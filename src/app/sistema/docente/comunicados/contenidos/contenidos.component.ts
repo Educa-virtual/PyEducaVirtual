@@ -16,7 +16,7 @@ interface Comunicado {
     caduca: string
     grupo: { iGrupoId: string; cGrupoNombre: string }[]
     collapsed: boolean
-
+    destinatario?: string
     curso?: number
     seccion?: number
     grado?: number
@@ -45,7 +45,6 @@ export class ContenidosComponent implements OnInit {
     data = []
     miembros = []
 
-    // Propiedades para el destinatario
     destinatarioNombre: string = ''
     destinatarioId: number | null = null
     visibleDialog: boolean = false
@@ -56,7 +55,7 @@ export class ContenidosComponent implements OnInit {
     tipoPersona: any
     destinatarios: any[] = []
 
-    columnasDestinatarios: any[] = [
+    columnaModal = [
         {
             type: 'actions',
             width: '1rem',
@@ -89,9 +88,25 @@ export class ContenidosComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'contacto',
+            header: 'Numero Telf. del Contacto',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'domicilio',
+            header: 'Direccion Domiciliaria',
+            text_header: 'center',
+            text: 'center',
+        },
     ]
 
-    accionDestinatarios = [
+    accionModal = [
         {
             labelTooltip: 'Seleccionar',
             icon: 'pi pi-user-plus',
@@ -212,12 +227,12 @@ export class ContenidosComponent implements OnInit {
         this.visibleDialog = false
     }
 
-    // Cuando hacemos clic en "Editar"
+    // "Editar"
     editComunicado(com: Comunicado) {
         this.selectedComunicado = {
             ...com,
             grupo: com.grupo.map((g: any) => g.iGrupoId.toString()),
-            // estado: com.estado === 'Activo' ? 1 : 0, // Convierte el string a número
+            // estado: com.estado === 'Activo' ? 1 : 0,
             prioridad:
                 this.prioridades.find((p: any) => p.label === com.prioridad)
                     ?.value || com.prioridad,
@@ -230,6 +245,7 @@ export class ContenidosComponent implements OnInit {
             grado: com.grado,
         }
         this.selectedEstado = com.estado === 'Activo' ? 1 : 0
+        this.destinatarioNombre = com.destinatario || ''
     }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
@@ -243,9 +259,10 @@ export class ContenidosComponent implements OnInit {
             dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
             dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
             iEstado: this.selectedEstado, // Estado (1 o 0)
+            iSemAcadId: this.iSemAcadId,
             iYAcadId: this.iYAcadId,
             listaGrupos: this.selectedComunicado.grupo,
-
+            iSedeId: this.Isede,
             curso: this.selectedComunicado.curso,
             seccion: this.selectedComunicado.seccion,
             grado: this.selectedComunicado.grado,
@@ -273,9 +290,7 @@ export class ContenidosComponent implements OnInit {
         this.cargarComunicadosUsuario()
     }
     togglePanel(event: Event, panel: any, comunicado: Comunicado) {
-        // Alterna el estado local para cambiar el icono
         comunicado.collapsed = !comunicado.collapsed
-        // Dispara la animación interna de PrimeNG con el evento correcto
         panel.toggle(event)
     }
     deleteComunicado(id: number) {
@@ -313,7 +328,7 @@ export class ContenidosComponent implements OnInit {
             case 'obtenerDatos':
                 this.prioridades = item.tipo_prioridad.map((p: any) => ({
                     label: p.cPrioridadNombre,
-                    value: p.iPrioridadId, // Convertimos a número
+                    value: p.iPrioridadId,
                 }))
 
                 this.tipos = item.tipo_comunicado.map((t: any) => ({
@@ -337,23 +352,34 @@ export class ContenidosComponent implements OnInit {
                     label: g.cGradoNombre,
                     value: g.iGradoId,
                 }))
+                this.iSemAcadId = item.semestre_acad_id
                 break
             case 'obtenerComunicadosPersona':
                 // item es el array devuelto por el SP
                 this.comunicados = item.map((c: any) => {
+                    const foundCurso = this.cursos.find(
+                        (cs: any) => cs.value == c.iCursoId
+                    )
+                    const foundSeccion = this.secciones.find(
+                        (ss: any) => ss.value == c.iSeccionId
+                    )
+                    const foundGrado = this.grados.find(
+                        (gg: any) => gg.value == c.iGradoId
+                    )
+
                     return {
                         id: c.iComunicadoId,
                         titulo: c.cComunicadoTitulo,
                         texto: c.cComunicadoDescripcion,
-                        // Si iEstado es 1 => 'Activo', 0 => 'Inactivo' (ajusta según tu lógica)
+                        // Si iEstado es 1 => 'Activo', 0 => 'Inactivo'
                         estado:
                             Number(c.bComunicadoArchivado) === 1
                                 ? 'Activo'
                                 : 'Inactivo',
-                        // Nombres leídos del SP
+                        // Nombres
                         tipo: c.cTipoComNombre,
                         prioridad: c.cPrioridadNombre,
-                        // Formatear fechas si quieres mostrar dd/mm/aaaa
+                        // Formato fechas  dd/mm/aaaa
                         publicado: c.dtComunicadoEmision
                             ? this.formatDate(new Date(c.dtComunicadoEmision))
                             : '',
@@ -377,19 +403,22 @@ export class ContenidosComponent implements OnInit {
                                       )
                                   })()
                                 : [],
+                        // curso, sección y grado:
+                        curso: c.iCursoId,
+                        seccion: c.iSeccionId,
+                        grado: c.iGradoId,
+                        // nombre del destinatario
+                        cursoName: foundCurso ? foundCurso.label : null,
+                        seccionName: foundSeccion ? foundSeccion.label : null,
+                        gradoName: foundGrado ? foundGrado.label : null,
+                        destinatario: c.NombreUsuario || '',
                         collapsed: true,
                     }
                 })
                 break
             case 'obtenerMiembros':
-                // Para el diálogo de destinatario
+                // Para el p-diálog de destinatario
                 this.destinatarios = JSON.parse(item[0]['miembroGrupo'])
-                // console.table(item)
-                // this.data = []
-                // const json_datos = item
-                // this.data = JSON.parse(json_datos[0]['miembroGrupo'])
-                // this.filtrarGrupo()
-                // this.destinatarios = item;
                 break
             case 'eliminar':
                 // Tras la eliminación refrescamos la lista
@@ -419,5 +448,11 @@ export class ContenidosComponent implements OnInit {
         // Reinicia el comunicado
         this.selectedComunicado = this.initComunicado()
         this.selectedEstado = null
+        this.destinatarioNombre = ''
+        this.destinatarioId = null
+        this.tipoPersona = null
+        setTimeout(() => {
+            this.destinatarioNombre = ''
+        })
     }
 }

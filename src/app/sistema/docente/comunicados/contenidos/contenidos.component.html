@@ -2,140 +2,250 @@
     <!-- Panel izquierdo: Lista de Comunicados -->
     <div class="col-12 md:col-6">
         <p-panel class="custom-header-panel">
-            <ng-template pTemplate="header">
+            <ng-template pTemplate="header" class="p-0">
                 <h4 class="p-2 m-0 font-bold text-white w-full text-center">
                     Lista Comunicados
                 </h4>
             </ng-template>
-            <!-- Contenedor de comunicados dinámicos -->
-            <div class="p-0 m-0 flex flex-column gap-3 mt-2">
-                <!-- Recorre el array con *ngFor -->
-                <p-panel
-                    *ngFor="let comunicado of comunicados; let i = index"
-                    #panel
-                    [toggleable]="true"
-                    [collapsed]="comunicado.collapsed"
-                    class="custom-panel"
+            <p-scrollPanel
+                [style]="{ width: '100%', height: '600px' }"
+                styleClass="custombar1"
+            >
+                <!-- Contenedor de comunicados dinámicos con p-accordion -->
+                <p-accordion
+                    class="w-full p-0 m-0 comunicados-accordion"
+                    expandIcon="pi pi-angle-down"
+                    collapseIcon="pi pi-angle-up"
                 >
-                    <!-- Personaliza el header de cada comunicado -->
-                    <ng-template pTemplate="header">
-                        <div
-                            class="flex align-items-center justify-content-between w-full text-white"
-                        >
-                            <div class="flex align-items-center">
-                                <div
-                                    class="bg-header-style flex justify-content-center px-2 py-2"
+                    <!-- Recorre el array con *ngFor -->
+                    <p-accordionTab
+                        *ngFor="let comunicado of comunicados; let i = index"
+                        iconPos="end"
+                    >
+                        <ng-template pTemplate="header">
+                            <p-inputGroup>
+                                <p-inputGroupAddon
+                                    class="font-bold bg-header-style"
                                 >
-                                    Nº {{ i + 1 }}:
-                                </div>
-                                <div class="ml-2 comunicado-titulo">
-                                    {{ comunicado.titulo }}
-                                </div>
-                            </div>
+                                    Comunicado Nº {{ i + 1 }}:
+                                </p-inputGroupAddon>
+                                <input
+                                    type="text"
+                                    [value]="comunicado.titulo"
+                                    pInputText
+                                    readonly
+                                    class="comunicado-titulo"
+                                />
+                            </p-inputGroup>
                             <div class="flex gap-0">
-                                <button
-                                    pButton
-                                    [icon]="
-                                        comunicado.collapsed
-                                            ? 'pi pi-eye'
-                                            : 'pi pi-eye-slash'
-                                    "
-                                    class="p-button-text p-button-xs text-white"
-                                    (click)="
-                                        togglePanel($event, panel, comunicado)
-                                    "
-                                    title="Ver"
-                                ></button>
-                                <button
+                                <p-button
                                     pButton
                                     icon="pi pi-trash"
-                                    class="p-button-text p-button-xs text-white"
+                                    class="p-button-text p-button-xs"
                                     title="Eliminar"
-                                    (click)="deleteComunicado(comunicado.id)"
-                                ></button>
-                                <button
+                                    (click)="
+                                        deleteComunicado(comunicado.id);
+                                        $event.stopPropagation()
+                                    "
+                                ></p-button>
+                                <p-button
                                     pButton
                                     icon="pi pi-pencil"
-                                    class="p-button-text p-button-xs mr-1 text-white"
-                                    (click)="editComunicado(comunicado)"
+                                    class="p-button-text p-button-xs"
                                     title="Editar"
-                                ></button>
+                                    (click)="
+                                        editComunicado(comunicado);
+                                        $event.stopPropagation()
+                                    "
+                                ></p-button>
                             </div>
-                        </div>
-                    </ng-template>
-
-                    <!-- Contenido que se ve al expandir el panel -->
-                    <div class="grid p-1">
-                        <div class="col-12 md:col-6">
-                            <div class="grid pb-3">
-                                <div class="col-3 bg-header-style font-bold">
-                                    Estado:
-                                </div>
-                                <div class="col-9">
-                                    {{ comunicado.estado }}
-                                </div>
-                            </div>
-                            <div class="grid pb-3">
-                                <div class="col-4 bg-header-style font-bold">
-                                    Publicado:
-                                </div>
-                                <div class="col-8">
-                                    {{ comunicado.publicado }}
-                                </div>
-                            </div>
+                        </ng-template>
+                        <!-- Contenido que se muestra al expandir el acordeón -->
+                        <!-- Card que muestra los datos del comunicado -->
+                        <p-card
+                            [header]="comunicado.titulo || 'Sin Título'"
+                            styleClass="mb-3 custom-comunicado-card"
+                        >
                             <div class="grid">
-                                <div class="col-4 bg-header-style font-bold">
-                                    Caduca:
-                                </div>
-                                <div class="col-8">
-                                    {{ comunicado.caduca }}
-                                </div>
-                            </div>
-                        </div>
+                                <!-- Columna Izquierda -->
+                                <div class="col-12 md:col-6">
+                                    <!-- Fila: Estado -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Estado:
+                                        </div>
+                                        <span>{{
+                                            comunicado.estado ||
+                                                'No especificado'
+                                        }}</span>
+                                    </div>
 
-                        <div class="col-12 md:col-6">
-                            <div class="grid pb-3">
-                                <div class="col-3 bg-header-style font-bold">
-                                    Tipo:
+                                    <!-- Fila: Publicado -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Publicado:
+                                        </div>
+                                        <span>{{
+                                            comunicado.publicado || 'Sin fecha'
+                                        }}</span>
+                                    </div>
+
+                                    <!-- Fila: Caduca -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Caduca:
+                                        </div>
+                                        <span>{{
+                                            comunicado.caduca || 'Sin fecha'
+                                        }}</span>
+                                    </div>
+
+                                    <!-- Fila: Curso -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Curso:
+                                        </div>
+                                        <span>{{
+                                            comunicado.cursoName ||
+                                                'No especificado'
+                                        }}</span>
+                                    </div>
+
+                                    <!-- Fila: Sección -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Sección:
+                                        </div>
+                                        <span>{{
+                                            comunicado.seccionName ||
+                                                'No especificado'
+                                        }}</span>
+                                    </div>
+
+                                    <!-- Fila: Grado -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Grado:
+                                        </div>
+                                        <span>{{
+                                            comunicado.gradoName ||
+                                                'No especificado'
+                                        }}</span>
+                                    </div>
                                 </div>
-                                <div class="col-9">
-                                    {{ comunicado.tipo }}
+
+                                <!-- Columna Derecha -->
+                                <div class="col-12 md:col-6">
+                                    <!-- Fila: Tipo -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Tipo:
+                                        </div>
+                                        <span>{{
+                                            comunicado.tipo || 'No definido'
+                                        }}</span>
+                                    </div>
+
+                                    <!-- Fila: Prioridad -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Prioridad:
+                                        </div>
+                                        <span>{{
+                                            comunicado.prioridad ||
+                                                'Sin prioridad'
+                                        }}</span>
+                                    </div>
+
+                                    <!-- Fila: Grupo -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Grupo:
+                                        </div>
+                                        <span>
+                                            <ng-container
+                                                *ngIf="
+                                                    comunicado.grupo?.length >
+                                                        0;
+                                                    else sinGrupo
+                                                "
+                                            >
+                                                <span
+                                                    *ngFor="
+                                                        let g of comunicado.grupo;
+                                                        let last = last
+                                                    "
+                                                    >{{ g.cGrupoNombre
+                                                    }}{{
+                                                        last ? '' : ', '
+                                                    }}</span
+                                                >
+                                            </ng-container>
+                                            <ng-template #sinGrupo>
+                                                No asignado
+                                            </ng-template>
+                                        </span>
+                                    </div>
+
+                                    <!-- Fila: Destinatario (si aplica) -->
+                                    <div class="flex align-items-center mb-2">
+                                        <div
+                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                            style="min-width: 80px"
+                                        >
+                                            Destinatario:
+                                        </div>
+                                        <span>{{
+                                            comunicado.destinatario ||
+                                                'Sin destinatario'
+                                        }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="grid pb-3">
-                                <div class="col-4 bg-header-style font-bold">
-                                    Prioridad:
-                                </div>
-                                <div class="col-8">
-                                    {{ comunicado.prioridad }}
-                                </div>
-                            </div>
-                            <div class="grid">
-                                <div
-                                    class="col-3 flex h-full bg-header-style font-bold justify-center"
-                                >
-                                    Grupo:
-                                </div>
-                                <div class="col-9 flex h-full justify-center">
-                                    <span
-                                        *ngFor="
-                                            let grupo of comunicado.grupo;
-                                            let last = last
-                                        "
+
+                                <!-- Texto o descripción -->
+                                <div class="col-12 mt-3">
+                                    <p
+                                        class="m-0"
+                                        style="white-space: pre-line"
                                     >
-                                        {{ grupo.cGrupoNombre
-                                        }}{{ last ? '' : ', ' }}
-                                    </span>
+                                        {{
+                                            comunicado.texto ||
+                                                'Sin contenido adicional.'
+                                        }}
+                                    </p>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-12">
-                            <p class="mt-2">{{ comunicado.texto }}</p>
-                        </div>
-                    </div>
-                </p-panel>
-            </div>
+                        </p-card>
+                    </p-accordionTab>
+                </p-accordion>
+            </p-scrollPanel>
         </p-panel>
     </div>
 
@@ -224,20 +334,22 @@
                 </div>
                 <div class="flex flex-column">
                     <label for="destinatario" class="mb-1"
-                        >Buscar por nombre</label
+                        >Destinatario Unico</label
                     >
                     <input
                         pInputText
                         id="destinatario"
                         name="destinatario"
-                        placeholder="Buscar por nombre"
+                        placeholder="Buscar por nombre o DNI"
                         [value]="destinatarioNombre"
                         readonly
                         (click)="abrirDialogBuscarDestinatario()"
+                        [ngClass]="{ 'input-seleccionado': destinatarioNombre }"
+                        (click)="abrirDialogBuscarDestinatario()"
                     />
                 </div>
-                <div class="grid">
-                    <div class="flex flex-column col-12 md:col-4">
+                <div class="row-with-wrap">
+                    <div class="dropdown-container">
                         <label for="curso" class="mb-1">Curso</label>
                         <p-dropdown
                             id="curso"
@@ -249,7 +361,7 @@
                             optionValue="value"
                         ></p-dropdown>
                     </div>
-                    <div class="flex flex-column col-12 md:col-4">
+                    <div class="dropdown-container">
                         <label for="seccion" class="mb-1">Sección</label>
                         <p-dropdown
                             id="seccion"
@@ -261,7 +373,7 @@
                             optionValue="value"
                         ></p-dropdown>
                     </div>
-                    <div class="flex flex-column col-12 md:col-4">
+                    <div class="dropdown-container">
                         <label for="grado" class="mb-1">Grado</label>
                         <p-dropdown
                             id="grado"
@@ -276,10 +388,11 @@
                 </div>
                 <div class="grid">
                     <div class="flex flex-column col-12 md:col-6">
-                        <label for="publicado" class="mb-1">Publicado</label>
+                        <label for="publicado" class="mb-1">Inicio</label>
                         <p-calendar
                             id="publicado"
                             name="publicado"
+                            placeholder="Fecha de Inicio"
                             [(ngModel)]="selectedComunicado.publicado"
                             dateFormat="dd/mm/yy"
                             showIcon="true"
@@ -290,10 +403,11 @@
                         ></p-calendar>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
-                        <label for="caduca" class="mb-1">Caduca</label>
+                        <label for="caduca" class="mb-1">Fin</label>
                         <p-calendar
                             id="caduca"
                             name="caduca"
+                            placeholder="Fecha de Fin"
                             [(ngModel)]="selectedComunicado.caduca"
                             dateFormat="dd/mm/yy"
                             showIcon="true"
@@ -372,9 +486,10 @@
         </div>
     </div>
     <app-table-primeng
-        [columnas]="columnasDestinatarios"
+        [columnas]="columnaModal"
         [data]="destinatarios"
         (accionBtnItem)="seleccionarDestinatario($event)"
+        [actions]="accionModal"
     ></app-table-primeng>
 </p-dialog>
 

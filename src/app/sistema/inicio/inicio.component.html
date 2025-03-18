@@ -1,37 +1,49 @@
-<!-- <p-carousel 
-    [value]="comunicados" 
-    [numVisible]="3" 
-    [numScroll]="3" 
-    [circular]="true" 
-    [responsiveOptions]="responsiveOptions" 
-    autoplayInterval="3000">
-        <ng-template let-product pTemplate="item">
-                <div class="border-1 surface-border border-round m-2 p-3">
-                    <div class="mb-3">
-                        <div class="relative mx-auto">
-                            
-                            <p-tag 
-                                [value]="product.inventoryStatus" 
-            
-                                class="absolute" 
-                                [ngStyle]="{ 'left.px': 5, 'top.px': 5 }" />
-                        </div>
-                    </div>
-                    <div class="mb-3 font-medium">
-                        1111
-                    </div>
-                    <div class="flex justify-content-between align-items-center">
-                    <div class="mt-0 font-semibold text-xl">
-                        111
-                    </div>
-                        <span>
-                            <p-button icon="pi pi-heart" severity="secondary" [outlined]="true" />
-                            <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
-                        </span>
-                    </div>
+<p-carousel
+    [value]="comunicados"
+    [numVisible]="2"
+    [numScroll]="2"
+    [circular]="true"
+    [responsiveOptions]="responsiveOptions"
+    *ngIf="comunicados.length > 0"
+    autoplayInterval="9000"
+>
+    <ng-template let-comunicado pTemplate="item">
+        <div
+            class="border-1 surface-border border-round m-2 p-3 bg-white"
+            (click)="
+                showModal(
+                    comunicado.cComunicadoTitulo,
+                    comunicado.cComunicadoDescripcion
+                )
+            "
+            tabindex="0"
+            (keydown)="onKeyDown($event)"
+            (keyup)="onKeyUp($event)"
+        >
+            <div class="mb-3">
+                <div class="relative mx-auto">
+                    <p-tag
+                        [value]="comunicado.cPrioridadNombre"
+                        [severity]="obtenerEstado(comunicado.iPrioridadId)"
+                        class="absolute"
+                        [ngStyle]="{ 'right.px': 1, 'top.px': 1 }"
+                    />
                 </div>
-        </ng-template>
-</p-carousel> -->
+            </div>
+            <div class="mb-3 font-bold w-10">
+                {{ comunicado.cComunicadoTitulo }}
+            </div>
+            <div class="flex justify-content-between align-items-center">
+                <div
+                    class="mt-0 font-medium text-base text-justify white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                    style="width: 500px"
+                >
+                    {{ comunicado.cComunicadoDescripcion }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-carousel>
 
 <div class="p-8">
     <div class="container p-5 text-center">
@@ -54,30 +66,19 @@
     </div>
 </div>
 
-<!-- <div class="mt-1 mr-8 ml-8">
-    <p-scrollPanel [style]="{ width: '100%',height: '350px' }" styleClass="custombar1">
-            <p-accordion
-            class="w-full p-0 m-0"
-            expandIcon="pi pi-angle-down"
-            collapseIcon="pi pi-angle-up"
-            >
-                <p-accordionTab
-                    iconPos="end"
-                    *ngFor="let comunicado of comunicados"
-                    [header]="comunicado.cComunicadoTitulo"
-                >
-                    <div class="p-3">
-                        <p class="mt-3">{{ comunicado.cComunicadoDescripcion }}</p>
-                        <p class="mt-3">
-                            <strong>Publicado:</strong>
-                            {{ comunicado.dtComunicadoEmision }}
-                        </p>
-                        <p class="mt-1">
-                            <strong>Caduca:</strong>
-                            {{ comunicado.dtComunicadoHasta }}
-                        </p>
-                    </div>
-                </p-accordionTab>
-            </p-accordion>
-    </p-scrollPanel>
-</div> -->
+<p-dialog
+    header="Comunicados"
+    [(visible)]="visible"
+    [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '50vw' }"
+    [draggable]="false"
+    [resizable]="false"
+>
+    <p class="mt-5 font-bold">
+        {{ titulo }}
+    </p>
+    <p class="mt-2">
+        {{ descripcion }}
+    </p>
+</p-dialog>

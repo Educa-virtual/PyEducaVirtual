@@ -94,3 +94,51 @@
     width: 100%;
     margin-top: 1rem;
 }
+:host ::ng-deep .input-seleccionado {
+    background-color: #f0f0f0 !important; // gris claro
+}
+:host ::ng-deep .row-with-wrap {
+    display: flex;
+    flex-wrap: wrap; /* <-- aquí activamos el wrap */
+    gap: 1rem; /* separa los items horizontal y verticalmente */
+}
+
+:host ::ng-deep .dropdown-container {
+    display: flex; /* Activar flex para la columna interna */
+    flex-direction: column; /* Label arriba, dropdown abajo */
+    flex: 1 1 auto; /* permite que cada dropdown crezca o se encoja */
+    min-width: 100px; /* ancho mínimo para evitar que se vuelvan muy estrechos */
+    margin-bottom: 1rem;
+}
+:host ::ng-deep .comunicados-accordion .grid.p-1 {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+:host ::ng-deep .comunicados-accordion .p-accordion-header-link {
+    padding: 4px 8px !important;
+    margin: 0 !important;
+    height: auto !important;
+    line-height: normal !important;
+}
+
+//   :host ::ng-deep .comunicados-accordion .p-accordion-header {
+//     padding: 0 !important;
+//     margin: 0 !important;
+//   }
+//   :host ::ng-deep .comunicados-accordion .p-inputgroup {
+//     margin: 0 !important;
+//     padding: 0 !important;
+//   }
+:host ::ng-deep .comunicados-accordion .p-inputgroup .p-inputtext[readonly] {
+    cursor: pointer !important;
+}
+
+/* Opcional: si quieres ocultar la línea de enfoque al hacer clic */
+:host
+    ::ng-deep
+    .comunicados-accordion
+    .p-inputgroup
+    .p-inputtext[readonly]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}

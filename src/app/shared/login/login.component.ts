@@ -126,7 +126,7 @@ export class LoginComponent implements OnInit {
                     detail:
                         error.pass || error.user
                             ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
-                            : error,
+                            : 'Verifica tus Credenciales',
                 })
             },
         })

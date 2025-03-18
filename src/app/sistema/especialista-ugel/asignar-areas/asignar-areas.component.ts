@@ -3,22 +3,22 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { forkJoin } from 'rxjs'
 import { MessageService } from 'primeng/api'
-import { ApiEspecialistasUgelService } from '../../services/api.especialistas-ugel.services'
+import { ApiEspecialistasUgelService } from '../../ere/services/api.especialistas-ugel.services'
 
 @Component({
     selector: 'app-especialista-ugel',
     standalone: true,
-    templateUrl: './especialista-ugel.component.html',
-    styleUrl: './especialista-ugel.component.scss',
+    templateUrl: './asignar-areas.component.html',
+    styleUrl: './asignar-areas.component.scss',
     imports: [PrimengModule, ContainerPageComponent],
 })
-export class EspecialistaUgelComponent implements OnInit {
+export class AsignarAreasEspecialistaUgelComponent implements OnInit {
     private _ApiEspecialistasService = inject(ApiEspecialistasUgelService)
     private _MessageService = inject(MessageService)
 
     objectKeys = Object.keys
 
-    titulo: string = 'Asignación de áreas a Especialistas UGEL'
+    titulo: string = 'Asignar áreas a Especialistas UGEL'
     especialistas: any[] = []
     ugeles: any[] = []
     nivelPrimaria: any[] = []

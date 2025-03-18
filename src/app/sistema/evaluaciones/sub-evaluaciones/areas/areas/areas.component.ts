@@ -1,7 +1,11 @@
-import { DataView } from 'primeng/dataview'
+import { DataViewModule, DataView } from 'primeng/dataview'
+import { IconFieldModule } from 'primeng/iconfield'
+import { InputIconModule } from 'primeng/inputicon'
+import { DropdownModule } from 'primeng/dropdown'
 import { TableModule } from 'primeng/table'
+import { InputTextModule } from 'primeng/inputtext'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@shared/table-primeng/table-primeng.component'
+import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
 import {
     ChangeDetectorRef,
     Component,
@@ -10,6 +14,9 @@ import {
     TrackByFunction,
 } from '@angular/core'
 import { IArea } from '../interfaces/area.interface'
+import { AreaCardComponent } from '../components/area-card/area-card.component'
+import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
+import { ButtonModule } from 'primeng/button'
 import { ActivatedRoute } from '@angular/router'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
@@ -18,8 +25,6 @@ import { CompartirFormularioEvaluacionService } from '../../../services/ereEvalu
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
-import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
-import { PrimengModule } from '@/app/primeng.module'
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
@@ -29,10 +34,16 @@ export type Layout = 'list' | 'grid'
     imports: [
         FormsModule,
         ContainerPageComponent,
-        CommonModule,
+        DataViewModule,
+        InputTextModule,
+        IconFieldModule,
+        InputIconModule,
+        DropdownModule,
         TableModule,
         TablePrimengComponent,
-        PrimengModule,
+        ButtonModule,
+        CommonModule,
+        AreaCardComponent,
     ],
 })
 export class AreasComponent implements OnInit {

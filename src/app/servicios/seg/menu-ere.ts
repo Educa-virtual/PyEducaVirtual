@@ -5,7 +5,7 @@ const inicio = {
 }
 
 export const evaluacionesEre = {
-    label: 'Evaluaciones',
+    label: 'Evaluaciones ERE',
     icon: 'pi pi-fw pi-check-square',
     routerLink: ['/ere/evaluaciones'],
 }
@@ -20,13 +20,37 @@ export const administradorDremo = [
     {
         items: [
             inicio,
-            {
+            /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',
                 routerLink: ['/evaluaciones'],
-            },
+            },*/
             evaluacionesEre,
             {
+                label: 'Especialista DREMO',
+                icon: 'pi pi-user',
+                //routerLink: ['/ere/especialista-dremo'],
+                items: [
+                    {
+                        label: 'Asignar áreas',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['./ere/especialistas-dremo/asignar-areas'],
+                    },
+                ],
+            },
+            {
+                label: 'Especialista UGEL',
+                icon: 'pi pi-sitemap',
+                //routerLink: ['/ere/administrar'],
+                items: [
+                    {
+                        label: 'Asignar áreas',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['./ere/especialistas-ugel/asignar-areas'],
+                    },
+                ],
+            },
+            /*{
                 label: 'Administrar',
                 icon: 'pi pi-fw pi-cog',
                 routerLink: ['/ere/administrar'],
@@ -42,8 +66,8 @@ export const administradorDremo = [
                         routerLink: ['./ere/administrar/especialista-ugel'],
                     },
                 ],
-            },
-            reportesEre,
+            },*/
+            //reportesEre,
             {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',

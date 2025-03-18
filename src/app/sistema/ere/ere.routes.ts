@@ -8,13 +8,20 @@ import {
 import { RoleGuard } from '@/app/shared/_guards/role.guard'
 import { Routes } from '@angular/router'
 import { EvaluacionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaciones/evaluaciones.component'
-import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
+import { ListaAreasComponent } from './evaluaciones/areas/lista-areas.component'
+import { PreguntasComponent } from './evaluaciones/preguntas/preguntas.component'
+import { AreasRendirExamenComponent } from './evaluaciones/examen/areas-rendir-examen/areas-rendir-examen.component'
+import { MostrarEvaluacionComponent } from './evaluaciones/examen/mostrar-evaluacion/mostrar-evaluacion.component'
+import { RendirExamenComponent } from './evaluaciones/examen/rendir-examen/rendir-examen.component'
+import { AsignarAreasEspecialistaDremoComponent } from '../especialista-dremo/asignar-areas/especialista-dremo.component'
+import { AsignarAreasEspecialistaUgelComponent } from '../especialista-ugel/asignar-areas/asignar-areas.component'
+/*import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
 import { EspecialistaUgelComponent } from './administrar/especialista-ugel/especialista-ugel.component'
 import { MostrarEvaluacionComponent } from './examen/mostrar-evaluacion/mostrar-evaluacion.component'
 import { RendirExamenComponent } from './examen/rendir-examen/rendir-examen.component'
-import { AreasRendirExamenComponent } from './examen/areas-rendir-examen/areas-rendir-examen.component'
+import { AreasRendirExamenComponent } from './examen/areas-rendir-examen/areas-rendir-examen.component'*/
 
 const routes: Routes = [
     {
@@ -23,12 +30,12 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas',
-        component: GestionarPreguntasComponent,
+        path: 'evaluaciones/:iEvaluacionId/areas',
+        component: ListaAreasComponent,
         canActivate: [RoleGuard],
         data: {
             expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
-            breadcrumb: 'Gestionar Preguntas',
+            breadcrumb: 'Lista de áreas',
             icon: 'pi pi-list-check',
         },
     },
@@ -48,7 +55,7 @@ const routes: Routes = [
         },
     },
     {
-        path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas/areas/:iCursoNivelGradId',
+        path: 'evaluaciones/:iEvaluacionId/areas/:iCursoNivelGradId/preguntas',
         component: PreguntasComponent,
         canActivate: [RoleGuard],
         data: {
@@ -58,27 +65,38 @@ const routes: Routes = [
         },
     },
     {
-        path: 'administrar',
+        path: 'especialistas-dremo',
         canActivate: [RoleGuard],
         data: {
             expectedRole: [ADMINISTRADOR_DREMO],
-            breadcrumb: 'Administrar',
+            breadcrumb: 'Especialistas DREMO',
             icon: 'pi pi-cog',
         },
         children: [
             {
-                path: 'especialista-dremo',
-                component: EspecialistaDremoComponent,
+                path: 'asignar-areas',
+                component: AsignarAreasEspecialistaDremoComponent,
                 data: {
-                    breadcrumb: 'Especialista DREMO',
+                    breadcrumb: 'Asignar áreas',
                     icon: 'pi pi-users',
                 },
             },
+        ],
+    },
+    {
+        path: 'especialistas-ugel',
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ADMINISTRADOR_DREMO],
+            breadcrumb: 'Especialistas UGEL',
+            icon: 'pi pi-cog',
+        },
+        children: [
             {
-                path: 'especialista-ugel',
-                component: EspecialistaUgelComponent,
+                path: 'asignar-areas',
+                component: AsignarAreasEspecialistaUgelComponent,
                 data: {
-                    breadcrumb: 'Especialista UGEL',
+                    breadcrumb: 'Asignar áreas',
                     icon: 'pi pi-users',
                 },
             },
@@ -122,13 +140,13 @@ const routes: Routes = [
         },
     },
 
-    {
+    /*{
         path: 'banco-preguntas',
         loadComponent: () =>
             import(
                 './evaluacion/preguntas/componentes/banco-preguntas/banco-preguntas-ere.component'
             ).then((c) => c.BancoPreguntasComponent),
-    },
+    },*/
 ]
 
 export class AppRoutingModule {}

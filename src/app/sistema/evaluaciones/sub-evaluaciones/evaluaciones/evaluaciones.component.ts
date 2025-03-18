@@ -29,7 +29,7 @@ import {
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles'
-import { FormLiberarAreasUgelComponent } from '../../../ere/components/areas/form-liberar-areas-ugel/form-liberar-areas-ugel.component'
+import { FormLiberarAreasUgelComponent } from '@/app/sistema/ere/evaluaciones/liberar-areas-ugel/form-liberar-areas-ugel.component'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -288,7 +288,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         {
             items: [
                 {
-                    label: 'Crear evaluación',
+                    label: 'Evaluación',
                     icon: 'pi pi-plus',
                     accion: 'seleccionar',
                     visible: this.generarAccines(),
@@ -301,7 +301,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     columnasBase: IColumn[] = [
         {
             type: 'item',
-            width: '0.5rem',
+            width: '1rem',
             field: 'index',
             header: '#',
             text_header: 'center',
@@ -311,41 +311,41 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             field: 'cEvaluacionNombre',
             header: 'Nombre evaluación',
             type: 'text',
-            width: '7rem',
+            width: '10rem',
             text: 'left',
-            text_header: 'Clave',
+            text_header: 'center',
         },
         {
             field: 'cTipoEvalDescripcion',
             header: 'Tipo evaluación',
             type: 'text',
-            width: '1rem',
-            text: 'left',
-            text_header: 'Tipo evaluación',
+            width: '3rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'cNivelEvalNombre',
             header: 'Nivel evaluación',
             type: 'text',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Puntaje',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'dtEvaluacionFechaInicio',
             header: 'Fecha Inicio',
             type: 'text',
             width: '4rem',
-            text: 'left',
-            text_header: 'Nivel',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'dtEvaluacionFechaFin',
             header: 'Fecha Fin',
             type: 'text',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
         },
     ]
     //COPIANDO COLUMNA PARA MODAL
@@ -356,8 +356,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             header: 'Acciones',
             type: 'actions',
             width: '5rem',
-            text: 'left',
-            text_header: '',
+            text: 'center',
+            text_header: 'center',
         },
     ]
     columnasAuto: IColumn[] = [
@@ -398,9 +398,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
-            labelTooltip: 'Gestionar Preguntas',
+            labelTooltip: 'Ver lista de áreas',
             icon: 'pi pi-list-check',
-            accion: 'gestionarPreguntas',
+            accion: 'verListaAreas',
             type: 'item',
             class: 'p-button-rounded p-button-help p-button-text',
             isVisible: () =>
@@ -524,7 +524,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             case 'eliminar':
                 this._confirmService.openConfirm({
                     header:
-                        '¿Esta seguro de eliminar la Evaluación: ' +
+                        '¿Esta seguro de eliminar la evaluación: ' +
                         item['cEvaluacionNombre'] +
                         ' ?',
                     accept: () => {
@@ -532,14 +532,12 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     },
                 })
                 break
-            case 'gestionarPreguntas':
+            case 'verListaAreas':
                 this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                     item.cEvaluacionNombre
                 )
                 this.router.navigate([
-                    'ere/evaluaciones/' +
-                        item.iEvaluacionIdxHash +
-                        '/gestionar-preguntas',
+                    'ere/evaluaciones/' + item.iEvaluacionIdxHash + '/areas',
                 ])
                 break
             case 'fechaPublicacion':

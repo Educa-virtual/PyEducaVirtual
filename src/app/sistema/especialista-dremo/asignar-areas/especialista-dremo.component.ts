@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { ApiEspecialistasService } from '../../services/api-especialistas.service'
 import { forkJoin } from 'rxjs'
 import { MessageService } from 'primeng/api'
+import { ApiEspecialistasService } from '../../ere/services/api-especialistas.service'
 
 @Component({
     selector: 'app-especialista-dremo',
@@ -12,13 +12,13 @@ import { MessageService } from 'primeng/api'
     styleUrl: './especialista-dremo.component.scss',
     imports: [PrimengModule, ContainerPageComponent],
 })
-export class EspecialistaDremoComponent implements OnInit {
+export class AsignarAreasEspecialistaDremoComponent implements OnInit {
     private _ApiEspecialistasService = inject(ApiEspecialistasService)
     private _MessageService = inject(MessageService)
 
     objectKeys = Object.keys
 
-    titulo: string = 'Asignación de áreas a Especialistas DREMO'
+    titulo: string = 'Asignar áreas a Especialistas DREMO'
     especialistas: any[] = []
     nivelPrimaria: any[] = []
     gradosPrimaria: any = []

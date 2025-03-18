@@ -17,7 +17,7 @@ import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
-} from '@shared/table-primeng/table-primeng.component'
+} from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 @Component({
     selector: 'app-alternativas',

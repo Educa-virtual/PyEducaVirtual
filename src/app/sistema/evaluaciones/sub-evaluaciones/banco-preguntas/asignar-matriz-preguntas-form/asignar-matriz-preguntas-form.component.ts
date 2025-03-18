@@ -6,7 +6,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import {
     IColumn,
     TablePrimengComponent,
-} from '@shared/table-primeng/table-primeng.component'
+} from '../../../../../shared/table-primeng/table-primeng.component'
 import {
     FormBuilder,
     FormGroup,

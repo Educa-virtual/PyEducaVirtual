@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
-import { mapData } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',

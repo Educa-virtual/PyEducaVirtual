@@ -18,7 +18,7 @@ import {
     administradorDremo,
     especialistaDremo,
     especialistaUgel,
-} from './seg/menu-ere/menuEre'
+} from './seg/menu-ere'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')

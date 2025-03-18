@@ -1,10 +1,10 @@
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
+import { ExamenEreComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
 import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
-import { ExamenEreComponent } from '../../sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
 
 @Component({
     selector: 'app-areas-rendir-examen',

@@ -1,6 +1,10 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { FichaVivienda } from '../../interfaces/fichaVivienda'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-ficha-vivienda',
@@ -10,9 +14,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
     styleUrl: './ficha-vivienda.component.scss',
 })
 export class FichaViviendaComponent implements OnInit {
-    form: FormGroup
+    formVivienda: FormGroup
+    vivienda_registrada: boolean = false
 
-    situaciones_vivienda: Array<object>
+    ocupaciones_vivienda: Array<object>
     pisos_vivienda: Array<object>
     estados_vivienda: Array<object>
     materiales_paredes_vivienda: Array<object>
@@ -26,142 +31,82 @@ export class FichaViviendaComponent implements OnInit {
 
     visibleInput: Array<boolean>
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private datosFichaBienestarService: DatosFichaBienestarService,
+        private compartirFichaService: CompartirFichaService
+    ) {}
+
+    private _messageService = inject(MessageService)
 
     ngOnInit(): void {
-        this.situaciones_vivienda = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'PROPIA' },
-            { id: 2, nombre: 'PROPIA, COMPRÁNDOLA A PLAZOS' },
-            { id: 3, nombre: 'ALQUILADA' },
-            { id: 4, nombre: 'ANTICRESIS' },
-            { id: 5, nombre: 'CEDIDA POR OTRO HOGAR' },
-            { id: 6, nombre: 'ALOJADO' },
-        ]
+        this.datosFichaBienestarService
+            .getFichaParametros()
+            .subscribe((data: any) => {
+                this.ocupaciones_vivienda =
+                    this.datosFichaBienestarService.getOcupacionesVivienda(
+                        data?.ocupaciones_vivienda
+                    )
+                this.estados_vivienda =
+                    this.datosFichaBienestarService.getEstadosVivienda(
+                        data?.estados_vivienda
+                    )
+                this.tipos_vivienda =
+                    this.datosFichaBienestarService.getTiposVivienda(
+                        data?.tipos_vivienda
+                    )
+                this.materiales_paredes_vivienda =
+                    this.datosFichaBienestarService.getParedesVivienda(
+                        data?.materiales_paredes_vivienda
+                    )
+                this.materiales_techos_vivienda =
+                    this.datosFichaBienestarService.getTechosVivienda(
+                        data?.materiales_techos_vivienda
+                    )
+                this.materiales_pisos_vivienda =
+                    this.datosFichaBienestarService.getPisosVivienda(
+                        data?.materiales_pisos_vivienda
+                    )
+                this.suministros_agua =
+                    this.datosFichaBienestarService.getSuministrosAgua(
+                        data?.suministros_agua
+                    )
+                this.tipos_sshh = this.datosFichaBienestarService.getTiposSshh(
+                    data?.tipos_sshh
+                )
+                this.tipos_alumbrado =
+                    this.datosFichaBienestarService.getTiposAlumbrado(
+                        data?.tipos_alumbrado
+                    )
+                this.otros_elementos =
+                    this.datosFichaBienestarService.getOtrosElementos(
+                        data?.otros_elementos
+                    )
+            })
 
-        this.pisos_vivienda = [
-            { id: 1, nombre: 'UN PISO' },
-            { id: 2, nombre: 'DOS PISOS' },
-            { id: 3, nombre: 'TRES PISOS' },
-            { id: 4, nombre: 'CUATRO PISOS' },
-            { id: 5, nombre: 'MÁS DE CUATRO PISOS' },
-        ]
-
-        this.estados_vivienda = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'TOTALMENTE CONSTRUIDA' },
-            { id: 2, nombre: 'EN CONSTRUCCIÓN' },
-            { id: 3, nombre: 'VIVIENDA IMPROVISADA' },
-        ]
-
-        this.tipos_vivienda = [
-            { id: 0, nombre: 'OTRO TIPO DE VIVIENDA' },
-            { id: 1, nombre: 'CASA INDEPENDIENTE' },
-            { id: 2, nombre: 'DEPARTAMENTO EN EDIFICIO' },
-            { id: 3, nombre: 'VIVIENDA EN QUINTA' },
-            { id: 4, nombre: 'CUARTO / HABITACIÓN' },
-        ]
-
-        this.materiales_paredes_vivienda = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'LADRILLO REVESTIDO' },
-            { id: 2, nombre: 'LADRILLO NO REVESTIDO' },
-            { id: 3, nombre: 'BLOQUETA DE CEMENTO REVESTIDO' },
-            { id: 4, nombre: 'BLOQUETA DE CEMENTO NO REVESTIDO' },
-            { id: 5, nombre: 'ADOBE' },
-            { id: 6, nombre: 'QUINCHA (CAÑA CON BARRO)' },
-            { id: 7, nombre: 'MADERA' },
-            { id: 8, nombre: 'ESTERA' },
-        ]
-
-        this.materiales_pisos_vivienda = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'PARQUET O MADERA PULIDA' },
-            { id: 2, nombre: 'VINÍLICOS O SIMILARES' },
-            { id: 3, nombre: 'LOSETAS' },
-            { id: 4, nombre: 'CEMENTO' },
-            { id: 5, nombre: 'TIERRA' },
-        ]
-
-        this.materiales_techos_vivienda = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'CONCRETO ARMADO' },
-            { id: 2, nombre: 'CALAMINA' },
-            { id: 3, nombre: 'FIBRA DE CEMENTO' },
-            { id: 4, nombre: 'ESTERA' },
-        ]
-
-        this.suministros_agua = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'RED PÚBLICA DENTRO DE LA VIVIENDA' },
-            {
-                id: 2,
-                nombre: 'RED PÚBLICA FUERA DE LA VIVIENDA, PERO DENTRO DEL EDIFICIO',
-            },
-            { id: 3, nombre: 'PILÓN DE USO PÚBLICO' },
-            { id: 4, nombre: 'CAMIÓN - CISTERNA U OTRO SIMILAR' },
-            { id: 5, nombre: 'RÍO, ACEQUIA, MANANTIAL O SIMILAR' },
-        ]
-
-        this.tipos_sshh = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'RED PÚBLICA DE DESAGÜE' },
-            { id: 2, nombre: 'LETRINA O SILO' },
-        ]
-
-        this.tipos_alumbrado = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'ELECTRICIDAD' },
-            { id: 2, nombre: 'MECHERO' },
-            { id: 3, nombre: 'VELA' },
-            { id: 4, nombre: 'PANEL SOLAR' },
-        ]
-
-        this.otros_elementos = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'EQUIPO DE SONIDO' },
-            { id: 2, nombre: 'TELEVISOR' },
-            { id: 3, nombre: 'SERVICIO DE CABLE' },
-            { id: 4, nombre: 'REFRIGERADORA / CONGELADORA' },
-            { id: 5, nombre: 'COCINA A GAS' },
-            { id: 6, nombre: 'TELEFONO FIJO' },
-            { id: 7, nombre: 'CELULAR' },
-            { id: 8, nombre: 'COMPUTADORA (PC)' },
-            { id: 9, nombre: 'LAPTOP' },
-            { id: 10, nombre: 'SERVICIO DE INTERNET HOGAR' },
-            { id: 11, nombre: 'TABLET' },
-            { id: 12, nombre: 'AUTOMÓVIL / CAMINETA' },
-            { id: 13, nombre: 'MOTO / MOTOTAXI' },
-        ]
+        if (this.compartirFichaService.getiFichaDGId()) {
+            this.searchFichaVivienda()
+        }
 
         this.visibleInput = Array(10).fill(false)
 
         try {
-            this.form = this.fb.group({
+            this.formVivienda = this.fb.group({
+                iViendaCarId: [null],
                 iFichaDGId: [null, Validators.required],
                 iTipoOcupaVivId: [null],
-                cTipoOcupaVivDescripcion: [''],
-                iEstadoVivId: [null],
-                cEstadoVivDescripcion: [''],
+                iMatPreId: [null],
+                iTipoVivId: [null],
                 iViviendaCarNroPisos: [null],
                 iViviendaCarNroAmbientes: [null],
                 iViviendaCarNroHabitaciones: [null],
-                iMatTecVivId: [null],
-                cMatTecVivDescripcion: [''],
+                iEstadoVivId: [null],
                 iMatPisoVivId: [null],
-                cMatPisoVivDescripcion: [''],
-                iMatPreId: [null],
-                cMatPreDescripcion: [''],
-                iTipoSumAId: [null],
-                cTipoSumADescripcion: [''],
-                iTipoAlumId: [null],
-                cTipoAlumDescripcion: [''],
-                iEleParaVivId: [null],
-                cEleParaVivDescripcion: [''],
-                iTipoVivId: [null],
-                cTipoVivDescripcion: [null],
+                iMatTecVivId: [null],
                 iTiposSsHhId: [null],
-                cTiposSsHhDescripcion: [null],
+                iTipoSumAId: [null],
+                iTipoAlumId: [null],
+                iEleParaVivId: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
@@ -174,13 +119,13 @@ export class FichaViviendaComponent implements OnInit {
             return null
         }
         if (Array.isArray(event.value)) {
-            if (event.value.includes(0)) {
+            if (event.value.includes(1)) {
                 this.visibleInput[index] = true
             } else {
                 this.visibleInput[index] = false
             }
         } else {
-            if (event.value == 0) {
+            if (event.value == 1) {
                 this.visibleInput[index] = true
             } else {
                 this.visibleInput[index] = false
@@ -188,11 +133,104 @@ export class FichaViviendaComponent implements OnInit {
         }
     }
 
+    searchFichaVivienda() {
+        this.datosFichaBienestarService
+            .searchFichaVivienda({
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            })
+            .subscribe((data: any) => {
+                if (data.data.length) {
+                    this.setFormVivienda(data.data)
+                }
+            })
+    }
+
+    setFormVivienda(data: FichaVivienda) {
+        this.formVivienda.patchValue(data)
+        this.formVivienda
+            .get('iTipoOcupaVivId')
+            ?.setValue(+data.iTipoOcupaVivId)
+        this.formVivienda
+            .get('iViviendaCarNroPisos')
+            ?.setValue(+data.iViviendaCarNroPisos)
+        this.formVivienda
+            .get('iViviendaCarNroAmbientes')
+            ?.setValue(+data.iViviendaCarNroAmbientes)
+        this.formVivienda
+            .get('iViviendaCarNroHabitaciones')
+            ?.setValue(+data.iViviendaCarNroHabitaciones)
+        this.formVivienda.get('iEstadoVivId')?.setValue(+data.iEstadoVivId)
+        this.formVivienda.get('iMatTecVivId')?.setValue(+data.iMatTecVivId)
+        this.formVivienda.get('iMatPisoVivId')?.setValue(+data.iMatPisoVivId)
+        this.formVivienda.get('iMatPreId')?.setValue(+data.iMatPreId)
+        this.formVivienda.get('iTiposSsHhId')?.setValue(+data.iTiposSsHhId)
+    }
+
     guardarDatos() {
-        console.log(this.form.value)
+        if (this.formVivienda.invalid) {
+            this._messageService.add({
+                severity: 'warning',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.datosFichaBienestarService
+            .guardarFichaVivienda(this.formVivienda.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.vivienda_registrada = true
+                    this.datosFichaBienestarService.formVivienda =
+                        this.formVivienda.value
+                },
+                error: (error) => {
+                    console.error('Error guardando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     actualizarDatos() {
-        console.log(this.form.value)
+        if (this.formVivienda.invalid) {
+            this._messageService.add({
+                severity: 'warning',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.datosFichaBienestarService
+            .actualizarFichaVivienda(this.formVivienda.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.vivienda_registrada = true
+                    this.datosFichaBienestarService.formVivienda =
+                        this.formVivienda.value
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 }

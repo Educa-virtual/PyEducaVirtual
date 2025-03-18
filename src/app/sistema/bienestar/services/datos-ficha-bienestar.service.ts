@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment.template'
 import { FichaGeneral } from '../interfaces/fichaGeneral'
 import { FichaFamiliar } from '../interfaces/fichaFamiliar'
+import { FichaVivienda } from '../interfaces/fichaVivienda'
 
 const baseUrl = environment.backendApi
 
@@ -24,8 +25,17 @@ export class DatosFichaBienestarService implements OnDestroy {
     lista: any[] = []
 
     parametros: any
-    tipos_documentos: Array<object>
+
+    /* ficha general */
+    tipos_vias: Array<object>
+    religiones: Array<object>
+
+    /* ficha familiar */
     tipos_familiares: Array<object>
+    ocupaciones: Array<object>
+    grados_instruccion: Array<object>
+    tipos_ies: Array<object>
+    tipos_documentos: Array<object>
     estados_civiles: Array<object>
     sexos: Array<object>
     nacionalidades: Array<object>
@@ -33,16 +43,30 @@ export class DatosFichaBienestarService implements OnDestroy {
     provincias: Array<object>
     distritos: Array<object>
     lenguas: Array<object>
-    tipos_contacto: Array<object>
-    religiones: Array<object>
+
+    /* ficha vivienda */
+    ocupaciones_vivienda: Array<object>
+    pisos_vivienda: Array<object>
+    estados_vivienda: Array<object>
+    materiales_paredes_vivienda: Array<object>
+    materiales_pisos_vivienda: Array<object>
+    materiales_techos_vivienda: Array<object>
+    tipos_vivienda: Array<object>
+    suministros_agua: Array<object>
+    tipos_sshh: Array<object>
+    tipos_alumbrado: Array<object>
+    otros_elementos: Array<object>
+
+    /* ficha salid */
     pandemias: Array<object>
-    tipos_vias: Array<object>
-    ocupaciones: Array<object>
-    grados_instruccion: Array<object>
-    tipos_ies: Array<object>
 
     formGeneral: FichaGeneral
     formFamiliar: FichaFamiliar
+    formVivienda: FichaVivienda
+
+    searchFichas(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/searchFichas`, data)
+    }
 
     searchFichaGeneral(data: any) {
         if (!this.formGeneral) {
@@ -95,23 +119,36 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/grl/validarPersona`, data)
     }
 
+    searchFichaVivienda(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/searchFichaVivienda`, data)
+    }
+
+    guardarFichaVivienda(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarFichaVivienda`, data)
+    }
+
+    actualizarFichaVivienda(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaVivienda`,
+            data
+        )
+    }
+
     /*
-     * Funciones para popular parametros de formularios de ficha general
+     * Funciones para popular parametros de formularios de ficha
      */
 
     /**
-     * Función para obtener los parametros de la ficha general
+     * Función para obtener los parametros de la ficha
      */
-    getFichaGeneralParametros() {
+    getFichaParametros() {
         if (!this.parametros) {
-            return this.http
-                .get(`${baseUrl}/bienestar/createFichaGeneral`)
-                .pipe(
-                    map((data: any) => {
-                        this.parametros = data.data[0]
-                        return this.parametros
-                    })
-                )
+            return this.http.get(`${baseUrl}/bienestar/createFicha`).pipe(
+                map((data: any) => {
+                    this.parametros = data.data[0]
+                    return this.parametros
+                })
+            )
         }
         return of(this.parametros)
     }
@@ -286,12 +323,122 @@ export class DatosFichaBienestarService implements OnDestroy {
     getReligiones(data: any) {
         if (!this.religiones && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
-            return items.map((religion: any) => ({
-                value: religion.iReligionId,
-                label: religion.cReligionNombre,
+            return items.map((item: any) => ({
+                value: item.iReligionId,
+                label: item.cReligionNombre,
             }))
         }
         return this.religiones
+    }
+
+    getOcupacionesVivienda(data: any) {
+        if (!this.ocupaciones_vivienda && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTipoOcupaVivId,
+                label: item.cTipoOcupaVivDescripcion,
+            }))
+        }
+        return this.ocupaciones_vivienda
+    }
+
+    getPisosVivienda(data: any) {
+        if (!this.pisos_vivienda && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iMatPisoVivId,
+                label: item.cMatPisoVivDescripcion,
+            }))
+        }
+        return this.pisos_vivienda
+    }
+
+    getEstadosVivienda(data: any) {
+        if (!this.estados_vivienda && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iEstadoVivId,
+                label: item.cEstadoVivDescripcion,
+            }))
+        }
+        return this.estados_vivienda
+    }
+
+    getTiposVivienda(data: any) {
+        if (!this.tipos_vivienda && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTipoVivId,
+                label: item.cTipoVivDescripcion,
+            }))
+        }
+        return this.tipos_vivienda
+    }
+
+    getParedesVivienda(data: any) {
+        if (!this.materiales_paredes_vivienda && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iMatPreId,
+                label: item.cMatPreDescripcion,
+            }))
+        }
+        return this.materiales_paredes_vivienda
+    }
+
+    getTechosVivienda(data: any) {
+        if (!this.materiales_techos_vivienda && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iMatTecVivId,
+                label: item.cMatTecVivDescripcion,
+            }))
+        }
+        return this.materiales_techos_vivienda
+    }
+
+    getSuministrosAgua(data: any) {
+        if (!this.suministros_agua && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTipoSumAId,
+                label: item.cTipoSumADescripcion,
+            }))
+        }
+        return this.suministros_agua
+    }
+
+    getTiposSshh(data: any) {
+        if (!this.tipos_sshh && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTiposSsHhId,
+                label: item.cTipoSsHhDescripcion,
+            }))
+        }
+        return this.tipos_sshh
+    }
+
+    getTiposAlumbrado(data: any) {
+        if (!this.tipos_alumbrado && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTipoAlumId,
+                label: item.cTipoAlumDescripcion,
+            }))
+        }
+        return this.tipos_alumbrado
+    }
+
+    getOtrosElementos(data: any) {
+        if (!this.otros_elementos && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iEleParaVivId,
+                label: item.cEleParaVivDescripcion,
+            }))
+        }
+        return this.otros_elementos
     }
 
     getPandemias() {

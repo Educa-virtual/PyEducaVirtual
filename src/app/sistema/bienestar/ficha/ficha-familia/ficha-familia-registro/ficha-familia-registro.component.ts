@@ -51,7 +51,7 @@ export class FichaFamiliaRegistroComponent implements OnInit {
 
     ngOnInit(): void {
         this.datosFichaBienestarService
-            .getFichaGeneralParametros()
+            .getFichaParametros()
             .subscribe((data: any) => {
                 this.sexos = this.datosFichaBienestarService.getSexos()
                 this.tipos_familiares =

@@ -77,7 +77,7 @@ export class FichasocgeneralComponent implements OnInit {
             })
 
         this.datosFichaBienestarService
-            .getFichaGeneralParametros()
+            .getFichaParametros()
             .subscribe((data: any) => {
                 this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
                     data?.tipos_vias

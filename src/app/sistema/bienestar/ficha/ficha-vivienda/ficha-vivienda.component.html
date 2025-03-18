@@ -1,364 +1,271 @@
 <br />
 
-<form [formGroup]="form">
+<form [formGroup]="formVivienda">
     <div class="grid p-fluid mt-3">
         <input type="hidden" name="iFichaDGId" />
 
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="situaciones_vivienda"
-                            formControlName="iTipoOcupaVivId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="false"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 0)"
-                        />
-                        <label for="iTipoOcupaVivId"
-                            >Ocupación de vivienda *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Ocupación </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="ocupaciones_vivienda"
+                    formControlName="iTipoOcupaVivId"
+                    [filter]="false"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 0)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[0] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cTipoOcupaVivDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cTipoOcupaVivDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="estados_vivienda"
-                            formControlName="iEstadoVivId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 1)"
-                        />
-                        <label for="iEstadoVivId"
-                            >Estado de la vivienda *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Estado </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="estados_vivienda"
+                    formControlName="iEstadoVivId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 1)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[1] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cEstadoVivDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cEstadoVivDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
 
         <div class="field col-12 md:col-4">
-            <span class="p-float-label">
+            <p-inputGroup>
+                <p-inputGroupAddon> # de pisos </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroPisos"
                     min="1"
                     showButtons="true"
                 />
-                <label for="iViviendaCarNroPisos">Número de pisos *</label>
-            </span>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-4">
-            <span class="p-float-label">
+            <p-inputGroup>
+                <p-inputGroupAddon> # de ambientes </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroAmbientes"
                     min="1"
                     showButtons="true"
                 />
-                <label for="iViviendaCarNroAmbientes"
-                    >Número de ambientes *</label
-                >
-            </span>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-4">
-            <span class="p-float-label">
+            <p-inputGroup>
+                <p-inputGroupAddon> # de dormitorios </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroHabitaciones"
                     min="0"
                     showButtons="true"
                 />
-                <label for="iViviendaCarNroHabitaciones"
-                    >Número de habitaciones/dormitorios *</label
-                >
-            </span>
+            </p-inputGroup>
         </div>
 
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="materiales_techos_vivienda"
-                            formControlName="iMatTecVivId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 2)"
-                        />
-                        <label for="iMatTecVivId"
-                            >Material predominante del techo *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Material del techo </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="materiales_techos_vivienda"
+                    formControlName="iMatTecVivId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 2)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[2] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cMatTecVivDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cMatTecVivDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="materiales_pisos_vivienda"
-                            formControlName="iMatPisoVivId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 3)"
-                        />
-                        <label for="iMatPisoVivId"
-                            >Material predominante del piso *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Pisos </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="materiales_pisos_vivienda"
+                    formControlName="iMatPisoVivId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 3)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[3] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cMatPisoVivDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cMatPisoVivDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
 
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="materiales_paredes_vivienda"
-                            formControlName="iMatPreId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="false"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 4)"
-                        />
-                        <label for="iMatPreId"
-                            >Material predominante de las paredes *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Paredes </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="materiales_paredes_vivienda"
+                    formControlName="iMatPreId"
+                    [filter]="false"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 4)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[4] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cMatPreDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cMatPreDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="suministros_agua"
-                            formControlName="iTipoSumAId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 5)"
-                        />
-                        <label for="iTipoSumAId"
-                            >Tipo de suministro de agua *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Suministro de agua </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="suministros_agua"
+                    formControlName="iTipoSumAId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 5)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[5] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cTipoSumADescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cTipoSumADescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
 
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="tipos_vivienda"
-                            formControlName="iTipoVivId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="false"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 6)"
-                        />
-                        <label for="iTipoVivId">Tipo de vivienda *</label>
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Tipo de vivienda </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="tipos_vivienda"
+                    formControlName="iTipoVivId"
+                    [filter]="false"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 6)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[6] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cTipoVivDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cTipoVivDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="tipos_sshh"
-                            formControlName="iTiposSsHhId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="handleDropdownChange($event, 7)"
-                        />
-                        <label for="iTiposSsHhId"
-                            >Tipo de servicio higiénico *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Tipo de SSHH </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="tipos_sshh"
+                    formControlName="iTiposSsHhId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    (onChange)="handleDropdownChange($event, 7)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[7] === true) {
-                    <div class="col">
-                        <input
-                            pInputText
-                            formControlName="cTipoSsHhDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cTipoSsHhDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
 
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-multiSelect
-                            display="chip"
-                            [options]="tipos_alumbrado"
-                            formControlName="iTipoAlumId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            multiple="true"
-                            [maxSelectedLabels]="undefined"
-                            (onChange)="handleDropdownChange($event, 8)"
-                            (onClear)="handleDropdownChange($event, 8)"
-                        />
-                        <label for="iPisosViviendaId"
-                            >Seleccione los tipos de alumbrado *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Alumbrado </p-inputGroupAddon>
+                <p-multiSelect
+                    display="chip"
+                    [options]="tipos_alumbrado"
+                    formControlName="iTipoAlumId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    multiple="true"
+                    [maxSelectedLabels]="undefined"
+                    (onChange)="handleDropdownChange($event, 8)"
+                    (onClear)="handleDropdownChange($event, 8)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[8] === true) {
-                    <div class="col-12">
-                        <input
-                            pInputText
-                            formControlName="cTipoAlumDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cTipoAlumDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
         <div class="field col-12 md:col-6">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-multiSelect
-                            display="chip"
-                            [options]="otros_elementos"
-                            formControlName="iEleParaVivId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            multiple="true"
-                            [maxSelectedLabels]="undefined"
-                            (onChange)="handleDropdownChange($event, 9)"
-                            (onClear)="handleDropdownChange($event, 9)"
-                        />
-                        <label for="iEleParaVivId"
-                            >Seleccione los elementos que tiene en su hogar
-                            *</label
-                        >
-                    </span>
-                </div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Otros elementos </p-inputGroupAddon>
+                <p-multiSelect
+                    display="chip"
+                    [options]="otros_elementos"
+                    formControlName="iEleParaVivId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    multiple="true"
+                    [maxSelectedLabels]="undefined"
+                    (onChange)="handleDropdownChange($event, 9)"
+                    (onClear)="handleDropdownChange($event, 9)"
+                    [style]="{ flex: '1', width: '100%' }"
+                />
                 @if (visibleInput[9] === true) {
-                    <div class="col-12">
-                        <input
-                            pInputText
-                            formControlName="cEleParaVivDescripcion"
-                            placeholder="Especifique"
-                            type="text"
-                        />
-                    </div>
+                    <input
+                        pInputText
+                        formControlName="cEleParaVivDescripcion"
+                        placeholder="Especifique"
+                        type="text"
+                    />
                 }
-            </div>
+            </p-inputGroup>
         </div>
     </div>
 </form>

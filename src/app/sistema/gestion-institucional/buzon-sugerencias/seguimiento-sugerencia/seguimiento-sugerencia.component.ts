@@ -9,11 +9,12 @@ import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { DatosSugerenciaService } from '../../services/datos.sugerencia.service'
+import { DerivarSugerenciaComponent } from '../derivar-sugerencia/derivar-sugerencia.component'
 
 @Component({
     selector: 'app-seguimiento-sugerencia',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [PrimengModule, TablePrimengComponent, DerivarSugerenciaComponent],
     templateUrl: './seguimiento-sugerencia.component.html',
     styleUrl: './seguimiento-sugerencia.component.scss',
 })
@@ -33,6 +34,7 @@ export class SeguimientoSugerenciaComponent implements OnInit {
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
     es_estudiante: boolean = this.perfil.iPerfilId == 80
     disable_form: boolean = false
+    item_seleccionado: any
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje

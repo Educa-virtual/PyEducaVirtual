@@ -271,7 +271,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             })
     }
 
-    getSilaboPdf(iSilaboId) {
+    getSilaboPdf(curso: string, grado: string, seccion: string, iSilaboId) {
         if (!iSilaboId) return
         const params = {
             petition: 'post',
@@ -282,13 +282,33 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                 iSilaboId: iSilaboId,
             },
         }
+        const fechas = new Date()
+        const dia = fechas.getDate()
+        const mes =
+            fechas.getMonth().toString().length > 1
+                ? fechas.getMonth()
+                : '0' + fechas.getMonth() // Se cambia el formato del mes cuando sea 1 digito se le aumentara un 0 adelante
+        const years = fechas.getFullYear()
         this._generalService.generarPdf(params).subscribe({
             next: (response) => {
                 const blob = new Blob([response], { type: 'application/pdf' })
                 const url = window.URL.createObjectURL(blob)
                 const a = document.createElement('a')
                 a.href = url
-                a.download = 'archivo.pdf'
+                a.download =
+                    'silabo_' +
+                    curso.toLowerCase() +
+                    '_' +
+                    grado.toLowerCase() +
+                    '_' +
+                    seccion.toLowerCase() +
+                    '_' +
+                    dia +
+                    '_' +
+                    mes +
+                    '_' +
+                    years +
+                    '.pdf'
                 a.click()
                 window.URL.revokeObjectURL(url)
             },

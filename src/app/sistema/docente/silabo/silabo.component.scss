@@ -15,3 +15,8 @@ textarea {
 :host ::ng-deep .tox .tox-statusbar a {
     display: none !important;
 }
+:host ::ng-deep {
+    .p-stepper .p-stepper-header .p-stepper-action {
+        border-radius: 100px;
+    }
+}

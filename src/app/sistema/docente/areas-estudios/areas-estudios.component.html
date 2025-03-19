@@ -104,7 +104,7 @@
                             {{ item.cCursoNombre }}
                         </td>
                         <td style="text-align: center">
-                            {{ item.iEstudiantes }}
+                            {{ item.cantidadalumnos }}
                         </td>
                         <td style="text-align: center">
                             {{ item.cNivelTipoNombre }}
@@ -174,7 +174,14 @@
                                     pButton
                                     pRipple
                                     class="p-1 mx-1 p-button-rounded p-button-danger p-button-text"
-                                    (click)="this.getSilaboPdf(item.iSilaboId)"
+                                    (click)="
+                                        this.getSilaboPdf(
+                                            item.cCursoNombre,
+                                            item.cGradoAbreviacion,
+                                            item.cSeccion,
+                                            item.iSilaboId
+                                        )
+                                    "
                                 >
                                     <i class="pi pi-file-pdf"></i>
                                 </button>

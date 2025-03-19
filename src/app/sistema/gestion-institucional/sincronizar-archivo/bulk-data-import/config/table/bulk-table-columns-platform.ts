@@ -158,12 +158,12 @@ export const estudiantePlatformTemplateColumns: IColumn[] = [
         type: 'text',
         width: '5rem',
         field: 'iSeccionId',
-        header: 'Seccion',
+        header: 'Sección',
         text_header: 'center',
         text: 'center',
     },
     {
-        type: 'cell-editor',
+        type: 'text',
         width: '5rem',
         field: 'cTipoIdentSigla',
         header: 'Tipo  de documento',
@@ -355,7 +355,7 @@ export const ambientesPlatformTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'bAmbienteEstado',
+        field: 'AmbienteEstado',
         header: 'Estado',
         text_header: 'center',
         text: 'center',

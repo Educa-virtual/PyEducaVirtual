@@ -2,7 +2,7 @@
 
 <div class="flex flex-column gap-4">
     <form [formGroup]="typeCollectionForm" class="flex flex-column gap-4">
-        <section class="flex justify-content-between">
+        <section class="flex gap-8">
             @for (config of dropdownConfigs; track config.id) {
                 @if (shouldShowDropdown(config)) {
                     <div class="flex flex-column gap-3">
@@ -11,6 +11,7 @@
                             [formControlName]="config.label + config.id"
                             [options]="config.options"
                             [placeholder]="config.placeholder"
+                            styleClass="w-16rem"
                         >
                         </p-dropdown>
                     </div>
@@ -18,10 +19,10 @@
             }
 
             @if (
-                typeCollectionForm.value['Origen de la colección:1'].id === 2
+                typeCollectionForm.value['Origen de la plantilla:1'].id === 2
             ) {
                 <div class="flex flex-column gap-3">
-                    <span>Iniciar proceso:</span>
+                    <span>Formato de importación:</span>
                     <p-button
                         #importBtn
                         styleClass="w-full"
@@ -37,31 +38,31 @@
     </form>
 
     @if (isSelectedTypeCollection(typeCollectionForm.value)) {
+        <div class="card flex flex-wrap flex-column gap-2">
+            <section class="flex justify-content-between">
+                <div class="flex flex-column gap-3">
+                    <span>Archivo de origen:</span>
+                    <app-btn-file-upload
+                        accept=".xlsx"
+                        (fileChange)="uploadFile($event)"
+                        [(ngModel)]="file"
+                    />
+                </div>
+
+                <div class="flex flex-column gap-3">
+                    <span>Iniciar proceso:</span>
+                    <p-button
+                        #importBtn
+                        label="Importar datos"
+                        icon="pi pi-database"
+                        [loading]="importLoad"
+                        (onClick)="validaImportData()"
+                    />
+                </div>
+            </section>
+        </div>
         <app-tab-view>
             <app-tab-panel title="Información del archivo">
-                <div class="card flex flex-wrap flex-column gap-2">
-                    <section class="flex justify-content-between">
-                        <div class="flex flex-column gap-3">
-                            <span>Archivo de origen:</span>
-                            <app-btn-file-upload
-                                accept=".xlsx"
-                                (fileChange)="uploadFile($event)"
-                                [(ngModel)]="file"
-                            />
-                        </div>
-
-                        <div class="flex flex-column gap-3">
-                            <span>Iniciar proceso:</span>
-                            <p-button
-                                #importBtn
-                                label="Importar datos"
-                                icon="pi pi-database"
-                                [loading]="importLoad"
-                                (onClick)="validaImportData()"
-                            />
-                        </div>
-                    </section>
-                </div>
                 @if (collection.columns) {
                     <app-table-primeng
                         [columnas]="columns"

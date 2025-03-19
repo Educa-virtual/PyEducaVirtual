@@ -1,19 +1,19 @@
 import {
     estudianteTemplateSiagieColumns,
+    padresFamiliasTemplateColumns,
     resultEstudianteTemplateSiagieColumns,
 } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/config/table/bulk-table-columns-siagie'
 import {
     ambientesPlatformTemplateColumns,
     docentePlatformTemplateColumns,
-    estudiantePlatformTemplateColumns,
     resultAmbientesPlatformTemplateColumns,
 } from '../table/bulk-table-columns-platform'
 
 export const dropdownGroupConfig = [
     {
         id: 1,
-        label: 'Origen de la colección:',
-        placeholder: 'Seleccione una entidad',
+        label: 'Origen de la plantilla:',
+        placeholder: 'Seleccione una origen',
         options: [
             {
                 value: {
@@ -32,8 +32,8 @@ export const dropdownGroupConfig = [
     {
         // SIAGIE
         id: 2,
-        label: 'Tipo de la colección:',
-        placeholder: 'Seleccione una colección',
+        label: 'Tipo de plantilla:',
+        placeholder: 'Seleccione una plantilla',
         options: [
             {
                 label: 'Estudiante',
@@ -62,6 +62,32 @@ export const dropdownGroupConfig = [
                     },
                 },
             },
+            {
+                label: 'Padres de familia',
+                value: {
+                    id: 2,
+                    cellData: 'B13',
+                    columns: padresFamiliasTemplateColumns,
+                    columnsResultImport: resultEstudianteTemplateSiagieColumns,
+                    importEndPoint:
+                        'acad/estudiante/importarEstudiantesPadresExcel',
+                    params: {
+                        iSedeId: JSON.parse(
+                            localStorage.getItem('dremoPerfil') || '{}'
+                        ).iSedeId,
+                        iYAcadId: JSON.parse(
+                            localStorage.getItem('dremoiYAcadId') || 'null'
+                        ),
+                        iCredId: JSON.parse(
+                            localStorage.getItem('dremoPerfil') || '{}'
+                        ).iCredId,
+                    },
+                    typeSend: 'file',
+                    response: (response: any) => {
+                        return response.data
+                    },
+                },
+            },
         ],
         dependency: 1,
         optionValue: 1,
@@ -69,8 +95,8 @@ export const dropdownGroupConfig = [
     {
         // Plataforma educativa
         id: 3,
-        label: 'Tipo de la colección:',
-        placeholder: 'Seleccione una colección',
+        label: 'Tipo de plantilla:',
+        placeholder: 'Seleccione una plantilla',
         options: [
             {
                 label: 'Docentes',
@@ -100,24 +126,40 @@ export const dropdownGroupConfig = [
                     },
                 },
             },
-            {
-                label: 'Estudiantes',
-                value: {
-                    id: 2,
-                    cellData: 'A3',
-                    columns: estudiantePlatformTemplateColumns,
-                    template: 'plantilla-estudiantes',
-                    typeSend: 'json',
-                },
-            },
+            // {
+            //     label: 'Estudiantes',
+            //     value: {
+            //         id: 2,
+            //         cellData: 'A3',
+            //         columns: estudiantePlatformTemplateColumns,
+            //         template: 'plantilla-estudiantes',
+            //         importEndPoint: '',
+            //         typeSend: 'json',
+            //     },
+            // },
             {
                 label: 'Ambientes',
                 value: {
                     id: 3,
                     cellData: 'A3',
                     columns: ambientesPlatformTemplateColumns,
+                    columnsResultImport: '',
                     template: 'plantilla-ambientes',
+                    importEndPoint:
+                        'acad/gestionInstitucional/importarAmbiente_IE',
                     typeSend: 'json',
+                    params: {
+                        iSedeId: JSON.parse(
+                            localStorage.getItem('dremoPerfil') || '{}'
+                        ).iSedeId,
+                        iYAcadId: JSON.parse(
+                            localStorage.getItem('dremoiYAcadId') || 'null'
+                        ),
+                        iNivelTipoId: JSON.parse(
+                            localStorage.getItem('dremoPerfil') || 'null'
+                        ).iNivelTipoId,
+                    },
+                    response: () => {},
                 },
             },
         ],

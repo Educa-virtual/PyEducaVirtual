@@ -1,0 +1,226 @@
+<section>
+    <div class="grid">
+        <div class="card col-5 m-1">
+            <app-toolbar-primeng
+                title="Listado de Capacitación Activas"
+            ></app-toolbar-primeng>
+            <section>
+                <p-dataView #dv [rows]="5" filterBy="">
+                    <ng-template let-products pTemplate="listItem">
+                        <app-table-primeng
+                            [columnas]="columnasTabla"
+                            [data]="cursos"
+                            [showCaption]="false"
+                        >
+                            <!--(accionBtnItem)="accionBnt($event)" -->
+                        </app-table-primeng>
+                    </ng-template>
+                </p-dataView>
+            </section>
+        </div>
+        <div class="card col">
+            <app-toolbar-primeng
+                title="Apertura Nueva Capacitación"
+            ></app-toolbar-primeng>
+            <form
+                [formGroup]="formNuevaCapacitacion"
+                class="flex flex-column gap-3 w-full"
+            >
+                <section>
+                    <div class="col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Tipo de Capacitación:</p-inputGroupAddon
+                            >
+                            <p-dropdown
+                                id="modalidad"
+                                formControlName="capacitacion"
+                                placeholder="Seleccione el tipo"
+                            ></p-dropdown>
+                            <!-- id="modalidad" [options]="modalidades" -->
+                        </p-inputGroup>
+                    </div>
+                    <div class="col">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Título: </p-inputGroupAddon>
+                            <input
+                                type="text"
+                                pInputText
+                                placeholder="Ingresar nombre...."
+                                formControlName="titulo"
+                            />
+                        </p-inputGroup>
+                    </div>
+
+                    <!-- select p-dropdown -->
+                    <div class="col">
+                        <div class="grid">
+                            <div class="col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Tipo de
+                                        Capacitación:</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        id="modalidad"
+                                        formControlName="capacitacion"
+                                        placeholder="Seleccione el tipo"
+                                    ></p-dropdown>
+                                    <!-- id="modalidad" [options]="modalidades" -->
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Tipo de
+                                        Capacitación:</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        id="modalidad"
+                                        formControlName="capacitacion"
+                                        placeholder="Seleccione el tipo"
+                                    ></p-dropdown>
+                                    <!-- id="modalidad" [options]="modalidades" -->
+                                </p-inputGroup>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descripción adicional -->
+                    <div class="col">
+                        <div class="formgrid grid">
+                            <div class="field col">
+                                <label for="descripcion" class="mt-1"
+                                    >Descripción
+                                    <span class="text-red-500 text-xs"
+                                        >(*) Obligatorio</span
+                                    ></label
+                                >
+                                <div class="mt-2">
+                                    <textarea
+                                        class="w-full"
+                                        rows="4"
+                                        placeholder="Escribe una Descripción"
+                                        pInputText
+                                        formControlName="cEvaluacionDescripcion"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- agregar horas -->
+                    <div class="col">
+                        <div class="grid">
+                            <div class="col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Total de horas:
+                                    </p-inputGroupAddon>
+                                    <p-calendar
+                                        id="fechaFin"
+                                        formControlName="fecha"
+                                        styleClass="w-full"
+                                        dateFormat="dd/mm/yy"
+                                    ></p-calendar>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Fecha de Inicio:</p-inputGroupAddon
+                                    >
+                                    <p-calendar
+                                        id="fechaFin"
+                                        formControlName="fecha"
+                                        styleClass="w-full"
+                                        dateFormat="dd/mm/yy"
+                                    ></p-calendar>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Fecha de Fin:</p-inputGroupAddon
+                                    >
+                                    <p-calendar
+                                        id="fechaFin"
+                                        formControlName="fecha"
+                                        styleClass="w-full"
+                                        dateFormat="dd/mm/yy"
+                                    ></p-calendar>
+                                </p-inputGroup>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="grid">
+                            <div class="col-8">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Instructor:
+                                    </p-inputGroupAddon>
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        placeholder="Nombre del Instructor"
+                                        formControlName="titulo"
+                                    />
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-4 align-content-center">
+                                <div class="flex">
+                                    <label for="" class="pr-3"
+                                        >¿Tiene Costo?</label
+                                    >
+                                    <p-inputSwitch class="align-self-start" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card col-12">
+                            <label for="descripcion" class="mt-1 font-bold"
+                                >Subir Imagen de portada:</label
+                            >
+                            <p-toast />
+                            <p-fileUpload
+                                name="demo[]"
+                                url="https://www.primefaces.org/cdn/api/upload.php"
+                                (onUpload)="onUpload($event)"
+                                [multiple]="true"
+                                accept="image/*"
+                                maxFileSize="1000000"
+                            >
+                                <ng-template pTemplate="content">
+                                    <ul *ngIf="uploadedFiles.length">
+                                        <li *ngFor="let file of uploadedFiles">
+                                            {{ file.name }} -
+                                            {{ file.size }} bytes
+                                        </li>
+                                    </ul>
+                                </ng-template>
+                            </p-fileUpload>
+                        </div>
+                    </div>
+
+                    <!-- Agregar los bottones -->
+                    <div class="col">
+                        <div class="text-right">
+                            <p-button
+                                icon="pi pi-eye"
+                                label="Visualizar"
+                                severity="contrast"
+                                class="pr-2"
+                            />
+                            <p-button
+                                icon="pi pi-check-circle"
+                                label="Crear"
+                                severity="success"
+                            />
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</section>

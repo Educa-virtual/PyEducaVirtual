@@ -79,9 +79,16 @@ const docente = [
                 ],
             },
             {
-                label: 'Mis Capacitaciones',
-                icon: 'pi pi-fw pi-sitemap',
-                routerLink: ['/docente/capacitaciones'],
+                label: 'Aula virtual',
+                icon: 'pi pi-id-card',
+                // routerLink: ['/aula-virtual/capacitate-docente'],
+                items: [
+                    {
+                        label: 'Capacitate',
+                        icon: 'pi pi-book',
+                        routerLink: ['/aula-virtual/capacitate-docente'],
+                    },
+                ],
             },
             {
                 label: 'Enlaces de ayuda',

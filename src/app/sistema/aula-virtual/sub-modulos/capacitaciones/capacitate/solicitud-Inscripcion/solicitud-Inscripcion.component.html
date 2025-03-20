@@ -1,0 +1,38 @@
+<app-toolbar-primeng title="Capacítate"></app-toolbar-primeng>
+<div class="card">
+    <p-tabView styleClass="tabview-custom" [(activeIndex)]="activeIndex">
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-user"></i>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Solicitud de Inscripción
+                    </span>
+                </div>
+            </ng-template>
+            <p-dataView #dv [rows]="5" filterBy="">
+                <ng-template let-products pTemplate="listItem">
+                    <app-table-primeng
+                        [columnas]="columnasTabla"
+                        [data]="alumnos"
+                        [actions]="accionesTabla"
+                    >
+                        <!--(accionBtnItem)="accionBnt($event)" -->
+                    </app-table-primeng>
+                </ng-template>
+            </p-dataView>
+        </p-tabPanel>
+
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-user"></i>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Apertura de Curso
+                    </span>
+                </div>
+            </ng-template>
+            <app-apertura-curso></app-apertura-curso>
+        </p-tabPanel>
+    </p-tabView>
+</div>

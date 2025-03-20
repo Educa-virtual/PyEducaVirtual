@@ -1,0 +1,23 @@
+:host ::ng-deep .p-card-title {
+    background-color: red;
+}
+@media (max-width: 868px) {
+    .col-4,
+    .col-5,
+    .col-6,
+    .col-7,
+    .col-8 {
+        width: 100%;
+        // padding: 2px;
+    }
+}
+:host ::ng-deep p-inputGroupAddon {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+    i {
+        color: var(--primary-color-text) !important;
+    }
+}
+.color {
+    background-color: red;
+}

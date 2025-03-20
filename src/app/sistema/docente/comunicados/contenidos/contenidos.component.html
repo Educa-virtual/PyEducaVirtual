@@ -307,6 +307,7 @@
                             name="prioridad"
                             [options]="prioridades"
                             [(ngModel)]="selectedComunicado.prioridad"
+                            placeholder="Seleccione Prioridad"
                             optionLabel="label"
                             optionValue="value"
                         ></p-dropdown>
@@ -320,6 +321,7 @@
                             name="tipo"
                             [options]="tipos"
                             [(ngModel)]="selectedComunicado.tipo"
+                            placeholder="Seleccione Tipo"
                             optionLabel="label"
                             optionValue="value"
                         ></p-dropdown>
@@ -332,6 +334,7 @@
                             id="advancedSwitch"
                             name="advancedSwitch"
                             [(ngModel)]="advancedOptions"
+                            (onChange)="onAdvancedOptionsChange()"
                         ></p-inputSwitch>
                     </div>
                 </div>
@@ -523,7 +526,7 @@
         [data]="destinatarios"
         (accionBtnItem)="seleccionarDestinatario($event)"
         [actions]="accionModal"
-        [indiceColumnaBuscar]="3"
+        [indiceColumnaBuscar]="2"
     ></app-table-primeng>
 </p-dialog>
 

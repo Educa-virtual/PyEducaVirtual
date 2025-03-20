@@ -286,8 +286,19 @@ export class ContenidosComponent implements OnInit {
             })
             return
         }
-
-        // 2) Validar Fechas
+        // Validar que se ingresen ambas fechas
+        if (
+            !this.selectedComunicado.publicado ||
+            !this.selectedComunicado.caduca
+        ) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe ingresar la fecha de Inicio y Fin.',
+            })
+            return
+        }
+        // Validar Fechas inicio no puede ser menor a final y viceversa
         const hoy = new Date() // hoy
         hoy.setHours(0, 0, 0, 0) // quitar hora
         const inicio = this.parseFecha(this.selectedComunicado.publicado)
@@ -306,6 +317,30 @@ export class ContenidosComponent implements OnInit {
                 severity: 'warn',
                 summary: 'Fechas inválidas',
                 detail: 'La fecha de Fin no puede ser menor a la fecha de Inicio.',
+            })
+            return
+        }
+        if (this.advancedOptions && !this.destinatarioId) {
+            const { curso, seccion, grado } = this.selectedComunicado
+            const algunoSeleccionado = curso || seccion || grado
+            if (algunoSeleccionado && !(curso && seccion && grado)) {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.',
+                })
+                return
+            }
+        }
+        // Validar que se haya ingresado contenido
+        if (
+            !this.selectedComunicado.texto ||
+            !this.selectedComunicado.texto.trim()
+        ) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'El contenido del comunicado no puede estar vacío.',
             })
             return
         }
@@ -388,14 +423,14 @@ export class ContenidosComponent implements OnInit {
         switch (accion) {
             case 'obtenerDatos':
                 this.prioridades = [
-                    { label: '— Seleccione —', value: null },
+                    { label: 'Seleccione Prioridad', value: null },
                     ...item.tipo_prioridad.map((p: any) => ({
                         label: p.cPrioridadNombre,
                         value: p.iPrioridadId,
                     })),
                 ]
                 this.tipos = [
-                    { label: '— Seleccione —', value: null },
+                    { label: 'Seleccione Tipo', value: null },
                     ...item.tipo_comunicado.map((t: any) => ({
                         label: t.cTipoComNombre,
                         value: t.iTipoComId,
@@ -407,21 +442,21 @@ export class ContenidosComponent implements OnInit {
                 }))
                 //  curso, seccion y grado
                 this.cursos = [
-                    { label: '— Seleccione —', value: null },
+                    { label: 'Curso', value: null },
                     ...item.cursos.map((c: any) => ({
                         label: c.cCursoNombre,
                         value: c.iCursoId,
                     })),
                 ]
                 this.secciones = [
-                    { label: '— Seleccione —', value: null },
+                    { label: 'Seccion', value: null },
                     ...item.secciones.map((s: any) => ({
                         label: s.cSeccionNombre,
                         value: s.iSeccionId,
                     })),
                 ]
                 this.grados = [
-                    { label: '— Seleccione —', value: null },
+                    { label: 'Grado', value: null },
                     ...item.grados.map((g: any) => ({
                         label: g.cGradoNombre,
                         value: g.iGradoId,
@@ -483,9 +518,18 @@ export class ContenidosComponent implements OnInit {
                         seccion: c.iSeccionId,
                         grado: c.iGradoId,
                         // nombre del destinatario
-                        cursoName: foundCurso ? foundCurso.label : null,
-                        seccionName: foundSeccion ? foundSeccion.label : null,
-                        gradoName: foundGrado ? foundGrado.label : null,
+                        cursoName:
+                            c.iCursoId !== null && foundCurso
+                                ? foundCurso.label
+                                : null,
+                        seccionName:
+                            c.iSeccionId !== null && foundSeccion
+                                ? foundSeccion.label
+                                : null,
+                        gradoName:
+                            c.iGradoId !== null && foundGrado
+                                ? foundGrado.label
+                                : null,
                         destinatario: c.NombreUsuario || '',
                         collapsed: true,
                     }
@@ -592,5 +636,16 @@ export class ContenidosComponent implements OnInit {
     clearDestinatario() {
         this.destinatarioNombre = ''
         this.destinatarioId = null
+    }
+    onAdvancedOptionsChange() {
+        if (this.advancedOptions) {
+            // Cuando se activa avanzado, el grupo se deshabilita, por lo que se resetea
+            this.selectedComunicado.grupo = []
+        } else {
+            // Cuando se desactiva avanzado, se deshabilitan los campos de curso, sección y grado
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+        }
     }
 }

@@ -25,15 +25,27 @@ export class DatosInformesService {
 
     obtenerEvaluacionesCursosIes(data: any) {
         return this.http.post(
-            `${baseUrl}/ere/Evaluaciones/obtenerEvaluacionesCursosIes`,
+            `${baseUrl}/ere/reportes/obtenerEvaluacionesCursosIes`,
             data
         )
     }
 
     obtenerInformeResumen(data: any) {
         return this.http.post(
-            `${baseUrl}/ere/Evaluaciones/obtenerInformeResumen`,
+            `${baseUrl}/ere/reportes/obtenerInformeResumen`,
             data
         )
+    }
+
+    exportarPdf(data: any) {
+        return this.http.post(`${baseUrl}/ere/reportes/generarPdf`, data, {
+            responseType: 'blob',
+        })
+    }
+
+    exportarExcel(data: any) {
+        return this.http.post(`${baseUrl}/ere/reportes/generarExcel`, data, {
+            responseType: 'blob',
+        })
     }
 }

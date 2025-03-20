@@ -119,11 +119,28 @@
     <br />
 
     <p-panel>
-        <h3 class="m-0 text-uppercase text-primary">
-            Resumen de participación y nivel de logro alcanzado
-        </h3>
-
-        <br />
+        <ng-template pTemplate="header">
+            <div class="grid">
+                <div class="col">
+                    <h3 class="m-0 text-uppercase text-primary">
+                        Resumen de participación y nivel de logro alcanzado
+                    </h3>
+                </div>
+                @if (hay_resultados) {
+                    <div class="col-auto">
+                        <p-toast />
+                        <p-menu #menu [model]="btn_exportar" [popup]="true" />
+                        <p-button
+                            (onClick)="menu.toggle($event)"
+                            pRipple
+                            severity="success"
+                            label="Exportar"
+                            icon="pi pi-fw pi-ellipsis-v"
+                        />
+                    </div>
+                }
+            </div>
+        </ng-template>
 
         @if (hay_resultados) {
             <div class="flex justify-content-center">

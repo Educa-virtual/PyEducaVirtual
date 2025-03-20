@@ -5,7 +5,7 @@ import { ChartModule } from 'primeng/chart'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { DatosInformesService } from '../../services/datos-informes.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import {
     IActionTable,
     TablePrimengComponent,
@@ -31,6 +31,7 @@ export class InformesEreComponent implements OnInit {
     options_doughnut: any
     data_bar: any
     options_bar: ChartOptions
+    btn_exportar: Array<MenuItem>
 
     resultados: Array<object>
     resumen: Array<object>
@@ -60,6 +61,23 @@ export class InformesEreComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.btn_exportar = [
+            {
+                label: 'PDF',
+                icon: 'pi pi-fw pi-file-pdf',
+                command: () => {
+                    this.exportar(1)
+                },
+            },
+            {
+                label: 'EXCEL',
+                icon: 'pi pi-fw pi-file-excel',
+                command: () => {
+                    this.exportar(2)
+                },
+            },
+        ]
+
         try {
             this.formFiltros = this.fb.group({
                 iYAcadId: [
@@ -329,9 +347,9 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
-                    this.resultados = data.data[0]
-                    this.resumen = data.data[1]
-                    this.matriz = data.data[2]
+                    this.resultados = data.data[1]
+                    this.resumen = data.data[2]
+                    this.matriz = data.data[3]
                     this.mostrarEstadisticaNivel()
                     this.generarColumnas(this.resumen)
                     this.mostrarEstadisticaPregunta()
@@ -551,6 +569,53 @@ export class InformesEreComponent implements OnInit {
             })
         }
         this.promedio = data
+    }
+
+    exportar(tipo: number) {
+        if (this.formFiltros.invalid) {
+            this._MessageService.add({
+                severity: 'warning',
+                summary: 'Advertencia',
+                detail: 'Debe seleccionar los filtros requeridos',
+            })
+            return
+        }
+        if (tipo == 1) {
+            this.datosInformes.exportarPdf(this.formFiltros.value).subscribe({
+                next: (response) => {
+                    const blob = new Blob([response], {
+                        type: 'application/pdf',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.target = '_blank'
+                    link.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+        } else {
+            this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
+                next: (response) => {
+                    const blob = new Blob([response], {
+                        type: 'application/vnd.ms-excel',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.download = 'Resultados-ERE.xlsx'
+                    link.target = '_blank'
+                    link.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+        }
     }
 
     accionBtnItemTable({ accion, item }) {

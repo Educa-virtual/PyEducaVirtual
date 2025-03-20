@@ -260,13 +260,13 @@ const administracion = [
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    {
-                        label: 'Registro de año escolar',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/calendarioAcademico',
-                        ],
-                    },
+                    // {
+                    //     label: 'Registro de año escolar',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: [
+                    //         '/gestion-institucional/calendarioAcademico',
+                    //     ],
+                    // },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',
@@ -304,11 +304,11 @@ const administracion = [
                         routerLink: ['/gestion-institucional/fechas'],
                     },
 
-                    {
-                        label: 'Cierre de año escolar',
-                        icon: 'pi pi-lock',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
+                    // {
+                    //     label: 'Cierre de año escolar',
+                    //     icon: 'pi pi-lock',
+                    //     routerLink: ['/configuracion/configuracion'],
+                    // },
                 ],
             },
 
@@ -335,11 +335,11 @@ const administracion = [
                                     '/gestion-institucional/IesPersonal',
                                 ],
                             },
-                            {
-                                label: 'Cargos',
-                                icon: 'pi pi-wrench',
-                                routerLink: ['/configuracion/configuracion'],
-                            },
+                            // {
+                            //     label: 'Cargos',
+                            //     icon: 'pi pi-wrench',
+                            //     routerLink: ['/configuracion/configuracion'],
+                            // },
                         ],
                         //ConfigGradoSeccion
                     },
@@ -416,33 +416,33 @@ const administracion = [
                 ],
             },
 
-            {
-                label: 'Generación de Reportes y estadísticas',
-                icon: 'pi pi-chart-bar',
-                items: [
-                    {
-                        label: 'Reportes',
-                        icon: 'pi pi-book',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Estadisticas',
-                        icon: 'pi pi-chart-scatter',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Indicadores',
-                        icon: 'pi pi-chart-line',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Plantillas',
-                        icon: 'pi pi-download',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                ],
-                //ConfigGradoSeccion
-            },
+            // {
+            //     label: 'Generación de Reportes y estadísticas',
+            //     icon: 'pi pi-chart-bar',
+            //     items: [
+            //         {
+            //             label: 'Reportes',
+            //             icon: 'pi pi-book',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Estadisticas',
+            //             icon: 'pi pi-chart-scatter',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Indicadores',
+            //             icon: 'pi pi-chart-line',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Plantillas',
+            //             icon: 'pi pi-download',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //     ],
+            //     //ConfigGradoSeccion
+            // },
 
             {
                 label: 'Evaluación - ERE',

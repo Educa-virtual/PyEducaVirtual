@@ -354,4 +354,12 @@ export class GeneralService {
             data
         )
     }
+
+    //Genera credenciales para personal de IE y asignacion de credenciales a IE
+    generarCredencialesIE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/generarCredencialesIE`,
+            data
+        )
+    }
 }

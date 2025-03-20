@@ -12,10 +12,10 @@ import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { catchError, map, throwError } from 'rxjs'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { FormImportarBancoPreguntasComponent } from './componentes/form-importar-banco-preguntas/form-importar-banco-preguntas.component'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import { BancoPreguntasComponent } from './componentes/banco-preguntas/banco-preguntas-ere.component'
 
 @Component({
     selector: 'app-preguntas',
@@ -25,9 +25,9 @@ import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
         ContainerPageComponent,
         EditorComponent,
         NgIf,
-        FormImportarBancoPreguntasComponent,
         RemoveHTMLCSSPipe,
         TruncatePipe,
+        BancoPreguntasComponent,
     ],
     templateUrl: './preguntas.component.html',
     styleUrl: './preguntas.component.scss',
@@ -51,6 +51,7 @@ export class PreguntasComponent implements OnInit {
     data
     matrizCompetencia = []
     matrizCapacidad = []
+    matrizCapacidadFiltrado = []
     nIndexAcordionTab: number = null
     isSecundaria: boolean = false
     isDisabled: boolean =
@@ -101,6 +102,7 @@ export class PreguntasComponent implements OnInit {
     preguntas = []
     alternativas = []
     showModalBancoPreguntas: boolean = false
+    totalPregunta: number = 0
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -121,10 +123,7 @@ export class PreguntasComponent implements OnInit {
             label: 'Agregar del banco de preguntas',
             icon: 'pi pi-plus',
             command: () => {
-                this.accionBtnItem({
-                    accion: 'importar-banco-preguntas',
-                    item: null,
-                })
+                this.showModalBancoPreguntas = true
             },
         },
     ]
@@ -138,7 +137,6 @@ export class PreguntasComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
         this.obtenerMatrizCompetencias()
         this.obtenerMatrizCapacidad()
     }
@@ -173,6 +171,7 @@ export class PreguntasComponent implements OnInit {
         this._apiEre.obtenerMatrizCapacidades({}).subscribe({
             next: (resp: any) => {
                 this.matrizCapacidad = resp.data.fullData
+                this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
             },
             error: (err) => {
                 console.error('Error al cargar datos:', err)
@@ -180,14 +179,27 @@ export class PreguntasComponent implements OnInit {
         })
     }
 
-    confirmarEliminarPregunta(positicion, pregunta) {
+    confirmarEliminarPregunta(pregunta) {
         if (!this.isDisabled) {
             return
         }
+        const removeHtml = new RemoveHTMLCSSPipe()
+        const truncateText = new TruncatePipe()
+        truncateText.transform(removeHtml.transform(pregunta.title), 40)
         this._ConfirmationModalService.openConfirm({
-            header: '¿Esta seguro de eliminar el item #' + positicion + ' ?',
+            header:
+                '¿Esta seguro de eliminar  la ' +
+                truncateText.transform(
+                    removeHtml.transform(pregunta.title),
+                    80
+                ) +
+                ' ?',
             accept: () => {
-                this.eliminarPregunta(pregunta?.pregunta)
+                if (pregunta.iEncabPregId > 0) {
+                    this.eliminarPreguntaConEncabezado(pregunta)
+                } else {
+                    this.eliminarPregunta(pregunta?.pregunta)
+                }
             },
         })
     }
@@ -211,6 +223,34 @@ export class PreguntasComponent implements OnInit {
             },
         }
         this.getInformation(params, params.data.opcion)
+    }
+
+    eliminarPreguntaConEncabezado(pregunta) {
+        if (pregunta.iEncabPregId > 0) {
+            const params = {
+                petition: 'post',
+                group: 'ere',
+                prefix: 'preguntas',
+                ruta: 'handleCrudOperation',
+                data: {
+                    opcion: 'ACTUALIZARxiPreguntaIdxbPreguntaEstado',
+                    iEncabPregId: pregunta.iEncabPregId,
+                },
+            }
+            this.getInformation(params, params.data.opcion)
+        } else {
+            const params = {
+                petition: 'post',
+                group: 'ere',
+                prefix: 'preguntas',
+                ruta: 'handleCrudOperation',
+                data: {
+                    opcion: 'ACTUALIZARxiPreguntaIdxbPreguntaEstado',
+                    iPreguntaId: pregunta.iPreguntaId,
+                },
+            }
+            this.getInformation(params, params.data.opcion)
+        }
     }
     handleNuevaPreguntaConEnunciadoSinData(item) {
         if (!this.isDisabled) {
@@ -453,9 +493,6 @@ export class PreguntasComponent implements OnInit {
                     if (itemSinEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemSinEncabezado,
-                            title:
-                                'Pregunta: ' +
-                                (itemSinEncabezado[0].cPregunta || '-'),
                             iEncabPregId: null,
                             iOrden: key,
                         })
@@ -470,9 +507,7 @@ export class PreguntasComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title:
-                                'Pregunta Múltiple: ' +
-                                (itemConEncabezado[0].cPregunta || '-'),
+                            title: 'Pregunta Múltiple',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                             iOrden: key,
                         })
@@ -490,9 +525,21 @@ export class PreguntasComponent implements OnInit {
                                 (t) => t.iEncabPregId === value.iEncabPregId
                             )
                 )
-
+                this.totalPregunta = 0
+                //console.log(this.preguntas)
                 this.preguntas.forEach((pregunta) => {
                     {
+                        if (pregunta.pregunta.length) {
+                            pregunta.pregunta.forEach((item) => {
+                                this.totalPregunta = this.totalPregunta + 1
+                                item.title =
+                                    'Pregunta #' +
+                                    this.totalPregunta +
+                                    ': ' +
+                                    (item.cPregunta || '')
+                            })
+                        }
+
                         if (pregunta.pregunta.length > 1) {
                             pregunta['iEncabPregId'] =
                                 pregunta.pregunta[0]['iEncabPregId']
@@ -506,10 +553,18 @@ export class PreguntasComponent implements OnInit {
                                 pregunta.pregunta[0]['cDesempenoDescripcion']
                             pregunta['cPregunta'] =
                                 pregunta.pregunta[0]['cPregunta']
+                        } else {
+                            pregunta.title = pregunta.pregunta[0]?.title || ''
                         }
+
+                        // pregunta.pregunta.forEach((item) => {
+                        //     this.totalPregunta = this.totalPregunta +1
+                        //     item.title = 'Pregunta #'+this.totalPregunta+': '+item.cPregunta
+                        //     this.obtenerCapacidades(item)
+                        // });
                     }
                 })
-                //console.log(this.preguntas)
+                console.log(this.preguntas)
                 break
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
                 this._MessageService.add({
@@ -538,12 +593,6 @@ export class PreguntasComponent implements OnInit {
             case 'GUARDAR-PREGUNTAS':
             case 'GUARDAR-ENCABEZADO-PREGUNTAS':
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
-                break
-            case 'importar-banco-preguntas':
-                this.showModalBancoPreguntas = true
-                break
-            case 'close-modal':
-                this.showModalBancoPreguntas = false
                 break
         }
     }
@@ -586,5 +635,11 @@ export class PreguntasComponent implements OnInit {
     }
     updateUrl(item) {
         item.cAlternativaImagen = 'users/no-image.png'
+    }
+
+    obtenerCapacidades(item) {
+        this.matrizCapacidadFiltrado = this.matrizCapacidad.filter(
+            (i) => i.iCompetenciaId === item.iCompetenciaId
+        )
     }
 }

@@ -116,42 +116,47 @@ const estudiante = [
     {
         items: [
             inicio,
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Calendario',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/03'],
-            },
-            {
-                label: 'Solicitudes y Tramites',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/02'],
-            },
-            {
-                label: 'Buzon de Sugerencias',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/01'],
-            },
-            {
-                label: 'Enlaces de ayuda',
-                icon: 'pi pi-fw pi-share-alt',
-                routerLink: ['ayuda'],
-            },
+            // {
+            //     label: 'Mis Áreas Curriculares',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/areas-curriculares'],
+            // },
+            // {
+            //     label: 'Calendario',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/03'],
+            // },
+            // {
+            //     label: 'Solicitudes y Tramites',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/02'],
+            // },
+            // {
+            //     label: 'Buzon de Sugerencias',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/01'],
+            // },
+            // {
+            //     label: 'Enlaces de ayuda',
+            //     icon: 'pi pi-fw pi-share-alt',
+            //     routerLink: ['ayuda'],
+            // },
 
             {
-                label: 'Dremo ERE',
-                icon: 'pi pi-fw pi-user',
+                label: 'Evaluaciones y Resultados',
+                icon: 'pi pi-fw pi-list-check',
                 items: [
+                    // {
+                    //     label: 'Evaluacion',
+                    //     icon: 'pi pi-fw pi-share-alt',
+                    //     routerLink: [
+                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
+                    //     ],
+                    // },
                     {
-                        label: 'Evaluacion',
-                        icon: 'pi pi-fw pi-share-alt',
-                        routerLink: [
-                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                        ],
+                        label: 'ERE',
+                        icon: 'pi pi-pen-to-square',
+                        routerLink: ['/ere/areas-rendir-examen'],
                     },
                     // {
                     //     label: 'Examen',
@@ -304,11 +309,11 @@ const administracion = [
                         routerLink: ['/gestion-institucional/fechas'],
                     },
 
-                    // {
-                    //     label: 'Cierre de año escolar',
-                    //     icon: 'pi pi-lock',
-                    //     routerLink: ['/configuracion/configuracion'],
-                    // },
+                    {
+                        label: 'Cierre de año escolar',
+                        icon: 'pi pi-lock',
+                        routerLink: ['/configuracion/configuracion'],
+                    },
                 ],
             },
 
@@ -458,11 +463,11 @@ const administracion = [
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
-                    // {
-                    //     label: 'Evaluaciones',
-                    //     icon: 'pi pi-fw pi-calendar',
-                    //     routerLink: ['/ere/evaluaciones'],
-                    // },
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-fw pi-calendar',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
                 ],
                 //ConfigGradoSeccion
             },
@@ -472,22 +477,22 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
-            {
-                label: 'Generar Reportes y Estadisticas',
-                icon: 'pi pi-chart-scatter',
-                items: [
-                    {
-                        label: 'Reportes Academicos',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/reporte'],
-                    },
-                    {
-                        label: 'Reportes Orden de Mérito',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/estadistica'],
-                    },
-                ],
-            },
+            // {
+            //     label: 'Generar Reportes y Estadisticas',
+            //     icon: 'pi pi-chart-scatter',
+            //     items: [
+            //         {
+            //             label: 'Reportes Academicos',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/reporte'],
+            //         },
+            //         {
+            //             label: 'Reportes Orden de Mérito',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/estadistica'],
+            //         },
+            //     ],
+            // },
         ],
     },
 ]
@@ -593,6 +598,7 @@ export class ConstantesService {
     iIieeId = perfil ? perfil.iIieeId : null
     iSedeId = perfil ? perfil.iSedeId : null
     grados = perfil ? perfil.grados : null
+    iSemAcadId = perfil ? perfil.semestres_acad : null
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
     nivelTipo = perfil ? perfil.iNivelTipoId : null

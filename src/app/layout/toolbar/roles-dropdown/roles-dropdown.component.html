@@ -15,9 +15,9 @@
                 >
                 <span class="p-0 display-none"
                     >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} -
-                    Nivel:{{ selectedPerfil.cNivelTipoNombre }} - / UGEL:
-                    -</span
-                >
+                    Nivel:{{ selectedPerfil.cNivelTipoNombre }} - UGEL:
+                    {{ selectedPerfil.cUgelNombre }}
+                </span>
             </div>
         } @else {
             <i
@@ -29,13 +29,13 @@
                 <!-- <span class="block p-0 font-bold">Perfil: {{ selectedPerfil.cPerfilNombre }}</span> -->
 
                 <span class="block p-0 font-bold"
-                    >IE: {{ selectedPerfil.cEntNombreLargo }}</span
+                    >IE: {{ selectedPerfil.cIieeNombre }}</span
                 >
                 <span class="p-0 display-none"
                     >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} -
-                    Nivel:{{ selectedPerfil.cNivelTipoNombre }} - / UGEL:
-                    -</span
-                >
+                    Nivel:{{ selectedPerfil.cNivelTipoNombre }} - UGEL:
+                    {{ selectedPerfil.cUgelNombre }}
+                </span>
             </div>
         }
     </div>

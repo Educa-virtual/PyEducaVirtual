@@ -97,7 +97,13 @@
                                                 )
                                             "
                                             [style]="{ width: '180px' }"
-                                            [disabled]="isDisabled"
+                                            [disabled]="
+                                                !nivel.grados ||
+                                                !habiltarButton(
+                                                    nivel.grados,
+                                                    curso
+                                                )
+                                            "
                                         >
                                         </p-calendar>
                                     </td>
@@ -116,7 +122,13 @@
                                                     curso
                                                 )
                                             "
-                                            [disabled]="isDisabled"
+                                            [disabled]="
+                                                !nivel.grados ||
+                                                !habiltarButton(
+                                                    nivel.grados,
+                                                    curso
+                                                )
+                                            "
                                         />
                                     </td>
                                 </tr>

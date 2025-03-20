@@ -54,8 +54,9 @@ export class SubirArchivoPreguntasComponent implements OnInit {
             const params = {
                 iEvaluacionId: this.curso.iEvaluacionIdHashed,
                 iCursosNivelGradId: this.curso.iCursosNivelGradId,
+                tipoArchivo: 'pdf',
             }
-            this.evaluacionesService.descargarPreguntasPorArea(params)
+            this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
         } else {
             alert('No se ha subido un archivo para esta área.')
         }

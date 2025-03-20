@@ -47,13 +47,29 @@
                             <!-- mostrar los cursos en accordion -->
                             <p-accordion [activeIndex]="0">
                                 <p-accordionTab
-                                    [header]="
-                                        curso.cCursoNombre +
-                                        ' - ' +
-                                        (grado.grado ?? grado.cGradoAbreviacion)
-                                    "
                                     *ngFor="let curso of grado.cursos"
                                 >
+                                    <ng-template pTemplate="header">
+                                        <span
+                                            class="flex align-items-center justify-content-start w-full"
+                                        >
+                                            <span
+                                                class="font-bold whitespace-nowrap"
+                                                >{{
+                                                    curso.cCursoNombre +
+                                                        ' - ' +
+                                                        (grado.grado ??
+                                                            grado.cGradoAbreviacion)
+                                                }}</span
+                                            >
+                                            &nbsp;&nbsp; (
+                                            {{
+                                                curso.dtExamenFechaInicio
+                                                    | date: 'shortDate'
+                                            }}
+                                            )
+                                        </span>
+                                    </ng-template>
                                     <!-- Columna derecha: Calendarios de inicio y fin -->
                                     <div class="grid col">
                                         <!-- Calendario de inicio -->
@@ -81,25 +97,6 @@
                                                     styleClass="w-full"
                                                     class="calendar"
                                                 ></p-calendar>
-                                                <!-- <p-calendar
-                                                    formControlName="{{
-                                                        curso.cCursoNombre +
-                                                            curso.iCursoNivelGradId
-                                                    }}[{{
-                                                        curso.iExamCurId
-                                                    }}]Inicio"
-                                                    [showTime]="true"
-                                                    [hourFormat]="'24'"
-                                                    [timeOnly]="false"
-                                                    [showIcon]="true"
-                                                    placeholder="Inicio"
-                                                    inputId="fechaHoraInicio-{{
-                                                        curso.cCursoNombre
-                                                    }}"
-                                                    [appendTo]="'body'"
-                                                    styleClass="w-full"
-                                                    class="calendar"
-                                                ></p-calendar> -->
                                             </p-inputGroup>
                                         </div>
 
@@ -115,9 +112,8 @@
                                                     }}[{{
                                                         curso.iExamCurId
                                                     }}]Fin"
-                                                    [showTime]="true"
+                                                    [timeOnly]="true"
                                                     [hourFormat]="'24'"
-                                                    [timeOnly]="false"
                                                     [showIcon]="true"
                                                     placeholder="Fin"
                                                     inputId="fechaHoraFin-{{

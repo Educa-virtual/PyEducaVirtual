@@ -10,6 +10,8 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { ChartOptions } from 'chart.js'
+import { formatNumber } from '@angular/common'
 
 @Component({
     selector: 'app-informes-ere',
@@ -25,10 +27,16 @@ import {
 })
 export class InformesEreComponent implements OnInit {
     formFiltros: FormGroup
-    data: any
-    options: any
+    data_doughnut: any
+    options_doughnut: any
+    data_bar: any
+    options_bar: ChartOptions
+
     resultados: Array<object>
     resumen: Array<object>
+    matriz: Array<object>
+    promedio: Array<object>
+
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
     hay_resultados: boolean = false
@@ -323,8 +331,10 @@ export class InformesEreComponent implements OnInit {
                 next: (data: any) => {
                     this.resultados = data.data[0]
                     this.resumen = data.data[1]
+                    this.matriz = data.data[2]
                     this.mostrarEstadisticaNivel()
-                    this.mostrarResumen()
+                    this.generarColumnas(this.resumen)
+                    this.mostrarEstadisticaPregunta()
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
@@ -353,9 +363,9 @@ export class InformesEreComponent implements OnInit {
 
         this.niveles_nombres = this.resultados.reduce(
             (prev: any, current: any) => {
-                const x = prev.find((item) => item === current.nivel_alcanzado)
+                const x = prev.find((item) => item === current.nivel_logro)
                 if (!x) {
-                    return prev.concat([current.nivel_alcanzado])
+                    return prev.concat([current.nivel_logro])
                 } else {
                     return prev
                 }
@@ -366,7 +376,7 @@ export class InformesEreComponent implements OnInit {
 
         this.niveles_resumen = this.resultados.reduce(
             (acumulador: any, item: any) => {
-                const nivel = item.nivel_alcanzado
+                const nivel = item.nivel_logro
                 if (acumulador[nivel]) {
                     acumulador[nivel]++
                 } else {
@@ -376,13 +386,15 @@ export class InformesEreComponent implements OnInit {
             },
             {}
         )
-        console.log(this.niveles_resumen, 'nivel resumen')
 
-        this.data = {
-            labels: Object.keys(this.niveles_resumen),
+        const niveles_nombres = Object.keys(this.niveles_resumen)
+        const niveles_valores = Object.values(this.niveles_resumen)
+
+        this.data_doughnut = {
+            labels: niveles_nombres,
             datasets: [
                 {
-                    data: Object.values(this.niveles_resumen),
+                    data: niveles_valores,
                     backgroundColor: [
                         documentStyle.getPropertyValue('--blue-500'),
                         documentStyle.getPropertyValue('--yellow-500'),
@@ -399,7 +411,7 @@ export class InformesEreComponent implements OnInit {
             ],
         }
 
-        this.options = {
+        this.options_doughnut = {
             cutout: '60%',
             plugins: {
                 legend: {
@@ -410,12 +422,135 @@ export class InformesEreComponent implements OnInit {
                 },
             },
         }
+
+        this.mostrarPromedio(niveles_nombres, niveles_valores)
     }
 
-    mostrarResumen() {
+    generarColumnas(data: any) {
+        if (data.length == 0) {
+            return
+        }
+        const columnas = [
+            {
+                type: 'text',
+                width: '1rem',
+                field: 'metrica',
+                header: 'Items',
+                text_header: 'left',
+                text: 'left',
+            },
+        ]
+        for (let col = 1, len = Object.keys(data[0]).length; col < len; col++) {
+            columnas.push({
+                type: 'text',
+                width: '1rem',
+                field: `${col}`,
+                header: `${col}`,
+                text_header: 'center',
+                text: 'left',
+            })
+        }
+        this.columns_resumen = columnas
+    }
+
+    mostrarEstadisticaPregunta() {
         if (this.resumen.length == 0) {
             return
         }
+
+        const documentStyle = getComputedStyle(document.documentElement)
+        const textColor = documentStyle.getPropertyValue('--text-color')
+
+        const preguntas = []
+        const aciertos = []
+        const fila_aciertos = this.resumen.findIndex(
+            (item: any) => item.metrica == '% DE ACIERTOS'
+        )
+        const desaciertos = []
+        const fila_desaciertos = this.resumen.findIndex(
+            (item: any) => item.metrica == '% DE DESACIERTOS'
+        )
+        const blancos = []
+        const fila_blancos = this.resumen.findIndex(
+            (item: any) => item.metrica == '% DE BLANCOS'
+        )
+        for (let i = 1; i < Object.keys(this.resumen[0]).length; i++) {
+            preguntas.push(i)
+            aciertos.push(this.resumen[fila_aciertos][i])
+            desaciertos.push(this.resumen[fila_desaciertos][i])
+            blancos.push(this.resumen[fila_blancos][i])
+        }
+
+        this.data_bar = {
+            labels: preguntas,
+            datasets: [
+                {
+                    label: '% DE ACIERTOS',
+                    backgroundColot:
+                        documentStyle.getPropertyValue('--blue-500'),
+                    hoverBackgroundColot:
+                        documentStyle.getPropertyValue('--blue-400'),
+                    data: aciertos,
+                },
+                {
+                    label: '% DE DESACIERTOS',
+                    backgroundColot:
+                        documentStyle.getPropertyValue('--red-500'),
+                    hoverBackgrounfColor:
+                        documentStyle.getPropertyValue('--red-400'),
+                    data: desaciertos,
+                },
+                {
+                    label: '% DE BLANCOS',
+                    backgroundColot:
+                        documentStyle.getPropertyValue('--yellow-500'),
+                    hoverBackgroundColot:
+                        documentStyle.getPropertyValue('--yellow-400'),
+                    data: blancos,
+                },
+            ],
+        }
+
+        this.options_bar = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: textColor,
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    ticks: {
+                        stepSize: 1,
+                    },
+                },
+                y: {
+                    max: 100,
+                    stacked: true,
+                },
+            },
+        }
+    }
+
+    mostrarPromedio(niveles, valores) {
+        const total = valores.reduce((acc, cur) => acc + cur)
+        const porcentajes = valores.map((valor) =>
+            formatNumber((valor * 100) / total, 'es', '1.1-1')
+        )
+        const data = []
+        for (let i = 0; i < niveles.length; i++) {
+            data.push({
+                nivel: niveles[i],
+                valor: valores[i],
+                porcentaje: porcentajes[i] + '%',
+            })
+        }
+        this.promedio = data
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -495,19 +630,37 @@ export class InformesEreComponent implements OnInit {
         {
             type: 'text',
             width: '5rem',
-            field: 'nivel_alcanzado',
+            field: 'nivel_logro',
             header: 'Nivel',
             text_header: 'center',
             text: 'center',
         },
     ]
 
-    columns_resumen = [
+    columns_resumen = []
+
+    columns_matriz = [
         {
-            type: 'item',
+            type: 'text',
             width: '1rem',
-            field: 'item',
+            field: 'pregunta_nro',
             header: '#',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'competencia',
+            header: 'COMPETENCIA',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '15rem',
+            field: 'desempeno',
+            header: 'DESEMPEÑO',
             text_header: 'left',
             text: 'left',
         },
@@ -515,63 +668,58 @@ export class InformesEreComponent implements OnInit {
             type: 'text',
             width: '5rem',
             field: 'aciertos',
-            header: 'Aciertos',
-            text_header: 'center',
+            header: 'ACIERTOS',
+            text_header: 'left',
             text: 'center',
         },
         {
             type: 'text',
-            width: '3rem',
+            width: '5rem',
             field: 'desaciertos',
-            header: 'Desaciertos',
-            text_header: 'center',
+            header: 'DESACIERTOS',
+            text_header: 'left',
             text: 'center',
         },
         {
             type: 'text',
-            width: '3rem',
-            field: 'blancos',
-            header: 'Blancos',
+            width: '5rem',
+            field: 'porcentaje_aciertos',
+            header: '% DE ACIERTOS',
+            text_header: 'left',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'porcentaje_desaciertos',
+            header: '% DE DESACIERTOS',
+            text_header: 'left',
+            text: 'center',
+        },
+    ]
+
+    columns_promedio = [
+        {
+            type: 'text',
+            width: '15rem',
+            field: 'nivel',
+            header: 'NIVEL DE LOGRO',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'valor',
+            header: 'NÚMERO',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: 'total',
-            header: 'Estudiante',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '3rem',
-            field: 'aciertos',
-            header: 'Aciertos',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '3rem',
-            field: 'desaciertos',
-            header: 'Desaciertos',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '3rem',
-            field: 'blancos',
-            header: 'Blancos',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'nivel_alcanzado',
-            header: 'Nivel',
+            field: 'porcentaje',
+            header: 'PORCENTAJE',
             text_header: 'center',
             text: 'center',
         },

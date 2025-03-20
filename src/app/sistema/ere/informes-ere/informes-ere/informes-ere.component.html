@@ -127,7 +127,11 @@
 
         @if (hay_resultados) {
             <div class="flex justify-content-center">
-                <p-chart type="doughnut" [data]="data" [options]="options" />
+                <p-chart
+                    type="doughnut"
+                    [data]="data_doughnut"
+                    [options]="options_doughnut"
+                />
             </div>
         }
 
@@ -136,7 +140,7 @@
                 <p-accordionTab header="Relación de Estudiantes">
                     <app-table-primeng
                         [columnas]="columns"
-                        [showCaption]="true"
+                        [showCaption]="false"
                         [data]="resultados"
                         (accionBtnItem)="accionBtnItemTable($event)"
                         [showPaginator]="true"
@@ -150,21 +154,47 @@
                 <p-accordionTab header="Estadisticas Avanzadas">
                     <app-table-primeng
                         [columnas]="columns_resumen"
-                        [showCaption]="true"
+                        [showCaption]="false"
+                        [enableCellSelection]="false"
                         [data]="resumen"
-                        [showPaginator]="true"
-                        sortMode="single"
-                        sortField="iPreguntaId"
-                        [sortOrder]="1"
+                        [showPaginator]="false"
+                        [showSortIcon]="false"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
+                    @if (hay_resultados) {
+                        <div class="grid">
+                            <p-chart
+                                type="bar"
+                                [data]="data_bar"
+                                [options]="options_bar"
+                                class="col"
+                                height="300px"
+                            />
+                        </div>
+                    }
+                </p-accordionTab>
+                <p-accordionTab header="Matris de Evaluación">
+                    <app-table-primeng
+                        [columnas]="columns_matriz"
+                        [showCaption]="false"
+                        [data]="matriz"
+                        [showPaginator]="false"
+                        [showSortIcon]="false"
                         [(selectedRowData)]="selectedItems"
                         [actions]="actions"
                     />
                 </p-accordionTab>
-                <p-accordionTab header="Matris de Evaluación">
-                    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
-                </p-accordionTab>
                 <p-accordionTab header="Promedio Final">
-                    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+                    <app-table-primeng
+                        [columnas]="columns_promedio"
+                        [showCaption]="false"
+                        [data]="promedio"
+                        [showPaginator]="false"
+                        [showSortIcon]="false"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
                 </p-accordionTab>
             </p-accordion>
         </div>

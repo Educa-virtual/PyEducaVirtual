@@ -25,12 +25,17 @@ import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
 import { CarouselModule } from 'primeng/carousel'
 import { dropdownGroupConfig } from './config/dropdown/dropdownGroup'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { SheetToMatrix } from './utils'
 
 @Component({
     selector: 'app-bulk-data-import',
     standalone: true,
     imports: [
         ContainerPageComponent,
+        InputGroupAddonModule,
+        InputGroupModule,
         DropdownModule,
         CarouselModule,
         ReactiveFormsModule,
@@ -205,8 +210,24 @@ export class BulkDataImportComponent implements OnInit {
                 range: row,
             })
 
-            console.log('this.typeCollectionForm.value')
-            console.log(this.typeCollectionForm.value)
+            const excelData2 = new SheetToMatrix(worksheet, {
+                structures: [
+                    {
+                        data: 'Q3:Q3',
+                    },
+                    {
+                        header: 'M7:V7',
+                        data: 'M8:V8',
+                    },
+                    {
+                        header: 'B13:AZ14',
+                        data: 'B15',
+                    },
+                ],
+            })
+
+            console.log('excelData2')
+            console.log(excelData2)
 
             switch (
                 this.typeCollectionForm.value['Origen de la plantilla:1'].id

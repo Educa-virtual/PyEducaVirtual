@@ -7,6 +7,7 @@ import {
     ambientesPlatformTemplateColumns,
     docentePlatformTemplateColumns,
     resultAmbientesPlatformTemplateColumns,
+    resultDocentePlatformTemplateColumns,
 } from '../table/bulk-table-columns-platform'
 
 export const dropdownGroupConfig = [
@@ -104,7 +105,7 @@ export const dropdownGroupConfig = [
                     id: 1,
                     cellData: 'A2',
                     columns: docentePlatformTemplateColumns,
-                    columnsResultImport: resultAmbientesPlatformTemplateColumns,
+                    columnsResultImport: resultDocentePlatformTemplateColumns,
                     importEndPoint:
                         'acad/gestionInstitucional/importarDocente_IE',
                     template: 'plantilla-docentes',
@@ -143,7 +144,7 @@ export const dropdownGroupConfig = [
                     id: 3,
                     cellData: 'A3',
                     columns: ambientesPlatformTemplateColumns,
-                    columnsResultImport: '',
+                    columnsResultImport: resultAmbientesPlatformTemplateColumns,
                     template: 'plantilla-ambientes',
                     importEndPoint:
                         'acad/gestionInstitucional/importarAmbiente_IE',
@@ -159,7 +160,11 @@ export const dropdownGroupConfig = [
                             localStorage.getItem('dremoPerfil') || 'null'
                         ).iNivelTipoId,
                     },
-                    response: () => {},
+                    response: (response) => {
+                        return response.procesados.map((data) => ({
+                            result: data.data[0].Resultado,
+                        }))
+                    },
                 },
             },
         ],

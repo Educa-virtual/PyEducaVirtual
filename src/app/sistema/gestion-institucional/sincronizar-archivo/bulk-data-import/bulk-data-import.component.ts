@@ -25,12 +25,17 @@ import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
 import { CarouselModule } from 'primeng/carousel'
 import { dropdownGroupConfig } from './config/dropdown/dropdownGroup'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { SheetToMatrix } from './utils'
 
 @Component({
     selector: 'app-bulk-data-import',
     standalone: true,
     imports: [
         ContainerPageComponent,
+        InputGroupAddonModule,
+        InputGroupModule,
         DropdownModule,
         CarouselModule,
         ReactiveFormsModule,
@@ -106,7 +111,12 @@ export class BulkDataImportComponent implements OnInit {
             console.log(value)
             this.data = undefined
             this.columns = undefined
-            this.file = undefined
+
+            this.file = null
+
+            console.log('cambio en el formulario?')
+            console.log(this.file)
+
             this.isDisabled.downloadTemplate =
                 !this.isSelectedTypeCollection(value)
             this.loadCollectionTemplate()
@@ -115,7 +125,7 @@ export class BulkDataImportComponent implements OnInit {
 
     isSelectedTypeCollection(obj: Record<string, any>): boolean {
         return Object.keys(obj).some(
-            (key) => /Tipo de la colección:\d+/i.test(key) && obj[key]
+            (key) => /Tipo de plantilla:\d+/i.test(key) && obj[key]
         )
     }
 
@@ -155,7 +165,7 @@ export class BulkDataImportComponent implements OnInit {
             this.typeCollectionForm.value
         ).find(
             ([key, value]) =>
-                key.startsWith('Tipo de la colección:') && value !== null
+                key.startsWith('Tipo de plantilla:') && value !== null
         )
 
         if (!foundEntry) {
@@ -179,8 +189,6 @@ export class BulkDataImportComponent implements OnInit {
 
         if (this.collection.typeSend === 'file') {
             this.file = file
-        } else {
-            this.file = undefined
         }
 
         reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -202,11 +210,27 @@ export class BulkDataImportComponent implements OnInit {
                 range: row,
             })
 
-            console.log('this.typeCollectionForm.value')
-            console.log(this.typeCollectionForm.value)
+            const excelData2 = new SheetToMatrix(worksheet, {
+                structures: [
+                    {
+                        data: 'Q3:Q3',
+                    },
+                    {
+                        header: 'M7:V7',
+                        data: 'M8:V8',
+                    },
+                    {
+                        header: 'B13:AZ14',
+                        data: 'B15',
+                    },
+                ],
+            })
+
+            console.log('excelData2')
+            console.log(excelData2)
 
             switch (
-                this.typeCollectionForm.value['Origen de la colección:1'].id
+                this.typeCollectionForm.value['Origen de la plantilla:1'].id
             ) {
                 case 1:
                     const cleanColumnsEmpty = excelData.map((row) =>
@@ -260,8 +284,23 @@ export class BulkDataImportComponent implements OnInit {
         console.log('this.collection')
         console.log(this.collection)
 
+        const fileImport = () => {
+            switch (this.collection.typeSend) {
+                case 'file':
+                    return this.file
+                case 'json':
+                    return undefined
+
+                default:
+                    return undefined
+            }
+        }
+
+        console.log('fileImport')
+        console.log(fileImport())
+
         this.bulkDataImport
-            .importDataCollection(this.file, this.data)
+            .importDataCollection(fileImport(), this.data)
             .subscribe({
                 next: (response) => {
                     console.log('response')

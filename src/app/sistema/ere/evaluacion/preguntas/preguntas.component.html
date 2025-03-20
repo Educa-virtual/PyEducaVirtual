@@ -22,7 +22,7 @@
             <span style="font-size: 18px">Total Preguntas:</span>
             <span>
                 <p-badge
-                    [value]="preguntas?.length || 0"
+                    [value]="totalPregunta"
                     severity="primary"
                     styleClass="ml-2"
                     badgeSize="large"
@@ -66,7 +66,7 @@
         } @else {
             <div class="col-12">
                 <p-accordion styleClass="w-full">
-                    @for (list of preguntas; track list; let id = $index) {
+                    @for (list of preguntas; track id; let id = $index) {
                         <p-accordionTab
                             iconPos="end"
                             (click)="nIndexAcordionTab = id"
@@ -77,7 +77,7 @@
                                     class="flex align-items-center justify-content-start w-full"
                                 >
                                     <span class="font-bold whitespace-nowrap">{{
-                                        '#' + (id + 1) + ' ' + list.title
+                                        list.title
                                             | removeHTMLCSS
                                             | truncateText: 80
                                     }}</span>
@@ -90,17 +90,14 @@
                                         [rounded]="true"
                                         (onClick)="
                                             $event.stopPropagation();
-                                            confirmarEliminarPregunta(
-                                                id + 1,
-                                                list
-                                            )
+                                            confirmarEliminarPregunta(list)
                                         "
                                     ></p-button>
                                 </span>
                             </ng-template>
                             @for (
                                 item of list.pregunta;
-                                track item;
+                                track idx;
                                 let idx = $index
                             ) {
                                 <div class="grid">
@@ -184,7 +181,7 @@
                                                         >
                                                             @for (
                                                                 encab of list.pregunta;
-                                                                track encab;
+                                                                track key;
                                                                 let key = $index
                                                             ) {
                                                                 <p-accordionTab
@@ -199,10 +196,10 @@
                                                                             <span
                                                                                 class="font-bold whitespace-nowrap"
                                                                                 >{{
-                                                                                    '#' +
-                                                                                        'Pregunta ' +
-                                                                                        (key +
-                                                                                            1)
+                                                                                    encab.title
+                                                                                        | removeHTMLCSS
+                                                                                        | truncateText
+                                                                                            : 80
                                                                                 }}</span
                                                                             >
                                                                             <p-button
@@ -219,9 +216,7 @@
                                                                                 (onClick)="
                                                                                     $event.stopPropagation();
                                                                                     confirmarEliminarPregunta(
-                                                                                        key +
-                                                                                            1,
-                                                                                        list
+                                                                                        encab
                                                                                     )
                                                                                 "
                                                                             ></p-button>
@@ -653,6 +648,9 @@
                                                     [filter]="true"
                                                     filterBy="cCompetenciaNombre"
                                                     [showClear]="true"
+                                                    (onChange)="
+                                                        obtenerCapacidades(item)
+                                                    "
                                                 />
                                             </p-inputGroup>
                                         </div>
@@ -751,7 +749,7 @@
                                         <div class="col-12">
                                             @for (
                                                 alternativa of item.alternativas;
-                                                track alternativa;
+                                                track ida;
                                                 let ida = $index
                                             ) {
                                                 <div
@@ -947,8 +945,30 @@
         }
     </div>
 </app-container-page>
-<app-form-importar-banco-preguntas
-    [showModal]="showModalBancoPreguntas"
-    (accionBtnItem)="accionBtnItem($event)"
-></app-form-importar-banco-preguntas>
+<p-dialog
+    [header]="
+        'Agregar preguntas de ' +
+        data?.cCursoNombre +
+        ' - ' +
+        data?.cGradoAbreviacion +
+        ' - ' +
+        data?.cNivelTipoNombre +
+        ''
+    "
+    [modal]="true"
+    [(visible)]="showModalBancoPreguntas"
+    (onShow)="bancoPreguntasEre.obtenerDatos()"
+    (onHide)="bancoPreguntasEre.limpiarDatos()"
+    [style]="{ width: '85rem' }"
+>
+    <app-banco-preguntas-ere
+        #bancoPreguntasEre
+        (actualizarListaPreguntasEvent)="
+            obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
+        "
+        (cerrarDialogEvent)="showModalBancoPreguntas = $event"
+        [iEvaluacionId]="iEvaluacionId"
+        [iCursosNivelGradId]="iCursoNivelGradId"
+    ></app-banco-preguntas-ere>
+</p-dialog>
 <p-toast></p-toast>

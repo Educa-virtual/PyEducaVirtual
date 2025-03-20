@@ -1,0 +1,23 @@
+.zoom-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+input[type='range'] {
+    margin-bottom: 20px;
+    width: 200px;
+}
+
+.image-container {
+    overflow: hidden;
+    width: 300px; /* Ajusta el tamaño según sea necesario */
+    height: 300px; /* Ajusta el tamaño según sea necesario */
+}
+
+img {
+    transition: transform 0.2s ease-in-out; /* Transición suave para el zoom */
+    width: 100%;
+    height: 100%;
+}

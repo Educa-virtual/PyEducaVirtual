@@ -1,0 +1,47 @@
+<p-dialog
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '65rem' }"
+    (onHide)="visible = false"
+>
+    <ng-template pTemplate="header">
+        <img src="assets/images/logo_blanco.png" alt="logo" height="60px" />
+    </ng-template>
+    <div class="mt-5 grid evaluacion-finalizada">
+        <div class="col-12 md:col-9">
+            <!-- <span class="title">Bienvenido</span> -->
+            <h1>
+                Gracias por tu Participación en la Evaluación Regional de
+                Estudiantes (ERE).
+            </h1>
+            <!-- <h5 style="font-size: 22px">
+                Levanta la mano e indica que terminaste, y espera las
+                indicaciones.
+            </h5> -->
+        </div>
+        <div class="col-12 md:col-3 align-content-center text-center">
+            <img
+                style="max-width: 150px"
+                src="assets/images/icons/prueba.gif"
+                alt="logo"
+            />
+        </div>
+        <div class="col-12 md:col-9">
+            <h5>Por favor completar la encuesta para culminar la evaluación</h5>
+        </div>
+        <div class="col-12 md:col-3 align-content-center text-center">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-success pulse"
+                (click)="irEncuesta()"
+            >
+                <i class="pi pi-check-square"></i>&nbsp; Iniciar Encuesta
+            </button>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <img src="assets/images/logo-proyecto.png" alt="logo" height="50px" />
+    </ng-template>
+</p-dialog>

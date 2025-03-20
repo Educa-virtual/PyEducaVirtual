@@ -116,42 +116,47 @@ const estudiante = [
     {
         items: [
             inicio,
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Calendario',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/03'],
-            },
-            {
-                label: 'Solicitudes y Tramites',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/02'],
-            },
-            {
-                label: 'Buzon de Sugerencias',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/01'],
-            },
-            {
-                label: 'Enlaces de ayuda',
-                icon: 'pi pi-fw pi-share-alt',
-                routerLink: ['ayuda'],
-            },
+            // {
+            //     label: 'Mis Áreas Curriculares',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/areas-curriculares'],
+            // },
+            // {
+            //     label: 'Calendario',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/03'],
+            // },
+            // {
+            //     label: 'Solicitudes y Tramites',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/02'],
+            // },
+            // {
+            //     label: 'Buzon de Sugerencias',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/aula-virtual/01'],
+            // },
+            // {
+            //     label: 'Enlaces de ayuda',
+            //     icon: 'pi pi-fw pi-share-alt',
+            //     routerLink: ['ayuda'],
+            // },
 
             {
-                label: 'Dremo ERE',
-                icon: 'pi pi-fw pi-user',
+                label: 'Evaluaciones y Resultados',
+                icon: 'pi pi-fw pi-list-check',
                 items: [
+                    // {
+                    //     label: 'Evaluacion',
+                    //     icon: 'pi pi-fw pi-share-alt',
+                    //     routerLink: [
+                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
+                    //     ],
+                    // },
                     {
-                        label: 'Evaluacion',
-                        icon: 'pi pi-fw pi-share-alt',
-                        routerLink: [
-                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                        ],
+                        label: 'ERE',
+                        icon: 'pi pi-pen-to-square',
+                        routerLink: ['/ere/areas-rendir-examen'],
                     },
                     // {
                     //     label: 'Examen',
@@ -256,111 +261,110 @@ const administracion = [
     {
         label: 'Administración',
         items: [
-            {
-                label: 'Administracion de tablas maestras',
-                icon: 'pi pi-fw pi-cog',
-                items: [
-                    {
-                        label: 'Registro de año escolar',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/calendarioAcademico',
-                        ],
-                    },
-                    {
-                        label: 'Información de la Institución',
-                        icon: 'pi pi-wrench',
-                        routerLink: ['/gestion-institucional/Informacion-ie'],
-                    },
-                    {
-                        label: 'Sincronizar archivos',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/sincronizar-archivo',
-                        ],
-                    },
-                    {
-                        label: 'Mantenimiento de usuarios',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/mantenimiento-usuario',
-                        ],
-                    },
-                ],
-            },
+            // {
+            //     label: 'Administracion de tablas maestras',
+            //     icon: 'pi pi-fw pi-cog',
+            //     items: [
+            //         {
+            //             label: 'Registro de año escolar',
+            //             icon: 'pi pi-wrench',
+            //             routerLink: [
+            //                 '/gestion-institucional/calendarioAcademico',
+            //             ],
+            //         },
+            //         {
+            //             label: 'Información de la Institución',
+            //             icon: 'pi pi-wrench',
+            //             routerLink: ['/gestion-institucional/Informacion-ie'],
+            //         },
+            //         {
+            //             label: 'Sincronizar archivos',
+            //             icon: 'pi pi-wrench',
+            //             routerLink: [
+            //                 '/gestion-institucional/sincronizar-archivo',
+            //             ],
+            //         },
+            //         {
+            //             label: 'Mantenimiento de usuarios',
+            //             icon: 'pi pi-wrench',
+            //             routerLink: [
+            //                 '/gestion-institucional/mantenimiento-usuario',
+            //             ],
+            //         },
+            //     ],
+            // },
 
-            {
-                label: 'Configurar Calendario escolar',
-                icon: 'pi pi-calendar',
-                items: [
-                    {
-                        label: 'Apertura de año escolar',
-                        icon: 'pi pi-lock-open',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Registro de fechas especiales',
-                        icon: 'pi pi-calendar',
-                        routerLink: ['/gestion-institucional/fechas'],
-                    },
+            // {
+            //     label: 'Configurar Calendario escolar',
+            //     icon: 'pi pi-calendar',
+            //     items: [
+            //         {
+            //             label: 'Apertura de año escolar',
+            //             icon: 'pi pi-lock-open',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Registro de fechas especiales',
+            //             icon: 'pi pi-calendar',
+            //             routerLink: ['/gestion-institucional/fechas'],
+            //         },
 
-                    {
-                        label: 'Cierre de año escolar',
-                        icon: 'pi pi-lock',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                ],
-            },
+            //         {
+            //             label: 'Cierre de año escolar',
+            //             icon: 'pi pi-lock',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //     ],
+            // },
 
-            {
-                label: 'Registro de condiciones operativas',
-                icon: 'pi pi-briefcase',
-                items: [
-                    {
-                        label: 'Gestion de Ambientes y Grados',
-                        icon: 'pi pi-building-columns',
-                        routerLink: [
-                            '/gestion-institucional/configGradoSeccion',
-                        ],
-                    },
+            // {
+            //     label: 'Registro de condiciones operativas',
+            //     icon: 'pi pi-briefcase',
+            //     items: [
+            //         {
+            //             label: 'Gestion de Ambientes y Grados',
+            //             icon: 'pi pi-building-columns',
+            //             routerLink: [
+            //                 '/gestion-institucional/configGradoSeccion',
+            //             ],
+            //         },
 
-                    {
-                        label: 'Gestión de Personal',
-                        icon: 'pi pi-users',
-                        items: [
-                            {
-                                label: 'Personal de IE',
-                                icon: 'pi pi-user-plus',
-                                routerLink: [
-                                    '/gestion-institucional/IesPersonal',
-                                ],
-                            },
-                            {
-                                label: 'Cargos',
-                                icon: 'pi pi-wrench',
-                                routerLink: ['/configuracion/configuracion'],
-                            },
-                        ],
-                        //ConfigGradoSeccion
-                    },
-                    {
-                        label: 'Gestión de horarios y asignaciones',
-                        icon: 'pi pi-calendar',
-                        items: [
-                            {
-                                label: 'Configuracion de horarios',
-                                icon: 'pi pi-calendar-clock',
-                                routerLink: ['/horario/configurar-horario'],
-                            },
-                            {
-                                label: 'horarios',
-                                icon: 'pi pi-calendar-times',
-                                routerLink: ['/horario/horario'],
-                            },
-                        ],
-                    },
-                ],
-            },
+            //         {
+            //             label: 'Gestión de Personal',
+            //             icon: 'pi pi-users',
+            //             items: [
+            //                 {
+            //                     label: 'Personal de IE',
+            //                     icon: 'pi pi-user-plus',
+            //                     routerLink: [
+            //                         '/gestion-institucional/IesPersonal',
+            //                     ],
+            //                 },
+            //                 {
+            //                     label: 'Cargos',
+            //                     icon: 'pi pi-wrench',
+            //                     routerLink: ['/configuracion/configuracion'],
+            //                 },
+            //             ],
+            //         },
+            //         {
+            //             label: 'Gestión de horarios y asignaciones',
+            //             icon: 'pi pi-calendar',
+            //             items: [
+            //                 {
+            //                     label: 'Configuracion de horarios',
+            //                     icon: 'pi pi-calendar-clock',
+            //                     routerLink: ['/horario/configurar-horario'],
+            //                 },
+            //                 {
+            //                     label: 'horarios',
+            //                     icon: 'pi pi-calendar-times',
+            //                     routerLink: ['/horario/horario'],
+            //                 },
+            //             ],
+            //         },
+            //     ],
+            // },
             {
                 label: 'Gestión de estudiantes',
                 icon: 'pi pi-fw pi-cog',
@@ -416,33 +420,32 @@ const administracion = [
                 ],
             },
 
-            {
-                label: 'Generación de Reportes y estadísticas',
-                icon: 'pi pi-chart-bar',
-                items: [
-                    {
-                        label: 'Reportes',
-                        icon: 'pi pi-book',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Estadisticas',
-                        icon: 'pi pi-chart-scatter',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Indicadores',
-                        icon: 'pi pi-chart-line',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Plantillas',
-                        icon: 'pi pi-download',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                ],
-                //ConfigGradoSeccion
-            },
+            // {
+            //     label: 'Generación de Reportes y estadísticas',
+            //     icon: 'pi pi-chart-bar',
+            //     items: [
+            //         {
+            //             label: 'Reportes',
+            //             icon: 'pi pi-book',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Estadisticas',
+            //             icon: 'pi pi-chart-scatter',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Indicadores',
+            //             icon: 'pi pi-chart-line',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //         {
+            //             label: 'Plantillas',
+            //             icon: 'pi pi-download',
+            //             routerLink: ['/configuracion/configuracion'],
+            //         },
+            //     ],
+            // },
 
             {
                 label: 'Evaluación - ERE',
@@ -458,11 +461,11 @@ const administracion = [
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
-                    // {
-                    //     label: 'Evaluaciones',
-                    //     icon: 'pi pi-fw pi-calendar',
-                    //     routerLink: ['/ere/evaluaciones'],
-                    // },
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-fw pi-calendar',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
                 ],
                 //ConfigGradoSeccion
             },
@@ -472,22 +475,22 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
-            {
-                label: 'Generar Reportes y Estadisticas',
-                icon: 'pi pi-chart-scatter',
-                items: [
-                    {
-                        label: 'Reportes Academicos',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/reporte'],
-                    },
-                    {
-                        label: 'Reportes Orden de Mérito',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/estadistica'],
-                    },
-                ],
-            },
+            // {
+            //     label: 'Generar Reportes y Estadisticas',
+            //     icon: 'pi pi-chart-scatter',
+            //     items: [
+            //         {
+            //             label: 'Reportes Academicos',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/reporte'],
+            //         },
+            //         {
+            //             label: 'Reportes Orden de Mérito',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/estadistica'],
+            //         },
+            //     ],
+            // },
         ],
     },
 ]
@@ -593,6 +596,7 @@ export class ConstantesService {
     iIieeId = perfil ? perfil.iIieeId : null
     iSedeId = perfil ? perfil.iSedeId : null
     grados = perfil ? perfil.grados : null
+    iSemAcadId = perfil ? perfil.semestres_acad : null
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
     nivelTipo = perfil ? perfil.iNivelTipoId : null

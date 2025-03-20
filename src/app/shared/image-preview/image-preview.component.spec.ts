@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { ComunicadosComponent } from './comunicados.component'
+import { ImagePreviewComponent } from './image-preview.component'
 
-describe('ComunicadosComponent', () => {
-    let component: ComunicadosComponent
-    let fixture: ComponentFixture<ComunicadosComponent>
+describe('ImagePreviewComponent', () => {
+    let component: ImagePreviewComponent
+    let fixture: ComponentFixture<ImagePreviewComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ComunicadosComponent],
+            imports: [ImagePreviewComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(ComunicadosComponent)
+        fixture = TestBed.createComponent(ImagePreviewComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

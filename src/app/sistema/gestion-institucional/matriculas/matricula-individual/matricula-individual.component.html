@@ -34,11 +34,13 @@
 
                 <div class="field col-8 md:col-9">
                     <span class="p-float-label">
-                        <input
-                            pInputText
+                        <p-inputMask
                             id="cEstCodigo"
                             formControlName="cEstCodigo"
                             aria-describedby="cEstCodigo-help"
+                            mask="99999999999999"
+                            autoClear="false"
+                            slotChar=""
                         />
                         <label for="cEstCodigo">Código de estudiante *</label>
                     </span>

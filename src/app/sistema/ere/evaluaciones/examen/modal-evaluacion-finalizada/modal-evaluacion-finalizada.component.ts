@@ -15,12 +15,14 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
     mostrarBotonEncuesta: boolean = false
 
     ngOnInit() {
-        switch (this.grado) {
+        //Desactivado porque solo era para el piloto
+        this.mostrarBotonEncuesta = false
+        /*switch (this.grado) {
             case '2do.':
             case '4to.':
                 this.mostrarBotonEncuesta = true
                 break
-        }
+        }*/
     }
 
     irEncuesta() {

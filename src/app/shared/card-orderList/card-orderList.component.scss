@@ -1,0 +1,5 @@
+// borrar las barras al costado del listar estudiantes
+:host ::ng-deep .p-orderlist-controls {
+    display: none;
+    height: 600px;
+}

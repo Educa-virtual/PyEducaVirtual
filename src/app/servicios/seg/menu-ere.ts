@@ -82,11 +82,11 @@ export const especialistaDremo = [
         items: [
             inicio,
             evaluacionesEre,
-            {
+            /*{
                 label: 'Banco de Preguntas',
                 icon: 'pi pi-fw pi-question-circle',
                 routerLink: ['/ere/banco-preguntas'],
-            },
+            },*/
             reportesEre,
             {
                 label: 'Enlaces de ayuda',

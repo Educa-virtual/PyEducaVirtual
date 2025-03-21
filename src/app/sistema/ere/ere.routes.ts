@@ -110,7 +110,7 @@ const routes: Routes = [
             ),
     },
     {
-        path: 'areas-rendir-examen',
+        path: 'evaluaciones/areas',
         component: AreasRendirExamenComponent,
         canActivate: [RoleGuard],
         data: {
@@ -120,7 +120,8 @@ const routes: Routes = [
         },
     },
     {
-        path: 'mostrar-evaluacion/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre/:cGradoNombre',
+        ///:cEvaluacionNombre/:cCursoNombre/:cGradoNombre
+        path: 'evaluaciones/:iEvaluacionId/areas/:iCursoNivelGradId/detalles',
         component: MostrarEvaluacionComponent,
         canActivate: [RoleGuard],
         data: {
@@ -130,7 +131,8 @@ const routes: Routes = [
         },
     },
     {
-        path: 'rendir-examen/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre/:cGradoNombre',
+        //path: 'rendir-examen/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre/:cGradoNombre',
+        path: 'evaluaciones/:iEvaluacionId/areas/:iCursoNivelGradId/rendir',
         component: RendirExamenComponent,
         canActivate: [RoleGuard],
         data: {

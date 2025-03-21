@@ -116,56 +116,10 @@ const estudiante = [
     {
         items: [
             inicio,
-            // {
-            //     label: 'Mis Áreas Curriculares',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/areas-curriculares'],
-            // },
-            // {
-            //     label: 'Calendario',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/03'],
-            // },
-            // {
-            //     label: 'Solicitudes y Tramites',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/02'],
-            // },
-            // {
-            //     label: 'Buzon de Sugerencias',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/01'],
-            // },
-            // {
-            //     label: 'Enlaces de ayuda',
-            //     icon: 'pi pi-fw pi-share-alt',
-            //     routerLink: ['ayuda'],
-            // },
-
             {
-                label: 'Evaluaciones y Resultados',
-                icon: 'pi pi-fw pi-list-check',
-                items: [
-                    // {
-                    //     label: 'Evaluacion',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [
-                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                    //     ],
-                    // },
-                    {
-                        label: 'ERE',
-                        icon: 'pi pi-pen-to-square',
-                        routerLink: ['/ere/areas-rendir-examen'],
-                    },
-                    // {
-                    //     label: 'Examen',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [
-                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-                    //     ],
-                    // },
-                ],
+                label: 'Evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluaciones/areas'],
             },
         ],
     },

@@ -1,5 +1,10 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
 <app-container-page
-    [title]="'EVALUACIÓN ERE: ' + (cEvaluacionNombre || '-')"
+    [title]="'Evaluación ERE: ' + (cEvaluacionNombre || '-')"
     [actions]="[]"
 >
     <div class="container">
@@ -25,12 +30,14 @@
                         }}</small>
                     </h3>
                     <div class="mt-2">
-                        <b>Inicio del Examen:</b>
-                        {{ curso.dtExamenFechaInicio | date: 'short' }}
+                        <b>Inicio:</b>
+                        {{
+                            curso.dtExamenFechaInicio | date: 'dd/MM/yy, h:mm a'
+                        }}
                     </div>
                     <div class="mt-1">
-                        <b>Fin del Examen:</b>
-                        {{ curso.dtExamenFechaFin | date: 'short' }}
+                        <b>Fin:</b>
+                        {{ curso.dtExamenFechaFin | date: 'dd/MM/yy, h:mm a' }}
                     </div>
                 </div>
                 <div class="flex">

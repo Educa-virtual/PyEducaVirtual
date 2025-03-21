@@ -25,15 +25,14 @@
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
         <p class="">{{ curso.iCantidadPreguntas }} preguntas</p>
         <button
-            size="small"
+            [size]="'small'"
             [rounded]="true"
             pButton
             pRipple
             (click)="$event.stopPropagation(); menuContenido.toggle($event)"
             ngClass="p-button-primary"
         >
-            Acciones &nbsp;
-            <i class="pi pi-plus"></i>
+            <i class="pi pi-plus"></i> Acciones
         </button>
     </footer>
 </article>

@@ -70,6 +70,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     iPerfil: number
     item = []
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
@@ -106,8 +109,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({})
     }
     resetSelect: boolean = false
-    // se inicializa..
+
     ngOnInit() {
+        this.breadCrumbItems = [{ label: 'Evaluaciones ERE' }]
+        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
         this.obtenerEvaluacion()
         this.obtenerPerfil()
         this.caption = 'Evaluaciones'
@@ -423,13 +428,13 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-success p-button-text',
             isVisible: () => this.iPerfilId === ESPECIALISTA_UGEL,
         },
-        {
+        /*{
             labelTooltip: 'Resultados',
             icon: 'pi pi-chart-bar',
             accion: 'resultados',
             type: 'item',
             class: 'p-button-rounded p-button-info p-button-text',
-        },
+        },*/
     ]
     // ].filter(accion => accion.visible !== false);
     onRowSelect(event: any) {

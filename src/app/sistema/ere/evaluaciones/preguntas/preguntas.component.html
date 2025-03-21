@@ -1,8 +1,15 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
 <app-container-page
     *ngIf="data"
     [title]="
         'Gestionar preguntas de ' +
-        data?.cCursoNombre +
+        data?.cCursoNombre.charAt(0).toUpperCase() +
+        data?.cCursoNombre.slice(1).toLowerCase() +
         ' - ' +
         data?.cGradoAbreviacion +
         ' - ' +
@@ -19,7 +26,7 @@
             ><br />
         </div>
         <div class="col-12 md:col-3 text-center align-content-center font-bold">
-            <span style="font-size: 18px">Total Preguntas:</span>
+            <span style="font-size: 18px">Total preguntas:</span>
             <span>
                 <p-badge
                     [value]="totalPregunta"
@@ -109,7 +116,7 @@
                                                 <label
                                                     for="enunciado"
                                                     class="mt-1 font-bold"
-                                                    >Descripción del Enunciado
+                                                    >Descripción del enunciado
                                                     <span
                                                         class="text-red-500 text-xs"
                                                         >(*) Obligatorio</span
@@ -169,7 +176,7 @@
                                                                     <span
                                                                         class="text-md"
                                                                         >Agregar
-                                                                        Pregunta</span
+                                                                        pregunta</span
                                                                     >
                                                                 </button>
                                                             </ng-template>
@@ -248,7 +255,7 @@
                                                                                     !isDisabled
                                                                                 "
                                                                                 styleClass="w-full"
-                                                                                placeholder="Seleccione la Competencia"
+                                                                                placeholder="Seleccione la competencia"
                                                                                 optionValue="iCompetenciaId"
                                                                                 [options]="
                                                                                     matrizCompetencia
@@ -279,7 +286,7 @@
                                                                                     !isDisabled
                                                                                 "
                                                                                 styleClass="w-full"
-                                                                                placeholder="Seleccione la Capacidad"
+                                                                                placeholder="Seleccione la capacidad"
                                                                                 optionValue="iCapacidadId"
                                                                                 [options]="
                                                                                     matrizCapacidad
@@ -340,7 +347,7 @@
                                                                                     "
                                                                                     optionValue="iPreguntaPesoId"
                                                                                     optionLabel="cPreguntaPesoNombre"
-                                                                                    placeholder="Peso Pregunta"
+                                                                                    placeholder="Peso de la pregunta"
                                                                                     [style]="{
                                                                                         width: '100%',
                                                                                     }"
@@ -382,7 +389,7 @@
                                                                             >
                                                                                 Lista
                                                                                 de
-                                                                                Alternativas
+                                                                                alternativas
                                                                             </div>
                                                                             <div>
                                                                                 <button
@@ -404,7 +411,7 @@
                                                                                     ></i
                                                                                     >&nbsp;
                                                                                     Añadir
-                                                                                    Alternativa
+                                                                                    alternativa
                                                                                 </button>
                                                                             </div>
                                                                         </div>
@@ -532,7 +539,7 @@
                                                                                             !isDisabled
                                                                                         "
                                                                                         [label]="
-                                                                                            'Respuesta Correcta'
+                                                                                            'Respuesta correcta'
                                                                                         "
                                                                                         [inputId]="
                                                                                             alternativa.iAlternativaId
@@ -566,7 +573,7 @@
                                                                                         <input
                                                                                             type="text"
                                                                                             pInputText
-                                                                                            placeholder="Ingrese la explicación"
+                                                                                            placeholder="Explicación de por qué la respuesta es correcta"
                                                                                             [(ngModel)]="
                                                                                                 alternativa.cAlternativaExplicacion
                                                                                             "
@@ -636,7 +643,7 @@
                                                 <p-dropdown
                                                     [disabled]="!isDisabled"
                                                     styleClass="w-full"
-                                                    placeholder="Seleccione la Competencia"
+                                                    placeholder="Seleccione la competencia"
                                                     optionValue="iCompetenciaId"
                                                     [options]="
                                                         matrizCompetencia
@@ -662,7 +669,7 @@
                                                 <p-dropdown
                                                     [disabled]="!isDisabled"
                                                     styleClass="w-full"
-                                                    placeholder="Seleccione la Capacidad"
+                                                    placeholder="Seleccione la capacidad"
                                                     optionValue="iCapacidadId"
                                                     [options]="matrizCapacidad"
                                                     optionLabel="cCapacidadNombre"
@@ -711,7 +718,7 @@
                                                         [options]="preguntaPeso"
                                                         optionValue="iPreguntaPesoId"
                                                         optionLabel="cPreguntaPesoNombre"
-                                                        placeholder="Peso Pregunta"
+                                                        placeholder="Peso de la pregunta"
                                                         [style]="{
                                                             width: '100%',
                                                         }"
@@ -849,7 +856,7 @@
                                                                     : ''
                                                             "
                                                             [label]="
-                                                                'Respuesta Correcta'
+                                                                'Respuesta correcta'
                                                             "
                                                             [inputId]="
                                                                 alternativa.iAlternativaId
@@ -887,7 +894,7 @@
                                                                 "
                                                                 type="text"
                                                                 pInputText
-                                                                placeholder="Ingrese la explicación"
+                                                                placeholder="Explicación de por qué la respuesta es correcta"
                                                                 [(ngModel)]="
                                                                     alternativa.cAlternativaExplicacion
                                                                 "
@@ -910,7 +917,7 @@
                                                     "
                                                 >
                                                     <i class="pi pi-plus"></i
-                                                    >&nbsp; Añadir Alternativa
+                                                    >&nbsp; Añadir alternativa
                                                 </button>
                                             </div>
                                         </div>
@@ -931,7 +938,7 @@
                                                     "
                                                 >
                                                     <i class="pi pi-check"></i
-                                                    >&nbsp; Guardar Pregunta
+                                                    >&nbsp; Guardar pregunta
                                                 </button>
                                             </div>
                                         </div>

@@ -2,8 +2,8 @@
     <ng-template pTemplate="header" class="encabezado">
         <div class="flex flex-column gap-2">
             <h3 class="m-0 text-uppercase text-primary">
-                Evaluación ERE: {{ cEvaluacionNombre || '-' }} -
-                {{ cCursoNombre || '-' }}
+                Evaluación ERE: {{ this.evaluacion.cEvaluacionNombre || '-' }} -
+                {{ this.evaluacion.cCursoNombre || '-' }}
             </h3>
         </div>
     </ng-template>
@@ -256,7 +256,7 @@
             <p-button
                 label="Terminar examen"
                 severity="success"
-                (onClick)="preguntarTerminarExamen($event)"
+                (onClick)="preguntarTerminarExamen()"
             />
         </div>
     </div>
@@ -264,7 +264,7 @@
 <p-toast></p-toast>
 
 <app-modal-evaluacion-finalizada
-    [grado]="cGradoNombre"
+    [grado]="this.evaluacion.cGradoAbreviacion"
     *ngIf="finalizado"
 ></app-modal-evaluacion-finalizada>
 

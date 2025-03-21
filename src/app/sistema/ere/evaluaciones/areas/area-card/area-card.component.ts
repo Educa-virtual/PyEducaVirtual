@@ -52,7 +52,7 @@ export class AreaCardComponent implements OnInit {
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.router.navigate([
-                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/gestionar-preguntas/areas/${this.curso.iCursosNivelGradId}`,
+                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${this.curso.iCursosNivelGradId}/preguntas`,
                     ])
                 },
             },

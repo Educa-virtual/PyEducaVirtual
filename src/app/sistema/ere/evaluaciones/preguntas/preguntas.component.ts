@@ -16,6 +16,7 @@ import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { BancoPreguntasComponent } from '../banco-preguntas/banco-preguntas-ere.component'
+import { PreguntasEreService } from '../services/preguntas-ere.service'
 
 @Component({
     selector: 'app-preguntas',
@@ -38,6 +39,7 @@ import { BancoPreguntasComponent } from '../banco-preguntas/banco-preguntas-ere.
 export class PreguntasComponent implements OnInit {
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
+    private _preguntasService = inject(PreguntasEreService)
     private _apiEre = inject(ApiEvaluacionesRService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private http = inject(HttpClient)
@@ -45,6 +47,8 @@ export class PreguntasComponent implements OnInit {
 
     private backendApi = environment.backendApi
     backend = environment.backend
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
 
     @Input() iEvaluacionId
     @Input() iCursoNivelGradId
@@ -75,7 +79,7 @@ export class PreguntasComponent implements OnInit {
         suffix: '.min', // Suffix to use when loading resources
         menubar: false,
         selector: 'textarea',
-        placeholder: 'Escribe aqui...',
+        placeholder: 'Escriba aquí...',
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
@@ -106,21 +110,21 @@ export class PreguntasComponent implements OnInit {
 
     tiposAgregarPregunta: MenuItem[] = [
         {
-            label: 'Nueva Pregunta simple',
+            label: 'Pregunta simple',
             icon: 'pi pi-plus',
             command: () => {
                 this.handleNuevaPregunta(false)
             },
         },
         {
-            label: 'Nueva Pregunta múltiple',
+            label: 'Pregunta múltiple',
             icon: 'pi pi-plus',
             command: () => {
                 this.handleNuevaPregunta(true)
             },
         },
         {
-            label: 'Agregar del banco de preguntas',
+            label: 'Del banco de preguntas',
             icon: 'pi pi-plus',
             command: () => {
                 this.showModalBancoPreguntas = true
@@ -183,75 +187,97 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
+
         const removeHtml = new RemoveHTMLCSSPipe()
         const truncateText = new TruncatePipe()
-        truncateText.transform(removeHtml.transform(pregunta.title), 40)
+        //truncateText.transform(removeHtml.transform(pregunta.title), 40)
+        const cabeceraPregunta = truncateText.transform(
+            removeHtml.transform(pregunta.title),
+            40
+        )
+        let headerConfirmarEliminar = '¿Está seguro de eliminar '
+        if (cabeceraPregunta.substring(0, 9) == 'Preguntas') {
+            headerConfirmarEliminar += 'las '
+        } else {
+            headerConfirmarEliminar += 'la '
+        }
+        headerConfirmarEliminar += cabeceraPregunta + '?'
         this._ConfirmationModalService.openConfirm({
-            header:
-                '¿Esta seguro de eliminar  la ' +
-                truncateText.transform(
-                    removeHtml.transform(pregunta.title),
-                    80
-                ) +
-                ' ?',
+            header: headerConfirmarEliminar,
             accept: () => {
-                if (pregunta.iEncabPregId > 0) {
-                    this.eliminarPreguntaConEncabezado(pregunta)
+                if (
+                    Object.prototype.hasOwnProperty.call(pregunta, 'pregunta')
+                ) {
+                    if (pregunta.iEncabPregId == null) {
+                        this.eliminarPreguntaSimple(pregunta.pregunta[0])
+                    } else {
+                        this.eliminarPreguntaMultiple(pregunta)
+                    }
+                    /*if (Array.isArray(pregunta.pregunta)) {
+
+                        this.eliminarPreguntaMultiple(pregunta)
+                    } else if (typeof pregunta.pregunta === 'object' && pregunta.pregunta !== null) {
+
+                        this.eliminarPreguntaSimple(pregunta)
+                    }*/
                 } else {
-                    this.eliminarPregunta(pregunta?.pregunta)
+                    this.eliminarPreguntaSimple(pregunta)
                 }
             },
         })
     }
 
-    eliminarPregunta(pregunta) {
-        if (!this.isDisabled) {
-            return
-        }
-        const itemPregunta = pregunta.length ? pregunta[0] : null
-        if (!itemPregunta) return
-
-        const params = {
-            petition: 'post',
-            group: 'ere',
-            prefix: 'preguntas',
-            ruta: 'handleCrudOperation',
-            data: {
-                opcion: 'ACTUALIZARxiPreguntaIdxbPreguntaEstado',
-                iPreguntaId: itemPregunta.iPreguntaId,
-                iEncabPregId: itemPregunta.iEncabPregId,
-            },
-        }
-        this.getInformation(params, params.data.opcion)
+    eliminarPreguntaSimple(pregunta) {
+        this._preguntasService
+            .eliminarPreguntaSimple({
+                iPreguntaId: pregunta.iPreguntaId,
+                //iEncabPregId: pregunta.iEncabPregId,
+                iEvaluacionId: this.iEvaluacionId,
+            })
+            .subscribe({
+                next: (response) => {
+                    this._MessageService.add({
+                        severity: 'success',
+                        detail: response['message'],
+                    })
+                    this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
+                },
+                complete: () => {},
+                error: (error) => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+            })
     }
 
-    eliminarPreguntaConEncabezado(pregunta) {
-        if (pregunta.iEncabPregId > 0) {
-            const params = {
-                petition: 'post',
-                group: 'ere',
-                prefix: 'preguntas',
-                ruta: 'handleCrudOperation',
-                data: {
-                    opcion: 'ACTUALIZARxiPreguntaIdxbPreguntaEstado',
-                    iEncabPregId: pregunta.iEncabPregId,
+    eliminarPreguntaMultiple(pregunta) {
+        this._preguntasService
+            .eliminarPreguntaMultiple({
+                iEncabPregId: pregunta.iEncabPregId,
+                iEvaluacionId: this.iEvaluacionId,
+            })
+            .subscribe({
+                next: (response) => {
+                    this._MessageService.add({
+                        severity: 'success',
+                        detail: response['message'],
+                    })
+                    this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 },
-            }
-            this.getInformation(params, params.data.opcion)
-        } else {
-            const params = {
-                petition: 'post',
-                group: 'ere',
-                prefix: 'preguntas',
-                ruta: 'handleCrudOperation',
-                data: {
-                    opcion: 'ACTUALIZARxiPreguntaIdxbPreguntaEstado',
-                    iPreguntaId: pregunta.iPreguntaId,
+                complete: () => {},
+                error: (error) => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
                 },
-            }
-            this.getInformation(params, params.data.opcion)
-        }
+            })
     }
+
     handleNuevaPreguntaConEnunciadoSinData(item) {
         if (!this.isDisabled) {
             return
@@ -288,6 +314,7 @@ export class PreguntasComponent implements OnInit {
         }
         this.getInformation(params, params.data.opcion)
     }
+
     guardarPreguntaConEnunciadoSinData() {
         if (!this.isDisabled) {
             return
@@ -306,6 +333,7 @@ export class PreguntasComponent implements OnInit {
         }
         this.getInformation(params, params.data.opcion)
     }
+
     guardarPreguntaConData(encabezado, pregunta, contenido) {
         if (!this.isDisabled) {
             return
@@ -401,6 +429,7 @@ export class PreguntasComponent implements OnInit {
             }
         })
     }
+
     agregarAlternativa(preguntas) {
         if (!this.isDisabled) {
             return
@@ -458,6 +487,25 @@ export class PreguntasComponent implements OnInit {
         const { item } = elemento
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradId':
+                this.breadCrumbItems = [
+                    {
+                        label: 'Evaluaciones ERE',
+                        routerLink: '/ere/evaluaciones',
+                    },
+                    {
+                        label: `${item[0].cEvaluacionNombre} - ${item[0].cNivelEvalNombre}`,
+                    },
+                    {
+                        label: 'Lista de áreas',
+                        routerLink: `/ere/evaluaciones/${item[0].iEvaluacionId}/areas`,
+                    },
+                    {
+                        label: `${item[0].cCursoNombre.charAt(0).toUpperCase() + item[0].cCursoNombre.slice(1).toLowerCase()} - ${item[0].cGradoAbreviacion} - ${item[0].cNivelTipoNombre.replace('Educación ', '')}`,
+                    },
+                    { label: 'Gestionar preguntas' },
+                ]
+                this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
+
                 this.data = item.length ? item[0] : []
                 this.isSecundaria =
                     this.data.iNivelTipoId === '4' ? true : false
@@ -473,7 +521,6 @@ export class PreguntasComponent implements OnInit {
                     this.ordenarAlternativaLetra(evaluacion.alternativas)
                 })
 
-                // let total = 0
                 for (const key in evaluaciones) {
                     if (evaluaciones[key]['iCompetenciaId']) {
                         evaluaciones[key]['iCompetenciaId'] =
@@ -484,7 +531,6 @@ export class PreguntasComponent implements OnInit {
                             evaluaciones[key]['iCapacidadId'].toString()
                     }
 
-                    // if (total == 0) {
                     const itemSinEncabezado = evaluaciones.filter(
                         (i) =>
                             !i.iEncabPregId &&
@@ -496,9 +542,7 @@ export class PreguntasComponent implements OnInit {
                             iEncabPregId: null,
                             iOrden: key,
                         })
-                        // total = 0
                     }
-                    // console.log(itemSinEncabezado)
                     const itemConEncabezado = evaluaciones.filter(
                         (i) =>
                             i.iEncabPregId &&
@@ -507,15 +551,12 @@ export class PreguntasComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Pregunta Múltiple',
+                            title: 'Preguntas',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                             iOrden: key,
                         })
-                        // total = total + 1
                     }
-                    // }
                 }
-                //console.log(this.preguntas)
 
                 this.preguntas = this.preguntas.filter(
                     (value, index, self) =>
@@ -526,12 +567,23 @@ export class PreguntasComponent implements OnInit {
                             )
                 )
                 this.totalPregunta = 0
-                //console.log(this.preguntas)
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length) {
                             pregunta.pregunta.forEach((item) => {
                                 this.totalPregunta = this.totalPregunta + 1
+                                if (item.iEncabPregId != null) {
+                                    const preguntaMultiple =
+                                        this.preguntas.find(
+                                            (o) =>
+                                                o.iEncabPregId ==
+                                                item.iEncabPregId
+                                        )
+                                    if (preguntaMultiple) {
+                                        preguntaMultiple.title +=
+                                            ' #' + this.totalPregunta
+                                    }
+                                }
                                 item.title =
                                     'Pregunta #' +
                                     this.totalPregunta +
@@ -556,15 +608,8 @@ export class PreguntasComponent implements OnInit {
                         } else {
                             pregunta.title = pregunta.pregunta[0]?.title || ''
                         }
-
-                        // pregunta.pregunta.forEach((item) => {
-                        //     this.totalPregunta = this.totalPregunta +1
-                        //     item.title = 'Pregunta #'+this.totalPregunta+': '+item.cPregunta
-                        //     this.obtenerCapacidades(item)
-                        // });
                     }
                 })
-                console.log(this.preguntas)
                 break
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
                 this._MessageService.add({

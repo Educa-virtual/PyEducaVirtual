@@ -14,6 +14,7 @@ import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finaliza
 import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-rendir-examen',
@@ -35,9 +36,10 @@ import { TimeComponent } from '@/app/shared/time/time.component'
 export class RendirExamenComponent implements OnInit {
     @Input() iEvaluacionId: string
     @Input() iCursoNivelGradId: string
-    @Input() cEvaluacionNombre: string
+    /*@Input() cEvaluacionNombre: string
     @Input() cCursoNombre: string
-    @Input() cGradoNombre: string
+    @Input() cGradoNombre: string*/
+    evaluacion: any
     tiempoActual = new Date()
     tiempoFin = new Date()
 
@@ -45,6 +47,7 @@ export class RendirExamenComponent implements OnInit {
     private _MessageService = inject(MessageService)
     private _DomSanitizer = inject(DomSanitizer)
     private _ConstantesService = inject(ConstantesService)
+    private _ConfirmationModalService = inject(ConfirmationModalService)
 
     totalPregunta: number = 0
 
@@ -60,8 +63,8 @@ export class RendirExamenComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        const evaluacion = this.store.getItem('evaluacion')
-        this.tiempoFin = new Date(evaluacion.dtExamenFechaFin)
+        this.evaluacion = this.store.getItem('evaluacion')
+        this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
         //console.log(evaluacion.dtExamenFechaFin)
         this.obtenerPreguntaxiEvaluacionId()
     }
@@ -166,17 +169,10 @@ export class RendirExamenComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
 
-    preguntarTerminarExamen(event: Event) {
-        this.confirmationService.confirm({
-            target: event.target as EventTarget,
-            message: 'El examen se dará por terminado. ¿Desea continuar?',
-            header: 'Terminar examen',
-            icon: 'pi pi-exclamation-triangle',
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            rejectButtonStyleClass: 'p-button-text',
+    preguntarTerminarExamen() {
+        this._ConfirmationModalService.openConfirm({
+            header: 'El examen se dará por terminado. ¿Desea continuar?',
             accept: () => {
-                //this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
                 this.terminarExamen()
             },
         })
@@ -235,7 +231,7 @@ export class RendirExamenComponent implements OnInit {
         const { accion } = elemento
         const { item } = elemento
         const { message } = elemento
-        this.cGradoNombre = this.cGradoNombre.toLowerCase()
+        //this.cGradoNombre = this.cGradoNombre.toLowerCase()
         switch (accion) {
             case 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId':
                 this.finalizado = false

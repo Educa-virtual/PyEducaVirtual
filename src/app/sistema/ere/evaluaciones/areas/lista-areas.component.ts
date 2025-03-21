@@ -17,7 +17,7 @@ import { environment } from '@/environments/environment'
 import { ActivatedRoute } from '@angular/router'
 import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services/api-evaluaciones-r.service'
 import { MessagesModule } from 'primeng/messages'
-import { Message } from 'primeng/api'
+import { MenuItem, Message } from 'primeng/api'
 import { ApiEspecialistasService } from '@/app/sistema/ere/services/api-especialistas.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -62,14 +62,23 @@ export class ListaAreasComponent implements OnInit {
     mostrarMensajeVacio: boolean = false
     mensajeInfo: Message[] | undefined
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     constructor(private route: ActivatedRoute) {}
 
     public onFilter(dv: DataView, event: Event) {
-        const text = (event.target as HTMLInputElement).value.toLowerCase()
+        //Elimina acentos (á, é, etc.) y convierte a minúsculas
+        const normalizeText = (str: string) =>
+            str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+        const text = normalizeText((event.target as HTMLInputElement).value)
         this.cursos = this.cursosInicial
         if (text.length > 1) {
             this.cursos = this.cursos.filter((curso) =>
-                curso.cCursoNombre.toLowerCase().includes(text)
+                normalizeText(curso.cCursoNombre).includes(text)
             )
         }
     }
@@ -92,7 +101,9 @@ export class ListaAreasComponent implements OnInit {
         this.mensajeInfo = [
             {
                 severity: 'info',
-                detail: 'No hay áreas seleccionables para el usuario actual',
+                detail:
+                    'No hay áreas seleccionables para el usuario actual con el rol ' +
+                    this.store.getItem('dremoPerfil').cPerfilNombre,
             },
         ]
         this.route.params.subscribe((params) => {
@@ -108,6 +119,23 @@ export class ListaAreasComponent implements OnInit {
             .subscribe({
                 next: (resp: unknown) => {
                     this.evaluacion = resp
+                    this.breadCrumbItems = [
+                        {
+                            label: 'Evaluaciones ERE',
+                            routerLink: '/ere/evaluaciones',
+                        },
+                        {
+                            label:
+                                this.evaluacion.cEvaluacionNombre +
+                                ' - ' +
+                                this.evaluacion.cNivelEvalNombre,
+                        },
+                        { label: 'Lista de áreas' },
+                    ]
+                    this.breadCrumbHome = {
+                        icon: 'pi pi-home',
+                        routerLink: '/',
+                    }
                 },
                 error: (error) => {
                     console.error('Error obteniendo datos', error)

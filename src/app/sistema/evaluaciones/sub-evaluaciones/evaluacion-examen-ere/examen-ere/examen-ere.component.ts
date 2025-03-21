@@ -1,11 +1,11 @@
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { ContainerPageComponent } from '../../../../../shared/container-page/container-page.component'
 import { Router, RouterModule } from '@angular/router'
 import { environment } from '@/environments/environment'
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-examen-ere',
@@ -14,17 +14,25 @@ import { MessageService } from 'primeng/api'
     templateUrl: './examen-ere.component.html',
     styleUrl: './examen-ere.component.scss',
 })
-export class ExamenEreComponent {
+export class ExamenEreComponent implements OnInit {
     @Input() iEvaluacionId: string = ''
     @Input() cEvaluacionNombre: string = ''
     @Input() cursos: any = []
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
     private router = inject(Router)
     private _ConstantesService = inject(ConstantesService)
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
 
     backend = environment.backend
+
+    ngOnInit(): void {
+        this.breadCrumbItems = [{ label: 'Evaluación ERE' }]
+        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
+    }
+
     updateUrl(item) {
         item.cCursoImagen = 'cursos/images/no-image.jpg'
     }
@@ -69,8 +77,11 @@ export class ExamenEreComponent {
         })
     }
     irMostrarEvaluacion(curso) {
-        this.router.navigate([
+        /*this.router.navigate([
             `ere/mostrar-evaluacion/${this.iEvaluacionId}/areas/${curso.iCursoNivelGradId}/${this.cEvaluacionNombre}/${curso.cCursoNombre}/${curso.cGradoNombre}`,
+        ])*/
+        this.router.navigate([
+            `ere/evaluaciones/${this.iEvaluacionId}/areas/${curso.iCursoNivelGradId}/detalles`,
         ])
     }
 }

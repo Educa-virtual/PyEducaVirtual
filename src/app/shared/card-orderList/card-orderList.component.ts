@@ -9,19 +9,19 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
     imports: [PrimengModule],
 })
 export class CardOrderListComponent implements OnInit {
-    @Input() estudianteMatriculadosxGrado: any[] = [] // Lista de estudiantes
-    @Output() estudianteSeleccionado = new EventEmitter<any>() // Evento para el padre
+    @Input() data: any[] = [] // Lista de datos
+    @Output() datoSeleccionado = new EventEmitter<any>() // Evento para el padre
     constructor() {}
 
     ngOnInit() {
         console.log('')
     }
-    obtenerCursoEstudiante(estudiante: any) {
-        this.estudianteSeleccionado.emit(estudiante) // Emitimos el estudiante seleccionado
+    obtenerDatos(estudiante: any) {
+        this.datoSeleccionado.emit(estudiante) // Emitimos el estudiante seleccionado
     }
     // en esta forma se puede importar el componente
-    // <app-card-orderList
-    //                   [estudianteMatriculadosxGrado]="estudianteMatriculadosxGrado"
-    //                   (estudianteSeleccionado)="obtenerCursoEstudiante($event)"
-    //               ></app-card-orderList>
+    // <app-card-orderlist
+    //     [data]="estudianteMatriculadosxGrado"
+    //     (datoSeleccionado)="obtenerCursoEstudiante($event)"
+    // ></app-card-orderlist>
 }

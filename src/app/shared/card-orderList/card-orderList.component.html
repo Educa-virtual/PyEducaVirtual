@@ -1,20 +1,18 @@
-<div class="card col-4">
+<div class="col">
     <div class="pb-2">
-        <label for="" class="font-bold text-base"
-            >Seleccione un Estudiante:</label
-        >
+        <label for="" class="font-bold text-base">Seleccione un:</label>
     </div>
     <p-orderList
-        [value]="estudianteMatriculadosxGrado"
-        filterBy="Estudiante"
+        [value]="data"
+        filterBy="Estudiantes"
         filterPlaceholder="Buscar...."
     >
-        <ng-template let-estudiante pTemplate="listItem">
+        <ng-template let-objeto pTemplate="listItem">
             <div
                 class="perfilesList"
                 tabindex="0"
-                (click)="obtenerCursoEstudiante(estudiante)"
-                (keydown.enter)="obtenerCursoEstudiante(estudiante)"
+                (click)="obtenerDatos(objeto)"
+                (keydown.enter)="obtenerDatos(objeto)"
             >
                 <img
                     src="assets/demo/images/matemit/perfil.png"
@@ -22,7 +20,7 @@
                     class="w-3rem btn"
                 />
                 <div class="perfil-name">
-                    {{ estudiante?.Estudiante | uppercase }}
+                    {{ objeto?.Estudiante | uppercase }}
                 </div>
             </div>
         </ng-template>

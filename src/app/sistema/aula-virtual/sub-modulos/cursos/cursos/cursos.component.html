@@ -46,6 +46,7 @@
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="cursos gap-4 py-2">
+                <!-- inicio de lista de cursos en cards -->
                 @for (curso of cursos; track curso) {
                     <app-curso-card
                         #dv
@@ -53,6 +54,7 @@
                         [curso]="curso"
                     ></app-curso-card>
                 }
+                <!-- fin de lista de cursos en cards -->
             </div>
         </ng-template>
     </p-dataView>

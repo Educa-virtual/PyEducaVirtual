@@ -224,7 +224,7 @@
                                         </div>
                                         <span>{{
                                             comunicado.destinatario ||
-                                                'Sin destinatario'
+                                                'No especificado'
                                         }}</span>
                                     </div>
                                 </div>
@@ -279,18 +279,26 @@
                         required
                     />
                 </div>
-                <div class="grid">
-                    <div class="flex flex-column col-12 md:col-6">
-                        <label for="estado" class="mb-1">Estado</label>
-                        <p-dropdown
-                            id="estado"
-                            name="estado"
-                            [options]="estados"
-                            [(ngModel)]="selectedEstado"
-                            placeholder="Seleccione Estado"
+                <div class="row-with-wrap">
+                    <div class="dropdown-container">
+                        <label for="grupo" class="mb-1">Grupo</label>
+                        <p-multiSelect
+                            id="grupo"
+                            name="grupo"
+                            [options]="grupos"
+                            [(ngModel)]="selectedComunicado.grupo"
+                            placeholder="Seleccione Grupos"
                             optionLabel="label"
                             optionValue="value"
-                        ></p-dropdown>
+                            [filter]="true"
+                            [disabled]="
+                                advancedOptions ||
+                                !!destinatarioId ||
+                                !!selectedComunicado.curso ||
+                                !!selectedComunicado.seccion ||
+                                !!selectedComunicado.grado
+                            "
+                        ></p-multiSelect>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
                         <label for="prioridad" class="mb-1">Prioridad</label>
@@ -319,73 +327,101 @@
                         ></p-dropdown>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
-                        <label for="grupo" class="mb-1">Grupo</label>
-                        <p-multiSelect
-                            id="grupo"
-                            name="grupo"
-                            [options]="grupos"
-                            [(ngModel)]="selectedComunicado.grupo"
-                            placeholder="Seleccione Grupos"
-                            optionLabel="label"
-                            optionValue="value"
-                            [filter]="true"
-                        ></p-multiSelect>
+                        <label for="advancedSwitch" class="mb-1"
+                            >Opciones Avanzadas</label
+                        >
+                        <p-inputSwitch
+                            id="advancedSwitch"
+                            name="advancedSwitch"
+                            [(ngModel)]="advancedOptions"
+                            (onChange)="onAdvancedOptionsChange()"
+                        ></p-inputSwitch>
                     </div>
                 </div>
-                <div class="flex flex-column">
-                    <label for="destinatario" class="mb-1"
-                        >Destinatario Unico</label
-                    >
-                    <input
-                        pInputText
-                        id="destinatario"
-                        name="destinatario"
-                        placeholder="Buscar por nombre o DNI"
-                        [value]="destinatarioNombre"
-                        readonly
-                        (click)="abrirDialogBuscarDestinatario()"
-                        [ngClass]="{ 'input-seleccionado': destinatarioNombre }"
-                        (click)="abrirDialogBuscarDestinatario()"
-                    />
+                <div *ngIf="advancedOptions">
+                    <div class="flex flex-column">
+                        <label for="destinatario" class="mb-1"
+                            >Destinatario Único</label
+                        >
+                        <div class="p-inputgroup">
+                            <input
+                                pInputText
+                                id="destinatario"
+                                name="destinatario"
+                                placeholder="Buscar por nombre o DNI"
+                                [value]="destinatarioNombre"
+                                [readonly]="true"
+                                [disabled]="
+                                    !advancedOptions ||
+                                    !!selectedComunicado.curso ||
+                                    !!selectedComunicado.seccion ||
+                                    !!selectedComunicado.grado
+                                "
+                                (click)="abrirDialogBuscarDestinatario()"
+                                [ngClass]="{
+                                    'input-seleccionado': destinatarioNombre,
+                                }"
+                            />
+
+                            <!-- Botón para limpiar el destinatario -->
+                            <button
+                                pButton
+                                type="button"
+                                icon="pi pi-times"
+                                class="p-button-rounded p-button-text p-button-danger"
+                                *ngIf="destinatarioNombre"
+                                (click)="clearDestinatario()"
+                                pTooltip="Quitar destinatario"
+                                tooltipPosition="top"
+                            ></button>
+                        </div>
+                    </div>
+                    <div class="row-with-wrap">
+                        <div class="dropdown-container">
+                            <label for="curso" class="mb-1">Curso</label>
+                            <p-dropdown
+                                id="curso"
+                                name="curso"
+                                [options]="cursos"
+                                [(ngModel)]="selectedComunicado.curso"
+                                optionLabel="label"
+                                optionValue="value"
+                                [disabled]="
+                                    !advancedOptions || !!destinatarioId
+                                "
+                            ></p-dropdown>
+                        </div>
+                        <div class="dropdown-container">
+                            <label for="seccion" class="mb-1">Sección</label>
+                            <p-dropdown
+                                id="seccion"
+                                name="seccion"
+                                [options]="secciones"
+                                [(ngModel)]="selectedComunicado.seccion"
+                                optionLabel="label"
+                                optionValue="value"
+                                [disabled]="
+                                    !advancedOptions || !!destinatarioId
+                                "
+                            ></p-dropdown>
+                        </div>
+                        <div class="dropdown-container">
+                            <label for="grado" class="mb-1">Grado</label>
+                            <p-dropdown
+                                id="grado"
+                                name="grado"
+                                [options]="grados"
+                                [(ngModel)]="selectedComunicado.grado"
+                                optionLabel="label"
+                                optionValue="value"
+                                [disabled]="
+                                    !advancedOptions || !!destinatarioId
+                                "
+                            ></p-dropdown>
+                        </div>
+                    </div>
                 </div>
-                <div class="row-with-wrap">
-                    <div class="dropdown-container">
-                        <label for="curso" class="mb-1">Curso</label>
-                        <p-dropdown
-                            id="curso"
-                            name="curso"
-                            [options]="cursos"
-                            [(ngModel)]="selectedComunicado.curso"
-                            placeholder="Curso"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                    <div class="dropdown-container">
-                        <label for="seccion" class="mb-1">Sección</label>
-                        <p-dropdown
-                            id="seccion"
-                            name="seccion"
-                            [options]="secciones"
-                            [(ngModel)]="selectedComunicado.seccion"
-                            placeholder="Sección"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                    <div class="dropdown-container">
-                        <label for="grado" class="mb-1">Grado</label>
-                        <p-dropdown
-                            id="grado"
-                            name="grado"
-                            [options]="grados"
-                            [(ngModel)]="selectedComunicado.grado"
-                            placeholder="Grado"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                </div>
+
                 <div class="grid">
                     <div class="flex flex-column col-12 md:col-6">
                         <label for="publicado" class="mb-1">Inicio</label>
@@ -490,6 +526,7 @@
         [data]="destinatarios"
         (accionBtnItem)="seleccionarDestinatario($event)"
         [actions]="accionModal"
+        [indiceColumnaBuscar]="2"
     ></app-table-primeng>
 </p-dialog>
 

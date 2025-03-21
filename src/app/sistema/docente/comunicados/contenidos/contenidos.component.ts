@@ -5,6 +5,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { TabViewModule } from 'primeng/tabview'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { MessageService } from 'primeng/api'
 interface Comunicado {
     id: number
     titulo: string
@@ -28,6 +29,7 @@ interface Comunicado {
     imports: [PrimengModule, FormsModule, TabViewModule, TablePrimengComponent],
     templateUrl: './contenidos.component.html',
     styleUrls: ['./contenidos.component.scss'],
+    providers: [MessageService],
 })
 export class ContenidosComponent implements OnInit {
     private GeneralService = inject(GeneralService)
@@ -44,6 +46,7 @@ export class ContenidosComponent implements OnInit {
     iIieeId: any
     data = []
     miembros = []
+    advancedOptions: boolean = false // Controla el switch
 
     destinatarioNombre: string = ''
     destinatarioId: number | null = null
@@ -116,7 +119,10 @@ export class ContenidosComponent implements OnInit {
         },
     ]
 
-    constructor(private ConstantesService: ConstantesService) {
+    constructor(
+        private messageService: MessageService,
+        private ConstantesService: ConstantesService
+    ) {
         this.grado = JSON.parse(this.ConstantesService.grados)
         this.iPersId = this.ConstantesService.iPersId
         this.iYAcadId = this.ConstantesService.iYAcadId
@@ -165,9 +171,9 @@ export class ContenidosComponent implements OnInit {
         titulo: '',
         texto: '',
         estado: '',
-        tipo: '',
+        tipo: null,
         publicado: '',
-        prioridad: '',
+        prioridad: null,
         caduca: '',
         grupo: [], // array vacío
 
@@ -185,9 +191,9 @@ export class ContenidosComponent implements OnInit {
             titulo: '',
             texto: '',
             estado: '',
-            tipo: '',
+            tipo: null,
             publicado: '',
-            prioridad: '',
+            prioridad: null,
             caduca: '',
             grupo: [],
             curso: null,
@@ -246,9 +252,99 @@ export class ContenidosComponent implements OnInit {
         }
         this.selectedEstado = com.estado === 'Activo' ? 1 : 0
         this.destinatarioNombre = com.destinatario || ''
+
+        if (com.destinatario || com.curso || com.seccion || com.grado) {
+            this.advancedOptions = true
+        } else {
+            this.advancedOptions = false
+        }
     }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
+        // 1) Validar Título, Prioridad, Tipo
+        if (!this.selectedComunicado.titulo?.trim()) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe ingresar un Título',
+            })
+            return
+        }
+        if (!this.selectedComunicado.prioridad) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe seleccionar Prioridad',
+            })
+            return
+        }
+        if (!this.selectedComunicado.tipo) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe seleccionar Tipo',
+            })
+            return
+        }
+        // Validar que se ingresen ambas fechas
+        if (
+            !this.selectedComunicado.publicado ||
+            !this.selectedComunicado.caduca
+        ) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe ingresar la fecha de Inicio y Fin.',
+            })
+            return
+        }
+        // Validar Fechas inicio no puede ser menor a final y viceversa
+        const hoy = new Date() // hoy
+        hoy.setHours(0, 0, 0, 0) // quitar hora
+        const inicio = this.parseFecha(this.selectedComunicado.publicado)
+        const fin = this.parseFecha(this.selectedComunicado.caduca)
+
+        if (inicio && inicio < hoy) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Fechas inválidas',
+                detail: 'La fecha de Inicio no puede ser anterior a hoy.',
+            })
+            return
+        }
+        if (inicio && fin && fin < inicio) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Fechas inválidas',
+                detail: 'La fecha de Fin no puede ser menor a la fecha de Inicio.',
+            })
+            return
+        }
+        if (this.advancedOptions && !this.destinatarioId) {
+            const { curso, seccion, grado } = this.selectedComunicado
+            const algunoSeleccionado = curso || seccion || grado
+            if (algunoSeleccionado && !(curso && seccion && grado)) {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.',
+                })
+                return
+            }
+        }
+        // Validar que se haya ingresado contenido
+        if (
+            !this.selectedComunicado.texto ||
+            !this.selectedComunicado.texto.trim()
+        ) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'El contenido del comunicado no puede estar vacío.',
+            })
+            return
+        }
+        this.aplicarLogicaEnvio()
         // objeto con el cual evaluamos si se actualiza o se ingresa un nuevo registro
         let dataObj: any = {
             iPersId: this.iPersId,
@@ -258,7 +354,7 @@ export class ContenidosComponent implements OnInit {
             cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
             dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
             dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
-            iEstado: this.selectedEstado, // Estado (1 o 0)
+            iEstado: 1,
             iSemAcadId: this.iSemAcadId,
             iYAcadId: this.iYAcadId,
             listaGrupos: this.selectedComunicado.grupo,
@@ -326,32 +422,46 @@ export class ContenidosComponent implements OnInit {
 
         switch (accion) {
             case 'obtenerDatos':
-                this.prioridades = item.tipo_prioridad.map((p: any) => ({
-                    label: p.cPrioridadNombre,
-                    value: p.iPrioridadId,
-                }))
-
-                this.tipos = item.tipo_comunicado.map((t: any) => ({
-                    label: t.cTipoComNombre,
-                    value: t.iTipoComId,
-                }))
+                this.prioridades = [
+                    { label: 'Seleccione Prioridad', value: null },
+                    ...item.tipo_prioridad.map((p: any) => ({
+                        label: p.cPrioridadNombre,
+                        value: p.iPrioridadId,
+                    })),
+                ]
+                this.tipos = [
+                    { label: 'Seleccione Tipo', value: null },
+                    ...item.tipo_comunicado.map((t: any) => ({
+                        label: t.cTipoComNombre,
+                        value: t.iTipoComId,
+                    })),
+                ]
                 this.grupos = item.grupos.map((g: any) => ({
                     label: g.cGrupoNombre,
                     value: g.iGrupoId,
                 }))
                 //  curso, seccion y grado
-                this.cursos = item.cursos.map((c: any) => ({
-                    label: c.cCursoNombre,
-                    value: c.iCursoId,
-                }))
-                this.secciones = item.secciones.map((s: any) => ({
-                    label: s.cSeccionNombre,
-                    value: s.iSeccionId,
-                }))
-                this.grados = item.grados.map((g: any) => ({
-                    label: g.cGradoNombre,
-                    value: g.iGradoId,
-                }))
+                this.cursos = [
+                    { label: 'Curso', value: null },
+                    ...item.cursos.map((c: any) => ({
+                        label: c.cCursoNombre,
+                        value: c.iCursoId,
+                    })),
+                ]
+                this.secciones = [
+                    { label: 'Seccion', value: null },
+                    ...item.secciones.map((s: any) => ({
+                        label: s.cSeccionNombre,
+                        value: s.iSeccionId,
+                    })),
+                ]
+                this.grados = [
+                    { label: 'Grado', value: null },
+                    ...item.grados.map((g: any) => ({
+                        label: g.cGradoNombre,
+                        value: g.iGradoId,
+                    })),
+                ]
                 this.iSemAcadId = item.semestre_acad_id
                 break
             case 'obtenerComunicadosPersona':
@@ -408,9 +518,18 @@ export class ContenidosComponent implements OnInit {
                         seccion: c.iSeccionId,
                         grado: c.iGradoId,
                         // nombre del destinatario
-                        cursoName: foundCurso ? foundCurso.label : null,
-                        seccionName: foundSeccion ? foundSeccion.label : null,
-                        gradoName: foundGrado ? foundGrado.label : null,
+                        cursoName:
+                            c.iCursoId !== null && foundCurso
+                                ? foundCurso.label
+                                : null,
+                        seccionName:
+                            c.iSeccionId !== null && foundSeccion
+                                ? foundSeccion.label
+                                : null,
+                        gradoName:
+                            c.iGradoId !== null && foundGrado
+                                ? foundGrado.label
+                                : null,
                         destinatario: c.NombreUsuario || '',
                         collapsed: true,
                     }
@@ -451,8 +570,82 @@ export class ContenidosComponent implements OnInit {
         this.destinatarioNombre = ''
         this.destinatarioId = null
         this.tipoPersona = null
+        this.advancedOptions = false
         setTimeout(() => {
             this.destinatarioNombre = ''
         })
+    }
+    aplicarLogicaEnvio() {
+        if (!this.advancedOptions) {
+            // advanced OFF => se envía por grupos
+            // Revisar si hay grupos
+            if (
+                !this.selectedComunicado.grupo ||
+                this.selectedComunicado.grupo.length === 0
+            ) {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Debe seleccionar al menos un Grupo (o activar Opciones Avanzadas).',
+                })
+                throw new Error('validación')
+            }
+            // forzar null
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+            this.destinatarioId = null
+            return
+        }
+
+        // advanced ON
+        // Caso 1: Destinatario
+        if (this.destinatarioId) {
+            // se envía a un usuario => forzar null en grupo y c/s/g
+            this.selectedComunicado.grupo = []
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+        } else {
+            // Caso 2: c/s/g
+            if (
+                this.selectedComunicado.curso ||
+                this.selectedComunicado.seccion ||
+                this.selectedComunicado.grado
+            ) {
+                // se envía a un (curso,seccion,grado) => forzar null en grupo y destinatario
+                this.selectedComunicado.grupo = []
+                this.destinatarioId = null
+            } else {
+                // Caso 3: si no hay destinatario NI c/s/g => error
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Debe seleccionar un Destinatario único o Curso/Sección/Grado.',
+                })
+                throw new Error('validación')
+            }
+        }
+    }
+    parseFecha(fechaStr: string): Date | null {
+        if (!fechaStr) return null
+        const [dd, mm, yyyy] = fechaStr.split('/')
+        if (!dd || !mm || !yyyy) return null
+        return new Date(+yyyy, +mm - 1, +dd)
+    }
+    clearDestinatario() {
+        this.destinatarioNombre = ''
+        this.destinatarioId = null
+    }
+    onAdvancedOptionsChange() {
+        if (this.advancedOptions) {
+            // Cuando se activa avanzado, el grupo se deshabilita, por lo que se resetea
+            this.selectedComunicado.grupo = []
+        } else {
+            // Cuando se desactiva avanzado, se deshabilitan los campos de curso, sección y grado
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+        }
     }
 }

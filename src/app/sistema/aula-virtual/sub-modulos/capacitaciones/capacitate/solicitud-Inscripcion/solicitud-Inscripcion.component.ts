@@ -9,6 +9,7 @@ import {
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component'
+import { MenuItem } from 'primeng/api'
 
 @Component({
     selector: 'app-solicitud-inscripcion',
@@ -26,6 +27,8 @@ import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.compone
 })
 export class SolicitudInscripcionComponent implements OnInit {
     activeIndex: number = 0
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
     alumnos = [
         {
             nombreApellido: 'Flores Caguana Miguel',
@@ -45,7 +48,11 @@ export class SolicitudInscripcionComponent implements OnInit {
     constructor() {}
 
     ngOnInit() {
-        console.log('')
+        this.breadCrumbItems = [
+            { label: 'Aula virtual' },
+            { label: 'Capacitaciones' },
+        ]
+        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
     }
     public columnasTabla: IColumn[] = [
         {

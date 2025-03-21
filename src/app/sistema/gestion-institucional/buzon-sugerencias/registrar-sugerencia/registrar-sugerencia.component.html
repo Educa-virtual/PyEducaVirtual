@@ -8,14 +8,17 @@
                     optionLabel="nombre"
                     optionValue="id"
                     [showClear]="true"
+                    display="chip"
                     [filter]="true"
                     [appendTo]="'body'"
+                    [style]="{ flex: '1', width: '100%' }"
                 />
                 <label for="iDestinoId">Destino</label>
             </span>
         </div>
         <div class="field col-12 md:col-6">
-            <span class="p-float-label">
+            <p-inputGroup>
+                <p-inputGroupAddon>Prioridad *</p-inputGroupAddon>
                 <p-dropdown
                     [options]="prioridades"
                     formControlName="iPrioridadId"
@@ -26,14 +29,13 @@
                     [filter]="true"
                     [appendTo]="'body'"
                 />
-                <label for="iPrioridadId">Prioridad *</label>
-            </span>
+            </p-inputGroup>
         </div>
         <div class="field col-12">
-            <span class="p-float-label">
+            <p-inputGroup>
+                <p-inputGroupAddon>Asunto *</p-inputGroupAddon>
                 <input pInputText type="text" formControlName="cAsunto" />
-                <label for="cAsunto">Asunto *</label>
-            </span>
+            </p-inputGroup>
         </div>
         <div class="field col-12">
             <p-editor
@@ -83,7 +85,7 @@
                     chooseLabel="Seleccione hasta 3 archivos (max. 10 MB)"
                     cancelLabel="Quitar archivos"
                     fileLimit="3"
-                    maxFileSize="10240"
+                    maxFileSize="10240000"
                 >
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">

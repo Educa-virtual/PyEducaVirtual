@@ -183,7 +183,7 @@
     [contentStyle]="{ overflow: 'auto' }"
 >
     <ng-content>
-        <app-derivar-sugerencia></app-derivar-sugerencia>
+        <app-derivar-sugerencia (es_visible)="derivacionVisible($event)" />
     </ng-content>
 </p-dialog>
 <p-toast></p-toast>

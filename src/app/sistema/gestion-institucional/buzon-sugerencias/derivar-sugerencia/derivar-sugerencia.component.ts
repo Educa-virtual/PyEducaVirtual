@@ -3,7 +3,14 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    inject,
+    Input,
+    OnInit,
+    Output,
+    EventEmitter,
+} from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirSugerenciaService } from '../services/compartir-sugerencia.service'
 import { MessageService } from 'primeng/api'
@@ -18,6 +25,7 @@ import { MessageService } from 'primeng/api'
 export class DerivarSugerenciaComponent implements OnInit {
     @Input() item: any
     @Input() disable: boolean
+    @Output() es_visible = new EventEmitter<any>()
 
     form: FormGroup
     disable_form: boolean = false
@@ -97,10 +105,11 @@ export class DerivarSugerenciaComponent implements OnInit {
         this.form.reset()
         this.derivaciones = []
         this.form.get('iSugerenciaId')?.setValue(null)
+        this.es_visible.emit(false)
     }
 
     actualizarDerivacion() {
-        console.log('Actualizando derivación...')
+        console.log('Actualizando derivación...', this.form.value)
     }
 
     accionBtnItemTable({ accion, item }) {

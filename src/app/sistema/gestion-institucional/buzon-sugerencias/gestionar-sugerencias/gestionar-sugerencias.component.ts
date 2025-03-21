@@ -66,6 +66,11 @@ export class GestionarSugerenciasComponent implements OnInit {
         this.buscarSugerencias()
     }
 
+    derivacionVisible(event: any) {
+        console.log(event, 'evento')
+        return (this.derivar_visible = event.value)
+    }
+
     /**
      * Buscar sugerencias segun criterios de busqueda
      */

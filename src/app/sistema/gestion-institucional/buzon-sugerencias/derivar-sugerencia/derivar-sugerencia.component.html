@@ -3,28 +3,30 @@
 <p-fieldset legend="Registrar derivación">
     <form [formGroup]="form" class="mt-3">
         <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Destino *</p-inputGroupAddon>
                     <p-multiSelect
                         [options]="destinos"
                         formControlName="iDestinoId"
                         [showClear]="true"
                         [filter]="true"
+                        display="chip"
                         [showToggleAll]="false"
                         [appendTo]="'body'"
                         (onChange)="marcarDestinos($event)"
+                        [style]="{ flex: '1', width: '100%' }"
                     />
-                    <label for="iDestinoId">Destino</label>
-                </span>
+                </p-inputGroup>
             </div>
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Proveído *</p-inputGroupAddon>
                     <input pInputText type="text" formControlName="cProveido" />
-                    <label for="cProveido">Proveído *</label>
-                </span>
+                </p-inputGroup>
             </div>
             @if (disable_form) {
-                <div class="field col-12">
+                <div class="col-12">
                     <a
                         href="#"
                         class="p-button-link p-button-text mr-2"
@@ -57,7 +59,7 @@
                     </a>
                 </div>
             } @else {
-                <div class="field col-12">
+                <div class="col-12">
                     <p-fileUpload
                         name="demo[]"
                         showUploadButton="false"
@@ -65,7 +67,7 @@
                         chooseLabel="Seleccione hasta 3 archivos (max. 10 MB)"
                         cancelLabel="Quitar archivos"
                         fileLimit="3"
-                        maxFileSize="10240"
+                        maxFileSize="10240000"
                     >
                         <ng-template pTemplate="content">
                             <ul *ngIf="uploadedFiles.length">

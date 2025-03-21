@@ -100,14 +100,14 @@
         <p-button
             label="Guardar"
             (onClick)="guardarSugerencia()"
-            styleClass="p-button-primary"
+            severity="success"
             [disabled]="form.invalid"
             [hidden]="sugerencia_registrada"
         />
         <p-button
             label="Actualizar"
             (onClick)="actualizarSugerencia()"
-            styleClass="p-button-primary"
+            severity="success"
             [disabled]="form.invalid"
             [hidden]="!sugerencia_registrada"
         />

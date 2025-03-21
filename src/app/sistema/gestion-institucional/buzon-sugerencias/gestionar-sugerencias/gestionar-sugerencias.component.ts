@@ -9,11 +9,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { DatosSugerenciaService } from '../../services/datos.sugerencia.service'
 import { Router } from '@angular/router'
+import { DerivarSugerenciaComponent } from '../derivar-sugerencia/derivar-sugerencia.component'
 
 @Component({
     selector: 'app-gestionar-sugerencias',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [PrimengModule, TablePrimengComponent, DerivarSugerenciaComponent],
     templateUrl: './gestionar-sugerencias.component.html',
     styleUrl: './gestionar-sugerencias.component.scss',
 })
@@ -23,9 +24,10 @@ export class GestionarSugerenciasComponent implements OnInit {
     iSedeId: number
     iYAcadId: number
 
-    visible: boolean = false //mostrar dialogo
-    caption: string = '' // titulo o cabecera de dialogo
-    c_accion: string //valos de las acciones
+    registrar_visible: boolean = false
+    derivar_visible: boolean = false
+    caption: string = ''
+    c_accion: string
 
     sugerencias: any[]
     sugerencia_registrada: boolean = false
@@ -143,7 +145,7 @@ export class GestionarSugerenciasComponent implements OnInit {
     agregarSugerencia() {
         this.dialog_header = 'Registrar sugerencia'
         this.disable_form = false
-        this.visible = true
+        this.registrar_visible = true
         this.resetearInputs()
         this.disableForm(false)
     }
@@ -163,7 +165,7 @@ export class GestionarSugerenciasComponent implements OnInit {
                         detail: 'Estudiante registrado',
                     })
                     console.log(data, 'agregar estudiante')
-                    this.visible = false
+                    this.registrar_visible = false
                 },
                 error: (error) => {
                     console.error('Error guardando estudiante:', error)
@@ -226,7 +228,7 @@ export class GestionarSugerenciasComponent implements OnInit {
         this.dialog_header = 'Editar sugerencia'
         this.disable_form = false
         this.setFormSugerencia(item)
-        this.visible = true
+        this.registrar_visible = true
     }
 
     /**
@@ -237,7 +239,7 @@ export class GestionarSugerenciasComponent implements OnInit {
         this.dialog_header = 'Ver sugerencia'
         this.disable_form = true
         this.setFormSugerencia(item)
-        this.visible = true
+        this.registrar_visible = true
         this.disableForm(true)
     }
 
@@ -312,7 +314,7 @@ export class GestionarSugerenciasComponent implements OnInit {
         this.form.get('cSugerencia')?.setValue(item.sugerencia)
         this.form.get('iDestinoId')?.setValue(item.destino_id)
         this.form.get('iPrioridadId')?.setValue(item.prioridad_id)
-        this.visible = true
+        this.registrar_visible = true
     }
 
     onUpload(event: any) {
@@ -336,6 +338,9 @@ export class GestionarSugerenciasComponent implements OnInit {
                 '/gestion-institucional/seguimiento-sugerencia',
             ])
         }
+        if (accion === 'derivar') {
+            this.derivar_visible = true
+        }
         if (accion === 'anular') {
             this.eliminarSugerencia(item)
         }
@@ -349,11 +354,14 @@ export class GestionarSugerenciasComponent implements OnInit {
      */
     actions: IActionTable[] = [
         {
-            labelTooltip: 'Ver sugerencia',
-            icon: 'pi pi-eye',
-            accion: 'ver',
+            labelTooltip: 'Derivar',
+            icon: 'pi pi-send',
+            accion: 'derivar',
             type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
+            class: 'p-button-rounded p-button-success p-button-text',
+            isVisible: (row) => {
+                return row.estado_id === 1
+            },
         },
         {
             labelTooltip: 'Anular sugerencia',
@@ -364,6 +372,13 @@ export class GestionarSugerenciasComponent implements OnInit {
             isVisible: (row) => {
                 return row.estado_id === 1 && 2 == this.perfil.iCredId
             },
+        },
+        {
+            labelTooltip: 'Ver sugerencia',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
             labelTooltip: 'Seguimiento',

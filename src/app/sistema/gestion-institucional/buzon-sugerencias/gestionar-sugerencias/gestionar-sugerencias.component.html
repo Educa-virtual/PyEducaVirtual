@@ -43,7 +43,7 @@
 
 <p-dialog
     [header]="dialog_header"
-    [(visible)]="visible"
+    [(visible)]="registrar_visible"
     [style]="{ width: '56rem' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
@@ -173,6 +173,17 @@
                 />
             </div>
         </form>
+    </ng-content>
+</p-dialog>
+<p-dialog
+    header="Registrar derivación"
+    [(visible)]="derivar_visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <ng-content>
+        <app-derivar-sugerencia></app-derivar-sugerencia>
     </ng-content>
 </p-dialog>
 <p-toast></p-toast>

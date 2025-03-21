@@ -8,31 +8,21 @@
     </ng-template>
     <ng-template pTemplate="icons" class="flex flex-column flex-1">
         <div class="flex flex-wrap gap-2 justify-content-end">
-            <button
-                size="small"
-                [rounded]="true"
-                pButton
-                pTooltip="Regresar"
-                tooltipPosition="top"
-                (click)="salir()"
-                class="p-button-secondary"
-            >
-                <i class="pi pi-arrow-left"></i>
-                <span class="ml-2 hidden sm:block">Regresar</span>
-            </button>
-            <button
-                size="small"
-                [rounded]="true"
-                pButton
-                pTooltip="Derivar"
-                tooltipPosition="top"
-                (click)="derivar()"
-                class="p-button-primary"
+            <p-button
+                pRipple
+                label="Regresar"
+                icon="pi pi-fw pi-arrow-left"
+                (onClick)="salir()"
+                severity="secondary"
+            />
+            <p-button
+                pRipple
+                label="Derivar"
+                icon="pi pi-fw pi-send"
+                (onClick)="derivar()"
+                severity="success"
                 *ngIf="!es_estudiante"
-            >
-                <i class="pi pi-send"></i>
-                <span class="ml-2 hidden sm:block">Derivar</span>
-            </button>
+            />
         </div>
     </ng-template>
     <app-table-primeng

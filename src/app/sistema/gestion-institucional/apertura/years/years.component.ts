@@ -163,10 +163,10 @@ export class YearsComponent implements OnInit {
 
     async navigateToRegistro() {
         console.log('Navegando')
-        this.router.navigate(['configuracion/configuracion/registro'])
+        this.router.navigate(['gestion-institucional/apertura/registro'])
     }
 
     navigateToResumen() {
-        this.router.navigate(['/configuracion/configuracion/registro'])
+        this.router.navigate(['/gestion-institucional/apertura/registro'])
     }
 }

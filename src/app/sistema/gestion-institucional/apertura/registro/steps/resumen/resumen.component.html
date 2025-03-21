@@ -38,29 +38,30 @@
             [data]="resumenInformation.formasAtencion"
         >
         </app-table-primeng>
-        
+
         <h6>Información del periodo académico</h6>
-        @for (periodo of resumenInformation.periodosAcademicos; track periodo.iFaseId) {
+        @for (
+            periodo of resumenInformation.periodosAcademicos;
+            track periodo.iFaseId
+        ) {
             <div class="flex justify-content-between">
                 <div>
                     <span>Periodo académico:</span>
-                    <span>{{periodo.cFasePromNombre}}</span>
+                    <span>{{ periodo.cFasePromNombre }}</span>
                 </div>
                 <div>
                     <span>Ciclo académico:</span>
-                    <span>{{periodo.cPeriodoEvalNombre}}</span>
+                    <span>{{ periodo.cPeriodoEvalNombre }}</span>
                 </div>
             </div>
             <app-table-primeng
-            [showCaption]="false"
-            [columnas]="columnsPeriodosAcademicos"
-            [showPaginator]="false"
-            [data]="periodo.periodosEvalForm"
-        >
+                [showCaption]="false"
+                [columnas]="columnsPeriodosAcademicos"
+                [showPaginator]="false"
+                [data]="periodo.periodosEvalForm"
+            >
             </app-table-primeng>
         }
-        
-
     </div>
 
     <div class="navigator flex justify-content-between">

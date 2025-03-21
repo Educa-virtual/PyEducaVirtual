@@ -80,7 +80,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
     ]
 
     navigateToYears() {
-        this.router.navigate(['configuracion/configuracion/years']) // Navega a YearsComponent
+        this.router.navigate(['gestion-institucional/apertura']) // Navega a YearsComponent
     }
 
     ngOnDestroy() {

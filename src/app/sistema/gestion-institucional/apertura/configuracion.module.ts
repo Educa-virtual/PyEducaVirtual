@@ -87,13 +87,8 @@ import { StepGuardService } from '@/app/servicios/step.guard'
                         component: ResumenComponent,
                         children: [{ path: '', component: ResumenComponent }],
                     },
-                    {
-                        path: 'years',
-                        component: YearsComponent,
-                        children: [{ path: '', component: YearsComponent }],
-                    },
 
-                    { path: '', redirectTo: 'years', pathMatch: 'full' },
+                    { path: '', component: YearsComponent, pathMatch: 'full' },
                 ],
             },
         ]),

@@ -89,7 +89,7 @@ export class PeriodosAcademicosComponent implements OnInit {
 
     async ngOnInit() {
         if (!this.ticketService.registroInformation) {
-            this.router.navigate(['configuracion/configuracion/years'])
+            this.router.navigate(['gestion-institucional/apertura/years'])
 
             return
         }
@@ -185,11 +185,13 @@ export class PeriodosAcademicosComponent implements OnInit {
     }
 
     nextPage() {
-        this.router.navigate(['configuracion/configuracion/registro/resumen'])
+        this.router.navigate([
+            'gestion-institucional/apertura/registro/resumen',
+        ])
     }
 
     prevPage() {
-        this.router.navigate(['configuracion/configuracion/registro/turnos'])
+        this.router.navigate(['gestion-institucional/apertura/registro/turnos'])
     }
 
     async saveInformation() {

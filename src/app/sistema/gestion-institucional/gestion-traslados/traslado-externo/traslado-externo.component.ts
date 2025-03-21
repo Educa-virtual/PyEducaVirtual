@@ -271,7 +271,7 @@ export class TrasladoExternoComponent implements OnInit {
                             cIieeCodigoModular: m.cIieeCodigoModular,
                             iNivelGradoId: m.iNivelGradoId,
                             iTipoSectorId: m.iTipoSectorId,
-                            iJuridUgelId: m.iJuridUgelId,
+                            //   iJuridUgelId: m.iJuridUgelId,
                             iNivelTipoId: m.iNivelTipoId,
                             cIieeRUC: m.cIieeRUC,
                             iIieeId: m.iIieeId,

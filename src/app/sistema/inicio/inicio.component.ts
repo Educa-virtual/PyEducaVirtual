@@ -1,44 +1,37 @@
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { Component, OnInit } from '@angular/core'
-import { DialogModule } from 'primeng/dialog'
-import { DropdownModule } from 'primeng/dropdown'
-import { DataViewModule } from 'primeng/dataview'
-import { OrderListModule } from 'primeng/orderlist'
 import { CommonModule } from '@angular/common'
+import { PrimengModule } from '@/app/primeng.module'
 import { Router } from '@angular/router'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { GeneralService } from '@/app/servicios/general.service'
-import { ButtonModule } from 'primeng/button'
-import { AccordionModule } from 'primeng/accordion'
 @Component({
     selector: 'app-inicio',
     standalone: true,
     templateUrl: './inicio.component.html',
     styleUrl: './inicio.component.scss',
-    imports: [
-        DialogModule,
-        CommonModule,
-        OrderListModule,
-        DropdownModule,
-        DataViewModule,
-        ButtonModule,
-        AccordionModule,
-    ],
+    imports: [CommonModule, PrimengModule],
 })
 export class InicioComponent implements OnInit {
+    visible = false
     name: string
     name1: string
     primerNombre: string = ''
     perfiles: any[] = []
     modalPerfiles: boolean = false
     perfilSeleccionado: any = {}
-
+    iYAcadId: string
+    iSedeId: string
     // Variables para el diálogo de comunicado
     displayComunicado: boolean = false
     comunicado: any = null
     comunicados: any[] = []
 
+    products: any = undefined
+    responsiveOptions: any[] | undefined
+    titulo = ''
+    descripcion = ''
     constructor(
         private ConstantesService: ConstantesService,
         private ls: LocalStoreService,
@@ -46,6 +39,25 @@ export class InicioComponent implements OnInit {
         private router: Router,
         private generalService: GeneralService
     ) {
+        this.iYAcadId = this.ConstantesService.iYAcadId
+        this.iSedeId = this.ConstantesService.iSedeId
+        this.responsiveOptions = [
+            {
+                breakpoint: '1199px',
+                numVisible: 1,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '991px',
+                numVisible: 2,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '767px',
+                numVisible: 1,
+                numScroll: 1,
+            },
+        ]
         this.name = this.ConstantesService.nombres
         this.name1 = this.ConstantesService.nombre
         if (!this.ConstantesService.verificado) {
@@ -91,6 +103,7 @@ export class InicioComponent implements OnInit {
     }
 
     cargarComunicadosDestino(): void {
+        const perfil = this.perfiles.map((item) => item.iPerfilId) // Se filtran los id de los perfiles
         const params = {
             petition: 'post',
             group: 'com',
@@ -98,12 +111,15 @@ export class InicioComponent implements OnInit {
             ruta: 'obtener_comunicados_destino', // Ruta definida en el backend
             data: {
                 iPersId: this.getUserId(), // Se obtiene el ID del usuario
+                iYAcadId: this.iYAcadId,
+                perfil: perfil,
+                iSedeId: this.iSedeId,
             },
         }
-        console.table(params)
+
         this.generalService.getGralPrefix(params).subscribe({
             next: (response: any) => {
-                if (response && response.data && response.data.length > 0) {
+                if (response && response.data && response.data?.length > 0) {
                     // Asigna el array completo de comunicados
                     this.comunicados = response.data
                     this.displayComunicado = true
@@ -119,5 +135,36 @@ export class InicioComponent implements OnInit {
     getUserId(): number {
         const info = this.ls.getItem('dremoUser')
         return info?.iPersId || 0
+    }
+
+    showModal(titulo: string, descripcion: string): void {
+        this.visible = true
+        this.titulo = titulo
+        this.descripcion = descripcion
+    }
+    onKeyDown(event: KeyboardEvent) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            return // este evento es solo para quitar el modo estricto de typescript
+        }
+    }
+
+    onKeyUp(event: KeyboardEvent) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            return // este evento es solo para quitar el modo estricto de typescript
+        }
+    }
+    obtenerEstado(estado: string) {
+        switch (estado) {
+            case '1':
+                return 'info'
+            case '2':
+                return 'success'
+            case '3':
+                return 'warning'
+            case '4':
+                return 'danger'
+            default:
+                return 'secondary'
+        }
     }
 }

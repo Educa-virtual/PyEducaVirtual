@@ -92,6 +92,7 @@
     background-color: #f0f0f0 !important; // gris claro
 }
 :host ::ng-deep .row-with-wrap {
+    margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem; /* separa los items horizontal y verticalmente */

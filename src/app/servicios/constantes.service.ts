@@ -88,6 +88,11 @@ const docente = [
                         icon: 'pi pi-book',
                         routerLink: ['/aula-virtual/capacitate-docente'],
                     },
+                    {
+                        label: 'Mis Áreas Curriculares',
+                        icon: 'pi pi-book',
+                        routerLink: ['/aula-virtual/'],
+                    },
                 ],
             },
             {

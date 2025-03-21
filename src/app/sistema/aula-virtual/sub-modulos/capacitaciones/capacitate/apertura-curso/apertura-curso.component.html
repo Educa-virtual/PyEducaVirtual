@@ -33,7 +33,7 @@
                                 >Tipo de Capacitación:</p-inputGroupAddon
                             >
                             <p-dropdown
-                                id="modalidad"
+                                styleClass="w-full"
                                 formControlName="capacitacion"
                                 placeholder="Seleccione el tipo"
                             ></p-dropdown>
@@ -43,13 +43,31 @@
                     <div class="col">
                         <p-inputGroup>
                             <p-inputGroupAddon>Título: </p-inputGroupAddon>
+
                             <input
                                 type="text"
                                 pInputText
                                 placeholder="Ingresar nombre...."
                                 formControlName="titulo"
+                                [ngClass]="{
+                                    'p-invalid':
+                                        formNuevaCapacitacion.get('titulo')
+                                            ?.invalid &&
+                                        formNuevaCapacitacion.get('titulo')
+                                            ?.touched,
+                                }"
                             />
                         </p-inputGroup>
+                        <!-- Mensaje de error -->
+                        <small
+                            class="p-error"
+                            *ngIf="
+                                formNuevaCapacitacion.get('titulo')?.invalid &&
+                                formNuevaCapacitacion.get('titulo')?.touched
+                            "
+                        >
+                            El título es obligatorio.
+                        </small>
                     </div>
 
                     <!-- select p-dropdown -->
@@ -58,13 +76,12 @@
                             <div class="col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Tipo de
-                                        Capacitación:</p-inputGroupAddon
+                                        >Nivel Educativo:</p-inputGroupAddon
                                     >
                                     <p-dropdown
-                                        id="modalidad"
-                                        formControlName="capacitacion"
-                                        placeholder="Seleccione el tipo"
+                                        styleClass="w-full"
+                                        formControlName="nivelEducativo"
+                                        placeholder="Seleccione Nivel"
                                     ></p-dropdown>
                                     <!-- id="modalidad" [options]="modalidades" -->
                                 </p-inputGroup>
@@ -72,13 +89,12 @@
                             <div class="col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Tipo de
-                                        Capacitación:</p-inputGroupAddon
+                                        >Dirigido para:</p-inputGroupAddon
                                     >
                                     <p-dropdown
-                                        id="modalidad"
-                                        formControlName="capacitacion"
-                                        placeholder="Seleccione el tipo"
+                                        styleClass="w-full"
+                                        formControlName="dirigidoPa"
+                                        placeholder="Seleccione Publico"
                                     ></p-dropdown>
                                     <!-- id="modalidad" [options]="modalidades" -->
                                 </p-inputGroup>
@@ -102,7 +118,7 @@
                                         rows="4"
                                         placeholder="Escribe una Descripción"
                                         pInputText
-                                        formControlName="cEvaluacionDescripcion"
+                                        formControlName="cDescripcion"
                                     ></textarea>
                                 </div>
                             </div>
@@ -116,13 +132,35 @@
                                     <p-inputGroupAddon
                                         >Total de horas:
                                     </p-inputGroupAddon>
-                                    <p-calendar
-                                        id="fechaFin"
-                                        formControlName="fecha"
-                                        styleClass="w-full"
-                                        dateFormat="dd/mm/yy"
-                                    ></p-calendar>
+                                    <input
+                                        type="number"
+                                        pInputText
+                                        min="1"
+                                        placeholder="0"
+                                        formControlName="hora"
+                                        [ngClass]="{
+                                            'p-invalid':
+                                                formNuevaCapacitacion.get(
+                                                    'hora'
+                                                )?.invalid &&
+                                                formNuevaCapacitacion.get(
+                                                    'hora'
+                                                )?.touched,
+                                        }"
+                                    />
                                 </p-inputGroup>
+                                <!-- Mensaje de error -->
+                                <small
+                                    class="p-error"
+                                    *ngIf="
+                                        formNuevaCapacitacion.get('hora')
+                                            ?.invalid &&
+                                        formNuevaCapacitacion.get('hora')
+                                            ?.touched
+                                    "
+                                >
+                                    El título es obligatorio.
+                                </small>
                             </div>
                             <div class="col-4">
                                 <p-inputGroup>
@@ -131,9 +169,12 @@
                                     >
                                     <p-calendar
                                         id="fechaFin"
-                                        formControlName="fecha"
+                                        formControlName="fechaIni"
                                         styleClass="w-full"
                                         dateFormat="dd/mm/yy"
+                                        [iconDisplay]="'input'"
+                                        [showIcon]="true"
+                                        inputId="icondisplay"
                                     ></p-calendar>
                                 </p-inputGroup>
                             </div>
@@ -144,9 +185,12 @@
                                     >
                                     <p-calendar
                                         id="fechaFin"
-                                        formControlName="fecha"
+                                        formControlName="fechaFin"
                                         styleClass="w-full"
                                         dateFormat="dd/mm/yy"
+                                        [iconDisplay]="'input'"
+                                        [showIcon]="true"
+                                        inputId="icondisplay"
                                     ></p-calendar>
                                 </p-inputGroup>
                             </div>
@@ -154,7 +198,7 @@
                     </div>
                     <div class="col">
                         <div class="grid">
-                            <div class="col-8">
+                            <div class="col-7">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
                                         >Instructor:
@@ -163,16 +207,32 @@
                                         type="text"
                                         pInputText
                                         placeholder="Nombre del Instructor"
-                                        formControlName="titulo"
+                                        formControlName="nompreProf"
                                     />
                                 </p-inputGroup>
                             </div>
-                            <div class="col-4 align-content-center">
+                            <div class="col align-content-center">
                                 <div class="flex">
                                     <label for="" class="pr-3"
                                         >¿Tiene Costo?</label
                                     >
-                                    <p-inputSwitch class="align-self-start" />
+                                    <div class="align-content-center">
+                                        <p-inputSwitch
+                                            formControlName="iPago"
+                                            class="pr-3"
+                                        />
+                                    </div>
+                                    <!-- Input visible solo si iPago está activado -->
+                                    <input
+                                        *ngIf="
+                                            formNuevaCapacitacion.get('iPago')
+                                                ?.value
+                                        "
+                                        type="text"
+                                        formControlName="montoPago"
+                                        placeholder="S/."
+                                        class="p-inputtext p-component w-10rem"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -216,6 +276,7 @@
                                 icon="pi pi-check-circle"
                                 label="Crear"
                                 severity="success"
+                                (click)="crearCurso()"
                             />
                         </div>
                     </div>

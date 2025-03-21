@@ -10,11 +10,17 @@ import { MessageService } from 'primeng/api'
 import { DatosSugerenciaService } from '../../services/datos.sugerencia.service'
 import { Router } from '@angular/router'
 import { DerivarSugerenciaComponent } from '../derivar-sugerencia/derivar-sugerencia.component'
+import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-sugerencia.component'
 
 @Component({
     selector: 'app-gestionar-sugerencias',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent, DerivarSugerenciaComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        DerivarSugerenciaComponent,
+        RegistrarSugerenciaComponent,
+    ],
     templateUrl: './gestionar-sugerencias.component.html',
     styleUrl: './gestionar-sugerencias.component.scss',
 })
@@ -66,8 +72,11 @@ export class GestionarSugerenciasComponent implements OnInit {
         this.buscarSugerencias()
     }
 
+    registroVisible(event: any) {
+        return (this.registrar_visible = event.value)
+    }
+
     derivacionVisible(event: any) {
-        console.log(event, 'evento')
         return (this.derivar_visible = event.value)
     }
 

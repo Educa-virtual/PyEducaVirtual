@@ -1,7 +1,8 @@
 <form [formGroup]="form">
     <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-6">
-            <span class="p-float-label">
+        <div class="field col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>Destino *</p-inputGroupAddon>
                 <p-multiSelect
                     [options]="destinos"
                     formControlName="iDestinoId"
@@ -10,13 +11,20 @@
                     [showClear]="true"
                     display="chip"
                     [filter]="true"
+                    [maxSelectedLabels]="undefined"
+                    [showToggleAll]="false"
                     [appendTo]="'body'"
                     [style]="{ flex: '1', width: '100%' }"
                 />
-                <label for="iDestinoId">Destino</label>
-            </span>
+            </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-6">
+        <div class="field col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Asunto *</p-inputGroupAddon>
+                <input pInputText type="text" formControlName="cAsunto" />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-4">
             <p-inputGroup>
                 <p-inputGroupAddon>Prioridad *</p-inputGroupAddon>
                 <p-dropdown
@@ -28,13 +36,8 @@
                     [showClear]="true"
                     [filter]="true"
                     [appendTo]="'body'"
+                    [style]="{ flex: '1', width: '100%' }"
                 />
-            </p-inputGroup>
-        </div>
-        <div class="field col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon>Asunto *</p-inputGroupAddon>
-                <input pInputText type="text" formControlName="cAsunto" />
             </p-inputGroup>
         </div>
         <div class="field col-12">

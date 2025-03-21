@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, Output, EventEmitter } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirSugerenciaService } from '../services/compartir-sugerencia.service'
 
@@ -11,6 +11,7 @@ import { CompartirSugerenciaService } from '../services/compartir-sugerencia.ser
     styleUrl: './registrar-sugerencia.component.scss',
 })
 export class RegistrarSugerenciaComponent implements OnInit {
+    @Output() es_visible = new EventEmitter<any>()
     form: FormGroup
     disable_form: boolean = false
     uploadedFiles: any[] = []
@@ -48,7 +49,7 @@ export class RegistrarSugerenciaComponent implements OnInit {
 
     guardarSugerencia() {
         this.disable_form = true
-        // this.compartirSugerenciaService.setiSugerenciaId()
+        this.es_visible.emit(false)
     }
 
     actualizarSugerencia() {

@@ -22,4 +22,5 @@ export interface ICurso {
     dtExamenFechaFin?: string
     iExamenCantidadPreguntas?: string
     iEvaluacionIdHashed?: string
+    iCursoNivelGradId?: string
 }

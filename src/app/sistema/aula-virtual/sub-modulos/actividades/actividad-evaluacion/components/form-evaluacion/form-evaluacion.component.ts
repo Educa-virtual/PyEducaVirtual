@@ -226,7 +226,13 @@ export class FormEvaluacionComponent implements OnChanges {
             })
             .subscribe({
                 next: (data) => {
-                    this.formEvaluacion.patchValue(data)
+                    if (Array.isArray(data) && data.length > 0) {
+                        this.formEvaluacion.patchValue(data[0])
+                    } else {
+                        console.warn(
+                            ' No se encontraron datos para asignar al formulario.'
+                        )
+                    }
                     //console.log(typeof this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
                     this.filesUrl =
                         this.formEvaluacion.value.cEvaluacionArchivoAdjunto

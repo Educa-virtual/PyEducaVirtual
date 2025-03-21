@@ -49,6 +49,7 @@
     [style]="{ width: '56rem' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
     (onHide)="resetearInputs()"
 >
     <ng-content>
@@ -62,6 +63,7 @@
     [(visible)]="derivar_visible"
     [style]="{ width: '56rem' }"
     [modal]="true"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
     [contentStyle]="{ overflow: 'auto' }"
 >
     <ng-content>

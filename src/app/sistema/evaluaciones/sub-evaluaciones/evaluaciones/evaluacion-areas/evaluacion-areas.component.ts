@@ -179,6 +179,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     next: (resp: any) => {
                         // Crear un mapa con los cursos seleccionados
 
+                        console.log('iprimiendo resp.cursos', resp.cursos)
+
                         this.data = resp.cursos
                         const cursosSeleccionados: Map<number, boolean> =
                             new Map(
@@ -188,6 +190,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                     curso.dtExamenFechaInicio,
                                 ])
                             )
+                        console.log('probando cursos sele', cursosSeleccionados)
 
                         // Limpia la lista para evitar datos residuales
                         this.lista.forEach((nivel: any) => {
@@ -199,34 +202,45 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                             })
                         })
 
+                        console.log('probando lista residual', this.lista)
+
                         // Actualizar con los nuevos datos
                         this.lista.forEach((nivel: any) => {
                             Object.keys(nivel.grados).forEach((grado) => {
                                 nivel.grados[grado].forEach((curso: any) => {
                                     // Si el curso está en el mapa, actualizamos su estado
+                                    console.log('probando curso', this.cursos)
+
+                                    console.log('probando this.data', this.data)
+
                                     curso.isSelected =
                                         cursosSeleccionados.get(
                                             curso.iCursoNivelGradId
                                         ) || false
                                     curso.dtExamenFechaInicio = this.data.find(
                                         (i) =>
-                                            i.iCursosNivelGradId ===
+                                            i.iCursoNivelGradId ==
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaInicio
                                     curso.dtExamenFechaFin = this.data.find(
                                         (i) =>
-                                            i.iCursosNivelGradId ===
+                                            i.iCursoNivelGradId ===
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaFin
                                     curso.iExamenCantidadPreguntas =
                                         this.data.find(
                                             (i) =>
-                                                i.iCursosNivelGradId ===
+                                                i.iCursoNivelGradId ===
                                                 curso.iCursoNivelGradId
                                         )?.iExamenCantidadPreguntas
                                 })
                             })
                         })
+
+                        console.log(
+                            'imprimiendo actualizacion de lista',
+                            this.lista
+                        )
 
                         resolve(cursosSeleccionados)
                     },
@@ -257,6 +271,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }).subscribe({
             next: (data: any) => {
                 // Combinamos los datos
+
+                console.log('probando data ', data)
 
                 this.lista = [
                     ...this.extraerAsignatura(data.primaria.data),

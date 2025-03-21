@@ -9,7 +9,7 @@ import { RecoverPasswordComponent } from './shared/recover-password/recover-pass
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 
 export const routes: Routes = [
-    { path: '', component: InicioComponent },
+    { path: 'inicio', component: InicioComponent },
     {
         path: '',
 

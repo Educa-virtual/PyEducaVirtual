@@ -2,16 +2,25 @@ import { Component, OnInit } from '@angular/core'
 import { PrimeNGConfig } from 'primeng/api'
 import { TokenStorageService } from './servicios/token.service'
 import { Router, RouterOutlet } from '@angular/router'
-import { AppLayoutComponent } from './layout/app.layout.component'
 import { ConstantesService } from './servicios/constantes.service'
 import { LocalStoreService } from './servicios/local-store.service'
 import localEs from 'primelocale/es.json'
+import { HeaderComponent } from './shared/components/header/header.component'
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
+import { GlobalLoaderComponent } from './shared/interceptors/global-loader/global-loader.component'
+import { BreadcrumbPrimengComponent } from './shared/breadcrumb-primeng/breadcrumb-primeng.component'
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     standalone: true,
-    imports: [RouterOutlet, AppLayoutComponent],
+    imports: [
+        RouterOutlet,
+        HeaderComponent,
+        SidebarComponent,
+        GlobalLoaderComponent,
+        BreadcrumbPrimengComponent,
+    ],
 })
 export class AppComponent implements OnInit {
     isLoggedIn: boolean = false

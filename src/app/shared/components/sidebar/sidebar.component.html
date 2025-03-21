@@ -1,0 +1,81 @@
+<div class="nav" id="navbar" [class.show-menu]="isSidebarOpen">
+    <nav class="nav__container">
+        <div>
+            <a [routerLink]="'inicio'" class="nav__logo">
+                <span class="mx-auto">
+                    <img
+                        style="width: 7rem"
+                        src="assets/images/logo-plataforma-virtual.png"
+                        alt="logo"
+                    />
+                </span>
+            </a>
+
+            <div class="nav__list mt-6">
+                <div class="nav__items">
+                    <div *ngFor="let item of menu; let index = index">
+                        @if (!item.items) {
+                            <a
+                                [routerLink]="item.routerLink"
+                                class="nav__link"
+                                (click)="closeSidebar()"
+                                [ngClass]="{
+                                    active: isActive(item.routerLink),
+                                }"
+                            >
+                                <i class="{{ item.icon }}"></i>
+                                <span class="nav__name">{{ item.label }}</span>
+                            </a>
+                        } @else {
+                            <div class="nav__dropdown">
+                                <a class="nav__link">
+                                    <i class="{{ item.icon }}"></i>
+                                    <span class="nav__name">{{
+                                        item.label
+                                    }}</span>
+                                    <i
+                                        class="pi pi-angle-down nav__icon nav__dropdown-icon"
+                                    ></i>
+                                </a>
+
+                                <div class="nav__dropdown-collapse">
+                                    <div
+                                        class="nav__dropdown-content"
+                                        *ngFor="let sub of item.items"
+                                    >
+                                        <a
+                                            [routerLink]="sub.routerLink"
+                                            class="nav__dropdown-item"
+                                            (click)="closeSidebar()"
+                                            [ngClass]="{
+                                                active: isActiveS(
+                                                    sub.routerLink
+                                                ),
+                                            }"
+                                        >
+                                            <span class="nav__name">{{
+                                                sub.label
+                                            }}</span></a
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a
+            tabindex="0"
+            role="button"
+            (click)="logout()"
+            (keyup)="logout()"
+            class="nav__link nav__logout"
+            style="cursor: pointer"
+        >
+            <i class="pi pi-sign-out"></i>
+            <span class="nav__name">Salir Sesión</span>
+        </a>
+    </nav>
+</div>

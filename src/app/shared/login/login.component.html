@@ -3,78 +3,74 @@
         <img src="assets/images/logins.svg" alt="logo" width="100%" />
     </div>
     <div class="login__form">
-        <div class="p-4">
-            <div class="login_card">
-                <div class="p-4 border-1 border-round-2xl border-gray-300">
-                    <div class="text-center">
-                        <h4 class="text-center mb-4 text-danger">
-                            <b>Dirección Regional de Educación Moquegua</b>
-                        </h4>
-                        <img
-                            src="assets/images/dremo.png"
-                            alt="logo"
-                            class="logo_dremo"
+        <div class="login_card">
+            <div class="p-4 border-1 border-round-2xl border-gray-300">
+                <div class="text-center">
+                    <h4 class="text-center mb-4 text-danger">
+                        <b>Dirección Regional de Educación Moquegua</b>
+                    </h4>
+                    <img
+                        src="assets/images/dremo.png"
+                        alt="logo"
+                        class="logo_dremo"
+                    />
+                </div>
+                <!-- <h5 class="text-center"><b>Proyecto Virtual</b></h5> -->
+                <h5 class="text-center text-primary">Iniciar Sesión</h5>
+                <form class="flex flex-column" [formGroup]="formLogin">
+                    <div class="mb-3 flex flex-column gap-2">
+                        <label for="usuario">Usuario</label>
+                        <input
+                            type="text"
+                            pInputText
+                            placeholder="Ingresar su Usuario"
+                            name="usuario"
+                            formControlName="user"
                         />
                     </div>
-                    <!-- <h5 class="text-center"><b>Proyecto Virtual</b></h5> -->
-                    <h5 class="text-center text-primary">Iniciar Sesión</h5>
-                    <form class="flex flex-column" [formGroup]="formLogin">
-                        <div class="mb-3 flex flex-column gap-2">
-                            <label for="usuario">Usuario</label>
-                            <input
-                                type="text"
-                                pInputText
-                                placeholder="Ingresar su Usuario"
-                                name="usuario"
-                                formControlName="user"
-                            />
-                        </div>
 
-                        <div class="mb-5 flex flex-column gap-2">
-                            <label for="clave">Contraseña</label>
-                            <div class="flex">
-                                <input
-                                    pInputText
-                                    [type]="!showPassword ? 'password' : 'text'"
-                                    class="flex-1 border-noround-right w-full"
-                                    [placeholder]="
-                                        !showPassword ? '********' : ''
-                                    "
-                                    formControlName="pass"
-                                />
-                                <button
-                                    class="p-button-outlined p-button-secondary border-noround-left"
-                                    type="button"
-                                    pButton
-                                    (click)="showPassword = !showPassword"
-                                >
-                                    @if (showPassword) {
-                                        <i class="pi pi-eye"></i>
-                                    } @else {
-                                        <i class="pi pi-eye-slash"></i>
-                                    }
-                                </button>
-                            </div>
-                        </div>
-                        <p class="small" align="center">
-                            <p-button
-                                class="text-primary"
-                                (onClick)="showModal = true"
-                                [text]="true"
-                                >¿Has olvidado tu contraseña? / ¿Contraseña
-                                vencida?</p-button
+                    <div class="mb-5 flex flex-column gap-2">
+                        <label for="clave">Contraseña</label>
+                        <div class="flex">
+                            <input
+                                pInputText
+                                [type]="!showPassword ? 'password' : 'text'"
+                                class="flex-1 border-noround-right w-full"
+                                [placeholder]="!showPassword ? '********' : ''"
+                                formControlName="pass"
+                            />
+                            <button
+                                class="p-button-outlined p-button-secondary border-noround-left"
+                                type="button"
+                                pButton
+                                (click)="showPassword = !showPassword"
                             >
-                        </p>
-                        <button
-                            pButton
-                            size="small"
-                            label="Iniciar Sesión"
-                            [loading]="loading"
-                            (click)="onSubmit()"
-                            [disabled]="this.formLogin.invalid"
-                        ></button>
-                    </form>
-                </div>
+                                @if (showPassword) {
+                                    <i class="pi pi-eye"></i>
+                                } @else {
+                                    <i class="pi pi-eye-slash"></i>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                    <p class="small" align="center">
+                        <p-button
+                            class="text-primary"
+                            (onClick)="showModal = true"
+                            [text]="true"
+                            >¿Has olvidado tu contraseña? / ¿Contraseña
+                            vencida?</p-button
+                        >
+                    </p>
+                    <button
+                        pButton
+                        size="small"
+                        label="Iniciar Sesión"
+                        [loading]="loading"
+                        (click)="onSubmit()"
+                        [disabled]="this.formLogin.invalid"
+                    ></button>
+                </form>
             </div>
         </div>
     </div>

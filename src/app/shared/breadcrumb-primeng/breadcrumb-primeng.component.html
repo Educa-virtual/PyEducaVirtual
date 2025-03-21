@@ -1,30 +1,20 @@
-<!-- @if (breadcrumbs.length) {
-    <div class="mb-1">
-        <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="home">
-            <ng-template pTemplate="item" let-item>
-                <ng-container *ngIf="item.route; else elseBlock">
-                    <a [routerLink]="item.route" class="p-breadcrumb-item-link">
-                        <i
-                            style="color: var(--primary-color)"
-                            [class]="item.icon"
-                        ></i>
-                        <span class="text-primary font-semibold ml-1">{{
-                            item.label
-                        }}</span>
-                    </a>
-                </ng-container>
-                <ng-template #elseBlock>
-                    <a [routerLink]="item.url">
-                        <span
-                            [ngClass]="[
-                                item.icon ? item.icon : '',
-                                'text-color',
-                            ]"
-                        ></span>
-                        <span class="text-color ml-1">{{ item.label }}</span>
-                    </a>
-                </ng-template>
+<div class="mb-1">
+    <p-breadcrumb class="max-w-full" [model]="breadcrumbs">
+        <ng-template pTemplate="item" let-item let-last="last">
+            <ng-container *ngIf="item.route; else elseBlock">
+                <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                    <i [class]="item.icon"></i>
+                    <span>
+                        {{ item.label }}
+                    </span>
+                </a>
+            </ng-container>
+            <ng-template #elseBlock>
+                <a [routerLink]="item.url">
+                    <i [class]="item.icon"></i>
+                    <span>{{ item.label }}</span>
+                </a>
             </ng-template>
-        </p-breadcrumb>
-    </div>
-} -->
+        </ng-template>
+    </p-breadcrumb>
+</div>

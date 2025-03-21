@@ -29,7 +29,7 @@ const iYAcadId = store.getItem('dremoiYAcadId')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
-    routerLink: [''],
+    routerLink: ['inicio'],
 }
 const docente = [
     {

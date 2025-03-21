@@ -1,7 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Component, inject, Input, OnInit } from '@angular/core'
-import { ConfirmationService, MessageService } from 'primeng/api'
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api'
 import { ProgressBarModule } from 'primeng/progressbar'
 import { RadioButtonModule } from 'primeng/radiobutton'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
@@ -57,6 +57,9 @@ export class RendirExamenComponent implements OnInit {
     seleccion: string | null = null
     backend = environment.backend
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     constructor(
         private store: LocalStoreService,
         private confirmationService: ConfirmationService
@@ -65,7 +68,32 @@ export class RendirExamenComponent implements OnInit {
     ngOnInit() {
         this.evaluacion = this.store.getItem('evaluacion')
         this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
-        //console.log(evaluacion.dtExamenFechaFin)
+        this.breadCrumbItems = [
+            {
+                label: 'Evaluación ERE',
+                routerLink: '/ere/evaluaciones/areas',
+            },
+            {
+                label: this.evaluacion.cEvaluacionNombre,
+            },
+            {
+                label:
+                    this.evaluacion.cGradoAbreviacion +
+                    ' ' +
+                    this.evaluacion.cCursoNombre +
+                    ' ' +
+                    this.evaluacion.cNivelTipoNombre,
+            },
+            {
+                label: 'Rendir',
+                routerLink: `/ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
+            },
+            { label: 'Iniciar evaluación' },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
+        }
         this.obtenerPreguntaxiEvaluacionId()
     }
     // meto de al seleccionar una opción

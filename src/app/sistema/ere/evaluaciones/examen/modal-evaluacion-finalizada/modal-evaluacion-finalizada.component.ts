@@ -26,7 +26,6 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
     }
 
     irEncuesta() {
-        console.log(this.grado)
         switch (this.grado) {
             case '2do.':
                 window.open(

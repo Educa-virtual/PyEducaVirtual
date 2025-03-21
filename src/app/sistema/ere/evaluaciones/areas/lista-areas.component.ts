@@ -121,7 +121,10 @@ export class ListaAreasComponent implements OnInit {
                     this.evaluacion = resp
                     this.breadCrumbItems = [
                         {
-                            label: 'Evaluaciones ERE',
+                            label: 'ERE',
+                        },
+                        {
+                            label: 'Evaluaciones',
                             routerLink: '/ere/evaluaciones',
                         },
                         {

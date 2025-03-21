@@ -28,7 +28,9 @@
 
 <p-dialog
     #dialogBancoPreguntas
-    header="Agregar hora de Publicación ERE:  {{ cEvaluacionNombre }} "
+    header="Asignar horas de inicio y fin a las áreas de ERE:  {{
+        cEvaluacionNombre
+    }} "
     [modal]="true"
     [(visible)]="showModalCursosEre"
     [position]="'top'"
@@ -37,7 +39,7 @@
 >
     @defer (when showModalCursosEre) {
         <br />
-        <div>Agregar hora de Publicación de las Areas Curriculares</div>
+        <!--<div>Agregar hora de Publicación de las Areas Curriculares</div>-->
         <div class="container" [formGroup]="form">
             <!-- "form" -->
             <!-- Card por cada nivel -->
@@ -68,10 +70,10 @@
                                                             grado.cGradoAbreviacion)
                                                 }}</span
                                             >
-                                            &nbsp;&nbsp; (
+                                            &nbsp;&nbsp; (Fecha de eval.:
                                             {{
                                                 curso.dtExamenFechaInicio
-                                                    | date: 'shortDate'
+                                                    | date: 'dd/MM/yy'
                                             }}
                                             )
                                         </span>
@@ -83,7 +85,7 @@
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
                                                     >Hora de
-                                                    Inicio</p-inputGroupAddon
+                                                    inicio</p-inputGroupAddon
                                                 >
                                                 <p-calendar
                                                     formControlName="{{
@@ -109,7 +111,7 @@
                                         <div class="col-6">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
-                                                    >Hora Fin</p-inputGroupAddon
+                                                    >Hora fin</p-inputGroupAddon
                                                 >
                                                 <p-calendar
                                                     formControlName="{{
@@ -140,7 +142,7 @@
         </div>
 
         <ng-template #noData>
-            <p>No hay cursos disponibles para mostrar.</p>
+            <p>No hay áreas disponibles para mostrar.</p>
         </ng-template>
     }
     <ng-template pTemplate="footer">

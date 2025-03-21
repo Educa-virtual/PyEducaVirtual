@@ -7,7 +7,7 @@ import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
-} from '../../../../shared/table-primeng/table-primeng.component'
+} from '@shared/table-primeng/table-primeng.component'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
 import { IActionContainer } from '@/app/shared/container-page/container-page.component'
@@ -111,7 +111,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     resetSelect: boolean = false
 
     ngOnInit() {
-        this.breadCrumbItems = [{ label: 'Evaluaciones ERE' }]
+        this.breadCrumbItems = [{ label: 'ERE' }, { label: 'Evaluaciones' }]
         this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
         this.obtenerEvaluacion()
         this.obtenerPerfil()
@@ -276,7 +276,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
         // Envía los datos al servicio para actualizar en la base de datos
         await this.apiservice.updateData(coincidencias)
-
+        this._MessageService.add({
+            severity: 'success',
+            //summary: 'Problema encontrado',
+            detail: 'Se han registrado las horas ingresadas.',
+        })
         this.visible = false
         this.showModalCursosEre = false
         this.form.reset()
@@ -413,7 +417,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
-            labelTooltip: 'Asignar horario de publicación',
+            labelTooltip: 'Asignar horas de inicio y fin a las áreas',
             icon: 'pi pi-clock',
             accion: 'fechaPublicacion',
             type: 'item',
@@ -421,7 +425,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             isVisible: () => this.iPerfilId === DIRECTOR_IE,
         },
         {
-            labelTooltip: 'Liberar Evaluación',
+            labelTooltip: 'Liberar evaluación',
             icon: 'pi pi-verified',
             accion: 'liberarUgelEvaluacion',
             type: 'item',
@@ -655,9 +659,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     // Manejo de errores
                     console.error('Error en obtenerEvaluacion:', err)
                 },
-                complete: () => {
-                    console.log('La función obtenerEvaluacion() ha finalizado.')
-                },
+                complete: () => {},
             })
     }
     agregarEditarPregunta(evaluacion) {

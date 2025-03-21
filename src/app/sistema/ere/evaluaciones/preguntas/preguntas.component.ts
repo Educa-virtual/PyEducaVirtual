@@ -489,7 +489,10 @@ export class PreguntasComponent implements OnInit {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradId':
                 this.breadCrumbItems = [
                     {
-                        label: 'Evaluaciones ERE',
+                        label: 'ERE',
+                    },
+                    {
+                        label: 'Evaluaciones',
                         routerLink: '/ere/evaluaciones',
                     },
                     {

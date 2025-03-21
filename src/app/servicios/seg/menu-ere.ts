@@ -4,11 +4,11 @@ const inicio = {
     routerLink: [''],
 }
 
-export const evaluacionesEre = {
+/*export const evaluacionesEre = {
     label: 'Evaluaciones ERE',
     icon: 'pi pi-fw pi-check-square',
     routerLink: ['/ere/evaluaciones'],
-}
+}*/
 
 export const reportesEre = {
     label: 'Reportes ERE',
@@ -25,7 +25,18 @@ export const administradorDremo = [
                 icon: 'pi pi-fw pi-sync',
                 routerLink: ['/evaluaciones'],
             },*/
-            evaluacionesEre,
+            {
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
+                items: [
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-list-check',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
+                ],
+            },
+
             {
                 label: 'Especialista DREMO',
                 icon: 'pi pi-user',
@@ -81,13 +92,23 @@ export const especialistaDremo = [
     {
         items: [
             inicio,
-            evaluacionesEre,
+            {
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
+                items: [
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-list-check',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
+                ],
+            },
             /*{
                 label: 'Banco de Preguntas',
                 icon: 'pi pi-fw pi-question-circle',
                 routerLink: ['/ere/banco-preguntas'],
             },*/
-            reportesEre,
+            //reportesEre,
             {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
@@ -101,7 +122,17 @@ export const especialistaUgel = [
     {
         items: [
             inicio,
-            evaluacionesEre,
+            {
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
+                items: [
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-list-check',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
+                ],
+            },
             reportesEre,
             {
                 label: 'Enlaces de ayuda',

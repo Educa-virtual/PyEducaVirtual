@@ -20,7 +20,7 @@ import {
     matListAlt,
     matAccessTime,
 } from '@ng-icons/material-icons/baseline'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
@@ -53,6 +53,8 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
     private _MessageService = inject(MessageService)
     private router = inject(Router)
     private _ChangeDetectorRef = inject(ChangeDetectorRef)
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
 
     constructor(private store: LocalStoreService) {}
 
@@ -65,7 +67,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
     iniciarEvaluacion: boolean = false
     evaluacion: any
     tiempoActual = new Date()
-    bEstadoTiempo: boolean
+    bEstadoTiempo: boolean = true
 
     ngOnInit() {
         this.obtenerEvaluacionxiEvaluacionId()
@@ -124,6 +126,28 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
             case 'CONSULTARxiEvaluacionId':
                 this.evaluacion = item.length ? item[0] : null
                 this.store.setItem('evaluacion', this.evaluacion)
+                this.breadCrumbItems = [
+                    {
+                        label: 'Evaluación ERE',
+                        routerLink: '/ere/evaluaciones/areas',
+                    },
+                    {
+                        label: this.evaluacion.cEvaluacionNombre,
+                    },
+                    {
+                        label:
+                            this.evaluacion.cGradoAbreviacion +
+                            ' ' +
+                            this.evaluacion.cCursoNombre +
+                            ' ' +
+                            this.evaluacion.cNivelTipoNombre,
+                    },
+                    { label: 'Rendir' },
+                ]
+                this.breadCrumbHome = {
+                    icon: 'pi pi-home',
+                    routerLink: '/',
+                }
                 break
             case 'CONSULTAR-ESTADOxiEvaluacionId':
                 if (this.bEstadoTiempo) {
@@ -132,7 +156,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
                 item.length
                     ? item[0]['iEstado']
                         ? this.router.navigate([
-                              `ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
+                              `ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/iniciar-evaluacion`,
                           ])
                         : null
                     : null

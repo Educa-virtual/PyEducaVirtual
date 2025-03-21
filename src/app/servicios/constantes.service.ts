@@ -404,8 +404,8 @@ const administracion = [
             // },
 
             {
-                label: 'Evaluación - ERE',
-                icon: 'pi pi-address-book',
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
                 items: [
                     // {
                     //     label: 'Configuración de ERE',
@@ -413,13 +413,13 @@ const administracion = [
                     //     routerLink: ['/configuracion/configuracion'],
                     // },
                     {
-                        label: 'Resultados de ERE',
+                        label: 'Resultados',
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
                     {
                         label: 'Evaluaciones',
-                        icon: 'pi pi-fw pi-calendar',
+                        icon: 'pi pi-list-check',
                         routerLink: ['/ere/evaluaciones'],
                     },
                 ],

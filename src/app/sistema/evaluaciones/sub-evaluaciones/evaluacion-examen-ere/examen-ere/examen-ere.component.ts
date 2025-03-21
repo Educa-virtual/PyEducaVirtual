@@ -81,7 +81,7 @@ export class ExamenEreComponent implements OnInit {
             `ere/mostrar-evaluacion/${this.iEvaluacionId}/areas/${curso.iCursoNivelGradId}/${this.cEvaluacionNombre}/${curso.cCursoNombre}/${curso.cGradoNombre}`,
         ])*/
         this.router.navigate([
-            `ere/evaluaciones/${this.iEvaluacionId}/areas/${curso.iCursoNivelGradId}/detalles`,
+            `ere/evaluaciones/${this.iEvaluacionId}/areas/${curso.iCursoNivelGradId}/rendir`,
         ])
     }
 }

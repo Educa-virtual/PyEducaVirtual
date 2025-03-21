@@ -98,7 +98,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: any) => {
+                next: () => {
                     if (this.accion == 'nuevo') {
                         // this._MessageService.add({
                         //     severity: 'success',
@@ -114,7 +114,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                         // })
                         console.log(this.accion)
                     }
-                    console.log('Respuesta de la API:', resp)
                 },
                 error: (err) => {
                     console.error('Error al insertar cursos:', err)
@@ -356,13 +355,12 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: any) => {
+                next: () => {
                     // this._MessageService.add({
                     //     severity: 'success',
                     //     summary: 'Guardado',
                     //     detail: 'Se guardó exitosamente',
                     // })
-                    console.log('Respuesta de la API:', resp)
                 },
                 error: (err) => {
                     // this._MessageService.add({

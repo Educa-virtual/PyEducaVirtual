@@ -73,6 +73,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
     minimo: number
     caption_docente: string
     visible_docente: boolean = false
+    c_accion: any = ''
 
     iTurnoId: number
     iModalServId: number

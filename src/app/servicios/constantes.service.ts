@@ -29,7 +29,7 @@ const iYAcadId = store.getItem('dremoiYAcadId')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
-    routerLink: [''],
+    routerLink: ['/inicio'],
 }
 const docente = [
     {
@@ -228,7 +228,7 @@ const jefe_programa = [
                     {
                         label: 'Registro de año escolar',
                         icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/gestion-institucional/apertura'],
                     },
                     {
                         label: 'Personal',
@@ -301,7 +301,7 @@ const administracion = [
                     {
                         label: 'Apertura de año escolar',
                         icon: 'pi pi-lock-open',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/gestion-institucional/apertura'],
                     },
                     {
                         label: 'Registro de fechas especiales',
@@ -343,7 +343,7 @@ const administracion = [
                             // {
                             //     label: 'Cargos',
                             //     icon: 'pi pi-wrench',
-                            //     routerLink: ['/configuracion/configuracion'],
+                            //     routerLink: ['/gestion-institucional/apertura'],
                             // },
                         ],
                         //ConfigGradoSeccion
@@ -428,22 +428,22 @@ const administracion = [
             //         {
             //             label: 'Reportes',
             //             icon: 'pi pi-book',
-            //             routerLink: ['/configuracion/configuracion'],
+            //             routerLink: ['/gestion-institucional/apertura'],
             //         },
             //         {
             //             label: 'Estadisticas',
             //             icon: 'pi pi-chart-scatter',
-            //             routerLink: ['/configuracion/configuracion'],
+            //             routerLink: ['/gestion-institucional/apertura'],
             //         },
             //         {
             //             label: 'Indicadores',
             //             icon: 'pi pi-chart-line',
-            //             routerLink: ['/configuracion/configuracion'],
+            //             routerLink: ['/gestion-institucional/apertura'],
             //         },
             //         {
             //             label: 'Plantillas',
             //             icon: 'pi pi-download',
-            //             routerLink: ['/configuracion/configuracion'],
+            //             routerLink: ['/gestion-institucional/apertura'],
             //         },
             //     ],
             //     //ConfigGradoSeccion
@@ -456,7 +456,7 @@ const administracion = [
                     // {
                     //     label: 'Configuración de ERE',
                     //     icon: 'pi pi-wrench',
-                    //     routerLink: ['/configuracion/configuracion'],
+                    //     routerLink: ['/gestion-institucional/apertura'],
                     // },
                     {
                         label: 'Resultados de ERE',

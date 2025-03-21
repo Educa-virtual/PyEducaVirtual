@@ -178,7 +178,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
         this.router.events
             .pipe(filter((event) => event instanceof NavigationEnd))
-            .subscribe((params) => {
+            .subscribe(() => {
                 if (this.item.routerLink) {
                     this.updateActiveStateFromRoute()
                 }
@@ -197,7 +197,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
     updateActiveStateFromRoute() {
         const activeRoute = this.router.isActive(this.item.routerLink[0], {
-            paths: 'exact',
+            paths: 'subset',
             queryParams: 'ignored',
             matrixParams: 'ignored',
             fragment: 'ignored',
@@ -208,6 +208,13 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
                 key: this.key,
                 routeEvent: true,
             })
+
+            this.item['routerLinkActiveOptions'] = {
+                paths: 'subset',
+                queryParams: 'ignored',
+                matrixParams: 'ignored',
+                fragment: 'exact',
+            }
         }
     }
 

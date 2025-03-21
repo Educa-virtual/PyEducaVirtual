@@ -31,40 +31,79 @@
 
         <p-panel header="Aplicar Filtros">
             <div class="grid p-fluid">
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
                     <p-inputGroup>
                         <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                         <p-dropdown
                             [options]="nivel_tipos"
+                            [showClear]="true"
                             formControlName="iNivelTipoId"
                             placeholder="Seleccione un nivel"
                             styleClass="w-full"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
                     <p-inputGroup>
                         <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                         <p-dropdown
                             [options]="nivel_grados"
+                            [showClear]="true"
                             formControlName="iNivelGradoId"
                             placeholder="Seleccione un grado"
                             styleClass="w-full"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="distritos"
+                            [showClear]="true"
+                            formControlName="iDsttId"
+                            placeholder="Seleccione un distrito"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="ies"
+                            [showClear]="true"
+                            formControlName="iIieeId"
+                            placeholder="Seleccione una Institución Educativa"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-5">
                     <p-inputGroup>
                         <p-inputGroupAddon>Sección</p-inputGroupAddon>
                         <p-dropdown
                             [options]="secciones"
+                            [showClear]="true"
                             formControlName="iSeccionId"
                             placeholder="Seleccione una sección"
                             styleClass="w-full"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Sexo</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="sexos"
+                            [showClear]="true"
+                            formControlName="cPersSexo"
+                            placeholder="Seleccione un sexo"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-2">
                     <p-button
                         pRipple
                         severity="success"
@@ -80,22 +119,45 @@
     <br />
 
     <p-panel>
-        <h3 class="m-0 text-uppercase text-primary">
-            Resumen de participación y nivel de logro alcanzado
-        </h3>
+        <ng-template pTemplate="header">
+            <div class="grid">
+                <div class="col">
+                    <h3 class="m-0 text-uppercase text-primary">
+                        Resumen de participación y nivel de logro alcanzado
+                    </h3>
+                </div>
+                @if (hay_resultados) {
+                    <div class="col-auto">
+                        <p-toast />
+                        <p-menu #menu [model]="btn_exportar" [popup]="true" />
+                        <p-button
+                            (onClick)="menu.toggle($event)"
+                            pRipple
+                            severity="success"
+                            label="Exportar"
+                            icon="pi pi-fw pi-ellipsis-v"
+                        />
+                    </div>
+                }
+            </div>
+        </ng-template>
 
-        <br />
-
-        <div class="flex justify-content-center" [hidden]="visible_chart">
-            <p-chart type="doughnut" [data]="data" [options]="options" />
-        </div>
+        @if (hay_resultados) {
+            <div class="flex justify-content-center">
+                <p-chart
+                    type="doughnut"
+                    [data]="data_doughnut"
+                    [options]="options_doughnut"
+                />
+            </div>
+        }
 
         <div>
             <p-accordion [activeIndex]="0">
                 <p-accordionTab header="Relación de Estudiantes">
                     <app-table-primeng
                         [columnas]="columns"
-                        [showCaption]="true"
+                        [showCaption]="false"
                         [data]="resultados"
                         (accionBtnItem)="accionBtnItemTable($event)"
                         [showPaginator]="true"
@@ -107,16 +169,49 @@
                     />
                 </p-accordionTab>
                 <p-accordionTab header="Estadisticas Avanzadas">
-                    <p>
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium...
-                    </p>
+                    <app-table-primeng
+                        [columnas]="columns_resumen"
+                        [showCaption]="false"
+                        [enableCellSelection]="false"
+                        [data]="resumen"
+                        [showPaginator]="false"
+                        [showSortIcon]="false"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
+                    @if (hay_resultados) {
+                        <div class="grid">
+                            <p-chart
+                                type="bar"
+                                [data]="data_bar"
+                                [options]="options_bar"
+                                class="col"
+                                height="300px"
+                            />
+                        </div>
+                    }
                 </p-accordionTab>
                 <p-accordionTab header="Matris de Evaluación">
-                    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+                    <app-table-primeng
+                        [columnas]="columns_matriz"
+                        [showCaption]="false"
+                        [data]="matriz"
+                        [showPaginator]="false"
+                        [showSortIcon]="false"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
                 </p-accordionTab>
                 <p-accordionTab header="Promedio Final">
-                    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+                    <app-table-primeng
+                        [columnas]="columns_promedio"
+                        [showCaption]="false"
+                        [data]="promedio"
+                        [showPaginator]="false"
+                        [showSortIcon]="false"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
                 </p-accordionTab>
             </p-accordion>
         </div>

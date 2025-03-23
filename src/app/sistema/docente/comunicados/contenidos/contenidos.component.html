@@ -281,6 +281,32 @@
                 </div>
                 <div class="row-with-wrap">
                     <div class="dropdown-container">
+                        <label for="tipo" class="mb-1">Tipo</label>
+                        <p-dropdown
+                            id="tipo"
+                            name="tipo"
+                            [options]="tipos"
+                            [(ngModel)]="selectedComunicado.tipo"
+                            placeholder="Seleccione Tipo"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="prioridad" class="mb-1">Prioridad</label>
+                        <p-dropdown
+                            id="prioridad"
+                            name="prioridad"
+                            [options]="prioridades"
+                            [(ngModel)]="selectedComunicado.prioridad"
+                            placeholder="Seleccione Prioridad"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div class="flex flex-column col-12 md:col-6">
                         <label for="grupo" class="mb-1">Grupo</label>
                         <p-multiSelect
                             id="grupo"
@@ -299,32 +325,6 @@
                                 !!selectedComunicado.grado
                             "
                         ></p-multiSelect>
-                    </div>
-                    <div class="flex flex-column col-12 md:col-6">
-                        <label for="prioridad" class="mb-1">Prioridad</label>
-                        <p-dropdown
-                            id="prioridad"
-                            name="prioridad"
-                            [options]="prioridades"
-                            [(ngModel)]="selectedComunicado.prioridad"
-                            placeholder="Seleccione Prioridad"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                </div>
-                <div class="grid">
-                    <div class="flex flex-column col-12 md:col-6">
-                        <label for="tipo" class="mb-1">Tipo</label>
-                        <p-dropdown
-                            id="tipo"
-                            name="tipo"
-                            [options]="tipos"
-                            [(ngModel)]="selectedComunicado.tipo"
-                            placeholder="Seleccione Tipo"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
                         <label for="advancedSwitch" class="mb-1"

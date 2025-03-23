@@ -44,6 +44,7 @@ export class ContenidosComponent implements OnInit {
     year: any
     selectedEstado: number
     iIieeId: any
+    iPerfilId: any
     data = []
     miembros = []
     advancedOptions: boolean = false // Controla el switch
@@ -131,6 +132,7 @@ export class ContenidosComponent implements OnInit {
         this.iEstudianteId = this.ConstantesService.iEstudianteId
         this.iEspecialistaId = this.ConstantesService.iEspecialistaId
         this.iIieeId = this.ConstantesService.iIieeId
+        this.iPerfilId = this.ConstantesService.iPerfilId
     }
 
     comunicados = []

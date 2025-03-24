@@ -26,22 +26,22 @@ export class FichaSaludComponent implements OnInit {
         this.visibleSeguroInput = Array(1).fill(false)
 
         this.dolencias = [
-            { id: 1, nombre: 'Asma' },
-            { id: 2, nombre: 'Diabetes' },
-            { id: 3, nombre: 'Epilepsia' },
-            { id: 4, nombre: 'Artritis' },
-            { id: 5, nombre: 'Reumatismo' },
-            { id: 6, nombre: 'Hipertensión' },
-            { id: 7, nombre: 'Estrés' },
+            { value: 1, label: 'Asma' },
+            { value: 2, label: 'Diabetes' },
+            { value: 3, label: 'Epilepsia' },
+            { value: 4, label: 'Artritis' },
+            { value: 5, label: 'Reumatismo' },
+            { value: 6, label: 'Hipertensión' },
+            { value: 7, label: 'Estrés' },
         ]
 
         this.seguros_salud = [
-            { id: 0, nombre: 'Otro' },
-            { id: 1, nombre: 'Seguro Integral de Salud' },
-            { id: 2, nombre: 'ESSALUD' },
-            { id: 3, nombre: 'Seguro Privado de Salud' },
-            { id: 4, nombre: 'Entidad Prestadora de Salud' },
-            { id: 5, nombre: 'Seguro de Fuerzas Armadas / Policiales' },
+            { value: 0, label: 'Otro' },
+            { value: 1, label: 'Seguro Integral de Salud' },
+            { value: 2, label: 'ESSALUD' },
+            { value: 3, label: 'Seguro Privado de Salud' },
+            { value: 4, label: 'Entvaluead Prestadora de Salud' },
+            { id: 5, label: 'Seguro de Fuerzas Armadas / Policiales' },
         ]
 
         try {

@@ -6,6 +6,40 @@
     }
 }
 
-// :host ::ng-deep .p-inputswitch {
-//     height: 1rem !important;
-// }
+:host ::ng-deep .p-inputgroup.vertical-group {
+    display: block !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .group-element,
+:host ::ng-deep .p-inputgroup.vertical-group .group-element .p-dropdown {
+    width: 100% !important;
+    border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group > .group-element:last-child {
+    border-top-right-radius: 0rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+    border-top-left-radius: 0rem !important;
+    border-bottom-left-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon {
+    border-top-left-radius: 0.5rem !important;
+    border-bottom-left-radius: 0rem !important;
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group button.p-inputnumber-button-up {
+    border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputnumber-input {
+    border-radius: 0 !important;
+    border-bottom-left-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-multiselect-label {
+    display: flex;
+    flex-wrap: wrap;
+}

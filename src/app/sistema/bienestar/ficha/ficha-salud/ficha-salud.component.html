@@ -4,22 +4,48 @@
     <div class="grid p-fluid mt-3">
         <input type="hidden" name="iFichaDGId" />
 
-        <div class="field col-12 lg:col-6">
+        <div class="col-12">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon> Seguros de salud </p-inputGroupAddon>
+                <p-multiSelect
+                    display="chip"
+                    [options]="seguros_salud"
+                    formControlName="iSeguroSaludId"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                    multiple="true"
+                    [maxSelectedLabels]="undefined"
+                    (onChange)="handleDropdownChange($event, 0)"
+                    (onClear)="handleDropdownChange($event, 0)"
+                    [style]="{ flex: '1', width: '100%' }"
+                    styleClass="group-element"
+                />
+                @if (visibleSeguroInput[0] === true) {
+                    <input
+                        pInputText
+                        formControlName="cSeguroSaludObs"
+                        placeholder="Especifique"
+                        type="text"
+                        class="group-element"
+                    />
+                }
+            </p-inputGroup>
+        </div>
+        <div class="col-12 lg:col-6">
             <p-fieldset legend="Dolencias o enfermedades crónicas">
                 <div class="grid">
                     <div
                         class="col-12"
                         *ngFor="let dolencia of dolencias; let i = index"
                     >
-                        <p-inputGroup>
+                        <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
                                 <p-inputSwitch
                                     (onChange)="handleSwitchChange($event, i)"
                                     name="bDolencia[{{ dolencia['id'] }}]"
                                 />
-                            </p-inputGroupAddon>
-                            <p-inputGroupAddon>
-                                {{ dolencia['nombre'] }}
+                                <span>{{ dolencia['nombre'] }}</span>
                             </p-inputGroupAddon>
                             @if (visibleInput[i] === true) {
                                 <input
@@ -27,6 +53,7 @@
                                     name="cDolenciaObs[{{ dolencia['id'] }}]"
                                     pInputText
                                     placeholder="Especifique *"
+                                    class="group-element"
                                 />
                             }
                         </p-inputGroup>
@@ -35,11 +62,11 @@
             </p-fieldset>
         </div>
 
-        <div class="field col-12 lg:col-6">
+        <div class="col-12 lg:col-6">
             <p-fieldset legend="Indique si tiene alergias">
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup>
+                        <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
                                 <p-inputSwitch
                                     (onChange)="
@@ -47,9 +74,7 @@
                                     "
                                     formControlName="bFichaDGAlergiaMedicamentos"
                                 />
-                            </p-inputGroupAddon>
-                            <p-inputGroupAddon>
-                                Alergia a medicamentos
+                                <span>Alergia a medicamentos</span>
                             </p-inputGroupAddon>
                             @if (visibleAlergiaInput[0] === true) {
                                 <input
@@ -57,12 +82,13 @@
                                     formControlName="cFichaDGAlergiaMedicamentos"
                                     pInputText
                                     placeholder="Especifique"
+                                    class="group-element"
                                 />
                             }
                         </p-inputGroup>
                     </div>
                     <div class="col-12">
-                        <p-inputGroup>
+                        <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
                                 <p-inputSwitch
                                     formControlName="bFichaDGAlergiaOtros"
@@ -70,9 +96,7 @@
                                         handleSwitchAlergiaChange($event, 1)
                                     "
                                 />
-                            </p-inputGroupAddon>
-                            <p-inputGroupAddon>
-                                Otras alergias
+                                <span>Otras alergias</span>
                             </p-inputGroupAddon>
                             @if (visibleAlergiaInput[1] === true) {
                                 <input
@@ -80,56 +104,10 @@
                                     formControlName="cFichaDGAlergiaOtros"
                                     pInputText
                                     placeholder="Especifique"
+                                    class="group-element"
                                 />
                             }
                         </p-inputGroup>
-                    </div>
-                </div>
-            </p-fieldset>
-        </div>
-
-        <div class="col-12">
-            <p-fieldset legend="Seguros">
-                <div class="grid">
-                    <div class="col-12">
-                        <div class="grid">
-                            <div class="col w-full">
-                                <span class="p-float-label">
-                                    <p-multiSelect
-                                        display="chip"
-                                        [options]="seguros_salud"
-                                        formControlName="iSeguroSaludId"
-                                        optionLabel="nombre"
-                                        optionValue="id"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                        multiple="true"
-                                        [maxSelectedLabels]="undefined"
-                                        (onChange)="
-                                            handleDropdownChange($event, 0)
-                                        "
-                                        (onClear)="
-                                            handleDropdownChange($event, 0)
-                                        "
-                                    />
-                                    <label for="iEleParaVivId"
-                                        >Seleccione los elementos que tiene en
-                                        su hogar *</label
-                                    >
-                                </span>
-                            </div>
-                            @if (visibleSeguroInput[0] === true) {
-                                <div class="col-12">
-                                    <input
-                                        pInputText
-                                        formControlName="cSeguroSaludObs"
-                                        placeholder="Especifique"
-                                        type="text"
-                                    />
-                                </div>
-                            }
-                        </div>
                     </div>
                 </div>
             </p-fieldset>

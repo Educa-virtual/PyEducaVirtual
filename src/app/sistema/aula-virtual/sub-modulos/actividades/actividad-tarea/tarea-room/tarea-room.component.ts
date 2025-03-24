@@ -26,6 +26,9 @@ import { RubricaCalificarComponent } from '../../../../features/rubricas/compone
 import { RubricasComponent } from '../../../../features/rubricas/rubricas.component'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+
 @Component({
     selector: 'app-tarea-room',
     standalone: true,
@@ -39,6 +42,8 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
         ScrollerModule,
         RubricaCalificarComponent,
         RubricasComponent,
+        CardOrderListComponent,
+        ToolbarPrimengComponent,
     ],
 
     templateUrl: './tarea-room.component.html',

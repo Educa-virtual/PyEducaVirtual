@@ -38,14 +38,14 @@
                     (onChange)="handleDropdownChange($event, 1)"
                     [style]="{ flex: '1', width: '100%' }"
                 />
-                @if (visibleInput[1] === true) {
-                    <input
-                        pInputText
-                        formControlName="cEstadoVivDescripcion"
-                        placeholder="Especifique"
-                        type="text"
-                    />
-                }
+                <!-- @if (visibleInput[1] === true) { -->
+                <input
+                    pInputText
+                    formControlName="cEstadoVivDescripcion"
+                    placeholder="Especifique"
+                    type="text"
+                />
+                <!-- } -->
             </p-inputGroup>
         </div>
 
@@ -227,6 +227,7 @@
                     [appendTo]="'body'"
                     multiple="true"
                     [maxSelectedLabels]="undefined"
+                    showToggleAll="false"
                     (onChange)="handleDropdownChange($event, 8)"
                     (onClear)="handleDropdownChange($event, 8)"
                     [style]="{ flex: '1', width: '100%' }"
@@ -253,6 +254,7 @@
                     [appendTo]="'body'"
                     multiple="true"
                     [maxSelectedLabels]="undefined"
+                    showToggleAll="false"
                     (onChange)="handleDropdownChange($event, 9)"
                     (onClear)="handleDropdownChange($event, 9)"
                     [style]="{ flex: '1', width: '100%' }"

@@ -7,8 +7,9 @@
         <div class="field col-12">
             <p-fieldset legend="Programas de alimentación estatales">
                 <div class="grid">
-                    <div class="col w-full">
-                        <span class="p-float-label">
+                    <div class="col">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Programas</p-inputGroupAddon>
                             <p-multiSelect
                                 display="chip"
                                 [options]="programas_alimentarios"
@@ -17,18 +18,18 @@
                                 optionValue="id"
                                 [filter]="true"
                                 [showClear]="true"
+                                [maxSelectedLabels]="undefined"
+                                [showToggleAll]="false"
                                 [appendTo]="'body'"
                                 multiple="true"
                                 [maxSelectedLabels]="undefined"
-                                (onChange)="handleDropdownChange($event, 9)"
-                                (onClear)="handleDropdownChange($event, 9)"
+                                (onChange)="handleDropdownChange($event, 0)"
+                                (onClear)="handleDropdownChange($event, 0)"
+                                [style]="{ flex: '1', width: '100%' }"
                             />
-                            <label for="iProAlimId">
-                                Seleccione programas *
-                            </label>
-                        </span>
+                        </p-inputGroup>
                     </div>
-                    @if (visibleInput[9] === true) {
+                    @if (visibleInput[0] === true) {
                         <div class="col-12">
                             <input
                                 pInputText
@@ -55,12 +56,12 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
-                                (onChange)="handleDropdownChange($event, 0)"
+                                (onChange)="handleDropdownChange($event, 1)"
                             />
                             <label for="iLugAlimId">Desayuno *</label>
                         </span>
                     </div>
-                    @if (visibleInput[0] === true) {
+                    @if (visibleInput[1] === true) {
                         <div class="col">
                             <input
                                 pInputText
@@ -82,12 +83,12 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
-                                (onChange)="handleDropdownChange($event, 1)"
+                                (onChange)="handleDropdownChange($event, 2)"
                             />
                             <label for="iLugAlimId">Almuerzo *</label>
                         </span>
                     </div>
-                    @if (visibleInput[1] === true) {
+                    @if (visibleInput[2] === true) {
                         <div class="col">
                             <input
                                 pInputText
@@ -109,12 +110,13 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
-                                (onChange)="handleDropdownChange($event, 2)"
+                                (onChange)="handleDropdownChange($event, 3)"
+                                [style]="{ flex: '1', width: '100%' }"
                             />
                             <label for="iLugAlimId">Cena *</label>
                         </span>
                     </div>
-                    @if (visibleInput[2] === true) {
+                    @if (visibleInput[3] === true) {
                         <div class="col">
                             <input
                                 pInputText

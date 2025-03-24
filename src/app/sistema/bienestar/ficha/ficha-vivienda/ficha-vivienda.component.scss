@@ -6,20 +6,30 @@
     }
 }
 
-:host ::ng-deep .p-inputswitch {
-    height: 1rem !important;
+:host ::ng-deep .p-inputgroup {
+    display: block !important;
 }
 
-.radius-left {
-    border-top-right-radius: 0px !important;
-    border-bottom-right-radius: 0px !important;
+:host ::ng-deep .p-inputgroup p-dropdown,
+:host ::ng-deep .p-inputgroup input,
+:host ::ng-deep .p-inputgroup p-input,
+:host ::ng-deep .p-inputgroup p-inputtext,
+:host ::ng-deep .p-inputgroup p-inputnumber,
+:host ::ng-deep .p-inputgroup p-inputnumber-button {
+    width: 100% !important;
+    border-radius: 0rem;
 }
 
-.radius-right {
-    border-top-left-radius: 0px !important;
-    border-bottom-left-radius: 0px !important;
+:host ::ng-deep .p-inputgroup-addon {
+    border-top-left-radius: 0.5rem !important;
+    border-bottom-left-radius: 0rem !important;
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0rem !important;
 }
 
-.radius-none {
-    border-radius: 0px !important;
+:host ::ng-deep .p-inputgroup .p-component:last-child {
+    border-top-right-radius: 0rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+    border-top-left-radius: 0rem !important;
+    border-bottom-left-radius: 0.5rem !important;
 }

@@ -110,7 +110,7 @@ const routes: Routes = [
             ),
     },
     {
-        path: 'evaluaciones/areas',
+        path: 'evaluacion/areas',
         component: AreasRendirExamenComponent,
         canActivate: [RoleGuard],
         data: {

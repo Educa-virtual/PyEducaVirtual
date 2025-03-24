@@ -71,7 +71,7 @@ export class RendirExamenComponent implements OnInit {
         this.breadCrumbItems = [
             {
                 label: 'Evaluación ERE',
-                routerLink: '/ere/evaluaciones/areas',
+                routerLink: '/ere/evaluacion/areas',
             },
             {
                 label: this.evaluacion.cEvaluacionNombre,

@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { forkJoin } from 'rxjs'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { ApiEspecialistasService } from '../../ere/services/api-especialistas.service'
 
 @Component({
@@ -27,6 +27,8 @@ export class AsignarAreasEspecialistaDremoComponent implements OnInit {
     gradosSecundaria: any = []
     areasSecundaria: any = []
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
     iDocenteId: string
     iAreasSinAsignar: number = 0
     iAreasConAsignar: number = 0
@@ -34,6 +36,15 @@ export class AsignarAreasEspecialistaDremoComponent implements OnInit {
     ngOnInit() {
         this.obtenerEspecialistasDremo()
         this.obtenerCursosxNivel()
+        this.breadCrumbItems = [
+            {
+                label: 'Especialistas DREMO',
+            },
+            {
+                label: 'Asignar áreas',
+            },
+        ]
+        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
     }
 
     obtenerEspecialistasDremo() {

@@ -119,7 +119,7 @@ const estudiante = [
             {
                 label: 'Evaluación ERE',
                 icon: 'pi pi-pen-to-square',
-                routerLink: ['/ere/evaluaciones/areas'],
+                routerLink: ['/ere/evaluacion/areas'],
             },
         ],
     },

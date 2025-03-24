@@ -129,7 +129,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
                 this.breadCrumbItems = [
                     {
                         label: 'Evaluación ERE',
-                        routerLink: '/ere/evaluaciones/areas',
+                        routerLink: '/ere/evaluacion/areas',
                     },
                     {
                         label: this.evaluacion.cEvaluacionNombre,

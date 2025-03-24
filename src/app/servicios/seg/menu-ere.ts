@@ -38,7 +38,7 @@ export const administradorDremo = [
             },
 
             {
-                label: 'Especialista DREMO',
+                label: 'Especialistas DREMO',
                 icon: 'pi pi-user',
                 //routerLink: ['/ere/especialista-dremo'],
                 items: [
@@ -50,7 +50,7 @@ export const administradorDremo = [
                 ],
             },
             {
-                label: 'Especialista UGEL',
+                label: 'Especialistas UGEL',
                 icon: 'pi pi-sitemap',
                 //routerLink: ['/ere/administrar'],
                 items: [
@@ -61,23 +61,7 @@ export const administradorDremo = [
                     },
                 ],
             },
-            /*{
-                label: 'Administrar',
-                icon: 'pi pi-fw pi-cog',
-                routerLink: ['/ere/administrar'],
-                items: [
-                    {
-                        label: 'Especialista DREMO',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['./ere/administrar/especialista-dremo'],
-                    },
-                    {
-                        label: 'Especialista UGEL',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['./ere/administrar/especialista-ugel'],
-                    },
-                ],
-            },*/
+
             //reportesEre,
             {
                 label: 'Enlaces de ayuda',

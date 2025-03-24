@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { forkJoin } from 'rxjs'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { ApiEspecialistasUgelService } from '../../ere/services/api.especialistas-ugel.services'
 
 @Component({
@@ -28,6 +28,9 @@ export class AsignarAreasEspecialistaUgelComponent implements OnInit {
     gradosSecundaria: any = []
     areasSecundaria: any = []
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     iDocenteId: string
     iAreasSinAsignar: number = 0
     iAreasConAsignar: number = 0
@@ -37,6 +40,15 @@ export class AsignarAreasEspecialistaUgelComponent implements OnInit {
         this.obtenerEspecialistasUgel()
         this.obtenerCursosxNivel()
         this.obtenerUgeles()
+        this.breadCrumbItems = [
+            {
+                label: 'Especialistas UGEL',
+            },
+            {
+                label: 'Asignar áreas',
+            },
+        ]
+        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
     }
 
     obtenerCursosxNivel() {

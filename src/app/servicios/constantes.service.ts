@@ -172,6 +172,7 @@ const estudiante = [
 ]
 
 const administrador = [
+    //MODULO DE SEGURIDAD
     {
         items: [
             inicio,
@@ -189,6 +190,12 @@ const administrador = [
                 label: 'Backup de BD',
                 icon: 'pi pi-fw pi-database',
                 routerLink: ['/administrador/backup-bd'],
+            },
+
+            {
+                label: 'Gestión de Usuario',
+                icon: 'pi pi-fw pi-user',
+                routerLink: ['/administrador/gestion-usuario'],
             },
             {
                 label: 'Enlaces de ayuda',

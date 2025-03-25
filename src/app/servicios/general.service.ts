@@ -362,4 +362,7 @@ export class GeneralService {
             data
         )
     }
+    validarPersona(data: any) {
+        return this.http.post(`${baseUrl}/grl/validarPersona`, data)
+    }
 }

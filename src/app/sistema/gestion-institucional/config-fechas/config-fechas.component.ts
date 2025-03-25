@@ -95,6 +95,28 @@ export class ConfigFechasComponent implements OnInit {
         }
     }
 
+    AddFechaImportante() {
+        this.query
+            .addCalAcademico({
+                json: this.form.value,
+                _opcion: 'addFechasEspeciales',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    // let periodosAcademicos: Array<any> = JSON.parse(
+                    //     data.data[0]['calPeriodos']
+                    // )
+                    console.log(data, 'addHorarioSede')
+                },
+                error: (error) => {
+                    console.error('Error fetching modalidades:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                    this.getfechasAcademico() // refresca los registros
+                },
+            })
+    }
     getCalendarioAcademico() {
         this.query
             .searchCalendario({

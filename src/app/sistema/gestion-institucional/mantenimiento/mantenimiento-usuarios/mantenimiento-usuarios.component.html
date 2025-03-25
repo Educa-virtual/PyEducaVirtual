@@ -1,22 +1,39 @@
 <div class="grid mt-2">
     <div class="col-12 md:col-7">
         <app-mantenimiento-search-usuario
-            [option]="'Director'"
+            [option]="option"
             [search_perfiles]="search_perfiles"
             [iSedeId]="iSedeId"
             (select_usuarios)="accionBtnItemTable($event)"
             (crear_usuario)="accionBtnItemTable($event)"
+            [titulo_cabecera]="titulo"
         />
     </div>
 
     <div class="col-12 md:col-5">
         <app-mantenimiento-add-perfil
-            [option]="'Director'"
+            [option]="option"
             [search_perfiles]="search_perfiles"
             [iSedeId]="iSedeId"
             [usuario]="usuario"
         />
     </div>
 </div>
-
+<p-dialog
+    header="Formulario de asignación: "
+    [resizable]="true"
+    [(visible)]="modal_visible"
+    [style]="{ width: '76rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    [modal]="true"
+>
+    <app-mantenimiento-add-user
+        [search_perfiles]="search_perfiles"
+        [data]="tipo_documentos"
+        [iSedeId]="iSedeId"
+        [iYAcadId]="iYAcadId"
+        [iCredId]="iCredId"
+    />
+</p-dialog>
 <p-toast />

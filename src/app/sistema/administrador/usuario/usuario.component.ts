@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core'
-import { PrimengModule } from '@/app/primeng.module'
 
 import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 
-import { MantenimientoSearchUsuarioComponent } from '../mantenimiento-search-usuario/mantenimiento-search-usuario.component'
-import { MantenimientoAddPerfilComponent } from '../mantenimiento-add-perfil/mantenimiento-add-perfil.component'
-import { MantenimientoAddUserComponent } from '../mantenimiento-add-user/mantenimiento-add-user.component'
+import { MantenimientoAddUserComponent } from '../../gestion-institucional/mantenimiento/mantenimiento-add-user/mantenimiento-add-user.component'
+import { MantenimientoAddPerfilComponent } from '../../gestion-institucional/mantenimiento/mantenimiento-add-perfil/mantenimiento-add-perfil.component'
+import { MantenimientoSearchUsuarioComponent } from '../../gestion-institucional/mantenimiento/mantenimiento-search-usuario/mantenimiento-search-usuario.component'
+import { PrimengModule } from '@/app/primeng.module'
+
 @Component({
-    selector: 'app-mantenimiento-usuarios',
+    selector: 'app-usuario',
     standalone: true,
     imports: [
         PrimengModule,
@@ -17,11 +18,10 @@ import { MantenimientoAddUserComponent } from '../mantenimiento-add-user/manteni
         MantenimientoAddPerfilComponent,
         MantenimientoAddUserComponent,
     ],
-
-    templateUrl: './mantenimiento-usuarios.component.html',
-    styleUrl: './mantenimiento-usuarios.component.scss',
+    templateUrl: './usuario.component.html',
+    styleUrl: './usuario.component.scss',
 })
-export class MantenimientoUsuariosComponent implements OnInit {
+export class UsuarioComponent implements OnInit {
     iSedeId: number
     iYAcadId: number
     iCredId: number
@@ -36,7 +36,9 @@ export class MantenimientoUsuariosComponent implements OnInit {
 
     modal_visible: boolean = false
     tipo_documentos: any = [] //lista de tipo de documentos
-    titulo: string = 'Accesos de usuario IE'
+    gestionar: boolean = true
+    condicion: string = ''
+    titulo: string
 
     constructor(
         private store: LocalStoreService,
@@ -52,7 +54,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getPerfilSedes()
+        // this.getPerfilSedes();
         this.getTipoDocumento()
     }
 
@@ -63,8 +65,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
                 esquema: 'seg',
                 tabla: 'perfiles',
                 campos: '*',
-                condicion:
-                    'iTipoPerfilId = 7 or iTipoPerfilId = 4 or iTipoPerfilId = 10 or iTipoPerfilId = 12 or iTipoPerfilId = 9 or iTipoPerfilId = 8',
+                condicion: this.condicion,
             })
             .subscribe({
                 next: (data: any) => {
@@ -135,8 +136,29 @@ export class MantenimientoUsuariosComponent implements OnInit {
         if (accion === 'nuevo_perfil_generado') {
             // envia la informacion del perfil seleccionado
             this.option = 'Director'
+
             this.modal_visible = false //Mostrar modal para registro de usuarior
             // this.getPerfilUsuario()
+        }
+
+        if (accion === 'especialista_ugel') {
+            this.gestionar = false
+            this.option = 'Especialista_UGEL'
+            this.condicion = 'iTipoPerfilId = 5 '
+            this.titulo = 'Accesos de Especialista UGEL'
+            this.getPerfilSedes()
+            // busca los perfiles
+        }
+
+        if (accion === 'especialista_dremo') {
+            this.gestionar = false
+            this.condicion = 'iTipoPerfilId = 6 '
+            this.option = 'Especialista_DREMO'
+            this.titulo = 'Accesos de Especialista DREMO'
+            this.getPerfilSedes()
+        }
+        if (accion === 'retornar') {
+            this.gestionar = true
         }
     }
 }

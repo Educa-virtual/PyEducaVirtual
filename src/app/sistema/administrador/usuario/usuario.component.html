@@ -1,0 +1,125 @@
+@if (gestionar) {
+    <div class="grid p-fluid mt-2 card-container">
+        <div class="field col-12 md:col-4">
+            <p-card header="Gestionar especialista DREMO" class="custom-card">
+                <div class="card-content">
+                    <p-button
+                        [text]="true"
+                        severity="secondary"
+                        class="p-col-12"
+                        (click)="
+                            accionBtnItemTable({
+                                accion: 'especialista_dremo',
+                                item: 1,
+                            })
+                        "
+                        (focus)="(true)"
+                    >
+                        <img
+                            src="assets/images/roles/especialista DRE.gif"
+                            alt="img"
+                            width="50%"
+                        />
+                    </p-button>
+                </div>
+                <footer class="card-footer"></footer>
+            </p-card>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-card header="Gestionar especialista UGEL" class="custom-card">
+                <div class="card-content">
+                    <p-button
+                        [text]="true"
+                        severity="secondary"
+                        class="p-col-12"
+                        (click)="
+                            accionBtnItemTable({
+                                accion: 'especialista_ugel',
+                                item: 0,
+                            })
+                        "
+                        (focus)="(true)"
+                    >
+                        <img
+                            src="assets/images/roles/especialista UGEL.gif"
+                            alt="img"
+                            width="50%"
+                        />
+                    </p-button>
+                </div>
+                <footer class="card-footer"></footer>
+            </p-card>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-card header="Gestionar especialista UGEL" class="custom-card">
+                <div class="card-content">
+                    <p-button
+                        [text]="true"
+                        severity="secondary"
+                        class="p-col-12"
+                        (click)="
+                            accionBtnItemTable({ accion: 'director', item: 0 })
+                        "
+                        (focus)="(true)"
+                    >
+                        <img
+                            src="assets/images/roles/director.gif"
+                            alt="img"
+                            width="50%"
+                        />
+                    </p-button>
+                </div>
+                <footer class="card-footer"></footer>
+            </p-card>
+        </div>
+    </div>
+} @else {
+    <div class="grid mt-2">
+        <div class="col-12 md:col-10"></div>
+        <div class="col-12 md:col-2">
+            <p-button
+                [text]="true"
+                (click)="accionBtnItemTable({ accion: 'retornar', item: 0 })"
+                (focus)="(true)"
+                >Retornar
+            </p-button>
+        </div>
+        <div class="col-12 md:col-7">
+            <app-mantenimiento-search-usuario
+                [option]="option"
+                [search_perfiles]="search_perfiles"
+                [iSedeId]="iSedeId"
+                (select_usuarios)="accionBtnItemTable($event)"
+                (crear_usuario)="accionBtnItemTable($event)"
+                [titulo_cabecera]="titulo"
+            />
+        </div>
+
+        <div class="col-12 md:col-5">
+            <app-mantenimiento-add-perfil
+                [option]="option"
+                [search_perfiles]="search_perfiles"
+                [iSedeId]="iSedeId"
+                [usuario]="usuario"
+            />
+        </div>
+    </div>
+    <p-dialog
+        header="Formulario de asignación: "
+        [resizable]="true"
+        [(visible)]="modal_visible"
+        [style]="{ width: '76rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [maximizable]="true"
+        [modal]="true"
+    >
+        <app-mantenimiento-add-user
+            [search_perfiles]="search_perfiles"
+            [data]="tipo_documentos"
+            [iSedeId]="iSedeId"
+            [iYAcadId]="iYAcadId"
+            [iCredId]="iCredId"
+        />
+    </p-dialog>
+    <p-toast />
+}

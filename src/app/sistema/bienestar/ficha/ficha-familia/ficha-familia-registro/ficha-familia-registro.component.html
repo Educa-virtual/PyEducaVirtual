@@ -50,7 +50,16 @@
             </div>
             <div class="col-6 sm:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Documento *</p-inputGroupAddon>
+                    <p-inputGroupAddon>
+                        <p-button
+                            size="small"
+                            label="Validar"
+                            styleClass="p-button-primary"
+                            (onClick)="validarPersona()"
+                            severity="success"
+                        />
+                        Documento *
+                    </p-inputGroupAddon>
                     <p-inputMask
                         formControlName="cPersDocumento"
                         [maxlength]="longitud_documento"
@@ -59,12 +68,6 @@
                         slotChar=""
                         [style]="{ flex: '1', width: '100%' }"
                         styleClass="group-element"
-                    />
-                    <p-button
-                        label="Validar"
-                        styleClass="p-button-primary"
-                        (onClick)="validarPersona()"
-                        severity="success"
                     />
                 </p-inputGroup>
             </div>
@@ -171,7 +174,7 @@
                         inputId="dPersNacimiento"
                         [appendTo]="'body'"
                         [maxDate]="fecha_actual"
-                        styleClass="group-element"
+                        inputStyleClass="group-element"
                     />
                 </p-inputGroup>
             </div>

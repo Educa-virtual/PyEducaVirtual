@@ -1,6 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormGroup } from '@angular/forms'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
 
 @Component({
     selector: 'app-ficha-alimentacion',
@@ -11,24 +12,19 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 })
 export class FichaAlimentacionComponent implements OnInit {
     formAlimentacion: FormGroup
-    horarios_alimentacion: Array<object>
     lugares_alimentacion: Array<object>
     programas_alimentarios: Array<object>
     visibleInput: Array<boolean>
     visibleAdicionalInput: Array<boolean>
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private compartirFichaService: CompartirFichaService
+    ) {}
 
     ngOnInit(): void {
         this.visibleInput = Array(1).fill(false)
         this.visibleAdicionalInput = Array(6).fill(false)
-
-        this.horarios_alimentacion = [
-            { id: 0, nombre: 'DESAYUNO' },
-            { id: 1, nombre: 'ALMUERZO' },
-            { id: 2, nombre: 'CENA' },
-            { id: 3, nombre: 'LONCHE/APERITIVOS' },
-        ]
 
         this.lugares_alimentacion = [
             { id: 0, nombre: 'OTRO' },
@@ -48,7 +44,8 @@ export class FichaAlimentacionComponent implements OnInit {
 
         try {
             this.formAlimentacion = this.fb.group({
-                iFichaDGId: [null, Validators.required],
+                iSesionId: this.compartirFichaService.perfil?.iCredId,
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
                 iLugarAlimIdDesayuno: [null],
                 cLugarAlimDesayuno: [''],
                 iLugarAlimIdAlmuerzo: [null],

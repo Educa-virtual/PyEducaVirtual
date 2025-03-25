@@ -173,39 +173,37 @@
     <p-fieldset legend="3. Relaciones familiares">
         <div class="grid">
             <div class="col-12 md:col-4">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
+                        ¿Vive su padre?
                         <p-inputSwitch formControlName="bFamiliarPadreVive" />
                     </p-inputGroupAddon>
-                    <p-inputGroupAddon> ¿Vive su padre? </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-4">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
+                        ¿Vive su madre?
                         <p-inputSwitch formControlName="bFamiliarMadreVive" />
                     </p-inputGroupAddon>
-                    <p-inputGroupAddon> ¿Vive su madre? </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-4">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
+                        ¿Sus padres viven juntos?
                         <p-inputSwitch
                             formControlName="bFamiliarPadresVivenJuntos"
                         />
                     </p-inputGroupAddon>
-                    <p-inputGroupAddon>
-                        ¿Sus padres viven juntos?
-                    </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-4">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
+                        ¿Tiene Hijos?
                         <p-inputSwitch formControlName="bFichaDGTieneHijos" />
                     </p-inputGroupAddon>
-                    <p-inputGroupAddon> ¿Tiene Hijos? </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
             @if (visibleInput) {

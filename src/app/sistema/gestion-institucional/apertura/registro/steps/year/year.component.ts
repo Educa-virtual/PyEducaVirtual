@@ -100,7 +100,7 @@ export class YearComponent implements OnInit {
             sessionStorage.getItem('reloadDetected') &&
             sessionStorage.getItem('reloadDetected') == 'true'
         ) {
-            this.router.navigate(['configuracion/configuracion/years'])
+            this.router.navigate(['gestion-institucional/apertura/years'])
         }
 
         // Limpia la marca después de manejarla
@@ -487,7 +487,7 @@ export class YearComponent implements OnInit {
 
     async nextPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/dias-laborales',
+            'gestion-institucional/apertura/registro/dias-laborales',
         ])
     }
 }

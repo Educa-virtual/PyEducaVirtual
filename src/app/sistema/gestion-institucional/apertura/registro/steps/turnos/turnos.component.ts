@@ -89,7 +89,7 @@ export class TurnosComponent implements OnInit {
 
     async ngOnInit() {
         if (!this.ticketService.registroInformation) {
-            this.router.navigate(['configuracion/configuracion/years'])
+            this.router.navigate(['gestion-institucional/apertura/years'])
 
             return
         }
@@ -145,13 +145,13 @@ export class TurnosComponent implements OnInit {
 
     nextPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/periodos-academicos',
+            'gestion-institucional/apertura/registro/periodos-academicos',
         ])
     }
 
     prevPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/dias-laborales',
+            'gestion-institucional/apertura/registro/dias-laborales',
         ])
     }
 

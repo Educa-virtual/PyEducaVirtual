@@ -1,7 +1,7 @@
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
-    routerLink: [''],
+    routerLink: ['/inicio'],
 }
 
 export const evaluacionesEre = {

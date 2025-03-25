@@ -50,16 +50,16 @@ export class DiasLaboralesComponent implements OnInit {
     ) {}
 
     async nextPage() {
-        this.router.navigate(['configuracion/configuracion/registro/turnos'])
+        this.router.navigate(['gestion-institucional/apertura/registro/turnos'])
     }
 
     prevPage() {
-        this.router.navigate(['configuracion/configuracion/registro/fechas'])
+        this.router.navigate(['gestion-institucional/apertura/registro/fechas'])
     }
 
     async ngOnInit() {
         if (!this.ticketService.registroInformation?.calendar?.iCalAcadId) {
-            this.router.navigate(['configuracion/configuracion/years'])
+            this.router.navigate(['gestion-institucional/apertura/years'])
 
             return
         }

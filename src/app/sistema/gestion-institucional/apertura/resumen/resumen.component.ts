@@ -1,27 +1,17 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Output, EventEmitter } from '@angular/core';
-
+import { Output, EventEmitter } from '@angular/core'
 
 @Component({
     selector: 'app-resumen',
     standalone: true,
-    imports: [
-        ContainerPageComponent,
-        TablePrimengComponent,
-    ],
+    imports: [ContainerPageComponent, TablePrimengComponent],
     templateUrl: './resumen.component.html',
     styleUrl: './resumen.component.scss',
 })
-export class ResumenComponent implements OnInit, OnChanges {
-    @Output() emitMode = new EventEmitter();
-
-
-    ngOnInit() {
-    
-    }
-    ngOnChanges(changes) {}
+export class ResumenComponent {
+    @Output() emitMode = new EventEmitter()
 
     actionBtn(mode) {
         this.emitMode.emit(mode)

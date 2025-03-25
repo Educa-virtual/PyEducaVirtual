@@ -441,13 +441,13 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     selectedValue: { [key: string]: any } = {}
     formatGroupHeader(header: string, data: any): string {
         return header.replace(/\b\w+\b/g, (key) => data[key] || key)
-        /*
-         * Mapea estilos de tag
-         * @param row fila seleccionada
-         * @param col datos del header de columna seleccionada
-         * @returns string 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast'
-         */
     }
+    /*
+     * Mapea estilos de tag
+     * @param row fila seleccionada
+     * @param col datos del header de columna seleccionada
+     * @returns string 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast'
+     */
     mapTagStyles(
         row,
         col

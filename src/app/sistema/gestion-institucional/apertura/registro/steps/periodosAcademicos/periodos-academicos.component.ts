@@ -89,7 +89,7 @@ export class PeriodosAcademicosComponent implements OnInit {
 
     async ngOnInit() {
         if (!this.ticketService.registroInformation) {
-            this.router.navigate(['configuracion/configuracion/years'])
+            this.router.navigate(['gestion-institucional/apertura/years'])
 
             return
         }
@@ -144,8 +144,9 @@ export class PeriodosAcademicosComponent implements OnInit {
             )
         ) {
             this.fasesPromocionales =
-                this.ticketService.registroInformation.stepYear.fases_promocionales.map(
-                    (fase, index) => ({
+                this.ticketService.registroInformation.stepYear.fases_promocionales
+                    .filter((fase) => fase.cFasePromNombre === 'FASE REGULAR')
+                    .map((fase, index) => ({
                         index: index + 1,
                         id: fase.iFaseId,
                         cPeriodoEvalNombre: fase.cPeriodoEvalNombre,
@@ -162,8 +163,7 @@ export class PeriodosAcademicosComponent implements OnInit {
                                 fase.dtFaseFin,
                                 'DD/MM/YYYY'
                             ),
-                    })
-                )
+                    }))
         }
     }
 
@@ -185,11 +185,13 @@ export class PeriodosAcademicosComponent implements OnInit {
     }
 
     nextPage() {
-        this.router.navigate(['configuracion/configuracion/registro/resumen'])
+        this.router.navigate([
+            'gestion-institucional/apertura/registro/resumen',
+        ])
     }
 
     prevPage() {
-        this.router.navigate(['configuracion/configuracion/registro/turnos'])
+        this.router.navigate(['gestion-institucional/apertura/registro/turnos'])
     }
 
     async saveInformation() {

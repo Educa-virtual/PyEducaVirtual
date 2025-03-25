@@ -11,7 +11,7 @@ export type informationMessage = {
             | 'warn'
             | 'error'
             | 'secondary'
-            | 'contrast',
+            | 'contrast'
         summary: string
         detail: string
         life: number
@@ -23,7 +23,7 @@ export type informationMessage = {
             | 'warn'
             | 'error'
             | 'secondary'
-            | 'contrast',
+            | 'contrast'
         summary: string
         detail: string
         life: number

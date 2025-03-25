@@ -35,19 +35,19 @@ export class ResumenComponent implements OnInit {
 
     nextPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/periodos-academicos',
+            'gestion-institucional/apertura/registro/periodos-academicos',
         ])
     }
 
     prevPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/periodos-academicos',
+            'gestion-institucional/apertura/registro/periodos-academicos',
         ])
     }
 
     ngOnInit() {
         if (!this.ticketService.registroInformation) {
-            this.router.navigate(['configuracion/configuracion/years'])
+            this.router.navigate(['gestion-institucional/apertura/years'])
 
             return
         }
@@ -78,7 +78,7 @@ export class ResumenComponent implements OnInit {
             )
         this.resumenInformation.periodosAcademicos =
             this.ticketService.registroInformation.stepYear.fases_promocionales.map(
-                (fase, index) => {
+                (fase) => {
                     // Buscar todas las coincidencias en lugar de solo una
                     const periodosEvalForm =
                         this.ticketService.registroInformation.stepPeriodosAcademicos
@@ -87,8 +87,8 @@ export class ResumenComponent implements OnInit {
                             )
                             .map((periodo, index) => {
                                 let periodoType
-                                console.log(periodo);
-                                
+                                console.log(periodo)
+
                                 switch (Number(periodo.iPeriodoEvalCantidad)) {
                                     case 6:
                                         periodoType = 'semestre'

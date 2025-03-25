@@ -144,8 +144,9 @@ export class PeriodosAcademicosComponent implements OnInit {
             )
         ) {
             this.fasesPromocionales =
-                this.ticketService.registroInformation.stepYear.fases_promocionales.map(
-                    (fase, index) => ({
+                this.ticketService.registroInformation.stepYear.fases_promocionales
+                    .filter((fase) => fase.cFasePromNombre === 'FASE REGULAR')
+                    .map((fase, index) => ({
                         index: index + 1,
                         id: fase.iFaseId,
                         cPeriodoEvalNombre: fase.cPeriodoEvalNombre,
@@ -162,8 +163,7 @@ export class PeriodosAcademicosComponent implements OnInit {
                                 fase.dtFaseFin,
                                 'DD/MM/YYYY'
                             ),
-                    })
-                )
+                    }))
         }
     }
 

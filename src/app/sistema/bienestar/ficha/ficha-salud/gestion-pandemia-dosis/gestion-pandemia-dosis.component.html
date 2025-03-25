@@ -2,9 +2,9 @@
     <div class="p-2 grid p-fluid mt-3">
         <div class="col" style="margin-left: -0.5rem">
             <p-inputGroup>
-                <p-inputGroupAddon
-                    ><i class="pi pi-search"></i
-                ></p-inputGroupAddon>
+                <p-inputGroupAddon>
+                    <i class="pi pi-search"></i>
+                </p-inputGroupAddon>
                 <input pInputText placeholder="Buscar" />
             </p-inputGroup>
         </div>
@@ -14,6 +14,7 @@
                     label="Agregar"
                     (onClick)="agregarDosis()"
                     styleClass="p-button-primary"
+                    severity="success"
                 />
             </div>
         </div>
@@ -47,8 +48,9 @@
 
                 <br />
 
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>Pandemia * </p-inputGroupAddon>
                         <p-dropdown
                             [options]="pandemias"
                             formControlName="iTipoFamiliarId"
@@ -58,32 +60,34 @@
                             [filter]="true"
                             [showClear]="true"
                             [appendTo]="'body'"
+                            styleClass="group-element"
                         />
-                        <label for="iTipoFamiliarId">Pandemia *</label>
-                    </span>
+                    </p-inputGroup>
                 </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>Nro de Dosis *</p-inputGroupAddon>
                         <p-inputNumber
                             formControlName="iPanDFichaNroDosis"
                             min="1"
                             showButtons="true"
+                            class="group-element"
                         />
-                        <label for="iPanDFichaNroDosis">N° de Dosis</label>
-                    </span>
+                    </p-inputGroup>
                 </div>
 
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>Fecha de Dosis *</p-inputGroupAddon>
                         <p-calendar
                             formControlName="dtPanDFichaDosis"
                             [iconDisplay]="'input'"
                             [showIcon]="true"
                             inputId="dtPanDFichaDosis"
                             [appendTo]="'body'"
+                            inputStyleClass="group-element"
                         />
-                        <label for="iTipoIdentId">Fecha de Dosis *</label>
-                    </span>
+                    </p-inputGroup>
                 </div>
             </div>
         </form>
@@ -92,13 +96,13 @@
             <p-button
                 label="Guardar"
                 (onClick)="guardarDosis()"
-                styleClass="p-button-primary"
+                styleClass="p-button-success"
                 [hidden]="dosis_registrada"
             />
             <p-button
                 label="Actualizar"
                 (onClick)="actualizarDosis()"
-                styleClass="p-button-primary"
+                styleClass="p-button-success"
                 [hidden]="!dosis_registrada"
             />
         </div>

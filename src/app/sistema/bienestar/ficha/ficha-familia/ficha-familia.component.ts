@@ -38,9 +38,9 @@ export class FichaFamiliaComponent implements OnInit {
         private DatosFichaBienestarService: DatosFichaBienestarService,
         private compartirFichaService: CompartirFichaService
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
-        }
+        // if (this.compartirFichaService.getiFichaDGId() === null) {
+        //     this.router.navigate(['/bienestar/ficha/general'])
+        // }
     }
 
     ngOnInit(): void {

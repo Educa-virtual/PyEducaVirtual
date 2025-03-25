@@ -6,7 +6,7 @@
     <p-fieldset legend="Relación familiar">
         <div class="pt-2 grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Relación * </p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_familiares"
@@ -15,16 +15,15 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
                         <p-inputSwitch formControlName="bFamiliarVivoConEl" />
-                    </p-inputGroupAddon>
-                    <p-inputGroupAddon>
-                        ¿Comparte residencia?
+                        <span>¿Comparte residencia?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
@@ -36,8 +35,8 @@
     <p-fieldset legend="Identidad">
         <div class="pt-2 grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Tipo Doc. *</p-inputGroupAddon>
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon> Tipo de Documento *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_documentos"
                         formControlName="iTipoIdentId"
@@ -45,11 +44,12 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-6 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Documento *</p-inputGroupAddon>
                     <p-inputMask
                         formControlName="cPersDocumento"
@@ -58,6 +58,7 @@
                         autoClear="false"
                         slotChar=""
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                     <p-button
                         label="Validar"
@@ -69,7 +70,7 @@
             </div>
 
             <div class="col-6 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Sexo *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="sexos"
@@ -78,11 +79,12 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-6 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Estado Civil</p-inputGroupAddon>
                     <p-dropdown
                         [options]="estados_civiles"
@@ -91,12 +93,13 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Nombres *</p-inputGroupAddon>
                     <input
                         pInputText
@@ -104,12 +107,13 @@
                         formControlName="cPersNombre"
                         aria-describedby="cPersNombre-help"
                         maxlength="50"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Primer Apellido *</p-inputGroupAddon>
                     <input
                         pInputText
@@ -117,11 +121,12 @@
                         formControlName="cPersPaterno"
                         aria-describedby="cPersPaterno-help"
                         maxlength="50"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Segundo Apellido </p-inputGroupAddon>
                     <input
                         pInputText
@@ -129,6 +134,7 @@
                         formControlName="cPersMaterno"
                         aria-describedby="cPersMaterno-help"
                         maxlength="50"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
@@ -140,7 +146,7 @@
     <p-fieldset legend="Nacimiento">
         <div class="grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Nacionalidad</p-inputGroupAddon>
                     <p-dropdown
                         [options]="nacionalidades"
@@ -149,11 +155,12 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
                         Fecha de nacimiento *</p-inputGroupAddon
                     >
@@ -164,6 +171,7 @@
                         inputId="dPersNacimiento"
                         [appendTo]="'body'"
                         [maxDate]="fecha_actual"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
@@ -175,7 +183,7 @@
     <p-fieldset legend="Ubigeo" [toggleable]="true">
         <div class="grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Departamento</p-inputGroupAddon>
                     <p-dropdown
                         [options]="departamentos"
@@ -184,11 +192,12 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Provincia</p-inputGroupAddon>
                     <p-dropdown
                         [options]="provincias"
@@ -197,12 +206,13 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Distrito</p-inputGroupAddon>
                     <p-dropdown
                         [options]="distritos"
@@ -211,18 +221,23 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Domicilio</p-inputGroupAddon>
-                    <input pInputText formControlName="cPersDomicilio" />
+                    <input
+                        pInputText
+                        formControlName="cPersDomicilio"
+                        class="group-element"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Tipo de vía: </p-inputGroupAddon>
                     <p-dropdown
                         formControlName="iTipoViaId"
@@ -232,113 +247,123 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
-                    ></p-dropdown>
+                        styleClass="group-element"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-8 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Nombre de la vía </p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionNombreVia"
                         maxlength="150"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Nro.Puerta </p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionNroPuerta"
                         maxlength="10"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Bloque</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionBlock"
                         maxlength="3"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Interior</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDirecionInterior"
                         maxlength="3"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Piso</p-inputGroupAddon>
                     <p-inputNumber
                         formControlName="cFichaDGDirecionPiso"
                         maxlength="3"
                         useGrouping="false"
                         showButtons="true"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Manzana</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionManzana"
                         maxlength="10"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Lote</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionLote"
                         maxlength="3"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Km</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionKm"
                         maxlength="10"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-8 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Referencia</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionReferencia"
+                        class="group-element"
                     />
                 </p-inputGroup>
             </div>
@@ -350,7 +375,7 @@
     <p-fieldset legend="Adicionales" [toggleable]="true">
         <div class="grid p-fluid mt-3">
             <div class="col-12">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Ocupación </p-inputGroupAddon>
                     <p-dropdown
                         [options]="ocupaciones"
@@ -359,11 +384,12 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Instrucción </p-inputGroupAddon>
                     <p-dropdown
                         [options]="grados_instruccion"
@@ -372,11 +398,12 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup>
+                <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon> Tipo I.E. </p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_ies"
@@ -385,6 +412,7 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>

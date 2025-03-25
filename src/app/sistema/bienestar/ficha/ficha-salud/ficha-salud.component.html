@@ -43,9 +43,9 @@
                             <p-inputGroupAddon>
                                 <p-inputSwitch
                                     (onChange)="handleSwitchChange($event, i)"
-                                    name="bDolencia[{{ dolencia['id'] }}]"
+                                    name="bDolencia[{{ dolencia['value'] }}]"
                                 />
-                                <span>{{ dolencia['nombre'] }}</span>
+                                <span>{{ dolencia['label'] }}</span>
                             </p-inputGroupAddon>
                             @if (visibleInput[i] === true) {
                                 <input

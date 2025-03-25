@@ -1,123 +1,113 @@
 import { Component, OnInit } from '@angular/core'
-import { FormsModule } from '@angular/forms'
-import { CheckboxModule } from 'primeng/checkbox'
-import { InputTextModule } from 'primeng/inputtext'
-import { DropdownModule } from 'primeng/dropdown'
-import { ButtonModule } from 'primeng/button'
-import { MultiSelectModule } from 'primeng/multiselect'
-import { DividerModule } from 'primeng/divider'
-import { CardModule } from 'primeng/card'
-import { ToggleButtonModule } from 'primeng/togglebutton'
-import {
-    FormControl,
-    FormGroup,
-    FormBuilder,
-    ReactiveFormsModule,
-} from '@angular/forms'
-import { InputSwitchModule } from 'primeng/inputswitch'
-import { CommonModule } from '@angular/common'
-import { ListboxModule } from 'primeng/listbox'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-ficha-recreacion',
     standalone: true,
-    imports: [
-        FormsModule,
-        CheckboxModule,
-        InputTextModule,
-        DropdownModule,
-        ButtonModule,
-        MultiSelectModule,
-        DividerModule,
-        CardModule,
-        ToggleButtonModule,
-        ReactiveFormsModule,
-        InputSwitchModule,
-        CommonModule,
-        ListboxModule,
-    ],
+    imports: [PrimengModule],
     templateUrl: './ficha-recreacion.component.html',
     styleUrl: './ficha-recreacion.component.scss',
 })
 export class FichaRecreacionComponent implements OnInit {
-    formGroup: FormGroup | undefined
+    formRecreacion: FormGroup | undefined
+    visibleInput: Array<boolean>
 
     constructor(private fb: FormBuilder) {}
 
     ngOnInit() {
-        this.formGroup = new FormGroup({
-            checked: new FormControl<boolean>(false),
-            text: new FormControl<string | null>(null),
+        this.visibleInput = Array(8).fill(false)
+
+        this.formRecreacion = this.fb.group({
+            iFichaDGId: [null, Validators.required],
+            iDeporteId: [null],
+            cDeporteObs: [''],
+            bFichaDGPerteneceLigaDeportiva: [false],
+            cFichaDGPerteneceLigaDeportiva: [''],
+            iReligionId: [null],
+            bFichaDGPerteneceCentroArtistico: [false],
+            cFichaDGPerteneceCentroArtistico: [''],
+            iPasaTiempoId: [null],
+            cPasaTiempoObs: [''],
+            bFichaDGAsistioConsultaPsicologica: [false],
+            cFichaDGAsistioConsultaPsicologica: [''],
+            iTipoFamiliarId: [null],
+            cTipoFamiliarObs: [''],
+            iRelacionPadresId: [null],
+            iTransporteId: [null],
+            cTransporteObs: [''],
+            nTransFichaGastoSoles: [null],
+            nTransFichaGastoTotal: [null],
         })
     }
 
     deportes = [
-        { nombre: '. Futbol', seleccionado: false },
-        { nombre: '. Vóley', seleccionado: false },
-        { nombre: '. Básquet', seleccionado: false },
-        { nombre: '. Natación', seleccionado: false },
+        { value: 1, label: 'FUTBOL' },
+        { value: 2, label: 'VOLEY' },
+        { value: 3, label: 'BASQUET' },
+        { value: 4, label: 'NATACION' },
     ]
 
     club = [{ respuesta: 'Si', seleccionado: false }]
 
     religion = [
-        { nombre: '. Cristianismo' },
-        { nombre: '. Islam' },
-        { nombre: '. Hinduismo' },
-        { nombre: '. Budismo' },
-        { nombre: '. Ateísmo' },
+        { value: 1, label: 'Cristianismo' },
+        { value: 2, label: 'Islam' },
+        { value: 3, label: 'Hinduismo' },
+        { value: 4, label: 'Budismo' },
+        { value: 5, label: 'Ateísmo' },
     ]
     // aqui se guarda la opcion seleccionada
     religionSeleccionada: any = null
 
     act_artistica = [
-        { nombre: '. Teatro', seleccionado: false },
-        { nombre: '. Danza', seleccionado: false },
-        { nombre: '. Música', seleccionado: false },
-        { nombre: '. Oratoria', seleccionado: false },
+        { value: 1, label: 'Teatro' },
+        { value: 2, label: 'Danza' },
+        { value: 3, label: 'Música' },
+        { value: 4, label: 'Oratoria' },
     ]
 
     Pasatiempos = [
-        { nombre: '. Cine', seleccionado: false },
-        { nombre: '. Lectura', seleccionado: false },
-        { nombre: '. Escuchar Música', seleccionado: false },
-        { nombre: '. Video juegos', seleccionado: false },
-        { nombre: '. Juegos online', seleccionado: false },
-        { nombre: '. Reuniones con amigos', seleccionado: false },
-        { nombre: '. Pasear', seleccionado: false },
+        { value: 1, label: 'Cine' },
+        { value: 2, label: 'Lectura' },
+        { value: 3, label: 'Escuchar Música' },
+        { value: 4, label: 'Video juegos' },
+        { value: 5, label: 'Juegos online' },
+        { value: 6, label: 'Reuniones con amigos' },
+        { value: 7, label: 'Pasear' },
     ]
 
     Problememocional = [
-        { nombre: '. Padre', seleccionado: false },
-        { nombre: '. Madre', seleccionado: false },
-        { nombre: '. Hermanos', seleccionado: false },
-        { nombre: '. Amigos', seleccionado: false },
-        { nombre: '. Tutor', seleccionado: false },
-        { nombre: '. Psicólogo', seleccionado: false },
+        { value: 1, label: 'Padre' },
+        { value: 2, label: 'Madre' },
+        { value: 3, label: 'Hermanos' },
+        { value: 4, label: 'Amigos' },
+        { value: 5, label: 'Tutor' },
+        { value: 6, label: 'Psicólogo' },
     ]
 
     Relac_familiar = [
-        { nombre: '. Bueno', seleccionado: false },
-        { nombre: '. Regular', seleccionado: false },
-        { nombre: '. Malo', seleccionado: false },
+        { value: 1, label: 'Bueno' },
+        { value: 2, label: 'Regular' },
+        { value: 3, label: 'Malo' },
     ]
     // aqui se guarda la opcion seleccionada
     relfamiliarSeleccionada: any = null
 
     dpersonal = [
-        { nombre: '. Inteligencia Emocional', seleccionado: false },
-        { nombre: '. Habilidades Socioemocionales', seleccionado: false },
-        { nombre: '. Control de las emociones', seleccionado: false },
-        { nombre: '. Resiliencia', seleccionado: false },
-        { nombre: '. Autoestima', seleccionado: false },
+        { value: 1, label: 'Inteligencia Emocional' },
+        { value: 2, label: 'Habilidades Socioemocionales' },
+        { value: 3, label: 'Control de las emociones' },
+        { value: 4, label: 'Resiliencia' },
+        { value: 5, label: 'Autoestima' },
     ]
 
     mTransporteUrbano = [
-        { nombre: 'Autobús' },
-        { nombre: 'Taxi' },
-        { nombre: 'Mototaxi' },
-        { nombre: 'Bicicleta' },
-        { nombre: 'Metro' },
+        { value: 1, label: 'Autobús' },
+        { value: 2, label: 'Taxi' },
+        { value: 3, label: 'Mototaxi' },
+        { value: 4, label: 'Bicicleta' },
+        { value: 5, label: 'Metro' },
     ]
 
     // aqui se guarda la opcion seleccionada
@@ -147,9 +137,46 @@ export class FichaRecreacionComponent implements OnInit {
     otrosdpersonalSeleccionados = false
     otrosdpersonal = ''
 
-    guardarFormulario() {
+    handleSwitchChange(event: any, index: number) {
+        if (event?.checked === undefined) {
+            this.visibleInput[index] = false
+            return null
+        }
+        if (event.checked === true) {
+            this.visibleInput[index] = true
+        } else {
+            this.visibleInput[index] = false
+        }
+    }
+
+    handleDropdownChange(event: any, index: number) {
+        if (event?.value === undefined) {
+            this.visibleInput[index] = false
+            return null
+        }
+        if (Array.isArray(event.value)) {
+            if (event.value.includes(0)) {
+                this.visibleInput[index] = true
+            } else {
+                this.visibleInput[index] = false
+            }
+        } else {
+            if (event.value == 0) {
+                this.visibleInput[index] = true
+            } else {
+                this.visibleInput[index] = false
+            }
+        }
+    }
+
+    guardarDatos() {
         console.log('Guardando formulario...')
         // Aquí va la lógica de guardado, por ejemplo, una llamada a servicio
+    }
+
+    actualizarDatos() {
+        console.log('Actualizando formulario...')
+        // Aquí va la lógica de actualización, por ejemplo, una llamada a servicio
     }
 
     imprimirFormulario() {

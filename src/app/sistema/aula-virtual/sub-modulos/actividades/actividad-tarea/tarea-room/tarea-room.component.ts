@@ -18,16 +18,17 @@ import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-tran
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConfirmationService, MessageService } from 'primeng/api'
-import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 import { Table } from 'primeng/table'
 import { ScrollerModule } from 'primeng/scroller'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
-import { RubricaCalificarComponent } from '../../../../features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
-import { RubricasComponent } from '../../../../features/rubricas/rubricas.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 
 @Component({
     selector: 'app-tarea-room',
@@ -44,6 +45,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
         RubricasComponent,
         CardOrderListComponent,
         ToolbarPrimengComponent,
+        EmptySectionComponent,
     ],
 
     templateUrl: './tarea-room.component.html',

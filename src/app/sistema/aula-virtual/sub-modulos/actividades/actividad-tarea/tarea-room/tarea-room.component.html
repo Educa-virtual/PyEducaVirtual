@@ -374,15 +374,11 @@
             </div>
             <!--  -->
             <div class="flex flex-column my-4 gap-4">
-                <div class="card">
-                    <div>
-                        <!-- Título para la sección de recursos -->
-                        <h2>Recursos:</h2>
-                        <app-recursos-lista [files]="FilesTareas">
-                        </app-recursos-lista>
-                    </div>
-                    instrumentos
-                    <div>
+                <!-- card mostrar o agregar las rubricas de esa tarea -->
+                <article class="card">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
                         <app-rubricas
                             [title]="'Rúbricas'"
                             mode="SELECTION"
@@ -390,7 +386,70 @@
                             (rubricaSelectedChange)="accionRubrica($event)"
                         ></app-rubricas>
                     </div>
-                </div>
+
+                    <!-- <div class="">
+                        <app-rubrica-evaluacion
+                            (clickNameRubrica)="showRubrica($event)"
+                            class="w-full"
+                        >
+                        </app-rubrica-evaluacion>
+                    </div>
+                    <div class="">
+                        <p-dialog
+                            [modal]="true"
+                            [header]="
+                                'Rubrica - ' + dialogRubricaInfo.header
+                            "
+                            [(visible)]="dialogRubricaInfo.visible"
+                            [style]="{ width: '75rem' }"
+                            [breakpoints]="{
+                                '1199px': '75vw',
+                                '575px': '90vw',
+                            }"
+                            [maximizable]="true"
+                        >
+                            <app-rubrica-calificar
+                                [enableCellSelection]="false"
+                                [showSortIcon]="false"
+                                class="w-full"
+                            >
+                            </app-rubrica-calificar>
+                        </p-dialog> 
+                     </div> -->
+                </article>
+
+                <!-- carde de mostrar recursos -->
+                <article class="card">
+                    <h2>Recursos</h2>
+                    <p-accordion>
+                        <p-accordionTab header="Recursos Adjuntos">
+                            <!-- Verifica si no hay archivos adjuntos -->
+                            <ng-container>
+                                <!-- *ngIf="
+                                    evaluacion?.cEvaluacionArchivoAdjunto
+                                        .length === 0;
+                                    else resourcesList
+                                " -->
+                                <app-empty-section
+                                    class="w-full"
+                                    [message]="'Sin recursos asignados'"
+                                ></app-empty-section>
+                            </ng-container>
+
+                            <!-- Si hay recursos adjuntos -->
+                            <ng-template #resourcesList>
+                                <!-- <app-recursos-lista
+                                [files]="
+                                        evaluacion?.cEvaluacionArchivoAdjunto ??
+                                        []
+                                    "
+                                    
+                                >
+                                </app-recursos-lista> -->
+                            </ng-template>
+                        </p-accordionTab>
+                    </p-accordion>
+                </article>
             </div>
         </p-tabPanel>
 

@@ -2,6 +2,8 @@ import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { GestionPandemiaDosisComponent } from './gestion-pandemia-dosis/gestion-pandemia-dosis.component'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-salud',
@@ -18,7 +20,15 @@ export class FichaSaludComponent implements OnInit {
     visibleSeguroInput: Array<boolean>
     seguros_salud: Array<object>
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private compartirFichaService: CompartirFichaService,
+        private router: Router
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     ngOnInit(): void {
         this.visibleInput = Array(7).fill(false)
@@ -41,7 +51,7 @@ export class FichaSaludComponent implements OnInit {
             { value: 2, label: 'ESSALUD' },
             { value: 3, label: 'Seguro Privado de Salud' },
             { value: 4, label: 'Entvaluead Prestadora de Salud' },
-            { id: 5, label: 'Seguro de Fuerzas Armadas / Policiales' },
+            { value: 5, label: 'Seguro de Fuerzas Armadas / Policiales' },
         ]
 
         try {

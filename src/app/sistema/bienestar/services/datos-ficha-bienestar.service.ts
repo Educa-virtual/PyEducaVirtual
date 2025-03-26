@@ -294,39 +294,57 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.departamentos
     }
 
-    getProvincias(iDptoId: number) {
+    getProvincias(data: any) {
+        if (!this.provincias && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.provincias = items.map((provincia) => ({
+                value: provincia.iPrvnId,
+                label: provincia.cPrvnNombre,
+                iDptoId: provincia.iDptoId,
+            }))
+            return this.provincias
+        }
+        return this.provincias
+    }
+
+    filterProvincias(iDptoId: number) {
         if (!iDptoId) {
             return null
         }
-        return this.parametros.provincias.filter((provincia) => {
-            return provincia.iDptoId === iDptoId ? provincia : null
+        console.log(this.provincias, 'provincias')
+        return this.provincias.filter((provincia: any) => {
+            if (provincia.iDptoId === iDptoId) {
+                return provincia
+            }
+            return null
         })
     }
 
-    getDistritos(iPrvnId: number) {
+    getDistritos(data: any) {
+        if (!this.distritos && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.distritos = items.map((distrito) => ({
+                value: distrito.iDsttId,
+                label: distrito.cDsttNombre,
+                iPrvnId: distrito.iPrvnId,
+                ubigeo: distrito.cDsttCodigo,
+                ubigeo_inei: distrito.cDsttCodigoINEI,
+            }))
+            return this.distritos
+        }
+        return this.distritos
+    }
+
+    filterDistritos(iPrvnId: number) {
         if (!iPrvnId) {
             return null
         }
-        return this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'distritos',
-                campos: '*',
-                condicion: 'iPrvnId = ' + iPrvnId,
-            })
-            .pipe(
-                takeUntil(this.onDestroy$),
-                map((data: any) => {
-                    const items = data.data
-                    this.distritos = items.map((distrito) => ({
-                        value: distrito.iDsttId,
-                        label: distrito.cDsttNombre,
-                        ubigeo: distrito.cDsttCodigo,
-                        ubigeo_inei: distrito.cDsttCodigoINEI,
-                    }))
-                    return this.distritos
-                })
-            )
+        return this.distritos.filter((distrito: any) => {
+            if (distrito.iPrvnId === iPrvnId) {
+                return distrito
+            }
+            return null
+        })
     }
 
     getLenguas() {

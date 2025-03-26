@@ -126,7 +126,7 @@ export class FichaSocioeconomicaComponent implements OnInit {
         {
             field: 'item',
             header: 'N°',
-            type: 'text',
+            type: 'item',
             width: '5%',
             text_header: 'N°',
             text: 'N°',

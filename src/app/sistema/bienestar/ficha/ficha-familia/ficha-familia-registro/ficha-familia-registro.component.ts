@@ -28,7 +28,6 @@ export class FichaFamiliaRegistroComponent implements OnInit {
     provincias: Array<object>
     distritos: Array<object>
     tipos_contacto: Array<object>
-    ubigeo: Array<object>
     ocupaciones: Array<object>
     grados_instruccion: Array<object>
     tipos_ies: Array<object>
@@ -74,6 +73,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                     this.datosFichaBienestarService.getDepartamentos(
                         data?.departamentos
                     )
+                this.datosFichaBienestarService.getProvincias(data?.provincias)
+                this.datosFichaBienestarService.getDistritos(data?.distritos)
                 this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
                     data?.tipos_vias
                 )
@@ -131,7 +132,6 @@ export class FichaFamiliaRegistroComponent implements OnInit {
         this.formFamiliar
             .get('iTipoIdentId')
             .valueChanges.subscribe((value) => {
-                this.formFamiliar.get('cPersDocumento').setValue(null)
                 // Solo permitir validar DNI, CDE y RUC
                 this.documento_consultable = [1, 2, 3].includes(value)
                     ? true
@@ -139,9 +139,16 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 const tipo_doc = this.tipos_documentos.find(
                     (item: any) => item.value === value
                 )
-                console.log(tipo_doc)
-                this.longitud_documento = tipo_doc['longitud']
-                this.formato_documento = '9'.repeat(this.longitud_documento)
+                if (tipo_doc) {
+                    if (
+                        this.formFamiliar.get('cPersDocumento').value.length >
+                        tipo_doc['longitud']
+                    ) {
+                        this.formFamiliar.get('cPersDocumento').setValue(null)
+                    }
+                    this.longitud_documento = tipo_doc['longitud']
+                    this.formato_documento = '9'.repeat(this.longitud_documento)
+                }
             })
 
         this.formFamiliar.get('iNacionId').valueChanges.subscribe((value) => {
@@ -151,48 +158,26 @@ export class FichaFamiliaRegistroComponent implements OnInit {
         this.formFamiliar.get('iDptoId').valueChanges.subscribe((value) => {
             this.formFamiliar.get('iPrvnId').setValue(null)
             this.provincias = null
-            this.getProvincias(value)
+            this.filterProvincias(value)
         })
 
         this.formFamiliar.get('iPrvnId').valueChanges.subscribe((value) => {
             this.formFamiliar.get('iDsttId').setValue(null)
             this.distritos = null
-            this.getDistritos(value)
-        })
-
-        this.formFamiliar.get('iDsttId').valueChanges.subscribe((value) => {
-            this.formFamiliar.get('cEstUbigeo').setValue(null)
-            if (!value) return null
-            if (!this.distritos) return null
-            const item = this.distritos.find(
-                (item: any) => item.value === value
-            )
-            if (item) {
-                this.formFamiliar
-                    .get('cEstUbigeo')
-                    .setValue(item['ubigeo_inei'])
-            } else {
-                this.formFamiliar.get('cEstUbigeo').setValue('')
-            }
+            this.filterDistritos(value)
         })
     }
 
-    getProvincias(iDptoId: number) {
+    filterProvincias(iDptoId: number) {
         if (!iDptoId) return null
-        this.datosFichaBienestarService.getProvincias(iDptoId).subscribe({
-            next: (data) => {
-                this.provincias = data
-            },
-        })
+        this.provincias =
+            this.datosFichaBienestarService.filterProvincias(iDptoId)
     }
 
-    getDistritos(iPrvnId: number) {
+    filterDistritos(iPrvnId: number) {
         if (!iPrvnId) return null
-        this.datosFichaBienestarService.getDistritos(iPrvnId).subscribe({
-            next: (data) => {
-                this.distritos = data
-            },
-        })
+        this.distritos =
+            this.datosFichaBienestarService.filterDistritos(iPrvnId)
     }
 
     /**
@@ -248,8 +233,11 @@ export class FichaFamiliaRegistroComponent implements OnInit {
         this.formFamiliar
             .get('iTipoFamiliarId')
             ?.setValue(+item?.iTipoFamiliarId)
+        this.formFamiliar.get('cPersDocumento')?.setValue(+item?.cPersDocumento)
         this.formFamiliar.get('iTipoIdentId')?.setValue(+item?.iTipoIdentId)
-        this.formFamiliar.get('iTipoEstCivId')?.setValue(+item?.iTipoEstCivId)
+        this.formFamiliar
+            .get('iTipoEstCivId')
+            ?.setValue(item?.iTipoEstCivId ? +item.iTipoEstCivId : null)
         this.formFamiliar.get('iNacionId')?.setValue(+item?.iNacionId)
         this.formFamiliar.get('iDptoId')?.setValue(+item?.iDptoId)
         this.formFamiliar.get('iPrvnId')?.setValue(+item?.iPrvnId)

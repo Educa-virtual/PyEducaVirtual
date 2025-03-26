@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-recreacion',
@@ -13,7 +15,15 @@ export class FichaRecreacionComponent implements OnInit {
     formRecreacion: FormGroup | undefined
     visibleInput: Array<boolean>
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private compartirFichaService: CompartirFichaService,
+        private router: Router
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     ngOnInit() {
         this.visibleInput = Array(8).fill(false)
@@ -42,6 +52,7 @@ export class FichaRecreacionComponent implements OnInit {
     }
 
     deportes = [
+        { value: 0, label: 'OTRO' },
         { value: 1, label: 'FUTBOL' },
         { value: 2, label: 'VOLEY' },
         { value: 3, label: 'BASQUET' },
@@ -51,6 +62,7 @@ export class FichaRecreacionComponent implements OnInit {
     club = [{ respuesta: 'Si', seleccionado: false }]
 
     religion = [
+        { value: 0, label: 'OTRO' },
         { value: 1, label: 'Cristianismo' },
         { value: 2, label: 'Islam' },
         { value: 3, label: 'Hinduismo' },
@@ -61,6 +73,7 @@ export class FichaRecreacionComponent implements OnInit {
     religionSeleccionada: any = null
 
     act_artistica = [
+        { value: 0, label: 'Otra actividad' },
         { value: 1, label: 'Teatro' },
         { value: 2, label: 'Danza' },
         { value: 3, label: 'Música' },
@@ -68,6 +81,7 @@ export class FichaRecreacionComponent implements OnInit {
     ]
 
     Pasatiempos = [
+        { value: 0, label: 'Otro pasatiempo' },
         { value: 1, label: 'Cine' },
         { value: 2, label: 'Lectura' },
         { value: 3, label: 'Escuchar Música' },
@@ -78,6 +92,7 @@ export class FichaRecreacionComponent implements OnInit {
     ]
 
     Problememocional = [
+        { value: 0, label: 'Otro' },
         { value: 1, label: 'Padre' },
         { value: 2, label: 'Madre' },
         { value: 3, label: 'Hermanos' },
@@ -95,6 +110,7 @@ export class FichaRecreacionComponent implements OnInit {
     relfamiliarSeleccionada: any = null
 
     dpersonal = [
+        { value: 0, label: 'Otro Emocional' },
         { value: 1, label: 'Inteligencia Emocional' },
         { value: 2, label: 'Habilidades Socioemocionales' },
         { value: 3, label: 'Control de las emociones' },
@@ -103,6 +119,7 @@ export class FichaRecreacionComponent implements OnInit {
     ]
 
     mTransporteUrbano = [
+        { value: 0, label: 'Otro' },
         { value: 1, label: 'Autobús' },
         { value: 2, label: 'Taxi' },
         { value: 3, label: 'Mototaxi' },

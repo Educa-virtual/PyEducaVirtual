@@ -6,13 +6,14 @@
 
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Ocupación </p-inputGroupAddon>
+                <p-inputGroupAddon> Tipo de Ocupación </p-inputGroupAddon>
                 <p-dropdown
                     [options]="ocupaciones_vivienda"
                     formControlName="iTipoOcupaVivId"
                     [filter]="false"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 0)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -21,7 +22,7 @@
                     <input
                         pInputText
                         formControlName="cTipoOcupaVivDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -37,6 +38,7 @@
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 1)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -45,7 +47,7 @@
                     <input
                         pInputText
                         formControlName="cEstadoVivDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -55,7 +57,7 @@
 
         <div class="field col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> # de pisos </p-inputGroupAddon>
+                <p-inputGroupAddon> Número de pisos </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroPisos"
                     min="1"
@@ -66,7 +68,7 @@
         </div>
         <div class="field col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> # de ambientes </p-inputGroupAddon>
+                <p-inputGroupAddon> Número de ambientes </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroAmbientes"
                     min="1"
@@ -77,7 +79,7 @@
         </div>
         <div class="field col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> # de dormitorios </p-inputGroupAddon>
+                <p-inputGroupAddon> Número de dormitorios </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroHabitaciones"
                     min="0"
@@ -96,6 +98,7 @@
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 2)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -104,7 +107,7 @@
                     <input
                         pInputText
                         formControlName="cMatTecVivDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -113,13 +116,14 @@
         </div>
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Pisos </p-inputGroupAddon>
+                <p-inputGroupAddon> Material del piso </p-inputGroupAddon>
                 <p-dropdown
                     [options]="materiales_pisos_vivienda"
                     formControlName="iMatPisoVivId"
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 3)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -128,7 +132,7 @@
                     <input
                         pInputText
                         formControlName="cMatPisoVivDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -138,13 +142,14 @@
 
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Paredes </p-inputGroupAddon>
+                <p-inputGroupAddon> Material de las paredes </p-inputGroupAddon>
                 <p-dropdown
                     [options]="materiales_paredes_vivienda"
                     formControlName="iMatPreId"
                     [filter]="false"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 4)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -153,7 +158,7 @@
                     <input
                         pInputText
                         formControlName="cMatPreDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -169,6 +174,7 @@
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 5)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -177,7 +183,7 @@
                     <input
                         pInputText
                         formControlName="cTipoSumADescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -194,6 +200,7 @@
                     [filter]="false"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 6)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -202,7 +209,7 @@
                     <input
                         pInputText
                         formControlName="cTipoVivDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -211,13 +218,16 @@
         </div>
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Tipo de SSHH </p-inputGroupAddon>
+                <p-inputGroupAddon>
+                    Tipo de servicio higiénico
+                </p-inputGroupAddon>
                 <p-dropdown
                     [options]="tipos_sshh"
                     formControlName="iTiposSsHhId"
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     (onChange)="handleDropdownChange($event, 7)"
                     [style]="{ flex: '1', width: '100%' }"
                     styleClass="group-element"
@@ -226,7 +236,7 @@
                     <input
                         pInputText
                         formControlName="cTipoSsHhDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -236,7 +246,7 @@
 
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Alumbrado </p-inputGroupAddon>
+                <p-inputGroupAddon> Tipo de alumbrado </p-inputGroupAddon>
                 <p-multiSelect
                     display="chip"
                     [options]="tipos_alumbrado"
@@ -244,6 +254,7 @@
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     multiple="true"
                     [maxSelectedLabels]="undefined"
                     showToggleAll="false"
@@ -256,7 +267,7 @@
                     <input
                         pInputText
                         formControlName="cTipoAlumDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otro"
                         type="text"
                         class="group-element"
                     />
@@ -265,7 +276,9 @@
         </div>
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Otros elementos </p-inputGroupAddon>
+                <p-inputGroupAddon>
+                    Otros elementos en su vivienda
+                </p-inputGroupAddon>
                 <p-multiSelect
                     display="chip"
                     [options]="otros_elementos"
@@ -273,6 +286,7 @@
                     [filter]="true"
                     [showClear]="true"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     multiple="true"
                     [maxSelectedLabels]="undefined"
                     showToggleAll="false"
@@ -285,7 +299,7 @@
                     <input
                         pInputText
                         formControlName="cEleParaVivDescripcion"
-                        placeholder="Especifique"
+                        placeholder="Especifique otros"
                         type="text"
                         class="group-element"
                     />

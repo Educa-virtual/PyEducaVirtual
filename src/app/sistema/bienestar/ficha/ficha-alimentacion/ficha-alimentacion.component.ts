@@ -2,6 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-alimentacion',
@@ -19,8 +20,13 @@ export class FichaAlimentacionComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private compartirFichaService: CompartirFichaService
-    ) {}
+        private compartirFichaService: CompartirFichaService,
+        private router: Router
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     ngOnInit(): void {
         this.visibleInput = Array(1).fill(false)

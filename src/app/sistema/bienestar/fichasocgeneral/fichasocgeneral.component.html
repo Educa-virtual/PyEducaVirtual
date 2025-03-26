@@ -7,7 +7,7 @@
         <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Tipo de vía: </p-inputGroupAddon>
+                    <p-inputGroupAddon> Tipo de vía * </p-inputGroupAddon>
                     <p-dropdown
                         formControlName="iTipoViaId"
                         [options]="tipos_vias"
@@ -15,9 +15,19 @@
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
+                        (onChange)="handleDropdownChange($event, 1)"
                         [style]="{ flex: '1', width: '100%' }"
                         styleClass="group-element"
-                    ></p-dropdown>
+                    />
+                    @if (visibleInput[1] === true) {
+                        <input
+                            pInputText
+                            formControlName="cTipoViaNombre"
+                            placeholder="Especifique otra"
+                            type="text"
+                            class="group-element"
+                        />
+                    }
                 </p-inputGroup>
             </div>
 
@@ -149,9 +159,7 @@
         <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon class="vertical">
-                        Religión:
-                    </p-inputGroupAddon>
+                    <p-inputGroupAddon> Religión </p-inputGroupAddon>
                     <p-dropdown
                         [options]="religiones"
                         formControlName="iReligionId"
@@ -159,9 +167,19 @@
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
+                        (onChange)="handleDropdownChange($event, 2)"
                         [style]="{ flex: '1', width: '100%' }"
                         styleClass="group-element"
                     />
+                    @if (visibleInput[2] === true) {
+                        <input
+                            pInputText
+                            formControlName="cReligionNombre"
+                            placeholder="Especifique otra"
+                            type="text"
+                            class="group-element"
+                        />
+                    }
                 </p-inputGroup>
             </div>
         </div>
@@ -206,7 +224,7 @@
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
-            @if (visibleInput) {
+            @if (visibleInput[0] === true) {
                 <div class="col-12 md:col-4">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon> ¿Cuántos Hijos? </p-inputGroupAddon>

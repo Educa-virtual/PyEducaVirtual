@@ -18,6 +18,7 @@
                     [maxSelectedLabels]="undefined"
                     [showToggleAll]="false"
                     [appendTo]="'body'"
+                    placeholder="Seleccione"
                     multiple="true"
                     [maxSelectedLabels]="undefined"
                     (onChange)="handleDropdownChange($event, 0)"
@@ -42,7 +43,9 @@
                 <div class="grid mt-3">
                     <div class="col-12">
                         <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon> Desayuno </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                ¿Donde consume el desayuno?
+                            </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="lugares_alimentacion"
                                 formControlName="iLugarAlimIdDesayuno"
@@ -51,6 +54,7 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 (onChange)="handleDropdownChange($event, 1)"
                                 styleClass="group-element"
                             />
@@ -58,7 +62,7 @@
                                 <input
                                     pInputText
                                     formControlName="cLugarAlimDesayuno"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />
@@ -67,7 +71,9 @@
                     </div>
                     <div class="col-12">
                         <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon> Almuerzo </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                ¿Donde consume el almuerzo?
+                            </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="lugares_alimentacion"
                                 formControlName="iLugarAlimIdAlmuerzo"
@@ -76,6 +82,7 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 (onChange)="handleDropdownChange($event, 2)"
                                 styleClass="group-element"
                             />
@@ -83,7 +90,7 @@
                                 <input
                                     pInputText
                                     formControlName="cLugarAlimAlmuerzo"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />
@@ -92,7 +99,9 @@
                     </div>
                     <div class="col-12">
                         <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon> Cena </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                ¿Donde consume la cena?
+                            </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="lugares_alimentacion"
                                 formControlName="iLugarAlimIdCena"
@@ -101,6 +110,7 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 (onChange)="handleDropdownChange($event, 3)"
                                 [style]="{ flex: '1', width: '100%' }"
                                 styleClass="group-element"
@@ -109,7 +119,7 @@
                                 <input
                                     pInputText
                                     formControlName="cLugarAlimCena"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />

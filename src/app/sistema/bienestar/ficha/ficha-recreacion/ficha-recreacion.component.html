@@ -19,6 +19,7 @@
                                 [filter]="true"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 multiple="true"
                                 [maxSelectedLabels]="undefined"
                                 (onChange)="handleDropdownChange($event, 0)"
@@ -30,7 +31,7 @@
                                 <input
                                     pInputText
                                     formControlName="cDeporteObs"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />
@@ -51,7 +52,7 @@
                                     type="text"
                                     name="cFichaDGPerteneceLigaDeportiva"
                                     pInputText
-                                    placeholder="Especifique *"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -72,6 +73,7 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 (onChange)="handleDropdownChange($event, 2)"
                                 [style]="{ flex: '1', width: '100%' }"
                                 styleClass="group-element"
@@ -80,7 +82,7 @@
                                 <input
                                     pInputText
                                     formControlName="cReligionObs"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otra"
                                     type="text"
                                     class="group-element"
                                 />
@@ -94,17 +96,16 @@
                                     (onChange)="handleSwitchChange($event, 3)"
                                     name="bFichaDGPerteneceCentroArtistico"
                                 />
-                                <span
-                                    >Pertenece a un Centro Artístico o
-                                    Cultural</span
-                                >
+                                <span>
+                                    Pertenece a un Centro Artístico o Cultural
+                                </span>
                             </p-inputGroupAddon>
                             @if (visibleInput[3] === true) {
                                 <input
                                     type="text"
                                     name="cFichaDGPerteneceCentroArtistico"
                                     pInputText
-                                    placeholder="Especifique *"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -122,6 +123,7 @@
                                 [filter]="true"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 multiple="true"
                                 [maxSelectedLabels]="undefined"
                                 showToggleAll="false"
@@ -134,7 +136,7 @@
                                 <input
                                     pInputText
                                     formControlName="cPasaTiempoObs"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otra"
                                     type="text"
                                     class="group-element"
                                 />
@@ -151,6 +153,7 @@
                                 [filter]="true"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 multiple="true"
                                 [maxSelectedLabels]="undefined"
                                 showToggleAll="false"
@@ -163,7 +166,7 @@
                                 <input
                                     pInputText
                                     formControlName="cPasaTiempoObs"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />
@@ -183,17 +186,17 @@
                                     (onChange)="handleSwitchChange($event, 6)"
                                     name="bFichaDGAsistioConsultaPsicologica"
                                 />
-                                <span
-                                    >Alguna vez asistió a una consulta
-                                    psicológica</span
-                                >
+                                <span>
+                                    ¿Alguna vez asistió a una consulta
+                                    psicológica?
+                                </span>
                             </p-inputGroupAddon>
                             @if (visibleInput[6] === true) {
                                 <input
                                     type="text"
                                     name="cFichaDGAsistioConsultaPsicologica"
                                     pInputText
-                                    placeholder="Especifique *"
+                                    placeholder="Especifique cuando"
                                     class="group-element"
                                 />
                             }
@@ -202,8 +205,8 @@
                     <div class="col-12 col-md-6">
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
-                                A quién acudes cuando tienes problemas
-                                emocionales
+                                ¿A quién acude cuando tiene problemas
+                                emocionales?
                             </p-inputGroupAddon>
                             <p-multiSelect
                                 display="chip"
@@ -212,6 +215,7 @@
                                 [filter]="true"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 multiple="true"
                                 [maxSelectedLabels]="undefined"
                                 showToggleAll="false"
@@ -224,7 +228,7 @@
                                 <input
                                     pInputText
                                     formControlName="cTipoFamiliarObs"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />
@@ -234,7 +238,7 @@
                     <div class="col-12 col-md-6">
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
-                                Como es la relacion con tu familia
+                                ¿Cómo es la relacion con su familia?
                             </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="Relac_familiar"
@@ -242,6 +246,7 @@
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 [style]="{ flex: '1', width: '100%' }"
                                 styleClass="group-element"
                             />
@@ -256,8 +261,7 @@
                     <div class="col-12 col-md-6">
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
-                                ¿Cuál es el medio de transporte que más
-                                utilizas?
+                                Medio de transporte más utilizado
                             </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="mTransporteUrbano"
@@ -265,6 +269,7 @@
                                 [filter]="true"
                                 [showClear]="true"
                                 [appendTo]="'body'"
+                                placeholder="Seleccione"
                                 (onChange)="handleDropdownChange($event, 8)"
                                 [style]="{ flex: '1', width: '100%' }"
                                 styleClass="group-element"
@@ -273,7 +278,7 @@
                                 <input
                                     pInputText
                                     formControlName="cTransporteObs"
-                                    placeholder="Especifique"
+                                    placeholder="Especifique otro"
                                     type="text"
                                     class="group-element"
                                 />
@@ -283,7 +288,7 @@
                     <div class="col-12">
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
-                                Cuanto gastas aprox. en pasajes
+                                Gasto aprox. diario en pasajes
                             </p-inputGroupAddon>
                             <p-inputNumber
                                 formControlName="nTransFichaGastoSoles"

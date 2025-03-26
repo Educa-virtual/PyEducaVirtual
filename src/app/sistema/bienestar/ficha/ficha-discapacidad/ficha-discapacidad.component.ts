@@ -1,6 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-discapacidad',
@@ -14,7 +16,15 @@ export class FichaDiscapacidadComponent implements OnInit {
     visibleProgramaInput: Array<boolean>
     visibleLimitacionesInput: Array<boolean>
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private compartirFichaService: CompartirFichaService,
+        private router: Router
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     ngOnInit(): void {
         this.visibleProgramaInput = Array(2).fill(false)

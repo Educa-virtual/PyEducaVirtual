@@ -5,6 +5,7 @@ import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { FichaVivienda } from '../../interfaces/fichaVivienda'
 import { MessageService } from 'primeng/api'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-vivienda',
@@ -34,8 +35,13 @@ export class FichaViviendaComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService
-    ) {}
+        private compartirFichaService: CompartirFichaService,
+        private router: Router
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     private _messageService = inject(MessageService)
 

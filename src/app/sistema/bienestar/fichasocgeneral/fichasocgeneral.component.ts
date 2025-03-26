@@ -29,7 +29,7 @@ export class FichasocgeneralComponent implements OnInit {
     formGeneral: FormGroup
     religiones: Array<object>
     tipos_vias: Array<object>
-    visibleInput: boolean = false
+    visibleInput: Array<boolean>
     ficha_registrada: boolean = false
 
     private _MessageService = inject(MessageService)
@@ -42,11 +42,13 @@ export class FichasocgeneralComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.visibleInput = Array(3).fill(false)
+
         this.formGeneral = this.fb.group({
             iSesionId: this.compartirFichaService.perfil?.iCredId,
             iPersId: this.compartirFichaService.perfil?.iPersId,
             iFichaDGId: [null],
-            iTipoViaId: [null],
+            iTipoViaId: [null, Validators.required],
             cFichaDGDireccionNombreVia: ['', Validators.required],
             cFichaDGDireccionNroPuerta: [''],
             cFichaDGDireccionBlock: [''],
@@ -69,9 +71,9 @@ export class FichasocgeneralComponent implements OnInit {
             .get('bFichaDGTieneHijos')
             ?.valueChanges.subscribe((value) => {
                 if (value) {
-                    this.visibleInput = true
+                    this.visibleInput[0] = true
                 } else {
-                    this.visibleInput = false
+                    this.visibleInput[0] = false
                     this.formGeneral.get('iFichaDGNroHijos')?.setValue(null) // Limpia si desactivan
                 }
             })
@@ -89,6 +91,26 @@ export class FichasocgeneralComponent implements OnInit {
 
         if (this.compartirFichaService.getiFichaDGId()) {
             this.searchFichaGeneral()
+        }
+    }
+
+    handleDropdownChange(event: any, index: number) {
+        if (event?.value === undefined) {
+            this.visibleInput[index] = false
+            return null
+        }
+        if (Array.isArray(event.value)) {
+            if (event.value.includes(1)) {
+                this.visibleInput[index] = true
+            } else {
+                this.visibleInput[index] = false
+            }
+        } else {
+            if (event.value == 1) {
+                this.visibleInput[index] = true
+            } else {
+                this.visibleInput[index] = false
+            }
         }
     }
 

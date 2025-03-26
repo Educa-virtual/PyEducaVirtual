@@ -42,6 +42,9 @@ export class AreaCardComponent implements OnInit {
     @Output() dialogSubirArchivoEvent = new EventEmitter<{
         curso: ICurso
     }>()
+    @Output() dialogConfigurarNivelLogroEvent = new EventEmitter<{
+        curso: ICurso
+    }>()
 
     constructor(private store: LocalStoreService) {}
 
@@ -61,6 +64,15 @@ export class AreaCardComponent implements OnInit {
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.descargarMatrizPorEvaluacionArea()
+                },
+            },
+            {
+                label: 'Config. nivel de logro',
+                icon: 'pi pi-angle-right',
+                command: () => {
+                    this.dialogConfigurarNivelLogroEvent.emit({
+                        curso: this.curso,
+                    })
                 },
             },
             {

@@ -57,6 +57,9 @@
                             (dialogSubirArchivoEvent)="
                                 recibirDatosParaSubirArchivo($event)
                             "
+                            (dialogConfigurarNivelLogroEvent)="
+                                recibirDatosParaConfigurarNivelLogro($event)
+                            "
                         ></app-area-card>
                     }
                 </div>
@@ -67,3 +70,5 @@
 <app-subir-archivo-preguntas
     (archivoSubidoEvent)="actualizarEstadoArchivoSubido($event)"
 ></app-subir-archivo-preguntas>
+
+<app-configurar-nivel-logro> </app-configurar-nivel-logro>

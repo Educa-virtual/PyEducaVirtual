@@ -23,6 +23,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { SubirArchivoPreguntasComponent } from './subir-archivo-preguntas/subir-archivo-preguntas.component'
 import { AreaCardComponent } from './area-card/area-card.component'
+import { ConfigurarNivelLogroComponent } from './configurar-nivel-logro/configurar-nivel-logro.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -36,6 +37,7 @@ export type Layout = 'list' | 'grid'
         MessagesModule,
         SubirArchivoPreguntasComponent,
         AreaCardComponent,
+        ConfigurarNivelLogroComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -47,6 +49,10 @@ export class ListaAreasComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
     @ViewChild(SubirArchivoPreguntasComponent)
     dialogSubirArchivo!: SubirArchivoPreguntasComponent
+
+    @ViewChild(ConfigurarNivelLogroComponent)
+    dialogConfigurarNivelLogro!: ConfigurarNivelLogroComponent
+
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
 
@@ -85,6 +91,10 @@ export class ListaAreasComponent implements OnInit {
 
     recibirDatosParaSubirArchivo(datos: { curso: ICurso }) {
         this.dialogSubirArchivo.mostrarDialog(datos)
+    }
+
+    recibirDatosParaConfigurarNivelLogro(datos: { curso: ICurso }) {
+        this.dialogConfigurarNivelLogro.mostrarDialog(datos)
     }
 
     actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {

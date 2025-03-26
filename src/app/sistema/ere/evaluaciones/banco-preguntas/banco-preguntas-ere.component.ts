@@ -269,7 +269,6 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     obtenerPreguntas() {
-        console.log('obteniendo preguntas')
         let params = new HttpParams()
         params = params.set(
             'tipo_pregunta',

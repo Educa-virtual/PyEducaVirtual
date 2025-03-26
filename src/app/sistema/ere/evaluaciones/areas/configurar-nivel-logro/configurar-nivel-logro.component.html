@@ -1,0 +1,66 @@
+<p-dialog
+    [header]="'Configurar nivel de logro'"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '40rem' }"
+>
+    <br />
+    <p style="margin-bottom: 1rem"><strong>Área: </strong> {{ titulo }}</p>
+
+    <form [formGroup]="formlogros">
+        <div formArrayName="logros">
+            <div
+                *ngFor="let logro of logros.controls; let i = index"
+                [formGroupName]="i"
+                class="p-fluid grid fila"
+            >
+                <div class="col-12 md:col-4">
+                    <div class="p-field">
+                        <label for="inicial">Desde:</label>
+                        <input
+                            type="number"
+                            formControlName="iDesde"
+                            pInputText
+                        />
+                    </div>
+                </div>
+                <div class="col-12 md:col-4">
+                    <div class="p-field">
+                        <label for="final">Hasta:</label>
+                        <input
+                            type="number"
+                            formControlName="iHasta"
+                            pInputText
+                        />
+                    </div>
+                </div>
+                <div class="col-12 md:col-4">
+                    <div class="p-field">
+                        <label for="resultado">Resultado:</label>
+                        <p-dropdown
+                            formControlName="iNivelLogroId"
+                            styleClass="w-full"
+                            placeholder="Seleccione..."
+                            optionValue="iNivelLogroId"
+                            [options]="nivelLogros"
+                            optionLabel="cNivelLogroNombre"
+                            [showClear]="true"
+                            appendTo="body"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br />
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+        <p-button label="Registrar" (onClick)="registrarLogros()" />
+    </div>
+</p-dialog>
+
+<p-toast></p-toast>

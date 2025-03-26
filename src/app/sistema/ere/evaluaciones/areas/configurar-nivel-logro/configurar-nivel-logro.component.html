@@ -5,7 +5,10 @@
     [style]="{ width: '40rem' }"
 >
     <br />
-    <p style="margin-bottom: 1rem"><strong>Área: </strong> {{ titulo }}</p>
+    <p><strong>Área: </strong> {{ titulo }}</p>
+    <p style="margin-bottom: 1.5rem">
+        <strong>Ctd. preguntas: </strong>{{ curso?.iCantidadPreguntas }}
+    </p>
 
     <form [formGroup]="formlogros">
         <div formArrayName="logros">

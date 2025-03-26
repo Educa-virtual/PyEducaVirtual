@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 
 @Component({
     selector: 'app-ficha-alimentacion',
@@ -21,6 +22,7 @@ export class FichaAlimentacionComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private compartirFichaService: CompartirFichaService,
+        private datosFichaBienestarService: DatosFichaBienestarService,
         private router: Router
     ) {
         if (this.compartirFichaService.getiFichaDGId() === null) {
@@ -32,21 +34,18 @@ export class FichaAlimentacionComponent implements OnInit {
         this.visibleInput = Array(1).fill(false)
         this.visibleAdicionalInput = Array(6).fill(false)
 
-        this.lugares_alimentacion = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'HOGAR' },
-            { id: 2, nombre: 'PENSIÓN' },
-            { id: 3, nombre: 'COMEDOR' },
-            { id: 4, nombre: 'NINGUNO' },
-        ]
-
-        this.programas_alimentarios = [
-            { id: 0, nombre: 'OTRO' },
-            { id: 1, nombre: 'QALIWARMA' },
-            { id: 2, nombre: 'WASI MIKUNA' },
-            { id: 3, nombre: 'PROGRAMA DE COMPLEMENTACION ALIMENTARIA' },
-            { id: 4, nombre: 'VASO DE LECHE' },
-        ]
+        this.datosFichaBienestarService
+            .getFichaParametros()
+            .subscribe((data: any) => {
+                this.lugares_alimentacion =
+                    this.datosFichaBienestarService.getLugaresAlimentacion(
+                        data?.lugares_alimentacion
+                    )
+                this.programas_alimentarios =
+                    this.datosFichaBienestarService.getProgramasAlimentarios(
+                        data?.programas_alimentarios
+                    )
+            })
 
         try {
             this.formAlimentacion = this.fb.group({
@@ -85,13 +84,13 @@ export class FichaAlimentacionComponent implements OnInit {
             return null
         }
         if (Array.isArray(event.value)) {
-            if (event.value.includes(0)) {
+            if (event.value.includes(1)) {
                 this.visibleInput[index] = true
             } else {
                 this.visibleInput[index] = false
             }
         } else {
-            if (event.value == 0) {
+            if (event.value == 1) {
                 this.visibleInput[index] = true
             } else {
                 this.visibleInput[index] = false

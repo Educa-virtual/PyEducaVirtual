@@ -4,7 +4,50 @@
     <div class="grid p-fluid mt-3">
         <input type="hidden" name="iFichaDGId" />
 
-        <div class="field col-12 lg:col-6">
+        <div class="col-12 lg:col-6">
+            <p-fieldset
+                legend="Indique si tiene alguna limitación o discapacidad"
+            >
+                <div class="grid">
+                    <div
+                        class="col-12"
+                        *ngFor="
+                            let discapacidad of discapacidades;
+                            let i = index
+                        "
+                    >
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    (onChange)="
+                                        handleSwitchLimitacionChange(
+                                            $event,
+                                            discapacidad['value']
+                                        )
+                                    "
+                                    formControlName="iDiscId"
+                                />
+                                <span>{{ discapacidad['label'] }}</span>
+                            </p-inputGroupAddon>
+                            @if (
+                                visibleLimitacionesInput[
+                                    discapacidad['value']
+                                ] === true
+                            ) {
+                                <input
+                                    type="text"
+                                    formControlName="cDiscFichaObs"
+                                    pInputText
+                                    placeholder="Observaciones"
+                                    class="group-element"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+        <div class="col-12 lg:col-6">
             <p-fieldset legend="Programas del estado">
                 <div class="grid">
                     <div class="col-12">
@@ -12,13 +55,16 @@
                             <p-inputGroupAddon>
                                 <p-inputSwitch
                                     (onChange)="
-                                        handleSwitchProgramaChange($event, 0)
+                                        handleSwitchProgramaChange(
+                                            $event,
+                                            'conadis'
+                                        )
                                     "
                                     formControlName="bFichaDGEstaEnCONADIS"
                                 />
                                 <span>CONADIS</span>
                             </p-inputGroupAddon>
-                            @if (visibleProgramaInput[0] === true) {
+                            @if (visibleProgramaInput['conadis'] === true) {
                                 <input
                                     type="text"
                                     formControlName="cCodigoCONADIS"
@@ -36,12 +82,15 @@
                                 <p-inputSwitch
                                     formControlName="bFichaDGEstaEnOMAPED"
                                     (onChange)="
-                                        handleSwitchProgramaChange($event, 1)
+                                        handleSwitchProgramaChange(
+                                            $event,
+                                            'omaped'
+                                        )
                                     "
                                 />
                                 <span>OMAPED</span>
                             </p-inputGroupAddon>
-                            @if (visibleProgramaInput[1] === true) {
+                            @if (visibleProgramaInput['omaped'] === true) {
                                 <input
                                     type="text"
                                     formControlName="cCodigoOMAPED"
@@ -57,112 +106,22 @@
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
                                 <p-inputSwitch
-                                    formControlName="bFichaDGEstaEnOMAPED"
+                                    formControlName="bFichaDGEstaEnOtro"
                                     (onChange)="
-                                        handleSwitchProgramaChange($event, 2)
+                                        handleSwitchProgramaChange(
+                                            $event,
+                                            'otro_programa'
+                                        )
                                     "
                                 />
                                 <span>Otro</span>
                             </p-inputGroupAddon>
-                            @if (visibleProgramaInput[2] === true) {
+                            @if (
+                                visibleProgramaInput['otro_programa'] === true
+                            ) {
                                 <input
                                     type="text"
                                     formControlName="cOtroProgramaDiscapacidad"
-                                    pInputText
-                                    placeholder="Observaciones"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                </div>
-            </p-fieldset>
-        </div>
-
-        <div class="field col-12 lg:col-6">
-            <p-fieldset legend="Indique si tiene alguna limitación permanente">
-                <div class="grid">
-                    <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="
-                                        handleSwitchLimitacionChange($event, 0)
-                                    "
-                                    formControlName="bLimFisica"
-                                />
-                                <span>Física o Motora</span>
-                            </p-inputGroupAddon>
-                            @if (visibleLimitacionesInput[0] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cLimFisicaObs"
-                                    pInputText
-                                    placeholder="Observaciones"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bLimSensorial"
-                                    (onChange)="
-                                        handleSwitchLimitacionChange($event, 1)
-                                    "
-                                />
-                                <span>Sensorial</span>
-                            </p-inputGroupAddon>
-                            @if (visibleLimitacionesInput[1] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cLimSensorialObs"
-                                    pInputText
-                                    placeholder="Observaciones"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bLimIntelectual"
-                                    (onChange)="
-                                        handleSwitchLimitacionChange($event, 2)
-                                    "
-                                />
-                                <span>Intelectual</span>
-                            </p-inputGroupAddon>
-                            @if (visibleLimitacionesInput[2] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cLimIntelectualObs"
-                                    pInputText
-                                    placeholder="Observaciones"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bLimMental"
-                                    (onChange)="
-                                        handleSwitchLimitacionChange($event, 3)
-                                    "
-                                />
-                                <span>Mental o Psíquica</span>
-                            </p-inputGroupAddon>
-                            @if (visibleLimitacionesInput[3] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cLimMentalObs"
                                     pInputText
                                     placeholder="Observaciones"
                                     class="group-element"

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 
 @Component({
     selector: 'app-ficha-discapacidad',
@@ -16,9 +17,12 @@ export class FichaDiscapacidadComponent implements OnInit {
     visibleProgramaInput: Array<boolean>
     visibleLimitacionesInput: Array<boolean>
 
+    discapacidades: Array<object>
+
     constructor(
         private fb: FormBuilder,
         private compartirFichaService: CompartirFichaService,
+        private datosFichaBienestarService: DatosFichaBienestarService,
         private router: Router
     ) {
         if (this.compartirFichaService.getiFichaDGId() === null) {
@@ -27,8 +31,21 @@ export class FichaDiscapacidadComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.visibleProgramaInput = Array(2).fill(false)
-        this.visibleLimitacionesInput = Array(6).fill(false)
+        this.visibleProgramaInput = Array(3).fill(false)
+
+        this.datosFichaBienestarService
+            .getFichaParametros()
+            .subscribe((data: any) => {
+                this.discapacidades =
+                    this.datosFichaBienestarService.getDiscapacidades(
+                        data?.discapacidades
+                    )
+                if (this.discapacidades.length > 0) {
+                    this.visibleLimitacionesInput = Array(
+                        this.discapacidades.length
+                    ).fill(false)
+                }
+            })
 
         try {
             this.formDiscapacidad = this.fb.group({
@@ -37,22 +54,17 @@ export class FichaDiscapacidadComponent implements OnInit {
                 cCodigoCONADIS: [null],
                 bFichaDGEstaEnOMAPED: [false],
                 cCodigoOMAPED: [null],
+                bFichaDGEstaEnOtro: [false],
                 cOtroProgramaDiscapacidad: [null],
-                bLimFisica: [false],
-                cLimFisicaObs: [null],
-                bLimSensorial: [false],
-                cLimSensorialObs: [null],
-                bLimIntelectual: [false],
-                cLimIntelectualObs: [null],
-                bLimMental: [false],
-                cLimMentalObs: [null],
+                iDiscId: [null],
+                cDiscFichaObs: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
     }
 
-    handleSwitchProgramaChange(event: any, index: number) {
+    handleSwitchProgramaChange(event: any, index: any) {
         if (event?.checked === undefined) {
             this.visibleProgramaInput[index] = false
             return null

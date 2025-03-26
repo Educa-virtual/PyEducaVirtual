@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { GestionPandemiaDosisComponent } from './gestion-pandemia-dosis/gestion-pandemia-dosis.component'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 
 @Component({
     selector: 'app-ficha-salud',
@@ -18,11 +19,13 @@ export class FichaSaludComponent implements OnInit {
     visibleInput: Array<boolean>
     visibleAlergiaInput: Array<boolean>
     visibleSeguroInput: Array<boolean>
+    visibleDolenciasInput: Array<boolean>
     seguros_salud: Array<object>
 
     constructor(
         private fb: FormBuilder,
         private compartirFichaService: CompartirFichaService,
+        private datosFichaBienestarService: DatosFichaBienestarService,
         private router: Router
     ) {
         if (this.compartirFichaService.getiFichaDGId() === null) {
@@ -35,24 +38,21 @@ export class FichaSaludComponent implements OnInit {
         this.visibleAlergiaInput = Array(2).fill(false)
         this.visibleSeguroInput = Array(1).fill(false)
 
-        this.dolencias = [
-            { value: 1, label: 'Asma' },
-            { value: 2, label: 'Diabetes' },
-            { value: 3, label: 'Epilepsia' },
-            { value: 4, label: 'Artritis' },
-            { value: 5, label: 'Reumatismo' },
-            { value: 6, label: 'Hipertensión' },
-            { value: 7, label: 'Estrés' },
-        ]
-
-        this.seguros_salud = [
-            { value: 0, label: 'Otro' },
-            { value: 1, label: 'Seguro Integral de Salud' },
-            { value: 2, label: 'ESSALUD' },
-            { value: 3, label: 'Seguro Privado de Salud' },
-            { value: 4, label: 'Entvaluead Prestadora de Salud' },
-            { value: 5, label: 'Seguro de Fuerzas Armadas / Policiales' },
-        ]
+        this.datosFichaBienestarService
+            .getFichaParametros()
+            .subscribe((data: any) => {
+                this.dolencias = this.datosFichaBienestarService.getDolencias(
+                    data?.dolenciaes
+                )
+                if (this.dolencias.length > 0) {
+                    this.visibleDolenciasInput = Array(
+                        this.dolencias.length
+                    ).fill(false)
+                }
+                this.seguros_salud = this.datosFichaBienestarService.getSeguros(
+                    data?.seguros_salud
+                )
+            })
 
         try {
             this.formSalud = this.fb.group({
@@ -63,6 +63,8 @@ export class FichaSaludComponent implements OnInit {
                 cFichaDGAlergiaOtros: [null],
                 iSeguroSaludId: [null],
                 cSeguroSaludObs: [null],
+                iDolenciaId: [null],
+                cDolFichaObs: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')

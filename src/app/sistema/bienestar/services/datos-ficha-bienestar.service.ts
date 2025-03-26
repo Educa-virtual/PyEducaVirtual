@@ -57,8 +57,17 @@ export class DatosFichaBienestarService implements OnDestroy {
     tipos_alumbrado: Array<object>
     otros_elementos: Array<object>
 
-    /* ficha salid */
+    /* ficha alimentacion */
+    lugares_alimentacion: Array<object>
+    programas_alimentarios: Array<object>
+
+    /* ficha discapacidad */
+    discapacidades: Array<object>
+
+    /* ficha salud */
+    dolencias: Array<object>
     pandemias: Array<object>
+    seguros_salud: Array<object>
 
     formGeneral: FichaGeneral
     formFamiliar: FichaFamiliar
@@ -478,6 +487,68 @@ export class DatosFichaBienestarService implements OnDestroy {
             }))
         }
         return this.otros_elementos
+    }
+
+    getLugaresAlimentacion(data: any) {
+        if (!this.lugares_alimentacion && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iLugAlimId,
+                label: item.cLugAlimDescripcion,
+            }))
+        }
+        return this.lugares_alimentacion
+    }
+
+    getProgramasAlimentarios(data: any) {
+        console.log(data, 'crear tabla')
+        if (!this.programas_alimentarios) {
+            this.programas_alimentarios = [
+                { value: 1, label: 'OTRO' },
+                { value: 2, label: 'QALIWARMA' },
+                { value: 3, label: 'WASI MIKUNA' },
+                { value: 4, label: 'PROGRAMA DE COMPLEMENTACION ALIMENTARIA' },
+                { value: 5, label: 'VASO DE LECHE' },
+            ]
+        }
+        return this.programas_alimentarios
+    }
+
+    getDiscapacidades(data: any) {
+        if (!this.discapacidades && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iDiscId,
+                label: item.cDiscNombre,
+            }))
+        }
+        return this.discapacidades
+    }
+
+    getDolencias(data: any) {
+        if (!this.dolencias && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iDolenciaId,
+                label: item.cDolenciaNombre,
+            }))
+        }
+        return this.dolencias
+    }
+
+    getSeguros(data: any) {
+        console.log(data, 'crear tabla')
+        if (!this.seguros_salud) {
+            this.seguros_salud = [
+                { value: 1, label: 'OTRO' },
+                { value: 2, label: 'SIS - SEGURO INTEGRAL DE SALUD' },
+                { value: 3, label: 'ESSALUD' },
+                { value: 4, label: 'SPS - SEGURO PRIVADO DE SALUD' },
+                { value: 5, label: 'EPS - ENTIDAD PRESTADORA DE SALUD' },
+                { value: 6, label: 'SEGURO DE FUERZAS ARMADAS/POLICIALES' },
+            ]
+        }
+        return this.seguros_salud
     }
 
     getPandemias() {

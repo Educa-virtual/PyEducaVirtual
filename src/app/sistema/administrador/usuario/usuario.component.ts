@@ -117,6 +117,7 @@ export class UsuarioComponent implements OnInit {
 
     accionBtnItemTable({ accion, item }) {
         // console.log(this.selectedItems, 'selectedItems')
+
         console.log(accion, 'accion', item, 'item')
         if (accion === 'editar') {
             console.log(item, 'btnTable')
@@ -139,6 +140,19 @@ export class UsuarioComponent implements OnInit {
 
             this.modal_visible = false //Mostrar modal para registro de usuarior
             // this.getPerfilUsuario()
+        }
+
+        if (accion === 'Director') {
+            alert(accion)
+            this.option = 'Director'
+
+            this.modal_visible = false //Mostrar modal para registro de usuarior
+            this.option = 'Director'
+            ;(this.condicion =
+                'iTipoPerfilId = 7 or iTipoPerfilId = 4 or iTipoPerfilId = 10 or iTipoPerfilId = 12 or iTipoPerfilId = 9 or iTipoPerfilId = 8'),
+                (this.titulo = 'Accesos de Director')
+            this.iSedeId = 1
+            this.getPerfilSedes()
         }
 
         if (accion === 'especialista_ugel') {

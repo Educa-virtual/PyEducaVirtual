@@ -54,7 +54,6 @@ export class ConfigFechasComponent implements OnInit {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
 
         this.iSedeId = perfil.iSedeId
-        this.iCalAcadId = perfil.iCalAcadId
     }
 
     ngOnInit(): void {
@@ -91,14 +90,28 @@ export class ConfigFechasComponent implements OnInit {
         switch (accion) {
             case 'guardar':
                 console.log('grabar')
+                this.AddFechaImportante()
                 break
         }
     }
 
     AddFechaImportante() {
+        alert(this.iCalAcadId)
         this.query
             .addCalAcademico({
-                json: this.form.value,
+                json: JSON.stringify({
+                    iFechaImpId: this.form.value.iFechaImpId,
+                    iTipoFerId: this.form.value.iTipoFerId,
+                    iCalAcadId: this.form.value.iCalAcadId,
+                    bFechaImpSeraLaborable:
+                        this.form.value.bFechaImpSeraLaborable,
+                    cFechaImpNombre: this.form.value.cFechaImpNombre,
+                    dtFechaImpFecha: this.form.value.dtFechaImpFecha,
+                    cFechaImpURLDocumento:
+                        this.form.value.cFechaImpURLDocumento,
+                    cFechaImpInfoAdicional:
+                        this.form.value.cFechaImpInfoAdicional,
+                }),
                 _opcion: 'addFechasEspeciales',
             })
             .subscribe({
@@ -113,6 +126,7 @@ export class ConfigFechasComponent implements OnInit {
                 },
                 complete: () => {
                     console.log('Request completed')
+                    this.visible = false
                     this.getfechasAcademico() // refresca los registros
                 },
             })
@@ -129,7 +143,7 @@ export class ConfigFechasComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.yearCalendarios = data.data
-
+                    this.iCalAcadId = Number(data.data[0]['iCalAcadId'])
                     console.log(this.yearCalendarios)
                 },
                 error: (error) => {

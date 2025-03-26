@@ -44,6 +44,7 @@ export class ContenidosComponent implements OnInit {
     year: any
     selectedEstado: number
     iIieeId: any
+    iPerfilId: any
     data = []
     miembros = []
     advancedOptions: boolean = false // Controla el switch
@@ -55,6 +56,95 @@ export class ContenidosComponent implements OnInit {
         { grupo: 'Estudiantes', codigo: 1 },
         { grupo: 'Docentes', codigo: 2 },
     ]
+
+    // Propiedades para el dialog de Instituciones y Docentes
+    instituciones: any[] = []
+    docentes: any[] = []
+
+    columnaInstituciones = [
+        {
+            type: 'actions',
+            width: '2rem',
+            field: 'iIieeId',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cIieeNombre',
+            header: 'Institución Educativa',
+            text_header: 'left',
+            text: 'left',
+        },
+    ]
+
+    accionInstitucion = [
+        {
+            labelTooltip: 'Seleccionar',
+            icon: 'pi pi-user-plus',
+            accion: 'seleccionarInstitucion',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+        },
+    ]
+
+    columnaDocentes = [
+        {
+            type: 'actions',
+            width: '2rem',
+            field: 'iDocenteId',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cDocenteNombres',
+            header: 'Nombres',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cDocentePaterno',
+            header: 'Apellido Paterno',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cDocenteMaterno',
+            header: 'Apellido Materno',
+            text_header: 'left',
+            text: 'left',
+        },
+    ]
+
+    accionDocente = [
+        {
+            labelTooltip: 'Seleccionar',
+            icon: 'pi pi-check',
+            accion: 'seleccionarDocente',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+        },
+    ]
+
+    // Variables de control para la visibilidad de los dialogs
+    visibleInstitucionDialog: boolean = false
+    visibleDocenteDialog: boolean = false
+
+    // Variables para almacenar las selecciones
+    institucionNombre: string = ''
+    institucionId: number | null = null
+    docenteNombre: string = ''
+    docenteId: number | null = null
+
     tipoPersona: any
     destinatarios: any[] = []
 
@@ -131,6 +221,7 @@ export class ContenidosComponent implements OnInit {
         this.iEstudianteId = this.ConstantesService.iEstudianteId
         this.iEspecialistaId = this.ConstantesService.iEspecialistaId
         this.iIieeId = this.ConstantesService.iIieeId
+        this.iPerfilId = this.ConstantesService.iPerfilId
     }
 
     comunicados = []
@@ -148,6 +239,7 @@ export class ContenidosComponent implements OnInit {
     ]
 
     ngOnInit() {
+        this.selectedComunicado = this.initComunicado()
         this.cargaDatos()
         this.cargarComunicadosUsuario()
     }
@@ -161,8 +253,11 @@ export class ContenidosComponent implements OnInit {
                 year: this.iYAcadId,
                 iPersId: this.iPersId,
                 iIieeId: this.iIieeId,
+                iPerfilId: this.iPerfilId,
+                iSedeId: this.Isede,
             },
         }
+        console.log(params)
         this.getInformation(params, 'obtenerDatos')
     }
     // Variable para el comunicado seleccionado (para editar)
@@ -186,15 +281,19 @@ export class ContenidosComponent implements OnInit {
 
     // Inicializa un comunicado vacío (para crear uno nuevo)
     initComunicado(): Comunicado {
+        const hoy = new Date()
+        const manana = new Date(hoy)
+        manana.setDate(hoy.getDate() + 1)
+
         return {
             id: 0,
             titulo: '',
             texto: '',
             estado: '',
             tipo: null,
-            publicado: '',
+            publicado: this.formatDate(hoy),
             prioridad: null,
-            caduca: '',
+            caduca: this.formatDate(manana),
             grupo: [],
             curso: null,
             seccion: null,
@@ -364,6 +463,7 @@ export class ContenidosComponent implements OnInit {
             grado: this.selectedComunicado.grado,
 
             iDestinatarioId: this.destinatarioId,
+            InstitucionId: this.institucionId,
             iTipoPersona: this.tipoPersona,
         }
 
@@ -463,6 +563,13 @@ export class ContenidosComponent implements OnInit {
                     })),
                 ]
                 this.iSemAcadId = item.semestre_acad_id
+
+                // Si el perfil es docente, filtrar para dejar solo la opción ACADEMICO (id=2)
+                if (Number(this.iPerfilId) === 7) {
+                    this.tipos = this.tipos.filter(
+                        (t) => t.value === null || Number(t.value) === 2
+                    )
+                }
                 break
             case 'obtenerComunicadosPersona':
                 // item es el array devuelto por el SP
@@ -543,6 +650,12 @@ export class ContenidosComponent implements OnInit {
                 // Tras la eliminación refrescamos la lista
                 this.cargarComunicadosUsuario()
                 // aqui toast de éxito
+                break
+            case 'obtenerInstituciones':
+                this.instituciones = item
+                break
+            case 'obtenerDocentes':
+                this.docentes = item
                 break
         }
     }
@@ -647,5 +760,95 @@ export class ContenidosComponent implements OnInit {
             this.selectedComunicado.seccion = null
             this.selectedComunicado.grado = null
         }
+    }
+    onTipoChange(event: any) {
+        // Supongamos que el valor "2" representa "Académico"
+        if (Number(event.value) !== 2) {
+            this.advancedOptions = false
+            // Limpia los campos avanzados si fuera necesario:
+            this.selectedComunicado.grupo = []
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+        }
+    }
+    // Abre el modal para seleccionar Institución Educativa
+    abrirDialogInstitucion() {
+        this.visibleInstitucionDialog = true
+        // Llama al SP para cargar las instituciones (ya implementado en cargarInstitucionesEspecialista)
+        this.cargarInstitucionesEspecialista()
+    }
+
+    // Método para cargar las instituciones (llama al SP Sp_SEL_institucionesEspecialista)
+    cargarInstitucionesEspecialista() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'obtener_institucionesEspecialista',
+            data: {
+                iPersId: this.iPersId, // Se utiliza el iPersId del especialista
+            },
+        }
+        this.getInformation(params, 'obtenerInstituciones')
+    }
+
+    // Método para limpiar la selección de institución
+    clearInstitucion() {
+        this.institucionNombre = ''
+        this.institucionId = null
+        // Además, si se había seleccionado docente, limpiarlo también
+        this.clearDocente()
+    }
+
+    // Abre el modal para seleccionar Docente en la institución seleccionada
+    abrirDialogDocente() {
+        if (!this.institucionId) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe seleccionar una Institución Educativa primero',
+            })
+            return
+        }
+        // Configura y abre el modal para docentes
+        this.visibleDocenteDialog = true
+        // Llama al método para cargar docentes filtrados por la institución seleccionada
+        this.cargarDocentesPorInstitucion()
+    }
+
+    // Método para limpiar la selección de docente
+    clearDocente() {
+        this.docenteNombre = ''
+        this.destinatarioId = null
+    }
+    // Método para procesar la selección de un docente
+    seleccionarDocente(event: any) {
+        const docente = event.item
+        this.docenteNombre =
+            docente.cDocenteNombres +
+            ' ' +
+            docente.cDocentePaterno +
+            ' ' +
+            docente.cDocenteMaterno
+        this.destinatarioId = docente.iPersId
+        this.visibleDocenteDialog = false
+    }
+    // Método para cargar docentes según la institución seleccionada (a implementar)
+    cargarDocentesPorInstitucion() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'obtener_docentes_por_institucion', // Debes crear o definir este endpoint en el backend
+            data: { iIieeId: this.institucionId },
+        }
+        this.getInformation(params, 'obtenerDocentes')
+    }
+    seleccionarInstitucion(event: any) {
+        const institucion = event.item
+        this.institucionNombre = institucion.cIieeNombre
+        this.institucionId = institucion.iIieeId
+        this.visibleInstitucionDialog = false
     }
 }

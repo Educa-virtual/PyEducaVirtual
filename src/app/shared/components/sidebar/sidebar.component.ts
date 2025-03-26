@@ -41,8 +41,8 @@ export class SidebarComponent implements OnInit {
         return this._Router.url.includes(route) // Verifica si la URL actual incluye la ruta
     }
     isActiveS(route: string): boolean {
-        console.log(route)
-        console.log(this._Router.url)
+        // console.log(route)
+        // console.log(this._Router.url)
         return this._Router.url.includes(route) // Verifica si la URL actual incluye la ruta
     }
 

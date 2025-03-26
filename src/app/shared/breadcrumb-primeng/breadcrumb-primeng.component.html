@@ -1,20 +1,37 @@
 <div class="mb-1">
     <p-breadcrumb class="max-w-full" [model]="breadcrumbs">
         <ng-template pTemplate="item" let-item let-last="last">
-            <ng-container *ngIf="item.route; else elseBlock">
-                <a [routerLink]="item.route" class="p-breadcrumb-item-link">
-                    <i [class]="item.icon"></i>
-                    <span>
-                        {{ item.label }}
-                    </span>
+            @if (item.label) {
+                <ng-container *ngIf="item.route; else elseBlock">
+                    <a
+                        [routerLink]="item.route"
+                        class="p-breadcrumb-item-link"
+                        [class]="last ? 'text-primary' : 'text-black-alpha-70'"
+                    >
+                        <i [class]="item.icon"></i>
+                        <span>
+                            {{ item.label }}
+                        </span>
+                    </a>
+                </ng-container>
+                <ng-template #elseBlock>
+                    <a
+                        [routerLink]="item.url"
+                        [class]="last ? 'text-primary' : 'text-black-alpha-70'"
+                    >
+                        <i [class]="item.icon"></i>
+                        <span>{{ item.label }}</span> {{ last }}
+                    </a>
+                </ng-template>
+            } @else {
+                <a
+                    [routerLink]="'inicio'"
+                    [class]="last ? 'text-primary' : 'text-black-alpha-70'"
+                >
+                    <i class="pi pi-home mr-1"></i>
                 </a>
-            </ng-container>
-            <ng-template #elseBlock>
-                <a [routerLink]="item.url">
-                    <i [class]="item.icon"></i>
-                    <span>{{ item.label }}</span>
-                </a>
-            </ng-template>
+            }
         </ng-template>
     </p-breadcrumb>
 </div>
+{{ breadcrumbs | json }}

@@ -1,115 +1,96 @@
 <p-toast />
 
 <div class="flex flex-column gap-4">
-    <section>
-        <h1>Importación masiva</h1>
+    <form [formGroup]="typeCollectionForm" class="flex flex-column gap-4">
+        <section class="flex gap-8">
+            @for (config of dropdownConfigs; track config.id) {
+                @if (shouldShowDropdown(config)) {
+                    <div class="flex flex-column gap-3">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>{{
+                                config.label
+                            }}</p-inputGroupAddon>
+                            <p-dropdown
+                                [formControlName]="config.label + config.id"
+                                [options]="config.options"
+                                [placeholder]="config.placeholder"
+                                styleClass="w-16rem"
+                            >
+                            </p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                }
+            }
 
-        <div
-            class="flex flex-wrap justify-content-between align-items-center"
-            style="column-gap: 5rem; row-gap: 2rem"
-        >
-            <div class="flex flex-column gap-3 w-2">
-                <span>Tipo de colección:</span>
-                <form [formGroup]="typeCollectionForm">
-                    <p-dropdown
-                        styleClass="w-full"
-                        formControlName="typeCollection"
-                        [options]="typeCollections"
-                        optionLabel="label"
-                        placeholder="Seleccione una colección"
-                    />
-                </form>
-            </div>
-
-            <div class="flex flex-column gap-3">
-                <span>Estructura de importación:</span>
+            @if (
+                typeCollectionForm.value['Origen de la plantilla:1'].id === 2
+            ) {
                 <p-button
-                    icon="pi pi-download"
+                    #importBtn
+                    class="download-template"
+                    styleClass="w-full"
                     label="Descargar plantilla"
-                    (onClick)="
-                        downloadCollectionTemplate(
-                            typeCollectionForm.value.typeCollection
-                        )
-                    "
+                    icon="pi pi-download"
+                    [loading]="importLoad"
+                    (onClick)="downloadTemplate()"
+                    [disabled]="isDisabled.downloadTemplate"
                 />
-            </div>
+            }
+        </section>
+    </form>
+
+    @if (isSelectedTypeCollection(typeCollectionForm.value)) {
+        <div class="card flex flex-wrap flex-column gap-2">
+            <section class="flex justify-content-between">
+                <div class="flex flex-column gap-3">
+                    <span>Archivo de origen:</span>
+                    <app-btn-file-upload
+                        accept=".xlsx"
+                        (fileChange)="uploadFile($event)"
+                        [(ngModel)]="file"
+                    />
+                </div>
+            </section>
         </div>
-    </section>
-
-    <app-tab-view>
-        <app-tab-panel title="Información del archivo">
-            <div class="card">
-                <section class="flex justify-content-between">
-                    <div class="flex flex-column gap-3">
-                        <span>Archivo de origen:</span>
-                        <app-btn-file-upload
-                            accept=".xlsx"
-                            (fileChange)="loadCollectionTemplate($event)"
-                        />
-                    </div>
-
-                    <div class="flex flex-column gap-3">
-                        <span>Iniciar proceso:</span>
-                        <p-button
-                            label="Verificar"
-                            icon="pi pi-file-import"
-                            [loading]="importLoad"
-                            (onClick)="validaImportData()"
-                        />
-                    </div>
-                </section>
-                @if (unverified_data && unverified_data.length > 0) {
+        <app-tab-view>
+            <app-tab-panel title="Información del archivo">
+                @if (collection.columns) {
                     <app-table-primeng
                         [columnas]="columns"
-                        [data]="unverified_data"
+                        [data]="data"
                         [showCaption]="true"
                         [showSortIcon]="false"
                     ></app-table-primeng>
-                } @else {
-                    <span class="block text-center"
-                        >Sin datos que verificar</span
-                    >
-                }
-            </div>
-        </app-tab-panel>
-        <app-tab-panel title="Datos ">
-            <div class="card">
-                @if (verified_data) {
-                    <!-- [data]="verified_data" -->
 
-                    <app-table-primeng
-                        [columnas]="verified_columns_recorded"
-                        [showCaption]="true"
-                        [showSortIcon]="false"
-                        [data]="verified_data"
-                        dataKey="cPersDocumento"
-                        groupRowsBy="cPersDocumento"
-                        template="expandable"
-                    >
-                    </app-table-primeng>
-                } @else {
-                    <span class="block text-center"
-                        >Sin datos que procesar</span
-                    >
+                    <div class="card flex flex-wrap flex-column gap-2">
+                        <section class="flex justify-content-between">
+                            <div class="flex flex-column gap-3">
+                                <span>Iniciar importación:</span>
+                                <p-button
+                                    #importBtn
+                                    class="import"
+                                    label="Importar datos"
+                                    icon="pi pi-database"
+                                    [loading]="importLoad"
+                                    (onClick)="validaImportData()"
+                                />
+                            </div>
+                        </section>
+                    </div>
                 }
-            </div>
-        </app-tab-panel>
-        <app-tab-panel title="Importación de datos">
-            <div class="card">
-                @if (import_data) {
-                    <app-table-primeng
-                        [columnas]="verified_columns_not_recorded"
-                        [data]="import_data"
-                        [actions]="import_data_actions"
-                        [showCaption]="false"
-                        [showSortIcon]="false"
-                    ></app-table-primeng>
-                } @else {
-                    <span class="block text-center"
-                        >Sin datos que procesar</span
-                    >
-                }
-            </div>
-        </app-tab-panel>
-    </app-tab-view>
+            </app-tab-panel>
+            @if (responseDataImport) {
+                <app-tab-panel title="Resultado de la importación">
+                    @if (columns) {
+                        <app-table-primeng
+                            [columnas]="collection.columnsResultImport"
+                            [data]="responseDataImport"
+                            [showCaption]="true"
+                            [showSortIcon]="false"
+                        ></app-table-primeng>
+                    }
+                </app-tab-panel>
+            }
+        </app-tab-view>
+    }
 </div>

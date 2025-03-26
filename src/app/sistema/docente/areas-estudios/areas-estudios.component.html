@@ -104,7 +104,7 @@
                             {{ item.cCursoNombre }}
                         </td>
                         <td style="text-align: center">
-                            {{ item.cantidadalumnos }}
+                            {{ item.cantidad }}
                         </td>
                         <td style="text-align: center">
                             {{ item.cNivelTipoNombre }}
@@ -112,7 +112,9 @@
                         <td style="text-align: center">
                             {{ item.cGradoAbreviacion }}
                         </td>
-                        <td style="text-align: center">{{ item.cSeccion }}</td>
+                        <td style="text-align: center">
+                            {{ item.cSeccionNombre }}
+                        </td>
                         <td style="text-align: center">
                             <div
                                 class="align-items-center align-content-center"
@@ -122,21 +124,21 @@
                                     pRipple
                                     class="p-1 mx-1 p-button-warning"
                                 >
-                                    {{ item.iAvanceSilabo + '%' }}
+                                    {{ 0 + '%' }}
                                 </button>
                                 <button
                                     pButton
                                     pRipple
                                     class="p-1 mx-1 p-button-success"
                                 >
-                                    {{ item.iAvanceAsistencia + '%' }}
+                                    {{ 0 + '%' }}
                                 </button>
                                 <button
                                     pButton
                                     pRipple
                                     class="p-1 mx-1 p-button-danger"
                                 >
-                                    {{ item.iAvanceNotas + '%' }}
+                                    {{ 0 + '%' }}
                                 </button>
                             </div>
                         </td>
@@ -157,17 +159,8 @@
                                 >
                                     <i class="pi pi-chevron-down"></i>
                                 </button>
-                                <!-- <button
-                                    pTooltip="Descargar Lista de Estudiantes"
-                                    tooltipPosition="top"
-                                    [rounded]="true"
-                                    pButton
-                                    pRipple
-                                    class="p-1 mx-1 p-button-rounded p-button-success p-button-text"
-                                >
-                                    <i class="pi pi-file-excel"></i>
-                                </button> -->
                                 <button
+                                    *ngIf="item.iSilaboId; else completar"
                                     pTooltip="Descargar Programación Curricular"
                                     tooltipPosition="top"
                                     [rounded]="true"
@@ -178,13 +171,27 @@
                                         this.getSilaboPdf(
                                             item.cCursoNombre,
                                             item.cGradoAbreviacion,
-                                            item.cSeccion,
+                                            item.cSeccionNombre,
                                             item.iSilaboId
                                         )
                                     "
                                 >
                                     <i class="pi pi-file-pdf"></i>
                                 </button>
+                                <!-- En caso de no contar con un silabus -->
+                                <ng-template #completar>
+                                    <button
+                                        pTooltip=""
+                                        tooltipPosition="top"
+                                        [rounded]="true"
+                                        pButton
+                                        pRipple
+                                        class="p-1 mx-1 p-button-rounded p-button-warning p-button-text"
+                                        (click)="importarSilabos(item)"
+                                    >
+                                        <i class="pi pi-info-circle"></i>
+                                    </button>
+                                </ng-template>
                             </div>
                         </td>
                         <td style="text-align: center">
@@ -195,7 +202,7 @@
                                     cCursoNombre: item.cCursoNombre,
                                     cNivelTipoNombre: item.cNivelTipoNombre,
                                     cGradoAbreviacion: item.cGradoAbreviacion,
-                                    cSeccion: item.cSeccion,
+                                    cSeccionNombre: item.cSeccionNombre,
                                     cCicloRomanos: item.cCicloRomanos,
                                     cNivelNombreCursos: item.cNivelNombreCursos,
                                     iCursoId: item.iCursoId,
@@ -281,3 +288,36 @@
 </div>
 
 <p-menu [style]="{ minWidth: '25rem' }" #menu [model]="items" [popup]="true" />
+
+<p-dialog
+    header="Importar Silabos"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '50rem' }"
+>
+    <div class="grid mt-3">
+        <div class="col-12 md:col-6">
+            <p-dropdown
+                appendTo="body"
+                [options]="opcionCurso"
+                [(ngModel)]="seleccionarCurso"
+                optionValue="idDocCursoId"
+                optionLabel="curso"
+                placeholder="Seleccionar silabos de curso"
+            />
+        </div>
+        <div class="col-12 md:col-6">
+            <button
+                [disabled]="seleccionarCurso === ''"
+                [rounded]="true"
+                pButton
+                pRipple
+                (click)="guardarImportacion()"
+            >
+                Guardar Importacion
+            </button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-toast />

@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+// import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import {
     Component,
     OnInit,
@@ -9,8 +9,8 @@ import {
     OnChanges,
     ViewChild,
 } from '@angular/core'
-import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
-import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
+// import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
+// import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
 import { Router } from '@angular/router'
 import { Table } from 'primeng/table'
 import { GeneralService } from '@/app/servicios/general.service'
@@ -32,10 +32,10 @@ interface Data {
     selector: 'app-areas-estudios',
     standalone: true,
     imports: [
-        ContainerPageComponent,
+        // ContainerPageComponent,
         PrimengModule,
-        TablePrimengComponent,
-        RecursosDidacticosComponent,
+        // TablePrimengComponent,
+        // RecursosDidacticosComponent,
     ],
     templateUrl: './areas-estudios.component.html',
     styleUrl: './areas-estudios.component.scss',
@@ -56,6 +56,11 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         private store: LocalStoreService
     ) {}
 
+    opcionCurso = []
+    idDocenteCurso: number
+    seleccionarCurso: any = ''
+    cursoSilabos = []
+    visible = false
     selectedData = []
     items = []
     // data = []
@@ -271,6 +276,67 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             })
     }
 
+    // importammos los silabos de los cursos dispnibles para la etiqueta modal
+    importarSilabos(docentecurso: string[]) {
+        console.log(docentecurso)
+        this.cursoSilabos = docentecurso
+        // filtra los cursos que tienen un silabos
+        const cursoId = docentecurso['iCursoId']
+        this.idDocenteCurso = docentecurso['idDocCursoId']
+        const cursos = this.data
+            .filter(
+                (item) => item.iSilaboId !== null && item.iCursoId == cursoId
+            )
+            .map((item) => ({
+                idDocCursoId: item.idDocCursoId,
+                iSilaboId: item.iSilaboId,
+                curso:
+                    item.cCursoNombre +
+                    ' ' +
+                    item.cGradoAbreviacion +
+                    ' ' +
+                    item.cSeccionNombre,
+            }))
+        this.opcionCurso = cursos
+        this.visible = true
+    }
+
+    guardarImportacion() {
+        const seleccionado = this.opcionCurso.filter(
+            (item) => item.idDocCursoId == this.seleccionarCurso
+        )
+
+        const params = {
+            petition: 'post',
+            group: 'acad',
+            prefix: 'docente',
+            ruta: 'importar_silabos',
+            data: {
+                idDocCursoId: this.idDocenteCurso,
+                iSilaboId: seleccionado[0]['iSilaboId'],
+            },
+        }
+
+        this._generalService
+            .getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    console.log(response.data)
+                    this.cursoSilabos['iSilaboId'] = response.data[0]
+                    this.MessageService.add({
+                        severity: 'success',
+                        summary: '¡Genial!',
+                        detail: 'Importacion Exitosa',
+                    })
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+        this.visible = false
+    }
     getSilaboPdf(curso: string, grado: string, seccion: string, iSilaboId) {
         if (!iSilaboId) return
         const params = {

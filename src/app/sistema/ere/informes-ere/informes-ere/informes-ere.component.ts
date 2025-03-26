@@ -780,7 +780,7 @@ export class InformesEreComponent implements OnInit {
         {
             type: 'text',
             width: '15%',
-            field: 'capcidad',
+            field: 'capacidad',
             header: 'CAPACIDAD',
             text_header: 'left',
             text: 'left',

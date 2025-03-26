@@ -166,3 +166,15 @@
 :host ::ng-deep .p-inputswitch {
     margin-top: 0.35rem; /* Ajusta según tu preferencia */
 }
+
+:host ::ng-deep .tox .tox-statusbar .tox-statusbar__path-item {
+    display: none !important;
+}
+:host ::ng-deep .tox .tox-statusbar a {
+    display: none !important;
+}
+:host ::ng-deep {
+    .p-stepper .p-stepper-header .p-stepper-action {
+        border-radius: 100px;
+    }
+}

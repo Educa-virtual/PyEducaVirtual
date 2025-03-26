@@ -4,10 +4,15 @@
         <p-panel class="custom-header-panel">
             <ng-template pTemplate="header" class="p-0">
                 <h4 class="p-2 m-0 font-bold text-white w-full text-center">
-                    Lista Comunicados
+                    Comunicados Creados
                 </h4>
             </ng-template>
             <p-scrollPanel
+                *ngIf="
+                    comunicados.length > 0;
+                    then buscando;
+                    else resultadoGrupo
+                "
                 [style]="{ width: '100%', height: '600px' }"
                 styleClass="custombar1"
             >
@@ -246,6 +251,12 @@
                     </p-accordionTab>
                 </p-accordion>
             </p-scrollPanel>
+            <ng-template #buscando>
+                <p class="font-bold text-center">Buscando Comunicados...</p>
+            </ng-template>
+            <ng-template #resultadoGrupo>
+                <p class="font-bold text-center">Sin Resultados</p>
+            </ng-template>
         </p-panel>
     </div>
 
@@ -533,6 +544,10 @@
                 </div>
                 <div class="flex flex-column">
                     <label for="texto" class="mb-1">Contenido</label>
+                    <!-- <editor
+                        formControlName="texto"
+                        [init]="mensajes"
+                    /> -->
                     <textarea
                         pInputTextarea
                         id="texto"

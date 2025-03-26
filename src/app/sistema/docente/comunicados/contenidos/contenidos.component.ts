@@ -6,6 +6,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { TabViewModule } from 'primeng/tabview'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { MessageService } from 'primeng/api'
+import { EditorComponent } from '@tinymce/tinymce-angular'
 interface Comunicado {
     id: number
     titulo: string
@@ -26,7 +27,13 @@ interface Comunicado {
 @Component({
     selector: 'app-contenidos',
     standalone: true,
-    imports: [PrimengModule, FormsModule, TabViewModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        FormsModule,
+        TabViewModule,
+        EditorComponent,
+        TablePrimengComponent,
+    ],
     templateUrl: './contenidos.component.html',
     styleUrls: ['./contenidos.component.scss'],
     providers: [MessageService],
@@ -222,6 +229,23 @@ export class ContenidosComponent implements OnInit {
         this.iEspecialistaId = this.ConstantesService.iEspecialistaId
         this.iIieeId = this.ConstantesService.iIieeId
         this.iPerfilId = this.ConstantesService.iPerfilId
+    }
+
+    mensajes: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        // setup: (editor) => {
+        //     editor.on('blur', (e) =>
+        //         this.actualizar(e, 'cSilaboDescripcionCurso')
+        //     )
+        // },
+        placeholder: 'Escribe aqui...',
+        height: 250,
+        plugins: 'lists image table',
+        toolbar: 'bold italic underline strikethrough',
+        editable_root: true,
     }
 
     comunicados = []

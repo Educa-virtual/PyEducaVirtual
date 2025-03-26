@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { ChartModule } from 'primeng/chart'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
@@ -12,18 +11,18 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ChartOptions } from 'chart.js'
 import { formatNumber } from '@angular/common'
+import {
+    ADMINISTRADOR_DREMO,
+    ADMINISTRADOR,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
     templateUrl: './informes-ere.component.html',
     styleUrls: ['./informes-ere.component.scss'],
-    imports: [
-        ContainerPageComponent,
-        PrimengModule,
-        ChartModule,
-        TablePrimengComponent,
-    ],
+    imports: [PrimengModule, ChartModule, TablePrimengComponent],
 })
 export class InformesEreComponent implements OnInit {
     formFiltros: FormGroup
@@ -62,6 +61,15 @@ export class InformesEreComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        const perfiles_permitidos = [
+            ADMINISTRADOR_DREMO,
+            ESPECIALISTA_DREMO,
+            ADMINISTRADOR,
+        ]
+        if (perfiles_permitidos.includes(this.datosInformes.perfil.iPerfilId)) {
+            this.es_especialista = true
+        }
+
         try {
             this.formFiltros = this.fb.group({
                 iYAcadId: [
@@ -543,14 +551,12 @@ export class InformesEreComponent implements OnInit {
             },
             scales: {
                 x: {
-                    stacked: true,
                     ticks: {
                         stepSize: 1,
                     },
                 },
                 y: {
                     max: 100,
-                    stacked: true,
                 },
             },
         }

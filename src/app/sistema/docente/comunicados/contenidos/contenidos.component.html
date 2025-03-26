@@ -290,6 +290,7 @@
                             placeholder="Seleccione Tipo"
                             optionLabel="label"
                             optionValue="value"
+                            (onChange)="onTipoChange($event)"
                         ></p-dropdown>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
@@ -306,7 +307,10 @@
                     </div>
                 </div>
                 <div class="grid">
-                    <div class="flex flex-column col-12 md:col-6">
+                    <div
+                        class="flex flex-column col-12 md:col-6"
+                        *ngIf="selectedComunicado.tipo === '2'"
+                    >
                         <label for="grupo" class="mb-1">Grupo</label>
                         <p-multiSelect
                             id="grupo"
@@ -326,7 +330,10 @@
                             "
                         ></p-multiSelect>
                     </div>
-                    <div class="flex flex-column col-12 md:col-6">
+                    <div
+                        class="flex flex-column col-12 md:col-6"
+                        *ngIf="selectedComunicado.tipo === '2'"
+                    >
                         <label for="advancedSwitch" class="mb-1"
                             >Opciones Avanzadas</label
                         >
@@ -340,43 +347,114 @@
                 </div>
                 <div *ngIf="advancedOptions">
                     <div class="flex flex-column">
-                        <label for="destinatario" class="mb-1"
-                            >Destinatario Único</label
-                        >
-                        <div class="p-inputgroup">
-                            <input
-                                pInputText
-                                id="destinatario"
-                                name="destinatario"
-                                placeholder="Buscar por nombre o DNI"
-                                [value]="destinatarioNombre"
-                                [readonly]="true"
-                                [disabled]="
-                                    !advancedOptions ||
-                                    !!selectedComunicado.curso ||
-                                    !!selectedComunicado.seccion ||
-                                    !!selectedComunicado.grado
-                                "
-                                (click)="abrirDialogBuscarDestinatario()"
-                                [ngClass]="{
-                                    'input-seleccionado': destinatarioNombre,
-                                }"
-                            />
+                        <!-- Ocultar solo el campo "Destinatario Único" cuando iPerfilId es 2 o 3 -->
+                        <div *ngIf="!(+iPerfilId === 2 || +iPerfilId === 3)">
+                            <label for="destinatario" class="mb-1"
+                                >Destinatario Único</label
+                            >
+                            <div class="p-inputgroup">
+                                <input
+                                    pInputText
+                                    id="destinatario"
+                                    name="destinatario"
+                                    placeholder="Buscar por nombre o DNI"
+                                    [value]="destinatarioNombre"
+                                    [readonly]="true"
+                                    [disabled]="
+                                        !advancedOptions ||
+                                        !!selectedComunicado.curso ||
+                                        !!selectedComunicado.seccion ||
+                                        !!selectedComunicado.grado
+                                    "
+                                    (click)="abrirDialogBuscarDestinatario()"
+                                    [ngClass]="{
+                                        'input-seleccionado':
+                                            destinatarioNombre,
+                                    }"
+                                />
 
-                            <!-- Botón para limpiar el destinatario -->
-                            <button
-                                pButton
-                                type="button"
-                                icon="pi pi-times"
-                                class="p-button-rounded p-button-text p-button-danger"
-                                *ngIf="destinatarioNombre"
-                                (click)="clearDestinatario()"
-                                pTooltip="Quitar destinatario"
-                                tooltipPosition="top"
-                            ></button>
+                                <!-- Botón para limpiar el destinatario -->
+                                <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    *ngIf="destinatarioNombre"
+                                    (click)="clearDestinatario()"
+                                    pTooltip="Quitar destinatario"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
+                        </div>
+                        <!-- Campo para seleccionar Institución Educativa para especialistas -->
+                        <div *ngIf="+iPerfilId === 2 || +iPerfilId === 3">
+                            <label for="institucion" class="mb-1"
+                                >Institución Educativa</label
+                            >
+                            <div class="p-inputgroup">
+                                <input
+                                    pInputText
+                                    id="institucion"
+                                    name="institucion"
+                                    placeholder="Seleccionar Institución Educativa"
+                                    [value]="institucionNombre"
+                                    readonly
+                                    (click)="abrirDialogInstitucion()"
+                                    [ngClass]="{
+                                        'input-seleccionado': institucionNombre,
+                                    }"
+                                />
+                                <!-- Se podría agregar un botón para limpiar la selección -->
+                                <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    *ngIf="institucionNombre"
+                                    (click)="clearInstitucion()"
+                                    pTooltip="Quitar institución"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
+                        </div>
+                        <!-- Campo para seleccionar Docente en la Institución elegida (solo para especialistas) -->
+                        <div
+                            *ngIf="
+                                (+iPerfilId === 2 || +iPerfilId === 3) &&
+                                institucionId
+                            "
+                        >
+                            <label for="docente" class="mb-1">Docente</label>
+                            <div class="p-inputgroup">
+                                <input
+                                    pInputText
+                                    id="docente"
+                                    name="docente"
+                                    placeholder="Seleccionar Docente"
+                                    [value]="docenteNombre"
+                                    readonly
+                                    (click)="abrirDialogDocente()"
+                                    [ngClass]="{
+                                        'input-seleccionado': docenteNombre,
+                                    }"
+                                />
+                                <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    *ngIf="docenteNombre"
+                                    (click)="clearDocente()"
+                                    pTooltip="Quitar docente"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
                         </div>
                     </div>
-                    <div class="row-with-wrap">
+                    <div
+                        class="row-with-wrap"
+                        *ngIf="!(+iPerfilId === 2 || +iPerfilId === 3)"
+                    >
                         <div class="dropdown-container">
                             <label for="curso" class="mb-1">Curso</label>
                             <p-dropdown
@@ -528,6 +606,42 @@
         [actions]="accionModal"
         [indiceColumnaBuscar]="2"
     ></app-table-primeng>
+</p-dialog>
+
+<!-- Dialog para seleccionar Institución Educativa -->
+<p-dialog
+    header="Buscar Institución Educativa"
+    [(visible)]="visibleInstitucionDialog"
+    [modal]="true"
+    [style]="{ width: '70rem', height: '700px' }"
+>
+    <div class="grid mt-3">
+        <app-table-primeng
+            [columnas]="columnaInstituciones"
+            [data]="instituciones"
+            (accionBtnItem)="seleccionarInstitucion($event)"
+            [actions]="accionInstitucion"
+            [indiceColumnaBuscar]="2"
+        ></app-table-primeng>
+    </div>
+</p-dialog>
+
+<!-- Dialog para seleccionar Docente en la Institución elegida -->
+<p-dialog
+    header="Buscar Docente"
+    [(visible)]="visibleDocenteDialog"
+    [modal]="true"
+    [style]="{ width: '70rem', height: '700px' }"
+>
+    <div class="grid mt-3">
+        <app-table-primeng
+            [columnas]="columnaDocentes"
+            [data]="docentes"
+            (accionBtnItem)="seleccionarDocente($event)"
+            [actions]="accionDocente"
+            [indiceColumnaBuscar]="2"
+        ></app-table-primeng>
+    </div>
 </p-dialog>
 
 <p-confirmDialog></p-confirmDialog>

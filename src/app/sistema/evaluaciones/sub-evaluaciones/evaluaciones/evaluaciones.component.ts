@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core'
 import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
 import { CompartirFormularioEvaluacionService } from './../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { DialogService } from 'primeng/dynamicdialog'
@@ -30,6 +30,8 @@ import {
     ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles'
 import { FormLiberarAreasUgelComponent } from '@/app/sistema/ere/evaluaciones/liberar-areas-ugel/form-liberar-areas-ugel.component'
+import { AsignarHorasAreasComponent } from './asignar-horas-areas/asignar-horas-areas.component'
+
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -38,6 +40,7 @@ import { FormLiberarAreasUgelComponent } from '@/app/sistema/ere/evaluaciones/li
         PrimengModule,
         ContainerPageAccionbComponent,
         FormLiberarAreasUgelComponent,
+        AsignarHorasAreasComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
@@ -48,27 +51,28 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
-    customers!: any
+    //customers!: any
     visible: boolean = false
     opcion: string = 'seleccionar'
     isDialogVisible: boolean = false
     caption: any
     formCapas: any
     evaluacionFormGroup: FormGroup<any>
-    tipoEvaluacion: any[]
-    nivelEvaluacion: any[]
+    areas = []
+    //tipoEvaluacion: any[]
+    //nivelEvaluacion: any[]
     acciones: any
     selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
-    selectedItemsAuto = []
+    //selectedItemsAuto = []
     selectedItems = []
-    cursosSeleccionados: any[] = []
-    fechaHoraInicio: Date | undefined
-    fechaHoraFin: Date | undefined
-    cursoSeleccionado: Map<number, boolean> = new Map()
+    //cursosSeleccionados: any[] = []
+    //fechaHoraInicio: Date | undefined
+    //fechaHoraFin: Date | undefined
+    //cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
     iPerfil: number
-    item = []
+    item: any
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -88,9 +92,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         bPreguntaEstado: -1,
     }
     public data = []
-    public showModalCursosEre: boolean = false
+    //public showModalAsignarHorasAreas: boolean = false
     public showModalLiberarUgel: boolean = false
     form: FormGroup
+    @ViewChild(AsignarHorasAreasComponent)
+    dialogAsignarHorasAreasComponent!: AsignarHorasAreasComponent
 
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
     public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
@@ -282,7 +288,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             detail: 'Se han registrado las horas ingresadas.',
         })
         this.visible = false
-        this.showModalCursosEre = false
+        //this.showModalAsignarHorasAreas = false
         this.form.reset()
         this.removeControls()
     }
@@ -419,7 +425,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         {
             labelTooltip: 'Asignar horas de inicio y fin a las áreas',
             icon: 'pi pi-clock',
-            accion: 'fechaPublicacion',
+            accion: 'asignarHoraAreas',
             type: 'item',
             class: 'p-button-rounded p-button-secondary p-button-text',
             isVisible: () => this.iPerfilId === DIRECTOR_IE,
@@ -549,13 +555,16 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     'ere/evaluaciones/' + item.iEvaluacionIdxHash + '/areas',
                 ])
                 break
-            case 'fechaPublicacion':
-                this.modalActivarCursosEre()
-                this.onEvaluacionSeleccionada({
+            case 'asignarHoraAreas':
+                //this.showModalAsignarHorasAreas = true;
+                //this.item = item
+                this.dialogAsignarHorasAreasComponent.mostrarDialog(item)
+                //this.obtenerHorasAreasPorEvaluacionIe()
+                /*this.onEvaluacionSeleccionada({
                     value: item.iEvaluacionId,
                     value1: item.cEvaluacionNombre,
-                })
-                this.cEvaluacionNombre = item.cEvaluacionNombre
+                })*/
+                //this.cEvaluacionNombre = item.cEvaluacionNombre
                 break
             case 'resultados':
                 alert('En proceso de desarrollo')
@@ -564,8 +573,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 if (!(this.iPerfilId === ESPECIALISTA_UGEL)) {
                     return
                 }
-                this.showModalLiberarUgel = true
                 this.item = item
+                this.showModalLiberarUgel = true
 
                 break
             case 'close-modal-liberar-ugel-evaluacion':
@@ -594,6 +603,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             },
         })
     }
+
     onEvaluacionSeleccionada(event: any) {
         // console.log('Evento recibido:', event); // Verifica qué valores llegan
         // Asigna dinámicamente el valor seleccionado
@@ -740,9 +750,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 this.agregarEditarPregunta({ iEvaluacionId: null })
                 break
         }
-    }
-    modalActivarCursosEre() {
-        this.showModalCursosEre = true
     }
 
     removeControls() {

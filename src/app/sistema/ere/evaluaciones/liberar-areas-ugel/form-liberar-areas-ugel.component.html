@@ -1,9 +1,9 @@
 <app-modal-primeng
     [title]="
         titulo +
-        (data.cEvaluacionNombre || '-') +
+        (data?.cEvaluacionNombre || '-') +
         ' - ' +
-        (data.cTipoEvalDescripcion || '-')
+        (data?.cTipoEvalDescripcion || '-')
     "
     [showModal]="showModal"
     [width]="'80rem'"
@@ -19,9 +19,9 @@
                     <input
                         pInputText
                         [placeholder]="
-                            (data.dtEvaluacionFechaInicio || '-') +
+                            (data?.dtEvaluacionFechaInicio || '-') +
                             ' al ' +
-                            (data.dtEvaluacionFechaFin || '-')
+                            (data?.dtEvaluacionFechaFin || '-')
                         "
                         disabled
                         class="opacity-100"

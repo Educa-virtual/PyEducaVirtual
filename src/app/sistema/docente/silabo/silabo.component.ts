@@ -75,10 +75,7 @@ export class SilaboComponent implements OnInit, OnDestroy {
         placeholder: 'Escribe aqui...',
         height: 250,
         plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
+        toolbar: 'bold italic underline strikethrough',
         editable_root: true,
     }
     initCapacidad: EditorComponent['init'] = {
@@ -92,10 +89,7 @@ export class SilaboComponent implements OnInit, OnDestroy {
         placeholder: 'Escribe aqui...',
         height: 250,
         plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
+        toolbar: 'bold italic underline strikethrough',
         editable_root: true,
     }
 

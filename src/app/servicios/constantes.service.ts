@@ -262,6 +262,11 @@ const administracion = [
         label: 'Administración',
         items: [
             {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
+            {
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [

@@ -25,6 +25,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
     intervalo: any
 
     ngOnChanges(changes: SimpleChanges): void {
+        console.log('Iniciado')
         if (changes['inicio'] || changes['fin']) {
             this.inicio = new Date(this.inicio)
             this.fin = new Date(this.fin)
@@ -60,8 +61,8 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     getTiempoFormateado(): string {
-        const hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600000 milisegundos
-        const minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60000 milisegundos
+        const hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600 segundos
+        const minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60 segundos
         const segundos = Math.floor(this.tiempoRestante % 60)
         const data = {
             accion: 'tiempo-finalizado',
@@ -73,6 +74,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
             data.accion = 'tiempo-espera'
             this.accionTime.emit(data)
         }
-        return `${hours}:${minutos}:${segundos < 10 ? '0' + segundos : segundos}`
+        const pad = (num: number) => num.toString().padStart(2, '0')
+        return `${pad(hours)}:${pad(minutos)}:${pad(segundos)}`
     }
 }

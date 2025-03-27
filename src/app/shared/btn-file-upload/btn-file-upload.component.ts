@@ -53,9 +53,12 @@ export class BtnFileUploadComponent
     }
 
     attachFileInput(file: File): void {
+        console.log('file')
+        console.log(file)
+
         if (!file) {
             this.fileInput.nativeElement.value = ''
-            this.fileView.nativeElement.value = ''
+            this.fileView.nativeElement.value = this.label
             this.isAttachedFile = false
         } else {
             this.fileView.nativeElement.value = file.name
@@ -69,13 +72,16 @@ export class BtnFileUploadComponent
 
     // Métodos de ControlValueAccessor
     private onChange = (file: File | null) => {
+        console.log('   ')
         console.log(file)
     }
     onTouched: () => void = () => {}
 
     writeValue(file): void {
-        this.file = file
-        if (this.fileInput) {
+        console.log('this.file')
+        console.log(this.file)
+
+        if (this.fileInput?.nativeElement) {
             this.attachFileInput(file)
         }
     }
@@ -94,6 +100,9 @@ export class BtnFileUploadComponent
 
     onFileSelected(): void {
         this.file = this.fileInput.nativeElement.files[0]
+
+        console.log('this.file.name')
+        console.log(this.file.name)
 
         this.fileView.nativeElement.value = this.file.name
 

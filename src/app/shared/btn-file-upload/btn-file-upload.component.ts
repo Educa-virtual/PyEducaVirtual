@@ -110,13 +110,12 @@ export class BtnFileUploadComponent
 
         this.attachFileInput(this.file)
     }
-
     onDeletedFile() {
-        this.fileInput.nativeElement.value = ''
         this.fileView.nativeElement.value = this.label
-
+        this.fileInput.nativeElement.value = null
+        this.file = null
         this.isAttachedFile = false
-
+        this.fileChange.emit(this.file)
         this.onChange(null)
         this.onTouched()
     }

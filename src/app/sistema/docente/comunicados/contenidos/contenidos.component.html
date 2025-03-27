@@ -544,11 +544,8 @@
                 </div>
                 <div class="flex flex-column">
                     <label for="texto" class="mb-1">Contenido</label>
-                    <!-- <editor
-                        formControlName="texto"
-                        [init]="mensajes"
-                    /> -->
-                    <textarea
+                    <editor formControlName="texto" [init]="mensajes" />
+                    <!-- <textarea
                         pInputTextarea
                         id="texto"
                         name="texto"
@@ -556,7 +553,7 @@
                         placeholder="Escriba el comunicado..."
                         [(ngModel)]="selectedComunicado.texto"
                         required
-                    ></textarea>
+                    ></textarea> -->
                 </div>
                 <div class="form-buttons">
                     <button

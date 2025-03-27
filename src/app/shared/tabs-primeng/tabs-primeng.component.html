@@ -1,0 +1,21 @@
+<p-tabView
+    [(activeIndex)]="activeIndex"
+    [scrollable]="true"
+    (activeIndexChange)="onActiveIndexChange($event)"
+>
+    <p-tabPanel *ngFor="let tab of tabs">
+        <ng-template pTemplate="header">
+            <div class="flex align-items-center gap-2">
+                <i class="pi {{ tab.icon }}"></i>
+                <span class="font-bold white-space-nowrap m-0">
+                    {{ tab.title }}
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+            <ng-container *ngIf="activeIndex === tabs.indexOf(tab)">
+                <ng-content></ng-content>
+            </ng-container>
+        </ng-template>
+    </p-tabPanel>
+</p-tabView>

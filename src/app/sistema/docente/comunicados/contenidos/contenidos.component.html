@@ -8,11 +8,7 @@
                 </h4>
             </ng-template>
             <p-scrollPanel
-                *ngIf="
-                    comunicados.length > 0;
-                    then buscando;
-                    else resultadoGrupo
-                "
+                *ngIf="comunicados.length > 0; else resultadoGrupo"
                 [style]="{ width: '100%', height: '600px' }"
                 styleClass="custombar1"
             >
@@ -251,9 +247,6 @@
                     </p-accordionTab>
                 </p-accordion>
             </p-scrollPanel>
-            <ng-template #buscando>
-                <p class="font-bold text-center">Buscando Comunicados...</p>
-            </ng-template>
             <ng-template #resultadoGrupo>
                 <p class="font-bold text-center">Sin Resultados</p>
             </ng-template>
@@ -467,7 +460,9 @@
                         *ngIf="!(+iPerfilId === 2 || +iPerfilId === 3)"
                     >
                         <div class="dropdown-container">
-                            <label for="curso" class="mb-1">Curso</label>
+                            <label for="curso" class="mb-1"
+                                >Area Curricular</label
+                            >
                             <p-dropdown
                                 id="curso"
                                 name="curso"

@@ -292,7 +292,7 @@
 <p-dialog [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }">
     <ng-template pTemplate="header">
         <span class="font-bold text-xl text-white"
-            >Importar Silabos - {{ descripcion }}</span
+            >Importar Silabos - {{ descripcion | lowercase }}</span
         >
     </ng-template>
     <div class="grid mt-3">
@@ -303,7 +303,7 @@
                 [(ngModel)]="seleccionarCurso"
                 optionValue="idDocCursoId"
                 optionLabel="curso"
-                placeholder="Seleccionar silabos de curso"
+                placeholder="Seleccionar silabos del Área Curricular"
             />
         </div>
         <div class="col-12 md:col-6">
@@ -314,7 +314,7 @@
                 pRipple
                 (click)="guardarImportacion()"
             >
-                Guardar Importacion
+                Guardar Importación
             </button>
         </div>
     </div>

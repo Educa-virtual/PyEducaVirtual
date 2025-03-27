@@ -100,18 +100,18 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .subscribe({
                 next: () => {
                     if (this.accion == 'nuevo') {
-                        // this._MessageService.add({
-                        //     severity: 'success',
-                        //     summary: 'Cursos registrados',
-                        //     detail: 'Los cursos se han registrado correctamente.',
-                        // })
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Se guardo area',
+                            detail: 'Los cursos se han registrado correctamente.',
+                        })
                         console.log(this.accion)
                     } else if (this.accion == 'editar') {
-                        // this._MessageService.add({
-                        //     severity: 'success',
-                        //     summary: 'Cursos editados',
-                        //     detail: 'Los cursos se han editado correctamente.',
-                        // })
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Se actualizo el area',
+                            detail: 'Los cursos se han editado correctamente.',
+                        })
                         console.log(this.accion)
                     }
                 },
@@ -147,7 +147,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     // Notifica el éxito
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Curso eliminado',
+                        summary: 'Se elimina area',
                         detail: 'El curso se eliminó correctamente.',
                     })
                     console.log('Cursos eliminados:', resp)
@@ -356,18 +356,18 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: () => {
-                    // this._MessageService.add({
-                    //     severity: 'success',
-                    //     summary: 'Guardado',
-                    //     detail: 'Se guardó exitosamente',
-                    // })
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Guardado',
+                        detail: 'Se guardó exitosamente',
+                    })
                 },
                 error: (err) => {
-                    // this._MessageService.add({
-                    //     severity: 'error',
-                    //     summary: 'Error',
-                    //     detail: err,
-                    // })
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: err,
+                    })
                     console.error('Error al insertar cursos:', err)
                 },
             })

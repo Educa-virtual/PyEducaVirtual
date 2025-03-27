@@ -406,7 +406,7 @@ export class EvaluacionesFormComponent implements OnInit {
 
                 this._MessageService.add({
                     severity: 'success',
-                    summary: 'Actualizado con exitoso',
+                    summary: 'Actualizado con exito',
                     detail: 'La evaluacion se ha actualizado con éxito.',
                 })
                 resp

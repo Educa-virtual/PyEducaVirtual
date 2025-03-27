@@ -180,6 +180,10 @@ export class EvaluacionesFormComponent implements OnInit {
                 this.evaluacionFormGroup.markAllAsTouched()
                 return
             }
+
+            // agregando  this.actualizarEvaluacion();
+            this.actualizarEvaluacion()
+
             // if (this.evaluacionFormGroup.invalid) {
             //     this._MessageService.add({
             //         severity: 'error',
@@ -350,6 +354,24 @@ export class EvaluacionesFormComponent implements OnInit {
     }
     // Método para actualizar los datos en la base de datos
     actualizarEvaluacion() {
+        let fechaInicio = this.evaluacionFormGroup.get(
+            'dtEvaluacionFechaInicio'
+        ).value
+        let fechaFin = this.evaluacionFormGroup.get(
+            'dtEvaluacionFechaFin'
+        ).value
+
+        // Convertir fechas al formato que necesita SQL Server (YYYY-MM-DD) // no cambiar esta conversion
+        if (typeof fechaInicio === 'string' && fechaInicio.includes('/')) {
+            const [dia, mes, anio] = fechaInicio.split('/')
+            fechaInicio = `${anio}-${mes}-${dia}`
+        }
+
+        if (typeof fechaFin === 'string' && fechaFin.includes('/')) {
+            const [dia, mes, anio] = fechaFin.split('/')
+            fechaFin = `${anio}-${mes}-${dia}`
+        }
+
         // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
 
         const data = {
@@ -370,16 +392,18 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
-                'dtEvaluacionFechaInicio'
-            ).value,
-            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
-                'dtEvaluacionFechaFin'
-            ).value,
+
+            dtEvaluacionFechaInicio: fechaInicio,
+            dtEvaluacionFechaFin: fechaFin,
         }
+
+        console.log('Datos para actualizar (con fechas ISO):', data)
+
         console.log('datos para acualizar', data)
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
+                console.log('respuesta de actualizacion', resp)
+
                 this._MessageService.add({
                     severity: 'success',
                     summary: 'Actualizado con exitoso',
@@ -389,6 +413,16 @@ export class EvaluacionesFormComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)
+
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error de actualización',
+                    detail: 'No se pudo actualizar la evaluación. Consulte la consola para más detalles.',
+                })
+            },
+
+            complete: () => {
+                console.log('Actualizacion completada')
             },
         })
     }

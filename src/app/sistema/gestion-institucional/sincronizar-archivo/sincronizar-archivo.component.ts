@@ -46,7 +46,8 @@ import { BulkDataImportComponent } from './bulk-data-import/bulk-data-import.com
 export class SincronizarArchivoComponent implements OnInit {
     jsonData: any[] = [] // Aquí se almacenará el JSON resultante
     form: FormGroup
-
+    iSedeId: number
+    iYAcadId: number
     messages: Message[] | undefined
 
     sortedData: any[] = []
@@ -64,6 +65,8 @@ export class SincronizarArchivoComponent implements OnInit {
         { id: 3, modulo: 'traslados' }, // traslados
     ]
 
+    headers: string[] = []
+
     constructor(
         private fb: FormBuilder,
         private store: LocalStoreService,
@@ -72,6 +75,10 @@ export class SincronizarArchivoComponent implements OnInit {
     ) {
         this.messages = []
         // Initialize any necessary properties or services here
+        const perfil = this.store.getItem('dremoPerfil')
+        console.log(perfil, 'perfil dremo', this.store)
+        this.iSedeId = perfil.iSedeId
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
     }
     ngOnInit(): void {
         this.messages = [
@@ -100,30 +107,75 @@ export class SincronizarArchivoComponent implements OnInit {
                 console.log(this.jsonData) // Muestra el JSON en la consola
                 const headers = json.slice(0)
                 console.log(headers)
+
+                this.importarDocenteExcel(json)
+
+                // if (json.length > 0) {
+                //     this.headers = json[0] as string[]; // Extrae los encabezados
+                //     this.jsonData = json.slice(1).map(row => {
+                //       const obj: any = {};
+                //       this.headers.forEach((header, index) => {
+                //         obj[header] = row[index];
+                //       });
+                //       return obj;
+                //     });
+                //   }
             }
 
             reader.readAsArrayBuffer(file) // Lee el archivo como un array buffer
         }
     }
 
+    importarDocenteExcel(data: any) {
+        // Método para importar los datos del JSON al sistema
+        this.query
+            .importarDocente_IE({
+                data: data, //this.jsonData ,
+                iSedeId: this.iSedeId,
+                iYAcadId: this.iYAcadId,
+            })
+            .subscribe({
+                // Llama al servicio para agregar los datos
+                next: (data: any) => {
+                    // Si la operación es exitosa
+                    console.log('Data:', data) // Muestra la respuesta en la consola
+                },
+                error: (error) => {
+                    console.error('Error de registro de docentes', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        // Muestra un mensaje de éxito
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Datos procesados correctamente',
+                    })
+                },
+            })
+    }
     selectTabla() {
         const option: number = this.form.value.iTabla
         alert(option)
         let condicion = ''
         switch (option) {
             case 1:
-                condicion = 'iSedeId = 1'
+                condicion = 'iSedeId = ' + this.iSedeId
                 this.gettablas('acad', 'iiee_ambientes', condicion)
 
                 break
             case 2:
-                condicion = 'iSedeId = 1'
+                condicion = 'iSedeId = ' + this.iSedeId
                 this.gettablas('acad', 'horarios_ie', condicion)
 
                 break
 
             case 3:
-                condicion = 'iSedeId = 1'
+                condicion = 'iSedeId = ' + this.iSedeId
                 this.gettablas('acad', 'configuraciones', condicion)
 
                 break

@@ -1,7 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Component, inject, Input, OnInit } from '@angular/core'
-import { MessageService } from 'primeng/api'
+import { ConfirmationService, MessageService } from 'primeng/api'
 import { ProgressBarModule } from 'primeng/progressbar'
 import { RadioButtonModule } from 'primeng/radiobutton'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
@@ -12,6 +12,8 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { environment } from '@/environments/environment'
 import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finalizada/modal-evaluacion-finalizada.component'
 import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.component'
+import { TimeComponent } from '../../../../shared/time/time.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-rendir-examen',
@@ -27,6 +29,7 @@ import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.
         NgxDocViewerModule,
         ModalEvaluacionFinalizadaComponent,
         ImagePreviewComponent,
+        TimeComponent,
     ],
 })
 export class RendirExamenComponent implements OnInit {
@@ -35,6 +38,8 @@ export class RendirExamenComponent implements OnInit {
     @Input() cEvaluacionNombre: string
     @Input() cCursoNombre: string
     @Input() cGradoNombre: string
+    tiempoActual = new Date()
+    tiempoFin = new Date()
 
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
@@ -49,10 +54,17 @@ export class RendirExamenComponent implements OnInit {
     seleccion: string | null = null
     backend = environment.backend
 
+    constructor(
+        private store: LocalStoreService,
+        private confirmationService: ConfirmationService
+    ) {}
+
     ngOnInit() {
+        const evaluacion = this.store.getItem('evaluacion')
+        this.tiempoFin = new Date(evaluacion.dtExamenFechaFin)
+        //console.log(evaluacion.dtExamenFechaFin)
         this.obtenerPreguntaxiEvaluacionId()
     }
-
     // meto de al seleccionar una opción
     seleccionarOpcion(opcion: string) {
         this.seleccion = opcion
@@ -92,6 +104,31 @@ export class RendirExamenComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
 
+    marcarPaginadorPregunta() {
+        const cantidadPreguntas =
+            this.preguntas[this.activeIndex].pregunta.length
+        let cantidadPreguntasMarcadas = 0
+        this.preguntas[this.activeIndex].pregunta.forEach((item) => {
+            item.alternativas.forEach((alter) => {
+                if (alter.iMarcado == 1) {
+                    cantidadPreguntasMarcadas++
+                }
+            })
+        })
+
+        if (cantidadPreguntas == cantidadPreguntasMarcadas) {
+            /*for (const i of this.preguntas[this.activeIndex].pregunta) {
+                if (i.iPreguntaId == alternativa.iPreguntaId) {
+                    this.preguntas[this.activeIndex].iMarcado = 1
+                    break
+                }
+            }*/
+            this.preguntas[this.activeIndex].iMarcado = 1
+        } else {
+            this.preguntas[this.activeIndex].iMarcado = 0
+        }
+    }
+
     guardarPregunta(alternativas, alternativa, marcado) {
         alternativas.forEach((i) => {
             if (i.iAlternativaId !== alternativa.iAlternativaId) {
@@ -99,14 +136,15 @@ export class RendirExamenComponent implements OnInit {
             }
         })
         alternativa.iMarcado = marcado
-        this.preguntas.forEach((pregunta) => {
+        /*this.preguntas.forEach((pregunta) => {
             pregunta.pregunta.forEach((i) => {
                 if (i.iPreguntaId === Number(alternativa.iPreguntaId)) {
                     i.iMarcado = true
                 }
             })
-        })
+        })*/
         // alternativa.iMarcado = 1
+        this.marcarPaginadorPregunta()
         const params = {
             petition: 'post',
             group: 'ere',
@@ -126,6 +164,22 @@ export class RendirExamenComponent implements OnInit {
             },
         }
         this.getInformation(params, params.data.opcion)
+    }
+
+    preguntarTerminarExamen(event: Event) {
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            message: 'El examen se dará por terminado. ¿Desea continuar?',
+            header: 'Terminar examen',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => {
+                //this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+                this.terminarExamen()
+            },
+        })
     }
 
     terminarExamen() {
@@ -149,25 +203,28 @@ export class RendirExamenComponent implements OnInit {
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                if (
+                /*if (
                     response.validated &&
                     accion ==
                         'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante'
                 ) {
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Exitoso',
                         detail: response.message,
                     })
-                }
-                this.accionBtnItem({ accion, item: response?.data })
+                }*/
+                this.accionBtnItem({
+                    accion,
+                    item: response?.data,
+                    message: response.message,
+                })
             },
             complete: () => {},
             error: (error) => {
                 //console.log(error)
                 this._MessageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: 'Problema encontrado',
                     detail: error,
                 })
             },
@@ -177,6 +234,7 @@ export class RendirExamenComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
+        const { message } = elemento
         this.cGradoNombre = this.cGradoNombre.toLowerCase()
         switch (accion) {
             case 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId':
@@ -276,6 +334,10 @@ export class RendirExamenComponent implements OnInit {
                 //console.log(this.preguntas)
                 break
             case 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante':
+                this._MessageService.add({
+                    severity: 'success',
+                    detail: message,
+                })
                 break
             case 'terminarExamenxiEstudianteId':
                 this.finalizado = false
@@ -283,6 +345,10 @@ export class RendirExamenComponent implements OnInit {
                     item.length &&
                     item[item.length - 1]['iFinalizado'] === '0'
                 ) {
+                    this._MessageService.add({
+                        severity: 'success',
+                        detail: message,
+                    })
                     this.finalizado = true
                     //window.location.reload()
                 }

@@ -11,10 +11,14 @@ export class BackupBdService {
     private http = inject(HttpClient)
     constructor() {}
 
-    realizarCopiaSeguridad() {
+    realizarCopiaSeguridad(iPersIdHash: string) {
         return this.http.post(
             `${this.urlBackendApi}/seguridad/database/backups`,
-            []
+            { iPersId: iPersIdHash }
         )
+    }
+
+    obtenerHistorialBackups() {
+        return this.http.get(`${this.urlBackendApi}/seguridad/database/backups`)
     }
 }

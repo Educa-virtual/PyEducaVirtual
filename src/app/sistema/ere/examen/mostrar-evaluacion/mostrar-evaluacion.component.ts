@@ -23,6 +23,7 @@ import {
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { TimeComponent } from '../../../../shared/time/time.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-mostrar-evaluacion',
@@ -52,6 +53,8 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
     private _MessageService = inject(MessageService)
     private router = inject(Router)
     private _ChangeDetectorRef = inject(ChangeDetectorRef)
+
+    constructor(private store: LocalStoreService) {}
 
     @Input() iEvaluacionId: string = ''
     @Input() iCursoNivelGradId: string = ''
@@ -120,6 +123,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
         switch (accion) {
             case 'CONSULTARxiEvaluacionId':
                 this.evaluacion = item.length ? item[0] : null
+                this.store.setItem('evaluacion', this.evaluacion)
                 break
             case 'CONSULTAR-ESTADOxiEvaluacionId':
                 if (this.bEstadoTiempo) {

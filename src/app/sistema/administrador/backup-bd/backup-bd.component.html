@@ -73,11 +73,16 @@
                 <p-button label="Crear backup" (onClick)="crearCopia()" />
             </div>
         </p-tabPanel>
-        <!--<p-tabPanel header="Historial">
-            <app-table-primeng [columnas]="columnas" [data]="filteredData" [showPaginator]="true" [showCaption]="false">
+        <p-tabPanel header="Historial">
+            <app-table-primeng
+                [columnas]="columnas"
+                [data]="dataHistorialBackups"
+                [showPaginator]="true"
+                [showCaption]="false"
+            >
                 <input type="text" />
             </app-table-primeng>
-        </p-tabPanel>-->
+        </p-tabPanel>
     </p-tabView>
 </app-container-page>
 

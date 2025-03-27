@@ -228,7 +228,7 @@
                                                                         <label
                                                                             for="matriz"
                                                                             class="mt-1 font-bold"
-                                                                            >Matriz
+                                                                            >Matrizc
                                                                             <span
                                                                                 class="text-red-500 text-xs"
                                                                                 >(*)
@@ -945,8 +945,30 @@
         }
     </div>
 </app-container-page>
-<app-form-importar-banco-preguntas
-    [showModal]="showModalBancoPreguntas"
-    (accionBtnItem)="accionBtnItem($event)"
-></app-form-importar-banco-preguntas>
+<p-dialog
+    [header]="
+        'Agregar preguntas de ' +
+        data?.cCursoNombre +
+        ' - ' +
+        data?.cGradoAbreviacion +
+        ' - ' +
+        data?.cNivelTipoNombre +
+        ''
+    "
+    [modal]="true"
+    [(visible)]="showModalBancoPreguntas"
+    (onShow)="bancoPreguntasEre.obtenerDatos()"
+    (onHide)="bancoPreguntasEre.limpiarDatos()"
+    [style]="{ width: '85rem' }"
+>
+    <app-banco-preguntas-ere
+        #bancoPreguntasEre
+        (actualizarListaPreguntasEvent)="
+            obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
+        "
+        (cerrarDialogEvent)="showModalBancoPreguntas = $event"
+        [iEvaluacionId]="iEvaluacionId"
+        [iCursosNivelGradId]="iCursoNivelGradId"
+    ></app-banco-preguntas-ere>
+</p-dialog>
 <p-toast></p-toast>

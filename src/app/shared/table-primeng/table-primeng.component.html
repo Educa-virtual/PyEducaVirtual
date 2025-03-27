@@ -145,7 +145,6 @@
             let-columns="columns"
             let-rowIndex="rowIndex"
             let-expanded="expanded"
-            let-editing="editing"
         >
             <tr
                 [pSelectableRow]="rowData"
@@ -226,14 +225,42 @@
                         @if (col.type === 'cell-editor') {
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input
-                                        pInputText
-                                        type="text"
-                                        [(ngModel)]="rowData[col.field]"
-                                    />
+                                    @switch (col.inputType) {
+                                        @case ('dropdown') {
+                                            <p-dropdown
+                                                [options]="col.options"
+                                                appendTo="body"
+                                                [(ngModel)]="rowData[col.field]"
+                                                [placeholder]="col.placeholder"
+                                                [style]="{ width: '100%' }"
+                                            />
+                                        }
+                                        @default {
+                                            <input
+                                                pInputText
+                                                [type]="col.inputType ?? 'text'"
+                                                [(ngModel)]="rowData[col.field]"
+                                            />
+                                        }
+                                    }
                                 </ng-template>
+
                                 <ng-template pTemplate="output">
-                                    {{ rowData[col.field] }}
+                                    @switch (col.outputType) {
+                                        @case ('tag') {
+                                            <p-tag
+                                                [value]="rowData[col.field]"
+                                                [severity]="
+                                                    col.severity(
+                                                        rowData[col.field]
+                                                    )
+                                                "
+                                            />
+                                        }
+                                        @default {
+                                            {{ rowData[col.field] }}
+                                        }
+                                    }
                                 </ng-template>
                             </p-cellEditor>
                         }
@@ -465,6 +492,13 @@
                                 />
                             </div>
                         }
+                        @if (col.type === 'tag') {
+                            <p-tag
+                                [severity]="mapTagStyles(rowData, col)"
+                                [value]="rowData[col.field]"
+                            >
+                            </p-tag>
+                        }
                     </td>
                 }
             </tr>
@@ -488,14 +522,20 @@
         </tr>
         <ng-template
             pTemplate="groupheader"
-            let-columns
+            let-columns="columns"
             let-rowData
             let-rowIndex="rowIndex"
             let-expanded="expanded"
         >
             <!-- @for (row of rowData; track $index; let i = $index) { -->
             <tr>
-                <td [attr.colspan]="columnasSeleccionadas.length">
+                <td
+                    [attr.colspan]="
+                        isAction(columns)
+                            ? columnasSeleccionadas.length - 1
+                            : columnasSeleccionadas.length
+                    "
+                >
                     <div class="flex align-items-center gap-2">
                         <button
                             type="button"
@@ -516,27 +556,82 @@
                                 ><!-- Esto elemento esta aquí por el eslint --></i
                             >
                         </button>
-                        <span class="font-bold ml-2 h-full"
-                            >{{ rowData.cPersDocumento }} -
-                            {{ rowData.cPersPaterno }}
-                            {{ rowData.cPersMaterno }}
-                            {{ rowData.cPersNombre }}</span
-                        >
+                        <span class="font-bold ml-2 h-full">{{
+                            formatGroupHeader(groupHeader, rowData)
+                        }}</span>
                     </div>
                 </td>
+                @if (isAction(columns)) {
+                    <td>
+                        <div [style.text-align]="isAction(columns).text">
+                            @for (item of actions; track $index) {
+                                @if (
+                                    item.type === 'item' && item.isVisible
+                                        ? item.isVisible(rowData)
+                                        : true
+                                ) {
+                                    <button
+                                        [rounded]="true"
+                                        pButton
+                                        pRipple
+                                        [pTooltip]="item.labelTooltip"
+                                        tooltipPosition="top"
+                                        (click)="
+                                            accionBtn(
+                                                item.accion,
+                                                selectedValue[
+                                                    rowData[groupRowsBy]
+                                                ]
+                                            )
+                                        "
+                                        class="p-1"
+                                        [ngClass]="item.class"
+                                    >
+                                        @if (item.icon | isIconType) {
+                                            <app-icon
+                                                [name]="item.icon.name"
+                                                [color]="item.icon.color"
+                                                [size]="item.icon.size"
+                                            ></app-icon>
+                                        } @else {
+                                            <i class="{{ item.icon }}"></i>
+                                        }
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </td>
+                }
             </tr>
+
             <!-- } -->
         </ng-template>
 
-        <ng-template pTemplate="groupfooter">
+        <!-- {{debug(groupfooter)}} -->
+
+        <ng-template pTemplate="groupfooter" let-rowData>
             <tr class="p-rowgroup-footer">
-                <td
-                    [attr.colspan]="columnasSeleccionadas.length - 1"
-                    style="text-align: right"
-                >
-                    Total Customers
-                </td>
-                <td>total</td>
+                @for (
+                    col of columnasSeleccionadas;
+                    track $index;
+                    let i = $index
+                ) {
+                    <td>
+                        <div [style.text-align]="col.text">
+                            @for (
+                                row of groupfooter;
+                                track $index;
+                                let i = $index
+                            ) {
+                                @if (
+                                    row[groupRowsBy] === rowData[groupRowsBy]
+                                ) {
+                                    {{ row[col.field] }}
+                                }
+                            }
+                        </div>
+                    </td>
+                }
             </tr>
         </ng-template>
         <ng-template pTemplate="rowexpansion" let-rowData let-columns>
@@ -547,23 +642,26 @@
                     let i = $index
                 ) {
                     <td>
-                        <div class="flex items-center gap-2">
-                            <span>{{ rowData[col.field] }}</span>
-                        </div>
+                        @switch (col.type) {
+                            @case ('radio') {
+                                <p-radioButton
+                                    [(ngModel)]="
+                                        selectedValue[rowData[groupRowsBy]]
+                                    "
+                                    [value]="rowData"
+                                    [inputId]="rowData"
+                                />
+                            }
+                            @case ('actions') {}
+                            @default {
+                                <div [style.text-align]="col.text">
+                                    {{ rowData[col.field] }}
+                                </div>
+                            }
+                        }
                     </td>
                 }
-                <!-- <td>
-                    </td>
-                    <td>
-                        {{ col.field }}
-                    </td>
-                    <td>
-                        <p-tag [value]="'Warn'" [severity]="'warning'" />
-                    </td>
-                    <td>
-                        {{ col.field }}
-                    </td> -->
-            </tr>
-        </ng-template>
+            </tr></ng-template
+        >
     }
 </p-table>

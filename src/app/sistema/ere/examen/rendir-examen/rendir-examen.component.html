@@ -13,7 +13,8 @@
         </div> -->
     </ng-template>
     <div class="grid" *ngIf="!finalizado">
-        <div class="col-12 text-center">
+        <div class="col-3"></div>
+        <div class="col-6 text-center">
             <p-button
                 *ngFor="let item of preguntas; let i = index"
                 (onClick)="activeIndex = i"
@@ -24,6 +25,13 @@
                 size="small"
                 [severity]="item.iMarcado ? 'success' : 'primary'"
             />
+        </div>
+        <div class="col-3 text-right">
+            <app-time
+                [inicio]="tiempoActual"
+                [fin]="tiempoFin"
+                (accionTime)="accionBtnItem($event)"
+            ></app-time>
         </div>
         <!-- <div class="col-12 py-2" *ngIf="preguntas.length">
             <p-progressBar [value]="75" />
@@ -76,7 +84,7 @@
                                                 >
                                                     <p-checkbox
                                                         [inputId]="
-                                                            opcion.iMarcado
+                                                            opcion.iAlternativaId
                                                         "
                                                         [value]="opcion"
                                                         [(ngModel)]="
@@ -96,25 +104,31 @@
                                                     <!-- <p-radioButton name="opciones" [value]="opcion" [(ngModel)]="seleccion"
                                                     (onClick)="guardarPregunta(opcion)">
                                                 </p-radioButton> -->
-                                                    <div class="ml-2">
-                                                        <!-- {{ getLetra(i) }}.--->
-                                                        {{
-                                                            opcion.cAlternativaDescripcion
-                                                        }}
-                                                        <p-image
-                                                            *ngIf="
-                                                                opcion.cAlternativaImagen
-                                                            "
-                                                            [src]="
-                                                                backend +
-                                                                '/' +
-                                                                opcion.cAlternativaImagen
-                                                            "
-                                                            alt="Image"
-                                                            width="75"
-                                                            [preview]="true"
-                                                        />
-                                                    </div>
+                                                    <label
+                                                        [for]="
+                                                            opcion.iAlternativaId
+                                                        "
+                                                    >
+                                                        <div class="ml-2">
+                                                            <!-- {{ getLetra(i) }}.--->
+                                                            {{
+                                                                opcion.cAlternativaDescripcion
+                                                            }}
+                                                            <p-image
+                                                                *ngIf="
+                                                                    opcion.cAlternativaImagen
+                                                                "
+                                                                [src]="
+                                                                    backend +
+                                                                    '/' +
+                                                                    opcion.cAlternativaImagen
+                                                                "
+                                                                alt="Image"
+                                                                width="75"
+                                                                [preview]="true"
+                                                            />
+                                                        </div>
+                                                    </label>
                                                 </li>
                                             </ul>
                                         </p-accordionTab>
@@ -176,37 +190,35 @@
                                                 )
                                             "
                                         />
-                                        <!-- <p-radioButton name="opciones" [value]="opcion" [(ngModel)]="seleccion"
-                                        (onClick)="guardarPregunta(opcion)">
-                                    </p-radioButton> -->
-                                        <div class="ml-2">
-                                            <!-- {{ getLetra(i) }}.--->
-                                            <div
-                                                *ngIf="
-                                                    !opcion.cAlternativaImagen
-                                                "
-                                            >
-                                                {{
-                                                    opcion.cAlternativaDescripcion
-                                                }}
+                                        <label [for]="opcion.iAlternativaId">
+                                            <div class="ml-2">
+                                                <div
+                                                    *ngIf="
+                                                        !opcion.cAlternativaImagen
+                                                    "
+                                                >
+                                                    {{
+                                                        opcion.cAlternativaDescripcion
+                                                    }}
+                                                </div>
+                                                <p-image
+                                                    *ngIf="
+                                                        opcion.cAlternativaImagen
+                                                    "
+                                                    [src]="
+                                                        backend +
+                                                        '/' +
+                                                        opcion.cAlternativaImagen
+                                                    "
+                                                    alt="Image"
+                                                    width="75"
+                                                    [preview]="true"
+                                                    (onImageError)="
+                                                        updateUrl(opcion)
+                                                    "
+                                                />
                                             </div>
-                                            <p-image
-                                                *ngIf="
-                                                    opcion.cAlternativaImagen
-                                                "
-                                                [src]="
-                                                    backend +
-                                                    '/' +
-                                                    opcion.cAlternativaImagen
-                                                "
-                                                alt="Image"
-                                                width="75"
-                                                [preview]="true"
-                                                (onImageError)="
-                                                    updateUrl(opcion)
-                                                "
-                                            />
-                                        </div>
+                                        </label>
                                     </li>
                                 </ul>
                             </div>
@@ -242,9 +254,9 @@
             *ngIf="activeIndex === preguntas.length - 1"
         >
             <p-button
-                label="Terminar Exámen"
+                label="Terminar examen"
                 severity="success"
-                (onClick)="terminarExamen()"
+                (onClick)="preguntarTerminarExamen($event)"
             />
         </div>
     </div>
@@ -261,3 +273,5 @@
     [showModal]="showModalPreview"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-image-preview>
+
+<p-confirmDialog />

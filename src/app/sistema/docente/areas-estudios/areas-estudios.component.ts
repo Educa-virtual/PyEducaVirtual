@@ -275,10 +275,15 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                 },
             })
     }
-
+    descripcion: string
     // importammos los silabos de los cursos dispnibles para la etiqueta modal
     importarSilabos(docentecurso: string[]) {
-        console.log(docentecurso)
+        this.descripcion =
+            docentecurso['cCursoNombre'] +
+            ' ' +
+            docentecurso['cGradoAbreviacion'] +
+            ' ' +
+            docentecurso['cSeccionNombre']
         this.cursoSilabos = docentecurso
         // filtra los cursos que tienen un silabos
         const cursoId = docentecurso['iCursoId']

@@ -281,7 +281,6 @@ export class ContenidosComponent implements OnInit {
                 iSedeId: this.Isede,
             },
         }
-        console.log(params)
         this.getInformation(params, 'obtenerDatos')
     }
     // Variable para el comunicado seleccionado (para editar)

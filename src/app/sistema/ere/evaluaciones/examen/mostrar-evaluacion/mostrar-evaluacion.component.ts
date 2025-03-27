@@ -24,6 +24,7 @@ import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-mostrar-evaluacion',
@@ -55,6 +56,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
     private _ChangeDetectorRef = inject(ChangeDetectorRef)
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
+    private _ConstantesService = inject(ConstantesService)
 
     constructor(private store: LocalStoreService) {}
 
@@ -78,28 +80,22 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
             petition: 'post',
             group: 'ere',
             prefix: 'evaluacion',
-            ruta: 'handleCrudOperation',
+            ruta: 'obtenerEvaluacionxiEvaluacionIdxiCursoNivelGradIdxiIieeId',
             data: {
-                opcion: 'CONSULTARxiEvaluacionId',
+                opcion: 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId',
                 iEvaluacionId: this.iEvaluacionId,
-                valorBusqueda: this.iCursoNivelGradId,
+                iCursoNivelGradId: this.iCursoNivelGradId,
+                iIieeId: this._ConstantesService.iIieeId,
             },
         }
         this.getInformation(params, params.data.opcion)
     }
 
     rendirExamen() {
-        const params = {
-            petition: 'post',
-            group: 'ere',
-            prefix: 'evaluacion',
-            ruta: 'handleCrudOperation',
-            data: {
-                opcion: 'CONSULTAR-ESTADOxiEvaluacionId',
-                iEvaluacionId: this.iEvaluacionId,
-            },
-        }
-        this.getInformation(params, params.data.opcion)
+        this.accionBtnItem({
+            accion: 'CONSULTAR-ESTADOxiEvaluacionId',
+            item: [],
+        })
     }
 
     getInformation(params, accion) {
@@ -123,7 +119,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
         const { accion } = elemento
         const { item } = elemento
         switch (accion) {
-            case 'CONSULTARxiEvaluacionId':
+            case 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId':
                 this.evaluacion = item.length ? item[0] : null
                 this.store.setItem('evaluacion', this.evaluacion)
                 this.breadCrumbItems = [

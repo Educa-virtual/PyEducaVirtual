@@ -100,10 +100,56 @@
                         </iframe>
                     </div>
                 </p-card>
+                <p-card
+                    header="Video 5"
+                    subheader="Director - Descargar Archivo SIAGIE"
+                    [style]="{ width: '100%' }"
+                >
+                    <div>
+                        <iframe
+                            width="100%"
+                            height="200"
+                            [src]="
+                                sanitizer.bypassSecurityTrustResourceUrl(
+                                    'https://www.youtube.com/embed/rnFZUOpEO14'
+                                )
+                            "
+                            frameborder="0"
+                            allowfullscreen
+                        >
+                        </iframe>
+                    </div>
+                </p-card>
             </div>
         </div>
     </p-accordionTab>
     <p-accordionTab header="INSTRUCTIVO PARA ESTUDIANTES - ERE ">
+        <div class="card-container">
+            <div class="card-grid">
+                <p-card
+                    header="Video 1"
+                    subheader="Estudiante - Rendir Examen"
+                    [style]="{ width: '35%' }"
+                >
+                    <div>
+                        <iframe
+                            width="100%"
+                            height="200"
+                            [src]="
+                                sanitizer.bypassSecurityTrustResourceUrl(
+                                    'https://www.youtube.com/embed/VxLi75nTpuI'
+                                )
+                            "
+                            frameborder="0"
+                            allowfullscreen
+                        >
+                        </iframe>
+                    </div>
+                </p-card>
+            </div>
+        </div>
+    </p-accordionTab>
+    <p-accordionTab header="INSTRUCTIVO PARA ESPECIALISTAS - ERE ">
         <div class="card-container">
             <div class="card-grid">
                 <p-card

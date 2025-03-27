@@ -4,19 +4,27 @@ import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 
-import { MantenimientoAddUserComponent } from '../../gestion-institucional/mantenimiento/mantenimiento-add-user/mantenimiento-add-user.component'
-import { MantenimientoAddPerfilComponent } from '../../gestion-institucional/mantenimiento/mantenimiento-add-perfil/mantenimiento-add-perfil.component'
-import { MantenimientoSearchUsuarioComponent } from '../../gestion-institucional/mantenimiento/mantenimiento-search-usuario/mantenimiento-search-usuario.component'
 import { PrimengModule } from '@/app/primeng.module'
+import {
+    IActionTable,
+    TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component'
+import {
+    IActionContainer,
+    ContainerPageComponent,
+} from '@/app/shared/container-page/container-page.component'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormUsuarioComponent } from './form-usuario/form-usuario.component'
 
 @Component({
     selector: 'app-usuario',
     standalone: true,
     imports: [
         PrimengModule,
-        MantenimientoSearchUsuarioComponent,
-        MantenimientoAddPerfilComponent,
-        MantenimientoAddUserComponent,
+
+        TablePrimengComponent,
+        ContainerPageComponent,
+        FormUsuarioComponent,
     ],
     templateUrl: './usuario.component.html',
     styleUrl: './usuario.component.scss',
@@ -25,6 +33,7 @@ export class UsuarioComponent implements OnInit {
     iSedeId: number
     iYAcadId: number
     iCredId: number
+    form_user: FormGroup
 
     perfiles = [] // lista de perfiles
     search_perfiles: any[] = [] // lista de perfiles
@@ -33,17 +42,36 @@ export class UsuarioComponent implements OnInit {
     perfil_usuario: any //Informacion del perfil seleccionado
     perfil: number = 0
     option: string = 'Director'
+    personas: any = [] //lista de personas
 
     modal_visible: boolean = false
     tipo_documentos: any = [] //lista de tipo de documentos
     gestionar: boolean = true
     condicion: string = ''
     titulo: string
+    btnValidar: boolean = false
+
+    selectedItemsPerfil: any
+
+    listaTipoPerfil: any = [
+        { label: 'Todos', value: '0' },
+        { label: 'Director', value: '1' },
+        { label: 'Especialista UGEL', value: '2' },
+        { label: 'Especialista DREMO', value: '3' },
+    ]
+
+    searchOpcionPersona: any = [
+        { label: 'Documento', value: '0' },
+        { label: 'Nombre', value: '1' },
+        { label: 'Apellido Paterno', value: '2' },
+        { label: 'Apellido Materno', value: '3' },
+    ]
 
     constructor(
         private store: LocalStoreService,
         private messageService: MessageService,
-        private query: GeneralService
+        private query: GeneralService,
+        private fb: FormBuilder
     ) {
         const perfil = this.store.getItem('dremoPerfil')
 
@@ -56,6 +84,70 @@ export class UsuarioComponent implements OnInit {
     ngOnInit(): void {
         // this.getPerfilSedes();
         this.getTipoDocumento()
+        this.form_user = this.fb.group({
+            iPerfilId: ['', [Validators.required]],
+            iPersId: [''],
+            iTipoIdentId: [1, [Validators.required]],
+            cPersDocumento: [''],
+            cPersNombre: ['', [Validators.required]],
+            cPersMaterno: ['', [Validators.required]],
+            cPersPaterno: [''],
+            iTipoPerfilId: [''],
+            tipoBusqueda: ['0'],
+        })
+    }
+
+    accionBtn(event: any, accion: string) {
+        console.log('item nuevo usuario event', accion)
+        if (accion === 'nuevo_perfil_generado') {
+            const item = [
+                {
+                    iPersId: this.form_user.value.iPersId,
+                    iPerfilId: this.form_user.value.iPerfilId,
+                },
+            ]
+
+            console.log(item)
+        }
+
+        if (accion === 'buscar') {
+            const opcion = Number(this.form_user.value.tipoBusqueda)
+
+            switch (opcion) {
+                case 0:
+                    const condicion_0 =
+                        "cPersDocumento LIKE '" +
+                        this.form_user.value.cPersDocumento +
+                        "%'"
+                    this.getPersona(condicion_0)
+                    break
+                case 1:
+                    const condicion_1 =
+                        "cPersNombre LIKE '" +
+                        this.form_user.value.cPersDocumento +
+                        "%'"
+                    this.getPersona(condicion_1)
+                    break
+                case 2:
+                    const condicion_2 =
+                        "cPersPaterno LIKE '" +
+                        this.form_user.value.cPersDocumento +
+                        "%'"
+                    this.getPersona(condicion_2)
+                    break
+                case 3:
+                    const condicion_3 =
+                        "cPersMaterno LIKE '" +
+                        this.form_user.value.cPersDocumento +
+                        "%'"
+                    this.getPersona(condicion_3)
+                    break
+            }
+            this.modal_visible = false
+        }
+        if (accion === 'nuevo') {
+            this.modal_visible = true
+        }
     }
 
     getPerfilSedes() {
@@ -114,6 +206,45 @@ export class UsuarioComponent implements OnInit {
                 //    },
             })
     }
+
+    getPersona(condicion: string): void {
+        this.query
+            .searchCalAcademico({
+                esquema: 'grl',
+                tabla: 'personas',
+                campos: '*',
+                condicion: condicion,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data
+                    this.personas = item.map((persona) => ({
+                        ...persona,
+                        nombre_completo: (
+                            persona.cPersPaterno +
+                            ' ' +
+                            persona.cPersMaterno +
+                            ' ' +
+                            persona.cPersNombre
+                        ).trim(),
+                    }))
+                },
+                error: (error) => {
+                    console.error('Error fetching Tipo documentos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                //    complete: () => {
+                //     console.log(this.tipo_documentos)
+                //        // console.log('Request completed')
+                //    },
+            })
+    }
+
+    generarCredencialesIE() {}
 
     accionBtnItemTable({ accion, item }) {
         // console.log(this.selectedItems, 'selectedItems')
@@ -175,4 +306,69 @@ export class UsuarioComponent implements OnInit {
             this.gestionar = true
         }
     }
+
+    accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Crear credencial a usuario',
+            text: 'Generar credencial',
+            icon: 'pi pi-check-square',
+            accion: 'nuevo_perfil_generado',
+            class: 'p-button-primary',
+        },
+    ]
+    //estructura de tabla
+    actionsPerfil: IActionTable[] = [
+        {
+            labelTooltip: 'Eliminar perfil',
+            icon: 'pi pi-trash', // pi pi-ban
+            accion: 'eliminar_perfil',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+    ]
+
+    columa_personas = [
+        {
+            type: 'item',
+            width: '2%',
+            field: 'item',
+            header: 'N°',
+            text_header: 'left',
+            text: 'left',
+        },
+
+        {
+            type: 'text',
+            width: '20%',
+            field: 'cPersDocumento',
+            header: 'Documento',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '60%',
+            field: 'nombre_completo',
+            header: 'Nombre',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'cPersSexo',
+            header: 'Sexo',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'actions',
+            width: '8%',
+            field: 'actions',
+            header: 'Acciones',
+            text_header: 'center',
+            text: 'center',
+        },
+    ] // iCredEntId  iCredEntEstado
 }

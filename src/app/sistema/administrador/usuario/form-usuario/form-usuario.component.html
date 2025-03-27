@@ -1,0 +1,261 @@
+<br />
+<form [formGroup]="form_user">
+    <input type="hidden" formControlName="iPersId" class="p-inputtext-sm" />
+
+    <div class="grid p-fluid mt-2">
+        <div class="field col-12 md:col-3">
+            <span class="p-float-label">
+                <p-dropdown
+                    [style]="{ width: '100%' }"
+                    [options]="data"
+                    filterBy="cTipoIdentSigla"
+                    filterBy="cTipoIdentSigla"
+                    optionLabel="cTipoIdentSigla"
+                    optionValue="iTipoIdentId"
+                    formControlName="iTipoIdentId"
+                    [appendTo]="'body'"
+                />
+                <label for="iTipoIdentId">Documento</label>
+            </span>
+        </div>
+
+        <div class="field col-12 md:col-3">
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    id="cPersDocumento"
+                    formControlName="cPersDocumento"
+                    aria-describedby="cPersDocumento-help"
+                />
+                <label for="cPersDocumento">Número</label>
+            </span>
+        </div>
+
+        <div class="field col-12 md:col-3">
+            <button
+                pButton
+                [label]="'Validar información'"
+                icon="pi pi-search"
+                size="small"
+                class="p-button-success"
+                (click)="accionBtn('validar')"
+            ></button>
+            <!-- (click)="guardarActualizarRubrica()" -->
+        </div>
+        <div class="field col-12 md:col-3">
+            <p-button
+                [label]="'Registrar usuario'"
+                icon="pi pi-check"
+                size="small"
+                [disabled]="form_user.invalid"
+            />
+        </div>
+    </div>
+
+    <p-fieldset legend="Información general">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cPersPaterno"
+                        formControlName="cPersPaterno"
+                        aria-describedby="cPersPaterno-help"
+                    />
+                    <label for="cPersPaterno">Primer Apellido *</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cPersMaterno"
+                        formControlName="cPersMaterno"
+                        aria-describedby="cPersMaterno-help"
+                    />
+                    <label for="cPersMaterno">Segundo Apellido</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cPersNombre"
+                        formControlName="cPersNombre"
+                        aria-describedby="cPersNombre-help"
+                    />
+                    <label for="cPersNombre">Nombres *</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="sexos"
+                        formControlName="cPersSexo"
+                        optionLabel="nombre"
+                        [checkmark]="true"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="cPersSexo">Sexo *</label>
+                </span>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <p-fieldset legend="Datos de nacimiento">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="nacionalidades"
+                        formControlName="iNacionId"
+                        optionLabel="nombre"
+                        [checkmark]="true"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iNacionId">Nacionalidad</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-calendar
+                        formControlName="dPersNacimiento"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="dPersNacimiento"
+                        [appendTo]="'body'"
+                    />
+                    <label for="dPersNacimiento">Fecha de nacimiento *</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4" [hidden]="!es_peruano">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cEstPartidaNacimiento"
+                        formControlName="cEstPartidaNacimiento"
+                        aria-describedby="cEstPartidaNacimiento-help"
+                    />
+                    <label for="cEstPartidaNacimiento"
+                        >Certificado de Nacimiento</label
+                    >
+                </span>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <p-fieldset legend="Ubigeo">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="departamentos"
+                        formControlName="iDptoId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iDptoId">Departamento</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="provincias"
+                        formControlName="iPrvnId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iPrvnId">Provincia</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="distritos"
+                        formControlName="iDsttId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iDsttId">Distrito</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        readonly
+                        type="text"
+                        formControlName="cEstUbigeo"
+                    />
+                    <label for="cEstUbigeo">Ubigeo</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-10">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cPersDomicilio"
+                        formControlName="cPersDomicilio"
+                        aria-describedby="cPersDomicilio-help"
+                    />
+                    <label for="cPersDomicilio">Domicilio</label>
+                </span>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <p-fieldset legend="Datos de contacto">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input
+                        type="tel"
+                        pInputText
+                        formControlName="cEstTelefono"
+                        aria-describedby="cEstTelefono-help"
+                    />
+                    <label for="cEstTelefono">Teléfono</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input
+                        type="email"
+                        pInputText
+                        formControlName="cPersConCorreoElectronico"
+                        aria-describedby="cPersConCorreoElectronico-help"
+                    />
+                    <label for="cPersConCorreoElectronico">Correo</label>
+                </span>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+<p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+</form>

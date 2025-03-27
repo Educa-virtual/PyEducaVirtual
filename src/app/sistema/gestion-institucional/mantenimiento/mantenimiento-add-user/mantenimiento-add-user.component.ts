@@ -56,7 +56,7 @@ export class MantenimientoAddUserComponent implements OnChanges, OnInit {
             iTipoIdentId: [1, [Validators.required]],
             cPersDocumento: [''],
             cPersNombre: ['', [Validators.required]],
-            cPersMaterno: ['', [Validators.required]],
+            cPersMaterno: [''],
             cPersPaterno: [''],
         })
     }
@@ -118,7 +118,6 @@ export class MantenimientoAddUserComponent implements OnChanges, OnInit {
 
     validarDocumento() {
         // solo para DNI
-
         this.query
             .validarPersona({
                 iTipoIdentId: this.form_user.get('iTipoIdentId')?.value,

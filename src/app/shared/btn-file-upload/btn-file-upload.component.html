@@ -31,7 +31,7 @@
             "
             [class]="disabled ? 'cursor-not-allowed' : 'cursor-pointer '"
             icon="pi pi pi-upload"
-            (click)="FileInput.click()"
+            (click)="onDeletedFile(); FileInput.click()"
         />
     </label>
     <!-- @if (isAttachedFile) {

@@ -62,9 +62,6 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
 
     @Input() iEvaluacionId: string = ''
     @Input() iCursoNivelGradId: string = ''
-    /*cEvaluacionNombre: string = 'EVAL NOM'
-    cCursoNombre: string = 'CURSO NOM'
-    cGradoNombre: string = 'GRADO NOM '*/
 
     iniciarEvaluacion: boolean = false
     evaluacion: any
@@ -149,13 +146,9 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
                 if (this.bEstadoTiempo) {
                     return
                 }
-                item.length
-                    ? item[0]['iEstado']
-                        ? this.router.navigate([
-                              `ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/iniciar-evaluacion`,
-                          ])
-                        : null
-                    : null
+                this.router.navigate([
+                    `ere/rendir-examen/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/iniciar-evaluacion`,
+                ])
                 break
             case 'tiempo-finalizado':
                 this.bEstadoTiempo = false

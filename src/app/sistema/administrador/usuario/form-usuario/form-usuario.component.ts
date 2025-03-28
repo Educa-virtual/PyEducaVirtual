@@ -5,6 +5,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
 
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-form-usuario',
@@ -40,7 +41,8 @@ export class FormUsuarioComponent implements OnInit {
         private query: GeneralService,
         private datosEstudianteService: DatosEstudianteService,
 
-        private store: LocalStoreService
+        private store: LocalStoreService,
+        private messageService: MessageService
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
     }
@@ -81,10 +83,7 @@ export class FormUsuarioComponent implements OnInit {
                 cPersMaterno: [''],
                 cPersPaterno: [''],
                 cNacionNombre: [''],
-                cPersConCorreoElectronico: [
-                    '',
-                    [Validators.required, Validators.email],
-                ],
+                cPersEmail: ['', [Validators.required, Validators.email]],
                 cPersDomicilio: [
                     '',
                     [Validators.required, Validators.minLength(5)],
@@ -99,6 +98,8 @@ export class FormUsuarioComponent implements OnInit {
                 iPrvnId: [''],
                 iDsttId: [''],
                 cEstUbigeo: [''],
+
+                cTelefono: [''],
             })
         } catch (error) {
             console.log(error, 'error de variables')
@@ -137,6 +138,41 @@ export class FormUsuarioComponent implements OnInit {
         if (action === 'validar') {
             this.validarDocumento()
         }
+    }
+
+    generarCredencialesIE() {
+        //console.log(this.registro);
+        this.query
+            .generarCredencialesIE({
+                data: this.registro,
+                iSedeId: 0,
+                iYAcadId: 0,
+                iCredId: this.perfil.iCredId,
+                iPerfilId: 0,
+                condicion: 'add_credencial_ie',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'validar persona')
+                    this.setFormUsuario(data.data)
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: data.message,
+                    })
+                },
+                error: (error) => {
+                    console.error('Error validando persona:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     validarDocumento() {
@@ -179,8 +215,8 @@ export class FormUsuarioComponent implements OnInit {
         this.form_user.get('iDsttId')?.setValue(item?.iDsttId)
         this.form_user.get('cEstUbigeo')?.setValue(item?.cEstUbigeo)
         this.form_user.get('cPersDomicilio')?.setValue(item?.cPersDomicilio)
-        this.form_user.get('cEstTelefono')?.setValue(item?.cEstTelefono)
-        this.form_user.get('cEstCorreo')?.setValue(item?.cEstCorreo)
+        this.form_user.get('cTelefono')?.setValue(item?.cTelefono)
+        this.form_user.get('cPersEmail')?.setValue(item?.cPersEmail)
         this.form_user
             .get('dPersNacimiento')
             ?.setValue(

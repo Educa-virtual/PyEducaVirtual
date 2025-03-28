@@ -62,9 +62,6 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
 
     @Input() iEvaluacionId: string = ''
     @Input() iCursoNivelGradId: string = ''
-    /*cEvaluacionNombre: string = 'EVAL NOM'
-    cCursoNombre: string = 'CURSO NOM'
-    cGradoNombre: string = 'GRADO NOM '*/
 
     iniciarEvaluacion: boolean = false
     evaluacion: any

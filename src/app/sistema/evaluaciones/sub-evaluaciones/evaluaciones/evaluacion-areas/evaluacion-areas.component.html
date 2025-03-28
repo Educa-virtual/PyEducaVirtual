@@ -20,7 +20,9 @@
                             <ng-template pTemplate="header">
                                 <tr>
                                     <th style="width: 1rem">#</th>
-                                    <th style="width: 15rem">Nombre de Área</th>
+                                    <th style="width: 15rem">
+                                        Nombre del área
+                                    </th>
                                     <th
                                         style="width: 1rem"
                                         *ngFor="
@@ -32,9 +34,9 @@
                                         {{ grado }}
                                     </th>
                                     <th style="width: 30%">
-                                        Fecha de Evaluación
+                                        Fecha de evaluación
                                     </th>
-                                    <th style="width: 30%">Cant. Preguntas</th>
+                                    <th style="width: 30%">Cant. preguntas</th>
                                 </tr>
                             </ng-template>
 
@@ -88,12 +90,13 @@
                                                 curso.dtExamenFechaInicio
                                             "
                                             dateFormat="dd/mm/yy"
-                                            placeholder="Seleccionar Fecha"
+                                            placeholder="Seleccione fecha"
                                             [showIcon]="true"
                                             [iconDisplay]="'input'"
                                             (onSelect)="
                                                 guardarFechaCantidadExamenCursos(
-                                                    curso
+                                                    curso,
+                                                    'fecha'
                                                 )
                                             "
                                             [style]="{ width: '180px' }"
@@ -119,7 +122,8 @@
                                             style="width: 65px"
                                             (input)="
                                                 guardarFechaCantidadExamenCursos(
-                                                    curso
+                                                    curso,
+                                                    'preguntas'
                                                 )
                                             "
                                             [disabled]="

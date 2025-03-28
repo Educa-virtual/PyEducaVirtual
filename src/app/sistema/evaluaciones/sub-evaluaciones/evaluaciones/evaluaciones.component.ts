@@ -284,7 +284,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         await this.apiservice.updateData(coincidencias)
         this._MessageService.add({
             severity: 'success',
-            //summary: 'Problema encontrado',
+            summary: 'Horas registradas',
             detail: 'Se han registrado las horas ingresadas.',
         })
         this.visible = false
@@ -348,7 +348,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         },
         {
             field: 'dtEvaluacionFechaInicio',
-            header: 'Fecha Inicio',
+            header: 'Fecha inicio',
             type: 'text',
             width: '4rem',
             text: 'center',
@@ -356,7 +356,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         },
         {
             field: 'dtEvaluacionFechaFin',
-            header: 'Fecha Fin',
+            header: 'Fecha fin',
             type: 'text',
             width: '4rem',
             text: 'center',

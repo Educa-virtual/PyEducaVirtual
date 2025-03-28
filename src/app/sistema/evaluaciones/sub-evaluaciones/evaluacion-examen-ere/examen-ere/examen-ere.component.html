@@ -30,14 +30,15 @@
                         }}</small>
                     </h3>
                     <div class="mt-2">
-                        <b>Inicio:</b>
+                        <b>Fecha:</b>
                         {{
-                            curso.dtExamenFechaInicio | date: 'dd/MM/yy, h:mm a'
+                            curso.dtExamenFechaInicio | date: 'EEEE, d MMMM, y'
                         }}
                     </div>
                     <div class="mt-1">
-                        <b>Fin:</b>
-                        {{ curso.dtExamenFechaFin | date: 'dd/MM/yy, h:mm a' }}
+                        <b>Hora:</b>
+                        {{ curso.dtExamenFechaInicio | date: 'HH:mm' }} a
+                        {{ curso.dtExamenFechaFin | date: 'HH:mm' }}
                     </div>
                 </div>
                 <div class="flex">

@@ -325,7 +325,6 @@ export class EvaluacionesFormComponent implements OnInit {
             iEstado: estado,
         }
 
-        console.log('datos que se guardaran', data)
         this._apiEre
             .guardarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
@@ -342,8 +341,8 @@ export class EvaluacionesFormComponent implements OnInit {
                     )
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Se guardo con exitoso',
-                        detail: 'La evaluacion se ha guardado con éxito.',
+                        summary: 'Se guardó con éxito',
+                        detail: 'La evaluación se ha guardado con éxito.',
                     })
                 },
                 error: (error) => {
@@ -354,15 +353,15 @@ export class EvaluacionesFormComponent implements OnInit {
     }
     // Método para actualizar los datos en la base de datos
     actualizarEvaluacion() {
-        let fechaInicio = this.evaluacionFormGroup.get(
+        /*let fechaInicio = this.evaluacionFormGroup.get(
             'dtEvaluacionFechaInicio'
         ).value
         let fechaFin = this.evaluacionFormGroup.get(
             'dtEvaluacionFechaFin'
-        ).value
+        ).value*/
 
         // Convertir fechas al formato que necesita SQL Server (YYYY-MM-DD) // no cambiar esta conversion
-        if (typeof fechaInicio === 'string' && fechaInicio.includes('/')) {
+        /*if (typeof fechaInicio === 'string' && fechaInicio.includes('/')) {
             const [dia, mes, anio] = fechaInicio.split('/')
             fechaInicio = `${anio}-${mes}-${dia}`
         }
@@ -370,7 +369,7 @@ export class EvaluacionesFormComponent implements OnInit {
         if (typeof fechaFin === 'string' && fechaFin.includes('/')) {
             const [dia, mes, anio] = fechaFin.split('/')
             fechaFin = `${anio}-${mes}-${dia}`
-        }
+        }*/
 
         // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
 
@@ -393,21 +392,25 @@ export class EvaluacionesFormComponent implements OnInit {
                 'cEvaluacionUrlDrive'
             ).value,
 
-            dtEvaluacionFechaInicio: fechaInicio,
-            dtEvaluacionFechaFin: fechaFin,
+            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaInicio'
+            ).value,
+            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaFin'
+            ).value,
         }
 
-        console.log('Datos para actualizar (con fechas ISO):', data)
+        //console.log('Datos para actualizar (con fechas ISO):', data)
 
-        console.log('datos para acualizar', data)
+        //console.log('datos para acualizar', data)
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
                 console.log('respuesta de actualizacion', resp)
 
                 this._MessageService.add({
                     severity: 'success',
-                    summary: 'Actualizado con exito',
-                    detail: 'La evaluacion se ha actualizado con éxito.',
+                    summary: 'Actualización exitosa',
+                    detail: 'Los datos de la evaluación han sido actualizados.',
                 })
                 resp
             },
@@ -417,7 +420,7 @@ export class EvaluacionesFormComponent implements OnInit {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error de actualización',
-                    detail: 'No se pudo actualizar la evaluación. Consulte la consola para más detalles.',
+                    detail: 'No se pudo actualizar la evaluación. Por favor intente de nuevo.',
                 })
             },
 

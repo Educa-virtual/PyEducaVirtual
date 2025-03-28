@@ -102,17 +102,15 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     if (this.accion == 'nuevo') {
                         this._MessageService.add({
                             severity: 'success',
-                            summary: 'Se guardo area',
-                            detail: 'Los cursos se han registrado correctamente.',
+                            summary: 'Área asignada',
+                            detail: 'Se ha asignado el área a la evaluación.',
                         })
-                        console.log(this.accion)
                     } else if (this.accion == 'editar') {
                         this._MessageService.add({
                             severity: 'success',
-                            summary: 'Se actualizo el area',
-                            detail: 'Los cursos se han editado correctamente.',
+                            summary: 'Área editada',
+                            detail: 'Se ha editado el área de la evaluación.',
                         })
-                        console.log(this.accion)
                     }
                 },
                 error: (err) => {
@@ -147,8 +145,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     // Notifica el éxito
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Se elimina area',
-                        detail: 'El curso se eliminó correctamente.',
+                        summary: 'Área retirada',
+                        detail: 'Se ha retirado el área de la evaluación.',
                     })
                     console.log('Cursos eliminados:', resp)
                 },
@@ -178,8 +176,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     next: (resp: any) => {
                         // Crear un mapa con los cursos seleccionados
 
-                        console.log('iprimiendo resp.cursos', resp.cursos)
-
                         this.data = resp.cursos
                         const cursosSeleccionados: Map<number, boolean> =
                             new Map(
@@ -189,7 +185,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                     curso.dtExamenFechaInicio,
                                 ])
                             )
-                        console.log('probando cursos sele', cursosSeleccionados)
 
                         // Limpia la lista para evitar datos residuales
                         this.lista.forEach((nivel: any) => {
@@ -201,16 +196,11 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                             })
                         })
 
-                        console.log('probando lista residual', this.lista)
-
                         // Actualizar con los nuevos datos
                         this.lista.forEach((nivel: any) => {
                             Object.keys(nivel.grados).forEach((grado) => {
                                 nivel.grados[grado].forEach((curso: any) => {
                                     // Si el curso está en el mapa, actualizamos su estado
-                                    console.log('probando curso', this.cursos)
-
-                                    console.log('probando this.data', this.data)
 
                                     curso.isSelected =
                                         cursosSeleccionados.get(
@@ -318,7 +308,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             grados: groupedData[nivel],
         }))
     }
-    guardarFechaCantidadExamenCursos(curso) {
+    guardarFechaCantidadExamenCursos(curso, campoActualizar: string) {
         if (this.accion === 'ver') {
             return
         }
@@ -358,8 +348,11 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 next: () => {
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Guardado',
-                        detail: 'Se guardó exitosamente',
+                        summary: 'Datos actualizados',
+                        detail:
+                            campoActualizar == 'preguntas'
+                                ? 'Se ha actualizado la cantidad de preguntas.'
+                                : 'Se ha actualizado la fecha de evaluación.',
                     })
                 },
                 error: (err) => {

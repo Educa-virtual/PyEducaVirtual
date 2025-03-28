@@ -5,7 +5,7 @@
         (curso?.cCursoNombre || '')
     "
 >
-    <div class="text-primary text-white font-bold block">
+    <div class="text-white font-bold block">
         Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo:
         {{ curso?.cCicloRomanos }} | Grado: {{ curso?.cGradoAbreviacion }} |
         Seccion:
@@ -19,6 +19,8 @@
         [tabs]="tabs"
         (updateTab)="updateTab($event)"
     >
+    </app-tabs-primeng>
+    <div class="col-12">
         @switch (selectTab) {
             @case (0) {
                 <app-tab-inicio
@@ -44,7 +46,6 @@
                     [curso]="curso"
                 ></app-tab-resultados>
             }
-            @default {}
         }
-    </app-tabs-primeng>
+    </div>
 </div>

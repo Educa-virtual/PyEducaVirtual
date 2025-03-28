@@ -1,13 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { NgFor, NgIf } from '@angular/common'
-import {
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    inject,
-    Input,
-    Output,
-} from '@angular/core'
+import { NgFor } from '@angular/common'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 
 export interface TabsPrimeng {
     title: string
@@ -18,7 +11,7 @@ export interface TabsPrimeng {
 @Component({
     selector: 'app-tabs-primeng',
     standalone: true,
-    imports: [PrimengModule, NgFor, NgIf],
+    imports: [PrimengModule, NgFor],
     templateUrl: './tabs-primeng.component.html',
     styleUrl: './tabs-primeng.component.scss',
 })
@@ -28,10 +21,10 @@ export class TabsPrimengComponent {
     @Input() activeIndex: number = 0
     @Input() tabs: TabsPrimeng[]
 
-    private _ChangeDetectorRef = inject(ChangeDetectorRef)
     ngOnChange(changes) {
         if (changes.activeIndex?.currentValue) {
             this.activeIndex = changes.activeIndex.currentValue
+            this.updateTab.emit(this.activeIndex)
         }
         if (changes.tabs?.currentValue) {
             this.tabs = changes.tabs.currentValue

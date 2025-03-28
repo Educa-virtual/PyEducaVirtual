@@ -28,3 +28,7 @@
 :host ::ng-deep .perfil-name {
     color: black;
 }
+
+::ng-deep .p-orderlist {
+    border: none !important;
+}

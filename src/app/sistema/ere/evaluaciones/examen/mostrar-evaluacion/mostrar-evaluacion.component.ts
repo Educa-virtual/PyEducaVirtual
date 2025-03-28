@@ -149,13 +149,14 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
                 if (this.bEstadoTiempo) {
                     return
                 }
-                item.length
-                    ? item[0]['iEstado']
-                        ? this.router.navigate([
-                              `ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/iniciar-evaluacion`,
+                this.router.navigate([
+                    `ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/iniciar-evaluacion`,
+                ])
+                /*console.log(this.evaluacion)
+                item.length ? item[0]['iEstado'] ?
                           ])
                         : null
-                    : null
+                    : null*/
                 break
             case 'tiempo-finalizado':
                 this.bEstadoTiempo = false

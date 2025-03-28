@@ -123,9 +123,13 @@ export class AsignarHorasAreasComponent implements OnInit {
     }
 
     filteredInputAreas(nivel: string) {
-        return this.inputAreas.controls.filter(
-            (area) => area.get('cNivelTipoNombre')?.value === nivel
-        )
+        return this.inputAreas.controls
+            .filter((area) => area.get('cNivelTipoNombre')?.value === nivel)
+            .sort((a, b) => {
+                const gradoA = a.get('cGradoAbreviacion')?.value || ''
+                const gradoB = b.get('cGradoAbreviacion')?.value || ''
+                return gradoA.localeCompare(gradoB)
+            })
     }
 
     get uniqueCNivel(): string[] {

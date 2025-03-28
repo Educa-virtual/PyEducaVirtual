@@ -235,7 +235,7 @@ export class ContenidosComponent implements OnInit {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
         menubar: false,
-        selector: 'textarea',
+        // selector: 'textarea',
         // setup: (editor) => {
         //     editor.on('blur', (e) =>
         //         this.actualizar(e, 'cSilaboDescripcionCurso')
@@ -455,17 +455,17 @@ export class ContenidosComponent implements OnInit {
             }
         }
         // Validar que se haya ingresado contenido
-        if (
-            !this.selectedComunicado.texto ||
-            !this.selectedComunicado.texto.trim()
-        ) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'El contenido del comunicado no puede estar vacío.',
-            })
-            return
-        }
+        // if (
+        //     !this.selectedComunicado.texto ||
+        //     !this.selectedComunicado.texto.trim()
+        // ) {
+        //     this.messageService.add({
+        //         severity: 'warn',
+        //         summary: 'Advertencia',
+        //         detail: 'El contenido del comunicado no puede estar vacío.',
+        //     })
+        //     return
+        // }
         this.aplicarLogicaEnvio()
         // objeto con el cual evaluamos si se actualiza o se ingresa un nuevo registro
         let dataObj: any = {
@@ -473,7 +473,7 @@ export class ContenidosComponent implements OnInit {
             iTipoComId: this.selectedComunicado.tipo, // Tipo de comunicado
             iPrioridadId: this.selectedComunicado.prioridad, // Prioridad
             cComunicadoTitulo: this.selectedComunicado.titulo, // Título
-            cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
+            cComunicadoDescripcion: this.selectedComunicado.texto, // contenido del comunicado
             dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
             dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
             iEstado: 1,
@@ -529,6 +529,7 @@ export class ContenidosComponent implements OnInit {
         const month = (date.getMonth() + 1).toString().padStart(2, '0') // Los meses van de 0 a 11
         const year = date.getFullYear()
         return `${day}/${month}/${year}`
+        // return `${year}/${month}/${day}`;
     }
 
     getInformation(params, accion) {
@@ -565,7 +566,7 @@ export class ContenidosComponent implements OnInit {
                 }))
                 //  curso, seccion y grado
                 this.cursos = [
-                    { label: 'Curso', value: null },
+                    { label: 'Area Curricular', value: null },
                     ...item.cursos.map((c: any) => ({
                         label: c.cCursoNombre,
                         value: c.iCursoId,

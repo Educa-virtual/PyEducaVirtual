@@ -229,10 +229,9 @@
                                         }}</span>
                                     </div>
                                 </div>
-
                                 <!-- Texto o descripción -->
                                 <div class="col-12 mt-3">
-                                    <p
+                                    <!-- <p
                                         class="m-0"
                                         style="white-space: pre-line"
                                     >
@@ -240,7 +239,14 @@
                                             comunicado.texto ||
                                                 'Sin contenido adicional.'
                                         }}
-                                    </p>
+                                    </p> -->
+                                    <div
+                                        class="m-0"
+                                        [innerHTML]="
+                                            comunicado.texto ||
+                                            'Sin contenido adicional.'
+                                        "
+                                    ></div>
                                 </div>
                             </div>
                         </p-card>
@@ -311,10 +317,7 @@
                     </div>
                 </div>
                 <div class="grid">
-                    <div
-                        class="flex flex-column col-12 md:col-6"
-                        *ngIf="selectedComunicado.tipo === '2'"
-                    >
+                    <div class="flex flex-column col-12 md:col-6">
                         <label for="grupo" class="mb-1">Grupo</label>
                         <p-multiSelect
                             id="grupo"
@@ -334,10 +337,7 @@
                             "
                         ></p-multiSelect>
                     </div>
-                    <div
-                        class="flex flex-column col-12 md:col-6"
-                        *ngIf="selectedComunicado.tipo === '2'"
-                    >
+                    <div class="flex flex-column col-12 md:col-6">
                         <label for="advancedSwitch" class="mb-1"
                             >Opciones Avanzadas</label
                         >
@@ -539,7 +539,12 @@
                 </div>
                 <div class="flex flex-column">
                     <label for="texto" class="mb-1">Contenido</label>
-                    <editor formControlName="texto" [init]="mensajes" />
+                    <editor
+                        name="texto"
+                        [(ngModel)]="selectedComunicado.texto"
+                        [init]="mensajes"
+                    >
+                    </editor>
                     <!-- <textarea
                         pInputTextarea
                         id="texto"

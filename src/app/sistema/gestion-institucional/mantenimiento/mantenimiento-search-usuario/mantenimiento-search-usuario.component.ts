@@ -118,7 +118,6 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
                             persona.cPersNombre
                         ).trim(),
                     }))
-                    console.log(this.lista_accesos, ' lista de cargos')
                 },
                 error: (error) => {
                     console.error('Error fetching Años Académicos:', error)

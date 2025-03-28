@@ -3,7 +3,6 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ChartModule } from 'primeng/chart'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { DatosInformesService } from '../../services/datos-informes.service'
-import { ConstantesService } from '@/app/servicios/constantes.service'
 import { MenuItem, MessageService } from 'primeng/api'
 import {
     IActionTable,
@@ -56,8 +55,7 @@ export class InformesEreComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private datosInformes: DatosInformesService,
-        private constantesService: ConstantesService
+        private datosInformes: DatosInformesService
     ) {}
 
     ngOnInit() {
@@ -72,12 +70,9 @@ export class InformesEreComponent implements OnInit {
 
         try {
             this.formFiltros = this.fb.group({
-                iYAcadId: [
-                    this.constantesService.iYAcadId,
-                    Validators.required,
-                ],
-                iSesionId: [
-                    this.constantesService.iCredId,
+                iYAcadId: [this.datosInformes.iYAcadId, Validators.required],
+                iCredEntPerfId: [
+                    this.datosInformes.perfil.iCredEntPerfId,
                     Validators.required,
                 ],
                 iEvaluacionId: [null, Validators.required],
@@ -85,7 +80,7 @@ export class InformesEreComponent implements OnInit {
                 iNivelTipoId: [null, Validators.required],
                 iNivelGradoId: [null, Validators.required],
                 iDsttId: [null],
-                iIieeId: this.constantesService.iIieeId,
+                iIieeId: [null],
                 iSeccionId: [null],
                 cPersSexo: [null],
             })
@@ -513,15 +508,15 @@ export class InformesEreComponent implements OnInit {
             datasets: [
                 {
                     label: '% DE ACIERTOS',
-                    backgroundColot:
+                    backgroundColor:
                         documentStyle.getPropertyValue('--blue-500'),
-                    hoverBackgroundColot:
+                    hoverBackgroundColor:
                         documentStyle.getPropertyValue('--blue-400'),
                     data: aciertos,
                 },
                 {
                     label: '% DE DESACIERTOS',
-                    backgroundColot:
+                    backgroundColor:
                         documentStyle.getPropertyValue('--red-500'),
                     hoverBackgrounfColor:
                         documentStyle.getPropertyValue('--red-400'),
@@ -529,9 +524,9 @@ export class InformesEreComponent implements OnInit {
                 },
                 {
                     label: '% DE BLANCOS',
-                    backgroundColot:
+                    backgroundColor:
                         documentStyle.getPropertyValue('--yellow-500'),
-                    hoverBackgroundColot:
+                    hoverBackgroundColor:
                         documentStyle.getPropertyValue('--yellow-400'),
                     data: blancos,
                 },

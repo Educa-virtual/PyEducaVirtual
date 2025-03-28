@@ -15,6 +15,7 @@ export class DatosInformesService {
     ) {}
 
     perfil = this.store.getItem('dremoPerfil')
+    iYAcadId = this.store.getItem('dremoiYAcadId')
 
     lista: any[] = []
     sexos: Array<object>

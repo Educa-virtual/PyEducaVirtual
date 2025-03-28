@@ -429,12 +429,12 @@ const administracion = [
                     {
                         label: 'Consulta Asistenta Social',
                         icon: 'pi pi-fw pi-user-edit',
-                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                        routerLink: ['/bienestar/gestion-fichas'],
                     },
                     {
                         label: 'Consulta Apoderado',
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['/bienestar/fichavistapoderado'],
+                        routerLink: ['/bienestar/gestion-fichas-apoderado'],
                     },
                     {
                         label: 'Ficha Socioeconomica',

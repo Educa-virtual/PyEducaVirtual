@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { DropdownModule } from 'primeng/dropdown'
 import { InputTextModule } from 'primeng/inputtext'
-import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
-import { CompartirFichaService } from '../services/compartir-ficha.service'
-import { FichaGeneral } from '../interfaces/fichaGeneral'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { FichaGeneral } from '../../interfaces/fichaGeneral'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
@@ -21,10 +21,10 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         //TablePrimengComponent,
         DropdownModule,
     ],
-    templateUrl: './fichasocgeneral.component.html',
-    styleUrl: './fichasocgeneral.component.scss',
+    templateUrl: './ficha-general.component.html',
+    styleUrl: './ficha-general.component.scss',
 })
-export class FichasocgeneralComponent implements OnInit {
+export class FichaGeneralComponent implements OnInit {
     formGroup: FormGroup | undefined
     formGeneral: FormGroup
     religiones: Array<object>
@@ -42,6 +42,7 @@ export class FichasocgeneralComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        console.log('iniciando')
         this.visibleInput = Array(3).fill(false)
 
         this.formGeneral = this.fb.group({

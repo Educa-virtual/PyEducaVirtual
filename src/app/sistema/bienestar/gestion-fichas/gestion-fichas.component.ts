@@ -28,7 +28,7 @@ interface Ficha {
 }
 
 @Component({
-    selector: 'app-ficha-socioeconomica',
+    selector: 'app-gestion-fichas',
     standalone: true,
     imports: [
         TablePrimengComponent,
@@ -39,10 +39,10 @@ interface Ficha {
         InputGroupModule,
         PrimengModule,
     ],
-    templateUrl: './ficha-socioeconomica.component.html',
-    styleUrls: ['./ficha-socioeconomica.component.scss'],
+    templateUrl: './gestion-fichas.component.html',
+    styleUrls: ['./gestion-fichas.component.scss'],
 })
-export class FichaSocioeconomicaComponent implements OnInit {
+export class GestionFichasComponent implements OnInit {
     fichas: Ficha[] = []
     searchForm: FormGroup
     iIieeId: number

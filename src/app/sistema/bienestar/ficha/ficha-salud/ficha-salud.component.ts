@@ -42,9 +42,9 @@ export class FichaSaludComponent implements OnInit {
             .getFichaParametros()
             .subscribe((data: any) => {
                 this.dolencias = this.datosFichaBienestarService.getDolencias(
-                    data?.dolenciaes
+                    data?.dolencias
                 )
-                if (this.dolencias.length > 0) {
+                if (this.dolencias && this.dolencias.length > 0) {
                     this.visibleDolenciasInput = Array(
                         this.dolencias.length
                     ).fill(false)

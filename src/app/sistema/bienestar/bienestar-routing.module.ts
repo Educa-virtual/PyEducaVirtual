@@ -7,19 +7,22 @@ import { FichaViviendaComponent } from './ficha/ficha-vivienda/ficha-vivienda.co
 import { FichaAlimentacionComponent } from './ficha/ficha-alimentacion/ficha-alimentacion.component'
 import { FichaDiscapacidadComponent } from './ficha/ficha-discapacidad/ficha-discapacidad.component'
 import { FichaSaludComponent } from './ficha/ficha-salud/ficha-salud.component'
-import { FichasocgeneralComponent } from './fichasocgeneral/fichasocgeneral.component'
-import { FichaSocioeconomicaComponent } from './ficha-socioeconomica/ficha-socioeconomica.component'
-import { FichavistapoderadoComponent } from './fichavistapoderado/fichavistapoderado.component'
+import { FichaGeneralComponent } from './ficha/ficha-general/ficha-general.component'
+import { GestionFichasComponent } from './gestion-fichas/gestion-fichas.component'
+import { GestionFichasApoderadoComponent } from './gestion-fichas-apoderado/gestion-fichas-apoderado.component'
 import { FichaRecreacionComponent } from './ficha/ficha-recreacion/ficha-recreacion.component'
 const routes: Routes = [
-    { path: 'ficha-socioeconomica', component: FichaSocioeconomicaComponent },
-    { path: 'fichavistapoderado', component: FichavistapoderadoComponent },
+    { path: 'gestion-fichas', component: GestionFichasComponent },
+    {
+        path: 'gestion-fichas-apoderado',
+        component: GestionFichasApoderadoComponent,
+    },
     {
         path: 'ficha',
         component: FichaComponent,
         children: [
             { path: '', redirectTo: 'general', pathMatch: 'full' },
-            { path: 'general', component: FichasocgeneralComponent },
+            { path: 'general', component: FichaGeneralComponent },
             { path: 'familia', component: FichaFamiliaComponent },
             { path: 'economico', component: FichaEconomicoComponent },
             { path: 'vivienda', component: FichaViviendaComponent },

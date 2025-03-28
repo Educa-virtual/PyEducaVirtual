@@ -54,11 +54,11 @@ export class FichaComponent implements OnInit {
             icon: 'pi pi-fw pi-users',
             route: '/bienestar/ficha/familia',
         },
-        // {
-        //     label: 'Economico',
-        //     icon: 'pi pi-fw pi-wallet',
-        //     route: '/bienestar/ficha/economico',
-        // },
+        {
+            label: 'Economico',
+            icon: 'pi pi-fw pi-wallet',
+            route: '/bienestar/ficha/economico',
+        },
         {
             label: 'Vivienda',
             icon: 'pi pi-fw pi-home',

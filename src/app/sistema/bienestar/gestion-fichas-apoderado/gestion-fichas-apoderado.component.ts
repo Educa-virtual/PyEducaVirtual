@@ -25,7 +25,7 @@ interface Estudiante {
 }
 
 @Component({
-    selector: 'app-fichavistapoderado',
+    selector: 'app-gestion-fichas-apoderado',
     standalone: true,
     imports: [
         TablePrimengComponent,
@@ -36,10 +36,10 @@ interface Estudiante {
         InputGroupModule,
         PrimengModule,
     ],
-    templateUrl: './fichavistapoderado.component.html',
-    styleUrl: './fichavistapoderado.component.scss',
+    templateUrl: './gestion-fichas-apoderado.component.html',
+    styleUrl: './gestion-fichas-apoderado.component.scss',
 })
-export class FichavistapoderadoComponent implements OnInit {
+export class GestionFichasApoderadoComponent implements OnInit {
     estudiantes: Estudiante[] = []
     searchForm: FormGroup
     //captar el valor iSedeId:

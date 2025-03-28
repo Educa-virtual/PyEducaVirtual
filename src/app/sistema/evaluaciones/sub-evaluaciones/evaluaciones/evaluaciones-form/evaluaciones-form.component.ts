@@ -325,7 +325,6 @@ export class EvaluacionesFormComponent implements OnInit {
             iEstado: estado,
         }
 
-        console.log('datos que se guardaran', data)
         this._apiEre
             .guardarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
@@ -342,8 +341,8 @@ export class EvaluacionesFormComponent implements OnInit {
                     )
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Se guardo con exitoso',
-                        detail: 'La evaluacion se ha guardado con éxito.',
+                        summary: 'Se guardó con éxito',
+                        detail: 'La evaluación se ha guardado con éxito.',
                     })
                 },
                 error: (error) => {
@@ -410,8 +409,8 @@ export class EvaluacionesFormComponent implements OnInit {
 
                 this._MessageService.add({
                     severity: 'success',
-                    summary: 'Actualizado con exito',
-                    detail: 'La evaluacion se ha actualizado con éxito.',
+                    summary: 'Actualización exitosa',
+                    detail: 'Los datos de la evaluación han sido actualizados.',
                 })
                 resp
             },
@@ -421,7 +420,7 @@ export class EvaluacionesFormComponent implements OnInit {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error de actualización',
-                    detail: 'No se pudo actualizar la evaluación. Consulte la consola para más detalles.',
+                    detail: 'No se pudo actualizar la evaluación. Por favor intente de nuevo.',
                 })
             },
 

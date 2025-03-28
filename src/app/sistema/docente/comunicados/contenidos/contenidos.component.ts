@@ -294,11 +294,9 @@ export class ContenidosComponent implements OnInit {
         prioridad: null,
         caduca: '',
         grupo: [], // array vacío
-
         curso: null,
         seccion: null,
         grado: null,
-
         collapsed: true,
     }
 
@@ -343,7 +341,6 @@ export class ContenidosComponent implements OnInit {
                 iPersId: this.iPersId,
             },
         }
-        console.table(params)
         this.getInformation(params, 'obtenerMiembros')
     }
 
@@ -381,31 +378,40 @@ export class ContenidosComponent implements OnInit {
             this.advancedOptions = false
         }
     }
+
+    // genera los mensajes emergentes
+    mensajesEmergentes(severidad: string, titulo: string, mensaje: string) {
+        this.messageService.add({
+            severity: severidad,
+            summary: titulo,
+            detail: mensaje,
+        })
+    }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
         // 1) Validar Título, Prioridad, Tipo
         if (!this.selectedComunicado.titulo?.trim()) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe ingresar un Título',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe ingresar un Título'
+            )
             return
         }
         if (!this.selectedComunicado.prioridad) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe seleccionar Prioridad',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar Prioridad'
+            )
             return
         }
         if (!this.selectedComunicado.tipo) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe seleccionar Tipo',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar Tipo'
+            )
             return
         }
         // Validar que se ingresen ambas fechas
@@ -413,11 +419,11 @@ export class ContenidosComponent implements OnInit {
             !this.selectedComunicado.publicado ||
             !this.selectedComunicado.caduca
         ) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe ingresar la fecha de Inicio y Fin.',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe ingresar la fecha de Inicio y Fin.'
+            )
             return
         }
         // Validar Fechas inicio no puede ser menor a final y viceversa
@@ -427,30 +433,30 @@ export class ContenidosComponent implements OnInit {
         const fin = this.parseFecha(this.selectedComunicado.caduca)
 
         if (inicio && inicio < hoy) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Fechas inválidas',
-                detail: 'La fecha de Inicio no puede ser anterior a hoy.',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Fechas inválidas',
+                'La fecha de Inicio no puede ser anterior a hoy.'
+            )
             return
         }
         if (inicio && fin && fin < inicio) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Fechas inválidas',
-                detail: 'La fecha de Fin no puede ser menor a la fecha de Inicio.',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Fechas inválidas',
+                'La fecha de Fin no puede ser menor a la fecha de Inicio.'
+            )
             return
         }
         if (this.advancedOptions && !this.destinatarioId) {
             const { curso, seccion, grado } = this.selectedComunicado
             const algunoSeleccionado = curso || seccion || grado
             if (algunoSeleccionado && !(curso && seccion && grado)) {
-                this.messageService.add({
-                    severity: 'warn',
-                    summary: 'Advertencia',
-                    detail: 'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.',
-                })
+                this.mensajesEmergentes(
+                    'warn',
+                    'Advertencia',
+                    'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.'
+                )
                 return
             }
         }
@@ -484,7 +490,6 @@ export class ContenidosComponent implements OnInit {
             curso: this.selectedComunicado.curso,
             seccion: this.selectedComunicado.seccion,
             grado: this.selectedComunicado.grado,
-
             iDestinatarioId: this.destinatarioId,
             InstitucionId: this.institucionId,
             iTipoPersona: this.tipoPersona,

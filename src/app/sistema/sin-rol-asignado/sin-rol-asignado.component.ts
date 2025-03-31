@@ -5,8 +5,6 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { Router } from '@angular/router'
-//import { EventEmitter } from 'ws';
-//import { input } from '@angular/core';
 
 @Component({
     selector: 'app-sin-rol-asignado',
@@ -17,9 +15,8 @@ import { Router } from '@angular/router'
 })
 export class SinRolAsignadoComponent implements OnInit {
     username: string = ''
-    //showContactModal: boolean = true
     user: any = null
-    //Para el modal propio del componente
+    // Para el modal propio del componente
     @Input() visible: boolean = false
     @Output() visibleChange = new EventEmitter<boolean>()
 

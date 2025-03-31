@@ -147,30 +147,6 @@ export class LoginComponent implements OnInit {
         })
     }
 
-    // verificacion si no tiene ningun rol/ perfil
-    /* checkUserProfiles() {
-        const user = this.store.getItem('dremoUser');
-
-        if (!user) {
-            return this.router.navigate(['/login']);
-        }
-
-        if (!user.perfiles || user.perfiles.length === 0) {
-            // Si no tiene perfiles, redirigir a sin-rol-asignado
-            return this.router.navigate(['/sin-rol-asignado']);
-        }
-
-        // Si tiene perfiles, continuar con el flujo normal
-        const perfilSeleccionado = this.store.getItem('dremoPerfil');
-        if (!perfilSeleccionado) {
-            // Si no ha seleccionado un perfil, mostrar el modal de selección
-            this.store.setItem('dremoModalPerfil', true);
-        }
-
-        // Redirigir a la página principal
-        return this.router.navigate(['/']);
-    } */
-
     showModal: boolean = false
 
     accionBtnItem(elemento): void {

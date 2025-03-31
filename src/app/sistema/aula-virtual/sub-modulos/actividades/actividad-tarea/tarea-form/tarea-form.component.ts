@@ -58,10 +58,11 @@ export class TareaFormComponent implements OnChanges {
             this.semana = [
                 {
                     severity: 'info',
-                    detail:
-                        this.contenidoSemana.cContenidoSemNumero +
-                        ' SEMANA - ' +
-                        this.contenidoSemana.cContenidoSemTitulo,
+                    detail: this.contenidoSemana.cContenidoSemTitulo,
+                    // detail:
+                    //     this.contenidoSemana.cContenidoSemNumero +
+                    //     ' SEMANA - ' +
+                    //     this.contenidoSemana.cContenidoSemTitulo,
                 },
             ]
         }

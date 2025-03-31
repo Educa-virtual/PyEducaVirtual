@@ -9,7 +9,6 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ChartOptions } from 'chart.js'
-import { formatNumber } from '@angular/common'
 import {
     ADMINISTRADOR_DREMO,
     ADMINISTRADOR,
@@ -34,6 +33,7 @@ export class InformesEreComponent implements OnInit {
     resumen: Array<object>
     matriz: Array<object>
     promedio: Array<object>
+    niveles: Array<object>
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
@@ -352,8 +352,9 @@ export class InformesEreComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.resultados = data.data[1]
-                    this.resumen = data.data[2]
-                    this.matriz = data.data[3]
+                    this.niveles = data.data[2]
+                    this.resumen = data.data[3]
+                    this.matriz = data.data[4]
                     this.mostrarEstadisticaNivel()
                     this.generarColumnas(this.resumen)
                     this.mostrarEstadisticaPregunta()
@@ -373,8 +374,9 @@ export class InformesEreComponent implements OnInit {
     }
 
     mostrarEstadisticaNivel() {
-        if (this.resultados.length == 0) {
+        if (!this.resultados || this.resultados.length == 0) {
             this.hay_resultados = false
+            this.promedio = []
             return
         }
 
@@ -383,34 +385,10 @@ export class InformesEreComponent implements OnInit {
 
         this.hay_resultados = true
 
-        this.niveles_nombres = this.resultados.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find((item) => item == current.nivel_logro)
-                if (!x) {
-                    return prev.concat([current.nivel_logro])
-                } else {
-                    return prev
-                }
-            },
-            []
+        const niveles_nombres = this.niveles.map(
+            (item: any) => item.nivel_logro
         )
-        console.log(this.niveles_nombres, 'niveles')
-
-        this.niveles_resumen = this.resultados.reduce(
-            (acumulador: any, item: any) => {
-                const nivel = item.nivel_logro
-                if (acumulador[nivel]) {
-                    acumulador[nivel]++
-                } else {
-                    acumulador[nivel] = 1
-                }
-                return acumulador
-            },
-            {}
-        )
-
-        const niveles_nombres = Object.keys(this.niveles_resumen)
-        const niveles_valores = Object.values(this.niveles_resumen)
+        const niveles_valores = this.niveles.map((item: any) => item.cantidad)
 
         this.data_doughnut = {
             labels: niveles_nombres,
@@ -559,8 +537,9 @@ export class InformesEreComponent implements OnInit {
 
     mostrarPromedio(niveles, valores) {
         const total = valores.reduce((acc, cur) => acc + cur)
+        console.log(total, 'total')
         const porcentajes = valores.map((valor) =>
-            formatNumber((valor * 100) / total, 'es', '1.1-1')
+            (((valor * 100) / total) * 100).toFixed(2)
         )
         const data = []
         for (let i = 0; i < niveles.length; i++) {

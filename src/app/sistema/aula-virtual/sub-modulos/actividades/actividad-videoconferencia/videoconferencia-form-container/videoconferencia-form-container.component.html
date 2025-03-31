@@ -6,14 +6,20 @@
                 [enableService]="false"
                 [closable]="false"
             />
-            <p-inputGroup>
-                <p-inputGroupAddon> Título </p-inputGroupAddon>
-                <input
-                    pInputText
-                    class="flex-auto w-full"
-                    formControlName="nombreConferencia"
-                    maxlength="250"
-                />
+            <label for="descripcion" class="mt-1"
+                >Título
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Título </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        class="flex-auto w-full"
+                        formControlName="nombreConferencia"
+                        maxlength="250"
+                    />
+                </p-inputGroup>
                 <div
                     *ngIf="
                         nombreConferencia?.hasError('maxlength') &&
@@ -23,13 +29,17 @@
                 >
                     Máximo 250 caracteres permitidos.
                 </div>
-            </p-inputGroup>
+            </div>
         </div>
 
         <!-- Agregar fecha y hora de la video conferencia -->
         <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Horario
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
             <div class="grid">
-                <div class="col-5">
+                <div class="col-5 mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon> Fecha de Inicio </p-inputGroupAddon>
                         <!-- Componente de calendario para seleccionar una fecha y hora -->
@@ -43,7 +53,7 @@
                         />
                     </p-inputGroup>
                 </div>
-                <div class="col-5">
+                <div class="col-5 mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon> Hora de Inicio </p-inputGroupAddon>
                         <p-calendar
@@ -68,7 +78,7 @@
         </div>
 
         <!-- Mostrar descripción -->
-        <div class="col-12">
+        <!-- <div class="col-12">
             <label for="descripcion" class="mt-1"
                 >Descripción
                 <span class="text-red-500 text-xs">(*) Obligatorio</span></label
@@ -81,20 +91,37 @@
                     [style]="{ height: 'auto', overflow: 'hidden' }"
                 />
             </div>
-        </div>
+            
+        </div> -->
         <!-- Mostrar link de video conferencia -->
         <div class="col-8">
-            <p-inputGroup>
-                <p-inputGroupAddon class="flex-auto w-25rem">
-                    Link del video Conferencia:</p-inputGroupAddon
-                >
-                <input
-                    pInputText
-                    class="flex-auto w-full"
-                    formControlName="linkConferencia"
-                    placeholder="https://meet.google.com/"
-                />
-            </p-inputGroup>
+            <label for="descripcion" class="mt-1"
+                >Link
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon class="flex-auto w-25rem">
+                        Link del video Conferencia:</p-inputGroupAddon
+                    >
+                    <input
+                        pInputText
+                        class="flex-auto w-full"
+                        formControlName="linkConferencia"
+                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                        placeholder="https://meet.google.com/"
+                    />
+                </p-inputGroup>
+            </div>
+            <div
+                *ngIf="
+                    formConferencia.controls.linkConferencia.invalid &&
+                    formConferencia.controls.linkConferencia.touched
+                "
+                class="text-red-500 text-sm"
+            >
+                La URL debe comenzar con http:// o https://
+            </div>
         </div>
     </div>
 </form>

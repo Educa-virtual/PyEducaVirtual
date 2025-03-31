@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { RecoverPasswordComponent } from '../recover-password/recover-password.component'
+import { SinRolAsignadoComponent } from '../../sistema/sin-rol-asignado/sin-rol-asignado.component'
 
 interface Data {
     accessToken: string
@@ -27,7 +28,7 @@ interface Data {
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [PrimengModule, RecoverPasswordComponent],
+    imports: [PrimengModule, RecoverPasswordComponent, SinRolAsignadoComponent],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
     providers: [MessageService],
@@ -61,7 +62,15 @@ export class LoginComponent implements OnInit {
         }
     }
 
+    modalSinRolVisible: boolean = false
+
+    cerrarModalSinRol() {
+        this.modalSinRolVisible = false
+    }
     onSubmit() {
+        // mostrar modal sin rol propiedad
+        this.modalSinRolVisible = true
+
         this.loading = true
         this.loadingText = 'Verificando...'
         this.authService.login(this.formLogin.value).subscribe({
@@ -76,6 +85,13 @@ export class LoginComponent implements OnInit {
                     })
 
                 const item = response.user
+
+                // logica a descomentar cuando no se encuentra ningun rol
+
+                /*if (!item.perfiles || item.perfiles.length === 0) {
+                    this.modalSinRolVisible = true;
+                    return;
+                } */
 
                 this.tokenStorage.setItem('dremoToken', response.accessToken)
                 this.tokenStorage.setItem('dremoUser', response.user)

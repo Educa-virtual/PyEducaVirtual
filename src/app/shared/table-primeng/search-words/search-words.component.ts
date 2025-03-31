@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core'
+import { Component, Output, EventEmitter, Input } from '@angular/core'
 
 @Component({
     selector: 'app-search-words',
@@ -8,16 +8,13 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core'
     styleUrls: ['./search-words.component.scss'],
     imports: [PrimengModule],
 })
-export class SearchWordsComponent implements OnInit {
+export class SearchWordsComponent {
     searchTerm: string = ''
     @Output() searchChange: EventEmitter<string> = new EventEmitter<string>()
     @Input() placeholder = 'Buscar'
 
     constructor() {}
 
-    ngOnInit() {
-        console.log('..')
-    }
     filtrarDatos(event: any) {
         this.searchTerm = event.target.value
         this.searchChange.emit(this.searchTerm) // 🔥 Emitimos el valor al padre

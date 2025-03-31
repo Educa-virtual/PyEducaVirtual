@@ -1,6 +1,6 @@
 import {
     estudianteTemplateSiagieColumns,
-    padresFamiliasTemplateColumns,
+    // padresFamiliasTemplateColumns,
     resultEstudianteTemplateSiagieColumns,
 } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/config/table/bulk-table-columns-siagie'
 import {
@@ -14,7 +14,7 @@ export const dropdownGroupConfig = [
     {
         id: 1,
         label: 'Origen de la plantilla:',
-        placeholder: 'Seleccione una origen',
+        placeholder: 'Seleccione un origen',
         options: [
             {
                 value: {
@@ -63,32 +63,32 @@ export const dropdownGroupConfig = [
                     },
                 },
             },
-            {
-                label: 'Padres de familia',
-                value: {
-                    id: 2,
-                    cellData: 'B13',
-                    columns: padresFamiliasTemplateColumns,
-                    columnsResultImport: resultEstudianteTemplateSiagieColumns,
-                    importEndPoint:
-                        'acad/estudiante/importarEstudiantesPadresExcel',
-                    params: {
-                        iSedeId: JSON.parse(
-                            localStorage.getItem('dremoPerfil') || '{}'
-                        ).iSedeId,
-                        iYAcadId: JSON.parse(
-                            localStorage.getItem('dremoiYAcadId') || 'null'
-                        ),
-                        iCredId: JSON.parse(
-                            localStorage.getItem('dremoPerfil') || '{}'
-                        ).iCredId,
-                    },
-                    typeSend: 'file',
-                    response: (response: any) => {
-                        return response.data
-                    },
-                },
-            },
+            // {
+            //     label: 'Padres de familia',
+            //     value: {
+            //         id: 2,
+            //         cellData: 'B13',
+            //         columns: padresFamiliasTemplateColumns,
+            //         columnsResultImport: resultEstudianteTemplateSiagieColumns,
+            //         importEndPoint:
+            //             'acad/estudiante/importarEstudiantesPadresExcel',
+            //         params: {
+            //             iSedeId: JSON.parse(
+            //                 localStorage.getItem('dremoPerfil') || '{}'
+            //             ).iSedeId,
+            //             iYAcadId: JSON.parse(
+            //                 localStorage.getItem('dremoiYAcadId') || 'null'
+            //             ),
+            //             iCredId: JSON.parse(
+            //                 localStorage.getItem('dremoPerfil') || '{}'
+            //             ).iCredId,
+            //         },
+            //         typeSend: 'file',
+            //         response: (response: any) => {
+            //             return response.data
+            //         },
+            //     },
+            // },
         ],
         dependency: 1,
         optionValue: 1,
@@ -162,7 +162,8 @@ export const dropdownGroupConfig = [
                     },
                     response: (response) => {
                         return response.procesados.map((data) => ({
-                            result: data.data[0].Resultado,
+                            ...data.data[0],
+                            ...data.item,
                         }))
                     },
                 },

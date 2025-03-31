@@ -276,7 +276,14 @@
 
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
-                    <p-multiSelect
+                    @for (dia of dias; track dia.iDiaId) {
+                        <p-tag
+                            severity="info"
+                            [value]="dia.cDiaNombre"
+                            [rounded]="true"
+                        ></p-tag>
+                    }
+                    <!-- <p-multiSelect
                         [options]="dias"
                         formControlName="iDiasLaborables"
                         optionLabel="cDiaNombre"
@@ -285,8 +292,9 @@
                         display="chip"
                         (onChange)="onChange($event, 'dia')"
                         [showClear]="true"
+                        [maxSelectedLabels]="7"
                     >
-                    </p-multiSelect>
+                    </p-multiSelect> -->
                 </span>
             </div>
 

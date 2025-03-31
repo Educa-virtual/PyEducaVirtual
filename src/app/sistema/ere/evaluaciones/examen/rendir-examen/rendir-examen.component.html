@@ -7,8 +7,9 @@
     <ng-template pTemplate="header" class="encabezado">
         <div class="flex flex-column gap-2">
             <h3 class="m-0 text-uppercase text-primary">
-                Evaluación ERE: {{ this.evaluacion.cEvaluacionNombre || '-' }} -
-                {{ this.evaluacion.cCursoNombre || '-' }}
+                Evaluación ERE:
+                {{ this.evaluacion?.cEvaluacionNombre || '-' }} -
+                {{ this.evaluacion?.cCursoNombre || '-' }}
             </h3>
         </div>
     </ng-template>
@@ -269,7 +270,7 @@
 <p-toast></p-toast>
 
 <app-modal-evaluacion-finalizada
-    [grado]="this.evaluacion.cGradoAbreviacion"
+    [grado]="this.evaluacion?.cGradoAbreviacion"
     *ngIf="finalizado"
 ></app-modal-evaluacion-finalizada>
 

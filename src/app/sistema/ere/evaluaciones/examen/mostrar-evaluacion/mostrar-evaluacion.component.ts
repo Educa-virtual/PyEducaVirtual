@@ -118,7 +118,7 @@ export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId':
                 this.evaluacion = item.length ? item[0] : null
-                this.store.setItem('evaluacion', this.evaluacion)
+                //this.store.setItem('evaluacion', this.evaluacion)
                 this.breadCrumbItems = [
                     {
                         label: 'Evaluación ERE',

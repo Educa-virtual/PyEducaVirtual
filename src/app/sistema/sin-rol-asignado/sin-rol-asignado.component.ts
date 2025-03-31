@@ -59,9 +59,8 @@ export class SinRolAsignadoComponent implements OnInit {
         // Navegar al login
         this.router.navigate(['/login'])
     }
-
-    cerrarModal() {
+    /*cerrarModal() {
         this.visible = false
         this.visibleChange.emit(false)
-    }
+    }*/
 }

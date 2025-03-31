@@ -5,29 +5,25 @@
     (onHide)="visibleChange.emit(false)"
 >
     <ng-template pTemplate="header">
-        <img src="assets/images/logo_blanco.png" alt="logo" height="60px" />
+        <div class="px-3 py-2">
+            <h2 class="m-0 text-white">Bienvenido:</h2>
+        </div>
     </ng-template>
-    <div class="grid justify-content-center text-center mt-5">
-        <div class="col-12">
-            <!-- <span class="title">Bienvenido</span> -->
-            <h1>
+    <div class="p-4">
+        <div>
+            <h2>
                 Hola, al parecer no tienes un ROL asignado, Comunícate con tu
                 director o el administrador.
-            </h1>
-            <!-- <h5 style="font-size: 22px">
-                Levanta la mano e indica que terminaste, y espera las
-                indicaciones.
-            </h5> -->
-
+            </h2>
             <div class="col-12 md:col-12 align-content-center text-center">
                 <img
-                    style="max-width: 150px"
+                    style="width: 380px; max-width: 100"
                     src="assets/images/icons/no-data-animate.svg"
                     alt="logo"
                 />
             </div>
 
-            <div class="flex justify-content-end w-full mt-3">
+            <div class="text-center mb-4">
                 <p-button
                     label="Salir de la Sesión"
                     severity="danger"
@@ -36,7 +32,4 @@
             </div>
         </div>
     </div>
-    <ng-template pTemplate="footer">
-        <img src="assets/images/logo-proyecto.png" alt="logo" height="50px" />
-    </ng-template>
 </p-dialog>

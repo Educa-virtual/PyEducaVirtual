@@ -22,3 +22,12 @@ $gutter: 1rem; //for primeflex grid system
     background-color: var(--highlight-bg);
     color: var(--text-color);
 }
+
+nav.p-breadcrumb {
+    background: transparent;
+    border: none;
+}
+
+nav.p-breadcrumb ol li:last-child a span {
+    color: #3b82f6;
+}

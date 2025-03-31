@@ -31,7 +31,7 @@ export class ConfirmationModalService {
             header,
             key: 'manual',
             icon: 'pi pi-exclamation-triangle',
-            acceptLabel: 'Si',
+            acceptLabel: 'Sí',
             rejectLabel: 'No, cancelar',
             rejectVisible: true,
             message:
@@ -52,7 +52,7 @@ export class ConfirmationModalService {
             header,
             key: 'manual',
             icon: 'pi pi-exclamation-circle',
-            acceptLabel: 'Si',
+            acceptLabel: 'Sí',
             rejectLabel: 'No, Cancelar',
             rejectVisible: true,
             message:

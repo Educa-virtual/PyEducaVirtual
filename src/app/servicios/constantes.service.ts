@@ -18,7 +18,7 @@ import {
     administradorDremo,
     especialistaDremo,
     especialistaUgel,
-} from './seg/menu-ere/menuEre'
+} from './seg/menu-ere'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')
@@ -116,56 +116,10 @@ const estudiante = [
     {
         items: [
             inicio,
-            // {
-            //     label: 'Mis Áreas Curriculares',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/areas-curriculares'],
-            // },
-            // {
-            //     label: 'Calendario',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/03'],
-            // },
-            // {
-            //     label: 'Solicitudes y Tramites',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/02'],
-            // },
-            // {
-            //     label: 'Buzon de Sugerencias',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/aula-virtual/01'],
-            // },
-            // {
-            //     label: 'Enlaces de ayuda',
-            //     icon: 'pi pi-fw pi-share-alt',
-            //     routerLink: ['ayuda'],
-            // },
-
             {
-                label: 'Evaluaciones y Resultados',
-                icon: 'pi pi-fw pi-list-check',
-                items: [
-                    // {
-                    //     label: 'Evaluacion',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [
-                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                    //     ],
-                    // },
-                    {
-                        label: 'ERE',
-                        icon: 'pi pi-pen-to-square',
-                        routerLink: ['/ere/areas-rendir-examen'],
-                    },
-                    // {
-                    //     label: 'Examen',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [
-                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-                    //     ],
-                    // },
-                ],
+                label: 'Evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion/areas'],
             },
         ],
     },
@@ -457,8 +411,8 @@ const administracion = [
             // },
 
             {
-                label: 'Evaluación - ERE',
-                icon: 'pi pi-address-book',
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
                 items: [
                     // {
                     //     label: 'Configuración de ERE',
@@ -466,13 +420,13 @@ const administracion = [
                     //     routerLink: ['/gestion-institucional/apertura'],
                     // },
                     {
-                        label: 'Resultados de ERE',
+                        label: 'Resultados',
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
                     {
                         label: 'Evaluaciones',
-                        icon: 'pi pi-fw pi-calendar',
+                        icon: 'pi pi-list-check',
                         routerLink: ['/ere/evaluaciones'],
                     },
                 ],

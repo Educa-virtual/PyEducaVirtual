@@ -28,7 +28,11 @@
             </div>
 
             <div>
-                <p-button label="Salir de la Sesión" severity="danger" />
+                <p-button
+                    label="Salir de la Sesión"
+                    severity="danger"
+                    (onClick)="logout()"
+                />
             </div>
         </div>
     </div>

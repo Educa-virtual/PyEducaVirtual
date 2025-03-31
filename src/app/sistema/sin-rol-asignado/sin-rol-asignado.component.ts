@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
-/* import { FormPerfilesComponent } from '../../shared/components/form-perfiles/form-perfiles.component'; // Ajusta la ruta
-import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { TokenStorageService } from '@/app/servicios/token.service';
-import { ConstantesService } from '@/app/servicios/constantes.service';
-import { Router } from '@angular/router'; */
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { TokenStorageService } from '@/app/servicios/token.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { Router } from '@angular/router'
 //import { EventEmitter } from 'ws';
 //import { input } from '@angular/core';
 
@@ -16,55 +15,53 @@ import { Router } from '@angular/router'; */
     templateUrl: './sin-rol-asignado.component.html',
     styleUrl: './sin-rol-asignado.component.scss',
 })
-export class SinRolAsignadoComponent {
+export class SinRolAsignadoComponent implements OnInit {
     username: string = ''
-    showContactModal: boolean = true
+    //showContactModal: boolean = true
     user: any = null
-
-    /* constructor(
-    private store: LocalStoreService,
-    private tokenStorageService: TokenStorageService,
-    private constantesService: ConstantesService,
-    private router: Router
-  ) {} */
-
-    /* ngOnInit(): void {
-    // Verificar si el usuario está autenticado
-    const user = this.store.getItem('dremoUser');
-    if (!user) {
-      this.logout();
-      return;
-    }
-
-    this.user = user;
-    this.username = user.nombres || user.nombre || user.username || 'Usuario';
-
-    // Verificar si el usuario tiene perfiles
-    if (user.perfiles && user.perfiles.length > 0) {
-      // Si tiene perfiles pero aún no ha seleccionado uno, mostrarle el modal de selección
-      const perfilSeleccionado = this.store.getItem('dremoPerfil');
-      if (perfilSeleccionado) {
-        // Si ya tiene un perfil seleccionado, redirigir al inicio
-        this.router.navigate(['/']);
-      }
-      // Si no tiene perfil seleccionado, el modal de selección se mostrará
-    }
-  } */
-
-    /* handleModalAction(event: any): void {
-    if (event.accion === 'close-modal') {
-      this.showContactModal = false;
-    }
-  }  */
-
-    /* logout(): void {
-    this.store.clear();
-    this.tokenStorageService.signOut();
-    this.router.navigate(['/login']);
-  } */
-
+    //Para el modal propio del componente
     @Input() visible: boolean = false
     @Output() visibleChange = new EventEmitter<boolean>()
+
+    constructor(
+        private store: LocalStoreService,
+        private tokenStorageService: TokenStorageService,
+        private constantesService: ConstantesService,
+        private router: Router
+    ) {}
+
+    ngOnInit(): void {
+        // Verificar si el usuario está autenticado
+        const user = this.store.getItem('dremoUser')
+        if (!user) {
+            this.logout()
+            return
+        }
+
+        this.user = user
+        this.username =
+            user.nombres || user.nombre || user.username || 'Usuario'
+
+        // mostrar automaticamente el dialog
+        this.visible = true
+        // si el usuario tiene perfiles, redirigir
+        if (user.perfiles && user.perfiles.length > 0) {
+            this.router.navigate(['/'])
+        }
+    }
+
+    logout(): void {
+        // Limpiar el almacenamiento
+        this.store.clear()
+        this.tokenStorageService.signOut()
+
+        // Reiniciar todas las variables relevantes
+        this.visible = false
+        this.visibleChange.emit(false)
+
+        // Navegar al login
+        this.router.navigate(['/login'])
+    }
 
     cerrarModal() {
         this.visible = false

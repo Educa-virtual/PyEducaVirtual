@@ -235,7 +235,7 @@ export class ContenidosComponent implements OnInit {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
         menubar: false,
-        selector: 'textarea',
+        // selector: 'textarea',
         // setup: (editor) => {
         //     editor.on('blur', (e) =>
         //         this.actualizar(e, 'cSilaboDescripcionCurso')
@@ -294,11 +294,9 @@ export class ContenidosComponent implements OnInit {
         prioridad: null,
         caduca: '',
         grupo: [], // array vacío
-
         curso: null,
         seccion: null,
         grado: null,
-
         collapsed: true,
     }
 
@@ -343,7 +341,6 @@ export class ContenidosComponent implements OnInit {
                 iPersId: this.iPersId,
             },
         }
-        console.table(params)
         this.getInformation(params, 'obtenerMiembros')
     }
 
@@ -381,31 +378,40 @@ export class ContenidosComponent implements OnInit {
             this.advancedOptions = false
         }
     }
+
+    // genera los mensajes emergentes
+    mensajesEmergentes(severidad: string, titulo: string, mensaje: string) {
+        this.messageService.add({
+            severity: severidad,
+            summary: titulo,
+            detail: mensaje,
+        })
+    }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
         // 1) Validar Título, Prioridad, Tipo
         if (!this.selectedComunicado.titulo?.trim()) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe ingresar un Título',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe ingresar un Título'
+            )
             return
         }
         if (!this.selectedComunicado.prioridad) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe seleccionar Prioridad',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar Prioridad'
+            )
             return
         }
         if (!this.selectedComunicado.tipo) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe seleccionar Tipo',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar Tipo'
+            )
             return
         }
         // Validar que se ingresen ambas fechas
@@ -413,11 +419,11 @@ export class ContenidosComponent implements OnInit {
             !this.selectedComunicado.publicado ||
             !this.selectedComunicado.caduca
         ) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe ingresar la fecha de Inicio y Fin.',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe ingresar la fecha de Inicio y Fin.'
+            )
             return
         }
         // Validar Fechas inicio no puede ser menor a final y viceversa
@@ -427,45 +433,45 @@ export class ContenidosComponent implements OnInit {
         const fin = this.parseFecha(this.selectedComunicado.caduca)
 
         if (inicio && inicio < hoy) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Fechas inválidas',
-                detail: 'La fecha de Inicio no puede ser anterior a hoy.',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Fechas inválidas',
+                'La fecha de Inicio no puede ser anterior a hoy.'
+            )
             return
         }
         if (inicio && fin && fin < inicio) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Fechas inválidas',
-                detail: 'La fecha de Fin no puede ser menor a la fecha de Inicio.',
-            })
+            this.mensajesEmergentes(
+                'warn',
+                'Fechas inválidas',
+                'La fecha de Fin no puede ser menor a la fecha de Inicio.'
+            )
             return
         }
         if (this.advancedOptions && !this.destinatarioId) {
             const { curso, seccion, grado } = this.selectedComunicado
             const algunoSeleccionado = curso || seccion || grado
             if (algunoSeleccionado && !(curso && seccion && grado)) {
-                this.messageService.add({
-                    severity: 'warn',
-                    summary: 'Advertencia',
-                    detail: 'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.',
-                })
+                this.mensajesEmergentes(
+                    'warn',
+                    'Advertencia',
+                    'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.'
+                )
                 return
             }
         }
         // Validar que se haya ingresado contenido
-        if (
-            !this.selectedComunicado.texto ||
-            !this.selectedComunicado.texto.trim()
-        ) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'El contenido del comunicado no puede estar vacío.',
-            })
-            return
-        }
+        // if (
+        //     !this.selectedComunicado.texto ||
+        //     !this.selectedComunicado.texto.trim()
+        // ) {
+        //     this.messageService.add({
+        //         severity: 'warn',
+        //         summary: 'Advertencia',
+        //         detail: 'El contenido del comunicado no puede estar vacío.',
+        //     })
+        //     return
+        // }
         this.aplicarLogicaEnvio()
         // objeto con el cual evaluamos si se actualiza o se ingresa un nuevo registro
         let dataObj: any = {
@@ -473,7 +479,7 @@ export class ContenidosComponent implements OnInit {
             iTipoComId: this.selectedComunicado.tipo, // Tipo de comunicado
             iPrioridadId: this.selectedComunicado.prioridad, // Prioridad
             cComunicadoTitulo: this.selectedComunicado.titulo, // Título
-            cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
+            cComunicadoDescripcion: this.selectedComunicado.texto, // contenido del comunicado
             dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
             dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
             iEstado: 1,
@@ -484,7 +490,6 @@ export class ContenidosComponent implements OnInit {
             curso: this.selectedComunicado.curso,
             seccion: this.selectedComunicado.seccion,
             grado: this.selectedComunicado.grado,
-
             iDestinatarioId: this.destinatarioId,
             InstitucionId: this.institucionId,
             iTipoPersona: this.tipoPersona,
@@ -529,6 +534,7 @@ export class ContenidosComponent implements OnInit {
         const month = (date.getMonth() + 1).toString().padStart(2, '0') // Los meses van de 0 a 11
         const year = date.getFullYear()
         return `${day}/${month}/${year}`
+        // return `${year}/${month}/${day}`;
     }
 
     getInformation(params, accion) {
@@ -565,7 +571,7 @@ export class ContenidosComponent implements OnInit {
                 }))
                 //  curso, seccion y grado
                 this.cursos = [
-                    { label: 'Curso', value: null },
+                    { label: 'Area Curricular', value: null },
                     ...item.cursos.map((c: any) => ({
                         label: c.cCursoNombre,
                         value: c.iCursoId,

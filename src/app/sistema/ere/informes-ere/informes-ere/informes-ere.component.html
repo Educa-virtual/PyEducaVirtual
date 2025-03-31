@@ -1,85 +1,91 @@
-<app-container-page
-    [title]="'Resultados ERE:'"
-    [actions]="[]"
-    class="custom-container-page"
->
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase"> Resultados ERE </span>
+    </ng-template>
     <form [formGroup]="formFiltros">
         <div class="grid p-fluid">
-            <div class="col-6">
+            <div class="col-12 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Evaluación *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="evaluaciones"
                         formControlName="iEvaluacionId"
                         placeholder="Seleccione una evaluación"
-                        styleClass="w-full"
+                        styleClass="group-element"
                     />
                 </p-inputGroup>
             </div>
-            <div class="col-6">
+            <div class="col-12 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Área *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="cursos"
                         formControlName="iCursoId"
                         placeholder="Seleccione un curso"
-                        styleClass="w-full"
+                        styleClass="group-element"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="nivel_tipos"
+                        [showClear]="true"
+                        formControlName="iNivelTipoId"
+                        placeholder="Seleccione un nivel"
+                        styleClass="group-element"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="nivel_grados"
+                        [showClear]="true"
+                        formControlName="iNivelGradoId"
+                        placeholder="Seleccione un grado"
+                        styleClass="group-element"
                     ></p-dropdown>
                 </p-inputGroup>
             </div>
         </div>
 
-        <p-panel header="Aplicar Filtros">
+        <p-panel
+            header="Aplicar Filtros Opcionales"
+            [toggleable]="true"
+            toggler="header"
+            [collapsed]="true"
+        >
             <div class="grid p-fluid">
-                <div class="col-12 sm:col-5">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="nivel_tipos"
-                            [showClear]="true"
-                            formControlName="iNivelTipoId"
-                            placeholder="Seleccione un nivel"
-                            styleClass="w-full"
-                        ></p-dropdown>
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-5">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>Grado *</p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="nivel_grados"
-                            [showClear]="true"
-                            formControlName="iNivelGradoId"
-                            placeholder="Seleccione un grado"
-                            styleClass="w-full"
-                        ></p-dropdown>
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-5">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>Distrito</p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="distritos"
-                            [showClear]="true"
-                            formControlName="iDsttId"
-                            placeholder="Seleccione un distrito"
-                            styleClass="w-full"
-                        ></p-dropdown>
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-5">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>I. E.</p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="ies"
-                            [showClear]="true"
-                            formControlName="iIieeId"
-                            placeholder="Seleccione una Institución Educativa"
-                            styleClass="w-full"
-                        ></p-dropdown>
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-5">
+                @if (es_especialista) {
+                    <div class="col-12 md:col-5">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="distritos"
+                                [showClear]="true"
+                                formControlName="iDsttId"
+                                placeholder="Seleccione un distrito"
+                                styleClass="group-element"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-5">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="ies"
+                                [showClear]="true"
+                                formControlName="iIieeId"
+                                placeholder="Seleccione una Institución Educativa"
+                                styleClass="group-element"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                }
+                <div class="col-12 md:col-6">
                     <p-inputGroup>
                         <p-inputGroupAddon>Sección</p-inputGroupAddon>
                         <p-dropdown
@@ -87,11 +93,11 @@
                             [showClear]="true"
                             formControlName="iSeccionId"
                             placeholder="Seleccione una sección"
-                            styleClass="w-full"
+                            styleClass="group-element"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-12 sm:col-5">
+                <div class="col-12 md:col-6">
                     <p-inputGroup>
                         <p-inputGroupAddon>Sexo</p-inputGroupAddon>
                         <p-dropdown
@@ -99,33 +105,33 @@
                             [showClear]="true"
                             formControlName="cPersSexo"
                             placeholder="Seleccione un sexo"
-                            styleClass="w-full"
+                            styleClass="group-element"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-12 sm:col-2">
-                    <p-button
-                        pRipple
-                        severity="success"
-                        label="Buscar"
-                        icon="pi pi-fw pi-search"
-                        (onClick)="searchResultados()"
-                    />
-                </div>
             </div>
         </p-panel>
+        <div class="flex justify-content-end mt-3">
+            <p-button
+                pRipple
+                severity="success"
+                label="Buscar"
+                icon="pi pi-fw pi-search"
+                (onClick)="searchResultados()"
+            />
+        </div>
     </form>
 
     <br />
 
     <p-panel>
         <ng-template pTemplate="header">
-            <div class="grid">
-                <div class="col">
-                    <h3 class="m-0 text-uppercase text-primary">
-                        Resumen de participación y nivel de logro alcanzado
-                    </h3>
-                </div>
+            <span class="text-2xl text-uppercase">
+                Resumen de participación y nivel de logro alcanzado
+            </span>
+        </ng-template>
+        <ng-template pTemplate="icons" class="flex justify-content-center">
+            <div class="flex flex-wrap gap-2 justify-content-end">
                 @if (hay_resultados) {
                     <div class="col-auto">
                         <p-toast />
@@ -154,13 +160,14 @@
 
         <div>
             <p-accordion [activeIndex]="0">
-                <p-accordionTab header="Relación de Estudiantes">
+                <p-accordionTab header="Resultados por Estudiante">
                     <app-table-primeng
                         [columnas]="columns"
                         [showCaption]="false"
                         [data]="resultados"
                         (accionBtnItem)="accionBtnItemTable($event)"
                         [showPaginator]="true"
+                        [showSortIcon]="false"
                         sortMode="single"
                         sortField="estudiante"
                         [sortOrder]="1"
@@ -168,7 +175,7 @@
                         [actions]="actions"
                     />
                 </p-accordionTab>
-                <p-accordionTab header="Estadisticas Avanzadas">
+                <p-accordionTab header="Resultados por Pregunta">
                     <app-table-primeng
                         [columnas]="columns_resumen"
                         [showCaption]="false"
@@ -191,7 +198,7 @@
                         </div>
                     }
                 </p-accordionTab>
-                <p-accordionTab header="Matris de Evaluación">
+                <p-accordionTab header="Matriz de Evaluación">
                     <app-table-primeng
                         [columnas]="columns_matriz"
                         [showCaption]="false"
@@ -216,5 +223,5 @@
             </p-accordion>
         </div>
     </p-panel>
-</app-container-page>
+</p-panel>
 <p-toast></p-toast>

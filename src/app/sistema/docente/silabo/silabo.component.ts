@@ -1,7 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { BtnLoadingComponent } from '@/app/shared/btn-loading/btn-loading.component'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+// import { BtnLoadingComponent } from '@/app/shared/btn-loading/btn-loading.component'
+// import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+// import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component, Input, OnInit, OnDestroy } from '@angular/core'
 import { RecursosDidacticosComponent } from '../areas-estudios/components/recursos-didacticos/recursos-didacticos.component'
 import { ActividadesAprendizajeEvaluacionComponent } from '../areas-estudios/components/actividades-aprendizaje-evaluacion/actividades-aprendizaje-evaluacion.component'
@@ -28,11 +28,11 @@ interface Data {
     selector: 'app-silabo',
     standalone: true,
     imports: [
-        ContainerPageComponent,
+        // ContainerPageComponent,
         PrimengModule,
-        BtnLoadingComponent,
+        // BtnLoadingComponent,
         EditorComponent,
-        TablePrimengComponent,
+        // TablePrimengComponent,
         RecursosDidacticosComponent,
         ActividadesAprendizajeEvaluacionComponent,
         EvaluacionComponent,

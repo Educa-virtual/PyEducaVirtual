@@ -1,29 +1,26 @@
 import { Component, inject, OnInit } from '@angular/core'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { ChartModule } from 'primeng/chart'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { DatosInformesService } from '../../services/datos-informes.service'
-import { ConstantesService } from '@/app/servicios/constantes.service'
 import { MenuItem, MessageService } from 'primeng/api'
 import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ChartOptions } from 'chart.js'
-import { formatNumber } from '@angular/common'
+import {
+    ADMINISTRADOR_DREMO,
+    ADMINISTRADOR,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
     templateUrl: './informes-ere.component.html',
     styleUrls: ['./informes-ere.component.scss'],
-    imports: [
-        ContainerPageComponent,
-        PrimengModule,
-        ChartModule,
-        TablePrimengComponent,
-    ],
+    imports: [PrimengModule, ChartModule, TablePrimengComponent],
 })
 export class InformesEreComponent implements OnInit {
     formFiltros: FormGroup
@@ -31,16 +28,18 @@ export class InformesEreComponent implements OnInit {
     options_doughnut: any
     data_bar: any
     options_bar: ChartOptions
-    btn_exportar: Array<MenuItem>
 
     resultados: Array<object>
     resumen: Array<object>
     matriz: Array<object>
     promedio: Array<object>
+    niveles: Array<object>
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
     hay_resultados: boolean = false
+
+    es_especialista: boolean = false
 
     evaluaciones_cursos_ies: Array<object>
     evaluaciones: Array<object>
@@ -56,36 +55,24 @@ export class InformesEreComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private datosInformes: DatosInformesService,
-        private constantesService: ConstantesService
+        private datosInformes: DatosInformesService
     ) {}
 
     ngOnInit() {
-        this.btn_exportar = [
-            {
-                label: 'PDF',
-                icon: 'pi pi-fw pi-file-pdf',
-                command: () => {
-                    this.exportar(1)
-                },
-            },
-            {
-                label: 'EXCEL',
-                icon: 'pi pi-fw pi-file-excel',
-                command: () => {
-                    this.exportar(2)
-                },
-            },
+        const perfiles_permitidos = [
+            ADMINISTRADOR_DREMO,
+            ESPECIALISTA_DREMO,
+            ADMINISTRADOR,
         ]
+        if (perfiles_permitidos.includes(this.datosInformes.perfil.iPerfilId)) {
+            this.es_especialista = true
+        }
 
         try {
             this.formFiltros = this.fb.group({
-                iYAcadId: [
-                    this.constantesService.iYAcadId,
-                    Validators.required,
-                ],
-                iSesionId: [
-                    this.constantesService.iCredId,
+                iYAcadId: [this.datosInformes.iYAcadId, Validators.required],
+                iCredEntPerfId: [
+                    this.datosInformes.perfil.iCredEntPerfId,
                     Validators.required,
                 ],
                 iEvaluacionId: [null, Validators.required],
@@ -93,7 +80,7 @@ export class InformesEreComponent implements OnInit {
                 iNivelTipoId: [null, Validators.required],
                 iNivelGradoId: [null, Validators.required],
                 iDsttId: [null],
-                iIieeId: this.constantesService.iIieeId,
+                iIieeId: [null],
                 iSeccionId: [null],
                 cPersSexo: [null],
             })
@@ -161,13 +148,30 @@ export class InformesEreComponent implements OnInit {
             })
     }
 
+    btn_exportar: Array<MenuItem> = [
+        {
+            label: 'PDF',
+            icon: 'pi pi-fw pi-file-pdf',
+            command: () => {
+                this.exportar(1)
+            },
+        },
+        {
+            label: 'EXCEL',
+            icon: 'pi pi-fw pi-file-excel',
+            command: () => {
+                this.exportar(2)
+            },
+        },
+    ]
+
     filterEvaluaciones() {
         this.evaluaciones = this.evaluaciones_cursos_ies.reduce(
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iEvaluacionId &&
-                        item.label === current.cEvaluacionNombre
+                        item.value == current.iEvaluacionId &&
+                        item.label == current.cEvaluacionNombre
                 )
                 if (!x) {
                     return prev.concat([
@@ -190,10 +194,10 @@ export class InformesEreComponent implements OnInit {
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iCursoId &&
-                        item.label === current.cCursoNombre
+                        item.value == current.iCursoId &&
+                        item.label == current.cCursoNombre
                 )
-                if (!x && current.iEvaluacionId === iEvaluacionId) {
+                if (!x && current.iEvaluacionId == iEvaluacionId) {
                     return prev.concat([
                         {
                             value: current.iCursoId,
@@ -214,8 +218,8 @@ export class InformesEreComponent implements OnInit {
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iNivelTipoId &&
-                        item.label === current.cNivelTipoNombre
+                        item.value == current.iNivelTipoId &&
+                        item.label == current.cNivelTipoNombre
                 )
                 if (!x) {
                     return prev.concat([
@@ -238,10 +242,10 @@ export class InformesEreComponent implements OnInit {
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iNivelGradoId &&
-                        item.label === current.cGradoNombre
+                        item.value == current.iNivelGradoId &&
+                        item.label == current.cGradoNombre
                 )
-                if (!x && current.iNivelTipoId === iNivelTipoId) {
+                if (!x && current.iNivelTipoId == iNivelTipoId) {
                     return prev.concat([
                         {
                             value: current.iNivelGradoId,
@@ -262,10 +266,10 @@ export class InformesEreComponent implements OnInit {
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iDsttId &&
-                        item.label === current.cDsttNombre
+                        item.value == current.iDsttId &&
+                        item.label == current.cDsttNombre
                 )
-                if (!x && current.iEvaluacionId === iEvaluacionId) {
+                if (!x && current.iEvaluacionId == iEvaluacionId) {
                     return prev.concat([
                         {
                             value: current.iDsttId,
@@ -286,10 +290,10 @@ export class InformesEreComponent implements OnInit {
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iIieeId &&
-                        item.label === current.cIieeNombre
+                        item.value == current.iIieeId &&
+                        item.label == current.cIieeNombre
                 )
-                if (!x && current.iDsstId === iDsstId) {
+                if (!x && current.iDsstId == iDsstId) {
                     return prev.concat([
                         {
                             value: current.iIieeId,
@@ -310,10 +314,10 @@ export class InformesEreComponent implements OnInit {
             (prev: any, current: any) => {
                 const x = prev.find(
                     (item) =>
-                        item.value === current.iSeccionId &&
-                        item.label === current.cSeccionNombre
+                        item.value == current.iSeccionId &&
+                        item.label == current.cSeccionNombre
                 )
-                if (!x && current.iNivelGradoId === iNivelGradoId) {
+                if (!x && current.iNivelGradoId == iNivelGradoId) {
                     return prev.concat([
                         {
                             value: current.iSeccionId,
@@ -348,8 +352,9 @@ export class InformesEreComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.resultados = data.data[1]
-                    this.resumen = data.data[2]
-                    this.matriz = data.data[3]
+                    this.niveles = data.data[2]
+                    this.resumen = data.data[3]
+                    this.matriz = data.data[4]
                     this.mostrarEstadisticaNivel()
                     this.generarColumnas(this.resumen)
                     this.mostrarEstadisticaPregunta()
@@ -369,8 +374,9 @@ export class InformesEreComponent implements OnInit {
     }
 
     mostrarEstadisticaNivel() {
-        if (this.resultados.length == 0) {
+        if (!this.resultados || this.resultados.length == 0) {
             this.hay_resultados = false
+            this.promedio = []
             return
         }
 
@@ -379,34 +385,10 @@ export class InformesEreComponent implements OnInit {
 
         this.hay_resultados = true
 
-        this.niveles_nombres = this.resultados.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find((item) => item === current.nivel_logro)
-                if (!x) {
-                    return prev.concat([current.nivel_logro])
-                } else {
-                    return prev
-                }
-            },
-            []
+        const niveles_nombres = this.niveles.map(
+            (item: any) => item.nivel_logro
         )
-        console.log(this.niveles_nombres, 'niveles')
-
-        this.niveles_resumen = this.resultados.reduce(
-            (acumulador: any, item: any) => {
-                const nivel = item.nivel_logro
-                if (acumulador[nivel]) {
-                    acumulador[nivel]++
-                } else {
-                    acumulador[nivel] = 1
-                }
-                return acumulador
-            },
-            {}
-        )
-
-        const niveles_nombres = Object.keys(this.niveles_resumen)
-        const niveles_valores = Object.values(this.niveles_resumen)
+        const niveles_valores = this.niveles.map((item: any) => item.cantidad)
 
         this.data_doughnut = {
             labels: niveles_nombres,
@@ -504,15 +486,15 @@ export class InformesEreComponent implements OnInit {
             datasets: [
                 {
                     label: '% DE ACIERTOS',
-                    backgroundColot:
+                    backgroundColor:
                         documentStyle.getPropertyValue('--blue-500'),
-                    hoverBackgroundColot:
+                    hoverBackgroundColor:
                         documentStyle.getPropertyValue('--blue-400'),
                     data: aciertos,
                 },
                 {
                     label: '% DE DESACIERTOS',
-                    backgroundColot:
+                    backgroundColor:
                         documentStyle.getPropertyValue('--red-500'),
                     hoverBackgrounfColor:
                         documentStyle.getPropertyValue('--red-400'),
@@ -520,9 +502,9 @@ export class InformesEreComponent implements OnInit {
                 },
                 {
                     label: '% DE BLANCOS',
-                    backgroundColot:
+                    backgroundColor:
                         documentStyle.getPropertyValue('--yellow-500'),
-                    hoverBackgroundColot:
+                    hoverBackgroundColor:
                         documentStyle.getPropertyValue('--yellow-400'),
                     data: blancos,
                 },
@@ -542,14 +524,12 @@ export class InformesEreComponent implements OnInit {
             },
             scales: {
                 x: {
-                    stacked: true,
                     ticks: {
                         stepSize: 1,
                     },
                 },
                 y: {
                     max: 100,
-                    stacked: true,
                 },
             },
         }
@@ -557,8 +537,9 @@ export class InformesEreComponent implements OnInit {
 
     mostrarPromedio(niveles, valores) {
         const total = valores.reduce((acc, cur) => acc + cur)
+        console.log(total, 'total')
         const porcentajes = valores.map((valor) =>
-            formatNumber((valor * 100) / total, 'es', '1.1-1')
+            (((valor * 100) / total) * 100).toFixed(2)
         )
         const data = []
         for (let i = 0; i < niveles.length; i++) {
@@ -630,7 +611,7 @@ export class InformesEreComponent implements OnInit {
     columns = [
         {
             type: 'item',
-            width: '1rem',
+            width: '5%',
             field: 'item',
             header: '#',
             text_header: 'left',
@@ -638,7 +619,7 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'cod_ie',
             header: 'I.E.',
             text_header: 'left',
@@ -646,68 +627,117 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '3rem',
+            width: '10%',
             field: 'distrito',
-            header: 'Distrito',
+            header: 'DISTRITO',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
-            width: '3rem',
+            width: '10%',
             field: 'seccion',
-            header: 'Sección',
+            header: 'SECCIÓN',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
-            width: '10rem',
+            width: '25%',
             field: 'estudiante',
-            header: 'Estudiante',
+            header: 'ESTUDIANTE',
             text_header: 'center',
             text: 'left',
         },
         {
             type: 'text',
-            width: '3rem',
+            width: '10%',
             field: 'aciertos',
-            header: 'Aciertos',
+            header: 'ACIERTOS',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
-            width: '3rem',
+            width: '10%',
             field: 'desaciertos',
-            header: 'Desaciertos',
+            header: 'DESACIERTOS',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
-            width: '3rem',
+            width: '10%',
             field: 'blancos',
-            header: 'Blancos',
+            header: 'BLANCOS',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'nivel_logro',
-            header: 'Nivel',
+            header: 'NIVEL',
             text_header: 'center',
             text: 'center',
         },
     ]
 
-    columns_resumen = []
+    columns_resumen = [
+        {
+            type: 'text',
+            width: '50%',
+            field: 'metrica',
+            header: 'ITEMS',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'pregunta_1',
+            header: '1',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'pregunta_2',
+            header: '2',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'pregunta_3',
+            header: '3',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'pregunta_4',
+            header: '4',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'pregunta_5',
+            header: '5',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
 
     columns_matriz = [
         {
             type: 'text',
-            width: '1rem',
+            width: '5%',
             field: 'pregunta_nro',
             header: '#',
             text_header: 'left',
@@ -715,7 +745,7 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '10rem',
+            width: '15%',
             field: 'competencia',
             header: 'COMPETENCIA',
             text_header: 'left',
@@ -723,7 +753,15 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '15rem',
+            width: '15%',
+            field: 'capacidad',
+            header: 'CAPACIDAD',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '25%',
             field: 'desempeno',
             header: 'DESEMPEÑO',
             text_header: 'left',
@@ -731,7 +769,7 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'aciertos',
             header: 'ACIERTOS',
             text_header: 'left',
@@ -739,7 +777,7 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'desaciertos',
             header: 'DESACIERTOS',
             text_header: 'left',
@@ -747,7 +785,7 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'porcentaje_aciertos',
             header: '% DE ACIERTOS',
             text_header: 'left',
@@ -755,7 +793,7 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'porcentaje_desaciertos',
             header: '% DE DESACIERTOS',
             text_header: 'left',

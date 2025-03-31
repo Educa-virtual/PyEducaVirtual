@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
         this.showPassword = false
         const isLoggedIn = !!this.tokenStorage.getToken()
         if (isLoggedIn) {
-            this.router.navigate(['./'])
+            this.router.navigate(['./inicio'])
         }
     }
 
@@ -123,7 +123,7 @@ export class LoginComponent implements OnInit {
                 this.tokenStorage.saveUser(item)
 
                 if (item.bCredVerificado == 1) {
-                    this.router.navigate(['./'])
+                    this.router.navigate(['./inicio'])
                     setTimeout(() => {
                         location.reload()
                     }, 500)

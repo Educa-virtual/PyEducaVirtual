@@ -27,6 +27,13 @@ const routes: Routes = [
                 (module) => module.BackupBdComponent
             ),*/
     },
+    {
+        path: 'gestion-usuario',
+        loadComponent: () =>
+            import('./usuario/usuario.component').then(
+                (m) => m.UsuarioComponent
+            ),
+    },
 ]
 
 @NgModule({

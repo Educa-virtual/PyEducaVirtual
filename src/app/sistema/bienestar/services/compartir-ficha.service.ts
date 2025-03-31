@@ -7,12 +7,13 @@ import { Injectable, OnDestroy } from '@angular/core'
 export class CompartirFichaService implements OnDestroy {
     constructor(private store: LocalStoreService) {}
 
+    perfil = this.store.getItem('dremoPerfil')
+    iYAcadId = this.store.getItem('dremoiYAcadId')
+
     lista: any[] = []
 
     private iPersId: string | null = null
     private iFichaDGId: string | null = null
-
-    perfil = this.store.getItem('dremoPerfil')
 
     clearData() {
         this.iPersId = null

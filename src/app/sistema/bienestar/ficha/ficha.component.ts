@@ -1,8 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { MenuItem, MessageService } from 'primeng/api'
-import { TabMenu } from 'primeng/tabmenu'
 import { CompartirFichaService } from '../services/compartir-ficha.service'
 
 @Component({
@@ -13,7 +12,6 @@ import { CompartirFichaService } from '../services/compartir-ficha.service'
     styleUrl: './ficha.component.scss',
 })
 export class FichaComponent implements OnInit {
-    @ViewChild('tabMenu') tabMenu: TabMenu
     activeItem: any
     previousItem: any
     ficha_registrada: boolean | string = false
@@ -26,6 +24,10 @@ export class FichaComponent implements OnInit {
     ngOnInit(): void {
         this.activeItem = this.items[0]
         this.previousItem = this.items[0]
+
+        this.compartirFichaService.setiPersId(
+            this.compartirFichaService.perfil.iPersId
+        )
 
         this.ficha_registrada = this.compartirFichaService.getiFichaDGId()
     }

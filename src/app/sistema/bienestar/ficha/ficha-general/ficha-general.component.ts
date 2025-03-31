@@ -48,8 +48,9 @@ export class FichaGeneralComponent implements OnInit {
         this.formGeneral = this.fb.group({
             iSesionId: this.compartirFichaService.perfil?.iCredId,
             iPersId: this.compartirFichaService.perfil?.iPersId,
-            iFichaDGId: [null],
+            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
             iTipoViaId: [null, Validators.required],
+            cTipoViaOtro: [''],
             cFichaDGDireccionNombreVia: ['', Validators.required],
             cFichaDGDireccionNroPuerta: [''],
             cFichaDGDireccionBlock: [''],
@@ -60,6 +61,7 @@ export class FichaGeneralComponent implements OnInit {
             cFichaDGDireccionKm: [''],
             cFichaDGDireccionReferencia: [''],
             iReligionId: [null],
+            cReligionOtro: [''],
             bFamiliarPadreVive: [false],
             bFamiliarMadreVive: [false],
             bFamiliarPadresVivenJuntos: [false],
@@ -90,7 +92,7 @@ export class FichaGeneralComponent implements OnInit {
                 )
             })
 
-        if (this.compartirFichaService.getiFichaDGId()) {
+        if (this.compartirFichaService.getiPersId()) {
             this.searchFichaGeneral()
         }
     }
@@ -119,6 +121,8 @@ export class FichaGeneralComponent implements OnInit {
         this.datosFichaBienestarService
             .searchFichaGeneral({
                 iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+                iPersId: this.compartirFichaService.getiPersId(),
+                iYAcadId: this.compartirFichaService.iYAcadId,
             })
             .subscribe((data: any) => {
                 if (data) {
@@ -130,8 +134,12 @@ export class FichaGeneralComponent implements OnInit {
     setFormGeneral(data: FichaGeneral) {
         this.ficha_registrada = true
         this.formGeneral.patchValue(data)
-        this.formGeneral.get('iTipoViaId').setValue(+data.iTipoViaId)
-        this.formGeneral.get('iReligionId').setValue(+data.iReligionId)
+        this.formGeneral
+            .get('iTipoViaId')
+            .setValue(data.iTipoViaId ? +data.iTipoViaId : null)
+        this.formGeneral
+            .get('iReligionId')
+            .setValue(data.iReligionId ? +data.iReligionId : null)
         this.formGeneral
             .get('bFamiliarPadreVive')
             .setValue(!!+data.bFamiliarPadreVive)

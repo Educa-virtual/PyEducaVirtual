@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
     loading: boolean
     loadingText: string
     formLogin!: FormGroup
+    modalSinRolAsignado: boolean
 
     constructor(
         private tokenStorage: TokenStorageService,
@@ -68,9 +69,6 @@ export class LoginComponent implements OnInit {
         this.modalSinRolVisible = false
     }
     onSubmit() {
-        // mostrar modal sin rol propiedad
-        this.modalSinRolVisible = true
-
         this.loading = true
         this.loadingText = 'Verificando...'
         this.authService.login(this.formLogin.value).subscribe({
@@ -86,20 +84,21 @@ export class LoginComponent implements OnInit {
 
                 const item = response.user
 
-                // logica a descomentar cuando no se encuentra ningun rol
-
-                /*if (!item.perfiles || item.perfiles.length === 0) {
-                    this.modalSinRolVisible = true;
-                    return;
-                } */
-
                 this.tokenStorage.setItem('dremoToken', response.accessToken)
                 this.tokenStorage.setItem('dremoUser', response.user)
+
+                if (
+                    !response.user.perfiles ||
+                    response.user.perfiles.length === 0
+                ) {
+                    // Si no tiene perfiles, redirigir a sin-rol-asignado
+                    this.router.navigate(['/sin-rol-asignado'])
+                    return
+                }
 
                 this.store.setItem('dremoModalPerfil', true)
 
                 const user = this.store.getItem('dremoUser')
-
                 const years = user ? user.years : null
                 const year = years.length ? years[0] : null
                 this.store.setItem('dremoYear', year?.iYearId)

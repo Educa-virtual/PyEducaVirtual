@@ -480,6 +480,7 @@ export class ApiEvaluacionesRService {
         iCursoNivelGradId: number | string
         dtExamenFechaInicio
         iExamenCantidadPreguntas: number
+        iExamenDuracionMinutos: number
     }): Observable<any> {
         return this.http.post(
             `${this.urlBackendApi}/ere/Evaluaciones/guardarFechaCantidadExamenCursos`,

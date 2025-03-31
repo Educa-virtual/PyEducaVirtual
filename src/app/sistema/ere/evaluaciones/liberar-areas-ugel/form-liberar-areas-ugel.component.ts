@@ -24,7 +24,6 @@ export class FormLiberarAreasUgelComponent implements OnChanges {
     ngOnChanges(changes) {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
-            console.log(this.data)
         }
     }
     accionBtn(elemento): void {

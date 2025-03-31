@@ -96,7 +96,6 @@ export class TabInicioComponent implements OnInit {
             })
             .subscribe((data) => {
                 this.anunciosDocente = data['data']
-                console.log(this.anunciosDocente)
             })
     }
     itemRespuesta: any[] = []

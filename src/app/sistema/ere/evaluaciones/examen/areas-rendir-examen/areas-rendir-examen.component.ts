@@ -33,7 +33,8 @@ export class AreasRendirExamenComponent implements OnInit {
             prefix: 'evaluacion',
             ruta: 'handleCrudOperation',
             data: {
-                opcion: 'CONSULTAR-ESTADO-ULTIMO-ACTIVO',
+                opcion: 'CONSULTAR-ESTADO-ULTIMO-ACTIVOxiIieeId',
+                valorBusqueda: this._ConstantesService.iIieeId,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -50,6 +51,7 @@ export class AreasRendirExamenComponent implements OnInit {
                 iEstudianteId: this._ConstantesService.iEstudianteId,
                 iEvaluacionId: this.iEvaluacionId,
                 iYAcadId: this._ConstantesService.iYAcadId,
+                iIieeId: this._ConstantesService.iIieeId,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -75,7 +77,7 @@ export class AreasRendirExamenComponent implements OnInit {
         const { accion } = elemento
         const { item } = elemento
         switch (accion) {
-            case 'CONSULTAR-ESTADO-ULTIMO-ACTIVO':
+            case 'CONSULTAR-ESTADO-ULTIMO-ACTIVOxiIieeId':
                 if (!item.length) {
                     this.bMensaje = false
                     return

@@ -4,6 +4,9 @@ import { MessageService } from 'primeng/api'
 import { Observable } from 'rxjs'
 import { DatosMatriculaService } from '../../services/datos-matricula.service'
 import { objectToFormData } from '@/app/shared/utils/object-to-form-data'
+import { environment } from '@/environments/environment'
+
+const baseUrl = environment.backendApi
 
 @Injectable({
     providedIn: 'root',
@@ -38,7 +41,7 @@ export class BulkDataImportService {
 
         try {
             this.http
-                .get('http://localhost:8000/api/file/import', {
+                .get(`${baseUrl}/file/import`, {
                     params: {
                         template: file['name'],
                     },
@@ -66,7 +69,7 @@ export class BulkDataImportService {
     }
 
     validateCollectionData(data: any, api: string): Observable<any> {
-        return this.http.post(`http://localhost:8000/api/file/${api}`, {
+        return this.http.post(`${baseUrl}/file/${api}`, {
             iYAcadId: JSON.parse(
                 localStorage.getItem('dremoiYAcadId') || 'null'
             ),
@@ -82,18 +85,12 @@ export class BulkDataImportService {
 
         if (file) {
             const formData = objectToFormData({ file, ...this.params })
-            return this.http.post(
-                `http://localhost:8000/api/${this.importEndPoint}`,
-                formData
-            )
+            return this.http.post(`${baseUrl}/${this.importEndPoint}`, formData)
         } else {
-            return this.http.post(
-                `http://localhost:8000/api/${this.importEndPoint}`,
-                {
-                    data: data,
-                    ...this.params,
-                }
-            )
+            return this.http.post(`${baseUrl}/${this.importEndPoint}`, {
+                data: data,
+                ...this.params,
+            })
         }
     }
 }

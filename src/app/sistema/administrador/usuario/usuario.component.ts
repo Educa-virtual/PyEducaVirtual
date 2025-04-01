@@ -15,16 +15,17 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component'
+import { UsuarioPerfilComponent } from './usuario-perfil/usuario-perfil.component'
 
 @Component({
     selector: 'app-usuario',
     standalone: true,
     imports: [
         PrimengModule,
-
         TablePrimengComponent,
         ContainerPageComponent,
         FormUsuarioComponent,
+        UsuarioPerfilComponent,
     ],
     templateUrl: './usuario.component.html',
     styleUrl: './usuario.component.scss',
@@ -96,9 +97,11 @@ export class UsuarioComponent implements OnInit {
             tipoBusqueda: ['0'],
         })
     }
+    cerrarModal($event) {
+        this.modal_visible = $event.visible
+    }
 
     accionBtn(event: any, accion: string) {
-        console.log('item nuevo usuario event', accion)
         if (accion === 'nuevo_perfil_generado') {
             const item = [
                 {
@@ -238,8 +241,7 @@ export class UsuarioComponent implements OnInit {
                     })
                 },
                 //    complete: () => {
-                //     console.log(this.tipo_documentos)
-                //        // console.log('Request completed')
+                //
                 //    },
             })
     }
@@ -249,9 +251,8 @@ export class UsuarioComponent implements OnInit {
     accionBtnItemTable({ accion, item }) {
         // console.log(this.selectedItems, 'selectedItems')
 
-        console.log(accion, 'accion', item, 'item')
         if (accion === 'editar') {
-            console.log(item, 'btnTable')
+            // console.log(item, 'btnTable')
         }
         if (accion === 'asignar_perfil') {
             // envia la informacion del perfil seleccionado
@@ -274,7 +275,6 @@ export class UsuarioComponent implements OnInit {
         }
 
         if (accion === 'Director') {
-            alert(accion)
             this.option = 'Director'
 
             this.modal_visible = false //Mostrar modal para registro de usuarior
@@ -318,6 +318,13 @@ export class UsuarioComponent implements OnInit {
     ]
     //estructura de tabla
     actionsPerfil: IActionTable[] = [
+        {
+            labelTooltip: 'Seleccionar perfil',
+            icon: 'pi pi-user', // pi pi-ban
+            accion: 'asignar_perfil',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+        },
         {
             labelTooltip: 'Eliminar perfil',
             icon: 'pi pi-trash', // pi pi-ban

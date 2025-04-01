@@ -41,6 +41,16 @@ export class MantenimientoAddUserComponent implements OnChanges, OnInit {
     btnValidar: boolean = false
     registro: any
     datoValido: boolean = false
+    sexo: any = [
+        {
+            label: 'Masculino',
+            value: 'M',
+        },
+        {
+            label: 'Femenino',
+            value: 'F',
+        },
+    ]
 
     private _confirmService = inject(ConfirmationModalService)
     constructor(

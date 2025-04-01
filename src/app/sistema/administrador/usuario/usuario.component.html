@@ -1,5 +1,5 @@
 <app-container-page
-    [title]="'Geestion de Usuarios'"
+    [title]="'Gestión de Usuarios'"
     [actions]="[]"
     (accionBtnItem)="([])"
 >
@@ -73,7 +73,9 @@
                 </app-table-primeng>
             </div>
         </div>
-        <div class="col-12 md:col-5"></div>
+        <div class="col-12 md:col-5">
+            <app-usuario-perfil [usuario]="usuario" />
+        </div>
     </div>
 </app-container-page>
 
@@ -86,7 +88,11 @@
     [maximizable]="true"
     [modal]="true"
 >
-    <app-form-usuario [data]="tipo_documentos"> </app-form-usuario>
+    <app-form-usuario
+        [data]="tipo_documentos"
+        (respuesta)="cerrarModal($event)"
+    >
+    </app-form-usuario>
 </p-dialog>
 
 <p-toast />

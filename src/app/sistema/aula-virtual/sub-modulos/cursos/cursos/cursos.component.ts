@@ -12,6 +12,7 @@ import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 
 export type Layout = 'list' | 'grid'
 @Component({
@@ -25,6 +26,7 @@ export type Layout = 'list' | 'grid'
         CursoCardComponent,
         AreasEstudiosComponent,
         PrimengModule,
+        ToolbarPrimengComponent,
     ],
     templateUrl: './cursos.component.html',
     styleUrl: './cursos.component.scss',
@@ -59,6 +61,7 @@ export class CursosComponent implements OnDestroy, OnInit {
             default:
                 break
         }
+
         this.obtenerPerfil()
     }
 

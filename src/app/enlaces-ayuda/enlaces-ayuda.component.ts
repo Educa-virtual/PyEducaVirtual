@@ -6,6 +6,7 @@ import { Message } from 'primeng/api'
 import { MessagesModule } from 'primeng/messages'
 import { AccordionModule } from 'primeng/accordion'
 import { ToolbarModule } from 'primeng/toolbar'
+import { EnlacesAyuda } from './config/enlaces-ayuda'
 
 @Component({
     selector: 'app-enlaces-ayuda',
@@ -24,9 +25,23 @@ export class EnlacesAyudaComponent implements OnInit {
     messages: Message[] | undefined
     sidebarVisible: boolean = false
 
-    constructor(public sanitizer: DomSanitizer) {}
+    enlacesAyuda
+
+    constructor(
+        public sanitizer: DomSanitizer,
+        private enlacesAyudaService: EnlacesAyuda
+    ) {}
 
     ngOnInit() {
         this.messages = [{ severity: 'info', detail: 'Videos de Seguridad' }]
+
+        this.enlacesAyudaService.getEnlacesAyuda().subscribe({
+            next: (enlacesAyuda) => {
+                this.enlacesAyuda = enlacesAyuda
+            },
+            error: (error) => {
+                console.error('Error loading enlaces ayuda:', error)
+            },
+        })
     }
 }

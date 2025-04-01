@@ -1,6 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { Component, inject, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienestar.service'
@@ -14,7 +22,10 @@ import { FichaFamiliar } from '../../../interfaces/fichaFamiliar'
     templateUrl: './ficha-familia-registro.component.html',
     styleUrl: './ficha-familia-registro.component.scss',
 })
-export class FichaFamiliaRegistroComponent implements OnInit {
+export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
+    @Output() es_visible = new EventEmitter<any>()
+    @Input() iFamiliarId: string | null = null
+
     formFamiliar: FormGroup
     familiar_registrado: boolean = false
 
@@ -32,7 +43,6 @@ export class FichaFamiliaRegistroComponent implements OnInit {
     grados_instruccion: Array<object>
     tipos_ies: Array<object>
 
-    estudiante_registrado: boolean = false
     longitud_documento: number
     formato_documento: string = '99999999'
     es_peruano: boolean = true
@@ -129,6 +139,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
             console.log(error, 'error al inicializar formulario')
         }
 
+        this.showFamiliar()
+
         this.formFamiliar
             .get('iTipoIdentId')
             .valueChanges.subscribe((value) => {
@@ -140,10 +152,9 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                     (item: any) => item.value === value
                 )
                 if (tipo_doc) {
-                    if (
-                        this.formFamiliar.get('cPersDocumento').value.length >
-                        tipo_doc['longitud']
-                    ) {
+                    const longitud =
+                        this.formFamiliar.get('cPersDocumento')?.value
+                    if (longitud && longitud.length > tipo_doc['longitud']) {
                         this.formFamiliar.get('cPersDocumento').setValue(null)
                     }
                     this.longitud_documento = tipo_doc['longitud']
@@ -168,6 +179,10 @@ export class FichaFamiliaRegistroComponent implements OnInit {
         })
     }
 
+    ngOnChanges() {
+        this.showFamiliar()
+    }
+
     filterProvincias(iDptoId: number) {
         if (!iDptoId) return null
         this.provincias =
@@ -178,6 +193,27 @@ export class FichaFamiliaRegistroComponent implements OnInit {
         if (!iPrvnId) return null
         this.distritos =
             this.datosFichaBienestarService.filterDistritos(iPrvnId)
+    }
+
+    showFamiliar() {
+        this.formFamiliar?.reset()
+        this.formFamiliar
+            ?.get('iSesionId')
+            ?.setValue(this.compartirFichaService.perfil?.iCredId)
+        this.formFamiliar
+            ?.get('iFichaDGId')
+            ?.setValue(this.compartirFichaService.getiFichaDGId())
+
+        if (!this.iFamiliarId) return null
+
+        this.datosFichaBienestarService
+            .showFamiliar({
+                iFamiliarId: this.iFamiliarId,
+            })
+            .subscribe((data: any) => {
+                console.log(data, 'data familiar')
+                this.setFormFamiliar(data.data[0])
+            })
     }
 
     /**
@@ -232,20 +268,40 @@ export class FichaFamiliaRegistroComponent implements OnInit {
             ?.setValue(!!+item?.bFamiliarVivoConEl)
         this.formFamiliar
             .get('iTipoFamiliarId')
-            ?.setValue(+item?.iTipoFamiliarId)
-        this.formFamiliar.get('cPersDocumento')?.setValue(+item?.cPersDocumento)
-        this.formFamiliar.get('iTipoIdentId')?.setValue(+item?.iTipoIdentId)
+            ?.setValue(item?.iTipoFamiliarId ? +item.iTipoFamiliarId : null)
+        this.formFamiliar
+            .get('cPersDocumento')
+            ?.setValue(item?.cPersDocumento ? +item.cPersDocumento : null)
+        this.formFamiliar
+            .get('iTipoIdentId')
+            ?.setValue(item?.iTipoIdentId ? +item.iTipoIdentId : null)
         this.formFamiliar
             .get('iTipoEstCivId')
             ?.setValue(item?.iTipoEstCivId ? +item.iTipoEstCivId : null)
-        this.formFamiliar.get('iNacionId')?.setValue(+item?.iNacionId)
-        this.formFamiliar.get('iDptoId')?.setValue(+item?.iDptoId)
-        this.formFamiliar.get('iPrvnId')?.setValue(+item?.iPrvnId)
-        this.formFamiliar.get('iDsttId')?.setValue(+item?.iDsttId)
-        this.formFamiliar.get('iTipoViaId')?.setValue(+item?.iTipoViaId)
-        this.formFamiliar.get('iOcupacionId')?.setValue(+item?.iOcupacionId)
-        this.formFamiliar.get('iGradoInstId')?.setValue(+item?.iGradoInstId)
-        this.formFamiliar.get('iTipoIeEstId')?.setValue(+item?.iTipoIeEstId)
+        this.formFamiliar
+            .get('iNacionId')
+            ?.setValue(item?.iNacionId ? +item.iNacionId : null)
+        this.formFamiliar
+            .get('iDptoId')
+            ?.setValue(item?.iDptoId ? +item.iDptoId : null)
+        this.formFamiliar
+            .get('iPrvnId')
+            ?.setValue(item?.iPrvnId ? +item.iPrvnId : null)
+        this.formFamiliar
+            .get('iDsttId')
+            ?.setValue(item?.iDsttId ? +item.iDsttId : null)
+        this.formFamiliar
+            .get('iTipoViaId')
+            ?.setValue(item?.iTipoViaId ? +item.iTipoViaId : null)
+        this.formFamiliar
+            .get('iOcupacionId')
+            ?.setValue(item?.iOcupacionId ? +item.iOcupacionId : null)
+        this.formFamiliar
+            .get('iGradoInstId')
+            ?.setValue(item?.iGradoInstId ? +item.iGradoInstId : null)
+        this.formFamiliar
+            .get('iTipoIeEstId')
+            ?.setValue(item?.iTipoIeEstId ? +item.iTipoIeEstId : null)
         this.formFamiliar
             .get('dPersNacimiento')
             ?.setValue(
@@ -260,8 +316,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 next: (data: any) => {
                     console.log(data, 'guardado')
                     this.familiar_registrado = true
-                    this.datosFichaBienestarService.formFamiliar =
-                        this.formFamiliar.value
+                    // this.datosFichaBienestarService.formFamiliar =
+                    //     this.formFamiliar.value
                 },
                 error: (error) => {
                     console.error('Error guardando familiar:', error)
@@ -273,6 +329,7 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 },
                 complete: () => {
                     console.log('Request completed')
+                    this.es_visible.emit(false)
                 },
             })
     }
@@ -284,8 +341,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 next: (data: any) => {
                     console.log(data, 'actualizado')
                     this.familiar_registrado = true
-                    this.datosFichaBienestarService.formFamiliar =
-                        this.formFamiliar.value
+                    // this.datosFichaBienestarService.formFamiliar =
+                    //     this.formFamiliar.value
                 },
                 error: (error) => {
                     console.error('Error actualizando familiar:', error)
@@ -297,7 +354,15 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 },
                 complete: () => {
                     console.log('Request completed')
+                    this.es_visible.emit(false)
                 },
             })
+    }
+
+    salirResetearForm() {
+        this.es_visible.emit(false)
+        this.formFamiliar.reset()
+        this.formFamiliar.get('iPersId')?.setValue(null)
+        this.formFamiliar.get('iFichaDGId')?.setValue(null)
     }
 }

@@ -117,6 +117,10 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/borrarFichaFamiliar`, data)
     }
 
+    showFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/searchFichaFamiliar`, data)
+    }
+
     searchFamiliares(data: any) {
         return this.http.post(
             `${baseUrl}/bienestar/searchFichaFamiliares`,
@@ -501,15 +505,12 @@ export class DatosFichaBienestarService implements OnDestroy {
     }
 
     getProgramasAlimentarios(data: any) {
-        console.log(data, 'crear tabla')
-        if (!this.programas_alimentarios) {
-            this.programas_alimentarios = [
-                { value: 1, label: 'OTRO' },
-                { value: 2, label: 'QALIWARMA' },
-                { value: 3, label: 'WASI MIKUNA' },
-                { value: 4, label: 'PROGRAMA DE COMPLEMENTACION ALIMENTARIA' },
-                { value: 5, label: 'VASO DE LECHE' },
-            ]
+        if (!this.programas_alimentarios && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iProgAlimId,
+                label: item.cProgAlimNombre,
+            }))
         }
         return this.programas_alimentarios
     }
@@ -537,16 +538,12 @@ export class DatosFichaBienestarService implements OnDestroy {
     }
 
     getSeguros(data: any) {
-        console.log(data, 'crear tabla')
-        if (!this.seguros_salud) {
-            this.seguros_salud = [
-                { value: 1, label: 'OTRO' },
-                { value: 2, label: 'SIS - SEGURO INTEGRAL DE SALUD' },
-                { value: 3, label: 'ESSALUD' },
-                { value: 4, label: 'SPS - SEGURO PRIVADO DE SALUD' },
-                { value: 5, label: 'EPS - ENTIDAD PRESTADORA DE SALUD' },
-                { value: 6, label: 'SEGURO DE FUERZAS ARMADAS/POLICIALES' },
-            ]
+        if (!this.seguros_salud && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iSegSaludId,
+                label: item.cSegSaludNombre,
+            }))
         }
         return this.seguros_salud
     }
@@ -588,15 +585,15 @@ export class DatosFichaBienestarService implements OnDestroy {
     }
 
     searchDosis(data: any) {
-        return this.http.post(`${baseUrl}/obe/dosis/index`, data)
+        return this.http.post(`${baseUrl}/bienestar/dosis/index`, data)
     }
 
     agregarDosis(data: any) {
-        return this.http.post(`${baseUrl}/obe/dosis/save`, data)
+        return this.http.post(`${baseUrl}/bienestar/dosis/save`, data)
     }
 
     borrarDosis(data: any) {
-        return this.http.post(`${baseUrl}/obe/dosis/delete`, data)
+        return this.http.post(`${baseUrl}/bienestar/dosis/delete`, data)
     }
 
     ngOnDestroy() {

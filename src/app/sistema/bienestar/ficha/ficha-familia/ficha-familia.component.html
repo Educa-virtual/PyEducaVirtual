@@ -35,6 +35,9 @@
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
 >
-    <app-ficha-familia-registro></app-ficha-familia-registro>
+    <app-ficha-familia-registro
+        [iFamiliarId]="iFamiliarId"
+        (es_visible)="visibleDialog($event)"
+    />
 </p-dialog>
 <p-toast></p-toast>

@@ -14,6 +14,7 @@ export class CompartirFichaService implements OnDestroy {
 
     private iPersId: string | null = null
     private iFichaDGId: string | null = null
+    private iFamiliarId: string | null = null
 
     clearData() {
         this.iPersId = null
@@ -49,6 +50,21 @@ export class CompartirFichaService implements OnDestroy {
                     : localStorage.getItem('iPersId')
         }
         return this.iPersId
+    }
+
+    setiFamiliarId(iFamiliarId: string) {
+        this.iFamiliarId = iFamiliarId
+        localStorage.setItem('iFamiliarId', iFamiliarId)
+    }
+
+    getiFamiliarId(): string | null {
+        if (!this.iFamiliarId) {
+            this.iFamiliarId =
+                localStorage.getItem('iFamiliarId') == 'null'
+                    ? null
+                    : localStorage.getItem('iFamiliarId')
+        }
+        return this.iFamiliarId
     }
 
     ngOnDestroy(): void {

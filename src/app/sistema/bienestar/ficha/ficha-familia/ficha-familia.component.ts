@@ -28,6 +28,7 @@ export class FichaFamiliaComponent implements OnInit {
     familiares: any[]
     visibleDialogFamiliar: boolean = false
     dialogTitle: string = ''
+    iFamiliarId: string | null = null
 
     private _messageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -49,8 +50,15 @@ export class FichaFamiliaComponent implements OnInit {
         }
     }
 
+    visibleDialog(event: any) {
+        this.visibleDialogFamiliar = event.value
+        this.iFamiliarId = null
+        this.searchFamiliares()
+    }
+
     agregarFamiliar() {
         this.visibleDialogFamiliar = true
+        this.iFamiliarId = null
         this.dialogTitle = 'Registrar familiar'
     }
 
@@ -78,12 +86,34 @@ export class FichaFamiliaComponent implements OnInit {
      * @param item datos del familiar seleccionado
      */
     borrarFamiliar(item: any) {
-        console.log(item)
+        this.DatosFichaBienestarService.borrarFamiliar({
+            iFamiliarId: item.iFamiliarId,
+        }).subscribe({
+            next: () => {
+                this._messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Se eliminó exitosamente',
+                })
+                this.familiares = this.familiares.filter(
+                    (item: any) => item.iFamiliarId !== item.iFamiliarId
+                )
+            },
+            error: (error) => {
+                console.error('Error eliminando familiar:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
     }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
-            console.log(item)
+            this.visibleDialogFamiliar = true
+            this.iFamiliarId = item.iFamiliarId
         }
         if (accion === 'anular') {
             this._confirmService.openConfirm({
@@ -145,23 +175,15 @@ export class FichaFamiliaComponent implements OnInit {
     columns = [
         {
             type: 'item',
-            width: '1rem',
+            width: '5%',
             field: 'item',
             header: '',
             text_header: 'left',
             text: 'center',
         },
         {
-            type: 'radio',
-            width: '5rem',
-            field: 'bEsApoderado',
-            header: 'Apoderado',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
             type: 'text',
-            width: '5rem',
+            width: '15%',
             field: 'cTipoFamiliarDescripcion',
             header: 'Relación',
             text_header: 'left',
@@ -169,7 +191,7 @@ export class FichaFamiliaComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '10%',
             field: 'cTipoIdentSigla',
             header: 'Tipo',
             text_header: 'center',
@@ -177,7 +199,7 @@ export class FichaFamiliaComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '15%',
             field: 'cPersDocumento',
             header: 'Documento',
             text_header: 'center',
@@ -185,15 +207,15 @@ export class FichaFamiliaComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '10rem',
-            field: 'cPersNomape',
+            width: '45%',
+            field: 'cPersNombresApellidos',
             header: 'Nombre Completo',
             text_header: 'left',
             text: 'left',
         },
         {
             type: 'actions',
-            width: '3rem',
+            width: '10%',
             field: 'actions',
             header: 'Acciones',
             text_header: 'center',

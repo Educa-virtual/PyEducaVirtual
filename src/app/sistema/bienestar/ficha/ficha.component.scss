@@ -24,7 +24,7 @@
     border-radius: 0rem;
 }
 
-:host ::ng-deep .p-inputgroup.vertical-group > .group-element:last-child {
+:host ::ng-deep .p-inputgroup.vertical-group *.group-element:last-child {
     border-top-right-radius: 0rem !important;
     border-bottom-right-radius: 0.5rem !important;
     border-top-left-radius: 0rem !important;
@@ -38,6 +38,7 @@
     border-bottom-right-radius: 0rem !important;
     display: flow-root !important;
     padding: 0rem !important;
+    border: 0rem !important;
 }
 
 :host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon:only-child {

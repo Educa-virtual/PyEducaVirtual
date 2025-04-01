@@ -31,7 +31,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
         file: true,
         url: true,
         youtube: true,
-        repository: false,
+        repository: true,
         image: false,
     }
 
@@ -67,6 +67,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                 this.titleFileTareas = 'Añadir Enlace de Youtube'
                 break
             case 'repository':
+                this.showModal = true
                 this.titleFileTareas = 'Añadir Archivo de mis Recursos'
                 break
             case 'image':

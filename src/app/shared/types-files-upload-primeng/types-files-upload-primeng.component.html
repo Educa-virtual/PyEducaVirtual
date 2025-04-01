@@ -1,5 +1,5 @@
 <div class="card">
-    <label for="" class="mt-1">Adjuntar</label>
+    <label for="" class="mt-1">Adjuntar:</label>
     <div class="d-flex align-items-center text-center mt-1">
         <button
             *ngIf="typesFiles.file"
@@ -47,6 +47,20 @@
                 class="pi pi-youtube my-2"
                 style="color: #c4302b; font-size: 3rem"
                 pTooltip="Subir Enlace Youtube"
+                tooltipPosition="bottom"
+            ></i>
+        </button>
+        <button
+            *ngIf="typesFiles.youtube"
+            pButton
+            type="button"
+            class="p-button-rounded p-button-outlined mx-2"
+            (click)="openUpload('repository')"
+        >
+            <i
+                class="pi pi-folder-open my-2"
+                style="color: #ffd04b; font-size: 3rem"
+                pTooltip="Subir mi recurso"
                 tooltipPosition="bottom"
             ></i>
         </button>
@@ -153,7 +167,7 @@
 <app-modal-primeng
     [title]="titleFileTareas"
     [showModal]="showModal"
-    [width]="'35rem'"
+    [width]="'45rem'"
     (accionBtnItem)="accionBtnItem($event)"
 >
     <div class="grid mt-4">
@@ -213,6 +227,11 @@
                         &nbsp;
                     </button>
                 </p-inputGroup>
+            </div>
+        }
+        @if (typeUpload === 'repository') {
+            <div class="col-12">
+                <h1>Hola</h1>
             </div>
         }
     </div>

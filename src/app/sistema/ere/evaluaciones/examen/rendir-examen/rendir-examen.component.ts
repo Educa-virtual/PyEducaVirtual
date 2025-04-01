@@ -280,7 +280,7 @@ export class RendirExamenComponent implements OnInit {
                     icon: 'pi pi-home',
                     routerLink: '/',
                 }
-                this.obtenerPreguntaxiEvaluacionId()
+                //this.obtenerPreguntaxiEvaluacionId()
                 break
             case 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId':
                 this.finalizado = false

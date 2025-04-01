@@ -30,6 +30,7 @@ export class FichaEconomicoComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.compartirFichaService.setActiveIndex('2')
         this.familiares = [
             {
                 id: 1,
@@ -75,7 +76,18 @@ export class FichaEconomicoComponent implements OnInit {
 
         try {
             this.formEconomico = this.fb.group({
-                iPersId: [null, null],
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+                iIngresoEcoFamiliar: [null],
+                cIngresoEcoActividad: [null],
+                iIngresoEcoEstudiante: [null],
+                iIngresoEcoTrabajoHoras: [null],
+                bIngresoEcoTrabaja: [null],
+                cIngresoEcoDependeDe: [null],
+                iRangoSueldoId: [null],
+                iRangoSueldoIdPersona: [null],
+                iDepEcoId: [null],
+                iTipoAEcoId: [null],
+                iJorTrabId: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')

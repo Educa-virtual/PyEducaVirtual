@@ -76,6 +76,7 @@
 :host ::ng-deep .p-inputgroup.vertical-group .p-inputnumber-input {
     border-radius: 0 !important;
     border-bottom-left-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
 }
 
 :host ::ng-deep .p-inputgroup.vertical-group .p-multiselect-label {
@@ -107,4 +108,8 @@
 
 :host ::ng-deep .p-fieldset-content {
     padding: 1rem !important;
+}
+
+:host ::ng-deep .p-panel-header .p-panel-header-icon {
+    color: var(--primary-color-text) !important;
 }

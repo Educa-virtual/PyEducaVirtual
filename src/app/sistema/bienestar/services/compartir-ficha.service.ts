@@ -15,11 +15,13 @@ export class CompartirFichaService implements OnDestroy {
     private iPersId: string | null = null
     private iFichaDGId: string | null = null
     private iFamiliarId: string | null = null
+    private activeIndex: string | null = null
 
     clearData() {
-        this.iPersId = null
-        localStorage.removeItem('iPersId')
-        localStorage.removeItem('iFichaDGId')
+        this.iFichaDGId = null
+        this.iFamiliarId = null
+        this.activeIndex = null
+        localStorage.removeItem('bienestar')
     }
 
     setiFichaDGId(index: string | null) {
@@ -65,6 +67,21 @@ export class CompartirFichaService implements OnDestroy {
                     : localStorage.getItem('iFamiliarId')
         }
         return this.iFamiliarId
+    }
+
+    setActiveIndex(index: string) {
+        this.activeIndex = index
+        localStorage.setItem('activeIndex', index)
+    }
+
+    getActiveIndex(): string | null {
+        if (!this.activeIndex) {
+            this.activeIndex =
+                localStorage.getItem('activeIndex') == 'null'
+                    ? null
+                    : localStorage.getItem('activeIndex')
+        }
+        return this.activeIndex
     }
 
     ngOnDestroy(): void {

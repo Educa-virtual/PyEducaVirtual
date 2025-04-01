@@ -1,187 +1,68 @@
 <br />
 
-<p-panel
-    header="Ingreso económico familiar"
-    toggler="header"
-    iconPos="start"
-    [toggleable]="true"
->
-    <p-table [value]="familiares">
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="width: 20%">Documento</th>
-                <th style="width: 35%">Nombre Completo</th>
-                <th style="width: 15%">Modalidad</th>
-                <th style="width: 15%">Jornada</th>
-                <th style="width: 15%">Ingreso bruto</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-familiar let-ri="rowIndex">
-            <tr>
-                <td>
-                    {{ familiar.documento }}
-                </td>
-                <td>
-                    {{ familiar.nomape }}
-                </td>
-                <td>
-                    <p-dropdown
-                        [options]="modalidades"
-                        appendTo="body"
-                        [(ngModel)]="familiar.modalidad_id"
-                        [style]="{ width: '100%' }"
-                    />
-                </td>
-                <td>
-                    <p-dropdown
-                        [options]="tipos_jornadas"
-                        appendTo="body"
-                        [(ngModel)]="familiar.tipo_jornada_id"
-                        [style]="{ width: '100%' }"
-                    />
-                </td>
-                <td>
-                    <p-inputNumber
-                        [(ngModel)]="familiar.ingreso_bruto"
-                        [showButtons]="false"
-                        [min]="0"
-                        mode="decimal"
-                        maxFractionDigits="2"
-                        minFractionDigits="2"
-                    />
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-</p-panel>
+<form [formGroup]="formEconomico">
+    <input type="hidden" formControlName="iFichaDGId" />
 
-<br />
+    <div class="pt-2 grid p-fluid mt-3">
+        <div class="col-12 sm:col-6">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon>
+                    Ingresos familiares al mes
+                </p-inputGroupAddon>
+                <p-inputNumber
+                    formControlName="iIngresoEcoFamiliar"
+                    maxlength="10"
+                    useGrouping="true"
+                    showButtons="false"
+                    class="group-element"
+                    placeholder="#"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 sm:col-6">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon>
+                    Actividad económica familiar
+                </p-inputGroupAddon>
+                <input
+                    pInputText
+                    formControlName="cIngresoEcoActividad"
+                    class="group-element"
+                    placeholder="Especifique"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 sm:col-6">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon> Ingresos personales </p-inputGroupAddon>
+                <p-inputNumber
+                    formControlName="iIngresoEcoEstudiante"
+                    maxlength="10"
+                    min="0"
+                    useGrouping="true"
+                    showButtons="false"
+                    class="group-element"
+                    placeholder="#"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 sm:col-6">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon>
+                    Cantidad de horas trabajadas
+                </p-inputGroupAddon>
+                <p-inputNumber
+                    formControlName="iIngresoEcoTrabajoHoras"
+                    maxlength="2"
+                    min="1"
+                    useGrouping="true"
+                    showButtons="false"
+                    class="group-element"
+                    placeholder="#"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
+</form>
 
-<p-panel
-    header="Apoyo económico estatal"
-    toggler="header"
-    iconPos="start"
-    [toggleable]="true"
->
-    <p-table [value]="familiares">
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="width: 20%">Documento</th>
-                <th style="width: 35%">Nombre Completo</th>
-                <th style="width: 15%">Percibe</th>
-                <th style="width: 15%">Tipo de Apoyo</th>
-                <th style="width: 15%">Cantidad</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-familiar let-ri="rowIndex">
-            <tr>
-                <td>
-                    {{ familiar.documento }}
-                </td>
-                <td>
-                    {{ familiar.nomape }}
-                </td>
-                <td>
-                    <p-dropdown
-                        [options]="percibe"
-                        appendTo="body"
-                        [(ngModel)]="familiar.modalidad_id"
-                        [style]="{ width: '100%' }"
-                    />
-                </td>
-                <td>
-                    <p-dropdown
-                        [options]="tipos_apoyos"
-                        appendTo="body"
-                        [(ngModel)]="familiar.tipo_jornada_id"
-                        [style]="{ width: '100%' }"
-                    />
-                </td>
-                <td>
-                    <p-inputNumber
-                        [(ngModel)]="familiar.ingreso_bruto"
-                        [showButtons]="false"
-                        [min]="0"
-                        mode="decimal"
-                        maxFractionDigits="2"
-                        minFractionDigits="2"
-                    />
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-</p-panel>
-
-<br />
-
-<p-panel
-    header="Apoyo económico externo al grupo familiar"
-    toggler="header"
-    iconPos="start"
-    [toggleable]="true"
->
-    <p-table [value]="familiares">
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="width: 20%">Documento</th>
-                <th style="width: 35%">Nombre Completo</th>
-                <th style="width: 15%">Percibe</th>
-                <th style="width: 15%">Tipo de Apoyo</th>
-                <th style="width: 15%">Cantidad</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-familiar let-ri="rowIndex">
-            <tr>
-                <td>
-                    {{ familiar.documento }}
-                </td>
-                <td>
-                    {{ familiar.nomape }}
-                </td>
-                <td>
-                    <p-dropdown
-                        [options]="percibe"
-                        appendTo="body"
-                        [(ngModel)]="familiar.modalidad_id"
-                        [style]="{ width: '100%' }"
-                    />
-                </td>
-                <td>
-                    <p-dropdown
-                        [options]="tipos_apoyos"
-                        appendTo="body"
-                        [(ngModel)]="familiar.tipo_jornada_id"
-                        [style]="{ width: '100%' }"
-                    />
-                </td>
-                <td>
-                    <p-inputNumber
-                        [(ngModel)]="familiar.ingreso_bruto"
-                        [showButtons]="false"
-                        [min]="0"
-                        mode="decimal"
-                        maxFractionDigits="2"
-                        minFractionDigits="2"
-                    />
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-</p-panel>
-
-<br />
-
-<div class="flex justify-content-end gap-2">
-    <p-button
-        label="Salir sin guardar"
-        (onClick)="actualizarDatos()"
-        severity="secondary"
-    />
-    <p-button
-        label="Guardar y continuar"
-        (onClick)="guardarDatos()"
-        severity="success"
-        icon="pi pi-save"
-    />
-</div>
 <p-toast></p-toast>

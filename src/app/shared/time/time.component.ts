@@ -25,7 +25,6 @@ export class TimeComponent implements OnChanges, OnDestroy {
     intervalo: any
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('Iniciado')
         if (changes['inicio'] || changes['fin']) {
             this.inicio = new Date(this.inicio)
             this.fin = new Date(this.fin)

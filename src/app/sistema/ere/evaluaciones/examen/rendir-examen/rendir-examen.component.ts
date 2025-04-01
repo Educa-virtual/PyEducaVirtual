@@ -253,6 +253,7 @@ export class RendirExamenComponent implements OnInit {
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId':
                 this.evaluacion = item.length ? item[0] : null
+                this.tiempoActual = new Date(this.evaluacion.dtHoraActual)
                 this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
                 this.breadCrumbItems = [
                     {
@@ -313,7 +314,7 @@ export class RendirExamenComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Pregunta Múltiple',
+                            title: 'Pregunta múltiple',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                         })
                     }

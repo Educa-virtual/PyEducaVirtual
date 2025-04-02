@@ -29,6 +29,10 @@ export class YearsComponent implements OnInit {
     ngOnInit(): void {
         this.ticketService.registroInformation = {}
 
+        this.getCalendariosAcademicos()
+    }
+
+    getCalendariosAcademicos() {
         this.ticketService.getCalendarioIESede({
             onNextCallbacks: [
                 (data) => {
@@ -111,6 +115,7 @@ export class YearsComponent implements OnInit {
                                 VALUE: row.item.iCalAcadId,
                             },
                         })
+                        this.getCalendariosAcademicos()
                     },
                 })
             },

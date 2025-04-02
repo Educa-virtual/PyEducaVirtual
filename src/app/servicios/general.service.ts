@@ -365,4 +365,11 @@ export class GeneralService {
     validarPersona(data: any) {
         return this.http.post(`${baseUrl}/grl/validarPersona`, data)
     }
+
+    generarConfiguracionMasivaInicio(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/generarConfiguracionMasivaInicio`,
+            data
+        )
+    }
 }

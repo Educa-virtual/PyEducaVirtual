@@ -8,6 +8,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
+import { ConfiguracionesComponent } from '../configuraciones/configuraciones.component'
 
 @Component({
     selector: 'app-componentes',
@@ -17,6 +18,7 @@ import {
         EmptySectionComponent,
         FormsModule,
         ReactiveFormsModule,
+        ConfiguracionesComponent,
     ],
     templateUrl: './componentes.component.html',
     styleUrl: './componentes.component.scss',

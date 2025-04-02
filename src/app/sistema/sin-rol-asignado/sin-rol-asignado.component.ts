@@ -14,7 +14,10 @@ import { Router } from '@angular/router'
     styleUrl: './sin-rol-asignado.component.scss',
 })
 export class SinRolAsignadoComponent implements OnInit {
+    correoTitle: string = 'educacion_virtual@gremoquegua.edu.pe'
     username: string = ''
+    //name: string
+    //name1: string
     user: any = null
     // Para el modal propio del componente
     @Input() visible: boolean = false
@@ -25,7 +28,10 @@ export class SinRolAsignadoComponent implements OnInit {
         private tokenStorageService: TokenStorageService,
         private constantesService: ConstantesService,
         private router: Router
-    ) {}
+    ) {
+        this.user = this.constantesService.nombres
+        this.username = this.constantesService.nombre
+    }
 
     ngOnInit(): void {
         // Verificar si el usuario está autenticado

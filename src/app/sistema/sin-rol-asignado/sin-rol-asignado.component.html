@@ -1,35 +1,55 @@
 <p-dialog
     [modal]="true"
     [(visible)]="visible"
-    [style]="{ width: '65rem' }"
+    [style]="{ width: '650px' }"
+    [showHeader]="false"
+    [closable]="false"
     (onHide)="visibleChange.emit(false)"
 >
-    <ng-template pTemplate="header">
-        <div class="px-3 py-2">
-            <h2 class="m-0 text-white">Bienvenido:</h2>
-        </div>
-    </ng-template>
-    <div class="p-4">
-        <div>
-            <h2>
-                Hola, al parecer no tienes un ROL asignado, Comunícate con tu
-                director o el administrador.
-            </h2>
-            <div class="col-12 md:col-12 align-content-center text-center">
-                <img
-                    style="width: 380px; max-width: 100"
-                    src="assets/images/icons/no-data-animate.svg"
-                    alt="logo"
-                />
-            </div>
+    <div class="header-blue">Bienvenido:</div>
 
-            <div class="text-center mb-4">
-                <p-button
-                    label="Salir de la Sesión"
-                    severity="danger"
-                    (onClick)="logout()"
-                />
+    <div class="content-container">
+        <div class="info-section">
+            <p class="greeting">Hola</p>
+
+            <p class="no-roles-title">No tienes Roles Asignados</p>
+
+            <p class="role-info">
+                Al parecer, no tienes asignado un rol en la plataforma.
+            </p>
+
+            <p class="contact-msg">
+                Por favor, comunicate con el administrador al siguiente correo:
+            </p>
+
+            <div class="admin-info">
+                <p class="admin-name">Ing. Daniel Catachura Palacios</p>
+                <p class="admin-role">Especialista en Sistemas</p>
+                <P>{{ correoTitle }}</P>
             </div>
+        </div>
+
+        <div class="image-section">
+            <img src="assets/images/icons/no-data-animate.svg" alt="No data" />
+        </div>
+    </div>
+
+    <div class="footer-container">
+        <div class="logo-left">
+            <img src="assets/images/dremo.png" alt="DREMO" />
+        </div>
+
+        <div class="btn-center">
+            <button class="logout-btn" (click)="logout()">
+                <span class="x-icon">×</span> Salir de la Sesión
+            </button>
+        </div>
+
+        <div class="logo-right">
+            <img
+                src="assets/images/logo-proyecto.png"
+                alt="Proyecto Educativo"
+            />
         </div>
     </div>
 </p-dialog>

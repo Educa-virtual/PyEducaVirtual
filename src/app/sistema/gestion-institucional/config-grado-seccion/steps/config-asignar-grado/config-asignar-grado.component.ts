@@ -16,7 +16,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { TreeViewPrimengComponent } from '../../../../../shared/tree-view-primeng/tree-view-primeng.component'
+//import { TreeViewPrimengComponent } from '../../../../../shared/tree-view-primeng/tree-view-primeng.component'
 
 @Component({
     selector: 'app-config-asignar-grado',
@@ -26,7 +26,7 @@ import { TreeViewPrimengComponent } from '../../../../../shared/tree-view-primen
         PrimengModule,
         ContainerPageComponent,
         TablePrimengComponent,
-        TreeViewPrimengComponent,
+        //  TreeViewPrimengComponent,
     ],
     templateUrl: './config-asignar-grado.component.html',
 
@@ -84,7 +84,7 @@ export class ConfigAsignarGradoComponent implements OnInit {
 
     ngOnInit(): void {
         console.log(this.configuracion, 'configuracion onit')
-
+        this.validariProgId()
         try {
             this.searchPersonalDocente()
             this.SearchNivelGrados()
@@ -148,37 +148,49 @@ export class ConfigAsignarGradoComponent implements OnInit {
             console.log(error, 'error de variables')
         }
     }
-
-    extraerSecciones(seccionesPosGrado) {
-        // Agrupar las secciones por grado
-        const agruparSeccionesPorGrado = (
-            datos: any[]
-        ): Record<string, string[]> => {
-            return datos.reduce(
-                (acumulador, item) => {
-                    const grado = item.cGradoNombre // Nombre del grado
-                    const seccion = item.cSeccionNombre // Nombre de la sección
-
-                    // Si el grado no existe en el acumulador, inicializarlo como un array vacío
-                    if (!acumulador[grado]) {
-                        acumulador[grado] = []
-                    }
-
-                    // Agregar la sección al grado (evitando duplicados)
-                    if (!acumulador[grado].includes(seccion)) {
-                        acumulador[grado].push(seccion)
-                    }
-
-                    return acumulador
-                },
-                {} as Record<string, string[]>
-            )
+    validariProgId() {
+        if (
+            !this.configuracion ||
+            this.configuracion.length === 0 ||
+            Number(this.configuracion[0].iProgId) === 0
+        ) {
+            this._confirmService.openAlert({
+                header: 'Advertencia de configuración',
+                message: 'No cuenta con el registro de Programas educativos',
+                icon: 'pi pi-exclamation-triangle',
+            })
         }
-
-        // Usar la función para agrupar las secciones
-        const resultado = agruparSeccionesPorGrado(seccionesPosGrado)
-        return resultado
     }
+    // extraerSecciones(seccionesPosGrado) {
+    //     // Agrupar las secciones por grado
+    //     const agruparSeccionesPorGrado = (
+    //         datos: any[]
+    //     ): Record<string, string[]> => {
+    //         return datos.reduce(
+    //             (acumulador, item) => {
+    //                 const grado = item.cGradoNombre // Nombre del grado
+    //                 const seccion = item.cSeccionNombre // Nombre de la sección
+
+    //                 // Si el grado no existe en el acumulador, inicializarlo como un array vacío
+    //                 if (!acumulador[grado]) {
+    //                     acumulador[grado] = []
+    //                 }
+
+    //                 // Agregar la sección al grado (evitando duplicados)
+    //                 if (!acumulador[grado].includes(seccion)) {
+    //                     acumulador[grado].push(seccion)
+    //                 }
+
+    //                 return acumulador
+    //             },
+    //             {} as Record<string, string[]>
+    //         )
+    //     }
+
+    //     // Usar la función para agrupar las secciones
+    //     const resultado = agruparSeccionesPorGrado(seccionesPosGrado)
+    //     return resultado
+    // }
     //==============================================
 
     onChange(event: any, cbo: string): void {
@@ -523,7 +535,7 @@ export class ConfigAsignarGradoComponent implements OnInit {
                 next: (data: any) => {
                     // this.seccionesAsignadas = data.data
                     //    this.iServId = this.serv_atencion[0].iServEdId
-                    this.lista = this.extraerSecciones(data.data)
+                    // this.lista = this.extraerSecciones(data.data)
                     this.seccionesAsignadas = data.data.map((ambiente: any) => {
                         return {
                             ...ambiente, // Mantén todos los campos originales

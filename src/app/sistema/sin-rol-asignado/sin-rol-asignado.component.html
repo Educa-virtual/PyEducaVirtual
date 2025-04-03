@@ -6,20 +6,18 @@
     [closable]="false"
     (onHide)="visibleChange.emit(false)"
 >
-    <div class="header-blue">Bienvenido:</div>
+    <div class="header-blue">Sin roles asignados</div>
 
     <div class="content-container">
         <div class="info-section">
-            <p class="greeting">Hola</p>
+            <!--<p class="greeting">Hola</p>-->
 
-            <p class="no-roles-title">No tienes Roles Asignados</p>
+            <!--<p class="no-roles-title">No tiene roles asignados</p>-->
 
-            <p class="role-info">
-                Al parecer, no tienes asignado un rol en la plataforma.
-            </p>
+            <p class="role-info">No tiene asignado un rol en la plataforma.</p>
 
             <p class="contact-msg">
-                Por favor, comunicate con el administrador al siguiente correo:
+                Por favor, comuníquese con el administrador del sistema:
             </p>
 
             <div class="admin-info">
@@ -41,7 +39,7 @@
 
         <div class="btn-center">
             <button class="logout-btn" (click)="logout()">
-                <span class="x-icon">×</span> Salir de la Sesión
+                <span class="x-icon">×</span> Salir de la sesión
             </button>
         </div>
 

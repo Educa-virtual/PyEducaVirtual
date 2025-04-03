@@ -147,7 +147,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.iPerfilId = this._constantesService.iPerfilId
     }
     ejecutarAccion(event: { accion: string; item: IActionContainer }) {
-        console.log('Acción seleccionada:', event.accion)
         if (event.accion === 'agregar') {
             // Lógica para agregar
         } else if (event.accion === 'descargar_pdf') {
@@ -420,7 +419,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-help p-button-text',
             isVisible: () =>
                 this.iPerfilId === ESPECIALISTA_DREMO ||
-                this.iPerfilId === ADMINISTRADOR_DREMO,
+                this.iPerfilId === ADMINISTRADOR_DREMO ||
+                this.iPerfilId === DIRECTOR_IE,
         },
         {
             labelTooltip: 'Asignar horas de inicio y fin a las áreas',

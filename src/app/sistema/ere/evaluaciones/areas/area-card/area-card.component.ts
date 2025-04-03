@@ -19,6 +19,7 @@ import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-area-card',
@@ -58,6 +59,7 @@ export class AreaCardComponent implements OnInit {
                         `ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${this.curso.iCursosNivelGradId}/preguntas`,
                     ])
                 },
+                disabled: this.iPerfilId === DIRECTOR_IE,
             },
             {
                 label: 'Descargar matriz',
@@ -65,6 +67,7 @@ export class AreaCardComponent implements OnInit {
                 command: () => {
                     this.descargarMatrizPorEvaluacionArea()
                 },
+                disabled: this.iPerfilId === DIRECTOR_IE,
             },
             {
                 label: 'Config. nivel de logro',
@@ -74,6 +77,7 @@ export class AreaCardComponent implements OnInit {
                         curso: this.curso,
                     })
                 },
+                disabled: this.iPerfilId === DIRECTOR_IE,
             },
             {
                 label: 'Exportar a Word',
@@ -85,6 +89,7 @@ export class AreaCardComponent implements OnInit {
                         this.descargarArchivoPreguntasPorArea('word')
                     }
                 },
+                disabled: this.iPerfilId === DIRECTOR_IE,
             },
             {
                 label: 'Subir PDF',
@@ -94,7 +99,9 @@ export class AreaCardComponent implements OnInit {
                         curso: this.curso,
                     })
                 },
-                disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
+                disabled:
+                    this.iPerfilId == DIRECTOR_IE ||
+                    this.iPerfilId !== ESPECIALISTA_DREMO,
             },
             {
                 label: 'Descargar PDF',

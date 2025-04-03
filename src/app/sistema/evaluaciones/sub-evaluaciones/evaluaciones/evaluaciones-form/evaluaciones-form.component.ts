@@ -180,6 +180,10 @@ export class EvaluacionesFormComponent implements OnInit {
                 this.evaluacionFormGroup.markAllAsTouched()
                 return
             }
+
+            // agregando  this.actualizarEvaluacion();
+            this.actualizarEvaluacion()
+
             // if (this.evaluacionFormGroup.invalid) {
             //     this._MessageService.add({
             //         severity: 'error',
@@ -321,7 +325,6 @@ export class EvaluacionesFormComponent implements OnInit {
             iEstado: estado,
         }
 
-        console.log('datos que se guardaran', data)
         this._apiEre
             .guardarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
@@ -338,8 +341,8 @@ export class EvaluacionesFormComponent implements OnInit {
                     )
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Se guardo con exitoso',
-                        detail: 'La evaluacion se ha guardado con éxito.',
+                        summary: 'Se guardó con éxito',
+                        detail: 'La evaluación se ha guardado con éxito.',
                     })
                 },
                 error: (error) => {
@@ -350,6 +353,24 @@ export class EvaluacionesFormComponent implements OnInit {
     }
     // Método para actualizar los datos en la base de datos
     actualizarEvaluacion() {
+        /*let fechaInicio = this.evaluacionFormGroup.get(
+            'dtEvaluacionFechaInicio'
+        ).value
+        let fechaFin = this.evaluacionFormGroup.get(
+            'dtEvaluacionFechaFin'
+        ).value*/
+
+        // Convertir fechas al formato que necesita SQL Server (YYYY-MM-DD) // no cambiar esta conversion
+        /*if (typeof fechaInicio === 'string' && fechaInicio.includes('/')) {
+            const [dia, mes, anio] = fechaInicio.split('/')
+            fechaInicio = `${anio}-${mes}-${dia}`
+        }
+
+        if (typeof fechaFin === 'string' && fechaFin.includes('/')) {
+            const [dia, mes, anio] = fechaFin.split('/')
+            fechaFin = `${anio}-${mes}-${dia}`
+        }*/
+
         // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
 
         const data = {
@@ -370,6 +391,7 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
+
             dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
                 'dtEvaluacionFechaInicio'
             ).value,
@@ -377,18 +399,33 @@ export class EvaluacionesFormComponent implements OnInit {
                 'dtEvaluacionFechaFin'
             ).value,
         }
-        console.log('datos para acualizar', data)
+
+        //console.log('Datos para actualizar (con fechas ISO):', data)
+
+        //console.log('datos para acualizar', data)
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
+                console.log('respuesta de actualizacion', resp)
+
                 this._MessageService.add({
                     severity: 'success',
-                    summary: 'Actualizado con exitoso',
-                    detail: 'La evaluacion se ha actualizado con éxito.',
+                    summary: 'Actualización exitosa',
+                    detail: 'Los datos de la evaluación han sido actualizados.',
                 })
                 resp
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)
+
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error de actualización',
+                    detail: 'No se pudo actualizar la evaluación. Por favor intente de nuevo.',
+                })
+            },
+
+            complete: () => {
+                console.log('Actualizacion completada')
             },
         })
     }
@@ -399,6 +436,7 @@ export class EvaluacionesFormComponent implements OnInit {
             .subscribe({
                 next: (resp: unknown) => {
                     this.tipoEvaluacion = resp['data']
+                    console.log('obteniendo respueta obtTipolEva', resp)
                 },
             })
     }

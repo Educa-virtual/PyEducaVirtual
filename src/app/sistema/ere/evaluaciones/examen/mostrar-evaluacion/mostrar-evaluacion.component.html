@@ -1,0 +1,135 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+<app-container-page
+    [title]="
+        'Evaluación ERE: ' +
+        (evaluacion?.cEvaluacionNombre || '-') +
+        ' - ' +
+        (evaluacion?.cCursoNombre || '-')
+    "
+    [subtitle]="
+        'Nivel: ' +
+        (evaluacion?.cNivelTipoNombre || '-') +
+        ' | Grado: ' +
+        (evaluacion?.cGradoAbreviacion || '-')
+    "
+    [actions]="[]"
+>
+    <!-- interface de Inicio -->
+    <div class="grid" *ngIf="!iniciarEvaluacion">
+        <div class="col-12 md:col-4 align-content-center">
+            <div>
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Fecha de evaluación:
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    {{
+                        evaluacion?.dtExamenFechaInicio
+                            | date: 'EEEE, d MMMM, y'
+                    }}
+                </p>
+            </div>
+            <div>
+                <span class="font-bold text-xl flex gap-2 mt-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Hora de evaluación:
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    De {{ evaluacion?.dtExamenFechaInicio | date: 'HH:mm' }} a
+                    {{ evaluacion?.dtExamenFechaFin | date: 'HH:mm' }}
+                </p>
+            </div>
+
+            <div>
+                <span class="font-bold text-xl flex gap-2 mt-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Iniciar evaluación:
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    @if (evaluacion?.dtExamenFechaInicio) {
+                        <app-time
+                            [inicio]="tiempoActual"
+                            [fin]="evaluacion?.dtExamenFechaInicio"
+                            (accionTime)="accionBtnItem($event)"
+                        ></app-time>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <!-- tiempo de evaluación  -->
+        <div class="col-12 md:col-3 align-content-center">
+            <div class="flex flex-column gap-2">
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Duración: {{ evaluacion?.tDuracion }} minutos
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    Cantidad de preguntas: {{ evaluacion?.totalPreguntas }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Instrucciones del examen -->
+        <div class="col-12 md:col-5 align-content-center">
+            <div class="col text-center">
+                <span class="font-bold text-xl"> Instrucciones </span>
+            </div>
+            <div class="backColor p-4">
+                <p class="flex gap-2 flex-wrap">
+                    1. Durante el desarrollo de la evaluación no se podrá usar
+                    ningún otro instrumento, reglas, calculadoras, etc.<br />
+                    2. Leer bien el enunciado de la Pregunta.<br />
+                    3. Ante cualquier duda levantar la mano y esperar la
+                    asistencia del monitor/docente.<br />
+                    4. Evitar ver a los costados.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 text-center">
+            @if (bEstadoTiempo) {
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-secondary"
+                    [disabled]="bEstadoTiempo"
+                >
+                    <i class="pi pi-check-square"></i>&nbsp; Iniciar evaluación
+                </button>
+            } @else {
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-success pulse"
+                    (click)="rendirExamen()"
+                >
+                    <i class="pi pi-check-square"></i>&nbsp; Iniciar evaluación
+                </button>
+            }
+        </div>
+    </div>
+</app-container-page>
+<p-toast></p-toast>

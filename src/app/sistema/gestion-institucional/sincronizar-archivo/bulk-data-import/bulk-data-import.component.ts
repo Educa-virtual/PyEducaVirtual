@@ -27,7 +27,7 @@ import { CarouselModule } from 'primeng/carousel'
 import { dropdownGroupConfig } from './config/dropdown/dropdownGroup'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { SheetToMatrix } from './utils'
+// import { SheetToMatrix } from './utils'
 
 @Component({
     selector: 'app-bulk-data-import',
@@ -210,24 +210,37 @@ export class BulkDataImportComponent implements OnInit {
                 range: row,
             })
 
-            const excelData2 = new SheetToMatrix(worksheet, {
-                structures: [
-                    {
-                        data: 'Q3:Q3',
-                    },
-                    {
-                        header: 'M7:V7',
-                        data: 'M8:V8',
-                    },
-                    {
-                        header: 'B13:AZ14',
-                        data: 'B15',
-                    },
-                ],
-            })
+            // const excelData2 = new SheetToMatrix(worksheet, {
+            //     structures: [
+            //         {
+            //             data: 'Q3:Q3',
+            //         },
+            //         {
+            //             header: 'M7:V7',
+            //             data: 'M8:V8',
+            //         },
+            //         {
+            //             header: 'B13:AZ14',
+            //             data: 'B15',
+            //         },
+            //     ],
+            // })
 
-            console.log('excelData2')
-            console.log(excelData2)
+            // const excelData2 = new SheetToMatrix(worksheet, {
+            //     structures: [
+            //         {
+            //             header: 'B11:AB12',
+            //             data: 'B13:AB47'
+            //         },
+            //         {
+            //             header: 'F7:O7',
+            //             data: 'F8:O8'
+            //         }
+            //     ]
+            // })
+
+            // console.log('excelData2')
+            // console.log(excelData2)
 
             switch (
                 this.typeCollectionForm.value['Origen de la plantilla:1'].id

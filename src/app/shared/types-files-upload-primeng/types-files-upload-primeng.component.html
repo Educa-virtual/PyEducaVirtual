@@ -229,10 +229,29 @@
                 </p-inputGroup>
             </div>
         }
-        @if (typeUpload === 'repository') {
+        <!-- @if (typeUpload === 'repository') {
             <div class="col-12">
-                <h1>Hola</h1>
+                <app-table-primeng
+                    [columnas]="columns"
+                    [actions]="actions"
+                    [data]="data"
+                    [showCaption]="true"
+                    [tableStyle]="null"
+                    (accionBtnItem)="accionBtnItem($event)"
+                ></app-table-primeng>
+
             </div>
-        }
+        } -->
+    </div>
+</app-modal-primeng>
+
+<!-- modal para mostrar el material educativo -->
+<app-modal-primeng
+    [title]="titleFileTareas"
+    [showModal]="showModalPreview"
+    [width]="'45rem'"
+>
+    <div class="mt-4">
+        <!-- <app-material-educativo /> -->
     </div>
 </app-modal-primeng>

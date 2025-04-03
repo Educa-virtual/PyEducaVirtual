@@ -127,6 +127,12 @@
                                                     [(ngModel)]="
                                                         item.cEncabPregContenido
                                                     "
+                                                    (onModelChange)="
+                                                        guardarEnunciadoEnCache(
+                                                            item.iEncabPregId,
+                                                            item.cEncabPregContenido
+                                                        )
+                                                    "
                                                 />
                                             </div>
                                             <div class="col-12 md:col-6">
@@ -166,7 +172,12 @@
                                                                     size="small"
                                                                     (click)="
                                                                         handleNuevaPreguntaConEnunciadoSinData(
-                                                                            item
+                                                                            {
+                                                                                iEncabPregId:
+                                                                                    item.iEncabPregId,
+                                                                                cEncabPregContenido:
+                                                                                    item.cEncabPregContenido,
+                                                                            }
                                                                         )
                                                                     "
                                                                 >
@@ -179,6 +190,28 @@
                                                                         pregunta</span
                                                                     >
                                                                 </button>
+                                                                <!--<button
+                                                                    *ngIf="
+                                                                        isDisabled
+                                                                    "
+                                                                    pButton
+                                                                    class="p-button-primary"
+                                                                    size="small"
+                                                                    (click)="
+                                                                        handleNuevaPreguntaConEnunciadoSinData(
+                                                                            item
+                                                                        )
+                                                                    "
+                                                                >
+                                                                    <i
+                                                                        class="pi pi-plus"
+                                                                    ></i>
+                                                                    <span
+                                                                        class="text-md"
+                                                                        >Agregar
+                                                                        pregunta</span
+                                                                    >
+                                                                </button> -->
                                                             </ng-template>
                                                         </p-toolbar>
                                                     </div>
@@ -593,6 +626,9 @@
                                                                             class="text-center"
                                                                         >
                                                                             <button
+                                                                                *ngIf="
+                                                                                    isDisabled
+                                                                                "
                                                                                 pButton
                                                                                 pRipple
                                                                                 type="button"
@@ -612,6 +648,26 @@
                                                                                 Guardar
                                                                                 pregunta
                                                                             </button>
+                                                                            <!-- <button
+                                                                                pButton
+                                                                                pRipple
+                                                                                type="button"
+                                                                                class="p-button-success btn-block"
+                                                                                (click)="
+                                                                                    guardarPreguntaConData(
+                                                                                        true,
+                                                                                        encab,
+                                                                                        item.cEncabPregContenido
+                                                                                    )
+                                                                                "
+                                                                            >
+                                                                                <i
+                                                                                    class="pi pi-check"
+                                                                                ></i
+                                                                                >&nbsp;
+                                                                                Guardar
+                                                                                pregunta
+                                                                            </button> -->
                                                                         </div>
                                                                     </div>
                                                                 </p-accordionTab>

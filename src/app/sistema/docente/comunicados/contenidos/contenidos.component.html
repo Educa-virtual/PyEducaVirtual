@@ -28,7 +28,7 @@
                                 <p-inputGroupAddon
                                     class="font-bold bg-header-style"
                                 >
-                                    Comunicado Nº {{ i + 1 }}:
+                                    Com. Nº {{ i + 1 }}:
                                 </p-inputGroupAddon>
                                 <input
                                     type="text"
@@ -68,178 +68,30 @@
                             styleClass="mb-3 custom-comunicado-card"
                         >
                             <div class="grid">
-                                <!-- Columna Izquierda -->
-                                <div class="col-12 md:col-6">
-                                    <!-- Fila: Estado -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Estado:
-                                        </div>
-                                        <span>{{
-                                            comunicado.estado ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Publicado -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Publicado:
-                                        </div>
-                                        <span>{{
-                                            comunicado.publicado || 'Sin fecha'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Caduca -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Caduca:
-                                        </div>
-                                        <span>{{
-                                            comunicado.caduca || 'Sin fecha'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Curso -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Curso:
-                                        </div>
-                                        <span>{{
-                                            comunicado.cursoName ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Sección -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Sección:
-                                        </div>
-                                        <span>{{
-                                            comunicado.seccionName ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Grado -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Grado:
-                                        </div>
-                                        <span>{{
-                                            comunicado.gradoName ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Columna Derecha -->
-                                <div class="col-12 md:col-6">
-                                    <!-- Fila: Tipo -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Tipo:
-                                        </div>
-                                        <span>{{
-                                            comunicado.tipo || 'No definido'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Prioridad -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Prioridad:
-                                        </div>
-                                        <span>{{
-                                            comunicado.prioridad ||
-                                                'Sin prioridad'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Grupo -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Grupo:
-                                        </div>
-                                        <span>
-                                            <ng-container
-                                                *ngIf="
-                                                    comunicado.grupo?.length >
-                                                        0;
-                                                    else sinGrupo
-                                                "
-                                            >
-                                                <span
-                                                    *ngFor="
-                                                        let g of comunicado.grupo;
-                                                        let last = last
-                                                    "
-                                                    >{{ g.cGrupoNombre
-                                                    }}{{
-                                                        last ? '' : ', '
-                                                    }}</span
-                                                >
-                                            </ng-container>
-                                            <ng-template #sinGrupo>
-                                                No asignado
-                                            </ng-template>
-                                        </span>
-                                    </div>
-
-                                    <!-- Fila: Destinatario (si aplica) -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Destinatario:
-                                        </div>
-                                        <span>{{
-                                            comunicado.destinatario ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-                                </div>
-                                <!-- Texto o descripción -->
-                                <div class="col-12 mt-3">
-                                    <!-- <p
-                                        class="m-0"
-                                        style="white-space: pre-line"
+                                <!-- Itera sobre los campos mostrables -->
+                                <div
+                                    *ngFor="
+                                        let campo of getCamposMostrables(
+                                            comunicado
+                                        )
+                                    "
+                                    [ngClass]="{
+                                        'w-100': campo.rowBreak,
+                                        'flex align-items-center mb-2': true,
+                                    }"
+                                    style="padding: 0 5px"
+                                >
+                                    <div
+                                        class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                        style="min-width: 80px"
                                     >
-                                        {{
-                                            comunicado.texto ||
-                                                'Sin contenido adicional.'
-                                        }}
-                                    </p> -->
+                                        {{ campo.label }}:
+                                    </div>
+                                    <span>{{ campo.value }}</span>
+                                </div>
+
+                                <!-- Sección para el contenido o descripción -->
+                                <div class="col-12 mt-3">
                                     <div
                                         class="m-0"
                                         [innerHTML]="
@@ -422,12 +274,7 @@
                             </div>
                         </div>
                         <!-- Campo para seleccionar Docente en la Institución elegida (solo para especialistas) -->
-                        <div
-                            *ngIf="
-                                (+iPerfilId === 2 || +iPerfilId === 3) &&
-                                institucionId
-                            "
-                        >
+                        <div *ngIf="+iPerfilId === 2 || +iPerfilId === 3">
                             <label for="docente" class="mb-1">Docente</label>
                             <div class="p-inputgroup">
                                 <input

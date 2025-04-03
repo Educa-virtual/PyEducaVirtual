@@ -1,178 +1,130 @@
-<div class="">
+<div class="card">
     <div class="grid">
-        <!-- <div class="col-12 md:col-4">
-            <div class="card mb-2">
-                <div class="text-primary font-bold">Información General</div>
-                <p>
-                    <strong>Docente:</strong><br />Carlos Jose Valderrama
-                    Eyzaguirre
-                </p>
-                <p><strong>Tutor:</strong><br />Jose Maria Callupe Delgado</p>
-                <ul class="list-none">
-                    <li>
-                        <a
-                            ><i class="pi pi-book"></i>&nbsp;<b
-                                >Descargar Sílabo</b
-                            ></a
+        <div class="col-4">
+            <div class="">
+                <p-panel class="custom-header-panel">
+                    <ng-template pTemplate="header">
+                        <h5
+                            class="p-2 m-0 font-bold text-white w-full text-center"
                         >
-                    </li>
-                    <li>
-                        <a
-                            ><i class="pi pi-calendar"></i>&nbsp;<b
-                                >Descargar Horario
-                            </b></a
-                        >
-                    </li>
-                </ul>
-               
-            </div>
-        </div> -->
-        <div class="col-12 md:col-12" [hidden]="iPerfilId !== DOCENTE">
-            <div class="card">
-                <div class="col-12">
-                    <label
-                        for=""
-                        class=""
-                        style="font-weight: bold; font-size: 16px"
-                    >
-                        Anuncia algo aquí para toda la clase:
-                    </label>
-                </div>
-                <!-- <label for="cTareaDescripcion" class="font-bold"
-                    >Anuncia algo aquí Para toda la clase</label
-                > -->
-                <!-- <div class="mt-2"></div> -->
-                <p-toast></p-toast>
-                <form
-                    [formGroup]="guardarPublicacion"
-                    class="flex flex-column gap-3 w-full"
-                >
-                    <p-editor
-                        id="cTareaDescripcion"
-                        placeholder="Agregar un comentario para los estudiantes..."
-                        formControlName="cForoDescripcion"
-                    ></p-editor>
-                </form>
-
-                <br />
-                <!-- <button
-                    pButton
-                    type="button"
-                    label="Link"
-                    icon="pi pi-link"
-                ></button>
-                <button
-                    pButton
-                    type="button"
-                    label="Cancelar"
-                    icon="pi pi-times"
-                    class="p-button-danger"
-                ></button> -->
-                <button
-                    pButton
-                    type="button"
-                    label="Publicar"
-                    icon="pi pi-users"
-                    class="p-button-success"
-                    (click)="guardarPublicacionDocente()"
-                ></button>
-            </div>
-        </div>
-    </div>
-    <div class="card col-12">
-        <div class="col-12 pb-2">
-            <label for="" class="" style="font-weight: bold; font-size: 16px">
-                Anuncios del curso:
-            </label>
-        </div>
-        <p-orderList class="listAlumno" [value]="anunciosDocente">
-            <ng-template
-                let-respuestas
-                of
-                comentarios
-                pTemplate="listItem"
-                let-i="index"
-                class="templateancios"
-            >
-                <!-- Agregar el length -->
-                @if (1 > 0) {
-                    <div class="perfiles-list-item text-left" tabindex="0">
-                        <div class="perfiles-list-detail">
-                            <div class="flex">
-                                <div>
-                                    <img
-                                        src="assets/demo/images/matemit/user.png"
-                                        [alt]="respuestas.name"
-                                        class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
-                                    />
-                                </div>
-                                <div>
-                                    <div class="pb-2 perfil-name">
-                                        <b>
-                                            <span class="perfil-name">
-                                                Doc:
-                                                {{ respuestas.cNombres }} (
-                                                {{
-                                                    respuestas?.dtCreado
-                                                        | date: 'short'
-                                                }}
-                                                )
-                                            </span>
-                                        </b>
-                                        <!-- Button para la accion de eliminar y editar -->
-                                        <!-- <p-button
-                                        type="button"
-                                        icon="pi pi-ellipsis-v"
-                                        class="menu-container p-button-text"
-                                        (click)="
-                                            itemRespuesta = respuestas;
-                                            menu.toggle($event)
-                                        "
-                                        aria-label="Abrir menú de configuración"
-                                    /> -->
-                                    </div>
-                                    <div class="" style="text-align: justify">
-                                        <span *ngIf="!respuestas.expanded">
-                                            {{
-                                                respuestas?.cForoDescripcion
-                                                    | slice: 0 : 150
-                                            }}...
-                                        </span>
-                                        <span *ngIf="respuestas.expanded">
-                                            {{ respuestas?.cForoDescripcion }}
-                                        </span>
-                                        <!-- Para Leer mas.. -->
-                                        <button
-                                            (click)="toggleExpand(respuestas)"
-                                            class="toggle-link"
-                                        >
-                                            {{
-                                                respuestas.expanded
-                                                    ? 'Leer menos'
-                                                    : 'Leer más'
-                                            }}
-                                        </button>
-                                    </div>
-                                    <!-- [style.display]="
-                                            !respuestas.iEstudianteId
-                                                ? respuestas.iDocenteId ===
-                                                    iDocenteId
-                                                : respuestas.iEstudianteId ===
-                                                    iEstudianteId
-                                        "
-                                        pButton -->
-                                </div>
-                            </div>
-                        </div>
+                            Información del Área
+                        </h5>
+                    </ng-template>
+                    <div>
+                        <p><strong>N° Estudiantes:</strong> 28</p>
+                        <p><strong>Docente:</strong> Mariela Gamboa Tarqui</p>
+                        <p><strong>Tutor:</strong> Juan Manuel</p>
+                        <p><strong>Grado:</strong> 4to</p>
+                        <p><strong>Sección:</strong> H</p>
+                        <p><strong>Ciclo:</strong> VI</p>
+                        <p><strong>Tiempo:</strong> 45 min</p>
                     </div>
-                } @else {
-                    <!-- <app-empty-section
-                        class="w-full"
-                        [message]="'Ningun Comentario'"
-                    ></app-empty-section> -->
-                }
-            </ng-template>
-        </p-orderList>
+                </p-panel>
+            </div>
+            <br />
+            <div class="">
+                <p-panel class="custom-header-panel">
+                    <ng-template pTemplate="header">
+                        <h5
+                            class="p-2 m-0 font-bold text-white w-full text-center"
+                        >
+                            Crear un Anuncio
+                        </h5>
+                    </ng-template>
+                    <div class="pb-2">
+                        <form [formGroup]="guardarComunicado" action="">
+                            <!-- numeración de anucios publicados -->
+                            <p-inputGroup>
+                                <p-inputGroupAddon> Nº: </p-inputGroupAddon>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    formControlName="numero"
+                                />
+                            </p-inputGroup>
+                            <br />
+                            <!-- título de anuncio -->
+                            <p-inputGroup>
+                                <p-inputGroupAddon> Título </p-inputGroupAddon>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    placeholder="Ingrese el título...."
+                                    formControlName="titulo"
+                                />
+                            </p-inputGroup>
+                            <br />
+                            <!-- Agregar descripción del anunciado -->
+                            <label for="descripcion" class="mt-1"
+                                >Descripción
+                                <span class="text-red-500 text-xs"
+                                    >(*) Obligatorio</span
+                                ></label
+                            >
+                            <div class="mt-2">
+                                <textarea
+                                    class="w-full"
+                                    rows="4"
+                                    placeholder="Escribe una Descripción"
+                                    pInputText
+                                    formControlName="descripcion"
+                                ></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="flex justify-content-end">
+                        <p-button
+                            label="Publicar"
+                            icon="pi pi-send"
+                            iconPos="right"
+                            (click)="guardarComunicadoSubmit()"
+                        />
+                    </div>
+                </p-panel>
+            </div>
+        </div>
+        <div class="col-8">
+            <!-- [(ngModel)]="searchTerm"
+                    (input)="filtrarDatos($event)" -->
+            <div class="">
+                <p-panel class="custom-header-panel">
+                    <ng-template pTemplate="header">
+                        <h5
+                            class="p-2 m-0 font-bold text-white w-full text-center"
+                        >
+                            Anuncios del Curso
+                        </h5>
+                    </ng-template>
+                    <div class="pb-3">
+                        <!-- input de busqueda -->
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                ><i class="pi pi-search"></i
+                            ></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                pInputText
+                                placeholder="Buscar por nombre...."
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <!-- mostrar comentarios -->
+                    <p-card
+                        *ngFor="let card of comunicado"
+                        [header]="card.titulo"
+                        class="mb-3 relative overflow-visible"
+                    >
+                        <ng-template pTemplate="header">
+                            <span class="tag ml-3 border-none text-xl font-bold"
+                                >Comunicado: #01</span
+                            >
+                        </ng-template>
+                        <p class="m-0 text-justify">
+                            {{ card.descripcion }}
+                        </p>
+                    </p-card>
+                </p-panel>
+            </div>
+        </div>
     </div>
 </div>
-<p-menu #menu [model]="menuItems" [popup]="true"> </p-menu>

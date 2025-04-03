@@ -35,106 +35,52 @@ export class TabInicioComponent implements OnInit {
     iPerfilId: number
     anunciosDocente: any[] = []
 
+    comunicado = [
+        {
+            titulo: '!Ojo! No olvides revisar el silabo',
+            descripcion:
+                'Chicos, recuerden que el examen final es el [fecha] a las [hora] en el aula [número]. Va a cubrir todo lo que hemos visto en clase, así que repasen bien.  No olviden traer su DNI, calculadora (si la necesitan) y lo necesario para rendir el examen sin problemas.  Si tienen dudas, aprovechen antes del día del examen. ¡Nos vemos!',
+        },
+        {
+            titulo: 'card 1',
+            descripcion:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        },
+        {
+            titulo: 'card 2',
+            descripcion:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        },
+        {
+            titulo: 'card 2',
+            descripcion:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        },
+    ]
+
     //form para obtener la variable
-    public guardarPublicacion: FormGroup = this._formBuilder.group({
-        iForo: [''],
-        cForoDescripcion: ['', [Validators.required]],
-        iForoCatId: [4],
+    public guardarComunicado: FormGroup = this._formBuilder.group({
+        numero: [''],
+        titulo: ['', [Validators.required]],
+        descripcion: [''],
     })
     //para los alert
     constructor(private messageService: MessageService) {}
     //Inicializamos
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
-        this.obtenerAnuncios()
     }
-    // metodo para limpiar las etiquetas
-    limpiarHTML(html: string): string {
-        const temporal = document.createElement('div') // Crear un div temporal
-        temporal.innerHTML = html // Insertar el HTML
-        return temporal.textContent || '' // Obtener solo el texto
-    }
-    //Guardamos el anuncio que el docente hico para los alumnos
-    guardarPublicacionDocente() {
-        const descripcion = this.guardarPublicacion.value
-        const descripcionLimpia = this.limpiarHTML(descripcion.cForoDescripcion)
-        const registro: any = {
-            iForoCatId: descripcion.iForoCatId,
-            idDocCursoId: this.idDocCursoId,
-            cForoDescripcion: descripcionLimpia,
-        }
-        console.log('hola where', registro)
-        this._aulaService.guardarAnucio(registro).subscribe({
-            next: (response) => {
-                this.obtenerAnuncios()
-                console.log(response)
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Se Guardo correctamente el anuncio.',
-                })
-            },
-            error: (error) => {
-                console.log('Error en la actualización:', error)
-            },
-        })
 
-        this.guardarPublicacion.reset()
-    }
-    //el button para leer mas o menos
-    toggleExpand(comment: any) {
-        comment.expanded = !comment.expanded
-    }
-    //datos de los anuncios
-    obtenerAnuncios() {
-        const idForo = 4
-        const idDocenteCurso = this.idDocCursoId
-        this._aulaService
-            .obtenerAnunciosDocnt({
-                iForoCatId: idForo,
-                iDocenteId: idDocenteCurso,
+    guardarComunicadoSubmit() {
+        if (this.guardarComunicado.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Formulario inválido',
             })
-            .subscribe((data) => {
-                this.anunciosDocente = data['data']
-            })
-    }
-    itemRespuesta: any[] = []
-    // menu para editar y eliminar el comentario del foro
-    menuItems = [
-        {
-            label: 'Editar',
-            icon: 'pi pi-pencil',
-            command: () => this.editar(),
-        },
-        {
-            label: 'Eliminar',
-            icon: 'pi pi-trash',
-            command: () => this.eliminar(this.itemRespuesta),
-        },
-    ]
-
-    editar(): void {
-        // let respuestasForo = this.itemRespuesta
-        // console.log('Editar acción ejecutada', respuestasForo)
-        //iForoRptaId
-    }
-    eliminar(itemRespuesta: any): void {
-        const iForoRptaId = {
-            iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
+        } else {
+            console.log(this.guardarComunicado.value)
+            this.guardarComunicado.reset()
         }
-        console.log('Eliminar acción ejecutada01', iForoRptaId)
-        this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
-            next: (response) => {
-                //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
-                console.log('Elemento eliminado correctamente:', response)
-                // Actualiza la lista local después de eliminar
-                // this.itemRespuesta = this.itemRespuesta.filter(
-                //     (item: any) => item.iForoRptaId !== respuestasForo
-                // );
-            },
-            error: (err) => {
-                console.error('Error al eliminar:', err)
-            },
-        })
     }
 }

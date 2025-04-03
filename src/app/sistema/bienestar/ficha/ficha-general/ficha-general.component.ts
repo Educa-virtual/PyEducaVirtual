@@ -42,7 +42,7 @@ export class FichaGeneralComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log('iniciando')
+        console.log(this.compartirFichaService.getiFichaDGId(), 'iFichaDGId')
         this.visibleInput = Array(3).fill(false)
 
         this.formGeneral = this.fb.group({
@@ -92,9 +92,7 @@ export class FichaGeneralComponent implements OnInit {
                 )
             })
 
-        if (this.compartirFichaService.getiPersId()) {
-            this.searchFichaGeneral()
-        }
+        this.searchFichaGeneral()
     }
 
     handleDropdownChange(event: any, index: number) {
@@ -121,8 +119,6 @@ export class FichaGeneralComponent implements OnInit {
         this.datosFichaBienestarService
             .searchFichaGeneral({
                 iFichaDGId: this.compartirFichaService.getiFichaDGId(),
-                iPersId: this.compartirFichaService.getiPersId(),
-                iYAcadId: this.compartirFichaService.iYAcadId,
             })
             .subscribe((data: any) => {
                 if (data) {
@@ -134,6 +130,12 @@ export class FichaGeneralComponent implements OnInit {
     setFormGeneral(data: FichaGeneral) {
         this.ficha_registrada = true
         this.formGeneral.patchValue(data)
+        this.compartirFichaService.setiFichaDGId(
+            data.iFichaDGId ? data.iFichaDGId + '' : null
+        )
+        this.formGeneral
+            .get('iFichaDGId')
+            .setValue(data.iFichaDGId ? +data.iFichaDGId : null)
         this.formGeneral
             .get('iTipoViaId')
             .setValue(data.iTipoViaId ? +data.iTipoViaId : null)
@@ -168,7 +170,6 @@ export class FichaGeneralComponent implements OnInit {
             .guardarFichaGeneral(this.formGeneral.value)
             .subscribe({
                 next: (data: any) => {
-                    console.log(data.data[0].iFichaDGId, 'ficha')
                     this.compartirFichaService.setiFichaDGId(
                         data.data[0].iFichaDGId
                     )

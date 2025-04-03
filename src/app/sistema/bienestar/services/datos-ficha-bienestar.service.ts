@@ -8,6 +8,7 @@ import { environment } from '@/environments/environment.template'
 import { FichaGeneral } from '../interfaces/fichaGeneral'
 import { FichaFamiliar } from '../interfaces/fichaFamiliar'
 import { FichaVivienda } from '../interfaces/fichaVivienda'
+import { FichaEconomico } from '../interfaces/FichaEconomico'
 
 const baseUrl = environment.backendApi
 
@@ -29,6 +30,12 @@ export class DatosFichaBienestarService implements OnDestroy {
     /* ficha general */
     tipos_vias: Array<object>
     religiones: Array<object>
+
+    /* ficha economico */
+    rangos_sueldo: Array<object>
+    dependencias_economicas: Array<object>
+    tipos_apoyo_economico: Array<object>
+    jornadas_trabajo: Array<object>
 
     /* ficha familiar */
     tipos_familiares: Array<object>
@@ -72,9 +79,14 @@ export class DatosFichaBienestarService implements OnDestroy {
     formGeneral: FichaGeneral
     formFamiliar: FichaFamiliar
     formVivienda: FichaVivienda
+    formEconomico: FichaEconomico
 
     searchFichas(data: any) {
         return this.http.post(`${baseUrl}/bienestar/searchFichas`, data)
+    }
+
+    searchFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/searchFicha`, data)
     }
 
     searchFichaGeneral(data: any) {
@@ -98,6 +110,24 @@ export class DatosFichaBienestarService implements OnDestroy {
     actualizarFichaGeneral(data: any) {
         return this.http.post(
             `${baseUrl}/bienestar/actualizarFichaGeneral`,
+            data
+        )
+    }
+
+    searchFichaEconomico(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/searchFichaEconomico`, data)
+    }
+
+    guardarFichaEconomico(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/guardarFichaEconomico`,
+            data
+        )
+    }
+
+    actualizarFichaEconomico(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaEconomico`,
             data
         )
     }
@@ -546,6 +576,50 @@ export class DatosFichaBienestarService implements OnDestroy {
             }))
         }
         return this.seguros_salud
+    }
+
+    getRangosSueldo(data: any) {
+        if (!this.rangos_sueldo && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iRangoSueldoId,
+                label: item.cRangoSueldoDescripcion,
+            }))
+        }
+        return this.rangos_sueldo
+    }
+
+    getDependenciasEconomicas(data: any) {
+        if (!this.dependencias_economicas && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iDepEcoId,
+                label: item.cDepEcoDescripcion,
+            }))
+        }
+        return this.dependencias_economicas
+    }
+
+    getTiposApoyoEconomico(data: any) {
+        if (!this.tipos_apoyo_economico && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTipoAEcoId,
+                label: item.cTipoAEcoDescripcion,
+            }))
+        }
+        return this.tipos_apoyo_economico
+    }
+
+    getJornadasTrabajo(data: any) {
+        if (!this.jornadas_trabajo && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iJorTrabId,
+                label: item.cJorTrabDescripcion,
+            }))
+        }
+        return this.jornadas_trabajo
     }
 
     getPandemias() {

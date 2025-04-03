@@ -18,10 +18,9 @@ export class CompartirFichaService implements OnDestroy {
     private activeIndex: string | null = null
 
     clearData() {
-        this.iFichaDGId = null
-        this.iFamiliarId = null
-        this.activeIndex = null
-        localStorage.removeItem('bienestar')
+        this.iPersId = null
+        localStorage.removeItem('iPersId')
+        localStorage.removeItem('iFichaDGId')
     }
 
     setiFichaDGId(index: string | null) {

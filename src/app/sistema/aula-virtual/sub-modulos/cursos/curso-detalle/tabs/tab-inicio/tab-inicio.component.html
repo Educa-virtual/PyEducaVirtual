@@ -1,7 +1,7 @@
 <div class="card">
     <div class="grid">
         <div class="col-4">
-            <div class="">
+            <div class="borde">
                 <p-panel class="custom-header-panel">
                     <ng-template pTemplate="header">
                         <h5
@@ -95,7 +95,7 @@
                             Anuncios del Curso
                         </h5>
                     </ng-template>
-                    <div class="pb-3">
+                    <div class="pb-5">
                         <!-- input de busqueda -->
                         <p-inputGroup>
                             <p-inputGroupAddon
@@ -115,11 +115,23 @@
                         class="mb-3 relative overflow-visible"
                     >
                         <ng-template pTemplate="header">
-                            <span class="tag ml-3 border-none text-xl font-bold"
+                            <span class="tag ml-3 font-bold"
                                 >Comunicado: #01</span
                             >
+                            <span class="btn flex justify-content-end">
+                                <p-button
+                                    icon="pi pi-heart"
+                                    [rounded]="true"
+                                    [text]="true"
+                                />
+                                <p-button
+                                    icon="pi pi-times"
+                                    [rounded]="true"
+                                    [text]="true"
+                                />
+                            </span>
                         </ng-template>
-                        <p class="m-0 text-justify">
+                        <p class="cnt m-0 text-justify">
                             {{ card.descripcion }}
                         </p>
                     </p-card>

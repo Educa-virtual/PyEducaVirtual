@@ -3,10 +3,12 @@
     padding: 0 !important;
     margin: 0 !important;
     background-color: #3b82f6;
+
     // 8F8A8A
 }
 :host ::ng-deep .p-card {
-    margin-bottom: 25px; //separar los cards
+    margin-bottom: 35px; //separar los cards
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* sombra tipo borde */
 }
 :host ::ng-deep .p-card-content {
     margin: 0px;
@@ -14,22 +16,23 @@
 }
 
 .tag {
-    // position: absolute;
-    // background-color: #FA8F45;
-    // color: white;
-    // padding: 5px 7px;
-    // border-radius: 5px;
-    // top: -1px;
-    // left: 50%;
-    // z-index: 10;
     position: absolute;
-    top: -20px; /* Para que sobresalga del card */
-    left: 15%;
+    top: -17px; /* Para que sobresalga del card */
+    left: 11%;
     transform: translateX(-50%);
     background-color: #fa8f45; /* Asegura que tenga un fondo */
     padding: 5px 7px;
     border-radius: 5px;
-    // box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    font-weight: bold;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 10;
+    color: white;
+}
+.btn {
+    position: absolute;
+    left: 90%;
+}
+:host ::ng-deep .p-panel {
+    box-shadow: 0 4px 8px rgba(8, 8, 8, 0.576); /* sombra tipo borde */
+    background-color: rgba(255, 0, 0, 0);
+    border-radius: 5px;
 }

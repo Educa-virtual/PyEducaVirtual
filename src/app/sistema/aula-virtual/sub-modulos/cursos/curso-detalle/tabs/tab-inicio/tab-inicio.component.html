@@ -40,6 +40,8 @@
                                     type="text"
                                     pInputText
                                     formControlName="numero"
+                                    class="font-bold"
+                                    readonly
                                 />
                             </p-inputGroup>
                             <br />
@@ -109,14 +111,14 @@
                     </div>
                     <!-- mostrar comentarios -->
                     <p-card
-                        *ngFor="let card of data"
+                        *ngFor="let card of data; let i = index"
                         [header]="card.cTitulo"
                         class="mb-3 relative overflow-visible"
                     >
                         <ng-template pTemplate="header">
                             <span class="tag ml-3 font-bold"
-                                >Comunicado: #01</span
-                            >
+                                >Comunicado: #{{ data.length - i }}
+                            </span>
                             <span class="btn flex justify-content-end">
                                 <p-button
                                     icon="pi pi-thumbtack"

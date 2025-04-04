@@ -2,7 +2,7 @@ import { Component, inject, Input, OnInit } from '@angular/core'
 import { ICurso } from '../../../interfaces/curso.interface'
 import { TableModule } from 'primeng/table'
 import { PrimengModule } from '@/app/primeng.module'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 //Message,
 import { MessageService } from 'primeng/api'
@@ -37,10 +37,11 @@ export class TabInicioComponent implements OnInit {
     iPerfilId: number
     anunciosDocente: any[] = []
     data: any[]
+    contadorAnuncios: number = 0
 
     //form para obtener la variable
     public guardarComunicado: FormGroup = this._formBuilder.group({
-        numero: [''],
+        numero: new FormControl(''),
         titulo: ['', [Validators.required]],
         descripcion: [''],
     })
@@ -163,6 +164,12 @@ export class TabInicioComponent implements OnInit {
 
         this._aulaService.obtenerAnuncios(paramst).subscribe((Data) => {
             this.data = Data['data']
+            this.contadorAnuncios = this.data.length + 1
+            // Asignar valor al campo "numero" del formulario
+            this.guardarComunicado.patchValue({
+                numero: this.contadorAnuncios,
+            })
+            console.log('Anuncios:', this.contadorAnuncios)
             console.log(this.data)
         })
     }

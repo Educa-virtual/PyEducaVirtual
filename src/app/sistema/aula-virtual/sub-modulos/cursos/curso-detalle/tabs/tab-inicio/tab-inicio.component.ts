@@ -143,7 +143,21 @@ export class TabInicioComponent implements OnInit {
     }
 
     // metodo para fijar el anuncio
-    fijarAnuncio(): void {
+    fijarAnuncio(id: string): void {
+        const iCredId = 1
+        const params = {
+            iAnuncioId: id,
+            iCredId: iCredId,
+        }
+        this._aulaService.fijarAnuncio(params).subscribe({
+            next: (response) => {
+                this.obtenerAnuncios()
+                console.log('Elemento fijado correctamente:', response)
+            },
+            error: (err) => {
+                console.error('Error al fijar:', err)
+            },
+        })
         this.messageService.add({
             severity: 'success',
             summary: 'Exito',

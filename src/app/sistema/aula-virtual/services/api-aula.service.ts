@@ -322,6 +322,12 @@ export class ApiAulaService {
             data // Enviar los datos como parámetros
         )
     }
+    fijarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/fijarAnuncios`,
+            data // Enviar los datos como parámetros
+        )
+    }
     obtenerAnuncios(params: any) {
         return this._http.post(
             `${this.baseUrlApi}/aula-virtual/anuncios/listarAnuncios`,

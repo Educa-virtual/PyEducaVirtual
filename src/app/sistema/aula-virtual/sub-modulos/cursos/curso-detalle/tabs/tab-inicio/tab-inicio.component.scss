@@ -36,7 +36,12 @@
     background-color: rgba(255, 0, 0, 0);
     border-radius: 5px;
 }
-
+// scrollbar para el panel
+:host ::ng-deep .p-panel-content {
+    max-height: 800px; /* Ajusta la altura máxima que tú quieras */
+    overflow-y: auto; /* Habilita el scroll vertical */
+}
+//  color de los inputGroup
 :host ::ng-deep p-inputGroupAddon {
     background-color: var(--bg-header-modal) !important;
     color: var(--primary-color-text) !important;
@@ -44,12 +49,22 @@
         color: var(--primary-color-text) !important;
     }
 }
+// padding del contenido del card
 :host ::ng-deep .p-card-body {
-    padding: 28px;
+    padding: 0px 20px 4px 20px; //y+, , y-
 }
+
+// estilo de los botones
 :host ::ng-deep .p-button {
-    // background: none !important;
-    // border: none !important;
-    //   color: black !important;
     box-shadow: none !important;
+}
+
+.sticky-search {
+    position: sticky;
+    top: 0;
+    background: white;
+    width: 100%;
+    padding: 0.5rem;
+    z-index: 11;
+    border-bottom: 1px solid #dee2e6;
 }

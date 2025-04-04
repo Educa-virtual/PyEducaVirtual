@@ -34,13 +34,13 @@
                     <div class="pb-2">
                         <form [formGroup]="guardarComunicado" action="">
                             <!-- numeración de anucios publicados -->
-                            <p-inputGroup>
+                            <p-inputGroup class="font-bold">
+                                <!-- Nº: {{data.length + 1}} -->
                                 <p-inputGroupAddon> Nº: </p-inputGroupAddon>
                                 <input
                                     type="text"
                                     pInputText
                                     formControlName="numero"
-                                    class="font-bold"
                                     readonly
                                 />
                             </p-inputGroup>
@@ -66,10 +66,12 @@
                             <div class="mt-2">
                                 <textarea
                                     class="w-full"
-                                    rows="4"
                                     placeholder="Escribe una Descripción"
                                     pInputText
                                     formControlName="descripcion"
+                                    [style]="{
+                                        height: '230px',
+                                    }"
                                 ></textarea>
                             </div>
                         </form>
@@ -88,15 +90,18 @@
         </div>
         <div class="col-8">
             <div class="">
-                <p-panel class="custom-header-panel">
-                    <ng-template pTemplate="header">
+                <p-panel
+                    class="custom-header-panel h-10rem"
+                    styleClass="scroll-panel"
+                >
+                    <ng-template pTemplate="header" class="">
                         <h5
                             class="p-2 m-0 font-bold text-white w-full text-center"
                         >
                             Anuncios del Curso
                         </h5>
                     </ng-template>
-                    <div class="pb-5">
+                    <div class="pb-5 sticky-search z-1">
                         <!-- input de busqueda -->
                         <p-inputGroup>
                             <p-inputGroupAddon
@@ -119,23 +124,34 @@
                             <span class="tag ml-3 font-bold"
                                 >Comunicado: #{{ data.length - i }}
                             </span>
-                            <span class="btn flex justify-content-end">
-                                <p-button
-                                    icon="pi pi-thumbtack"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="secondary"
-                                    (click)="fijarAnuncio()"
-                                />
-                                <p-button
-                                    icon="pi pi-times"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="danger"
-                                    (click)="
-                                        eliminarComunicado(card.iAnuncioId)
-                                    "
-                                />
+                            <span
+                                class="flex flex-column md:align-items-end gap-0"
+                            >
+                                <div
+                                    class="grid flex flex-row-reverse md:flex-row gap-2"
+                                >
+                                    <p-button
+                                        icon="pi pi-thumbtack"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        severity="secondary"
+                                        (click)="fijarAnuncio(card.iAnuncioId)"
+                                        [severity]="
+                                            card.iFijado === '0'
+                                                ? 'secondary'
+                                                : 'success'
+                                        "
+                                    />
+                                    <p-button
+                                        icon="pi pi-times"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        severity="danger"
+                                        (click)="
+                                            eliminarComunicado(card.iAnuncioId)
+                                        "
+                                    />
+                                </div>
                             </span>
                         </ng-template>
                         <p class="cnt m-0 text-justify">
@@ -146,6 +162,16 @@
                             {{ card.dtCreado | date: 'dd/MM/yyyy' }}
                         </div>
                     </p-card>
+                    <!-- Paginador -->
+                    <!-- <p-paginator
+                        [rows]="itemsPerPage"
+                        [totalRecords]="data.length"
+                        (onPageChange)="onPageChange($event)"
+                        [showPageLinks]="true"
+                        
+                        [showFirstLastIcon]="true"
+                    ></p-paginator> -->
+                    <!--  -->
                 </p-panel>
             </div>
         </div>

@@ -55,6 +55,15 @@ export class TabInicioComponent implements OnInit {
 
     // guardar anunciado:
     guardarComunicadoSubmit() {
+        const iCursosNivelGradId = 1
+        const iCredId = 1
+        const data = {
+            iCursosNivelGradId: iCursosNivelGradId,
+            idDocCursoId: this.idDocCursoId,
+            iCredId: iCredId,
+            cTitulo: this.guardarComunicado.value.titulo,
+            cContenido: this.guardarComunicado.value.descripcion,
+        }
         if (this.guardarComunicado.invalid) {
             this.messageService.add({
                 severity: 'error',
@@ -63,18 +72,10 @@ export class TabInicioComponent implements OnInit {
             })
         } else {
             this._confirmService.openConfiSave({
-                message: 'Recuerde que son datos de ayuda',
-                header: `¿Esta seguro de descargar en PDF el nivel de logro de: ?`,
+                message: 'Recuerde que podran verlo todos los estudiantes',
+                header: `¿Esta seguro de guardar: ?`,
                 accept: () => {
-                    const iCursosNivelGradId = 1
-                    const iCredId = 1
-                    const data = {
-                        iCursosNivelGradId: iCursosNivelGradId,
-                        idDocCursoId: this.idDocCursoId,
-                        iCredId: iCredId,
-                        cTitulo: this.guardarComunicado.value.titulo,
-                        cContenido: this.guardarComunicado.value.descripcion,
-                    }
+                    console.log('data', data)
                     this._aulaService.guardarAnuncio(data).subscribe({
                         next: (resp: any) => {
                             // para refrescar la pagina

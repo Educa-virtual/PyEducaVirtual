@@ -35,6 +35,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     calcularTiempoRestante(): void {
+        this.inicio = new Date(this.inicio.getTime() + 1000)
         const diferenciaMs = this.fin.getTime() - this.inicio.getTime()
         this.tiempoRestante = Math.max(Math.floor(diferenciaMs / 1000), 0)
     }

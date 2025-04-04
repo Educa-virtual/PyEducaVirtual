@@ -51,7 +51,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
-    //customers!: any
     visible: boolean = false
     opcion: string = 'seleccionar'
     isDialogVisible: boolean = false
@@ -59,17 +58,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     formCapas: any
     evaluacionFormGroup: FormGroup<any>
     areas = []
-    //tipoEvaluacion: any[]
-    //nivelEvaluacion: any[]
     acciones: any
-    selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
-    //selectedItemsAuto = []
+    selectedRow: any[] = []
     selectedItems = []
-    //cursosSeleccionados: any[] = []
-    //fechaHoraInicio: Date | undefined
-    //fechaHoraFin: Date | undefined
-    //cursoSeleccionado: Map<number, boolean> = new Map()
-    iiEvaluacionId: number // El ID de evaluación que quieras usar
+    iiEvaluacionId: number
     nombreEvaluacion: string
     iPerfil: number
     item: any

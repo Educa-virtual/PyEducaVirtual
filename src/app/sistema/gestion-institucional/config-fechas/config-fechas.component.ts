@@ -29,7 +29,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 })
 export class ConfigFechasComponent implements OnInit {
     form: FormGroup
-    yearCalendarios: []
+    yearCalendarios: any = []
     fechas: []
     tipo_feriado: []
     iSedeId: number
@@ -138,13 +138,14 @@ export class ConfigFechasComponent implements OnInit {
                     iSedeId: this.iSedeId,
                     iYAcadId: this.iYAcadId,
                 }),
-                _opcion: 'getCalendarioSedeYear',
+                _opcion: 'getCalendarioIESede2', //getCalendarioSedeYear,
             })
             .subscribe({
                 next: (data: any) => {
+                    //  this.iCalAcadId = Number(data.data[0]['iCalAcadId'])
                     this.yearCalendarios = data.data
-                    this.iCalAcadId = Number(data.data[0]['iCalAcadId'])
-                    console.log(this.yearCalendarios)
+
+                    console.log(this.yearCalendarios, 'yearCalendarios')
                 },
                 error: (error) => {
                     console.error('Error fetching Años Académicos:', error)

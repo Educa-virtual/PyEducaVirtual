@@ -17,7 +17,7 @@
                         <p><strong>Grado:</strong> 4to</p>
                         <p><strong>Sección:</strong> H</p>
                         <p><strong>Ciclo:</strong> VI</p>
-                        <p><strong>Tiempo:</strong> 45 min</p>
+                        <!-- <p><strong>Tiempo:</strong> 45 min</p> -->
                     </div>
                 </p-panel>
             </div>
@@ -71,6 +71,7 @@
                                 ></textarea>
                             </div>
                         </form>
+                        <p-toast></p-toast>
                     </div>
                     <div class="flex justify-content-end">
                         <p-button
@@ -84,8 +85,6 @@
             </div>
         </div>
         <div class="col-8">
-            <!-- [(ngModel)]="searchTerm"
-                    (input)="filtrarDatos($event)" -->
             <div class="">
                 <p-panel class="custom-header-panel">
                     <ng-template pTemplate="header">
@@ -120,20 +119,30 @@
                             >
                             <span class="btn flex justify-content-end">
                                 <p-button
-                                    icon="pi pi-heart"
+                                    icon="pi pi-thumbtack"
                                     [rounded]="true"
                                     [text]="true"
+                                    severity="secondary"
+                                    (click)="fijarAnuncio()"
                                 />
                                 <p-button
                                     icon="pi pi-times"
                                     [rounded]="true"
                                     [text]="true"
+                                    severity="danger"
+                                    (click)="
+                                        eliminarComunicado(card.iAnuncioId)
+                                    "
                                 />
                             </span>
                         </ng-template>
                         <p class="cnt m-0 text-justify">
                             {{ card.cContenido }}
                         </p>
+                        <div class="flex text-xs justify-content-end mt-5">
+                            {{ card.dtCreado | date: 'HH:mm:ss' }} Hrs
+                            {{ card.dtCreado | date: 'dd/MM/yyyy' }}
+                        </div>
                     </p-card>
                 </p-panel>
             </div>

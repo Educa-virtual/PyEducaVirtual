@@ -310,12 +310,22 @@ export class ApiAulaService {
             }
         )
     }
-    obtenerAnuncios(params) {
+    guardarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/guardarAnuncios`,
+            data
+        )
+    }
+    eliminarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/eliminarAnuncios`,
+            data // Enviar los datos como parámetros
+        )
+    }
+    obtenerAnuncios(params: any) {
         return this._http.post(
             `${this.baseUrlApi}/aula-virtual/anuncios/listarAnuncios`,
-            {
-                params, // Enviar los datos como parámetros
-            }
+            params // Enviar los datos como parámetros
         )
     }
 }

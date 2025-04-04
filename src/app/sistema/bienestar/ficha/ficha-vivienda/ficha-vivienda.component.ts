@@ -41,6 +41,7 @@ export class FichaViviendaComponent implements OnInit {
         if (this.compartirFichaService.getiFichaDGId() === null) {
             this.router.navigate(['/bienestar/ficha/general'])
         }
+        this.compartirFichaService.setActiveIndex(3)
     }
 
     private _messageService = inject(MessageService)

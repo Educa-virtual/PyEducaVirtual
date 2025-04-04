@@ -20,19 +20,6 @@
         <div class="col-12 sm:col-6">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon>
-                    Actividad económica familiar
-                </p-inputGroupAddon>
-                <input
-                    pInputText
-                    formControlName="cIngresoEcoActividad"
-                    class="group-element"
-                    placeholder="Especifique"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 sm:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>
                     Rango de sueldo familiar
                 </p-inputGroupAddon>
                 <p-dropdown
@@ -43,6 +30,19 @@
                     [appendTo]="'body'"
                     placeholder="Seleccione"
                     styleClass="group-element"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 sm:col-6">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon>
+                    Actividad económica familiar
+                </p-inputGroupAddon>
+                <input
+                    pInputText
+                    formControlName="cIngresoEcoActividad"
+                    class="group-element"
+                    placeholder="Especifique"
                 />
             </p-inputGroup>
         </div>
@@ -70,7 +70,7 @@
                 </p-inputGroupAddon>
             </p-inputGroup>
         </div>
-        <p-fieldset legend="Ingresos personales">
+        <p-fieldset legend="Ingresos personales" *ngIf="trabaja">
             <div class="grid">
                 <div class="col-12 sm:col-6">
                     <p-inputGroup styleClass="vertical-group">
@@ -85,6 +85,22 @@
                             showButtons="false"
                             class="group-element"
                             placeholder="Especifique"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            Rango de sueldo personal
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="rangos_sueldo"
+                            formControlName="iRangoSueldoIdPersona"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            placeholder="Seleccione"
+                            styleClass="group-element"
                         />
                     </p-inputGroup>
                 </div>
@@ -114,22 +130,6 @@
                             formControlName="cIngresoEcoDependeDe"
                             class="group-element"
                             placeholder="Especifique"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Rango de sueldo personal
-                        </p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="rangos_sueldo"
-                            formControlName="iRangoSueldoIdPersona"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            placeholder="Seleccione"
-                            styleClass="group-element"
                         />
                     </p-inputGroup>
                 </div>
@@ -175,14 +175,25 @@
 <div class="flex justify-content-end gap-2">
     <p-button
         label="Salir sin guardar"
-        (onClick)="actualizar()"
+        (onClick)="salir()"
         severity="secondary"
     />
-    <p-button
-        label="Guardar y continuar"
-        (onClick)="guardar()"
-        severity="success"
-        icon="pi pi-save"
-    />
+    @if (!ficha_registrada) {
+        <p-button
+            type="button"
+            label="Guardar y continuar"
+            icon="pi pi-save"
+            severity="success"
+            (click)="guardar()"
+        />
+    } @else {
+        <p-button
+            type="button"
+            label="Actualizar y continuar"
+            icon="pi pi-save"
+            severity="success"
+            (click)="actualizar()"
+        />
+    }
 </div>
 <p-toast></p-toast>

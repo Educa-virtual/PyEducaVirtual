@@ -85,22 +85,22 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/searchFichas`, data)
     }
 
-    searchFicha(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFicha`, data)
+    searchFicha(data: any): Promise<any> {
+        return this.http
+            .post(`${baseUrl}/bienestar/searchFicha`, data)
+            .toPromise()
     }
 
-    searchFichaGeneral(data: any) {
-        if (!this.formGeneral) {
-            return this.http
-                .post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
-                .pipe(
-                    map((data: any) => {
-                        this.formGeneral = data.data[0]
-                        return this.formGeneral
-                    })
-                )
-        }
-        return of(this.formGeneral)
+    searchFichaGeneral(data: any): Promise<any> {
+        return this.http
+            .post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
+            .pipe(
+                map((data: any) => {
+                    this.formGeneral = data.data[0]
+                    return this.formGeneral
+                })
+            )
+            .toPromise()
     }
 
     guardarFichaGeneral(data: any) {
@@ -114,8 +114,16 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchFichaEconomico(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichaEconomico`, data)
+    searchFichaEconomico(data: any): Promise<any> {
+        return this.http
+            .post(`${baseUrl}/bienestar/searchFichaEconomico`, data)
+            .pipe(
+                map((data: any) => {
+                    this.formEconomico = data.data[0]
+                    return this.formEconomico
+                })
+            )
+            .toPromise()
     }
 
     guardarFichaEconomico(data: any) {

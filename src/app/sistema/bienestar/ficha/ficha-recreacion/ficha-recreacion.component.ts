@@ -23,6 +23,7 @@ export class FichaRecreacionComponent implements OnInit {
         if (this.compartirFichaService.getiFichaDGId() === null) {
             this.router.navigate(['/bienestar/ficha/general'])
         }
+        this.compartirFichaService.setActiveIndex(7)
     }
 
     ngOnInit() {

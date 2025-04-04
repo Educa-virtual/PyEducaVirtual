@@ -17,6 +17,7 @@ import { MessageService } from 'primeng/api'
 export class FichaEconomicoComponent implements OnInit {
     formEconomico: FormGroup
     ficha_registrada: boolean
+    trabaja: boolean = false
 
     rangos_sueldo: Array<object>
     dependencias_economicas: Array<object>
@@ -34,11 +35,10 @@ export class FichaEconomicoComponent implements OnInit {
         if (this.compartirFichaService.getiFichaDGId() === null) {
             this.router.navigate(['/bienestar/ficha/general'])
         }
+        this.compartirFichaService.setActiveIndex(2)
     }
 
     ngOnInit(): void {
-        this.compartirFichaService.setActiveIndex('2')
-
         this.datosFichaBienestarService
             .getFichaParametros()
             .subscribe((data: any) => {
@@ -67,6 +67,7 @@ export class FichaEconomicoComponent implements OnInit {
         try {
             this.formEconomico = this.fb.group({
                 iCredId: this.compartirFichaService.perfil.iCredId,
+                iIngresoEcoId: [null],
                 iFichaDGId: this.compartirFichaService.getiFichaDGId(),
                 iIngresoEcoFamiliar: [null],
                 cIngresoEcoActividad: [null],
@@ -83,22 +84,49 @@ export class FichaEconomicoComponent implements OnInit {
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
-    }
 
-    searchFichaEconomico() {
-        this.datosFichaBienestarService
-            .searchFichaEconomico({
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
-            })
-            .subscribe((data: any) => {
-                if (data.data.length) {
-                    this.setFormEconomico(data.data[0])
+        this.formEconomico
+            .get('bIngresoEcoTrabaja')
+            .valueChanges.subscribe((value) => {
+                if (value) {
+                    this.trabaja = true
+                    this.formEconomico
+                        .get('iIngresoEcoEstudiante')
+                        .setValue(null)
+                    this.formEconomico
+                        .get('iRangoSueldoIdPersona')
+                        .setValue(null)
+                    this.formEconomico
+                        .get('iIngresoEcoTrabajoHoras')
+                        .setValue(null)
+                    this.formEconomico
+                        .get('cIngresoEcoDependeDe')
+                        .setValue(null)
+                    this.formEconomico.get('iDepEcoId').setValue(null)
+                    this.formEconomico.get('iJorTrabId').setValue(null)
+                } else {
+                    this.trabaja = false
                 }
             })
     }
 
+    async searchFichaEconomico(): Promise<void> {
+        const data = await this.datosFichaBienestarService.searchFichaEconomico(
+            {
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            }
+        )
+        if (data) {
+            this.setFormEconomico(data)
+        }
+    }
+
     setFormEconomico(data: FichaEconomico) {
+        this.ficha_registrada = true
         this.formEconomico.patchValue(data)
+        this.formEconomico
+            .get('iIngresoEcoId')
+            .setValue(data?.iIngresoEcoId ? +data.iIngresoEcoId : null)
         this.formEconomico
             .get('iIngresoEcoFamiliar')
             .setValue(
@@ -190,6 +218,40 @@ export class FichaEconomicoComponent implements OnInit {
     }
 
     actualizar() {
-        console.log(this.formEconomico.value)
+        if (this.formEconomico.invalid) {
+            this._MessageService.add({
+                severity: 'warning',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.datosFichaBienestarService
+            .actualizarFichaEconomico(this.formEconomico.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formEconomico =
+                        this.formEconomico.value
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    salir() {
+        this.router.navigate(['/'])
     }
 }

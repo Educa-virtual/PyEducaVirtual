@@ -151,40 +151,6 @@
         </div>
     </p-fieldset>
 
-    <!-- Religión -->
-
-    <br />
-
-    <p-fieldset legend="2. Afiliaciones y creencias">
-        <div class="grid p-fluid">
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Religión </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="religiones"
-                        formControlName="iReligionId"
-                        placeholder="Seleccione"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                        (onChange)="handleDropdownChange($event, 2)"
-                        [style]="{ flex: '1', width: '100%' }"
-                        styleClass="group-element"
-                    />
-                    @if (visibleInput[2] === true) {
-                        <input
-                            pInputText
-                            formControlName="cReligionNombre"
-                            placeholder="Especifique otra"
-                            type="text"
-                            class="group-element"
-                        />
-                    }
-                </p-inputGroup>
-            </div>
-        </div>
-    </p-fieldset>
-
     <br />
 
     <!-- Relaciones familiares -->
@@ -193,8 +159,8 @@
             <div class="col-12 md:col-4">
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
-                        ¿Vive su padre?
                         <p-inputSwitch formControlName="bFamiliarPadreVive" />
+                        <span>¿Vive su padre?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
@@ -209,10 +175,10 @@
             <div class="col-12 md:col-4">
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
-                        ¿Sus padres viven juntos?
                         <p-inputSwitch
                             formControlName="bFamiliarPadresVivenJuntos"
                         />
+                        <span>¿Sus padres viven juntos?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
@@ -259,7 +225,7 @@
                 type="button"
                 label="Actualizar y continuar"
                 icon="pi pi-save"
-                severity="secondary"
+                severity="success"
                 (click)="actualizar()"
             />
         }

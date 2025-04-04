@@ -39,10 +39,11 @@ export class FichaGeneralComponent implements OnInit {
         private fb: FormBuilder,
         private datosFichaBienestarService: DatosFichaBienestarService,
         private compartirFichaService: CompartirFichaService
-    ) {}
+    ) {
+        this.compartirFichaService.setActiveIndex(0)
+    }
 
     ngOnInit() {
-        console.log(this.compartirFichaService.getiFichaDGId(), 'iFichaDGId')
         this.visibleInput = Array(3).fill(false)
 
         this.formGeneral = this.fb.group({
@@ -115,16 +116,13 @@ export class FichaGeneralComponent implements OnInit {
         }
     }
 
-    searchFichaGeneral() {
-        this.datosFichaBienestarService
-            .searchFichaGeneral({
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
-            })
-            .subscribe((data: any) => {
-                if (data) {
-                    this.setFormGeneral(data)
-                }
-            })
+    async searchFichaGeneral(): Promise<void> {
+        const data = await this.datosFichaBienestarService.searchFichaGeneral({
+            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+        })
+        if (data) {
+            this.setFormGeneral(data)
+        }
     }
 
     setFormGeneral(data: FichaGeneral) {

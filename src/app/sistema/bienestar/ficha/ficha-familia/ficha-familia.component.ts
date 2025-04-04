@@ -42,6 +42,7 @@ export class FichaFamiliaComponent implements OnInit {
         if (this.compartirFichaService.getiFichaDGId() === null) {
             this.router.navigate(['/bienestar/ficha/general'])
         }
+        this.compartirFichaService.setActiveIndex(1)
     }
 
     ngOnInit(): void {

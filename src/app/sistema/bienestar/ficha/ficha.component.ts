@@ -16,6 +16,7 @@ export class FichaComponent implements OnInit {
     activeItem: any
     previousItem: any
     ficha_registrada: boolean | string = false
+    ficha: any
 
     private _messageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -25,41 +26,39 @@ export class FichaComponent implements OnInit {
         private datosFichaBienestarService: DatosFichaBienestarService
     ) {}
 
-    ngOnInit(): void {
-        this.activeItem = this.items[0]
-        this.previousItem = this.items[0]
-
+    async ngOnInit(): Promise<void> {
         this.compartirFichaService.setiPersId(
             this.compartirFichaService.perfil.iPersId
         )
 
-        this.datosFichaBienestarService
-            .searchFicha({
+        try {
+            this.ficha = await this.datosFichaBienestarService.searchFicha({
                 iPersId: this.compartirFichaService.perfil.iPersId,
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
                 iYAcadId: this.compartirFichaService.iYAcadId,
             })
-            .subscribe({
-                next: (data: any) => {
-                    if (data.data.length) {
-                        this.compartirFichaService.setiFichaDGId(
-                            data.data[0].iFichaDGId
-                        )
-                        this.ficha_registrada = true
-                    } else {
-                        this.compartirFichaService.setiFichaDGId(null)
-                        this.ficha_registrada = false
-                    }
-                },
-                error: (error) => {
-                    console.error('Error cargando ficha:', error)
-                    this._messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
-                },
+        } catch (error) {
+            console.error('Error cargando ficha:', error)
+            this._messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error,
             })
+        }
+
+        if (this.ficha.data.length) {
+            this.compartirFichaService.setiFichaDGId(
+                this.ficha.data[0].iFichaDGId
+            )
+            this.ficha_registrada = true
+            this.compartirFichaService
+                .getActiveIndex()
+                .subscribe((index: number) => {
+                    this.activeItem = this.items[index]
+                })
+        } else {
+            this.compartirFichaService.setiFichaDGId(null)
+            this.ficha_registrada = false
+        }
     }
 
     /**

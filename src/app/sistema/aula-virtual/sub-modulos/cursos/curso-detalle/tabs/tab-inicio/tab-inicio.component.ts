@@ -34,29 +34,7 @@ export class TabInicioComponent implements OnInit {
 
     iPerfilId: number
     anunciosDocente: any[] = []
-
-    comunicado = [
-        {
-            titulo: '!Ojo! No olvides revisar el silabo',
-            descripcion:
-                'Chicos, recuerden que el examen final es el [fecha] a las [hora] en el aula [número]. Va a cubrir todo lo que hemos visto en clase, así que repasen bien.  No olviden traer su DNI, calculadora (si la necesitan) y lo necesario para rendir el examen sin problemas.  Si tienen dudas, aprovechen antes del día del examen. ¡Nos vemos!',
-        },
-        {
-            titulo: 'card 1',
-            descripcion:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        },
-        {
-            titulo: 'card 2',
-            descripcion:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        },
-        {
-            titulo: 'card 2',
-            descripcion:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        },
-    ]
+    data: any[]
 
     //form para obtener la variable
     public guardarComunicado: FormGroup = this._formBuilder.group({
@@ -66,11 +44,13 @@ export class TabInicioComponent implements OnInit {
     })
     //para los alert
     constructor(private messageService: MessageService) {}
+
     //Inicializamos
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
+        this.obtenerAnuncios()
     }
-
+    // guardar anunciado:
     guardarComunicadoSubmit() {
         if (this.guardarComunicado.invalid) {
             this.messageService.add({
@@ -82,5 +62,17 @@ export class TabInicioComponent implements OnInit {
             console.log(this.guardarComunicado.value)
             this.guardarComunicado.reset()
         }
+    }
+    // obtener anciados de curso
+    obtenerAnuncios() {
+        const iCursosNivelGradId = 1
+        const idDocCursoId = 1
+        const iCredId = 1
+
+        const paramst = [iCursosNivelGradId, idDocCursoId, iCredId]
+        this._aulaService.obtenerAnuncios(paramst).subscribe((Data) => {
+            this.data = Data['data']
+            console.log(this.data)
+        })
     }
 }

@@ -310,4 +310,12 @@ export class ApiAulaService {
             }
         )
     }
+    obtenerAnuncios(params) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/listarAnuncios`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
+    }
 }

@@ -110,8 +110,8 @@
                     </div>
                     <!-- mostrar comentarios -->
                     <p-card
-                        *ngFor="let card of comunicado"
-                        [header]="card.titulo"
+                        *ngFor="let card of data"
+                        [header]="card.cTitulo"
                         class="mb-3 relative overflow-visible"
                     >
                         <ng-template pTemplate="header">
@@ -132,7 +132,7 @@
                             </span>
                         </ng-template>
                         <p class="cnt m-0 text-justify">
-                            {{ card.descripcion }}
+                            {{ card.cContenido }}
                         </p>
                     </p-card>
                 </p-panel>

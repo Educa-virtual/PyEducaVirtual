@@ -26,6 +26,7 @@ import { ToastModule } from 'primeng/toast'
 import { FileUploadModule } from 'primeng/fileupload'
 import { InputTextModule } from 'primeng/inputtext'
 import { InputFileUploadComponent } from '@/app/shared/input-file-upload/input-file-upload.component'
+import { ApiService } from '@/app/servicios/api.service'
 
 @Component({
     selector: 'app-year',
@@ -72,7 +73,8 @@ export class YearComponent implements OnInit {
         public ticketService: TicketService,
         private router: Router,
         private stepConfirmationService: StepConfirmationService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private apiService: ApiService
     ) {
         this.form = this.fb.group({
             fechaVigente: ['', Validators.required],
@@ -442,10 +444,36 @@ export class YearComponent implements OnInit {
             )
 
             if (insCalFasesProm.length > 0) {
+                for (const [, Fase] of Object.entries(insCalFasesProm)) {
+                    this.apiService.updateData({
+                        esquema: 'acad',
+                        tabla: 'calendario_academicos',
+                        campos: this.getCamposPorFaseAInsertar(Fase),
+                        where: {
+                            COLUMN_NAME: 'iCalAcadId',
+                            VALUE: this.ticketService.registroInformation
+                                .calendar.iCalAcadId,
+                        },
+                    })
+                }
+
                 await this.ticketService.insCalFasesProm(insCalFasesProm)
             }
 
             if (deleteCalFasesProm.length > 0) {
+                for (const [, Fase] of Object.entries(deleteCalFasesProm)) {
+                    this.apiService.updateData({
+                        esquema: 'acad',
+                        tabla: 'calendario_academicos',
+                        campos: this.getCamposPorFaseAEliminar(Fase),
+                        where: {
+                            COLUMN_NAME: 'iCalAcadId',
+                            VALUE: this.ticketService.registroInformation
+                                .calendar.iCalAcadId,
+                        },
+                    })
+                }
+
                 await this.ticketService.deleteCalFasesProm(deleteCalFasesProm)
             }
 
@@ -483,6 +511,28 @@ export class YearComponent implements OnInit {
         await this.ticketService.setCalendar()
 
         this.hasUnsavedChanges = true
+    }
+
+    getCamposPorFaseAEliminar(Fase: any) {
+        switch (Fase.cFasePromNombre) {
+            case 'FASE DE RECUPERACIÓN':
+                return { bCalAcadFaseRecuperacion: 0 }
+            case 'FASE REGULAR': // Aquí había un error antes
+                return { bCalAcadFaseRegular: 0 }
+            default:
+                return {}
+        }
+    }
+
+    getCamposPorFaseAInsertar(Fase: any) {
+        switch (Fase.iFasePromId) {
+            case '2':
+                return { bCalAcadFaseRecuperacion: 1 }
+            case '1': // Aquí había un error antes
+                return { bCalAcadFaseRegular: 1 }
+            default:
+                return {}
+        }
     }
 
     async nextPage() {

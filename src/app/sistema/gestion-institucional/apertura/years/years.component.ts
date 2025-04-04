@@ -5,6 +5,7 @@ import { Router } from '@angular/router'
 import { TicketService } from '../registro/service/ticketservice'
 import { ApiService } from '@/app/servicios/api.service'
 import { MessageService } from 'primeng/api'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-years',
@@ -21,12 +22,17 @@ export class YearsComponent implements OnInit {
         private router: Router,
         private messageService: MessageService,
         private apiService: ApiService,
-        private ticketService: TicketService
+        private ticketService: TicketService,
+        private dialog: ConfirmationModalService
     ) {}
 
     ngOnInit(): void {
         this.ticketService.registroInformation = {}
 
+        this.getCalendariosAcademicos()
+    }
+
+    getCalendariosAcademicos() {
         this.ticketService.getCalendarioIESede({
             onNextCallbacks: [
                 (data) => {
@@ -44,6 +50,7 @@ export class YearsComponent implements OnInit {
                                     'DD/MM/YYYY'
                                 ),
                             cYearNombre: calAcademico.cYearNombre,
+                            iEstado: calAcademico.iEstado,
                         })
                     )
                 },
@@ -93,9 +100,24 @@ export class YearsComponent implements OnInit {
                     }
                 )
             },
-            eliminar: () => {
-                // Lógica para la acción "eliminar"
-                console.log('Eliminando')
+            cierre: () => {
+                this.dialog.openConfirm({
+                    header: 'Cierre de año escolar',
+                    accept: () => {
+                        this.apiService.updateData({
+                            esquema: 'acad',
+                            tabla: 'calendario_academicos',
+                            campos: {
+                                iEstado: 0,
+                            },
+                            where: {
+                                COLUMN_NAME: 'iCalAcadId',
+                                VALUE: row.item.iCalAcadId,
+                            },
+                        })
+                        this.getCalendariosAcademicos()
+                    },
+                })
             },
         }
 
@@ -112,6 +134,13 @@ export class YearsComponent implements OnInit {
             labelTooltip: 'Editar',
             icon: 'pi pi-pencil',
             accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Cierre de año',
+            icon: 'pi pi-lock',
+            accion: 'cierre',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
@@ -139,6 +168,14 @@ export class YearsComponent implements OnInit {
             width: '5rem',
             field: 'dtCalAcadFin',
             header: 'Fecha fin',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'estado-activo',
+            width: '5rem',
+            field: 'iEstado',
+            header: 'Estado',
             text_header: 'center',
             text: 'center',
         },

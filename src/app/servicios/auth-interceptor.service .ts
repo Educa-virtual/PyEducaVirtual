@@ -6,11 +6,13 @@ import {
     HttpRequest,
 } from '@angular/common/http'
 import { catchError, throwError } from 'rxjs'
-
 import { Observable } from 'rxjs'
+import { Router } from '@angular/router'
+import { Injectable } from '@angular/core'
 
+@Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-    constructor() {}
+    constructor(private router: Router) {}
 
     intercept(
         request: HttpRequest<any>,
@@ -31,7 +33,8 @@ export class AuthInterceptorService implements HttpInterceptor {
             catchError((err) => {
                 if (err instanceof HttpErrorResponse) {
                     if (err.status === 401) {
-                        // redirect user to the logout page
+                        // Redirigir al usuario a la página de login
+                        this.router.navigate(['/login'])
                     }
                 }
                 return throwError(() => err)

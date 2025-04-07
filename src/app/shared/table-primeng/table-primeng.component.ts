@@ -34,6 +34,8 @@ type TColumnType =
     | string
 
 export interface IColumn {
+    rowspan?: number
+    colspan?: number
     type: TColumnType
 
     width: string
@@ -179,6 +181,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     public isIIcon = isIIcon
 
+    @Input() typeHeaderColumn: 'simple' | 'group' = 'simple'
+    @Input() columnsGroup: IColumn[][]
+
     private _columnas: IColumn[] = [
         {
             type: 'text',
@@ -311,6 +316,16 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     ngOnInit() {
         this.columnasSeleccionadas = this.columnas
         //this.selectedCells = {}
+    }
+
+    getStyleColumnGroup(col: any, colIndex: number) {
+        if (col.colspan && col.colspan > 1) {
+            return (colIndex + 1) % 2 !== 0
+                ? { 'background-color': '#c9c8d9' }
+                : { 'background-color': '#dddde8' }
+        }
+
+        return { 'background-color': '#e6e6ee' }
     }
 
     ngOnChanges(changes: any) {

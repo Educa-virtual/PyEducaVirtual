@@ -27,7 +27,7 @@ import { CarouselModule } from 'primeng/carousel'
 import { dropdownGroupConfig } from './config/dropdown/dropdownGroup'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-// import { SheetToMatrix } from './utils'
+import { SheetToMatrix } from './utils/sheetToMatrix'
 
 @Component({
     selector: 'app-bulk-data-import',
@@ -68,7 +68,9 @@ export class BulkDataImportComponent implements OnInit {
     typeCollectionForm: FormGroup
 
     columns: IColumn[]
-    data
+    columnsGroup: IColumn[][]
+    data: Array<any> = []
+    extraData = []
     responseDataImport
     importLoad: boolean = false
 
@@ -109,8 +111,9 @@ export class BulkDataImportComponent implements OnInit {
         this.typeCollectionForm.valueChanges.subscribe((value) => {
             console.log('value')
             console.log(value)
-            this.data = undefined
-            this.columns = undefined
+            this.data = []
+            this.columns = []
+            this.columnsGroup = []
 
             this.file = null
 
@@ -176,20 +179,24 @@ export class BulkDataImportComponent implements OnInit {
 
         this.collection = collection
 
-        this.columns = this.collection.columns
+        // this.columns = this.collection.columns
 
         this.bulkDataImport.importEndPoint = this.collection.importEndPoint
         this.bulkDataImport.params = this.collection.params
     }
 
     uploadFile(file: any) {
-        if (!file) return
+        this.data = undefined
+        this.columns = []
+        this.columnsGroup = []
 
-        const reader = new FileReader()
+        if (!file) return
 
         if (this.collection.typeSend === 'file') {
             this.file = file
         }
+
+        const reader = new FileReader()
 
         reader.onload = (e: ProgressEvent<FileReader>) => {
             const data = new Uint8Array(e.target?.result as ArrayBuffer)
@@ -199,87 +206,43 @@ export class BulkDataImportComponent implements OnInit {
             const firstSheetName = workbook.SheetNames[0]
             const worksheet = workbook.Sheets[firstSheetName]
 
-            const row = XLSX.utils.decode_cell(this.collection.cellData).r
+            // const row = XLSX.utils.decode_cell(this.collection.cellData).r
 
-            const headers = this.collection.columns.map(
-                (column) => column.field
+            // const headers = this.collection.columns.map(
+            //     (column) => column.field
+            // )
+
+            // const excelData: any = XLSX.utils.sheet_to_json(worksheet, {
+            //     header: 1,
+            //     range: row,
+            // })
+
+            const excelData = SheetToMatrix.setInstance(
+                'hojaDeDatosAImportar',
+                worksheet,
+                {
+                    structures: this.collection.structures,
+                }
             )
 
-            const excelData: any = XLSX.utils.sheet_to_json(worksheet, {
-                header: 1,
-                range: row,
-            })
+            // const excelData2 = SheetToMatrix.setInstance(
+            //     'hojaDeDatosAImportar',
+            //     worksheet,
+            //     {
+            //         structures: this.collection.structures,
+            //     },
+            //     this.collection.columns
+            // )
 
-            // const excelData2 = new SheetToMatrix(worksheet, {
-            //     structures: [
-            //         {
-            //             data: 'Q3:Q3',
-            //         },
-            //         {
-            //             header: 'M7:V7',
-            //             data: 'M8:V8',
-            //         },
-            //         {
-            //             header: 'B13:AZ14',
-            //             data: 'B15',
-            //         },
-            //     ],
-            // })
+            this.columnsGroup = excelData.inTableColumnsGroup
+            this.columns = excelData.inTableColumns
+            this.data = excelData.inTableData
 
-            // const excelData2 = new SheetToMatrix(worksheet, {
-            //     structures: [
-            //         {
-            //             header: 'B11:AB12',
-            //             data: 'B13:AB47'
-            //         },
-            //         {
-            //             header: 'F7:O7',
-            //             data: 'F8:O8'
-            //         }
-            //     ]
-            // })
-
-            // console.log('excelData2')
-            // console.log(excelData2)
-
-            switch (
-                this.typeCollectionForm.value['Origen de la plantilla:1'].id
-            ) {
-                case 1:
-                    const cleanColumnsEmpty = excelData.map((row) =>
-                        row.filter((cell) => cell != null)
-                    )
-
-                    this.data = cleanColumnsEmpty.map((row) =>
-                        Object.fromEntries(
-                            headers.map((key, index) => [
-                                key,
-                                row[index] ?? null,
-                            ])
-                        )
-                    )
-                    break
-                case 2:
-                    this.data = excelData.map((row) =>
-                        Object.fromEntries(
-                            headers.map((key, index) => [
-                                key,
-                                row[index] ?? null,
-                            ])
-                        )
-                    )
-                    break
-
-                default:
-                    break
-            }
-
+            // const [info, otro] = excelData.extraData
             console.log('excelData')
             console.log(excelData)
-
-            console.log('this.data')
-            console.log(this.collection.columns)
-            console.log(this.data)
+            // console.log('info', info)
+            // console.log(excelData2)
         }
 
         reader.readAsArrayBuffer(file)
@@ -294,30 +257,28 @@ export class BulkDataImportComponent implements OnInit {
     validaImportData() {
         this.importLoad = true
 
-        console.log('this.collection')
-        console.log(this.collection)
-
         const fileImport = () => {
             switch (this.collection.typeSend) {
                 case 'file':
                     return this.file
                 case 'json':
+                    SheetToMatrix.getInstance(
+                        'hojaDeDatosAImportar'
+                    ).setDataAccordingColumns()
                     return undefined
-
                 default:
                     return undefined
             }
         }
 
-        console.log('fileImport')
-        console.log(fileImport())
-
         this.bulkDataImport
-            .importDataCollection(fileImport(), this.data)
+            .importDataCollection(
+                fileImport(),
+                SheetToMatrix.getInstance('hojaDeDatosAImportar')
+                    .dataAccordingColumns
+            )
             .subscribe({
                 next: (response) => {
-                    console.log('response')
-                    console.log(response)
                     this.importLoad = false
                     this.responseDataImport =
                         this.collection.response(response) ?? undefined

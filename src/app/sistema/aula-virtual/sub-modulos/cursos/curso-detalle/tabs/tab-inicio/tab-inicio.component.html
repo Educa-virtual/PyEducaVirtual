@@ -1,6 +1,6 @@
 <div class="card">
     <div class="grid">
-        <div class="col-4">
+        <div class="col-4" [hidden]="iPerfilId !== DOCENTE">
             <div class="borde">
                 <p-panel class="custom-header-panel">
                     <ng-template pTemplate="header">
@@ -88,8 +88,11 @@
                 </p-panel>
             </div>
         </div>
-        <div class="col-8">
-            <div class="">
+        <div
+            class="col-8"
+            [class]="iPerfilId === DOCENTE ? 'col-12 md:col-8' : 'col-12'"
+        >
+            <div>
                 <p-panel
                     class="custom-header-panel h-10rem"
                     styleClass="scroll-panel"

@@ -68,3 +68,14 @@
     z-index: 11;
     border-bottom: 1px solid #dee2e6;
 }
+
+// para que los contenedores de los cards sean responsivos
+@media (max-width: 868px) {
+    .col-4,
+    .col-8 {
+        width: 100%;
+    }
+    .grid {
+        flex-direction: column-reverse; /* Invierte el orden: Imagen arriba, texto abajo */
+    }
+}

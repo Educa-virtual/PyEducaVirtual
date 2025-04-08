@@ -165,7 +165,7 @@ export class TabInicioComponent implements OnInit {
         })
     }
 
-    // obtener anciados de curso
+    // obtener anunciados de curso:
     obtenerAnuncios() {
         const iCursosNivelGradId = 1
         const iCredId = 1
@@ -178,6 +178,10 @@ export class TabInicioComponent implements OnInit {
 
         this._aulaService.obtenerAnuncios(paramst).subscribe((Data) => {
             this.data = Data['data']
+            this.data.sort((a, b) => b.iFijado - a.iFijado)
+
+            // console.log('Anuncios:', this.data)
+
             this.contadorAnuncios = this.data.length + 1
             // Asignar valor al campo "numero" del formulario
             this.guardarComunicado.patchValue({

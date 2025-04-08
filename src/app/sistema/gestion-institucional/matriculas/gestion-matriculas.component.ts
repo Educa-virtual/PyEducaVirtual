@@ -411,6 +411,14 @@ export class GestionMatriculasComponent implements OnInit {
         },
         {
             type: 'text',
+            width: '5rem',
+            field: 'cPersDocumento',
+            header: 'Documento',
+            text_header: 'center',
+            text: 'left',
+        },
+        {
+            type: 'text',
             width: '10rem',
             field: '_cPersNomape',
             header: 'Estudiante',

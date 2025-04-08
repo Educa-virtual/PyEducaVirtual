@@ -103,7 +103,6 @@ export class ListaAreasComponent implements OnInit {
     }
 
     importarResultados(datos: { curso: ICurso }) {
-        console.log(this.dialogConfigurarNivelLogro)
         this.dialogImportarResultados.mostrarDialog(datos)
     }
 

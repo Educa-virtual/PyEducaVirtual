@@ -6,11 +6,15 @@ import { MessageService } from 'primeng/api'
 import { DatosInformesService } from '../../services/datos-informes.service'
 import { InputFileUploadComponent } from '../../../../shared/input-file-upload/input-file-upload.component'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
+import {
+    IActionTable,
+    TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component'
 
 @Component({
     selector: 'app-importar-resultados',
     standalone: true,
-    imports: [PrimengModule, InputFileUploadComponent],
+    imports: [PrimengModule, InputFileUploadComponent, TablePrimengComponent],
     templateUrl: './importar-resultados.component.html',
     styleUrl: './importar-resultados.component.scss',
 })
@@ -22,7 +26,8 @@ export class ImportarResultadosComponent implements OnInit {
     iYAcadId: string
     resultados: any
     visible: boolean = false
-    hay_resultados: boolean = false
+    exito: boolean = false
+    hay_excluidos: boolean = false
     titulo: string = ''
     form: FormGroup
 
@@ -79,13 +84,30 @@ export class ImportarResultadosComponent implements OnInit {
         formData.append('iYAcadId', this.iYAcadId)
         formData.append('iSedeId', this.iSedeId)
         formData.append('iCredId', this.store.getItem('dremoPerfil').iCredId)
-        formData.append('iEvaluacionIdHashed', this.curso.iEvaluacionIdHashed)
+        formData.append(
+            'iEvaluacionIdHashed',
+            this.curso.iEvaluacionIdHashed ?? null
+        )
+        formData.append('cCursoNombre', this.curso.cCursoNombre ?? null)
+        formData.append(
+            'cGradoAbreviacion',
+            this.curso.cGradoAbreviacion ?? null
+        )
+        formData.append(
+            'iCursoNivelGradId',
+            this.curso.iCursoNivelGradId ?? null
+        )
         formData.append('tipo', 'resultados')
 
         this.datosInformesService.importarResultados(formData).subscribe({
             next: (data: any) => {
-                this.visible = false
+                // this.visible = false
                 this.mostrarResultados(data.data)
+                // setTimeout(() => {
+                //     this.archivoSubidoEvent.emit({
+                //         curso: this.curso,
+                //     })
+                // }, 1000)
             },
             error: (error) => {
                 console.error('Error subiendo archivo:', error)
@@ -102,8 +124,12 @@ export class ImportarResultadosComponent implements OnInit {
     }
 
     mostrarResultados(data) {
-        this.hay_resultados = true
-        console.log(data)
+        if (data) {
+            this.resultados = data
+            this.hay_excluidos = true
+        } else {
+            this.exito = true
+        }
     }
 
     resetearInput() {
@@ -111,6 +137,79 @@ export class ImportarResultadosComponent implements OnInit {
     }
 
     resetearResultados() {
-        this.hay_resultados = false
+        this.hay_excluidos = false
     }
+
+    selectedItems = []
+
+    actions: IActionTable[] = []
+
+    actionsLista: IActionTable[]
+
+    columns = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: '',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'persona_nomape',
+            header: 'Estudiante',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'documento',
+            header: 'Documento',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'seccion_importado',
+            header: 'Sec.',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'persona_importado',
+            header: 'Per.',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'estudiante_importado',
+            header: 'Est.',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'matricula_importado',
+            header: 'Mat.',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'resultado_importado',
+            header: 'Res.',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
 }

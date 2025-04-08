@@ -55,4 +55,11 @@ export class DatosInformesService {
             responseType: 'blob',
         })
     }
+
+    importarResultados(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/importarResultados`,
+            data
+        )
+    }
 }

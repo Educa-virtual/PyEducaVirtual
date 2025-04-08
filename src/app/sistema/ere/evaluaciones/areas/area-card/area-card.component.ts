@@ -46,6 +46,9 @@ export class AreaCardComponent implements OnInit {
     @Output() dialogConfigurarNivelLogroEvent = new EventEmitter<{
         curso: ICurso
     }>()
+    @Output() dialogImportarResultados = new EventEmitter<{
+        curso: ICurso
+    }>()
 
     constructor(private store: LocalStoreService) {}
 
@@ -114,6 +117,18 @@ export class AreaCardComponent implements OnInit {
                     }
                 },
             },
+            {
+                label: 'Subir resultados',
+                icon: 'pi pi-upload',
+                command: () => {
+                    this.dialogImportarResultados.emit({
+                        curso: this.curso,
+                    })
+                },
+                disabled:
+                    this.iPerfilId !== DIRECTOR_IE &&
+                    this.iPerfilId !== ESPECIALISTA_DREMO,
+            },
         ]
     }
 
@@ -138,5 +153,9 @@ export class AreaCardComponent implements OnInit {
             iDocenteId: user.iDocenteId,
         }
         this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
+    }
+
+    importarResultados() {
+        console.log('importar resultados')
     }
 }

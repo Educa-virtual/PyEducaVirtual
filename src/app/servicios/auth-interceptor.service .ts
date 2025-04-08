@@ -4,15 +4,20 @@ import {
     HttpHandler,
     HttpInterceptor,
     HttpRequest,
+    HttpResponse,
 } from '@angular/common/http'
-import { catchError, throwError } from 'rxjs'
+import { catchError, throwError, tap } from 'rxjs'
 import { Observable } from 'rxjs'
 import { Router } from '@angular/router'
 import { Injectable } from '@angular/core'
+import { TokenStorageService } from './token.service'
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-    constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private tokenStorageService: TokenStorageService
+    ) {}
 
     intercept(
         request: HttpRequest<any>,
@@ -25,16 +30,25 @@ export class AuthInterceptorService implements HttpInterceptor {
                     Authorization: `Bearer ${token.replaceAll('"', '')}`,
                 },
             })
-        } else {
-            console.warn('Token no encontrado en el localStorage')
         }
 
         return next.handle(request).pipe(
+            tap((event) => {
+                if (event instanceof HttpResponse) {
+                    const authorizationHeader =
+                        event.headers.get('authorization')
+                    if (authorizationHeader) {
+                        localStorage.setItem('dremoToken', authorizationHeader)
+                    }
+                }
+            }),
             catchError((err) => {
                 if (err instanceof HttpErrorResponse) {
                     if (err.status === 401) {
                         // Redirigir al usuario a la página de login
-                        this.router.navigate(['/login'])
+                        /*localStorage.clear()
+                        this.tokenStorageService.signOut()
+                        this.router.navigate(['/login'])*/
                     }
                 }
                 return throwError(() => err)

@@ -439,6 +439,7 @@ export class IeparticipaComponent implements OnInit {
     }
 
     filterIEs(): void {
+        console.log('llamado')
         // Filtrar los elementos en sourceProducts (No Participan)
         this.sourceProducts = this.allIEs.filter((ie) => {
             // Filtrar por nivelTipo si hay uno seleccionado

@@ -38,8 +38,11 @@
 }
 // scrollbar para el panel
 :host ::ng-deep .p-panel-content {
-    max-height: 800px; /* Ajusta la altura máxima que tú quieras */
+    max-height: 742px; /* Ajusta la altura máxima que tú quieras */
     overflow-y: auto; /* Habilita el scroll vertical */
+}
+:host ::ng-deep .margenAnuncios .p-panel .p-panel-content {
+    padding-top: 0px;
 }
 //  color de los inputGroup
 :host ::ng-deep p-inputGroupAddon {
@@ -65,8 +68,8 @@
     background: white;
     width: 100%;
     padding: 0.5rem;
-    z-index: 11;
-    border-bottom: 1px solid #dee2e6;
+    z-index: 9999;
+    // border-bottom: 1px solid #dee2e6;
 }
 
 // para que los contenedores de los cards sean responsivos

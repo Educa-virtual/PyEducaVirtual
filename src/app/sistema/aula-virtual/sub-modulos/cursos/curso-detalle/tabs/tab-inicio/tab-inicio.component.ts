@@ -54,6 +54,22 @@ export class TabInicioComponent implements OnInit {
         this.obtenerAnuncios()
     }
 
+    // metodo para buscar x título de enunciado
+    buscarText: string = ''
+
+    dataFiltrada() {
+        if (!this.buscarText) {
+            return this.data
+        }
+
+        const texto = this.buscarText.toLowerCase()
+
+        return this.data.filter((card) =>
+            card.cTitulo.toLowerCase().includes(texto)
+        )
+        // || card.cContenido.toLowerCase().includes(texto)
+    }
+
     // guardar anunciado:
     guardarComunicadoSubmit() {
         const iCursosNivelGradId = 1
@@ -74,7 +90,7 @@ export class TabInicioComponent implements OnInit {
         } else {
             this._confirmService.openConfiSave({
                 message: 'Recuerde que podran verlo todos los estudiantes',
-                header: `¿Esta seguro de guardar: ?`,
+                header: `¿Esta seguro de guardar?`,
                 accept: () => {
                     console.log('data', data)
                     this._aulaService.guardarAnuncio(data).subscribe({
@@ -119,7 +135,7 @@ export class TabInicioComponent implements OnInit {
                 this._aulaService.eliminarAnuncio(params).subscribe({
                     next: (response) => {
                         console.log(
-                            'Elemento eliminado correctamente:',
+                            'Elemento eliminado correctamente',
                             response
                         )
                     },

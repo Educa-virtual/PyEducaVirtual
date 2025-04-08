@@ -47,7 +47,9 @@
                             <br />
                             <!-- título de anuncio -->
                             <p-inputGroup>
-                                <p-inputGroupAddon> Título </p-inputGroupAddon>
+                                <p-inputGroupAddon class="font-bold">
+                                    Título:
+                                </p-inputGroupAddon>
                                 <input
                                     type="text"
                                     pInputText
@@ -94,7 +96,7 @@
         >
             <div>
                 <p-panel
-                    class="custom-header-panel h-10rem"
+                    class="custom-header-panel h-10rem margenAnuncios"
                     styleClass="scroll-panel"
                 >
                     <ng-template pTemplate="header" class="">
@@ -104,7 +106,7 @@
                             Anuncios del Curso
                         </h5>
                     </ng-template>
-                    <div class="pb-5 sticky-search z-1">
+                    <div class="p-3 sticky-search">
                         <!-- input de busqueda -->
                         <p-inputGroup>
                             <p-inputGroupAddon
@@ -114,57 +116,64 @@
                                 type="text"
                                 pInputText
                                 placeholder="Buscar por nombre...."
+                                [(ngModel)]="buscarText"
                             />
                         </p-inputGroup>
                     </div>
                     <!-- mostrar comentarios -->
-                    <p-card
-                        *ngFor="let card of data; let i = index"
-                        [header]="card.cTitulo"
-                        class="mb-3 relative overflow-visible"
-                    >
-                        <ng-template pTemplate="header">
-                            <span class="tag ml-3 font-bold"
-                                >Comunicado: #{{ data.length - i }}
-                            </span>
-                            <span
-                                class="flex flex-column md:align-items-end gap-0"
-                            >
-                                <div
-                                    class="grid flex flex-row-reverse md:flex-row gap-2"
+                    <div class="pt-5">
+                        <p-card
+                            *ngFor="let card of dataFiltrada(); let i = index"
+                            [header]="card.cTitulo"
+                            class="pt-20 relative overflow-visible"
+                        >
+                            <ng-template pTemplate="header">
+                                <span class="tag ml-3 font-bold"
+                                    >Comunicado: #{{ data.length - i }}
+                                </span>
+                                <span
+                                    class="flex flex-column md:align-items-end gap-0"
                                 >
-                                    <p-button
-                                        icon="pi pi-thumbtack"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        severity="secondary"
-                                        (click)="fijarAnuncio(card.iAnuncioId)"
-                                        [severity]="
-                                            card.iFijado === '0'
-                                                ? 'secondary'
-                                                : 'success'
-                                        "
-                                    />
-                                    <p-button
-                                        icon="pi pi-times"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        severity="danger"
-                                        (click)="
-                                            eliminarComunicado(card.iAnuncioId)
-                                        "
-                                    />
-                                </div>
-                            </span>
-                        </ng-template>
-                        <p class="cnt m-0 text-justify">
-                            {{ card.cContenido }}
-                        </p>
-                        <div class="flex text-xs justify-content-end mt-5">
-                            {{ card.dtCreado | date: 'HH:mm:ss' }} Hrs
-                            {{ card.dtCreado | date: 'dd/MM/yyyy' }}
-                        </div>
-                    </p-card>
+                                    <div
+                                        class="grid flex flex-row-reverse md:flex-row gap-2"
+                                    >
+                                        <p-button
+                                            icon="pi pi-thumbtack"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="secondary"
+                                            (click)="
+                                                fijarAnuncio(card.iAnuncioId)
+                                            "
+                                            [severity]="
+                                                card.iFijado === '0'
+                                                    ? 'secondary'
+                                                    : 'success'
+                                            "
+                                        />
+                                        <p-button
+                                            icon="pi pi-times"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="danger"
+                                            (click)="
+                                                eliminarComunicado(
+                                                    card.iAnuncioId
+                                                )
+                                            "
+                                        />
+                                    </div>
+                                </span>
+                            </ng-template>
+                            <p class="cnt m-0 text-justify">
+                                {{ card.cContenido }}
+                            </p>
+                            <div class="flex text-xs justify-content-end mt-5">
+                                {{ card.dtCreado | date: 'HH:mm:ss' }} Hrs
+                                {{ card.dtCreado | date: 'dd/MM/yyyy' }}
+                            </div>
+                        </p-card>
+                    </div>
                     <!-- Paginador -->
                     <!-- <p-paginator
                         [rows]="itemsPerPage"

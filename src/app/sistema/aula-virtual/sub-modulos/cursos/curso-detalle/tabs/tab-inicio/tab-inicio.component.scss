@@ -68,7 +68,7 @@
     background: white;
     width: 100%;
     padding: 0.5rem;
-    z-index: 9999;
+    z-index: 1000;
     // border-bottom: 1px solid #dee2e6;
 }
 
@@ -81,4 +81,25 @@
     .grid {
         flex-direction: column-reverse; /* Invierte el orden: Imagen arriba, texto abajo */
     }
+}
+
+.text-normal {
+    color: #6c757d; /* Gris */
+}
+
+.text-warning {
+    color: #ffc107; /* Amarillo */
+}
+
+.text-danger {
+    color: #dc3545; /* Rojo */
+}
+
+.textarea-wrapper {
+    position: relative;
+}
+.remaning {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
 }

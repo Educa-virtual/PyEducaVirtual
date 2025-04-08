@@ -38,12 +38,14 @@ export class TabInicioComponent implements OnInit {
     anunciosDocente: any[] = []
     data: any[]
     contadorAnuncios: number = 0
+    remainingText: number = 500
+    tituloremainingText: number = 100
 
     //form para obtener la variable
     public guardarComunicado: FormGroup = this._formBuilder.group({
         numero: new FormControl(''),
-        titulo: ['', [Validators.required]],
-        descripcion: [''],
+        titulo: ['', [Validators.required, Validators.pattern(/\S+/)]],
+        descripcion: ['', [Validators.required, Validators.pattern(/\S+/)]],
     })
     //para los alert
     constructor(private messageService: MessageService) {}
@@ -52,11 +54,43 @@ export class TabInicioComponent implements OnInit {
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
         this.obtenerAnuncios()
+
+        // contador de caracteres de descripcion
+        this.guardarComunicado
+            .get('descripcion')
+            ?.valueChanges.subscribe((value: string) => {
+                this.remainingText = 500 - (value?.length || 0)
+            })
+        // contador de caracteres de título
+        this.guardarComunicado
+            .get('titulo')
+            ?.valueChanges.subscribe((value: string) => {
+                this.tituloremainingText = 100 - (value?.length || 0)
+            })
+    }
+
+    // asignar el color de los caracteres restantes
+    getColorClass(): string {
+        if (this.remainingText < 20) {
+            return 'text-danger'
+        } else if (this.remainingText < 100) {
+            return 'text-warning'
+        } else {
+            return 'text-normal'
+        }
+    }
+
+    // asignar el color de los caracteres del titulo
+    asignarColorTitulo(): string {
+        if (this.tituloremainingText < 20) {
+            return 'text-danger'
+        } else {
+            return 'text-normal'
+        }
     }
 
     // metodo para buscar x título de enunciado
     buscarText: string = ''
-
     dataFiltrada() {
         if (!this.buscarText) {
             return this.data
@@ -122,14 +156,17 @@ export class TabInicioComponent implements OnInit {
     }
 
     // metodo para eliminar el anuncio
-    eliminarComunicado(id: string): void {
+    eliminarComunicado(id): void {
+        const iAnuncioId = id.iAnuncioId
+        const nombreTitulo = id.cTitulo
+
         this._confirmService.openConfiSave({
             message: 'Recuerde que al eliminarlo no podra recuperarlo',
-            header: `¿Esta seguro de Eliminar: ?`,
+            header: `¿Esta seguro de Eliminar: ${nombreTitulo} ?`,
             accept: () => {
                 const iCredId = 1
                 const params = {
-                    iAnuncioId: id,
+                    iAnuncioId: iAnuncioId,
                     iCredId: iCredId,
                 }
                 this._aulaService.eliminarAnuncio(params).subscribe({

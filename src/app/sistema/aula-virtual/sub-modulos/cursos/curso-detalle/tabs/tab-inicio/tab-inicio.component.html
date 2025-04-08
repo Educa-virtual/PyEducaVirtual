@@ -46,17 +46,25 @@
                             </p-inputGroup>
                             <br />
                             <!-- título de anuncio -->
-                            <p-inputGroup>
-                                <p-inputGroupAddon class="font-bold">
-                                    Título:
-                                </p-inputGroupAddon>
-                                <input
-                                    type="text"
-                                    pInputText
-                                    placeholder="Ingrese el título...."
-                                    formControlName="titulo"
-                                />
-                            </p-inputGroup>
+                            <div class="textarea-wrapper">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon class="font-bold">
+                                        Título:
+                                    </p-inputGroupAddon>
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        placeholder="Ingrese el título...."
+                                        formControlName="titulo"
+                                        maxlength="100"
+                                    />
+                                </p-inputGroup>
+                                <span
+                                    class="flex justify-content-end"
+                                    [ngClass]="asignarColorTitulo()"
+                                    >{{ tituloremainingText }}/100</span
+                                >
+                            </div>
                             <br />
                             <!-- Agregar descripción del anunciado -->
                             <label for="descripcion" class="mt-1"
@@ -65,7 +73,7 @@
                                     >(*) Obligatorio</span
                                 ></label
                             >
-                            <div class="mt-2">
+                            <div class="textarea-wrapper mt-2">
                                 <textarea
                                     class="w-full"
                                     placeholder="Escribe una Descripción"
@@ -74,7 +82,13 @@
                                     [style]="{
                                         height: '230px',
                                     }"
+                                    maxlength="500"
                                 ></textarea>
+                                <span
+                                    class="remaning"
+                                    [ngClass]="getColorClass()"
+                                    >{{ remainingText }}/500</span
+                                >
                             </div>
                         </form>
                         <p-toast></p-toast>
@@ -85,6 +99,7 @@
                             icon="pi pi-send"
                             iconPos="right"
                             (click)="guardarComunicadoSubmit()"
+                            [disabled]="guardarComunicado.invalid"
                         />
                     </div>
                 </p-panel>
@@ -156,11 +171,7 @@
                                             [rounded]="true"
                                             [text]="true"
                                             severity="danger"
-                                            (click)="
-                                                eliminarComunicado(
-                                                    card.iAnuncioId
-                                                )
-                                            "
+                                            (click)="eliminarComunicado(card)"
                                         />
                                     </div>
                                 </span>

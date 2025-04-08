@@ -350,13 +350,13 @@ export class PreguntasComponent implements OnInit {
             return
         }
         const preguntas = pregunta.pregunta
-
-        if (!this.isSecundaria && !encabezado) {
+        //Resulta que las preguntas para primaria también tienen peso
+        /*if (!this.isSecundaria && !encabezado) {
             preguntas.forEach((item) => (item.iPreguntaPeso = 1))
         }
         if (!this.isSecundaria && encabezado) {
             pregunta.iPreguntaPeso = 1
-        }
+        }*/
 
         const data = !encabezado
             ? preguntas.length

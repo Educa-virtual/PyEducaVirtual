@@ -182,7 +182,9 @@ export class TabInicioComponent implements OnInit {
                 })
 
                 // Si quieres además eliminarlo del array local:
-                this.data = this.data.filter((item) => item.iAnuncioId !== id)
+                this.data = this.data.filter(
+                    (item) => item.iAnuncioId !== iAnuncioId
+                )
             },
             reject: () => {
                 // Mensaje de cancelación (opcional)

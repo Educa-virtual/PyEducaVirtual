@@ -47,7 +47,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Item',
+        field: 'Item1',
         header: 'ITEM',
         text_header: 'center',
         text: 'center',
@@ -55,7 +55,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Grado',
+        field: 'Grado2',
         header: 'GRADO',
         text_header: 'center',
         text: 'center',
@@ -63,7 +63,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Sección',
+        field: 'Sección3',
         header: 'SECCIÓN',
         text_header: 'center',
         text: 'center',
@@ -71,7 +71,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Tipo de documento',
+        field: 'Tipo de documento4',
         header: 'TIPO DE DOCUMENTO',
         text_header: 'center',
         text: 'center',
@@ -79,7 +79,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Numero de documento',
+        field: 'Numero de documento5',
         header: 'NÙMERO DE DOCUMENTO',
         text_header: 'center',
         text: 'center',
@@ -87,7 +87,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Validado con reniec',
+        field: 'Validado con reniec6',
         header: 'VALIDADO CON RENIEC',
         text_header: 'center',
         text: 'center',
@@ -95,7 +95,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Código del estudiante',
+        field: 'Código del estudiante7',
         header: 'CÓDIGO DEL ESTUDIANTE',
         text_header: 'center',
         text: 'center',
@@ -103,7 +103,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Apellido paterno',
+        field: 'Apellido paterno8',
         header: 'APELLIDO PATERNO',
         text_header: 'center',
         text: 'center',
@@ -111,7 +111,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Apellido materno',
+        field: 'Apellido materno9',
         header: 'APELLIDO MATERNO',
         text_header: 'center',
         text: 'center',
@@ -119,7 +119,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Nombres',
+        field: 'Nombres10',
         header: 'NOMBRES',
         text_header: 'center',
         text: 'center',
@@ -127,7 +127,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Sexo',
+        field: 'Sexo11',
         header: 'SEXO',
         text_header: 'center',
         text: 'center',
@@ -135,7 +135,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Fecha de nacimiento',
+        field: 'Fecha de nacimiento12',
         header: 'FECHA DE NACIMIENTO',
         text_header: 'center',
         text: 'center',
@@ -143,7 +143,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Edad al (31 de marzo)',
+        field: 'Edad al (31 de marzo)13',
         header: 'EDAD AL (31 DE MARZO)',
         text_header: 'center',
         text: 'center',
@@ -151,15 +151,18 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Estado de matricula',
+        field: 'Estado de matricula14',
         header: 'ESTADO DE MATRICULA',
         text_header: 'center',
         text: 'center',
     },
+]
+
+export const apoderadoPadresFamiliasTemplateColumns = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Apellidos y nombres',
+        field: 'Apellidos y nombres15',
         header: 'APELLIDOS Y NOMBRES',
         text_header: 'center',
         text: 'center',
@@ -167,7 +170,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Padre Sexo',
+        field: 'Padre Sexo16',
         header: 'SEXO',
         text_header: 'center',
         text: 'center',
@@ -175,7 +178,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Parentesco',
+        field: 'Parentesco17',
         header: 'PARENTESCO',
         text_header: 'center',
         text: 'center',
@@ -183,7 +186,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Parentesco',
+        field: 'Parentesco18',
         header: 'TIPO DE DOCUMENTO',
         text_header: 'center',
         text: 'center',
@@ -191,7 +194,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Parentesco',
+        field: 'Parentesco19',
         header: 'NÚMERO DE DOCUMENTO',
         text_header: 'center',
         text: 'center',
@@ -199,7 +202,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Parentesco',
+        field: 'Parentesco20',
         header: 'VALIDADO CON RENIEC',
         text_header: 'center',
         text: 'center',
@@ -207,7 +210,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Parentesco',
+        field: 'Parentesco21',
         header: 'CORREO ELECTRÓNICO',
         text_header: 'center',
         text: 'center',
@@ -215,7 +218,7 @@ export const padresFamiliasTemplateColumns: IColumn[] = [
     {
         type: 'text',
         width: '5rem',
-        field: 'Parentesco',
+        field: 'Parentesco22',
         header: 'NÚMERO CELULAR',
         text_header: 'center',
         text: 'center',

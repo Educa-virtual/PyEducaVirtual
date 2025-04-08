@@ -154,10 +154,6 @@ export class SheetToMatrix {
                         }
                     }
                 }
-
-                if (locations[key].inTableColumns.length <= 0) {
-                    locations[key].inTableColumns = structure.columns
-                }
             }
         }
 
@@ -272,12 +268,6 @@ export class SheetToMatrix {
             )
 
             const columns = rowHeadersInData.map((header) => {
-                if (header.cell === 'F12') {
-                    console.log('header.cell')
-                    console.log(header.cell)
-                    console.log(this.worksheet[header.cell])
-                }
-
                 const matchedColumn = inTableColumns.find(
                     (column) => column.header === this.worksheet[header.cell].v
                 )
@@ -374,6 +364,9 @@ export class SheetToMatrix {
                     rowspan
             }
 
+            console.log('rowHeadersInData')
+            console.log(rowHeadersInData)
+
             for (const [, currCol] of Object.entries(rowHeadersInData)) {
                 for (const [cell, location] of Object.entries(data)) {
                     if (location.c != currCol.location.c) continue
@@ -458,12 +451,9 @@ export class SheetToMatrix {
                     }
                 })
 
-                this.inTableColumns.push(
-                    ...(Array.isArray(this.inTableColumns)
-                        ? this.inTableColumns
-                        : []),
-                    ...subData.columns
-                )
+                console.log('this.inTableColumns', this.inTableColumns)
+
+                this.inTableColumns.push(...subData.columns)
 
                 subData.data.forEach((header, index) => {
                     if (header instanceof Object) {
@@ -529,12 +519,7 @@ export class SheetToMatrix {
 
                 subData.inTableColumns = []
 
-                subData.inTableColumns.push(
-                    ...(Array.isArray(subData.inTableColumns)
-                        ? subData.inTableColumns
-                        : []),
-                    ...subData.columns
-                )
+                subData.inTableColumns.push(...subData.columns)
 
                 subData.data.forEach((header, index) => {
                     if (header instanceof Object) {

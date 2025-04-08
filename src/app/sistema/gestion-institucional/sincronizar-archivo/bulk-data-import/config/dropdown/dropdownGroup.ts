@@ -1,4 +1,5 @@
 import {
+    apoderadoPadresFamiliasTemplateColumns,
     estudianteTemplateSiagieColumns,
     headerTemplateSiagie,
     padresFamiliasTemplateColumns,
@@ -85,20 +86,22 @@ export const dropdownGroupConfig = [
                         {
                             header: 'B11:R12',
                             data: 'B13',
+                            columns: padresFamiliasTemplateColumns,
                             inTableColumn: true,
                         },
                         {
                             header: 'AS11:AZ12',
                             data: 'AS13',
+                            columns: apoderadoPadresFamiliasTemplateColumns,
                             inTableColumn: true,
                         },
                         {
                             header: 'M7:V7',
                             data: 'M8:V8',
+                            columns: headerTemplateSiagie,
                         },
                     ],
                     cellData: 'B15',
-                    columns: padresFamiliasTemplateColumns,
                     columnsResultImport: resultEstudianteTemplateSiagieColumns,
                     importEndPoint:
                         'acad/estudiante/importarEstudiantesPadresExcel',

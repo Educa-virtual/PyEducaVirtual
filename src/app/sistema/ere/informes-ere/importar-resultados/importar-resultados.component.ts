@@ -94,8 +94,8 @@ export class ImportarResultadosComponent implements OnInit {
             this.curso.cGradoAbreviacion ?? null
         )
         formData.append(
-            'iCursoNivelGradId',
-            this.curso.iCursoNivelGradId ?? null
+            'iCursosNivelGradId',
+            this.curso.iCursosNivelGradId ?? null
         )
         formData.append('tipo', 'resultados')
 
@@ -134,6 +134,9 @@ export class ImportarResultadosComponent implements OnInit {
 
     resetearInput() {
         this.form.get('archivo').setValue('')
+        this.resultados = []
+        this.exito = false
+        this.hay_excluidos = false
     }
 
     resetearResultados() {

@@ -124,7 +124,7 @@ export class ImportarResultadosComponent implements OnInit {
     }
 
     mostrarResultados(data) {
-        if (data) {
+        if (data?.length > 0) {
             this.resultados = data
             this.hay_excluidos = true
         } else {

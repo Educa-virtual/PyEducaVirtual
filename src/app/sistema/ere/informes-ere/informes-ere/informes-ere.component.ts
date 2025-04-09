@@ -529,10 +529,9 @@ export class InformesEreComponent implements OnInit {
     }
 
     mostrarPromedio(niveles, valores) {
-        const total = valores.reduce((acc, cur) => acc + cur)
-        console.log(total, 'total')
+        const total = valores.reduce((acc, cur) => Number(acc) + Number(cur))
         const porcentajes = valores.map((valor) =>
-            (((+valor * 100) / +total) * 100).toFixed(2)
+            ((Number(valor) / Number(total)) * 100).toFixed(2)
         )
         const data = []
         for (let i = 0; i < niveles.length; i++) {

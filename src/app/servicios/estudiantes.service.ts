@@ -23,7 +23,7 @@ import { Observable } from 'rxjs'
     providedIn: 'root',
 })
 export class EstudiantesService {
-    private apiUrl = 'http://127.0.0.1:8000/api/estudiantes' // URL de Laravel
+    private apiUrl = 'http://127.0.0.1:8000/api/bienestar/searchApoderados' // URL de Laravel
 
     constructor(private http: HttpClient) {}
 

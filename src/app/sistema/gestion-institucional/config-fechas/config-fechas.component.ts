@@ -38,6 +38,7 @@ export class ConfigFechasComponent implements OnInit {
     visible: boolean = false
     caption: string
     option: string
+    datePipe: any
 
     constructor(
         private stepService: AdmStepGradoSeccionService,
@@ -78,7 +79,10 @@ export class ConfigFechasComponent implements OnInit {
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
-            console.log(item, 'btnTable')
+            this.updateForm(item)
+            this.visible = true
+            this.caption = 'Registro para editar fechas especiales'
+            this.option = 'editar'
         }
         if (accion === 'agregar') {
             this.visible = true
@@ -89,7 +93,9 @@ export class ConfigFechasComponent implements OnInit {
     accionBtnItem(accion) {
         switch (accion) {
             case 'guardar':
-                console.log('grabar')
+                this.AddFechaImportante()
+                break
+            case 'editar':
                 this.AddFechaImportante()
                 break
         }
@@ -201,6 +207,27 @@ export class ConfigFechasComponent implements OnInit {
                 },
             })
     }
+
+    updateForm(item) {
+        const fecha = new Date(item.dtFechaImpFecha)
+
+        this.form.patchValue({
+            iFechaImpId: item.iFechaImpId,
+            iTipoFerId: item.iTipoFerId,
+            iCalAcadId: item.iCalAcadId,
+            bFechaImpSeraLaborable: item.bFechaImpSeraLaborable,
+            cFechaImpNombre: item.cFechaImpNombre,
+            dtFechaImpFecha: fecha,
+            cFechaImpURLDocumento: item.cFechaImpURLDocumento,
+            cFechaImpInfoAdicional: item.cFechaImpInfoAdicional,
+        })
+        this.iCalAcadId = item.iCalAcadId
+        this.visible = true
+        this.caption = 'Registro para editar fechas especiales'
+        this.option = 'editar'
+    }
+
+    // ESTRUCTURA DE ACCIONES
 
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [

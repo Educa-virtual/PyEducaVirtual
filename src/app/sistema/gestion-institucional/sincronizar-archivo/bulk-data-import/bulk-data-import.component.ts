@@ -189,6 +189,7 @@ export class BulkDataImportComponent implements OnInit {
         this.data = undefined
         this.columns = []
         this.columnsGroup = []
+        SheetToMatrix.resetInstance('hojaDeDatosAImportar')
 
         if (!file) return
 
@@ -234,13 +235,14 @@ export class BulkDataImportComponent implements OnInit {
             //     this.collection.columns
             // )
 
+            console.log('excelData')
+            console.log(excelData)
+
             this.columnsGroup = excelData.inTableColumnsGroup
             this.columns = excelData.inTableColumns
             this.data = excelData.inTableData
 
             // const [info, otro] = excelData.extraData
-            console.log('excelData')
-            console.log(excelData)
             // console.log('info', info)
             // console.log(excelData2)
         }
@@ -256,6 +258,13 @@ export class BulkDataImportComponent implements OnInit {
 
     validaImportData() {
         this.importLoad = true
+
+        console.log(
+            'SheetToMatrix',
+            SheetToMatrix.getInstance(
+                'hojaDeDatosAImportar'
+            ).setDataAccordingColumns()
+        )
 
         const fileImport = () => {
             switch (this.collection.typeSend) {

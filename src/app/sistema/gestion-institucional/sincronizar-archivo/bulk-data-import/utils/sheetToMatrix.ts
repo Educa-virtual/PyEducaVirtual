@@ -6,7 +6,10 @@ interface Options {
     structures: {
         header?: Excel['Range']
         data: Excel['Cell']
-        columns: IColumn[]
+        columns: {
+            inTableColumnsGroup: IColumn[][]
+            inTableColumns: IColumn[]
+        }
         inTableColumn: boolean
     }[]
 }
@@ -15,33 +18,9 @@ export class SheetToMatrix {
     private worksheet: XLSX.WorkSheet
     public inTableColumns: IColumn[] = []
     public inTableColumnsGroup: IColumn[][] = []
-    public inTableData: IColumn[] = []
-    public extraData: any[] = []
+    public inTableData = []
+    public fullData: any[] = []
     public dataAccordingColumns: any
-    public matrix: {
-        fullData: any
-        subData?: any
-        locations: {
-            [key: Excel['Range']]: {
-                header: {
-                    [key: Excel['Cell']]: {
-                        r: number
-                        c: number
-                        merge: XLSX.Range
-                    }
-                }
-                columns: IColumn[]
-                inTableColumns: IColumn[]
-                data: {
-                    [key: Excel['Cell']]: {
-                        r: number
-                        c: number
-                        merge: XLSX.Range
-                    }
-                }
-            }
-        }
-    }
     private options: Options
 
     constructor(worksheet: XLSX.WorkSheet, options: Options) {
@@ -49,527 +28,135 @@ export class SheetToMatrix {
 
         this.options = options
 
-        this.matrix = {
-            subData: {},
-            fullData: this.initializeMatrix(),
-            locations: {},
-        }
-
-        this.matrix.locations = this.assignLocations()
-
-        this.matrix.subData = this.assignSheetData()
-
-        this.processCells()
-        // this.applyMerges()
-    }
-
-    private initializeMatrix(): any[][] {
-        const range = XLSX.utils.decode_range(this.worksheet['!ref'] || 'A1')
-        return Array.from(
-            { length: range.e.r - range.s.r },
-            () => new Array(range.e.c - range.s.c)
-        )
-    }
-
-    private processCells(): void {
-        this.assignSheetData()
         this.assignTableData()
     }
 
-    private assignLocations() {
-        const locations = {}
+    private assignTableData() {
+        for (const { columns, data, header, inTableColumn } of this.options
+            .structures) {
+            const rowDataGroup = []
+            const structureDataAddress = XLSX.utils.decode_range(data)
+            const structureHeaderAddress = XLSX.utils.decode_range(header)
 
-        // if (structure.header) {
-        //     const range = XLSX.utils.decode_range(structure.header)
-        for (const [cellName] of Object.entries(this.worksheet)) {
-            if (cellName.includes('!')) continue
-
-            const { r: row, c: column } = XLSX.utils.decode_cell(cellName)
-            const cellAddress = XLSX.utils.decode_cell(cellName)
-            const merge = this.assignMerges(cellName)
-
-            for (const structure of this.options.structures) {
-                const key = structure.header ?? structure.data
-
-                if (!key) continue
-
-                if (!locations[key]) {
-                    locations[key] = {
-                        header: {},
-                        data: {},
-                        inTableColumns: [],
-                    }
-                }
-
-                const structureHeaderAddress = XLSX.utils.decode_range(
-                    structure.header ?? structure.data
-                )
-                const structureDataAddress = XLSX.utils.decode_range(
-                    structure.data
-                )
-
-                const headersInRange =
-                    structureHeaderAddress.s.c <= cellAddress.c &&
-                    structureHeaderAddress.s.r <= cellAddress.r &&
-                    structureHeaderAddress.e.c >= cellAddress.c &&
-                    structureHeaderAddress.e.r >= cellAddress.r
-
-                if (headersInRange) {
-                    locations[key].header[cellName] = {
-                        r: row,
-                        c: column,
-                        ...(merge && { merge }),
-                    }
-                }
-
-                if (structureHeaderAddress == structureDataAddress) continue
-
-                // let dataInRange
-
-                if (isRange(structure.data)) {
-                    const dataInRange =
-                        structureDataAddress.s.c <= cellAddress.c &&
-                        structureDataAddress.s.r <= cellAddress.r &&
-                        structureDataAddress.e.c >= cellAddress.c &&
-                        structureDataAddress.e.r >= cellAddress.r
-
-                    if (dataInRange) {
-                        locations[key].data[cellName] = {
-                            r: row,
-                            c: column,
-                            ...(merge && { merge }),
-                        }
-                    }
-                } else {
-                    const dataInRange =
-                        structureDataAddress.s.c <= cellAddress.c &&
-                        structureDataAddress.s.r <= cellAddress.r &&
-                        structureHeaderAddress.e.c >= cellAddress.c
-
-                    if (dataInRange) {
-                        locations[key].data[cellName] = {
-                            r: row,
-                            c: column,
-                            ...(merge && { merge }),
-                        }
-                    }
-                }
-            }
-        }
-
-        return locations
-    }
-
-    private assignMerges(cellName) {
-        if (!this.worksheet['!merges']) return undefined
-
-        for (const merge of this.worksheet['!merges']) {
-            const { s, e } = merge // s: inicio, e: fin del merge
-            const location = XLSX.utils.decode_cell(cellName)
-            // r: fila, c: columna
-            if (location?.r === s.r && location?.c === s.c) {
-                return { s, e }
-            }
-        }
-
-        return undefined
-    }
-
-    private assignSheetData() {
-        let resultHeader = []
-        const rangeGroup = {}
-        let rowHeaderGroup = []
-        let rowDataGroup = []
-        const colHeaderGroup = []
-        const parentHeaderMap = {}
-
-        for (const [
-            rangeName,
-            { header, data, inTableColumns },
-        ] of Object.entries(this.matrix.locations)) {
-            for (const [cell, location] of Object.entries(header)) {
-                if (!header) continue // Ignorar valores vacíos
-
-                const obj = { cell, location }
-
-                if (!this.worksheet[cell].v) continue
-
-                // Si la celda es parte de un merge, establecer el padre
-                if (location.merge) {
-                    parentHeaderMap[cell] = { cell, merge: location.merge } // Guardar como posible padre
-                }
-
-                for (const [
-                    parentCell,
-                    { c: parentC, r: parentR },
-                ] of Object.entries(header)) {
-                    if (!this.worksheet[parentCell].v) continue
-
-                    const { s, e } = header[parentCell].merge || {}
-                    const { r, c } = location
-
-                    const inRange = s && e && r >= e.r && c >= s.c && c <= e.c
-
-                    const inColumn = r >= parentR && c == parentC
-
-                    if (inRange && parentCell != cell) {
-                        obj['parent'] = parentCell
-                    } else if (inColumn && parentCell != cell) {
-                        obj['parent'] = parentCell
-                    }
-
-                    const matchedColumn = inTableColumns.find(
-                        (column) => column.header === this.worksheet[cell].v
-                    )
-
-                    if (matchedColumn) {
-                        const { header: headerColumn, field } = matchedColumn
-                        // Usar headerColumn y field como necesites
-                        rowHeaderGroup[location.r] = {
-                            ...rowHeaderGroup[location.r],
-                            [obj.cell]: {
-                                type: 'text',
-                                width: '5rem',
-                                text_header: 'center',
-                                field: cell + '/' + headerColumn + '/' + field,
-                                header: this.worksheet[obj.cell].v,
-                                text: 'center',
-                            },
-                        }
-                    } else {
-                        rowHeaderGroup[location.r] = {
-                            ...rowHeaderGroup[location.r],
-                            [obj.cell]: {
-                                type: 'text',
-                                width: '5rem',
-                                text_header: 'center',
-                                field: cell + '/' + this.worksheet[cell].v,
-                                header: this.worksheet[obj.cell].v,
-                                text: 'center',
-                            },
-                        }
-                    }
-                }
-
-                resultHeader.push(obj)
-            }
-
-            console.log('result')
-            console.log(resultHeader)
-
-            const rowHeadersInData: typeof resultHeader = Object.values(
-                resultHeader.reduce((acc, item) => {
-                    const col: any = item.location.c
-                    if (!acc[col] || item.location.r > acc[col].location.r) {
-                        acc[col] = item
-                    }
-                    return acc
-                }, {})
+            columns.inTableColumnsGroup = this.assignColWithSpan(
+                columns?.inTableColumnsGroup
             )
 
-            const columns = rowHeadersInData.map((header) => {
-                const matchedColumn = inTableColumns.find(
-                    (column) => column.header === this.worksheet[header.cell].v
-                )
+            columns.inTableColumns = columns?.inTableColumns?.map(
+                (column, index) => ({ ...column, col: index + 1 })
+            )
 
-                if (matchedColumn) {
-                    const { header: headerColumn, field } = matchedColumn
-                    // Usar headerColumn y field como necesites
-                    return {
-                        type: 'text',
-                        width: '5rem',
-                        text_header: 'center',
-                        field: header.cell + '/' + headerColumn + '/' + field,
-                        header: this.worksheet[header.cell].v,
-                        text: 'center',
-                    }
-                } else {
-                    return {
-                        type: 'text',
-                        width: '5rem',
-                        text_header: 'center',
-                        field:
-                            header.cell + '/' + this.worksheet[header.cell].v,
-                        header: this.worksheet[header.cell].v,
-                        text: 'center',
-                    }
-                }
-            })
+            for (const [cellName, any] of Object.entries(this.worksheet)) {
+                if (cellName.includes('!')) continue
 
-            for (const [, currCol] of Object.entries(resultHeader)) {
-                let colspan = 0
+                const locationCellName = XLSX.utils.decode_cell(cellName)
 
-                for (const [, col] of Object.entries(resultHeader)) {
-                    if (col.parent && currCol.cell == col.parent) {
-                        colspan++
-                    }
+                if (columns.inTableColumns) {
+                    for (const { field } of columns.inTableColumns) {
+                        const [cellNameColumn] = field.split('/')
 
-                    if (currCol.parent) {
-                        colHeaderGroup[currCol.location.c] = {
-                            ...colHeaderGroup[currCol.location.c],
-                            [currCol.cell]: {},
-                            [currCol.parent]: {},
+                        const locationCellColumn =
+                            XLSX.utils.decode_cell(cellNameColumn)
+
+                        const InColum =
+                            locationCellColumn.c === locationCellName.c
+
+                        if (!InColum) {
+                            // console.log('cellName', cellName)
+                            // console.log('locationCellName', locationCellName)
+                            // console.log('any', any.v)
+
+                            continue
                         }
-                    } else {
-                        colHeaderGroup[currCol.location.c] = {
-                            ...colHeaderGroup[currCol.location.c],
-                            [currCol.cell]: {},
+
+                        if (isRange(data)) {
+                            const dataInRange =
+                                structureDataAddress.s.c <=
+                                    locationCellName.c &&
+                                structureDataAddress.s.r <=
+                                    locationCellName.r &&
+                                structureDataAddress.e.c >=
+                                    locationCellName.c &&
+                                structureDataAddress.e.r >= locationCellName.r
+
+                            if (dataInRange) {
+                                rowDataGroup[locationCellName.r] = {
+                                    ...rowDataGroup[locationCellName.r],
+                                    [field]: any.w,
+                                }
+                            }
+                        } else {
+                            const dataInRange =
+                                structureDataAddress.s.c <=
+                                    locationCellName.c &&
+                                structureDataAddress.s.r <=
+                                    locationCellName.r &&
+                                structureHeaderAddress.e.c >= locationCellName.c
+
+                            if (dataInRange) {
+                                rowDataGroup[locationCellName.r] = {
+                                    ...rowDataGroup[locationCellName.r],
+                                    [field]: any.w,
+                                }
+                            }
                         }
                     }
-                }
 
-                colspan = colspan > 0 ? colspan : 1
-
-                rowHeaderGroup[currCol.location.r][currCol.cell]['colspan'] =
-                    colspan
-            }
-
-            console.log('rangeName')
-            console.log(rangeName)
-
-            for (const [currCell, currCol] of Object.entries(resultHeader)) {
-                const range = XLSX.utils.decode_range(rangeName)
-
-                const parent = currCol.parent
-                    ? this.matrix.locations[rangeName].header[currCol?.parent]
-                    : null
-
-                let rowspan = range.e.r - range.s.r + 1
-
-                let isParent = parent ? true : false
-
-                for (const [cell, col] of Object.entries(resultHeader)) {
-                    if (currCell === cell) continue
-
-                    isParent = currCol.cell === col?.parent
-
-                    const inColumn = col.location.c === currCol.location.c
-                    const inRow = col.location.r != currCol.location.r
-
-                    const inRangeColumnParent =
-                        parent &&
-                        parent.merge &&
-                        (parent.merge.s.c <= col.location.c ||
-                            parent.merge.e.c >= col.location.c)
-
-                    if (!isParent) continue
-
-                    if (inRangeColumnParent || (inColumn && inRow)) {
-                        isParent = false
-                        rowspan--
-                    }
-                }
-
-                rowHeaderGroup[currCol.location.r][currCol.cell]['rowspan'] =
-                    rowspan
-            }
-
-            console.log('rowHeadersInData')
-            console.log(rowHeadersInData)
-
-            for (const [, currCol] of Object.entries(rowHeadersInData)) {
-                for (const [cell, location] of Object.entries(data)) {
-                    if (location.c != currCol.location.c) continue
-
-                    const matchedColumn = this.matrix.locations[
-                        rangeName
-                    ].inTableColumns.find(
-                        (column) =>
-                            column.header === this.worksheet[currCol.cell].v
-                    )
-
-                    if (matchedColumn) {
-                        const { field } = matchedColumn
-                        // Usar headerColumn y field como necesites
-                        rowDataGroup[location.r] = {
-                            ...rowDataGroup[location.r],
-                            [currCol.cell +
-                            '/' +
-                            this.worksheet[currCol.cell].v +
-                            '/' +
-                            field]: this.worksheet[cell].v,
-                        }
-                    } else {
-                        rowDataGroup[location.r] = {
-                            ...rowDataGroup[location.r],
-                            [currCol.cell +
-                            '/' +
-                            this.worksheet[currCol.cell].v]:
-                                this.worksheet[cell].v,
-                        }
-                        // Manejar el caso en que no se encontró la columna
+                    if (inTableColumn) {
+                        this.inTableColumnsGroup = columns.inTableColumnsGroup
+                        this.inTableColumns = columns.inTableColumns
+                        this.inTableData = Object.values(rowDataGroup)
                     }
                 }
             }
 
-            rangeGroup[rangeName] = {
-                header: rowHeaderGroup,
-                columns: columns,
-                data: rowDataGroup,
-            }
-
-            rowHeaderGroup = []
-            resultHeader = []
-            rowDataGroup = []
+            this.fullData.push([
+                columns?.inTableColumnsGroup,
+                columns.inTableColumns,
+                Object.values(rowDataGroup),
+            ])
         }
-
-        console.log('rangeGroup')
-
-        console.log(rangeGroup)
-
-        return rangeGroup
     }
 
-    private assignTableData() {
-        let mergedHeaders = new Map<number, any>() // { index: mergedHeader }
-        let mergeData = new Map<number, any>()
+    private assignColWithSpan(table: any[][]) {
+        if (!table) return table
 
-        for (const [, structure] of Object.entries(this.options.structures)) {
-            if (structure?.inTableColumn) {
-                const subData = this.matrix.subData[structure.header]
+        const occupied: Record<number, Record<number, boolean>> = {} // fila -> columnas ocupadas
+        const result: any[][] = []
 
-                if (!subData || !Array.isArray(subData.header)) {
-                    console.error(
-                        `No se encontró 'header' en subData para '${structure.header}'`
-                    )
-                    continue
+        for (let row = 0; row < table.length; row++) {
+            const newRow: any[] = []
+            let colIndex = 0
+
+            occupied[row] ??= {}
+
+            for (const cell of table[row]) {
+                // Buscar la siguiente columna libre
+                while (occupied[row][colIndex]) colIndex++
+
+                // Asignar col
+                const newCell = { ...cell, col: colIndex + 1 }
+                newRow.push(newCell)
+
+                const colspan = cell.colspan ?? 1
+                const rowspan = cell.rowspan ?? 1
+
+                // Marcar celdas ocupadas por rowspan y colspan
+                for (let r = 0; r < rowspan; r++) {
+                    occupied[row + r] ??= {}
+                    for (let c = 0; c < colspan; c++) {
+                        occupied[row + r][colIndex + c] = true
+                    }
                 }
 
-                // Recorrer cada cabecera con su índice
-                subData.header.forEach((header, index) => {
-                    if (header instanceof Object) {
-                        if (mergedHeaders.has(index)) {
-                            // Si ya existe en el índice, fusionamos los objetos
-                            mergedHeaders.set(index, {
-                                ...mergedHeaders.get(index),
-                                ...header,
-                            })
-                        } else {
-                            // Si no existe, lo agregamos
-                            mergedHeaders.set(index, header)
-                        }
-                    }
-                })
-
-                console.log('this.inTableColumns', this.inTableColumns)
-
-                this.inTableColumns.push(...subData.columns)
-
-                subData.data.forEach((header, index) => {
-                    if (header instanceof Object) {
-                        if (mergeData.has(index)) {
-                            // Si ya existe en el índice, fusionamos los objetos
-                            mergeData.set(index, {
-                                ...mergeData.get(index),
-                                ...header,
-                            })
-                        } else {
-                            // Si no existe, lo agregamos
-                            mergeData.set(index, header)
-                        }
-                    }
-                })
-
-                this.inTableColumnsGroup = Array.from(mergedHeaders.entries())
-                    .sort(([indexA], [indexB]) => indexA - indexB) // Ordenar por índice
-                    .map(([, header]) => {
-                        console.log('header')
-                        const columns = []
-
-                        for (const [, column] of Object.entries(header)) {
-                            columns.push(column)
-                        }
-
-                        return columns
-                    }) // Extraer solo los valores
-
-                this.inTableData = Array.from(mergeData.entries())
-                    .sort(([indexA], [indexB]) => indexA - indexB) // Ordenar por índice
-                    .map(([, header]) => {
-                        return header
-                    }) // Extraer solo los valores
-            } else {
-                mergedHeaders = new Map<number, any>()
-                mergeData = new Map<number, any>()
-
-                const subData = this.matrix.subData[structure.header]
-
-                if (!subData || !Array.isArray(subData.header)) {
-                    console.error(
-                        `No se encontró 'header' en subData para '${structure.header}'`
-                    )
-                    continue
-                }
-
-                // Recorrer cada cabecera con su índice
-                subData.header.forEach((header, index) => {
-                    if (header instanceof Object) {
-                        if (mergedHeaders.has(index)) {
-                            // Si ya existe en el índice, fusionamos los objetos
-                            mergedHeaders.set(index, {
-                                ...mergedHeaders.get(index),
-                                ...header,
-                            })
-                        } else {
-                            // Si no existe, lo agregamos
-                            mergedHeaders.set(index, header)
-                        }
-                    }
-                })
-
-                subData.inTableColumns = []
-
-                subData.inTableColumns.push(...subData.columns)
-
-                subData.data.forEach((header, index) => {
-                    if (header instanceof Object) {
-                        if (mergeData.has(index)) {
-                            // Si ya existe en el índice, fusionamos los objetos
-                            mergeData.set(index, {
-                                ...mergeData.get(index),
-                                ...header,
-                            })
-                        } else {
-                            // Si no existe, lo agregamos
-                            mergeData.set(index, header)
-                        }
-                    }
-                })
-
-                subData.inTableColumnsGroup = Array.from(
-                    mergedHeaders.entries()
-                )
-                    .sort(([indexA], [indexB]) => indexA - indexB) // Ordenar por índice
-                    .map(([, header]) => {
-                        console.log('header')
-                        const columns = []
-
-                        for (const [, column] of Object.entries(header)) {
-                            columns.push(column)
-                        }
-
-                        return columns
-                    }) // Extraer solo los valores
-
-                subData.inTableData = Array.from(mergeData.entries())
-                    .sort(([indexA], [indexB]) => indexA - indexB) // Ordenar por índice
-                    .map(([, header]) => {
-                        return header
-                    }) // Extraer solo los valores
-
-                if (
-                    subData.inTableColumns &&
-                    subData.inTableColumnsGroup &&
-                    subData.inTableData
-                ) {
-                    this.extraData.push([
-                        subData.inTableColumnsGroup,
-                        subData.inTableColumns,
-                        subData.inTableData,
-                    ])
-                }
+                // Avanzar colIndex para la próxima celda
+                colIndex += colspan
             }
+
+            result.push(newRow)
         }
+
+        return result
     }
 
     public setDataAccordingColumns() {

@@ -1,8 +1,8 @@
 import {
-    apoderadoPadresFamiliasTemplateColumns,
     estudianteTemplateSiagieColumns,
     headerTemplateSiagie,
-    padresFamiliasTemplateColumns,
+    // padresFamiliasTemplateColumns,
+    padresFamiliasTemplateColumns2,
     resultEstudianteTemplateSiagieColumns,
 } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/config/table/bulk-table-columns-siagie'
 import {
@@ -76,6 +76,10 @@ export const dropdownGroupConfig = [
                     response: (response: any) => {
                         return response.data
                     },
+
+                    // requests: ([estudiante,apoderado, ]) => {
+
+                    // }
                 },
             },
             {
@@ -84,17 +88,17 @@ export const dropdownGroupConfig = [
                     id: 2,
                     structures: [
                         {
-                            header: 'B11:R12',
+                            header: 'B11:AZ12',
                             data: 'B13',
-                            columns: padresFamiliasTemplateColumns,
+                            columns: padresFamiliasTemplateColumns2,
                             inTableColumn: true,
                         },
-                        {
-                            header: 'AS11:AZ12',
-                            data: 'AS13',
-                            columns: apoderadoPadresFamiliasTemplateColumns,
-                            inTableColumn: true,
-                        },
+                        // {
+                        //     header: 'AS11:AZ12',
+                        //     data: 'AS13',
+                        //     columns: apoderadoPadresFamiliasTemplateColumns,
+                        //     inTableColumn: true,
+                        // },
                         {
                             header: 'M7:V7',
                             data: 'M8:V8',
@@ -138,8 +142,8 @@ export const dropdownGroupConfig = [
                     id: 1,
                     structures: [
                         {
-                            header: 'A1:G1',
-                            data: 'A2',
+                            header: 'A1:G2',
+                            data: 'A3',
                             columns: docentePlatformTemplateColumns,
                             inTableColumn: true,
                         },
@@ -172,17 +176,6 @@ export const dropdownGroupConfig = [
                     },
                 },
             },
-            // {
-            //     label: 'Estudiantes',
-            //     value: {
-            //         id: 2,
-            //         cellData: 'A3',
-            //         columns: estudiantePlatformTemplateColumns,
-            //         template: 'plantilla-estudiantes',
-            //         importEndPoint: '',
-            //         typeSend: 'json',
-            //     },
-            // },
             {
                 label: 'Ambientes',
                 value: {

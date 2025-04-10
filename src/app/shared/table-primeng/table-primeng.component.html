@@ -77,7 +77,7 @@
     <ng-template pTemplate="header" let-columns>
         @switch (typeHeaderColumn) {
             @case ('group') {
-                @for (columns of columnsGroup; track $index) {
+                @for (columns of columnsGroupSeleccionadas; track $index) {
                     <tr class="text-uppercase">
                         @for (col of columns; track $index) {
                             <th

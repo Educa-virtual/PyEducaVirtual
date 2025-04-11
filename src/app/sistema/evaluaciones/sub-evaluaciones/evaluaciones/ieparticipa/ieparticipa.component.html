@@ -48,14 +48,14 @@
         [responsive]="true"
         [sourceStyle]="{ height: '300px' }"
         [targetStyle]="{ height: '300px' }"
-        filterBy="cIieeNombre"
+        filterBy="cIieeNombre,cIieeCodigoModular"
         sourceFilterPlaceholder="Buscar por nombre de I.E"
         targetFilterPlaceholder="Buscar por nombre de I.E"
         [disabled]="accion === 'ver'"
         [showSourceControls]="false"
         [showTargetControls]="false"
     >
-        <!-- controles de los costados [showSourceControls]="false" 
+        <!-- controles de los costados [showSourceControls]="false"
         [showTargetControls]="false" -->
         <ng-template let-product pTemplate="item">
             <div class="flex flex-wrap p-2 align-items-center gap-3">

@@ -4,7 +4,6 @@
     border-radius: 5px;
 }
 .pregunta-container {
-    border: 1px solid #ddd;
     padding: 10px;
     border-radius: 5px;
     max-width: 100%;
@@ -26,6 +25,7 @@ li {
     display: flex;
     align-items: center;
 }
+
 label {
     cursor: pointer;
 }
@@ -52,10 +52,47 @@ li:hover {
     border-radius: 8px; /* Opcional: bordes redondeados */
 }
 // ------------------------------------
+div.no-padding {
+    padding: 0 !important;
+}
 
 ::ng-deep .p-panel .p-panel-header {
     background: var(--bg-header-modal) !important;
     color: white !important;
+}
+
+:host ::ng-deep .sin-borde-contenedor .p-component {
+    border: none;
+    box-shadow: none;
+}
+
+:host ::ng-deep .sin-borde-contenedor {
+    border-radius: 8px;
+}
+
+:host ::ng-deep .p-card .p-card-body {
+    padding: 10px !important;
+}
+
+:host ::ng-deep div.p-card-title {
+    padding: 1.25rem;
+    border-top: 1px solid #e5e7eb;
+    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    background: #f9fafb;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-bottom: 0px;
+}
+
+:host ::ng-deep .p-accordion-header-text {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+:host ::ng-deep div.p-card-content {
+    padding: 1.25rem;
+    border: 1px solid var(--surface-border);
 }
 
 ::ng-deep .text-primary {

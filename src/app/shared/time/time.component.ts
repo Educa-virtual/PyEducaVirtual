@@ -23,14 +23,24 @@ export class TimeComponent implements OnChanges, OnDestroy {
 
     tiempoRestante: number = 0 // Tiempo restante en segundos
     intervalo: any
+    private hours: number = 0
+    private minutos: number = 0
+    private segundos: number = 0
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['inicio'] || changes['fin']) {
-            this.inicio = new Date(this.inicio)
-            this.fin = new Date(this.fin)
-            this.detenerContador() // Reinicia el contador si las fechas cambian
-            this.calcularTiempoRestante()
-            this.iniciarContador()
+            if (this.inicio == this.fin) {
+                console.log(
+                    'No iniciar porque aun no se obtienen las fechas reales'
+                )
+                return
+            } else {
+                this.inicio = new Date(this.inicio)
+                this.fin = new Date(this.fin)
+                this.detenerContador() // Reinicia el contador si las fechas cambian
+                this.calcularTiempoRestante()
+                this.iniciarContador()
+            }
         }
     }
 
@@ -46,6 +56,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
             if (this.tiempoRestante <= 0) {
                 this.detenerContador()
             }
+            this.emitirEvento()
         }, 1000)
     }
 
@@ -60,21 +71,30 @@ export class TimeComponent implements OnChanges, OnDestroy {
         this.detenerContador() // Limpia el intervalo al destruir el componente
     }
 
-    getTiempoFormateado(): string {
-        const hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600 segundos
-        const minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60 segundos
-        const segundos = Math.floor(this.tiempoRestante % 60)
+    emitirEvento(): void {
         const data = {
-            accion: 'tiempo-finalizado',
+            accion: 'tiempo-espera',
             item: null,
         }
-        if (hours == 0 && minutos == 0 && segundos == 0) {
-            this.accionTime.emit(data)
-        } else {
-            data.accion = 'tiempo-espera'
-            this.accionTime.emit(data)
+
+        if (this.hours == 0 && this.minutos == 0 && this.segundos == 0) {
+            data.accion = 'tiempo-finalizado'
         }
+        if (this.hours == 0 && this.minutos == 1 && this.segundos == 0) {
+            data.accion = 'tiempo-1-minuto-restante'
+        } /*else {
+            data.accion = 'tiempo-espera'
+        }*/
+        console.log('Emitiendo evento:', data.accion)
+        this.accionTime.emit(data)
+    }
+
+    getTiempoFormateado(): string {
+        this.hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600 segundos
+        this.minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60 segundos
+        this.segundos = Math.floor(this.tiempoRestante % 60)
+        //this.emitirEvento(hours,minutos,segundos)
         const pad = (num: number) => num.toString().padStart(2, '0')
-        return `${pad(hours)}:${pad(minutos)}:${pad(segundos)}`
+        return `${pad(this.hours)}:${pad(this.minutos)}:${pad(this.segundos)}`
     }
 }

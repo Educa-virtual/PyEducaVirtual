@@ -12,7 +12,7 @@ export class AuditoriaService {
                 filtroFechaFin: filtroFecha.filtroFechaFin,
             }
         )
-        return data?.data
+        return data?.data ?? []
     }
     async getAuditoriaAccesosFallidos(filtroFecha) {
         const data: any = await this.http.getData(

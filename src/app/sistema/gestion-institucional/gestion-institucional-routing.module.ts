@@ -48,8 +48,17 @@ const routes: Routes = [
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
     { path: 'Informacion-ie', component: InformacionComponent },
     { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
+
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+    {
+        path: 'apertura',
+        loadChildren: () =>
+            import('./apertura/configuracion.module').then(
+                (c) => c.ConfiguracionModule
+            ),
+    },
+
     {
         path: 'horario',
         loadComponent: () =>

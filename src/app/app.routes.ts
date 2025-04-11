@@ -9,7 +9,8 @@ import { RecoverPasswordComponent } from './shared/recover-password/recover-pass
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 
 export const routes: Routes = [
-    { path: '', component: InicioComponent },
+    { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+    { path: 'inicio', component: InicioComponent },
     {
         path: '',
 
@@ -46,6 +47,15 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import(
                         './sistema/especialista-ugel/especialista-ugel.routes'
+                    ),
+            },
+
+            // ruta de rol asignado
+            {
+                path: 'sin-rol-asignado',
+                loadChildren: () =>
+                    import(
+                        './sistema/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
             },
         ],
@@ -109,5 +119,5 @@ export const routes: Routes = [
 
     { path: 'notfound', component: NotfoundComponent },
 
-    { path: '**', redirectTo: '/notfound' },
+    { path: '**', redirectTo: '/notfound', pathMatch: 'full' },
 ]

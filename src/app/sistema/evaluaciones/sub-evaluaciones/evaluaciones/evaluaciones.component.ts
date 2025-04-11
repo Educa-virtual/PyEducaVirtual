@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core'
 import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
 import { CompartirFormularioEvaluacionService } from './../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { DialogService } from 'primeng/dynamicdialog'
@@ -7,7 +7,7 @@ import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
-} from '../../../../shared/table-primeng/table-primeng.component'
+} from '@shared/table-primeng/table-primeng.component'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
 import { IActionContainer } from '@/app/shared/container-page/container-page.component'
@@ -29,7 +29,9 @@ import {
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles'
-import { FormLiberarAreasUgelComponent } from '../../../ere/components/areas/form-liberar-areas-ugel/form-liberar-areas-ugel.component'
+import { FormLiberarAreasUgelComponent } from '@/app/sistema/ere/evaluaciones/liberar-areas-ugel/form-liberar-areas-ugel.component'
+import { AsignarHorasAreasComponent } from './asignar-horas-areas/asignar-horas-areas.component'
+
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -38,6 +40,7 @@ import { FormLiberarAreasUgelComponent } from '../../../ere/components/areas/for
         PrimengModule,
         ContainerPageAccionbComponent,
         FormLiberarAreasUgelComponent,
+        AsignarHorasAreasComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
@@ -48,27 +51,31 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
-    customers!: any
+    //customers!: any
     visible: boolean = false
     opcion: string = 'seleccionar'
     isDialogVisible: boolean = false
     caption: any
     formCapas: any
     evaluacionFormGroup: FormGroup<any>
-    tipoEvaluacion: any[]
-    nivelEvaluacion: any[]
+    areas = []
+    //tipoEvaluacion: any[]
+    //nivelEvaluacion: any[]
     acciones: any
     selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
-    selectedItemsAuto = []
+    //selectedItemsAuto = []
     selectedItems = []
-    cursosSeleccionados: any[] = []
-    fechaHoraInicio: Date | undefined
-    fechaHoraFin: Date | undefined
-    cursoSeleccionado: Map<number, boolean> = new Map()
+    //cursosSeleccionados: any[] = []
+    //fechaHoraInicio: Date | undefined
+    //fechaHoraFin: Date | undefined
+    //cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
     iPerfil: number
-    item = []
+    item: any
+
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
 
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
@@ -85,9 +92,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         bPreguntaEstado: -1,
     }
     public data = []
-    public showModalCursosEre: boolean = false
+    //public showModalAsignarHorasAreas: boolean = false
     public showModalLiberarUgel: boolean = false
     form: FormGroup
+    @ViewChild(AsignarHorasAreasComponent)
+    dialogAsignarHorasAreasComponent!: AsignarHorasAreasComponent
 
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
     public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
@@ -106,8 +115,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({})
     }
     resetSelect: boolean = false
-    // se inicializa..
+
     ngOnInit() {
+        this.breadCrumbItems = [{ label: 'ERE' }, { label: 'Evaluaciones' }]
+        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
         this.obtenerEvaluacion()
         this.obtenerPerfil()
         this.caption = 'Evaluaciones'
@@ -136,7 +147,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.iPerfilId = this._constantesService.iPerfilId
     }
     ejecutarAccion(event: { accion: string; item: IActionContainer }) {
-        console.log('Acción seleccionada:', event.accion)
         if (event.accion === 'agregar') {
             // Lógica para agregar
         } else if (event.accion === 'descargar_pdf') {
@@ -271,9 +281,13 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
         // Envía los datos al servicio para actualizar en la base de datos
         await this.apiservice.updateData(coincidencias)
-
+        this._MessageService.add({
+            severity: 'success',
+            summary: 'Horas registradas',
+            detail: 'Se han registrado las horas ingresadas.',
+        })
         this.visible = false
-        this.showModalCursosEre = false
+        //this.showModalAsignarHorasAreas = false
         this.form.reset()
         this.removeControls()
     }
@@ -288,7 +302,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         {
             items: [
                 {
-                    label: 'Crear evaluación',
+                    label: 'Evaluación',
                     icon: 'pi pi-plus',
                     accion: 'seleccionar',
                     visible: this.generarAccines(),
@@ -301,7 +315,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     columnasBase: IColumn[] = [
         {
             type: 'item',
-            width: '0.5rem',
+            width: '1rem',
             field: 'index',
             header: '#',
             text_header: 'center',
@@ -311,41 +325,41 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             field: 'cEvaluacionNombre',
             header: 'Nombre evaluación',
             type: 'text',
-            width: '7rem',
+            width: '10rem',
             text: 'left',
-            text_header: 'Clave',
+            text_header: 'center',
         },
         {
             field: 'cTipoEvalDescripcion',
             header: 'Tipo evaluación',
             type: 'text',
-            width: '1rem',
-            text: 'left',
-            text_header: 'Tipo evaluación',
+            width: '3rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'cNivelEvalNombre',
             header: 'Nivel evaluación',
             type: 'text',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Puntaje',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'dtEvaluacionFechaInicio',
-            header: 'Fecha Inicio',
+            header: 'Fecha inicio',
             type: 'text',
             width: '4rem',
-            text: 'left',
-            text_header: 'Nivel',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'dtEvaluacionFechaFin',
-            header: 'Fecha Fin',
+            header: 'Fecha fin',
             type: 'text',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
         },
     ]
     //COPIANDO COLUMNA PARA MODAL
@@ -356,8 +370,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             header: 'Acciones',
             type: 'actions',
             width: '5rem',
-            text: 'left',
-            text_header: '',
+            text: 'center',
+            text_header: 'center',
         },
     ]
     columnasAuto: IColumn[] = [
@@ -398,38 +412,39 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
-            labelTooltip: 'Gestionar Preguntas',
+            labelTooltip: 'Ver lista de áreas',
             icon: 'pi pi-list-check',
-            accion: 'gestionarPreguntas',
+            accion: 'verListaAreas',
             type: 'item',
             class: 'p-button-rounded p-button-help p-button-text',
             isVisible: () =>
                 this.iPerfilId === ESPECIALISTA_DREMO ||
-                this.iPerfilId === ADMINISTRADOR_DREMO,
+                this.iPerfilId === ADMINISTRADOR_DREMO ||
+                this.iPerfilId === DIRECTOR_IE,
         },
         {
-            labelTooltip: 'Asignar horario de publicación',
+            labelTooltip: 'Asignar horas de inicio y fin a las áreas',
             icon: 'pi pi-clock',
-            accion: 'fechaPublicacion',
+            accion: 'asignarHoraAreas',
             type: 'item',
             class: 'p-button-rounded p-button-secondary p-button-text',
             isVisible: () => this.iPerfilId === DIRECTOR_IE,
         },
         {
-            labelTooltip: 'Liberar Evaluación',
+            labelTooltip: 'Liberar evaluación',
             icon: 'pi pi-verified',
             accion: 'liberarUgelEvaluacion',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
             isVisible: () => this.iPerfilId === ESPECIALISTA_UGEL,
         },
-        {
+        /*{
             labelTooltip: 'Resultados',
             icon: 'pi pi-chart-bar',
             accion: 'resultados',
             type: 'item',
             class: 'p-button-rounded p-button-info p-button-text',
-        },
+        },*/
     ]
     // ].filter(accion => accion.visible !== false);
     onRowSelect(event: any) {
@@ -524,7 +539,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             case 'eliminar':
                 this._confirmService.openConfirm({
                     header:
-                        '¿Esta seguro de eliminar la Evaluación: ' +
+                        '¿Esta seguro de eliminar la evaluación: ' +
                         item['cEvaluacionNombre'] +
                         ' ?',
                     accept: () => {
@@ -532,23 +547,24 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     },
                 })
                 break
-            case 'gestionarPreguntas':
+            case 'verListaAreas':
                 this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                     item.cEvaluacionNombre
                 )
                 this.router.navigate([
-                    'ere/evaluaciones/' +
-                        item.iEvaluacionIdxHash +
-                        '/gestionar-preguntas',
+                    'ere/evaluaciones/' + item.iEvaluacionIdxHash + '/areas',
                 ])
                 break
-            case 'fechaPublicacion':
-                this.modalActivarCursosEre()
-                this.onEvaluacionSeleccionada({
+            case 'asignarHoraAreas':
+                //this.showModalAsignarHorasAreas = true;
+                //this.item = item
+                this.dialogAsignarHorasAreasComponent.mostrarDialog(item)
+                //this.obtenerHorasAreasPorEvaluacionIe()
+                /*this.onEvaluacionSeleccionada({
                     value: item.iEvaluacionId,
                     value1: item.cEvaluacionNombre,
-                })
-                this.cEvaluacionNombre = item.cEvaluacionNombre
+                })*/
+                //this.cEvaluacionNombre = item.cEvaluacionNombre
                 break
             case 'resultados':
                 alert('En proceso de desarrollo')
@@ -557,8 +573,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 if (!(this.iPerfilId === ESPECIALISTA_UGEL)) {
                     return
                 }
-                this.showModalLiberarUgel = true
                 this.item = item
+                this.showModalLiberarUgel = true
 
                 break
             case 'close-modal-liberar-ugel-evaluacion':
@@ -587,6 +603,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             },
         })
     }
+
     onEvaluacionSeleccionada(event: any) {
         // console.log('Evento recibido:', event); // Verifica qué valores llegan
         // Asigna dinámicamente el valor seleccionado
@@ -652,9 +669,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     // Manejo de errores
                     console.error('Error en obtenerEvaluacion:', err)
                 },
-                complete: () => {
-                    console.log('La función obtenerEvaluacion() ha finalizado.')
-                },
+                complete: () => {},
             })
     }
     agregarEditarPregunta(evaluacion) {
@@ -735,9 +750,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 this.agregarEditarPregunta({ iEvaluacionId: null })
                 break
         }
-    }
-    modalActivarCursosEre() {
-        this.showModalCursosEre = true
     }
 
     removeControls() {

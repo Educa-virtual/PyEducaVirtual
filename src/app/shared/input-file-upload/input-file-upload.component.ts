@@ -38,9 +38,6 @@ export class InputFileUploadComponent {
 
     // Métodos de ControlValueAccessor
     writeValue(value: File | null): void {
-        console.log('Seteando pdf')
-        console.log(value)
-
         this.selectFile = value
         if (this.fileView && this.fileView.nativeElement) {
             this.fileView.nativeElement.value = value ? value.name : ''

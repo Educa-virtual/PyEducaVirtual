@@ -1,12 +1,13 @@
-import { Component } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { DropdownModule } from 'primeng/dropdown'
 import {
     FormBuilder,
+    FormControl,
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { ButtonModule } from 'primeng/button'
+import { Button, ButtonModule } from 'primeng/button'
 import { FileUploadModule } from 'primeng/fileupload'
 import { BtnFileUploadComponent } from '@/app/shared/btn-file-upload/btn-file-upload.component'
 import { TabViewModule } from 'primeng/tabview'
@@ -22,14 +23,21 @@ import * as XLSX from 'xlsx'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
-import { check, decline } from './actions-table-primeng'
+import { CarouselModule } from 'primeng/carousel'
+import { dropdownGroupConfig } from './config/dropdown/dropdownGroup'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+// import { SheetToMatrix } from './utils'
 
 @Component({
     selector: 'app-bulk-data-import',
     standalone: true,
     imports: [
         ContainerPageComponent,
+        InputGroupAddonModule,
+        InputGroupModule,
         DropdownModule,
+        CarouselModule,
         ReactiveFormsModule,
         FormsModule,
         ButtonModule,
@@ -46,24 +54,22 @@ import { check, decline } from './actions-table-primeng'
     templateUrl: './bulk-data-import.component.html',
     styleUrl: './bulk-data-import.component.scss',
 })
-export class BulkDataImportComponent {
+export class BulkDataImportComponent implements OnInit {
+    @ViewChild('importBtn') importBtn!: Button
+
+    isDisabled = {
+        downloadTemplate: false,
+    }
+
+    file
+    dropdownConfigs = dropdownGroupConfig
+    collection
+
     typeCollectionForm: FormGroup
-    typeCollections = [
-        { label: 'Docente', name: 'plantilla-docente.xlsx' },
-        { label: 'Estudiante', name: 'plantilla-estudiante.xlsx' },
-    ]
-    fileUploadForm: FormGroup
-    fileOrigin: File
-    disabled
 
     columns: IColumn[]
-    unverified_data
-    verified_data
-    verified_columns_recorded
-    import_data_actions = [check, decline]
-    verified_columns_not_recorded
-    import_data
-
+    data
+    responseDataImport
     importLoad: boolean = false
 
     constructor(
@@ -72,30 +78,118 @@ export class BulkDataImportComponent {
 
         private messageService: MessageService
     ) {
-        this.typeCollectionForm = this.fb.group({
-            typeCollection: [''],
+        this.typeCollectionForm = this.fb.group({})
+
+        this.dropdownConfigs.forEach((dropdown) => {
+            this.typeCollectionForm.addControl(
+                `${dropdown.label}${dropdown.id}`,
+                new FormControl('')
+            )
         })
     }
 
-    downloadCollectionTemplate(typeCollection) {
-        if (!typeCollection['name']) {
-            this.messageService.clear()
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'No ha seleccionado una colección valida.',
-            })
+    ngOnInit(): void {
+        this.dropdownConfigs.forEach((config) => {
+            if (config.dependency) {
+                const parentControlName = `${this.dropdownConfigs.find((dropdown) => dropdown.id === config.dependency).label}${config.dependency}`
+                this.typeCollectionForm
+                    .get(parentControlName)
+                    ?.valueChanges.subscribe(() => {
+                        // Al cambiar el valor del dropdown padre, reinicia el valor del hijo
+                        const currentControlName = `${config.label}${config.id}`
+                        this.typeCollectionForm.get(currentControlName)?.reset()
+                        ;(this.bulkDataImport.importEndPoint = ''),
+                            (this.bulkDataImport.params = {})
+
+                        this.clearDescendants(config.id)
+                    })
+            }
+        })
+
+        this.typeCollectionForm.valueChanges.subscribe((value) => {
+            console.log('value')
+            console.log(value)
+            this.data = undefined
+            this.columns = undefined
+
+            this.file = null
+
+            console.log('cambio en el formulario?')
+            console.log(this.file)
+
+            this.isDisabled.downloadTemplate =
+                !this.isSelectedTypeCollection(value)
+            this.loadCollectionTemplate()
+        })
+    }
+
+    isSelectedTypeCollection(obj: Record<string, any>): boolean {
+        return Object.keys(obj).some(
+            (key) => /Tipo de plantilla:\d+/i.test(key) && obj[key]
+        )
+    }
+
+    clearDescendants(parentId: number) {
+        // Encontrar todos los dropdowns cuyo dependency sea mayor o igual al parentId
+        this.dropdownConfigs.forEach((config) => {
+            if (config.dependency && config.dependency >= parentId) {
+                const controlName = `${config.label}${config.id}`
+                this.typeCollectionForm.get(controlName)?.reset()
+                config.options = [] // Limpia las opciones
+            }
+        })
+    }
+
+    shouldShowDropdown(config): boolean {
+        if (!config.dependency) {
+            return true
+        }
+
+        const dependentDropdown = this.dropdownConfigs.find(
+            (dropdown) => dropdown.id === config.dependency
+        )
+
+        if (!dependentDropdown) {
+            return false
+        }
+
+        return (
+            this.typeCollectionForm.get(
+                dependentDropdown.label + dependentDropdown.id
+            )?.value.id === config.optionValue
+        )
+    }
+
+    loadCollectionTemplate() {
+        const foundEntry: [any, any] = Object.entries(
+            this.typeCollectionForm.value
+        ).find(
+            ([key, value]) =>
+                key.startsWith('Tipo de plantilla:') && value !== null
+        )
+
+        if (!foundEntry) {
             return
         }
 
-        this.bulkDataImport.downloadCollectionTemplate(typeCollection)
+        const [, collection] = foundEntry
+
+        this.collection = collection
+
+        this.columns = this.collection.columns
+
+        this.bulkDataImport.importEndPoint = this.collection.importEndPoint
+        this.bulkDataImport.params = this.collection.params
     }
 
-    loadCollectionTemplate(file: any) {
-        console.log('file')
-        console.log(file)
+    uploadFile(file: any) {
+        if (!file) return
 
         const reader = new FileReader()
+
+        if (this.collection.typeSend === 'file') {
+            this.file = file
+        }
 
         reader.onload = (e: ProgressEvent<FileReader>) => {
             const data = new Uint8Array(e.target?.result as ArrayBuffer)
@@ -105,160 +199,153 @@ export class BulkDataImportComponent {
             const firstSheetName = workbook.SheetNames[0]
             const worksheet = workbook.Sheets[firstSheetName]
 
-            // Convertir los datos de la hoja a formato JSON
-            const jsonData: Array<any> = XLSX.utils.sheet_to_json(worksheet, {
-                header: 1,
-            })
-            console.log('Datos del archivo XLSX:', jsonData)
+            const row = XLSX.utils.decode_cell(this.collection.cellData).r
 
-            this.columns = jsonData[0]
-                .map((data, index) => {
-                    if (!jsonData[0][index]) {
-                        return null
-                    }
-
-                    return {
-                        type: 'text',
-                        width: '5rem',
-                        field: jsonData[1][index],
-                        header: jsonData[0][index],
-                        text_header: 'center',
-                        text: 'center',
-                    }
-                })
-                .filter(
-                    (column): column is { [key: string]: any } =>
-                        column !== null
-                )
-
-            this.unverified_data = jsonData.slice(2).map((row) =>
-                row.reduce(
-                    (acc, cell, index) => ({
-                        ...acc,
-                        [jsonData[1][index]]: cell,
-                    }),
-                    {}
-                )
+            const headers = this.collection.columns.map(
+                (column) => column.field
             )
 
-            console.log(this.unverified_data)
+            const excelData: any = XLSX.utils.sheet_to_json(worksheet, {
+                header: 1,
+                range: row,
+            })
+
+            // const excelData2 = new SheetToMatrix(worksheet, {
+            //     structures: [
+            //         {
+            //             data: 'Q3:Q3',
+            //         },
+            //         {
+            //             header: 'M7:V7',
+            //             data: 'M8:V8',
+            //         },
+            //         {
+            //             header: 'B13:AZ14',
+            //             data: 'B15',
+            //         },
+            //     ],
+            // })
+
+            // const excelData2 = new SheetToMatrix(worksheet, {
+            //     structures: [
+            //         {
+            //             header: 'B11:AB12',
+            //             data: 'B13:AB47'
+            //         },
+            //         {
+            //             header: 'F7:O7',
+            //             data: 'F8:O8'
+            //         }
+            //     ]
+            // })
+
+            // console.log('excelData2')
+            // console.log(excelData2)
+
+            switch (
+                this.typeCollectionForm.value['Origen de la plantilla:1'].id
+            ) {
+                case 1:
+                    const cleanColumnsEmpty = excelData.map((row) =>
+                        row.filter((cell) => cell != null)
+                    )
+
+                    this.data = cleanColumnsEmpty.map((row) =>
+                        Object.fromEntries(
+                            headers.map((key, index) => [
+                                key,
+                                row[index] ?? null,
+                            ])
+                        )
+                    )
+                    break
+                case 2:
+                    this.data = excelData.map((row) =>
+                        Object.fromEntries(
+                            headers.map((key, index) => [
+                                key,
+                                row[index] ?? null,
+                            ])
+                        )
+                    )
+                    break
+
+                default:
+                    break
+            }
+
+            console.log('excelData')
+            console.log(excelData)
+
+            console.log('this.data')
+            console.log(this.collection.columns)
+            console.log(this.data)
         }
 
         reader.readAsArrayBuffer(file)
     }
 
-    validaImportData() {
-        if (!this.unverified_data) {
-            this.messageService.clear()
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'El archivo cargado no contiene datos válidos.',
-            })
-            return
-        }
-
-        this.bulkDataImport
-            .validateCollectionData(this.unverified_data)
-            .subscribe({
-                next: (response) => {
-                    // this.verified_data = response.data
-
-                    console.log('Respuesta del servidor:', response)
-
-                    const excel = []
-
-                    const status = []
-
-                    const filteredData = response.data.map((obj) => {
-                        const { json_excel, lista_no_d, ...rest } = obj
-
-                        status.push(
-                            Object.keys(obj)
-                                .filter(
-                                    (key) =>
-                                        key.startsWith('v_') ||
-                                        key === 'cPersDocumento'
-                                ) // Filtra solo las claves que inician con "v_"
-                                .reduce((acc, key) => {
-                                    const newKey = key.replace('v_', '')
-                                    acc[newKey] = obj[key] // Agrega las claves filtradas al nuevo objeto
-                                    return acc
-                                }, {} as any)
-                        )
-                        excel.push(...JSON.parse(json_excel))
-                        console.log(json_excel, lista_no_d)
-                        return { ...rest }
-                    })
-
-                    this.verified_data = [...filteredData, ...excel, ...status]
-
-                    console.log('filteredData')
-                    console.log(this.verified_data)
-
-                    this.unverified_data = response.data.flatMap((data) =>
-                        JSON.parse(data.lista_no_d)
-                    )
-
-                    if (this.unverified_data) {
-                        console.log(this.columns)
-
-                        this.verified_columns_not_recorded = [
-                            ...this.columns.map((column) => ({
-                                ...column,
-                                type: 'cell-editor',
-                            })),
-                            {
-                                type: 'actions',
-                                width: '3rem',
-                                field: 'actions',
-                                header: 'Acciones',
-                                text_header: 'center',
-                                text: 'center',
-                            },
-                        ]
-
-                        this.verified_columns_recorded = this.columns.map(
-                            (column) => ({
-                                ...column,
-                                type: 'expansion',
-                            })
-                        )
-
-                        this.verified_columns_recorded = [
-                            ...this.columns,
-                            {
-                                type: 'actions',
-                                width: '3rem',
-                                field: 'actions',
-                                header: 'Acciones',
-                                text_header: 'center',
-                                text: 'center',
-                            },
-                        ]
-
-                        // this.import_data = this.unverified_data.filter(un_obj => !this.verified_data.some(v_obj => un_obj['cPersDocumento'] === v_obj['cPersDocumento']));
-
-                        console.log('this.import_data')
-                        console.log(this.unverified_data)
-                        console.log(this.import_data)
-                        this.import_data = this.unverified_data.filter(
-                            (obj) => Object.keys(obj).length > 0
-                        )
-
-                        this.unverified_data = []
-                    }
-
-                    console.log('this.verified_data_not_recorded')
-                    console.log(this.unverified_data)
-                },
-                error: (error) => {
-                    console.error('Error en la solicitud:', error)
-                },
-            })
+    downloadTemplate() {
+        this.bulkDataImport.downloadCollectionTemplate({
+            name: this.collection.template,
+        })
     }
 
-    debug(data) {
-        console.log(data)
+    validaImportData() {
+        this.importLoad = true
+
+        console.log('this.collection')
+        console.log(this.collection)
+
+        const fileImport = () => {
+            switch (this.collection.typeSend) {
+                case 'file':
+                    return this.file
+                case 'json':
+                    return undefined
+
+                default:
+                    return undefined
+            }
+        }
+
+        console.log('fileImport')
+        console.log(fileImport())
+
+        this.bulkDataImport
+            .importDataCollection(fileImport(), this.data)
+            .subscribe({
+                next: (response) => {
+                    console.log('response')
+                    console.log(response)
+                    this.importLoad = false
+                    this.responseDataImport =
+                        this.collection.response(response) ?? undefined
+
+                    console.log('this.responseDataImport')
+                    console.log(this.responseDataImport)
+                },
+                error: (error) => {
+                    console.log('error')
+                    console.log(error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Importación de datos',
+                        detail: 'Ha ocurrido un error al importar los datos',
+                        life: 3000,
+                    })
+                    this.importLoad = false
+                },
+                complete: () => {
+                    this.importLoad = false
+
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Importación de datos',
+                        detail: 'Los datos han sido importados correctamente',
+                        life: 3000,
+                    })
+                },
+            })
     }
 }

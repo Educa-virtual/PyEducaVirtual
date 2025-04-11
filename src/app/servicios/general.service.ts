@@ -341,4 +341,28 @@ export class GeneralService {
             data
         )
     }
+    importarDocente_IE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/importarDocente_IE`,
+            data
+        )
+    }
+
+    importarAmbiente_IE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/importarAmbiente_IE`,
+            data
+        )
+    }
+
+    //Genera credenciales para personal de IE y asignacion de credenciales a IE
+    generarCredencialesIE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/generarCredencialesIE`,
+            data
+        )
+    }
+    validarPersona(data: any) {
+        return this.http.post(`${baseUrl}/grl/validarPersona`, data)
+    }
 }

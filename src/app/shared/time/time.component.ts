@@ -25,7 +25,6 @@ export class TimeComponent implements OnChanges, OnDestroy {
     intervalo: any
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('Iniciado')
         if (changes['inicio'] || changes['fin']) {
             this.inicio = new Date(this.inicio)
             this.fin = new Date(this.fin)
@@ -36,7 +35,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     calcularTiempoRestante(): void {
-        const diferenciaMs = this.fin.getTime() - new Date().getTime()
+        const diferenciaMs = this.fin.getTime() - this.inicio.getTime()
         this.tiempoRestante = Math.max(Math.floor(diferenciaMs / 1000), 0)
     }
 

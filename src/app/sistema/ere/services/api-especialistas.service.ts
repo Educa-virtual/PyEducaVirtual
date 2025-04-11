@@ -17,11 +17,11 @@ export class ApiEspecialistasService {
     obtenerAreasPorEvaluacionyEspecialista(
         iEvaluacionId,
         iEspecialistaId,
-        iPerfilId
+        iCredEntPerfId
     ): Observable<any> {
         return this.http
             .get(
-                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/especialistas/${iEspecialistaId}/perfiles/${iPerfilId}/areas`
+                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/especialistas/${iEspecialistaId}/perfiles/${iCredEntPerfId}/areas`
             )
             .pipe(map((resp) => resp['data']))
     }

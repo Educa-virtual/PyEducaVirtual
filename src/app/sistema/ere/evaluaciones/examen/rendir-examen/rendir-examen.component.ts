@@ -322,7 +322,7 @@ export class RendirExamenComponent implements OnInit {
                 })
                 break
             default:
-                console.log('Esperando...')
+                //console.log('Esperando...')
                 break
         }
     }

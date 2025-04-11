@@ -28,19 +28,15 @@ export class TimeComponent implements OnChanges, OnDestroy {
     private segundos: number = 0
 
     ngOnChanges(changes: SimpleChanges): void {
+        if (this.inicio.getTime() == this.fin.getTime()) {
+            return
+        }
         if (changes['inicio'] || changes['fin']) {
-            if (this.inicio == this.fin) {
-                console.log(
-                    'No iniciar porque aun no se obtienen las fechas reales'
-                )
-                return
-            } else {
-                this.inicio = new Date(this.inicio)
-                this.fin = new Date(this.fin)
-                this.detenerContador() // Reinicia el contador si las fechas cambian
-                this.calcularTiempoRestante()
-                this.iniciarContador()
-            }
+            this.inicio = new Date(this.inicio)
+            this.fin = new Date(this.fin)
+            this.detenerContador() // Reinicia el contador si las fechas cambian
+            this.calcularTiempoRestante()
+            this.iniciarContador()
         }
     }
 
@@ -53,14 +49,16 @@ export class TimeComponent implements OnChanges, OnDestroy {
     iniciarContador(): void {
         this.intervalo = setInterval(() => {
             this.calcularTiempoRestante()
+            this.emitirEvento()
             if (this.tiempoRestante <= 0) {
                 this.detenerContador()
+                this.emitirEvento()
             }
-            this.emitirEvento()
         }, 1000)
     }
 
     detenerContador(): void {
+        console.log('Deteniendo contador')
         if (this.intervalo) {
             clearInterval(this.intervalo)
             this.intervalo = null
@@ -68,6 +66,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        console.log('Destruyendo componente')
         this.detenerContador() // Limpia el intervalo al destruir el componente
     }
 
@@ -76,16 +75,17 @@ export class TimeComponent implements OnChanges, OnDestroy {
             accion: 'tiempo-espera',
             item: null,
         }
-
+        if (this.hours == 0 && this.minutos == 1 && this.segundos == 0) {
+            data.accion = 'tiempo-1-minuto-restante'
+        }
         if (this.hours == 0 && this.minutos == 0 && this.segundos == 0) {
             data.accion = 'tiempo-finalizado'
         }
-        if (this.hours == 0 && this.minutos == 1 && this.segundos == 0) {
-            data.accion = 'tiempo-1-minuto-restante'
-        } /*else {
-            data.accion = 'tiempo-espera'
-        }*/
+        /*else {
+           data.accion = 'tiempo-espera'
+       }*/
         console.log('Emitiendo evento:', data.accion)
+        console.log('Tiempo restante:', this.hours, this.minutos, this.segundos)
         this.accionTime.emit(data)
     }
 

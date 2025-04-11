@@ -28,12 +28,12 @@ export class TimeComponent implements OnChanges, OnDestroy {
     private segundos: number = 0
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.inicio.getTime() == this.fin.getTime()) {
-            return
-        }
         if (changes['inicio'] || changes['fin']) {
             this.inicio = new Date(this.inicio)
             this.fin = new Date(this.fin)
+            if (this.inicio.getTime() == this.fin.getTime()) {
+                return
+            }
             this.detenerContador() // Reinicia el contador si las fechas cambian
             this.calcularTiempoRestante()
             this.iniciarContador()

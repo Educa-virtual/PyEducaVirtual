@@ -174,7 +174,7 @@ export class ListaAreasComponent implements OnInit {
             .obtenerAreasPorEvaluacionyEspecialista(
                 this.iEvaluacionIdHashed,
                 this.store.getItem('dremoUser').iPersId,
-                this._ConstantesService.iPerfilId
+                this.store.getItem('dremoPerfil').iCredEntPerfId
             )
             .subscribe({
                 next: (respuesta) => {

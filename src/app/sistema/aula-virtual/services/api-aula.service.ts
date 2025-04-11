@@ -310,4 +310,29 @@ export class ApiAulaService {
             }
         )
     }
+    // consultas para las capacitaciones docentes
+    obtenerTipoCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/tipo-capacitaciones/listarTipoCapacitaciones`,
+            data
+        )
+    }
+    obtenerNivelPedagogico(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/nivel-pedagogicos/listarNivelPedagogicos`,
+            data
+        )
+    }
+    obtenerTipoPublico(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/tipo-publicos/listarTipoPublicos`,
+            data
+        )
+    }
+    guardarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/guardarCapacitacion`,
+            data
+        )
+    }
 }

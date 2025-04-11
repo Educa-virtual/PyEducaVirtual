@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api'
 import { InputSwitchModule } from 'primeng/inputswitch'
 import { FormBuilder, Validators } from '@angular/forms'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 
 @Component({
     selector: 'app-apertura-curso',
@@ -28,8 +29,6 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     providers: [MessageService],
 })
 export class AperturaCursoComponent implements OnInit {
-    uploadedFiles: any[] = []
-    iPago: boolean = true
     // datos de prueba que seran remplazadas:
     cursos = [
         {
@@ -55,26 +54,36 @@ export class AperturaCursoComponent implements OnInit {
     ]
     private _formBuilder = inject(FormBuilder)
     private _confirmService = inject(ConfirmationModalService)
+    private _aulaService = inject(ApiAulaService)
+
+    uploadedFiles: any[] = []
+    iPago: boolean = true
+    tipoCapacitacion: any[] = []
+    nivelPedagogico: any[] = []
+    publicoObjetivo: any[] = []
 
     constructor(private messageService: MessageService) {}
 
     // formGroup para el formulario
     public formNuevaCapacitacion = this._formBuilder.group({
-        capacitacion: ['1', [Validators.required]],
-        titulo: ['', [Validators.required]],
-        nivelEducativo: ['1', [Validators.required]],
-        dirigidoPa: ['1'],
-        cDescripcion: [''],
-        hora: ['', [Validators.required]],
-        fechaIni: [new Date()],
-        fechaFin: [new Date()],
-        nompreProf: [],
-        iPago: [0],
-        montoPago: [''],
+        iTipoCapId: ['', [Validators.required]],
+        cCapTitulo: ['', [Validators.required]],
+        iNivelPedId: ['', [Validators.required]],
+        iTipoPubId: [''],
+        cCapDescripcion: [''],
+        iTotalHrs: ['', [Validators.required]],
+        dFechaInicio: [new Date()],
+        dFechaFin: [new Date()],
+        iDocenteId: [],
+        iCosto: [0],
+        iCantidad: [''],
     })
 
     ngOnInit() {
-        console.log('')
+        // Obtener los select:
+        this.obtnerTipoCapacitacion()
+        this.obtenerNivelPedagogico()
+        this.obtenerTipodePublico()
     }
     // mostrar los headr de las tablas
     public columnasTabla: IColumn[] = [
@@ -117,6 +126,7 @@ export class AperturaCursoComponent implements OnInit {
     }
     // metodo para guardar el curso creado
     crearCurso() {
+        // const data = this.formNuevaCapacitacion.value
         // revisar si tiene datos formNuevaCapacitacion para registrar el curso
         const titulo = this.formNuevaCapacitacion.get('titulo')?.value || ''
         // alert en caso si no tiene datos los campos del formulario
@@ -132,6 +142,7 @@ export class AperturaCursoComponent implements OnInit {
                 message: 'Recuerde que no podra retroceder',
                 header: `¿Esta seguro que desea guardar: ${titulo} ?`,
                 accept: () => {
+                    // this._aulaService.guardarCapacitacion(data).subscribe((data)=>{
                     // Mensaje de guardado(opcional)
                     this.messageService.add({
                         severity: 'success',
@@ -143,6 +154,7 @@ export class AperturaCursoComponent implements OnInit {
                         this.formNuevaCapacitacion.value
                     )
                     this.formNuevaCapacitacion.reset()
+                    // })
                 },
                 reject: () => {
                     // Mensaje de cancelación (opcional)
@@ -155,4 +167,41 @@ export class AperturaCursoComponent implements OnInit {
             })
         }
     }
+
+    // metodo para obtener tipo capacitación:
+    obtnerTipoCapacitacion() {
+        const userId = 1
+        this._aulaService.obtenerTipoCapacitacion(userId).subscribe((Data) => {
+            this.tipoCapacitacion = Data['data']
+            console.log('Datos tipo capacitacion', this.tipoCapacitacion)
+        })
+    }
+
+    // Obtener el nivel pedagógico:
+    obtenerNivelPedagogico() {
+        const userId = 1
+        this._aulaService.obtenerNivelPedagogico(userId).subscribe((Data) => {
+            this.nivelPedagogico = Data['data']
+            console.log('Datos tipo capacitacion', this.nivelPedagogico)
+        })
+    }
+
+    // metodo para obtener el tipo de publico
+    obtenerTipodePublico() {
+        const userId = 1
+        this._aulaService.obtenerTipoPublico(userId).subscribe((Data) => {
+            this.publicoObjetivo = Data['data']
+            console.log('Datos tipo capacitacion', this.publicoObjetivo)
+        })
+    }
+
+    // obtener las capacitaciones
+    // obtenerCapacitaciones() {
+    //     const data ={
+
+    //     }
+    //     this._aulaService.obtenerCapacitacion(userId).subscribe((Data) => {
+    //         this.cursos = Data['data']
+    //         console.log('Datos capacitacion', this.cursos)
+    //     })
 }

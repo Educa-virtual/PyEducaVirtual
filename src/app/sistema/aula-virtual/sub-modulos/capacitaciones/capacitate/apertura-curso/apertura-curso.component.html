@@ -27,17 +27,19 @@
                 class="flex flex-column gap-3 w-full"
             >
                 <section>
-                    <div class="col-6">
+                    <div class="col-8">
                         <p-inputGroup>
                             <p-inputGroupAddon
                                 >Tipo de Capacitación:</p-inputGroupAddon
                             >
                             <p-dropdown
+                                [options]="tipoCapacitacion"
                                 styleClass="w-full"
-                                formControlName="capacitacion"
+                                formControlName="iTipoCapId"
                                 placeholder="Seleccione el tipo"
+                                optionValue="iTipoCapId"
+                                optionLabel="cTipoCapNombre"
                             ></p-dropdown>
-                            <!-- id="modalidad" [options]="modalidades" -->
                         </p-inputGroup>
                     </div>
                     <div class="col">
@@ -48,7 +50,7 @@
                                 type="text"
                                 pInputText
                                 placeholder="Ingresar nombre...."
-                                formControlName="titulo"
+                                formControlName="cCapTitulo"
                                 [ngClass]="{
                                     'p-invalid':
                                         formNuevaCapacitacion.get('titulo')
@@ -79,8 +81,11 @@
                                         >Nivel Educativo:</p-inputGroupAddon
                                     >
                                     <p-dropdown
+                                        [options]="nivelPedagogico"
                                         styleClass="w-full"
-                                        formControlName="nivelEducativo"
+                                        formControlName="iNivelPedId"
+                                        optionValue="iNivelPedId"
+                                        optionLabel="cNivelPedNombre"
                                         placeholder="Seleccione Nivel"
                                     ></p-dropdown>
                                     <!-- id="modalidad" [options]="modalidades" -->
@@ -92,9 +97,12 @@
                                         >Dirigido para:</p-inputGroupAddon
                                     >
                                     <p-dropdown
+                                        [options]="publicoObjetivo"
                                         styleClass="w-full"
-                                        formControlName="dirigidoPa"
+                                        formControlName="iTipoPubId"
                                         placeholder="Seleccione Publico"
+                                        optionValue="iTipoPubId"
+                                        optionLabel="cTipoPubNombre"
                                     ></p-dropdown>
                                     <!-- id="modalidad" [options]="modalidades" -->
                                 </p-inputGroup>
@@ -118,7 +126,7 @@
                                         rows="4"
                                         placeholder="Escribe una Descripción"
                                         pInputText
-                                        formControlName="cDescripcion"
+                                        formControlName="cCapDescripcion"
                                     ></textarea>
                                 </div>
                             </div>
@@ -137,7 +145,7 @@
                                         pInputText
                                         min="1"
                                         placeholder="0"
-                                        formControlName="hora"
+                                        formControlName="iTotalHrs"
                                         [ngClass]="{
                                             'p-invalid':
                                                 formNuevaCapacitacion.get(
@@ -169,7 +177,7 @@
                                     >
                                     <p-calendar
                                         id="fechaFin"
-                                        formControlName="fechaIni"
+                                        formControlName="dFechaInicio"
                                         styleClass="w-full"
                                         dateFormat="dd/mm/yy"
                                         [iconDisplay]="'input'"
@@ -185,7 +193,7 @@
                                     >
                                     <p-calendar
                                         id="fechaFin"
-                                        formControlName="fechaFin"
+                                        formControlName="dFechaFin"
                                         styleClass="w-full"
                                         dateFormat="dd/mm/yy"
                                         [iconDisplay]="'input'"
@@ -218,7 +226,7 @@
                                     >
                                     <div class="align-content-center">
                                         <p-inputSwitch
-                                            formControlName="iPago"
+                                            formControlName="iCosto"
                                             class="pr-3"
                                         />
                                     </div>
@@ -229,7 +237,7 @@
                                                 ?.value
                                         "
                                         type="text"
-                                        formControlName="montoPago"
+                                        formControlName="iCantidad"
                                         placeholder="S/."
                                         class="p-inputtext p-component w-10rem"
                                     />

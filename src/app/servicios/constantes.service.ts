@@ -124,7 +124,7 @@ const estudiante = [
             {
                 label: 'Practicar evaluación ERE',
                 icon: 'pi pi-pen-to-square',
-                routerLink: ['/ere/evaluacion/practicar'],
+                routerLink: ['/ere/evaluacion-practica'],
             },
         ],
     },

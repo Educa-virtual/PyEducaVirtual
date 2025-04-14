@@ -355,7 +355,25 @@ export class ApiAulaService {
     }
     guardarCapacitacion(data) {
         return this._http.post(
-            `${this.baseUrlApi}/cap/capacitaciones/guardarCapacitacion`,
+            `${this.baseUrlApi}/cap/capacitaciones/guardarCapacitaciones`,
+            data
+        )
+    }
+    eliminarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/eliminarCapacitaciones`,
+            data
+        )
+    }
+    actualizarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/actualizarCapacitaciones`,
+            data
+        )
+    }
+    obtenerCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/listarCapacitaciones`,
             data
         )
     }

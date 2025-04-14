@@ -1,7 +1,6 @@
 import {
     estudianteTemplateSiagieColumns,
     headerTemplateSiagie,
-    // padresFamiliasTemplateColumns,
     padresFamiliasTemplateColumns2,
     resultEstudianteTemplateSiagieColumns,
 } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/config/table/bulk-table-columns-siagie'
@@ -126,6 +125,50 @@ export const dropdownGroupConfig = [
                     },
                 },
             },
+            // {
+            //     label: 'Resultados de evaluación',
+            //     value: {
+            //         id: 3,
+            //         sheetName: 'Consolidado',
+            //         structures: [
+            //             {
+            //                 header: 'A1:AQ1',
+            //                 data: 'A2',
+            //                 columns: resultadosEvaluacionTemplateColumns,
+            //                 inTableColumn: true,
+            //             },
+            //             {
+            //                 header: 'F7:R7',
+            //                 data: 'F8:R8',
+            //                 columns: headerTemplateSiagie,
+            //             },
+            //         ],
+            //         columns: estudianteTemplateSiagieColumns,
+            //         columnsResultImport: resultEstudianteTemplateSiagieColumns,
+            //         importEndPoint:
+            //             'acad/estudiante/importarEstudiantesMatriculasExcel',
+            //         params: {
+            //             tipo: 'matriculas',
+            //             iSedeId: JSON.parse(
+            //                 localStorage.getItem('dremoPerfil') || '{}'
+            //             ).iSedeId,
+            //             iYAcadId: JSON.parse(
+            //                 localStorage.getItem('dremoiYAcadId') || 'null'
+            //             ),
+            //             iCredId: JSON.parse(
+            //                 localStorage.getItem('dremoPerfil') || '{}'
+            //             ).iCredId,
+            //         },
+            //         typeSend: 'file',
+            //         response: (response: any) => {
+            //             return response.data
+            //         },
+
+            //         // requests: ([estudiante,apoderado, ]) => {
+
+            //         // }
+            //     },
+            // },
         ],
         dependency: 1,
         optionValue: 1,

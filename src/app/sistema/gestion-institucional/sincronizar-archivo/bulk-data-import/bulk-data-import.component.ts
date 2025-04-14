@@ -203,20 +203,10 @@ export class BulkDataImportComponent implements OnInit {
             const data = new Uint8Array(e.target?.result as ArrayBuffer)
             const workbook = XLSX.read(data, { type: 'array' })
 
-            // Obtener el nombre de la primera hoja
             const firstSheetName = workbook.SheetNames[0]
-            const worksheet = workbook.Sheets[firstSheetName]
 
-            // const row = XLSX.utils.decode_cell(this.collection.cellData).r
-
-            // const headers = this.collection.columns.map(
-            //     (column) => column.field
-            // )
-
-            // const excelData: any = XLSX.utils.sheet_to_json(worksheet, {
-            //     header: 1,
-            //     range: row,
-            // })
+            const worksheet =
+                workbook.Sheets[this.collection?.sheetName ?? firstSheetName]
 
             const excelData = SheetToMatrix.setInstance(
                 'hojaDeDatosAImportar',
@@ -226,25 +216,9 @@ export class BulkDataImportComponent implements OnInit {
                 }
             )
 
-            // const excelData2 = SheetToMatrix.setInstance(
-            //     'hojaDeDatosAImportar',
-            //     worksheet,
-            //     {
-            //         structures: this.collection.structures,
-            //     },
-            //     this.collection.columns
-            // )
-
-            console.log('excelData')
-            console.log(excelData)
-
             this.columnsGroup = excelData.inTableColumnsGroup
             this.columns = excelData.inTableColumns
             this.data = excelData.inTableData
-
-            // const [info, otro] = excelData.extraData
-            // console.log('info', info)
-            // console.log(excelData2)
         }
 
         reader.readAsArrayBuffer(file)
@@ -258,13 +232,6 @@ export class BulkDataImportComponent implements OnInit {
 
     validaImportData() {
         this.importLoad = true
-
-        console.log(
-            'SheetToMatrix',
-            SheetToMatrix.getInstance(
-                'hojaDeDatosAImportar'
-            ).setDataAccordingColumns()
-        )
 
         const fileImport = () => {
             switch (this.collection.typeSend) {
@@ -291,30 +258,26 @@ export class BulkDataImportComponent implements OnInit {
                     this.importLoad = false
                     this.responseDataImport =
                         this.collection.response(response) ?? undefined
-
-                    console.log('this.responseDataImport')
-                    console.log(this.responseDataImport)
                 },
-                error: (error) => {
-                    console.log('error')
-                    console.log(error)
+                error: () => {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Importación de datos',
                         detail: 'Ha ocurrido un error al importar los datos',
                         life: 3000,
                     })
+
                     this.importLoad = false
                 },
                 complete: () => {
-                    this.importLoad = false
-
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Importación de datos',
                         detail: 'Los datos han sido importados correctamente',
                         life: 3000,
                     })
+
+                    this.importLoad = false
                 },
             })
     }

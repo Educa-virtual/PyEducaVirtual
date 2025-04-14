@@ -12,7 +12,7 @@ export const docentePlatformTemplateColumns: TableColumn = {
                 type: 'text',
                 width: '5rem',
                 field: 'A1/cTipoIdentId',
-                header: 'Tipo de documento',
+                header: 'Docente',
                 text_header: 'center',
                 text: 'center',
                 colspan: 7,

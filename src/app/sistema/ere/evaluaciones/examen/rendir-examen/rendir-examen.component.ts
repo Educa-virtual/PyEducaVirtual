@@ -305,24 +305,13 @@ export class RendirExamenComponent implements OnInit {
         const { accion } = $event
         switch (accion) {
             case 'tiempo-finalizado':
-                console.log('El tiempo de la evaluación ha finalizado')
-                /*this._MessageService.add({
-                    severity: 'warn',
-                    detail: 'El tiempo de la evaluación ha finalizado.',
-                })*/
                 this.finalizado = true
-                /*this.accionBtnItem({accion: "terminarExamenxiEstudianteId"})*/
                 break
             case 'tiempo-1-minuto-restante':
-                console.log('Queda 1 minuto para finalizar la evaluación')
-                //console.log('Queda 1 minuto para finalizar la evaluación')
                 this._MessageService.add({
                     severity: 'warn',
                     detail: 'Queda 1 minuto para finalizar la evaluación',
                 })
-                break
-            default:
-                //console.log('Esperando...')
                 break
         }
     }

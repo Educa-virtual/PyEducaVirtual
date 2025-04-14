@@ -263,7 +263,7 @@ export class UsuarioPerfilComponent implements OnChanges, OnInit {
                 if (accion === 'eliminar_perfil') {
                     // elimina perfil seleccionado del usuario
                     this.eliminar_perfiles(
-                        this.selectedItemsPerfil['iPerfilId']
+                        this.selectedItemsPerfil['iCredEntPerfId']
                     )
                 }
             },
@@ -486,7 +486,7 @@ export class UsuarioPerfilComponent implements OnChanges, OnInit {
             params = {
                 esquema: 'seg',
                 tabla: 'credenciales_entidades_perfiles',
-                campo: 'iPerfilId',
+                campo: 'iCredEntPerfId',
                 valorId: id,
             }
         }

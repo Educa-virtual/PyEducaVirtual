@@ -9,7 +9,7 @@
     (accionBtnItem)="accionBtn($event)"
 >
     <ng-content>
-        <form [formGroup]="form" (ngSubmit)="subirArchivo()">
+        <form [formGroup]="form" (ngSubmit)="handleFormSubmit()">
             @if (!exito) {
                 <div class="grid p-fluid mt-3">
                     <div class="field col-12">

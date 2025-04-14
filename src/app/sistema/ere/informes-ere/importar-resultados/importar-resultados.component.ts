@@ -10,6 +10,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import * as XLSX from 'xlsx'
 
 @Component({
     selector: 'app-importar-resultados',
@@ -25,11 +26,15 @@ export class ImportarResultadosComponent implements OnInit {
     iSedeId: string
     iYAcadId: string
     resultados: any
+    datos_hojas: Array<object>
     visible: boolean = false
     exito: boolean = false
     hay_excluidos: boolean = false
     titulo: string = ''
     form: FormGroup
+
+    file: File
+    collection: any
 
     private _messageService = inject(MessageService)
 
@@ -78,49 +83,102 @@ export class ImportarResultadosComponent implements OnInit {
         })
     }
 
-    subirArchivo() {
-        const formData: FormData = new FormData()
-        formData.append('archivo', this.form.controls['archivo'].value)
-        formData.append('iYAcadId', this.iYAcadId)
-        formData.append('iSedeId', this.iSedeId)
-        formData.append('iCredId', this.store.getItem('dremoPerfil').iCredId)
-        formData.append(
-            'iEvaluacionIdHashed',
-            this.curso.iEvaluacionIdHashed ?? null
-        )
-        formData.append('cCursoNombre', this.curso.cCursoNombre ?? null)
-        formData.append(
-            'cGradoAbreviacion',
-            this.curso.cGradoAbreviacion ?? null
-        )
-        formData.append(
-            'iCursosNivelGradId',
-            this.curso.iCursosNivelGradId ?? null
-        )
-        formData.append('tipo', 'resultados')
+    async handleFormSubmit() {
+        this.datos_hojas = await this.leerArchivo()
+        await this.subirArchivo(this.datos_hojas)
+    }
 
-        this.datosInformesService.importarResultados(formData).subscribe({
-            next: (data: any) => {
-                // this.visible = false
-                this.mostrarResultados(data.data)
-                // setTimeout(() => {
-                //     this.archivoSubidoEvent.emit({
-                //         curso: this.curso,
-                //     })
-                // }, 1000)
-            },
-            error: (error) => {
-                console.error('Error subiendo archivo:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
+    async subirArchivo(datos_hojas: Array<object>) {
+        this.datosInformesService
+            .importarResultados({
+                datos_hojas: datos_hojas,
+                iYAcadId: this.iYAcadId,
+                iSedeId: this.iSedeId,
+                iCredId: this.store.getItem('dremoPerfil').iCredId,
+                iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
+                cCursoNombre: this.curso.cCursoNombre ?? null,
+                cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
+                iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
+                tipo: 'resultados',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.mostrarResultados(data.data)
+                },
+                error: (error) => {
+                    console.error('Error subiendo archivo:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    async leerArchivo(): Promise<Array<object>> {
+        const file = this.form.controls['archivo'].value
+        if (!file) {
+            this._messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Debe seleccionar un archivo',
+            })
+            return Promise.reject()
+        }
+
+        const reader = new FileReader()
+        this.file = file
+
+        let objeto_inicial: any = {}
+
+        return new Promise((resolve, reject) => {
+            try {
+                reader.onload = (e: ProgressEvent<FileReader>) => {
+                    const data = new Uint8Array(e.target?.result as ArrayBuffer)
+                    const workbook = XLSX.read(data, {
+                        type: 'array',
+                        sheetStubs: true,
+                    })
+
+                    const inicio = workbook.Sheets['Inicio']
+                    const consolidado = workbook.Sheets['Consolidado']
+
+                    // Obtener el nombre de la primera hoja
+                    objeto_inicial = [
+                        this.configurarFilasColumnas(inicio),
+                        this.configurarFilasColumnas(consolidado),
+                    ]
+                    resolve(objeto_inicial)
+                }
+            } catch (error) {
+                reject(error)
+            }
+            reader.onerror = () => {
+                reject('Error procesando el archivo')
+            }
+            reader.readAsArrayBuffer(file)
         })
+    }
+
+    configurarFilasColumnas(worksheet: XLSX.WorkSheet) {
+        const objeto_final = {}
+        for (const key in worksheet) {
+            const match = key.match(/^([A-Z]+)(\d+)$/)
+            if (match) {
+                const letra_columna = match[1]
+                const numero_fila = Number(match[2])
+                if (!objeto_final[numero_fila]) {
+                    objeto_final[numero_fila] = {}
+                }
+                objeto_final[numero_fila][letra_columna] = worksheet[key].v
+            }
+        }
+        console.log(objeto_final)
+        return objeto_final
     }
 
     mostrarResultados(data) {

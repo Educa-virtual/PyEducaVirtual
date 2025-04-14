@@ -382,6 +382,7 @@ export class InformesEreComponent implements OnInit {
             (item: any) => item.nivel_logro
         )
         const niveles_valores = this.niveles.map((item: any) => item.cantidad)
+        const total = niveles_valores.reduce((a, b) => Number(a) + Number(b), 0)
 
         this.data_doughnut = {
             labels: niveles_nombres,
@@ -407,6 +408,13 @@ export class InformesEreComponent implements OnInit {
         this.options_doughnut = {
             cutout: '60%',
             plugins: {
+                title: {
+                    display: true,
+                    text: 'Total de Estudiantes: ' + total,
+                    font: {
+                        size: 12,
+                    },
+                },
                 legend: {
                     position: 'right',
                     labels: {

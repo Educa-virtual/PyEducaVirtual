@@ -22,6 +22,12 @@ interface Comunicado {
     curso?: number
     seccion?: number
     grado?: number
+    institucion: string
+    docente: string
+    institucionId: number
+    cursoName?: string
+    seccionName?: string
+    gradoName?: string
 }
 
 @Component({
@@ -298,6 +304,9 @@ export class ContenidosComponent implements OnInit {
         seccion: null,
         grado: null,
         collapsed: true,
+        institucion: '',
+        institucionId: 0,
+        docente: '',
     }
 
     // Inicializa un comunicado vacío (para crear uno nuevo)
@@ -320,7 +329,52 @@ export class ContenidosComponent implements OnInit {
             seccion: null,
             grado: null,
             collapsed: true,
+            institucion: '',
+            docente: '',
+            institucionId: 0,
         }
+    }
+    /**
+     * Retorna un arreglo de objetos { label, value } con los campos a mostrar,
+     * filtrando aquellos que sean null o cadenas vacías.
+     */
+    getCamposMostrables(
+        comunicado: Comunicado
+    ): { label: string; value: string; rowBreak?: boolean }[] {
+        const campos = [
+            { label: 'Prioridad', value: comunicado.prioridad },
+            { label: 'Tipo', value: comunicado.tipo },
+            { label: 'Inicio', value: comunicado.publicado },
+            { label: 'Fin', value: comunicado.caduca },
+
+            {
+                label: 'Institución',
+                value: comunicado.institucion,
+                rowBreak: true,
+            },
+            {
+                label: 'Destinatario',
+                value: comunicado.destinatario,
+                rowBreak: true,
+            },
+            { label: 'Docente', value: comunicado.docente },
+
+            { label: 'Área Curricular', value: comunicado.cursoName },
+            { label: 'Sección', value: comunicado.seccionName },
+            { label: 'Grado', value: comunicado.gradoName },
+
+            {
+                label: 'Grupo',
+                value:
+                    comunicado.grupo && comunicado.grupo.length > 0
+                        ? comunicado.grupo.map((g) => g.cGrupoNombre).join(', ')
+                        : '',
+            },
+        ]
+        // Se filtran aquellos campos cuyo valor sea null, undefined o una cadena vacía
+        return campos.filter(
+            (campo) => campo.value != null && campo.value.trim() !== ''
+        )
     }
 
     abrirDialogBuscarDestinatario() {
@@ -368,11 +422,26 @@ export class ContenidosComponent implements OnInit {
             curso: com.curso,
             seccion: com.seccion,
             grado: com.grado,
+            cursoName: com.cursoName || '',
+            seccionName: com.seccionName || '',
+            gradoName: com.gradoName || '',
         }
         this.selectedEstado = com.estado === 'Activo' ? 1 : 0
-        this.destinatarioNombre = com.destinatario || ''
 
-        if (com.destinatario || com.curso || com.seccion || com.grado) {
+        this.destinatarioNombre = com.destinatario || ''
+        this.institucionNombre = com.institucion || ''
+        this.institucionId = com.institucionId || null
+        this.docenteNombre = com.destinatario || ''
+
+        // Si se cuenta con alguno de estos datos o se tiene curso/sección/grado, activar las opciones avanzadas
+        if (
+            com.destinatario ||
+            com.institucion ||
+            com.docente ||
+            com.curso ||
+            com.seccion ||
+            com.grado
+        ) {
             this.advancedOptions = true
         } else {
             this.advancedOptions = false
@@ -459,6 +528,18 @@ export class ContenidosComponent implements OnInit {
                 )
                 return
             }
+        }
+        // Validar que para perfiles de especialista se haya seleccionado Institución y Docente
+        if (
+            (+this.iPerfilId === 2 || +this.iPerfilId === 3) &&
+            (!this.institucionNombre?.trim() || !this.docenteNombre?.trim())
+        ) {
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar una Institución y un Docente'
+            )
+            return
         }
         // Validar que se haya ingresado contenido
         // if (
@@ -667,6 +748,9 @@ export class ContenidosComponent implements OnInit {
                                 ? foundGrado.label
                                 : null,
                         destinatario: c.NombreUsuario || '',
+                        institucionId: c.iIieeId || null,
+                        institucion: c.cIieeNombre || '',
+                        // docente: c.NombreUsuario || '',
                         collapsed: true,
                     }
                 })
@@ -713,6 +797,8 @@ export class ContenidosComponent implements OnInit {
         this.destinatarioId = null
         this.tipoPersona = null
         this.advancedOptions = false
+        this.clearInstitucion()
+        this.clearDocente()
         setTimeout(() => {
             this.destinatarioNombre = ''
         })
@@ -742,30 +828,37 @@ export class ContenidosComponent implements OnInit {
 
         // advanced ON
         // Caso 1: Destinatario
-        if (this.destinatarioId) {
-            // se envía a un usuario => forzar null en grupo y c/s/g
-            this.selectedComunicado.grupo = []
-            this.selectedComunicado.curso = null
-            this.selectedComunicado.seccion = null
-            this.selectedComunicado.grado = null
-        } else {
-            // Caso 2: c/s/g
-            if (
-                this.selectedComunicado.curso ||
-                this.selectedComunicado.seccion ||
-                this.selectedComunicado.grado
-            ) {
-                // se envía a un (curso,seccion,grado) => forzar null en grupo y destinatario
+        if (
+            this.destinatarioId ||
+            (this.selectedComunicado.curso &&
+                this.selectedComunicado.seccion &&
+                this.selectedComunicado.grado)
+        ) {
+            if (this.destinatarioId) {
+                // se envía a un usuario => forzar null en grupo y c/s/g
                 this.selectedComunicado.grupo = []
-                this.destinatarioId = null
+                this.selectedComunicado.curso = null
+                this.selectedComunicado.seccion = null
+                this.selectedComunicado.grado = null
             } else {
-                // Caso 3: si no hay destinatario NI c/s/g => error
-                this.messageService.add({
-                    severity: 'warn',
-                    summary: 'Advertencia',
-                    detail: 'Debe seleccionar un Destinatario único o Curso/Sección/Grado.',
-                })
-                throw new Error('validación')
+                // Caso 2: c/s/g
+                if (
+                    this.selectedComunicado.curso ||
+                    this.selectedComunicado.seccion ||
+                    this.selectedComunicado.grado
+                ) {
+                    // se envía a un (curso,seccion,grado) => forzar null en grupo y destinatario
+                    this.selectedComunicado.grupo = []
+                    this.destinatarioId = null
+                } else {
+                    // Caso 3: si no hay destinatario NI c/s/g => error
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Advertencia',
+                        detail: 'Debe seleccionar un Destinatario único o Curso/Sección/Grado.',
+                    })
+                    throw new Error('validación')
+                }
             }
         }
     }
@@ -804,7 +897,7 @@ export class ContenidosComponent implements OnInit {
     // Abre el modal para seleccionar Institución Educativa
     abrirDialogInstitucion() {
         this.visibleInstitucionDialog = true
-        // Llama al SP para cargar las instituciones (ya implementado en cargarInstitucionesEspecialista)
+        // Llama al SP para cargar las instituciones (cargarInstitucionesEspecialista)
         this.cargarInstitucionesEspecialista()
     }
 

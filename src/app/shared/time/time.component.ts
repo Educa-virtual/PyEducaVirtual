@@ -21,7 +21,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
     @Input() inicio // Fecha y hora de inicio
     @Input() fin // Fecha y hora de fin
 
-    tiempoRestante: number = 0 // Tiempo restante en segundos
+    tiempoRestante: number = 0
     intervalo: any
     private hours: number = 0
     private minutos: number = 0
@@ -31,10 +31,11 @@ export class TimeComponent implements OnChanges, OnDestroy {
         if (changes['inicio'] || changes['fin']) {
             this.inicio = new Date(this.inicio)
             this.fin = new Date(this.fin)
+            //Al iniciar el componente, se le da el mismo valor a las fechas, por eso se ignora su inicio
             if (this.inicio.getTime() == this.fin.getTime()) {
                 return
             }
-            this.detenerContador() // Reinicia el contador si las fechas cambian
+            this.detenerContador()
             this.calcularTiempoRestante()
             this.iniciarContador()
         }
@@ -44,15 +45,18 @@ export class TimeComponent implements OnChanges, OnDestroy {
         this.inicio = new Date(this.inicio.getTime() + 1000)
         const diferenciaMs = this.fin.getTime() - this.inicio.getTime()
         this.tiempoRestante = Math.max(Math.floor(diferenciaMs / 1000), 0)
+        this.hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600 segundos
+        this.minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60 segundos
+        this.segundos = Math.floor(this.tiempoRestante % 60)
+        this.emitirEvento()
     }
 
     iniciarContador(): void {
         this.intervalo = setInterval(() => {
             this.calcularTiempoRestante()
-            this.emitirEvento()
+
             if (this.tiempoRestante <= 0) {
                 this.detenerContador()
-                this.emitirEvento()
             }
         }, 1000)
     }
@@ -90,9 +94,6 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     getTiempoFormateado(): string {
-        this.hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600 segundos
-        this.minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60 segundos
-        this.segundos = Math.floor(this.tiempoRestante % 60)
         //this.emitirEvento(hours,minutos,segundos)
         const pad = (num: number) => num.toString().padStart(2, '0')
         return `${pad(this.hours)}:${pad(this.minutos)}:${pad(this.segundos)}`

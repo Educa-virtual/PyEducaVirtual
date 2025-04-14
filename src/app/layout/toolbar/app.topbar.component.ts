@@ -125,7 +125,6 @@ export class AppTopBarComponent implements OnInit {
                 this.changeYear(item)
                 break
             case 'logout':
-                console.log(accion)
                 this.logout()
                 break
             case 'modulo':

@@ -50,6 +50,8 @@ export class PreguntasComponent implements OnInit {
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
 
+    private enunciadosCache = new Map<number, string>()
+
     @Input() iEvaluacionId
     @Input() iCursoNivelGradId
     data
@@ -282,6 +284,14 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
+
+        if (item.iEncabPregId && item.cEncabPregContenido) {
+            this.enunciadosCache.set(
+                item.iEncabPregId,
+                item.cEncabPregContenido
+            )
+        }
+
         const params = {
             petition: 'post',
             group: 'ere',
@@ -292,6 +302,7 @@ export class PreguntasComponent implements OnInit {
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iEncabPregId: item.iEncabPregId,
+                cEncabPregContenido: item.iEncabPregContenido,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -339,13 +350,13 @@ export class PreguntasComponent implements OnInit {
             return
         }
         const preguntas = pregunta.pregunta
-
-        if (!this.isSecundaria && !encabezado) {
+        //Resulta que las preguntas para primaria también tienen peso
+        /*if (!this.isSecundaria && !encabezado) {
             preguntas.forEach((item) => (item.iPreguntaPeso = 1))
         }
         if (!this.isSecundaria && encabezado) {
             pregunta.iPreguntaPeso = 1
-        }
+        }*/
 
         const data = !encabezado
             ? preguntas.length
@@ -613,7 +624,28 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 })
+
+                this.preguntas.forEach((pregunta) => {
+                    if (
+                        pregunta.iEncabPregId &&
+                        this.enunciadosCache.has(pregunta.iEncabPregId)
+                    ) {
+                        // Restauramos el contenido desde el caché
+                        pregunta.cEncabPregContenido = this.enunciadosCache.get(
+                            pregunta.iEncabPregId
+                        )
+
+                        // También lo aplicamos a todas las preguntas dentro del grupo
+                        if (pregunta.pregunta && pregunta.pregunta.length) {
+                            pregunta.pregunta.forEach((subPregunta) => {
+                                subPregunta.cEncabPregContenido =
+                                    pregunta.cEncabPregContenido
+                            })
+                        }
+                    }
+                })
                 break
+
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
                 this._MessageService.add({
                     severity: 'success',
@@ -689,5 +721,16 @@ export class PreguntasComponent implements OnInit {
         this.matrizCapacidadFiltrado = this.matrizCapacidad.filter(
             (i) => i.iCompetenciaId === item.iCompetenciaId
         )
+    }
+
+    guardarEnunciadoEnCache(id: number, contenido: string): void {
+        // Solo almacenamos en caché si es un ID válido y está relacionado con preguntas
+        if (id && this.preguntas.some((p) => p.iEncabPregId === id)) {
+            this.enunciadosCache.set(id, contenido)
+        }
+    }
+
+    limpiarCacheEnunciados(): void {
+        this.enunciadosCache.clear()
     }
 }

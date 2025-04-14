@@ -24,6 +24,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { SubirArchivoPreguntasComponent } from './subir-archivo-preguntas/subir-archivo-preguntas.component'
 import { AreaCardComponent } from './area-card/area-card.component'
 import { ConfigurarNivelLogroComponent } from './configurar-nivel-logro/configurar-nivel-logro.component'
+import { ImportarResultadosComponent } from '../../informes-ere/importar-resultados/importar-resultados.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -38,6 +39,7 @@ export type Layout = 'list' | 'grid'
         SubirArchivoPreguntasComponent,
         AreaCardComponent,
         ConfigurarNivelLogroComponent,
+        ImportarResultadosComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -49,6 +51,9 @@ export class ListaAreasComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
     @ViewChild(SubirArchivoPreguntasComponent)
     dialogSubirArchivo!: SubirArchivoPreguntasComponent
+
+    @ViewChild(ImportarResultadosComponent)
+    dialogImportarResultados!: ImportarResultadosComponent
 
     @ViewChild(ConfigurarNivelLogroComponent)
     dialogConfigurarNivelLogro!: ConfigurarNivelLogroComponent
@@ -97,6 +102,10 @@ export class ListaAreasComponent implements OnInit {
         this.dialogConfigurarNivelLogro.mostrarDialog(datos)
     }
 
+    importarResultados(datos: { curso: ICurso }) {
+        this.dialogImportarResultados.mostrarDialog(datos)
+    }
+
     actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
         this.gestionarPreguntasCard.forEach((card) => {
             if (
@@ -105,6 +114,10 @@ export class ListaAreasComponent implements OnInit {
                 card.curso.bTieneArchivo = true
             }
         })
+    }
+
+    actualizarEstadoResultadosImportados(datos: { curso: ICurso }) {
+        console.log(datos, 'datos')
     }
 
     ngOnInit() {
@@ -161,7 +174,7 @@ export class ListaAreasComponent implements OnInit {
             .obtenerAreasPorEvaluacionyEspecialista(
                 this.iEvaluacionIdHashed,
                 this.store.getItem('dremoUser').iPersId,
-                this._ConstantesService.iPerfilId
+                this.store.getItem('dremoPerfil').iCredEntPerfId
             )
             .subscribe({
                 next: (respuesta) => {

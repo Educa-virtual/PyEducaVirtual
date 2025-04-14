@@ -84,4 +84,10 @@
     (accionBtnItem)="accionBtnItem($event)"
 >
 </app-recover-password>
+
+<app-sin-rol-asignado
+    [visible]="modalSinRolVisible"
+    (visibleChange)="modalSinRolVisible = $event"
+>
+</app-sin-rol-asignado>
 <p-toast />

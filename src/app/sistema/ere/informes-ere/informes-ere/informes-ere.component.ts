@@ -11,7 +11,7 @@ import {
 import { ChartOptions } from 'chart.js'
 import {
     ADMINISTRADOR_DREMO,
-    ADMINISTRADOR,
+    ESPECIALISTA_UGEL,
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
 
@@ -62,12 +62,13 @@ export class InformesEreComponent implements OnInit {
         const perfiles_permitidos = [
             ADMINISTRADOR_DREMO,
             ESPECIALISTA_DREMO,
-            ADMINISTRADOR,
+            ESPECIALISTA_UGEL,
         ]
-        if (perfiles_permitidos.includes(this.datosInformes.perfil.iPerfilId)) {
+        if (
+            perfiles_permitidos.includes(+this.datosInformes.perfil.iPerfilId)
+        ) {
             this.es_especialista = true
         }
-
         try {
             this.formFiltros = this.fb.group({
                 iYAcadId: [this.datosInformes.iYAcadId, Validators.required],
@@ -93,7 +94,6 @@ export class InformesEreComponent implements OnInit {
             .obtenerEvaluacionesCursosIes(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
-                    console.log(data.data, 'data evaluaciones')
                     this.evaluaciones_cursos_ies = data.data
                     this.filterEvaluaciones()
                     this.filterNivelTipos()
@@ -186,7 +186,6 @@ export class InformesEreComponent implements OnInit {
             },
             []
         )
-        console.log(this.evaluaciones, 'evaluaciones')
     }
 
     filterCursos(iEvaluacionId: any) {
@@ -210,7 +209,6 @@ export class InformesEreComponent implements OnInit {
             },
             []
         )
-        console.log(this.cursos, 'cursos')
     }
 
     filterNivelTipos() {
@@ -234,7 +232,6 @@ export class InformesEreComponent implements OnInit {
             },
             []
         )
-        console.log(this.nivel_grados, 'nivel grados')
     }
 
     filterGrados(iNivelTipoId: any) {
@@ -258,7 +255,6 @@ export class InformesEreComponent implements OnInit {
             },
             []
         )
-        console.log(this.nivel_grados, 'nivel grados')
     }
 
     filterDistritos(iEvaluacionId: any) {
@@ -282,10 +278,9 @@ export class InformesEreComponent implements OnInit {
             },
             []
         )
-        console.log(this.distritos, 'distritos')
     }
 
-    filterIes(iDsstId: any) {
+    filterIes(iDsttId: any) {
         this.ies = this.evaluaciones_cursos_ies.reduce(
             (prev: any, current: any) => {
                 const x = prev.find(
@@ -293,7 +288,7 @@ export class InformesEreComponent implements OnInit {
                         item.value == current.iIieeId &&
                         item.label == current.cIieeNombre
                 )
-                if (!x && current.iDsstId == iDsstId) {
+                if (!x && current.iDsttId == iDsttId) {
                     return prev.concat([
                         {
                             value: current.iIieeId,
@@ -306,7 +301,6 @@ export class InformesEreComponent implements OnInit {
             },
             []
         )
-        console.log(this.distritos, 'distritos')
     }
 
     filterSecciones(iNivelGradoId: any) {
@@ -335,7 +329,6 @@ export class InformesEreComponent implements OnInit {
                 .get('iSeccionId')
                 ?.setValue(this.secciones[0]['id'])
         }
-        console.log(this.secciones, 'secciones')
     }
 
     searchResultados() {
@@ -389,6 +382,7 @@ export class InformesEreComponent implements OnInit {
             (item: any) => item.nivel_logro
         )
         const niveles_valores = this.niveles.map((item: any) => item.cantidad)
+        const total = niveles_valores.reduce((a, b) => Number(a) + Number(b), 0)
 
         this.data_doughnut = {
             labels: niveles_nombres,
@@ -414,6 +408,13 @@ export class InformesEreComponent implements OnInit {
         this.options_doughnut = {
             cutout: '60%',
             plugins: {
+                title: {
+                    display: true,
+                    text: 'Total de Estudiantes: ' + total,
+                    font: {
+                        size: 12,
+                    },
+                },
                 legend: {
                     position: 'right',
                     labels: {
@@ -536,10 +537,9 @@ export class InformesEreComponent implements OnInit {
     }
 
     mostrarPromedio(niveles, valores) {
-        const total = valores.reduce((acc, cur) => acc + cur)
-        console.log(total, 'total')
+        const total = valores.reduce((acc, cur) => Number(acc) + Number(cur))
         const porcentajes = valores.map((valor) =>
-            (((valor * 100) / total) * 100).toFixed(2)
+            ((Number(valor) / Number(total)) * 100).toFixed(2)
         )
         const data = []
         for (let i = 0; i < niveles.length; i++) {
@@ -576,6 +576,11 @@ export class InformesEreComponent implements OnInit {
                 },
                 error: (error) => {
                     console.log(error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
                 },
             })
         } else {
@@ -593,7 +598,11 @@ export class InformesEreComponent implements OnInit {
                     window.URL.revokeObjectURL(url)
                 },
                 error: (error) => {
-                    console.log(error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
                 },
             })
         }

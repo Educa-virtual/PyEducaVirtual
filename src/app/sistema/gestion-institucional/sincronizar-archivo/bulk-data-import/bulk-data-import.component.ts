@@ -331,7 +331,9 @@ export class BulkDataImportComponent implements OnInit {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Importación de datos',
-                        detail: 'Ha ocurrido un error al importar los datos',
+                        detail:
+                            error ??
+                            'Ha ocurrido un error al importar los datos',
                         life: 3000,
                     })
                     this.importLoad = false

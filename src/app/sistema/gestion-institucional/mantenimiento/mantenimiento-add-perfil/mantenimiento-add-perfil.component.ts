@@ -104,7 +104,7 @@ export class MantenimientoAddPerfilComponent implements OnChanges, OnInit {
                 if (accion === 'eliminar_perfil') {
                     // elimina perfil seleccionado del usuario
                     this.eliminar_perfiles(
-                        this.selectedItemsPerfil['iPerfilId']
+                        this.selectedItemsPerfil['iCredEntPerfId']
                     )
                 }
             },

@@ -30,6 +30,11 @@ export const administradorDremo = [
                 icon: 'pi pi-pen-to-square',
                 items: [
                     {
+                        label: 'Resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-ere'],
+                    },
+                    {
                         label: 'Evaluaciones',
                         icon: 'pi pi-list-check',
                         routerLink: ['/ere/evaluaciones'],
@@ -81,6 +86,11 @@ export const especialistaDremo = [
                 icon: 'pi pi-pen-to-square',
                 items: [
                     {
+                        label: 'Resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-ere'],
+                    },
+                    {
                         label: 'Evaluaciones',
                         icon: 'pi pi-list-check',
                         routerLink: ['/ere/evaluaciones'],
@@ -110,6 +120,11 @@ export const especialistaUgel = [
                 label: 'ERE',
                 icon: 'pi pi-pen-to-square',
                 items: [
+                    {
+                        label: 'Resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-ere'],
+                    },
                     {
                         label: 'Evaluaciones',
                         icon: 'pi pi-list-check',

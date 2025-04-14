@@ -34,7 +34,11 @@ const routes: Routes = [
         component: ListaAreasComponent,
         canActivate: [RoleGuard],
         data: {
-            expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
+            expectedRole: [
+                ADMINISTRADOR_DREMO,
+                ESPECIALISTA_DREMO,
+                DIRECTOR_IE,
+            ],
             breadcrumb: 'Lista de áreas',
             icon: 'pi pi-list-check',
         },

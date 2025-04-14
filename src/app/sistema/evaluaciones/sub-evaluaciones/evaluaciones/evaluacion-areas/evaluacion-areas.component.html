@@ -36,7 +36,8 @@
                                     <th style="width: 30%">
                                         Fecha de evaluación
                                     </th>
-                                    <th style="width: 30%">Cant. preguntas</th>
+                                    <th style="width: 15%">Cant. preguntas</th>
+                                    <!--<th style="width: 15%">Duración eval. (minutos)</th>-->
                                 </tr>
                             </ng-template>
 
@@ -135,6 +136,31 @@
                                             "
                                         />
                                     </td>
+                                    <!--<td>
+                                        <input
+                                            type="number"
+                                            pInputText
+                                            [(ngModel)]="
+                                                curso.iExamenDuracionMinutos
+                                            "
+                                            min="1"
+                                            placeholder="0"
+                                            style="width: 65px"
+                                            (input)="
+                                                guardarFechaCantidadExamenCursos(
+                                                    curso,
+                                                    'duracion'
+                                                )
+                                            "
+                                            [disabled]="
+                                                !nivel.grados ||
+                                                !habiltarButton(
+                                                    nivel.grados,
+                                                    curso
+                                                )
+                                            "
+                                        />
+                                    </td>-->
                                 </tr>
                             </ng-template>
                         </p-table>

@@ -51,7 +51,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
-    //customers!: any
     visible: boolean = false
     opcion: string = 'seleccionar'
     isDialogVisible: boolean = false
@@ -59,17 +58,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     formCapas: any
     evaluacionFormGroup: FormGroup<any>
     areas = []
-    //tipoEvaluacion: any[]
-    //nivelEvaluacion: any[]
     acciones: any
-    selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
-    //selectedItemsAuto = []
+    selectedRow: any[] = []
     selectedItems = []
-    //cursosSeleccionados: any[] = []
-    //fechaHoraInicio: Date | undefined
-    //fechaHoraFin: Date | undefined
-    //cursoSeleccionado: Map<number, boolean> = new Map()
-    iiEvaluacionId: number // El ID de evaluación que quieras usar
+    iiEvaluacionId: number
     nombreEvaluacion: string
     iPerfil: number
     item: any
@@ -147,7 +139,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.iPerfilId = this._constantesService.iPerfilId
     }
     ejecutarAccion(event: { accion: string; item: IActionContainer }) {
-        console.log('Acción seleccionada:', event.accion)
         if (event.accion === 'agregar') {
             // Lógica para agregar
         } else if (event.accion === 'descargar_pdf') {
@@ -420,7 +411,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-help p-button-text',
             isVisible: () =>
                 this.iPerfilId === ESPECIALISTA_DREMO ||
-                this.iPerfilId === ADMINISTRADOR_DREMO,
+                this.iPerfilId === ADMINISTRADOR_DREMO ||
+                this.iPerfilId === DIRECTOR_IE,
         },
         {
             labelTooltip: 'Asignar horas de inicio y fin a las áreas',

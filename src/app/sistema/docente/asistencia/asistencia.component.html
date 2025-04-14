@@ -2,12 +2,13 @@
     <p-toolbar class="col-12">
         <div class="block">
             <h4 class="text-primary text-white font-bold block">
-                ASISTENCIA DEL {{ cNivelNombreCursos.toUpperCase() }} :
-                {{ cCursoNombre }}
+                ASISTENCIA DEL {{ encabezado[0]?.cCursoNombre | uppercase }}
             </h4>
             <div class="text-primary text-white font-bold block">
-                Nivel: {{ cNivelTipoNombre }} | Ciclo: I | Grado:
-                {{ cGradoAbreviacion }} | Seccion: {{ cSeccion }}
+                Nivel: {{ cNivelTipoNombre }} | Ciclo:
+                {{ encabezado[0]?.cCicloRomanos }} | Grado:
+                {{ encabezado[0]?.cGradoAbreviacion }} | Seccion:
+                {{ encabezado[0]?.cSeccionNombre }}
             </div>
         </div>
     </p-toolbar>
@@ -88,12 +89,12 @@
     [modal]="true"
     class="asistenciaModal"
     [(visible)]="verAsistencia"
-    [style]="{ width: '50rem' }"
+    [style]="{ width: '60rem' }"
 >
     <div class="grid mt-4">
         <div class="col-12">
             <span class="font-bold white-space-nowrap m-0">
-                Detalle del {{ cNivelNombreCursos }}
+                Detalles del {{ encabezado[0]?.cNivelNombreCursos }}
             </span>
         </div>
         <div class="col-12">
@@ -104,9 +105,13 @@
                         color: 'var(--primary-color-text)',
                     }"
                 >
-                    {{ cNivelNombreCursos }}
+                    {{ cNivelNombre }}
                 </p-inputGroupAddon>
-                <input pInputText disabled [value]="cCursoNombre" />
+                <input
+                    pInputText
+                    disabled
+                    [value]="encabezado[0]?.cCursoNombre"
+                />
             </p-inputGroup>
         </div>
         <div class="col-6">
@@ -132,7 +137,11 @@
                 >
                     Ciclo
                 </p-inputGroupAddon>
-                <input pInputText disabled value="I" />
+                <input
+                    pInputText
+                    disabled
+                    [value]="encabezado[0]?.cCicloRomanos"
+                />
             </p-inputGroup>
         </div>
         <div class="col-6">
@@ -145,7 +154,11 @@
                 >
                     Grado
                 </p-inputGroupAddon>
-                <input pInputText disabled [value]="cGradoAbreviacion" />
+                <input
+                    pInputText
+                    disabled
+                    [value]="encabezado[0]?.cGradoAbreviacion"
+                />
             </p-inputGroup>
         </div>
         <div class="col-6">
@@ -158,7 +171,11 @@
                 >
                     Sección
                 </p-inputGroupAddon>
-                <input pInputText disabled [value]="cSeccion" />
+                <input
+                    pInputText
+                    disabled
+                    [value]="encabezado[0]?.cSeccionNombre"
+                />
             </p-inputGroup>
         </div>
         <div class="col-12">
@@ -246,19 +263,24 @@
 <p-toast />
 
 <app-reporte-asistencia
-    [showModal]="showModal"
-    [cCursoNombre]="cCursoNombre"
-    [cGradoAbreviacion]="cGradoAbreviacion"
+    [idDocCursoId]="idDocCursoId"
+    [year]="year"
+    [cPersNombreLargo]="cPersNombreLargo"
+    [cIieeNombre]="cIieeNombre"
+    [cCicloRomanos]="encabezado[0]?.cCicloRomanos"
     [cNivelTipoNombre]="cNivelTipoNombre"
-    [cNivelNombreCursos]="cNivelNombreCursos"
-    [nombrecompleto]="nombrecompleto"
-    [cSeccion]="cSeccion"
-    [cCicloRomanos]="cCicloRomanos"
+    [cNivelNombreCursos]="encabezado[0]?.cNivelNombreCursos"
+    [showModal]="showModal"
+    [cCursoNombre]="encabezado[0]?.cCursoNombre"
     [iCursoId]="iCursoId"
     [iDocenteId]="iDocenteId"
     [iGradoId]="iGradoId"
+    [cGradoAbreviacion]="encabezado[0]?.cGradoAbreviacion"
     [iSeccionId]="iSeccionId"
+    [cSeccionNombre]="encabezado[0]?.cSeccionNombre"
     [iYAcadId]="iYAcadId"
+    [iIieeId]="iIieeId"
+    [iSedeId]="iSedeId"
     [iNivelGradoId]="iNivelGradoId"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-reporte-asistencia>

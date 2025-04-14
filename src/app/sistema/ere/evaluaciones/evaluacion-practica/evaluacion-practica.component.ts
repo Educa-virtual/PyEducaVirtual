@@ -331,7 +331,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     cPregunta:
                         '<p>¿En qué lugar fueron entregados los Diez Mandamientos?</p>',
                     cEncabPregContenido:
-                        '<p>Los Diez Mandamientos son un conjunto de principios éticos y de adoración que, según la Biblia, fueron escritos por Dios en dos tablas de piedra y entregados al profeta Moisés en el monte Sinaí.</p> <img src="assets/images/cuatro.jpg" alt="pregunta tres width="300" height="270" alt="Imagen de familia">',
+                        '<p>Los Diez Mandamientos son un conjunto de principios éticos y de adoración que, según la Biblia, fueron escritos por Dios en dos tablas de piedra y entregados al profeta Moisés en el monte Sinaí.</p> <img src="assets/images/cuatro.jpg" alt="pregunta tres width="300" height="255" alt="Imagen de familia">',
                     alternativas: JSON.stringify([
                         {
                             iAlternativaId: '1017',

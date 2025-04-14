@@ -150,7 +150,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     iPreguntaId: '1001',
                     iEncabPregId: null,
                     cPregunta:
-                        '<p>¿Cuál es el libro sagrado del cristianismo?</p> <img src="assets/images/uno.jpg" alt="Imagen de familia">',
+                        '<p>¿Cuál es el libro sagrado del cristianismo?</p>',
                     cEncabPregContenido: null,
                     alternativas: JSON.stringify([
                         {
@@ -193,7 +193,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     iPreguntaId: '1002',
                     iEncabPregId: null,
                     cPregunta:
-                        '<p>¿Cuál de los siguientes es un ejemplo de valor moral?</p> <img src="assets/images/dos.jpeg" alt="Imagen de familia">',
+                        '<p>¿Cuál de los siguientes es un ejemplo de valor moral?</p>',
                     cEncabPregContenido: null,
                     alternativas: JSON.stringify([
                         {
@@ -238,7 +238,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     cPregunta:
                         '<p>¿Quiénes ignoraron al hombre herido según la parábola?</p>',
                     cEncabPregContenido:
-                        '<p>Lee la siguiente parábola:</p><p>Un hombre bajaba de Jerusalén a Jericó y cayó en manos de unos ladrones. Le quitaron la ropa, lo golpearon y se fueron, dejándolo medio muerto. Un sacerdote pasó por el mismo camino, y al verlo, dio un rodeo y siguió adelante. También un levita pasó por aquel lugar, lo miró y dio un rodeo. Pero un samaritano que iba de viaje, al verlo se compadeció de él. Se acercó, le curó las heridas y lo llevó a una posada para que lo atendieran.</p> <img src="assets/images/tres.jpeg" alt="Imagen de familia">',
+                        '<p>Lee la siguiente parábola:</p><p>Un hombre bajaba de Jerusalén a Jericó y cayó en manos de unos ladrones. Le quitaron la ropa, lo golpearon y se fueron, dejándolo medio muerto. Un sacerdote pasó por el mismo camino, y al verlo, dio un rodeo y siguió adelante. También un levita pasó por aquel lugar, lo miró y dio un rodeo. Pero un samaritano que iba de viaje, al verlo se compadeció de él. Se acercó, le curó las heridas y lo llevó a una posada para que lo atendieran.</p> <img src="assets/images/tres.jpg" alt="pregunta tres width="300" height="250""> ',
                     alternativas: JSON.stringify([
                         {
                             iAlternativaId: '1009',
@@ -331,7 +331,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     cPregunta:
                         '<p>¿En qué lugar fueron entregados los Diez Mandamientos?</p>',
                     cEncabPregContenido:
-                        '<p>Los Diez Mandamientos son un conjunto de principios éticos y de adoración que, según la Biblia, fueron escritos por Dios en dos tablas de piedra y entregados al profeta Moisés en el monte Sinaí.</p> <img src="assets/images/cuatro.jpg" alt="Imagen de familia">',
+                        '<p>Los Diez Mandamientos son un conjunto de principios éticos y de adoración que, según la Biblia, fueron escritos por Dios en dos tablas de piedra y entregados al profeta Moisés en el monte Sinaí.</p> <img src="assets/images/cuatro.jpg" alt="pregunta tres width="300" height="270" alt="Imagen de familia">',
                     alternativas: JSON.stringify([
                         {
                             iAlternativaId: '1017',
@@ -419,7 +419,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     cPregunta:
                         '<p>¿Cuál de estos es un ejemplo de respeto en la familia?</p>',
                     cEncabPregContenido:
-                        '<p>La familia es el núcleo fundamental de la sociedad. Es el lugar donde aprendemos valores como el amor, el respeto, la responsabilidad y la solidaridad. Estos valores son esenciales para una convivencia armónica.</p><img src="assets/images/cinco.jpg" alt="Imagen de familia">',
+                        '<p>La familia es el núcleo fundamental de la sociedad. Es el lugar donde aprendemos valores como el amor, el respeto, la responsabilidad y la solidaridad. Estos valores son esenciales para una convivencia armónica.</p><img src="assets/images/cinco.jpg" alt="pregunta tres width="300" height="290" alt="Imagen de familia">',
                     alternativas: JSON.stringify([
                         {
                             iAlternativaId: '1025',
@@ -467,7 +467,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                     cPregunta:
                         '<p>¿Qué valor se demuestra cuando compartimos lo que tenemos con los demás miembros de la familia?</p>',
                     cEncabPregContenido:
-                        '<p>La familia es el núcleo fundamental de la sociedad. Es el lugar donde aprendemos valores como el amor, el respeto, la responsabilidad y la solidaridad. Estos valores son esenciales para una convivencia armónica.</p><img src="https://via.placeholder.com/400x300" alt="Imagen de familia">',
+                        '<p>La familia es el núcleo fundamental de la sociedad. Es el lugar donde aprendemos valores como el amor, el respeto, la responsabilidad y la solidaridad. Estos valores son esenciales para una convivencia armónica.</p> alt="Imagen de familia">',
                     alternativas: JSON.stringify([
                         {
                             iAlternativaId: '1029',

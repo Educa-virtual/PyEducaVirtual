@@ -571,8 +571,9 @@ export class InformesEreComponent implements OnInit {
                     const link = document.createElement('a')
                     link.href = url
                     link.target = '_blank'
+                    // link.download = 'INFORME-ERE.pdf'
                     link.click()
-                    window.URL.revokeObjectURL(url)
+                    // window.URL.revokeObjectURL(url)
                 },
                 error: (error) => {
                     console.log(error)

@@ -32,6 +32,13 @@ const routes: Routes = [
                 './sub-modulos/aula-banco-preguntas/aula-banco-pregunta-page/aula-banco-pregunta-page.component'
             ).then((m) => m.AulaBancoPreguntaPageComponent),
     },
+    {
+        path: 'capacitate-docente',
+        loadComponent: () =>
+            import(
+                './sub-modulos/capacitaciones/capacitate/solicitud-Inscripcion/solicitud-Inscripcion.component'
+            ).then((m) => m.SolicitudInscripcionComponent),
+    },
 ]
 
 export default routes

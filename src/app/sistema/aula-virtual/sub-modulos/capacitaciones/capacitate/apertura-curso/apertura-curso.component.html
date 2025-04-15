@@ -1,0 +1,312 @@
+<section>
+    <div class="grid">
+        <div class="card col-5 m-1">
+            <app-toolbar-primeng
+                title="Listado de Capacitación Activas"
+            ></app-toolbar-primeng>
+            <section>
+                <p-dataView #dv [value]="cursos" [rows]="5" filterBy="">
+                    <ng-template let-products pTemplate="listItem">
+                        <app-table-primeng
+                            [columnas]="columnasTabla"
+                            [data]="cursos"
+                            [showCaption]="false"
+                            (accionBtnItem)="accionBnt($event)"
+                            [actions]="accionesTabla"
+                        >
+                            <!--(accionBtnItem)="accionBnt($event)" -->
+                        </app-table-primeng>
+                    </ng-template>
+                </p-dataView>
+            </section>
+        </div>
+        <div class="card col">
+            <app-toolbar-primeng
+                title="Apertura Nueva Capacitación"
+            ></app-toolbar-primeng>
+            <form
+                [formGroup]="formNuevaCapacitacion"
+                class="flex flex-column gap-3 w-full"
+            >
+                <section>
+                    <div class="col-8">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Tipo de Capacitación:</p-inputGroupAddon
+                            >
+                            <p-dropdown
+                                [options]="tipoCapacitacion"
+                                styleClass="w-full"
+                                formControlName="iTipoCapId"
+                                placeholder="Seleccione el tipo"
+                                optionValue="iTipoCapId"
+                                optionLabel="cTipoCapNombre"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Título: </p-inputGroupAddon>
+
+                            <input
+                                type="text"
+                                pInputText
+                                placeholder="Ingresar nombre...."
+                                formControlName="cCapTitulo"
+                                [ngClass]="{
+                                    'p-invalid':
+                                        formNuevaCapacitacion.get('titulo')
+                                            ?.invalid &&
+                                        formNuevaCapacitacion.get('titulo')
+                                            ?.touched,
+                                }"
+                            />
+                        </p-inputGroup>
+                        <!-- Mensaje de error -->
+                        <small
+                            class="p-error"
+                            *ngIf="
+                                formNuevaCapacitacion.get('titulo')?.invalid &&
+                                formNuevaCapacitacion.get('titulo')?.touched
+                            "
+                        >
+                            El título es obligatorio.
+                        </small>
+                    </div>
+
+                    <!-- select p-dropdown -->
+                    <div class="col">
+                        <div class="grid">
+                            <div class="col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Nivel Educativo:</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        [options]="nivelPedagogico"
+                                        styleClass="w-full"
+                                        formControlName="iNivelPedId"
+                                        optionValue="iNivelPedId"
+                                        optionLabel="cNivelPedNombre"
+                                        placeholder="Seleccione Nivel"
+                                    ></p-dropdown>
+                                    <!-- id="modalidad" [options]="modalidades" -->
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Dirigido para:</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        [options]="publicoObjetivo"
+                                        styleClass="w-full"
+                                        formControlName="iTipoPubId"
+                                        placeholder="Seleccione Publico"
+                                        optionValue="iTipoPubId"
+                                        optionLabel="cTipoPubNombre"
+                                    ></p-dropdown>
+                                    <!-- id="modalidad" [options]="modalidades" -->
+                                </p-inputGroup>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descripción adicional -->
+                    <div class="col">
+                        <div class="formgrid grid">
+                            <div class="field col">
+                                <label for="descripcion" class="mt-1"
+                                    >Descripción
+                                    <span class="text-red-500 text-xs"
+                                        >(*) Obligatorio</span
+                                    ></label
+                                >
+                                <div class="mt-2">
+                                    <textarea
+                                        class="w-full"
+                                        rows="4"
+                                        placeholder="Escribe una Descripción"
+                                        pInputText
+                                        formControlName="cCapDescripcion"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- agregar horas -->
+                    <div class="col">
+                        <div class="grid">
+                            <div class="col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Total de horas:
+                                    </p-inputGroupAddon>
+                                    <input
+                                        type="number"
+                                        pInputText
+                                        min="1"
+                                        placeholder="0"
+                                        formControlName="iTotalHrs"
+                                        [ngClass]="{
+                                            'p-invalid':
+                                                formNuevaCapacitacion.get(
+                                                    'hora'
+                                                )?.invalid &&
+                                                formNuevaCapacitacion.get(
+                                                    'hora'
+                                                )?.touched,
+                                        }"
+                                    />
+                                </p-inputGroup>
+                                <!-- Mensaje de error -->
+                                <small
+                                    class="p-error"
+                                    *ngIf="
+                                        formNuevaCapacitacion.get('hora')
+                                            ?.invalid &&
+                                        formNuevaCapacitacion.get('hora')
+                                            ?.touched
+                                    "
+                                >
+                                    El título es obligatorio.
+                                </small>
+                            </div>
+                            <div class="col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Fecha de Inicio:</p-inputGroupAddon
+                                    >
+                                    <p-calendar
+                                        id="fechaFin"
+                                        formControlName="dFechaInicio"
+                                        styleClass="w-full"
+                                        dateFormat="dd/mm/yy"
+                                        [iconDisplay]="'input'"
+                                        [showIcon]="true"
+                                        inputId="icondisplay"
+                                    ></p-calendar>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Fecha de Fin:</p-inputGroupAddon
+                                    >
+                                    <p-calendar
+                                        id="fechaFin"
+                                        formControlName="dFechaFin"
+                                        styleClass="w-full"
+                                        dateFormat="dd/mm/yy"
+                                        [iconDisplay]="'input'"
+                                        [showIcon]="true"
+                                        inputId="icondisplay"
+                                    ></p-calendar>
+                                </p-inputGroup>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="grid">
+                            <div class="col-7">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Instructor:
+                                    </p-inputGroupAddon>
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        placeholder="Nombre del Instructor"
+                                        formControlName="iDocenteId"
+                                    />
+                                </p-inputGroup>
+                            </div>
+                            <div class="col align-content-center">
+                                <div class="flex">
+                                    <label for="" class="pr-3"
+                                        >¿Tiene Costo?</label
+                                    >
+                                    <div class="align-content-center">
+                                        <p-inputSwitch
+                                            formControlName="iCosto"
+                                            class="pr-3"
+                                        />
+                                    </div>
+                                    <!-- Input visible solo si iPago está activado -->
+                                    <input
+                                        *ngIf="
+                                            formNuevaCapacitacion.get('iCosto')
+                                                ?.value
+                                        "
+                                        type="text"
+                                        formControlName="nCosto"
+                                        placeholder="S/."
+                                        class="p-inputtext p-component w-10rem"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card col-12">
+                            <label for="descripcion" class="mt-1 font-bold"
+                                >Subir Imagen de portada:</label
+                            >
+                            <p-toast />
+                            <p-fileUpload
+                                name="demo[]"
+                                url="https://www.primefaces.org/cdn/api/upload.php"
+                                (onUpload)="onUpload($event)"
+                                [multiple]="true"
+                                accept="image/*"
+                                maxFileSize="1000000"
+                            >
+                                <ng-template pTemplate="content">
+                                    <ul *ngIf="uploadedFiles.length">
+                                        <li *ngFor="let file of uploadedFiles">
+                                            {{ file.name }} -
+                                            {{ file.size }} bytes
+                                        </li>
+                                    </ul>
+                                </ng-template>
+                            </p-fileUpload>
+                        </div>
+                    </div>
+
+                    <!-- Agregar los bottones -->
+                    <div class="col">
+                        <div class="flex justify-content-between">
+                            <div class="text-left">
+                                <p-button
+                                    icon="pi pi-hammer"
+                                    label="Limpiar"
+                                    severity="danger"
+                                    class="pr-2"
+                                    (click)="limpiarFormulario()"
+                                />
+                            </div>
+                            <div class="text-right">
+                                <p-button
+                                    icon="pi pi-eye"
+                                    label="Visualizar"
+                                    severity="contrast"
+                                    class="pr-2"
+                                />
+                                <p-button
+                                    icon="pi pi-check-circle"
+                                    [label]="
+                                        modoFormulario === 'editar'
+                                            ? 'Actualizar'
+                                            : 'Guardar'
+                                    "
+                                    severity="success"
+                                    (click)="crearCurso()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</section>

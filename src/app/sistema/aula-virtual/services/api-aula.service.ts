@@ -310,4 +310,71 @@ export class ApiAulaService {
             }
         )
     }
+    guardarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/guardarAnuncios`,
+            data
+        )
+    }
+    eliminarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/eliminarAnuncios`,
+            data // Enviar los datos como parámetros
+        )
+    }
+    fijarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/fijarAnuncios`,
+            data // Enviar los datos como parámetros
+        )
+    }
+    obtenerAnuncios(params: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/listarAnuncios`,
+            params // Enviar los datos como parámetros
+        )
+    }
+    // consultas para las capacitaciones docentes
+    obtenerTipoCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/tipo-capacitaciones/listarTipoCapacitaciones`,
+            data
+        )
+    }
+    obtenerNivelPedagogico(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/nivel-pedagogicos/listarNivelPedagogicos`,
+            data
+        )
+    }
+    obtenerTipoPublico(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/tipo-publicos/listarTipoPublicos`,
+            data
+        )
+    }
+    guardarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/guardarCapacitaciones`,
+            data
+        )
+    }
+    eliminarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/eliminarCapacitaciones`,
+            data
+        )
+    }
+    actualizarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/actualizarCapacitaciones`,
+            data
+        )
+    }
+    obtenerCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/listarCapacitaciones`,
+            data
+        )
+    }
 }

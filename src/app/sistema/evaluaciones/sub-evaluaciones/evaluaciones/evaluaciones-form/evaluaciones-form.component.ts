@@ -436,7 +436,6 @@ export class EvaluacionesFormComponent implements OnInit {
             .subscribe({
                 next: (resp: unknown) => {
                     this.tipoEvaluacion = resp['data']
-                    console.log('obteniendo respueta obtTipolEva', resp)
                 },
             })
     }

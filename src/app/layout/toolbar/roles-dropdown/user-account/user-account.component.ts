@@ -14,15 +14,21 @@ export class UserAccountComponent implements OnInit {
     @Output() actionTopBar = new EventEmitter()
 
     @Input() modulos = []
-    @Input() selectedModulo: string
+    @Input() roles = []
+    @Input() selectedModulo: string //perfil seleccionado
 
     name: string
+
     constructor(private ConstantesService: ConstantesService) {
         this.name = this.ConstantesService.nombres
+        // this.cPerfilNombre = this.selectedModulo[0]['cPerfilNombre']
     }
 
     items: MenuItem[] | undefined
     ngOnInit() {
+        // console.log(this.selectedModulo, 'selectedModulo')
+        // this.cPerfilNombre = this.selectedModulo[0]['cPerfilNombre']
+
         this.items = [
             {
                 items: [
@@ -31,7 +37,7 @@ export class UserAccountComponent implements OnInit {
                     //     icon: 'pi pi-user',
                     // },
                     {
-                        label: 'Salir Sesión',
+                        label: 'Salir sesión',
                         icon: 'pi pi-sign-out',
                         command: () => {
                             this.actionTopBar.emit({ accion: 'logout' })

@@ -9,13 +9,16 @@ import {
     OnInit,
     ContentChild,
     TemplateRef,
+    ViewChild,
 } from '@angular/core'
 import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component'
 import { IIcon } from '../icon/icon.interface'
 import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
-import { environment } from '@/environments/environment.template'
+import { Table } from 'primeng/table'
+import { SearchWordsComponent } from './search-words/search-words.component'
+import { environment } from '@/environments/environment'
 
 type TColumnType =
     | 'actions'
@@ -34,15 +37,35 @@ export interface IColumn {
     type: TColumnType
 
     width: string
+    padding?: string
     field: string
     header: string
     text_header: string
+    placeholder?: string
+    inputType?: string
+    outputType?: string
+
+    severity?: (
+        option
+    ) =>
+        | 'success'
+        | 'secondary'
+        | 'info'
+        | 'warning'
+        | 'danger'
+        | 'contrast'
+        | undefined
+    options?: {
+        label: string
+        value: string
+    }[]
     text: string
     styles?: object | undefined
     customFalsy?: {
         trueText: string
         falseText: string
     }
+    styles?: object | undefined
 }
 
 export interface IActionTable {
@@ -65,6 +88,7 @@ export interface IActionTable {
         TableColumnFilterComponent,
         IconComponent,
         IsIconTypePipe,
+        SearchWordsComponent,
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
@@ -84,18 +108,30 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() selectedRowDataChange = new EventEmitter()
 
     @Input() selectionMode: 'single' | 'multiple' | null = null
+    @Input() groupHeader: string
+
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
+    @Input() groupRowsBy
+    @Input() groupfooter: IColumn[]
+
+    debug(d) {
+        console.log('d')
+        console.log(d)
+    }
     @Input() showCaption: boolean = true
     @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
     @Input() sortMode: 'single' | 'multiple' | null = 'multiple'
     @Input() sortField: string | undefined | null = null
     @Input() sortOrder: number | undefined | null = null
+    @Input() indiceColumnaBuscar: number = 1
 
     @Input() selectedRowData
     @Input() scrollable: boolean = false
     @Input() scrollHeight: string = ''
+
+    @Input() template: 'body' | 'expandable' = 'body'
 
     @Input() data = []
     @Input() tableStyle: {
@@ -105,6 +141,42 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() placeholder = 'Buscar'
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
+    rowGroupheader: TemplateRef<unknown>
+
+    // buscador de palabras en el primeng
+    @ViewChild('dt') dt!: Table
+    searchTerm: string = ''
+
+    buscarPalabras(event: string) {
+        //     this.searchTerm = event.trim().toLowerCase();
+
+        // if (this.dt) {
+        //     const columnasFiltrar = [this.columnas[1].field, this.columnas[2].field, this.columnas[3].field];
+
+        //     columnasFiltrar.forEach(col => {
+        //         this.dt.filter(this.searchTerm, col, 'contains');
+        //     });
+        // }
+        this.searchTerm = event
+        console.log('Valor es ' + this.indiceColumnaBuscar)
+        if (this.dt) {
+            // solo va buscar en el indice(1)
+            // const filas = [this.columnas[1].field, this.columnas[2].field]
+            this.dt.filter(
+                this.searchTerm,
+                this.columnas[this.indiceColumnaBuscar].field,
+                'contains'
+            )
+        }
+    }
+    // otra forma de buscar en la table pero general demora en buscar
+    // buscarPalabras(event: string) {
+    //     this.searchTerm = event;
+
+    //     if (this.dt) {
+    //       this.dt.filterGlobal(this.searchTerm, 'contains');
+    //     }
+    // }
 
     public isIIcon = isIIcon
 
@@ -153,7 +225,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     @Input()
     set columnas(value: IColumn[] | undefined) {
-        console.log
         if (value) {
             this._columnas = value.map((column) => ({
                 ...column,
@@ -325,7 +396,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() enableViewSelections
     @Input() showSortIcon = true
     @Input() showAdvancedFilter = false
-    @Input() showColumnFilter = true
+
+    isAction(columns) {
+        return columns.filter((column) => column.type === 'actions')[0]
+    }
 
     // firstLoadRubrica = true
 
@@ -365,7 +439,11 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         item.ruta = 'users/no-image.png'
     }
 
-    /***
+    selectedValue: { [key: string]: any } = {}
+    formatGroupHeader(header: string, data: any): string {
+        return header.replace(/\b\w+\b/g, (key) => data[key] || key)
+    }
+    /*
      * Mapea estilos de tag
      * @param row fila seleccionada
      * @param col datos del header de columna seleccionada

@@ -129,9 +129,17 @@ export class EvaluacionesFormComponent implements OnInit {
             iNivelEvalId: [null, [Validators.required]],
             cEvaluacionNombre: [null, [Validators.required]],
             cEvaluacionDescripcion: [null, [Validators.required]],
-            cEvaluacionUrlDrive: [null, [Validators.required]],
-            dtInicio: ['', [Validators.required]],
-            dtFin: ['', [Validators.required]],
+            cEvaluacionUrlDrive: [
+                '',
+                [
+                    Validators.required,
+                    Validators.pattern(
+                        'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)'
+                    ),
+                ],
+            ],
+            dtEvaluacionFechaInicio: [null, [Validators.required]],
+            dtEvaluacionFechaFin: [null, [Validators.required]],
         })
     }
     // Función para mostrar el valor en la consola
@@ -155,33 +163,62 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'editar') {
-            if (this.evaluacionFormGroup.invalid) {
+            const camposInvalidos: string[] = []
+            Object.keys(this.evaluacionFormGroup.controls).forEach((campo) => {
+                const control = this.evaluacionFormGroup.get(campo)
+                if (control?.invalid) {
+                    camposInvalidos.push(campo)
+                }
+            })
+            if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para editar la evaluación.',
+                    detail: `Rellene los campos que esten vacíos o inválidos: ${camposInvalidos.join(', ')}`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
                 return
             }
-            this.esModoEdicion = true
-            this.actualizarEvaluacion()
-            //console.log('Formulario EDITAR DESDE HANDLE', this.accion)
-        }
 
-        if (this.activeStep === 0 && this.accion === 'nuevo') {
-            console.log(this.evaluacionFormGroup)
+            // agregando  this.actualizarEvaluacion();
+            this.actualizarEvaluacion()
+
             // if (this.evaluacionFormGroup.invalid) {
             //     this._MessageService.add({
             //         severity: 'error',
             //         summary: 'Rellenar los campos',
-            //         detail: 'Rellene todos los campos para crear la evaluación.',
+            //         detail: 'Rellene todos los campos para editar la evaluación.',
             //     })
             //     // Marca los campos como tocados para que se muestren los errores
             //     this.evaluacionFormGroup.markAllAsTouched()
             //     return
             // }
+            // this.esModoEdicion = true
+            // this.actualizarEvaluacion()
+            //console.log('Formulario EDITAR DESDE HANDLE', this.accion)
+        }
+
+        if (this.activeStep === 0 && this.accion === 'nuevo') {
+            // console.log(this.evaluacionFormGroup)
+
+            const camposInvalidos: string[] = []
+            Object.keys(this.evaluacionFormGroup.controls).forEach((campo) => {
+                const control = this.evaluacionFormGroup.get(campo)
+                if (control?.invalid) {
+                    camposInvalidos.push(campo)
+                }
+            })
+            if (camposInvalidos.length > 0) {
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Rellenar los campos',
+                    detail: `Los siguientes campos están vacíos o inválidos: ${camposInvalidos.join(', ')}`,
+                })
+                // Marca los campos como tocados para que se muestren los errores
+                this.evaluacionFormGroup.markAllAsTouched()
+                return
+            }
             // Si es válido, guardar la evaluación
             this.guardarEvaluacion()
             this.enviarVarlorDesdeForm()
@@ -246,64 +283,28 @@ export class EvaluacionesFormComponent implements OnInit {
         }
     }
     ereCrearFormulario() {
-        // this.evaluacionFormGroup = this._formBuilder.group({
-        //     iEvaluacionId: [null],
-        //     idTipoEvalId: [null, [Validators.required]],
-        //     iNivelEvalId: [null, [Validators.required]],
-        //     cEvaluacionNombre: [null, [Validators.required]],
-        //     cEvaluacionDescripcion: [null, [Validators.required]],
-        //     cEvaluacionUrlDrive: [null, [Validators.required]],
-        //     cEvaluacionUrlPlantilla: [null, [Validators.required]],
-        //     cEvaluacionUrlManual: [null, [Validators.required]],
-        //     cEvaluacionUrlMatriz: [null, [Validators.required]],
-        //     cEvaluacionObs: [null, [Validators.required]],
-        //     dtEvaluacionCreacion: [null, Validators.required],
-        //     dtEvaluacionLiberarMatriz: [null, Validators.required],
-        //     dtEvaluacionLiberarCuadernillo: [null, Validators.required],
-        //     dtEvaluacionLiberarResultados: [null, Validators.required],
-        //     iEstado: [null],
-        //     cEvaluacionIUrlCuadernillo: [null, Validators.required], // URL de la cuadernillo
-        //     cEvaluacionUrlHojaRespuestas: [null, Validators.required], // URL de la hoja de respuestas
-        // })
+        this.evaluacionFormGroup = this._formBuilder.group({
+            iEvaluacionId: [null],
+            idTipoEvalId: [null, [Validators.required]],
+            iNivelEvalId: [null, [Validators.required]],
+            cEvaluacionNombre: [null, [Validators.required]],
+            cEvaluacionDescripcion: [null, [Validators.required]],
+            cEvaluacionUrlDrive: [null, [Validators.required]],
+            dtEvaluacionFechaInicio: [null, [Validators.required]],
+            dtEvaluacionFechaFin: [null, [Validators.required]],
+        })
     }
+
     ereVerEvaluacion() {
-        // const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
-        // if (evaluacionData) {
-        //     //console.log(evaluacionData.dtEvaluacionCreacion)
-        //     this.evaluacionFormGroup.patchValue({
-        //         iEvaluacionId: evaluacionData.iEvaluacionId,
-        //         idTipoEvalId: evaluacionData.idTipoEvalId,
-        //         iNivelEvalId: evaluacionData.iNivelEvalId,
-        //         cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
-        //         cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
-        //         cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
-        //         cEvaluacionUrlPlantilla: evaluacionData.cEvaluacionUrlPlantilla,
-        //         cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
-        //         cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
-        //         cEvaluacionObs: evaluacionData.cEvaluacionObs,
-        //         dtEvaluacionCreacion: evaluacionData.dtEvaluacionCreacion,
-        //         dtEvaluacionLiberarMatriz:
-        //             evaluacionData.dtEvaluacionLiberarMatriz,
-        //         dtEvaluacionLiberarCuadernillo:
-        //             evaluacionData.dtEvaluacionLiberarCuadernillo,
-        //         dtEvaluacionLiberarResultados:
-        //             evaluacionData.dtEvaluacionLiberarResultados,
-        //         // Convertir 0 o 1 en un valor booleano para el input switch
-        //         iEstado:
-        //             evaluacionData.iEstado === '1' ||
-        //             evaluacionData.iEstado === 1,
-        //         cEvaluacionIUrlCuadernillo:
-        //             evaluacionData.cEvaluacionIUrlCuadernillo,
-        //         cEvaluacionUrlHojaRespuestas:
-        //             evaluacionData.cEvaluacionUrlHojaRespuestas,
-        //     })
-        //     // Aquí estamos configurando el valor de `checked` para el input switch
-        //     this.checked =
-        //         evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
-        // }
+        const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
+        if (evaluacionData) {
+            this.evaluacionFormGroup.patchValue(evaluacionData)
+        }
     }
     guardarEvaluacion() {
         // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+        // console.log(this.evaluacionFormGroup.get('idTipoEvalId').value)
+        const estado = 1
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
@@ -315,115 +316,62 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            dtInicio: this.evaluacionFormGroup.get('dtInicio').value,
-            dtFin: this.evaluacionFormGroup.get('dtFin').value,
+            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaInicio'
+            ).value,
+            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaFin'
+            ).value,
+            iEstado: estado,
         }
 
-        console.log('datos que se guardaran', data)
-        // this._apiEre
-        //     .guardarEvaluacion(data)
-        //     .pipe(takeUntil(this.unsubscribe$))
-        //     .subscribe({
-        //         next: (resp: any) => {
-        //             this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-        //             this.compartirIdEvaluacionService.iEvaluacionId =
-        //                 this.iEvaluacionId // Guardar en el servicio
+        this._apiEre
+            .guardarEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+                    this.compartirIdEvaluacionService.iEvaluacionId =
+                        this.iEvaluacionId // Guardar en el servicio
 
-        //             const nombreEvaluacion =
-        //                 resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
-        //             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-        //                 nombreEvaluacion
-        //             )
-        //             this._MessageService.add({
-        //                 severity: 'success',
-        //                 summary: 'Se guardo con exitoso',
-        //                 detail: 'La evaluacion se ha guardado con éxito.',
-        //             })
-        //         },
-        //         error: (error) => {
-        //             console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-        //             //alert('Error en el servidor: ' + JSON.stringify(error))
-        //         },
-        //     })
+                    const nombreEvaluacion =
+                        resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
+                    this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+                        nombreEvaluacion
+                    )
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Se guardó con éxito',
+                        detail: 'La evaluación se ha guardado con éxito.',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+                    //alert('Error en el servidor: ' + JSON.stringify(error))
+                },
+            })
     }
-    // el anterior metodo guardar..
-    // guardarEvaluacion() {
-    //     const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
-    //     const data = {
-    //         idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
-    //         iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
-    //         dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionCreacion'
-    //         ).value,
-    //         cEvaluacionNombre:
-    //             this.evaluacionFormGroup.get('cEvaluacionNombre').value,
-    //         cEvaluacionDescripcion: this.evaluacionFormGroup.get(
-    //             'cEvaluacionDescripcion'
-    //         ).value,
-    //         cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlDrive'
-    //         ).value,
-    //         cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlPlantilla'
-    //         ).value,
-    //         cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlManual'
-    //         ).value,
-    //         cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlMatriz'
-    //         ).value,
-    //         cEvaluacionObs:
-    //             this.evaluacionFormGroup.get('cEvaluacionObs').value,
-    //         dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionLiberarMatriz'
-    //         ).value,
-    //         dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionLiberarCuadernillo'
-    //         ).value,
-    //         dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionLiberarResultados'
-    //         ).value,
-    //         iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
-    //         iSesionId: iSesionId,
-    //         cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
-    //             'cEvaluacionIUrlCuadernillo'
-    //         ).value,
-    //         cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlHojaRespuestas'
-    //         ).value,
-    //     }
-
-    //     console.log(data)
-    //     this._apiEre
-    //         .guardarEvaluacion(data)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-    //                 this.compartirIdEvaluacionService.iEvaluacionId =
-    //                     this.iEvaluacionId // Guardar en el servicio
-
-    //                 const nombreEvaluacion =
-    //                     resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
-    //                 this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-    //                     nombreEvaluacion
-    //                 )
-    //                 this._MessageService.add({
-    //                     severity: 'success',
-    //                     summary: 'Se guardo con exitoso',
-    //                     detail: 'La evaluacion se ha guardado con éxito.',
-    //                 })
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-    //                 //alert('Error en el servidor: ' + JSON.stringify(error))
-    //             },
-    //         })
-    // }
-
-    // Método para actualizar los datos en el backend
+    // Método para actualizar los datos en la base de datos
     actualizarEvaluacion() {
-        const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+        /*let fechaInicio = this.evaluacionFormGroup.get(
+            'dtEvaluacionFechaInicio'
+        ).value
+        let fechaFin = this.evaluacionFormGroup.get(
+            'dtEvaluacionFechaFin'
+        ).value*/
+
+        // Convertir fechas al formato que necesita SQL Server (YYYY-MM-DD) // no cambiar esta conversion
+        /*if (typeof fechaInicio === 'string' && fechaInicio.includes('/')) {
+            const [dia, mes, anio] = fechaInicio.split('/')
+            fechaInicio = `${anio}-${mes}-${dia}`
+        }
+
+        if (typeof fechaFin === 'string' && fechaFin.includes('/')) {
+            const [dia, mes, anio] = fechaFin.split('/')
+            fechaFin = `${anio}-${mes}-${dia}`
+        }*/
+
+        // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
 
         const data = {
             iEvaluacionId: Number(
@@ -435,9 +383,6 @@ export class EvaluacionesFormComponent implements OnInit {
             iNivelEvalId: Number(
                 this.evaluacionFormGroup.get('iNivelEvalId').value
             ),
-            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-                'dtEvaluacionCreacion'
-            ).value,
             cEvaluacionNombre:
                 this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             cEvaluacionDescripcion: this.evaluacionFormGroup.get(
@@ -446,48 +391,41 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlPlantilla'
-            ).value,
-            cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlManual'
-            ).value,
-            cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlMatriz'
-            ).value,
-            cEvaluacionObs:
-                this.evaluacionFormGroup.get('cEvaluacionObs').value,
-            dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarMatriz'
-            ).value,
-            dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarCuadernillo'
-            ).value,
-            dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarResultados'
-            ).value,
-            iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
-            iSesionId: iSesionId,
 
-            cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
-                'cEvaluacionIUrlCuadernillo'
+            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaInicio'
             ).value,
-            cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlHojaRespuestas'
+            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaFin'
             ).value,
         }
 
+        //console.log('Datos para actualizar (con fechas ISO):', data)
+
+        //console.log('datos para acualizar', data)
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
+                console.log('respuesta de actualizacion', resp)
+
                 this._MessageService.add({
                     severity: 'success',
-                    summary: 'Actualizado con exitoso',
-                    detail: 'La evaluacion se ha actualizado con éxito.',
+                    summary: 'Actualización exitosa',
+                    detail: 'Los datos de la evaluación han sido actualizados.',
                 })
                 resp
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)
+
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error de actualización',
+                    detail: 'No se pudo actualizar la evaluación. Por favor intente de nuevo.',
+                })
+            },
+
+            complete: () => {
+                console.log('Actualizacion completada')
             },
         })
     }

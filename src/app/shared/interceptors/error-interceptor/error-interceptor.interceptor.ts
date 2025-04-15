@@ -29,7 +29,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                     errorMsg = `Error: ${error.error.message}`
                 } else {
                     // verificar respuesta api
-                    errorMsg = error.error.message
+                    errorMsg =
+                        error.error?.message || 'Ocurrió un error desconocido'
                 }
                 message.message = errorMsg
                 this._messageService.openDialog(message)

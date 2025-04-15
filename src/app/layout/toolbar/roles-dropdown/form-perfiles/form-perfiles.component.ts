@@ -19,6 +19,7 @@ export class FormPerfilesComponent {
     perfilSeleccionado: any = {}
     name: string
     name1: string
+    ModalPermanente: boolean = false
     constructor(
         private store: LocalStoreService,
         private ConstantesService: ConstantesService,
@@ -29,6 +30,9 @@ export class FormPerfilesComponent {
         this.name1 = this.ConstantesService.nombre
         const user = this.store.getItem('dremoUser')
         this.perfiles = user ? user.perfiles : this.logout()
+
+        const perfil = this.store.getItem('dremoPerfil')
+        this.ModalPermanente = perfil ? true : false
     }
 
     changePerfil(perfiles: any): void {

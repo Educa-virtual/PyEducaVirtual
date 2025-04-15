@@ -1,57 +1,70 @@
 import { Injectable } from '@angular/core'
-import {
-    ActivatedRoute,
-    ActivatedRouteSnapshot,
-    Router,
-    RoutesRecognized,
-} from '@angular/router'
-import { filter, map, tap } from 'rxjs/operators'
-import { Observable } from 'rxjs'
-import { Breadcrumb } from './breadcrumb.model'
-
-@Injectable()
-export class BreadcrumbNavService {
-    public crumbs$: Observable<Breadcrumb[]>
-    public activeCrumb: Breadcrumb
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
+import { BehaviorSubject } from 'rxjs'
+import { filter } from 'rxjs/operators'
+@Injectable({
+    providedIn: 'root',
+})
+export class BreadcrumbService {
+    private breadcrumbsSubject: BehaviorSubject<
+        Array<{ label: string; url: string }>
+    > = new BehaviorSubject([])
+    breadcrumbs$ = this.breadcrumbsSubject.asObservable()
 
     constructor(
-        public activatedRoute: ActivatedRoute,
-        public router: Router
+        private router: Router,
+        private activatedRoute: ActivatedRoute
     ) {
-        this.crumbs$ = this.router.events.pipe(
-            // only continue if routing has completed
-            filter((event) => event instanceof RoutesRecognized),
-
-            map((event: RoutesRecognized) => event.state.root.firstChild),
-
-            map((snapshot) => this.routeSnapshotToBreadcrumb(snapshot)),
-
-            tap((crumbs) => (this.activeCrumb = crumbs[crumbs.length - 1]))
-        )
+        this.router.events
+            .pipe(filter((event) => event instanceof NavigationEnd))
+            .subscribe(() => {
+                const breadcrumbs = this.createBreadcrumbs(
+                    this.activatedRoute.root
+                )
+                this.breadcrumbsSubject.next(breadcrumbs)
+            })
     }
 
-    private routeSnapshotToBreadcrumb(snapshot: ActivatedRouteSnapshot): any[] {
-        const crumbs: Breadcrumb[] = []
-        let routeSnapshot = snapshot
-        let routeFromRoot = ''
+    private createBreadcrumbs(
+        route: ActivatedRoute,
+        url: string = '',
+        breadcrumbs: Array<{
+            label: string
+            url: string
+            icon: string
+            route: boolean
+            index: number
+        }> = []
+    ): Array<{ label: string; url: string }> {
+        const children: ActivatedRoute[] = route.children
 
-        while (routeSnapshot) {
-            if (!routeSnapshot.url.length) {
-                break
+        // Si no tiene rutas hijas, devolvemos los breadcrumbs
+        if (children.length === 0) {
+            return breadcrumbs
+        }
+        children.forEach((child, index) => {
+            const routeURL: string = child.snapshot.url
+                .map((segment) => segment.path)
+                .join('/')
+            const breadcrumbLabel =
+                child.snapshot.data['breadcrumb'] || routeURL // Si no existe el 'breadcrumb', usamos el nombre de la ruta
+            const breadcrumbIcon = child.snapshot.data['icon'] || 'pi pi-home'
+            if (routeURL !== '') {
+                url += `/${routeURL}`
+                breadcrumbs.push({
+                    label: breadcrumbLabel,
+                    url: url,
+                    icon: breadcrumbIcon,
+                    route:
+                        breadcrumbs.length === children.length ? true : false,
+                    index: index,
+                })
             }
 
-            const urlSegment = routeSnapshot.url[0].path
-            const route = (routeFromRoot += `/${urlSegment}`)
-            const label = routeSnapshot.data['breadcrumb']
-            crumbs.push({
-                urlSegment,
-                route,
-                label,
-            })
+            // // Recursividad: para cada hijo, seguir agregando al breadcrumb
+            //return this.createBreadcrumbs(child, url, breadcrumbs);
+        })
 
-            routeSnapshot = routeSnapshot.firstChild
-        }
-
-        return crumbs
+        return breadcrumbs
     }
 }

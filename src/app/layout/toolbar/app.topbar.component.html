@@ -15,7 +15,7 @@
     </div>
     <div class="topbar__notif_anio_inst_account">
         <button
-            class="p-link"
+            class="p-link display-none"
             style="color: var(--surface-menu)"
             (click)="menu.toggle($event)"
         >
@@ -24,7 +24,12 @@
                 pBadge
                 style="font-size: 2rem"
                 [value]="totalNotificaciones"
+                *ngIf="totalNotificaciones !== 0; else alarma"
             ></i>
+
+            <ng-template #alarma>
+                <i class="pi pi-bell" style="font-size: 2rem"></i>
+            </ng-template>
         </button>
         <app-anio-escolar
             class="ml-5 mr-1"
@@ -42,7 +47,7 @@
         <app-user-account
             class="mr-1"
             (actionTopBar)="actionTopBar($event)"
-            [selectedModulo]="selectedModulo"
+            [selectedModulo]="selectedPerfil"
         ></app-user-account>
     </div>
 </div>

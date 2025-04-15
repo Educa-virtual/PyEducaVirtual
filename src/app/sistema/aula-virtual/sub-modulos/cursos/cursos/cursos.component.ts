@@ -1,20 +1,13 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
-import { CardModule } from 'primeng/card'
 import { DataViewModule, DataView } from 'primeng/dataview'
-import { TableModule } from 'primeng/table'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
 import { CursoCardComponent } from '../components/curso-card/curso-card.component'
 import { ICurso } from '../interfaces/curso.interface'
-import { DropdownModule } from 'primeng/dropdown'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Subject, takeUntil } from 'rxjs'
-import { ButtonModule } from 'primeng/button'
 import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas-estudios.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { PrimengModule } from '@/app/primeng.module'
@@ -27,18 +20,10 @@ export type Layout = 'list' | 'grid'
     imports: [
         CommonModule,
         ContainerPageComponent,
-        CardModule,
         DataViewModule,
-        TableModule,
         TablePrimengComponent,
-        IconFieldModule,
-        InputIconModule,
-        InputTextModule,
         CursoCardComponent,
-        DropdownModule,
-        ButtonModule,
         AreasEstudiosComponent,
-        ButtonModule,
         PrimengModule,
     ],
     templateUrl: './cursos.component.html',
@@ -95,7 +80,7 @@ export class CursosComponent implements OnDestroy, OnInit {
         const perfil = this.store.getItem('dremoPerfil')
         switch (Number(perfil.iPerfilId)) {
             case DOCENTE:
-                this.getCursosDocente(year)
+                this.getCursosDocente()
                 break
             case ESTUDIANTE:
                 this.getCursosEstudiante(year)
@@ -103,23 +88,42 @@ export class CursosComponent implements OnDestroy, OnInit {
         }
     }
 
-    getCursosDocente(year) {
+    // muestra en la area curriculares los cursos del docente,grado y seccion
+    getCursosDocente() {
         const params = {
             petition: 'post',
-            group: 'docente',
-            prefix: 'docente-cursos',
-            ruta: 'list', //'getDocentesCursos',
+            group: 'acad',
+            prefix: 'docente',
+            ruta: 'docente_curso',
             data: {
-                opcion: 'CONSULTARxiPersIdxiYearId',
-                iCredId: this._constantesService.iCredId,
-                valorBusqueda: year, //iYearId
-                iSemAcadId: null,
-                iIieeId: null,
+                opcion: 2,
+                iDocenteId: this._constantesService.iDocenteId,
+                iYearId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iIieeId: this._constantesService.iIieeId,
             },
             params: { skipSuccessMessage: true },
         }
         this.obtenerCursos(params)
     }
+
+    // getCursosDocente(year) {
+    //     const params = {
+    //         petition: 'post',
+    //         group: 'acad',
+    //         prefix: 'docente',
+    //         ruta: 'docente_curso',
+    //         data: {
+    //             opcion: 'CONSULTARxiPersIdxiYearId',
+    //             iCredId: this._constantesService.iCredId,
+    //             valorBusqueda: year, //iYearId
+    //             iSemAcadId: null,
+    //             iIieeId: null,
+    //         },
+    //         params: { skipSuccessMessage: true },
+    //     }
+    //     this.obtenerCursos(params)
+    // }
     getCursosEstudiante(year) {
         const params = {
             petition: 'post',

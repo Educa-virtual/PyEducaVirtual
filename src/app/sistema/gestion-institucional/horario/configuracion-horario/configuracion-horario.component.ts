@@ -32,7 +32,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
     formSearch: FormGroup
 
     configTime: any = {}
-
+    dremoYear: number
     cicloAcad: number
 
     horaInicio: string = ''
@@ -73,6 +73,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
     minimo: number
     caption_docente: string
     visible_docente: boolean = false
+    c_accion: any = ''
 
     iTurnoId: number
     iModalServId: number
@@ -111,6 +112,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
         this.perfil = this.store.getItem('dremoPerfil')
         console.log(this.perfil, 'perfil dremo')
         console.log(this.store, 'console.log(this.store)')
+        this.dremoYear = this.store.getItem('dremoYear')
         //this.getSemestres();
         this.searchConfiguraciones()
 
@@ -315,10 +317,30 @@ export class ConfiguracionHorarioComponent implements OnInit {
                 complete: () => {
                     console.log('Request completed')
 
+                    if (this.configuracion.length > 0) {
+                        // this.SearchNivelGrados(this.configuracion[0].iConfigId) // carga los grados
+                    } else {
+                        this._confirmService.openAlert({
+                            header: 'Advertencia de configuración',
+                            message:
+                                'No se encuentra registro de ambientes no creado, año acdémico ' +
+                                this.dremoYear,
+                            icon: 'pi pi-times-circle',
+                            //severity : "error"
+                        })
+
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Registro no valido',
+                            detail: 'El calendario escolar y periodos no configurados',
+                        })
+                    }
+
                     // this.getYearCalendarios(this.formCalendario.value)
                 },
             })
     }
+
     searchHorarioIes() {
         this.query
             .searchHorarioIes({

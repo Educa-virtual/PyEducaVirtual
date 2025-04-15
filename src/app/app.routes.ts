@@ -9,7 +9,8 @@ import { RecoverPasswordComponent } from './shared/recover-password/recover-pass
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 
 export const routes: Routes = [
-    { path: '', component: InicioComponent },
+    { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+    { path: 'inicio', component: InicioComponent },
     {
         path: '',
 
@@ -35,6 +36,10 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
+            {
+                path: 'ere',
+                loadChildren: () => import('./sistema/ere/ere.routes'),
+            },
             // Ruta de Especialista
             {
                 path: 'especialista-ugel',
@@ -42,6 +47,15 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import(
                         './sistema/especialista-ugel/especialista-ugel.routes'
+                    ),
+            },
+
+            // ruta de rol asignado
+            {
+                path: 'sin-rol-asignado',
+                loadChildren: () =>
+                    import(
+                        './sistema/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
             },
         ],
@@ -94,8 +108,16 @@ export const routes: Routes = [
                 './sistema/gestion-institucional/horario/horario.module'
             ).then((m) => m.HorarioModule),
     },
+    {
+        path: 'apoderado',
+
+        loadChildren: () =>
+            import('./sistema/apoderado/apoderado.module').then(
+                (m) => m.ApoderadoModule
+            ),
+    },
 
     { path: 'notfound', component: NotfoundComponent },
 
-    { path: '**', redirectTo: '/notfound' },
+    { path: '**', redirectTo: '/notfound', pathMatch: 'full' },
 ]

@@ -1,283 +1,32 @@
-<section class="flex flex-column gap-4">
-    <div class="col-12 md:col-6 text-left">
+<section class="flex flex-column gap-2">
+    <div class="col-12 md:col-6 text-left p-0 m-0">
         <span class="text-sm"> Inicio > Mis Comunicados </span>
     </div>
-
     <!-- título -->
-    <div class="grid">
-        <p-toolbar class="col-12">
+    <div>
+        <p-toolbar class="col-12 p-0 m-0">
             <div class="block">
                 <h2 class="text-primary text-white font-bold block">
                     Mis Comunicados
                 </h2>
             </div>
         </p-toolbar>
-        <p-toolbar class="col-12">
-            <!-- Sección de variables (Nivel, Ciclo, Grado, etc.) -->
-            <div class="flex flex-wrap gap-2 align-items-center">
-                <span class="font-medium"
-                    >Nivel: <strong>Educación Secundaria</strong></span
-                >
-                <span class="font-medium">Ciclo: <strong>VI</strong></span>
-                <span class="font-medium">Grado: <strong>1ro</strong></span>
-                <span class="font-medium">Sección: <strong>A</strong></span>
-                <span class="font-medium"
-                    >Área: <strong>Matemática</strong></span
-                >
-            </div>
-        </p-toolbar>
     </div>
-
     <!-- contenido -->
-    <div class="flex">
-        <div class="card w-full">
-            <div class="flex">
-                <button
-                    pButton
-                    pRipple
-                    icon="pi pi pi-home"
-                    label="Inicio"
-                    class="p-button-primary ml-1"
-                ></button>
-
-                <button
-                    pButton
-                    pRipple
-                    icon="pi pi pi-book"
-                    label="Contenido"
-                    class="p-button-primary ml-1"
-                ></button>
-                <button
-                    pButton
-                    pRipple
-                    icon="pi pi pi-users"
-                    label="Resultados"
-                    class="p-button-primary ml-1"
-                ></button>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid">
-        <!-- Panel izquierdo: Lista de Comunicados -->
-        <div class="col-12 md:col-6">
-            <p-panel>
-                <ng-template pTemplate="header">
-                    <h2 class="m-0 font-bold text-white">Lista Comunicados</h2>
-                </ng-template>
-                <!-- Contenedor de comunicados dinámicos -->
-                <div class="flex flex-column gap-3 mt-2">
-                    <!-- Recorre el array con *ngFor -->
-                    <p-panel
-                        *ngFor="let comunicado of comunicados"
-                        [toggleable]="true"
-                        [collapsed]="true"
-                    >
-                        <!-- Personaliza el header de cada comunicado -->
-                        <ng-template pTemplate="header">
-                            <div
-                                class="flex justify-content-between align-items-center text-white"
-                            >
-                                <strong>{{ comunicado.titulo }}</strong>
-                                <!-- Opcional: Botones de acción -->
-                                <div>
-                                    <button
-                                        pButton
-                                        icon="pi pi-pencil"
-                                        class="p-button-text p-button-sm mr-1 text-white"
-                                        (click)="editComunicado(comunicado)"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        pButton
-                                        icon="pi pi-trash"
-                                        class="p-button-text p-button-sm text-white"
-                                    >
-                                        Eliminar
-                                    </button>
-                                    <button
-                                        pButton
-                                        icon="pi pi-eye"
-                                        class="p-button-text p-button-sm text-white"
-                                    >
-                                        Ver
-                                    </button>
-                                </div>
-                            </div>
-                        </ng-template>
-
-                        <!-- Contenido que se ve al expandir el panel -->
-                        <div class="grid p-2">
-                            <div class="col-12 md:col-6">
-                                <p>
-                                    <strong>Estado:</strong>
-                                    {{ comunicado.estado }}
-                                </p>
-                                <p>
-                                    <strong>Tipo:</strong> {{ comunicado.tipo }}
-                                </p>
-                                <p>
-                                    <strong>Publicado:</strong>
-                                    {{ comunicado.publicado }}
-                                </p>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <p>
-                                    <strong>Prioridad:</strong>
-                                    {{ comunicado.prioridad }}
-                                </p>
-                                <p>
-                                    <strong>Caduca:</strong>
-                                    {{ comunicado.caduca }}
-                                </p>
-                                <p>
-                                    <strong>Grupo:</strong>
-                                    {{ comunicado.grupo }}
-                                </p>
-                            </div>
-                            <div class="col-12">
-                                <p class="mt-2">
-                                    {{ comunicado.texto }}
-                                </p>
-                            </div>
-                        </div>
-                    </p-panel>
-                </div>
-            </p-panel>
-        </div>
-
-        <!-- Panel derecho: Crear Comunicado -->
-        <div class="col-12 md:col-6">
-            <p-panel>
-                <ng-template pTemplate="header">
-                    <div
-                        class="w-full bg-primary text-white p-3 border-round-top"
-                    >
-                        <h2 class="m-0 font-bold text-white">
-                            <!-- Cambia el título dinámicamente -->
-                            {{
-                                selectedComunicado.id === 0
-                                    ? 'Crear Comunicado'
-                                    : 'Editar Comunicado'
-                            }}
-                        </h2>
-                    </div>
-                </ng-template>
-                <!-- FORMULARIO (Template-Driven) -->
-                <form
-                    (ngSubmit)="guardarComunicado()"
-                    #comunicadoForm="ngForm"
-                    class="flex flex-column gap-2"
-                >
-                    <div class="grid">
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="estado" class="mb-1">Estado</label>
-                            <input
-                                pInputText
-                                id="estado"
-                                name="estado"
-                                [(ngModel)]="selectedComunicado.estado"
-                            />
-                        </div>
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="prioridad" class="mb-1"
-                                >Prioridad</label
-                            >
-                            <input
-                                pInputText
-                                id="prioridad"
-                                name="prioridad"
-                                [(ngModel)]="selectedComunicado.prioridad"
-                            />
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="tipo" class="mb-1">Tipo</label>
-                            <input
-                                pInputText
-                                id="tipo"
-                                name="tipo"
-                                [(ngModel)]="selectedComunicado.tipo"
-                            />
-                        </div>
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="grupo" class="mb-1">Grupo</label>
-                            <input
-                                pInputText
-                                id="grupo"
-                                name="grupo"
-                                [(ngModel)]="selectedComunicado.grupo"
-                            />
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="publicado" class="mb-1"
-                                >Publicado</label
-                            >
-                            <input
-                                pInputText
-                                id="publicado"
-                                name="publicado"
-                                [(ngModel)]="selectedComunicado.publicado"
-                            />
-                        </div>
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="caduca" class="mb-1">Caduca</label>
-                            <input
-                                pInputText
-                                id="caduca"
-                                name="caduca"
-                                [(ngModel)]="selectedComunicado.caduca"
-                            />
-                        </div>
-                    </div>
-
-                    <div class="flex flex-column">
-                        <label for="titulo" class="mb-1">Título</label>
-                        <input
-                            pInputText
-                            id="titulo"
-                            name="titulo"
-                            placeholder="Ingrese el título"
-                            [(ngModel)]="selectedComunicado.titulo"
-                            required
-                        />
-                    </div>
-
-                    <div class="flex flex-column">
-                        <label for="texto" class="mb-1">Contenido</label>
-                        <textarea
-                            pInputTextarea
-                            id="texto"
-                            name="texto"
-                            rows="5"
-                            placeholder="Escriba el comunicado..."
-                            [(ngModel)]="selectedComunicado.texto"
-                            required
-                        ></textarea>
-                    </div>
-
-                    <!-- Botón para crear o actualizar según corresponda -->
-                    <button
-                        pButton
-                        pRipple
-                        [label]="
-                            selectedComunicado.id === 0
-                                ? 'Publicar'
-                                : 'Guardar Cambios'
-                        "
-                        class="p-button-success align-self-end"
-                        type="submit"
-                    ></button>
-                </form>
-            </p-panel>
-        </div>
-    </div>
-
-    <p-confirmDialog></p-confirmDialog>
-    <p-toast position="top-right"></p-toast>
-    <p-confirmDialog></p-confirmDialog>
+    <p-tabView [activeIndex]="0">
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="pi pi-inbox"></i>
+                <span class="ml-2">Contenido</span>
+            </ng-template>
+            <app-contenidos></app-contenidos>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="pi pi-users"></i>
+                <span class="ml-2">Crear Grupo</span>
+            </ng-template>
+            <app-grupos></app-grupos>
+        </p-tabPanel>
+    </p-tabView>
 </section>

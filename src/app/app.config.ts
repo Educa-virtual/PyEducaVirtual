@@ -42,6 +42,7 @@ import localeEs from '@angular/common/locales/es'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import { AuditoriaInterceptor } from '@/app/shared/interceptors/auditoria-interceptor/auditoria.interceptor'
+import { AuthInterceptorService } from './servicios/auth-interceptor.service '
 
 registerLocaleData(localeEs)
 
@@ -108,6 +109,11 @@ export const appConfig: ApplicationConfig = {
         {
             provide: APP_INITIALIZER,
             useFactory: initializeDayjs,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptorService,
             multi: true,
         },
     ],

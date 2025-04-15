@@ -233,8 +233,8 @@ export class MatriculaIndividualComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    console.log(data, 'search estudiante')
-                    if (!data) {
+                    const item = data.data[0]
+                    if (!item) {
                         this.messageService.add({
                             severity: 'info',
                             summary: 'Información',
@@ -243,10 +243,10 @@ export class MatriculaIndividualComponent implements OnInit {
                     } else {
                         this.form
                             .get('iEstudianteId')
-                            ?.setValue(data.data[0].iEstudianteId)
+                            ?.setValue(item.iEstudianteId)
                         this.form
                             .get('apenomEstudiante')
-                            ?.setValue(data.data[0]._cPersApenom)
+                            ?.setValue(item._cPersApenom)
                     }
                 },
                 error: (error) => {
@@ -324,9 +324,15 @@ export class MatriculaIndividualComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     const item = data.data[0]
-                    this.form.get('iEstudianteId')?.setValue(item.iEstudianteId)
-                    this.form.get('cEstCodigo')?.setValue(item.cEstCodigo)
-                    this.form.get('apenomEstudiante').setValue(item._cEstApenom)
+                    if (item) {
+                        this.form
+                            .get('iEstudianteId')
+                            ?.setValue(item.iEstudianteId)
+                        this.form.get('cEstCodigo')?.setValue(item.cEstCodigo)
+                        this.form
+                            .get('apenomEstudiante')
+                            .setValue(item._cEstApenom)
+                    }
                 },
                 error: (error) => {
                     console.error('Error obteniendo matricula:', error)
@@ -359,9 +365,16 @@ export class MatriculaIndividualComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     console.log(data, 'guardar matricula')
-                    this.router.navigate([
-                        '/gestion-institucional/gestion-matriculas',
-                    ])
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Matrícula registrada',
+                    })
+                    setTimeout(() => {
+                        this.router.navigate([
+                            '/gestion-institucional/gestion-matriculas',
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error guardando matricula:', error)

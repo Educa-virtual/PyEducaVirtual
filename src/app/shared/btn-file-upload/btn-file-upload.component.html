@@ -1,0 +1,40 @@
+<section class="flex gap-2 border-round" style="background-color: inherit">
+    <input
+        #FileInput
+        [class]="disabled ? 'cursor-not-allowed' : 'cursor-pointer '"
+        [hidden]="true"
+        [accept]="accept"
+        type="file"
+        (change)="onFileSelected()"
+    />
+
+    <label
+        class="p-button p-button-label cursor-pointer"
+        style="background-color: inherit; border: none"
+        [ngClass]="{
+            'p-disabled': disabled,
+        }"
+    >
+        <i [class]="icon"></i>
+        <input
+            #FileView
+            type="submit"
+            [value]="label"
+            style="
+                background-color: inherit;
+                border-radius: 6px;
+                color: inherit;
+                font-family: inherit;
+                outline: none;
+                border: none;
+                font-weight: inherit;
+            "
+            [class]="disabled ? 'cursor-not-allowed' : 'cursor-pointer '"
+            icon="pi pi pi-upload"
+            (click)="onDeletedFile(); FileInput.click()"
+        />
+    </label>
+    <!-- @if (isAttachedFile) {
+        <p-button icon="pi pi-trash" (click)="onDeletedFile()" />
+    } -->
+</section>

@@ -1,5 +1,10 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
 <app-container-page
-    [title]="'Áreas Curriculares ERE: ' + cEvaluacionNombre"
+    [title]="'Evaluación ERE: ' + (cEvaluacionNombre || '-')"
     [actions]="[]"
 >
     <div class="container">
@@ -19,47 +24,38 @@
                 <div class="p-3">
                     <h3 class="text-xl">
                         {{ curso.cGradoAbreviacion }} {{ curso.cCursoNombre }}
+                        <div class="mt-1"></div>
+                        <small style="color: var(--primary-color)">{{
+                            curso.cNivelTipoNombre
+                        }}</small>
                     </h3>
-                    <p class="">
-                        Inicio del Examen:
-                        {{ curso.dtExamenFechaInicio | date: 'short' }}
-                    </p>
-                    <p class="">
-                        Fin del Examen:
-                        {{ curso.dtExamenFechaFin | date: 'short' }}
-                    </p>
+                    <div class="mt-2">
+                        <b>Fecha:</b>
+                        {{
+                            curso.dtExamenFechaInicio | date: 'EEEE, d MMMM, y'
+                        }}
+                    </div>
+                    <div class="mt-1">
+                        <b>Hora:</b>
+                        {{ curso.dtExamenFechaInicio | date: 'HH:mm' }} a
+                        {{ curso.dtExamenFechaFin | date: 'HH:mm' }}
+                    </div>
                 </div>
                 <div class="flex">
                     <footer
                         class="flex w-full justify-content-between align-items-center"
                     >
+                        <!-- {{curso | json}} -->
                         <p-button
-                            [routerLink]="['./', curso.iExamCurId]"
-                            [queryParams]="{
-                                cCursoNombre: curso.cCursoNombre,
-                                cGradoAbreviacion: curso.cGradoAbreviacion,
-                                cNivelTipoNombre: curso.cNivelTipoNombre,
-                                cGradoNombre: curso.cGradoNombre,
-                                dtExamenFechaInicio: curso.dtExamenFechaInicio,
-                                dtExamenFechaFin: curso.dtExamenFechaFin,
-                            }"
+                            (onClick)="irMostrarEvaluacion(curso)"
                             label="Rendir"
                             styleClass="p-button-link"
+                            [disabled]="
+                                curso.iEstadoExamen === '1' ? false : true
+                            "
                         ></p-button>
 
-                        <p-button
-                            [routerLink]="['./', curso.iExamCurId]"
-                            [queryParams]="{
-                                cCursoNombre: curso.cCursoNombre,
-                                cGradoAbreviacion: curso.cGradoAbreviacion,
-                                cNivelTipoNombre: curso.cNivelTipoNombre,
-                                cGradoNombre: curso.cGradoNombre,
-                                dtExamenFechaInicio: curso.dtExamenFechaInicio,
-                                dtExamenFechaFin: curso.dtExamenFechaFin,
-                            }"
-                            label="Resultados"
-                            styleClass="p-button-link"
-                        ></p-button>
+                        <!-- <p-button [disabled]="true" label="Resultados" styleClass="p-button-link"></p-button> -->
                     </footer>
                 </div>
             </div>

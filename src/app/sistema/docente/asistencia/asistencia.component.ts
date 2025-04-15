@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+// import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+// import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Component, OnInit, Input, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -20,9 +20,9 @@ import { ReporteAsistenciaComponent } from './reporte-asistencia/reporte-asisten
     selector: 'app-asistencia',
     standalone: true,
     imports: [
-        ContainerPageComponent,
+        // ContainerPageComponent,
         PrimengModule,
-        TablePrimengComponent,
+        // TablePrimengComponent,
         ReporteAsistenciaComponent,
     ],
     templateUrl: './asistencia.component.html',
@@ -30,17 +30,24 @@ import { ReporteAsistenciaComponent } from './reporte-asistencia/reporte-asisten
 })
 export class AsistenciaComponent implements OnInit {
     @Input() iCursoId: string
-    @Input() iDocenteId: string
+    @Input() idDocCursoId: string
     @Input() iGradoId: string
-    @Input() iYAcadId: string
     @Input() iNivelGradoId: string
     @Input() iSeccionId: string
-    @Input() cSeccion: string
-    @Input() cGradoAbreviacion: string
-    @Input() cNivelTipoNombre: string
-    @Input() cNivelNombreCursos: string
-    @Input() nombrecompleto: string
-    @Input() cCicloRomanos: string
+    @Input() iCicloId: string
+    @Input() iNivelId: string
+
+    iDocenteId: string
+    iYAcadId: string
+    iIieeId: string
+    iSedeId: string
+    cNivelTipoNombre: string
+    cNivelNombre: string
+    cPersNombreLargo: string
+    cIieeNombre: string
+    detalles = [] // guarda los detalles del encabezado
+    year: string
+    encabezado = []
 
     private GeneralService = inject(GeneralService)
     private unsubscribe$ = new Subject<boolean>()
@@ -50,10 +57,18 @@ export class AsistenciaComponent implements OnInit {
     cCursoNombre: string
     constructor(
         private messageService: MessageService,
-        //private GeneralService: GeneralService,
         private activatedRoute: ActivatedRoute,
         private router: Router
     ) {
+        this.year = this._ConstantesService.year
+        this.cIieeNombre = this._ConstantesService.cIieeNombre
+        this.iDocenteId = this._ConstantesService.iDocenteId
+        this.iYAcadId = this._ConstantesService.iYAcadId
+        this.iIieeId = this._ConstantesService.iIieeId
+        this.iSedeId = this._ConstantesService.iSedeId
+        this.cPersNombreLargo = this._ConstantesService.nombres
+        this.cNivelTipoNombre = this._ConstantesService.cNivelTipoNombre
+        this.cNivelNombre = this._ConstantesService.cNivelNombre
         this.activatedRoute.params.subscribe((params) => {
             this.iCursoId = params['iCursoId']
             this.cCursoNombre = params['cCursoNombre']
@@ -62,6 +77,27 @@ export class AsistenciaComponent implements OnInit {
 
     ngOnInit() {
         this.getCursoHorario()
+        this.detalleCurricular()
+    }
+
+    // busca los datos para el encabezado
+    detalleCurricular() {
+        const params = {
+            petition: 'post',
+            group: 'acad',
+            prefix: 'docente',
+            ruta: 'detalle_curricular',
+            data: {
+                iGradoId: this.iGradoId,
+                iCursoId: this.iCursoId,
+                iCicloId: this.iCicloId,
+                iSeccionId: this.iSeccionId,
+                iNivelId: this.iNivelId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params, 'get_detalle_curricular')
     }
 
     /**
@@ -157,8 +193,6 @@ export class AsistenciaComponent implements OnInit {
         const dia = new Date(this.fechaActual + 'T00:00:00')
         this.limitado = dia.getDay()
         this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
-
-        console.warn(this.horario)
         this.horario.map((fecha) => {
             if (
                 fecha.dtHorarioFecha == this.fechaActual &&
@@ -212,20 +246,26 @@ export class AsistenciaComponent implements OnInit {
     captura = ''
     capturarMes = 0
     countAsistencias() {
+        // agregamos un contador desde 0 para agregar el total de asistencia, faltas y etc de los estudiantes
         this.leyenda.filter((index) => {
             index.contar = 0
         })
+
         this.events.filter((index) => {
             this.captura = index.title.split(' : ')
 
             if (this.captura.length > 1) {
-                const capturar = this.captura[0]
-                const suma = parseInt(this.captura[1])
-                const capturarFecha = index.start.split('-')
+                const capturar = this.captura[0] // Capturamos el tipo de asistencia
+                const suma = parseInt(this.captura[1]) // Capturamos la cantidad del registro y lo convertimos en enteros
+                const capturarFecha = index.start.split('-') // Dividimos la fechas en año, mes y dia para obtener la cantidad de asistencias del mes
                 const fechaAsistencia =
                     capturarFecha[0] + '-' + capturarFecha[1]
                 const fechaCalendario =
-                    this.calendarioYear + '-' + this.calendarioMes
+                    this.calendarioYear +
+                    '-' +
+                    (this.calendarioMes.length > 1
+                        ? this.calendarioMes
+                        : '0' + this.calendarioMes)
 
                 this.leyenda[0].contar +=
                     capturar == 'Asistio' && fechaCalendario == fechaAsistencia
@@ -441,7 +481,6 @@ export class AsistenciaComponent implements OnInit {
                 this.router.navigate(['./docente/detalle-asistencia'])
                 break
             case 'get_data':
-                // this.getObtenerAsitencias()
                 this.getFechasImportantes()
                 this.verAsistencia = false
                 break
@@ -462,6 +501,9 @@ export class AsistenciaComponent implements OnInit {
                 break
             case 'close-modal':
                 this.showModal = false
+                break
+            case 'get_detalle_curricular':
+                this.encabezado = this.encabezado.concat(item)
                 break
             default:
                 break
@@ -545,6 +587,10 @@ export class AsistenciaComponent implements OnInit {
             prefix: 'reporte_asistencia',
             ruta: 'obtenerAsistencia',
             data: {
+                iGradoId: this.iGradoId,
+                idDocCursoId: this.idDocCursoId,
+                iSedeId: this.iSedeId,
+                iIieeId: this.iIieeId,
                 iCursoId: this.iCursoId,
                 iYAcadId: this.iYAcadId,
                 iDocenteId: this.iDocenteId,
@@ -568,10 +614,16 @@ export class AsistenciaComponent implements OnInit {
             prefix: 'reporte_asistencia',
             ruta: 'obtenerCursoHorario',
             data: {
+                iSedeId: this.iSedeId,
+                iIieeId: this.iIieeId,
                 iCursoId: this.iCursoId,
                 iYAcadId: this.iYAcadId,
                 iDocenteId: this.iDocenteId,
                 iSeccionId: this.iSeccionId,
+                iGradoId: this.iGradoId,
+                iNivelGradoId: this.iNivelGradoId,
+                idDocCursoId: this.idDocCursoId,
+                iCicloId: this.iCicloId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -596,6 +648,10 @@ export class AsistenciaComponent implements OnInit {
                 iDocenteId: this.iDocenteId,
                 iYAcadId: this.iYAcadId,
                 iNivelGradoId: this.iNivelGradoId,
+                iGradoId: this.iGradoId,
+                idDocCursoId: this.idDocCursoId,
+                iSedeId: this.iSedeId,
+                iIieeId: this.iIieeId,
                 dtCtrlAsistencia: fechas,
             },
             params: { skipSuccessMessage: true },

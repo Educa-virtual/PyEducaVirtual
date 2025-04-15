@@ -45,9 +45,10 @@ export class RolesDropdownComponent implements OnChanges, OnInit {
     }
     ngOnInit() {
         const modalPerfil = this.store.getItem('dremoModalPerfil')
-        if (!modalPerfil) return
+        if (!modalPerfil || this.selectedPerfil?.iPerfilId !== 0) {
+            return
+        }
         this.showModal = true
-        console.log(modalPerfil)
     }
     accionBtnItem(elemento): void {
         const { accion } = elemento

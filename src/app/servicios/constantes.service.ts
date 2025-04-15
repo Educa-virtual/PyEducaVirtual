@@ -4,12 +4,21 @@ import {
     ADMINISTRADOR,
     DIRECTOR_IE,
     DOCENTE,
-    ESPECIALISTA_DREMO,
-    ESPECIALISTA_UGEL,
     ESTUDIANTE,
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
+    APODERADO,
 } from './perfilesConstantes'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from './seg/perfiles'
+import {
+    administradorDremo,
+    especialistaDremo,
+    especialistaUgel,
+} from './seg/menu-ere'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')
@@ -17,10 +26,11 @@ const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
 const iYAcadId = store.getItem('dremoiYAcadId')
+const years = store.getItem('dremoYear')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
-    routerLink: [''],
+    routerLink: ['/inicio'],
 }
 const docente = [
     {
@@ -108,77 +118,21 @@ const estudiante = [
         items: [
             inicio,
             {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                label: 'Evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion/areas'],
             },
             {
-                label: 'Calendario',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/03'],
-            },
-            {
-                label: 'Solicitudes y Tramites',
-                icon: 'pi pi-fw pi-inbox',
-                routerLink: ['/aula-virtual/02'],
-            },
-            {
-                label: 'Buzon de Sugerencias',
-                icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/gestion-institucional/gestionar-sugerencias'],
-            },
-            {
-                label: 'Enlaces de ayuda',
-                icon: 'pi pi-fw pi-share-alt',
-                routerLink: ['ayuda'],
-            },
-
-            {
-                label: 'Dremo ERE',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'Evaluacion',
-                        icon: 'pi pi-fw pi-share-alt',
-                        routerLink: [
-                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                        ],
-                    },
-                    // {
-                    //     label: 'Examen',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [
-                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-                    //     ],
-                    // },
-                ],
+                label: 'Practicar evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion-practica'],
             },
         ],
     },
 ]
-// const especialista_ugel = [
-//     {
-//         items: [
-//             inicio,
-//             {
-//                 label: 'Perfiel',
-//                 icon: 'pi pi-user',
-//                 routerLink: ['/especialista-ugel'],
-//             },
-//             {
-//                 label: 'Evaluaciones',
-//                 icon: 'pi pi-fw pi-calendar',
-//                 routerLink: ['/evaluaciones/evaluaciones'],
-//             },
-//             {
-//                 label: 'Mis Áreas Curriculares',
-//                 icon: 'pi pi-fw pi-folder',
-//                 routerLink: ['/evaluaciones/areas'],
-//             },
-//         ],
-//     },
-// ]
+
 const administrador = [
+    //MODULO DE SEGURIDAD
     {
         items: [
             inicio,
@@ -191,6 +145,17 @@ const administrador = [
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
+            },
+            {
+                label: 'Backup de BD',
+                icon: 'pi pi-fw pi-database',
+                routerLink: ['/administrador/backup-bd'],
+            },
+
+            {
+                label: 'Gestión de Usuario',
+                icon: 'pi pi-fw pi-user',
+                routerLink: ['/administrador/gestion-usuario'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -230,7 +195,7 @@ const jefe_programa = [
                     {
                         label: 'Registro de año escolar',
                         icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/gestion-institucional/apertura'],
                     },
                     {
                         label: 'Personal',
@@ -248,433 +213,6 @@ const jefe_programa = [
     },
 ]
 
-const notas_evaluaciones = [
-    {
-        items: [
-            inicio,
-            {
-                label: 'Sincronizar SIAGIE',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/evaluaciones'],
-            },
-            {
-                label: 'Configurar Modulo',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/evaluaciones'],
-            },
-
-            {
-                label: 'Pruebas Escolares',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'ERE',
-                        icon: 'pi pi-fw pi-sign-in',
-                        //routerLink: ['/especialista-ugel/ver-evaluacion'],
-                        items: [
-                            {
-                                label: 'Evaluaciones',
-                                icon: 'pi pi-fw pi-calendar',
-                                routerLink: ['/evaluaciones/evaluaciones'],
-                            },
-                            {
-                                label: 'Banco de Preguntas',
-                                icon: 'pi pi-fw pi-folder',
-                                routerLink: ['/evaluaciones/areas'],
-                            },
-                            {
-                                label: 'Dashboard',
-                                icon: 'pi pi-fw pi-user',
-                                routerLink: [
-                                    '/especialista-ugel/ver-evaluacion',
-                                ],
-                            },
-                            {
-                                label: 'Informes',
-                                icon: 'pi pi-fw pi-sign-in',
-                                //routerLink: ['/especialista-ugel/ver-evaluacion'],
-                                items: [
-                                    {
-                                        label: 'I.E',
-                                        icon: 'pi pi-fw pi-user',
-                                        routerLink: [
-                                            '/especialista-ugel/institucion-educativa',
-                                        ],
-                                    },
-                                    {
-                                        label: 'Distritos',
-                                        icon: 'pi pi-fw pi-user',
-                                        routerLink: [
-                                            '/especialista-ugel/distritos-informe',
-                                        ],
-                                    },
-                                    {
-                                        label: 'Respuesta',
-                                        icon: 'pi pi-fw pi-user',
-                                        routerLink: [
-                                            '/especialista-ugel/respuesta-evaluacion',
-                                        ],
-                                    },
-
-                                    {
-                                        label: 'Est. Archivos',
-                                        icon: 'pi pi-fw pi-user',
-                                        routerLink: [
-                                            '/especialista-ugel/estado-archivos',
-                                        ],
-                                    },
-                                    {
-                                        label: 'Proc. Archivo. DRE',
-                                        icon: 'pi pi-fw pi-user',
-                                        routerLink: [
-                                            '/especialista-ugel/procesar-archivos',
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        label: 'Prueba ECE',
-                        icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/evaluaciones/preguntas-activas'],
-                    },
-                ],
-            },
-            {
-                label: 'Enlaces de ayuda',
-                icon: 'pi pi-fw pi-share-alt',
-                routerLink: ['ayuda'],
-            },
-            //Borrar
-            // {
-            //     label: 'Mis Áreas Curriculares',
-            //     icon: 'pi pi-fw pi-folder',
-            //     routerLink: ['/evaluaciones/areas'],
-            // },
-            // {
-            //     label: 'Configuración',
-            //     icon: 'pi pi-fw pi-user',
-            //     items: [
-            //         {
-            //             label: 'Competencias',
-            //             icon: 'pi pi-fw pi-sign-in',
-            //             routerLink: ['/evaluaciones/competencias'],
-            //         },
-            //         {
-            //             label: 'Capacidades',
-            //             icon: 'pi pi-fw pi-times-circle',
-            //             routerLink: ['/evaluaciones/preguntas-activas'],
-            //         },
-            //         {
-            //             label: 'Desempeños',
-            //             icon: 'pi pi-fw pi-times-circle',
-            //             routerLink: ['/evaluaciones/preguntas-activas'],
-            //         },
-            //     ],
-            // },
-        ],
-    },
-]
-
-// const director = [
-//     {
-//         items: [
-//             inicio,
-//             {
-//                 label: 'Mis Áreas Curriculares',
-//                 icon: 'pi pi-fw pi-book',
-//                 routerLink: ['/aula-virtual/areas-curriculares'],
-//             },
-//             {
-//                 label: 'Calendario',
-//                 icon: 'pi pi-fw pi-calendar',
-//                 routerLink: ['/aula-virtual/calendario'],
-//             },
-//             {
-//                 label: 'Recursos',
-//                 icon: 'pi pi-fw pi-folder',
-//                 routerLink: ['/aula-virtual/recursos'],
-//             },
-//             {
-//                 label: 'DashBoard',
-//                 icon: 'pi pi-fw pi-chart-bar',
-//                 routerLink: ['/aula-virtual'],
-//             },
-//         ],
-//     },
-// ]
-
-// const other = [
-//     {
-//         label: 'Home',
-//         items: [
-//             { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
-//         ],
-//     },
-//     {
-//         label: 'UI Components',
-//         items: [
-//             {
-//                 label: 'Form Layout',
-//                 icon: 'pi pi-fw pi-id-card',
-//                 routerLink: ['/uikit/formlayout'],
-//             },
-//             {
-//                 label: 'Input',
-//                 icon: 'pi pi-fw pi-check-square',
-//                 routerLink: ['/uikit/input'],
-//             },
-//             {
-//                 label: 'Float Label',
-//                 icon: 'pi pi-fw pi-bookmark',
-//                 routerLink: ['/uikit/floatlabel'],
-//             },
-//             {
-//                 label: 'Invalid State',
-//                 icon: 'pi pi-fw pi-exclamation-circle',
-//                 routerLink: ['/uikit/invalidstate'],
-//             },
-//             {
-//                 label: 'Button',
-//                 icon: 'pi pi-fw pi-box',
-//                 routerLink: ['/uikit/button'],
-//             },
-//             {
-//                 label: 'Table',
-//                 icon: 'pi pi-fw pi-table',
-//                 routerLink: ['/uikit/table'],
-//             },
-//             {
-//                 label: 'List',
-//                 icon: 'pi pi-fw pi-list',
-//                 routerLink: ['/uikit/list'],
-//             },
-//             {
-//                 label: 'Tree',
-//                 icon: 'pi pi-fw pi-share-alt',
-//                 routerLink: ['/uikit/tree'],
-//             },
-//             {
-//                 label: 'Panel',
-//                 icon: 'pi pi-fw pi-tablet',
-//                 routerLink: ['/uikit/panel'],
-//             },
-//             {
-//                 label: 'Overlay',
-//                 icon: 'pi pi-fw pi-clone',
-//                 routerLink: ['/uikit/overlay'],
-//             },
-//             {
-//                 label: 'Media',
-//                 icon: 'pi pi-fw pi-image',
-//                 routerLink: ['/uikit/media'],
-//             },
-//             {
-//                 label: 'Menu',
-//                 icon: 'pi pi-fw pi-bars',
-//                 routerLink: ['/uikit/menu'],
-//                 routerLinkActiveOptions: {
-//                     paths: 'subset',
-//                     queryParams: 'ignored',
-//                     matrixParams: 'ignored',
-//                     fragment: 'ignored',
-//                 },
-//             },
-//             {
-//                 label: 'Message',
-//                 icon: 'pi pi-fw pi-comment',
-//                 routerLink: ['/uikit/message'],
-//             },
-//             {
-//                 label: 'File',
-//                 icon: 'pi pi-fw pi-file',
-//                 routerLink: ['/uikit/file'],
-//             },
-//             {
-//                 label: 'Chart',
-//                 icon: 'pi pi-fw pi-chart-bar',
-//                 routerLink: ['/uikit/charts'],
-//             },
-//             {
-//                 label: 'Misc',
-//                 icon: 'pi pi-fw pi-circle',
-//                 routerLink: ['/uikit/misc'],
-//             },
-//         ],
-//     },
-//     {
-//         label: 'Prime Blocks',
-//         items: [
-//             {
-//                 label: 'Free Blocks',
-//                 icon: 'pi pi-fw pi-eye',
-//                 routerLink: ['/blocks'],
-//                 badge: 'NEW',
-//             },
-//             {
-//                 label: 'All Blocks',
-//                 icon: 'pi pi-fw pi-globe',
-//                 url: ['https://www.primefaces.org/primeblocks-ng'],
-//                 target: '_blank',
-//             },
-//         ],
-//     },
-//     {
-//         label: 'Utilities',
-//         items: [
-//             {
-//                 label: 'PrimeIcons',
-//                 icon: 'pi pi-fw pi-prime',
-//                 routerLink: ['/utilities/icons'],
-//             },
-//             {
-//                 label: 'PrimeFlex',
-//                 icon: 'pi pi-fw pi-desktop',
-//                 url: ['https://www.primefaces.org/primeflex/'],
-//                 target: '_blank',
-//             },
-//         ],
-//     },
-//     {
-//         label: 'Pages',
-//         icon: 'pi pi-fw pi-briefcase',
-//         items: [
-//             {
-//                 label: 'Landing',
-//                 icon: 'pi pi-fw pi-globe',
-//                 routerLink: ['/landing'],
-//             },
-//             {
-//                 label: 'Auth',
-//                 icon: 'pi pi-fw pi-user',
-//                 items: [
-//                     {
-//                         label: 'Login',
-//                         icon: 'pi pi-fw pi-sign-in',
-//                         routerLink: ['/auth/login'],
-//                     },
-//                     {
-//                         label: 'Error',
-//                         icon: 'pi pi-fw pi-times-circle',
-//                         routerLink: ['/auth/error'],
-//                     },
-//                     {
-//                         label: 'Access Denied',
-//                         icon: 'pi pi-fw pi-lock',
-//                         routerLink: ['/auth/access'],
-//                     },
-//                 ],
-//             },
-//             {
-//                 label: 'Crud',
-//                 icon: 'pi pi-fw pi-pencil',
-//                 routerLink: ['/pages/crud'],
-//             },
-//             {
-//                 label: 'Timeline',
-//                 icon: 'pi pi-fw pi-calendar',
-//                 routerLink: ['/pages/timeline'],
-//             },
-//             {
-//                 label: 'Not Found',
-//                 icon: 'pi pi-fw pi-exclamation-circle',
-//                 routerLink: ['/notfound'],
-//             },
-//             {
-//                 label: 'Empty',
-//                 icon: 'pi pi-fw pi-circle-off',
-//                 routerLink: ['/pages/empty'],
-//             },
-//         ],
-//     },
-//     {
-//         label: 'Hierarchy',
-//         items: [
-//             {
-//                 label: 'Submenu 1',
-//                 icon: 'pi pi-fw pi-bookmark',
-//                 items: [
-//                     {
-//                         label: 'Submenu 1.1',
-//                         icon: 'pi pi-fw pi-bookmark',
-//                         items: [
-//                             {
-//                                 label: 'Submenu 1.1.1',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                             {
-//                                 label: 'Submenu 1.1.2',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                             {
-//                                 label: 'Submenu 1.1.3',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                         ],
-//                     },
-//                     {
-//                         label: 'Submenu 1.2',
-//                         icon: 'pi pi-fw pi-bookmark',
-//                         items: [
-//                             {
-//                                 label: 'Submenu 1.2.1',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                         ],
-//                     },
-//                 ],
-//             },
-//             {
-//                 label: 'Submenu 2',
-//                 icon: 'pi pi-fw pi-bookmark',
-//                 items: [
-//                     {
-//                         label: 'Submenu 2.1',
-//                         icon: 'pi pi-fw pi-bookmark',
-//                         items: [
-//                             {
-//                                 label: 'Submenu 2.1.1',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                             {
-//                                 label: 'Submenu 2.1.2',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                         ],
-//                     },
-//                     {
-//                         label: 'Submenu 2.2',
-//                         icon: 'pi pi-fw pi-bookmark',
-//                         items: [
-//                             {
-//                                 label: 'Submenu 2.2.1',
-//                                 icon: 'pi pi-fw pi-bookmark',
-//                             },
-//                         ],
-//                     },
-//                 ],
-//             },
-//         ],
-//     },
-//     {
-//         label: 'Get Started',
-//         items: [
-//             {
-//                 label: 'Documentation',
-//                 icon: 'pi pi-fw pi-question',
-//                 routerLink: ['/documentation'],
-//             },
-//             {
-//                 label: 'View Source',
-//                 icon: 'pi pi-fw pi-search',
-//                 url: ['https://github.com/primefaces/sakai-ng'],
-//                 target: '_blank',
-//             },
-//         ],
-//     },
-// ]
-
 const registro_asistencia = [
     {
         items: [inicio],
@@ -686,16 +224,15 @@ const registro_asistencia = [
     },
 ]
 
-// const seguridad = [
-//     {
-//         items: [inicio],
-//     },
-// ]
-
 const administracion = [
     {
         label: 'Administración',
         items: [
+            {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
             {
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
@@ -712,6 +249,20 @@ const administracion = [
                         icon: 'pi pi-wrench',
                         routerLink: ['/gestion-institucional/Informacion-ie'],
                     },
+                    {
+                        label: 'Sincronizar archivos',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/sincronizar-archivo',
+                        ],
+                    },
+                    {
+                        label: 'Mantenimiento de usuarios',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/mantenimiento-usuario',
+                        ],
+                    },
                 ],
             },
 
@@ -722,7 +273,7 @@ const administracion = [
                     {
                         label: 'Apertura de año escolar',
                         icon: 'pi pi-lock-open',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/gestion-institucional/apertura'],
                     },
                     {
                         label: 'Registro de fechas especiales',
@@ -761,11 +312,11 @@ const administracion = [
                                     '/gestion-institucional/IesPersonal',
                                 ],
                             },
-                            {
-                                label: 'Cargos',
-                                icon: 'pi pi-wrench',
-                                routerLink: ['/configuracion/configuracion'],
-                            },
+                            // {
+                            //     label: 'Cargos',
+                            //     icon: 'pi pi-wrench',
+                            //     routerLink: ['/gestion-institucional/apertura'],
+                            // },
                         ],
                         //ConfigGradoSeccion
                     },
@@ -849,47 +400,52 @@ const administracion = [
                 ],
             },
 
-            {
-                label: 'Generación de Reportes y estadísticas',
-                icon: 'pi pi-chart-bar',
-                items: [
-                    {
-                        label: 'Reportes',
-                        icon: 'pi pi-book',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Estadisticas',
-                        icon: 'pi pi-chart-scatter',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Indicadores',
-                        icon: 'pi pi-chart-line',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Plantillas',
-                        icon: 'pi pi-download',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                ],
-                //ConfigGradoSeccion
-            },
+            // {
+            //     label: 'Generación de Reportes y estadísticas',
+            //     icon: 'pi pi-chart-bar',
+            //     items: [
+            //         {
+            //             label: 'Reportes',
+            //             icon: 'pi pi-book',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //         {
+            //             label: 'Estadisticas',
+            //             icon: 'pi pi-chart-scatter',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //         {
+            //             label: 'Indicadores',
+            //             icon: 'pi pi-chart-line',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //         {
+            //             label: 'Plantillas',
+            //             icon: 'pi pi-download',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //     ],
+            //     //ConfigGradoSeccion
+            // },
 
             {
-                label: 'Evaluación - ERE',
-                icon: 'pi pi-address-book',
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
                 items: [
+                    // {
+                    //     label: 'Configuración de ERE',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: ['/gestion-institucional/apertura'],
+                    // },
                     {
-                        label: 'Configuración de ERE',
-                        icon: 'pi pi-wrench',
-                        routerLink: ['/configuracion/configuracion'],
+                        label: 'Resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-ere'],
                     },
                     {
-                        label: 'Resultados de ERE',
-                        icon: 'pi pi-chart-bar',
-                        routerLink: ['/configuracion/configuracion'],
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-list-check',
+                        routerLink: ['/ere/evaluaciones'],
                     },
                 ],
                 //ConfigGradoSeccion
@@ -900,22 +456,22 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
-            {
-                label: 'Generar Reportes y Estadisticas',
-                icon: 'pi pi-chart-scatter',
-                items: [
-                    {
-                        label: 'Reportes Academicos',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/reporte'],
-                    },
-                    {
-                        label: 'Reportes Orden de Mérito',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/estadistica'],
-                    },
-                ],
-            },
+            // {
+            //     label: 'Generar Reportes y Estadisticas',
+            //     icon: 'pi pi-chart-scatter',
+            //     items: [
+            //         {
+            //             label: 'Reportes Academicos',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/reporte'],
+            //         },
+            //         {
+            //             label: 'Reportes Orden de Mérito',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/estadistica'],
+            //         },
+            //     ],
+            // },
         ],
     },
 ]
@@ -932,11 +488,33 @@ const administracion = [
 //     },
 // ]
 
-// const apoderados = [
-//     {
-//         items: [inicio],
-//     },
-// ]
+const apoderado = [
+    {
+        label: 'Apoderado',
+        items: [
+            {
+                label: 'Visualizar datos',
+                icon: 'pi pi-fw pi-eye',
+                routerLink: ['apoderado/seguimiento-apoderado'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
+        ],
+    },
+]
 
 const first = [
     {
@@ -962,15 +540,15 @@ export class ConstantesService {
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        //console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
             case ADMINISTRADOR:
                 return administrador
+            case ADMINISTRADOR_DREMO:
+                return administradorDremo
             case ESPECIALISTA_DREMO:
-                return notas_evaluaciones
+                return especialistaDremo
             case ESPECIALISTA_UGEL:
-                // return notas_evaluaciones
-                return docente
+                return especialistaUgel
             case ESTUDIANTE:
                 return estudiante
             case SUBDIRECTOR_IE:
@@ -981,41 +559,14 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
+
+            case APODERADO:
+                return apoderado
+
             default:
                 return first
         }
     }
-    // getMenu() {
-    //     if (!modulo) return first
-    //     switch (Number(modulo.iModuloId)) {
-    //         case 1:
-    //             return aula_virtual
-    //         case 2:
-    //             return docente
-    //         case 3:
-    //             return estudiante
-    //         case 4:
-    //             return notas_evaluaciones
-    //         case 5:
-    //             return registro_asistencia
-    //         case 6:
-    //             return administrador
-    //         case 7:
-    //             return seguridad
-    //         case 8:
-    //             return bienestar
-    //         case 9:
-    //             return comunicado
-    //         case 10:
-    //             return concurso_docente
-    //         case 11:
-    //             return apoderados
-    //         case 12:
-    //             return especialista_ugel
-    //         default:
-    //             return first
-    //     }
-    // }
     verificado = verificado
 
     nombres = user
@@ -1026,7 +577,11 @@ export class ConstantesService {
     iIieeId = perfil ? perfil.iIieeId : null
     iSedeId = perfil ? perfil.iSedeId : null
     grados = perfil ? perfil.grados : null
+    iSemAcadId = perfil ? perfil.semestres_acad : null
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
     nivelTipo = perfil ? perfil.iNivelTipoId : null
+    cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
+    cNivelNombre = perfil ? perfil.cNivelNombre : null
+    year = years ? years : null
 }

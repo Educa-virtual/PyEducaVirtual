@@ -1,0 +1,33 @@
+:host ::ng-deep {
+    .p-panel .p-panel-header {
+        padding: 10px !important;
+    }
+    .p-inputgroup-addon {
+        background: var(--bg-header-modal) !important;
+        color: white !important;
+    }
+
+    .p-scrollpanel {
+        p {
+            padding: 0.5rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        &.custombar1 {
+            .p-scrollpanel-wrapper {
+                border-right: 9px solid var(--layer-1);
+            }
+
+            .p-scrollpanel-bar {
+                background-color: var(--primary-color);
+                opacity: 1;
+                transition: background-color 0.2s;
+
+                &:hover {
+                    background-color: #007ad9;
+                }
+            }
+        }
+    }
+}

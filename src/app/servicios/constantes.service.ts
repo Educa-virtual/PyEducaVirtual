@@ -26,6 +26,7 @@ const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
 const iYAcadId = store.getItem('dremoiYAcadId')
+const years = store.getItem('dremoYear')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
@@ -573,4 +574,7 @@ export class ConstantesService {
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
     nivelTipo = perfil ? perfil.iNivelTipoId : null
+    cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
+    cNivelNombre = perfil ? perfil.cNivelNombre : null
+    year = years ? years : null
 }

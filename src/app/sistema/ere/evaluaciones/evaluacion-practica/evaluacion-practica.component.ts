@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { NgxDocViewerModule } from 'ngx-doc-viewer'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { environment } from '@/environments/environment'
-//import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finalizada/modal-evaluacion-finalizada.component'
 import { ModalEvaluacionFinalizadaComponent } from '../examen/modal-evaluacion-finalizada/modal-evaluacion-finalizada.component'
 import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
@@ -73,7 +72,8 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     obtenerEvaluacionxiEvaluacionId() {
-        const params = {
+        //codigo comentado
+        /*const params = {
             petition: 'post',
             group: 'ere',
             prefix: 'evaluacion',
@@ -86,6 +86,23 @@ export class EvaluacionPracticaComponent implements OnInit {
             },
         }
         this.getInformation(params, params.data.opcion)
+        */
+        this.accionBtnItem({
+            accion: 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId',
+            item: [
+                {
+                    dtHoraActual: new Date().toISOString(),
+                    dtExamenFechaFin: new Date(
+                        new Date().getTime() + 60 * 60 * 1000
+                    ).toISOString(), // 1 hora desde ahora
+                    cEvaluacionNombre: 'Evaluación de Práctica',
+                    cGradoAbreviacion: '5°',
+                    cCursoNombre: 'Ciencias Sociales',
+                    cNivelTipoNombre: 'Secundaria',
+                },
+            ],
+            message: 'Evaluación de práctica cargada correctamente',
+        })
     }
 
     seleccionarOpcion(opcion: string) {
@@ -109,7 +126,7 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     obtenerPreguntaxiEvaluacionId() {
-        const params = {
+        /*const params = {
             petition: 'post',
             group: 'ere',
             prefix: 'evaluacion',
@@ -123,13 +140,379 @@ export class EvaluacionPracticaComponent implements OnInit {
                 iYAcadId: this._ConstantesService.iYAcadId,
             },
         }
-        this.getInformation(params, params.data.opcion)
+        this.getInformation(params, params.data.opcion);
+      */
+        this.accionBtnItem({
+            accion: 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId',
+            item: [
+                // PREGUNTA SIMPLE 1: Religión
+                {
+                    iPreguntaId: '1001',
+                    iEncabPregId: null,
+                    cPregunta:
+                        '<p>¿Cuál es el libro sagrado del cristianismo?</p>',
+                    cEncabPregContenido: null,
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1001',
+                            iPreguntaId: '1001',
+                            cAlternativaDescripcion: 'La Biblia',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2001',
+                        },
+                        {
+                            iAlternativaId: '1002',
+                            iPreguntaId: '1001',
+                            cAlternativaDescripcion: 'El Corán',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2002',
+                        },
+                        {
+                            iAlternativaId: '1003',
+                            iPreguntaId: '1001',
+                            cAlternativaDescripcion: 'La Torá',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2003',
+                        },
+                        {
+                            iAlternativaId: '1004',
+                            iPreguntaId: '1001',
+                            cAlternativaDescripcion: 'El Bhagavad Gita',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2004',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA SIMPLE 2: Valores
+                {
+                    iPreguntaId: '1002',
+                    iEncabPregId: null,
+                    cPregunta:
+                        '<p>¿Cuál de los siguientes es un ejemplo de valor moral?</p>',
+                    cEncabPregContenido: null,
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1005',
+                            iPreguntaId: '1002',
+                            cAlternativaDescripcion: 'Honestidad',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2005',
+                        },
+                        {
+                            iAlternativaId: '1006',
+                            iPreguntaId: '1002',
+                            cAlternativaDescripcion: 'Egoísmo',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2006',
+                        },
+                        {
+                            iAlternativaId: '1007',
+                            iPreguntaId: '1002',
+                            cAlternativaDescripcion: 'Envidia',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2007',
+                        },
+                        {
+                            iAlternativaId: '1008',
+                            iPreguntaId: '1002',
+                            cAlternativaDescripcion: 'Avaricia',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2008',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA MÚLTIPLE 1: Parábola del Buen Samaritano - Primera parte
+                {
+                    iPreguntaId: '1003',
+                    iEncabPregId: '5001',
+                    cPregunta:
+                        '<p>¿Quiénes ignoraron al hombre herido según la parábola?</p>',
+                    cEncabPregContenido:
+                        '<p>Lee la siguiente parábola:</p><p>Un hombre bajaba de Jerusalén a Jericó y cayó en manos de unos ladrones. Le quitaron la ropa, lo golpearon y se fueron, dejándolo medio muerto. Un sacerdote pasó por el mismo camino, y al verlo, dio un rodeo y siguió adelante. También un levita pasó por aquel lugar, lo miró y dio un rodeo. Pero un samaritano que iba de viaje, al verlo se compadeció de él. Se acercó, le curó las heridas y lo llevó a una posada para que lo atendieran.</p> <img src="assets/images/tres.jpg" alt="pregunta tres width="300" height="250""> ',
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1009',
+                            iPreguntaId: '1003',
+                            cAlternativaDescripcion: 'Un sacerdote y un levita',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2009',
+                        },
+                        {
+                            iAlternativaId: '1010',
+                            iPreguntaId: '1003',
+                            cAlternativaDescripcion:
+                                'Un samaritano y un sacerdote',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2010',
+                        },
+                        {
+                            iAlternativaId: '1011',
+                            iPreguntaId: '1003',
+                            cAlternativaDescripcion:
+                                'Un levita y un samaritano',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2011',
+                        },
+                        {
+                            iAlternativaId: '1012',
+                            iPreguntaId: '1003',
+                            cAlternativaDescripcion: 'Dos samaritanos',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2012',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA MÚLTIPLE 1: Parábola del Buen Samaritano - Segunda parte
+                {
+                    iPreguntaId: '1004',
+                    iEncabPregId: '5001',
+                    cPregunta:
+                        '<p>¿Cuál es el mensaje principal de esta parábola?</p>',
+                    cEncabPregContenido:
+                        '<p>Lee la siguiente parábola:</p><p>Un hombre bajaba de Jerusalén a Jericó y cayó en manos de unos ladrones. Le quitaron la ropa, lo golpearon y se fueron, dejándolo medio muerto. Un sacerdote pasó por el mismo camino, y al verlo, dio un rodeo y siguió adelante. También un levita pasó por aquel lugar, lo miró y dio un rodeo. Pero un samaritano que iba de viaje, al verlo se compadeció de él. Se acercó, le curó las heridas y lo llevó a una posada para que lo atendieran.</p>',
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1013',
+                            iPreguntaId: '1004',
+                            cAlternativaDescripcion:
+                                'Debemos ayudar a quien lo necesita, sin importar quién sea',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2013',
+                        },
+                        {
+                            iAlternativaId: '1014',
+                            iPreguntaId: '1004',
+                            cAlternativaDescripcion: 'Es peligroso viajar solo',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2014',
+                        },
+                        {
+                            iAlternativaId: '1015',
+                            iPreguntaId: '1004',
+                            cAlternativaDescripcion:
+                                'Los sacerdotes no son buenas personas',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2015',
+                        },
+                        {
+                            iAlternativaId: '1016',
+                            iPreguntaId: '1004',
+                            cAlternativaDescripcion:
+                                'Debemos evitar los caminos peligrosos',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2016',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA MÚLTIPLE 2: Los Diez Mandamientos - Primera parte
+                {
+                    iPreguntaId: '1005',
+                    iEncabPregId: '5002',
+                    cPregunta:
+                        '<p>¿En qué lugar fueron entregados los Diez Mandamientos?</p>',
+                    cEncabPregContenido:
+                        '<p>Los Diez Mandamientos son un conjunto de principios éticos y de adoración que, según la Biblia, fueron escritos por Dios en dos tablas de piedra y entregados al profeta Moisés en el monte Sinaí.</p> <img src="assets/images/cuatro.jpg" alt="pregunta tres width="300" height="255" alt="Imagen de familia">',
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1017',
+                            iPreguntaId: '1005',
+                            cAlternativaDescripcion: 'Monte Sinaí',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2017',
+                        },
+                        {
+                            iAlternativaId: '1018',
+                            iPreguntaId: '1005',
+                            cAlternativaDescripcion: 'Monte Tabor',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2018',
+                        },
+                        {
+                            iAlternativaId: '1019',
+                            iPreguntaId: '1005',
+                            cAlternativaDescripcion: 'Monte de los Olivos',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2019',
+                        },
+                        {
+                            iAlternativaId: '1020',
+                            iPreguntaId: '1005',
+                            cAlternativaDescripcion: 'Monte Ararat',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2020',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA MÚLTIPLE 2: Los Diez Mandamientos - Segunda parte
+                {
+                    iPreguntaId: '1006',
+                    iEncabPregId: '5002',
+                    cPregunta:
+                        '<p>¿A quién fueron entregados los Diez Mandamientos?</p>',
+                    cEncabPregContenido:
+                        '<p>Los Diez Mandamientos son un conjunto de principios éticos y de adoración que, según la Biblia, fueron escritos por Dios en dos tablas de piedra y entregados al profeta Moisés en el monte Sinaí.</p>',
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1021',
+                            iPreguntaId: '1006',
+                            cAlternativaDescripcion: 'Moisés',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2021',
+                        },
+                        {
+                            iAlternativaId: '1022',
+                            iPreguntaId: '1006',
+                            cAlternativaDescripcion: 'Abraham',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2022',
+                        },
+                        {
+                            iAlternativaId: '1023',
+                            iPreguntaId: '1006',
+                            cAlternativaDescripcion: 'Noé',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2023',
+                        },
+                        {
+                            iAlternativaId: '1024',
+                            iPreguntaId: '1006',
+                            cAlternativaDescripcion: 'David',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2024',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA MÚLTIPLE 3: Valores de la familia - Primera parte
+                {
+                    iPreguntaId: '1007',
+                    iEncabPregId: '5003',
+                    cPregunta:
+                        '<p>¿Cuál de estos es un ejemplo de respeto en la familia?</p>',
+                    cEncabPregContenido:
+                        '<p>La familia es el núcleo fundamental de la sociedad. Es el lugar donde aprendemos valores como el amor, el respeto, la responsabilidad y la solidaridad. Estos valores son esenciales para una convivencia armónica.</p><img src="assets/images/cinco.jpg" alt="pregunta tres width="300" height="290" alt="Imagen de familia">',
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1025',
+                            iPreguntaId: '1007',
+                            cAlternativaDescripcion:
+                                'Escuchar atentamente cuando otros hablan',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2025',
+                        },
+                        {
+                            iAlternativaId: '1026',
+                            iPreguntaId: '1007',
+                            cAlternativaDescripcion:
+                                'Interrumpir cuando alguien está hablando',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2026',
+                        },
+                        {
+                            iAlternativaId: '1027',
+                            iPreguntaId: '1007',
+                            cAlternativaDescripcion:
+                                'Ignorar las opiniones de los demás',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2027',
+                        },
+                        {
+                            iAlternativaId: '1028',
+                            iPreguntaId: '1007',
+                            cAlternativaDescripcion:
+                                'Burlarse de las ideas de otros',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2028',
+                        },
+                    ]),
+                },
+
+                // PREGUNTA MÚLTIPLE 3: Valores de la familia - Segunda parte
+                {
+                    iPreguntaId: '1008',
+                    iEncabPregId: '5003',
+                    cPregunta:
+                        '<p>¿Qué valor se demuestra cuando compartimos lo que tenemos con los demás miembros de la familia?</p>',
+                    cEncabPregContenido:
+                        '<p>La familia es el núcleo fundamental de la sociedad. Es el lugar donde aprendemos valores como el amor, el respeto, la responsabilidad y la solidaridad. Estos valores son esenciales para una convivencia armónica.</p> alt="Imagen de familia">',
+                    alternativas: JSON.stringify([
+                        {
+                            iAlternativaId: '1029',
+                            iPreguntaId: '1008',
+                            cAlternativaDescripcion: 'Solidaridad',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2029',
+                        },
+                        {
+                            iAlternativaId: '1030',
+                            iPreguntaId: '1008',
+                            cAlternativaDescripcion: 'Competencia',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2030',
+                        },
+                        {
+                            iAlternativaId: '1031',
+                            iPreguntaId: '1008',
+                            cAlternativaDescripcion: 'Egoísmo',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2031',
+                        },
+                        {
+                            iAlternativaId: '1032',
+                            iPreguntaId: '1008',
+                            cAlternativaDescripcion: 'Indiferencia',
+                            cAlternativaImagen: null,
+                            iMarcado: 0,
+                            iResultadoId: '2032',
+                        },
+                    ]),
+                },
+            ],
+            message: 'Preguntas de práctica cargadas correctamente',
+        })
     }
 
     marcarPaginadorPregunta() {
         const cantidadPreguntas =
             this.preguntas[this.activeIndex].pregunta.length
         let cantidadPreguntasMarcadas = 0
+
         this.preguntas[this.activeIndex].pregunta.forEach((item) => {
             item.alternativas.forEach((alter) => {
                 if (alter.iMarcado == 1) {
@@ -171,7 +554,7 @@ export class EvaluacionPracticaComponent implements OnInit {
         /*const cantidadPreguntas =
             this.preguntas[this.activeIndex].pregunta.length
         let cantidadPreguntasMarcadas = 0
-
+    
         this.preguntas[this.activeIndex].pregunta.forEach((item) => {
             item.alternativas.forEach((alter) => {
                 if (alter.iMarcado == 1) {
@@ -179,7 +562,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                 }
             })
         })
-
+    
         if (cantidadPreguntas == cantidadPreguntasMarcadas) {
             this.preguntas[this.activeIndex].iMarcado = 1
         } else {
@@ -202,7 +585,9 @@ export class EvaluacionPracticaComponent implements OnInit {
             })
         })*/
         // alternativa.iMarcado = 1
-        this.marcarPaginadorPregunta()
+
+        //codigo comentado
+        /*this.marcarPaginadorPregunta();
         const params = {
             petition: 'post',
             group: 'ere',
@@ -222,6 +607,13 @@ export class EvaluacionPracticaComponent implements OnInit {
             },
         }
         this.getInformation(params, params.data.opcion)
+        */
+
+        this.accionBtnItem({
+            accion: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
+            item: null,
+            message: 'Respuesta de práctica guardada correctamente',
+        })
     }
 
     preguntarTerminarExamen() {
@@ -251,7 +643,8 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     terminarExamen() {
-        const params = {
+        //codigo comentado
+        /*const params = {
             petition: 'post',
             group: 'ere',
             prefix: 'resultados',
@@ -266,6 +659,12 @@ export class EvaluacionPracticaComponent implements OnInit {
             },
         }
         this.getInformation(params, params.data.opcion)
+        */
+        this.accionBtnItem({
+            accion: 'terminarExamenxiEstudianteId',
+            item: [{ iFinalizado: '0' }],
+            message: 'Examen de práctica finalizado correctamente',
+        })
     }
 
     getInformation(params, accion) {
@@ -420,7 +819,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                             let iMarcado = 0
                             pregunta.pregunta.forEach((item) => {
                                 this.totalPregunta = this.totalPregunta + 1
-                                item.title = 'Pregunta #' + this.totalPregunta
+                                item.title = 'Pregunta ' + this.totalPregunta
                                 item.alternativas = item.alternativas
                                     ? JSON.parse(item.alternativas)
                                     : item.alternativas

@@ -64,7 +64,7 @@
                 <p class="flex gap-2 flex-wrap ml-5">
                     @if (evaluacion?.dtExamenFechaInicio) {
                         <app-time
-                            [inicio]="tiempoActual"
+                            [inicio]="evaluacion?.dtHoraActual"
                             [fin]="evaluacion?.dtExamenFechaInicio"
                             (accionTime)="accionBtnItem($event)"
                         ></app-time>

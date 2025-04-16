@@ -173,50 +173,17 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                     'docente/asistencia/' +
                         this.selectedData['iCursoId'] +
                         '/' +
-                        this.selectedData['cCursoNombre'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        ) +
-                        '/' +
                         this.selectedData['iNivelGradoId'] +
                         '/' +
                         this.selectedData['iSeccionId'] +
                         '/' +
-                        this.selectedData['iDocenteId'] +
-                        '/' +
-                        this.selectedData['iYAcadId'] +
+                        this.selectedData['idDocCursoId'] +
                         '/' +
                         this.selectedData['iGradoId'] +
                         '/' +
-                        this.selectedData['cNivelTipoNombre'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        ) +
+                        this.selectedData['iCicloId'] +
                         '/' +
-                        this.selectedData['cGradoAbreviacion'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        ) +
-                        '/' +
-                        this.selectedData['cSeccion'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        ) +
-                        '/' +
-                        this.selectedData['cCicloRomanos'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        ) +
-                        '/' +
-                        this.selectedData['cNivelNombreCursos'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        ) +
-                        '/' +
-                        this.selectedData['nombrecompleto'].replace(
-                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
-                            ''
-                        )
+                        this.selectedData['iNivelId']
                 )
                 break
             case 'material-educativo':
@@ -230,18 +197,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                         )
                 )
                 break
-            // case 'calendario':
-            //     this.router.navigateByUrl(
-            //         'docente/calendario/' +
-            //             this.selectedData['idDocCursoId'] +
-            //             '/' +
-            //             this.selectedData['iYAcadId'] +
-            //             '/' +
-            //             this.selectedData['iCursoId'] +
-            //             '/' +
-            //             this.selectedData['iSeccionId']
-            //     )
-            //     break
         }
     }
     getCursos() {
@@ -327,7 +282,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response: Data) => {
-                    console.log(response.data)
                     this.cursoSilabos['iSilaboId'] = response.data[0]
                     this.MessageService.add({
                         severity: 'success',

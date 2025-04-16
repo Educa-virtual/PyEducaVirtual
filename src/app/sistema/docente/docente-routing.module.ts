@@ -32,7 +32,7 @@ import { ComunicadosComponent } from './comunicados/comunicados.component'
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
             {
-                path: 'asistencia/:iCursoId/:cCursoNombre/:iNivelGradoId/:iSeccionId/:iDocenteId/:iYAcadId/:iGradoId/:cNivelTipoNombre/:cGradoAbreviacion/:cSeccion/:cCicloRomanos/:cNivelNombreCursos/:nombrecompleto',
+                path: 'asistencia/:iCursoId/:iNivelGradoId/:iSeccionId/:idDocCursoId/:iGradoId/:iCicloId/:iNivelId',
                 component: AsistenciaComponent,
             },
             {

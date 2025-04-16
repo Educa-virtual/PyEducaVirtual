@@ -60,6 +60,9 @@
                             (dialogConfigurarNivelLogroEvent)="
                                 recibirDatosParaConfigurarNivelLogro($event)
                             "
+                            (dialogImportarResultados)="
+                                importarResultados($event)
+                            "
                         ></app-area-card>
                     }
                 </div>
@@ -70,5 +73,8 @@
 <app-subir-archivo-preguntas
     (archivoSubidoEvent)="actualizarEstadoArchivoSubido($event)"
 ></app-subir-archivo-preguntas>
+<app-importar-resultados
+    (archivoSubidoEvent)="actualizarEstadoResultadosImportados($event)"
+/>
 
 <app-configurar-nivel-logro> </app-configurar-nivel-logro>

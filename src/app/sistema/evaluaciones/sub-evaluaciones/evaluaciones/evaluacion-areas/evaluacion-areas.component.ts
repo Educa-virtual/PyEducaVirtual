@@ -342,17 +342,34 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 iCursoNivelGradId: curso.iCursoNivelGradId,
                 dtExamenFechaInicio: curso.dtExamenFechaInicio,
                 iExamenCantidadPreguntas: curso.iExamenCantidadPreguntas,
+                iExamenDuracionMinutos: curso.iExamenDuracionMinutos,
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: () => {
+                    let detailMessage: string
+                    switch (campoActualizar) {
+                        case 'preguntas':
+                            detailMessage =
+                                'Se ha actualizado la cantidad de preguntas.'
+                            break
+                        case 'duracion':
+                            detailMessage =
+                                'Se ha actualizado la duración de la evaluación.'
+                            break
+                        case 'fecha':
+                            detailMessage =
+                                'Se ha actualizado la fecha de inicio.'
+                            break
+                        default:
+                            detailMessage =
+                                'Se han actualizado los datos de la evaluación.'
+                            break
+                    }
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Datos actualizados',
-                        detail:
-                            campoActualizar == 'preguntas'
-                                ? 'Se ha actualizado la cantidad de preguntas.'
-                                : 'Se ha actualizado la fecha de evaluación.',
+                        detail: detailMessage,
                     })
                 },
                 error: (err) => {

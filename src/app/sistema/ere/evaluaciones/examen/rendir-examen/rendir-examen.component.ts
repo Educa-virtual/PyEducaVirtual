@@ -66,37 +66,27 @@ export class RendirExamenComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.evaluacion = this.store.getItem('evaluacion')
-        this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
-        this.breadCrumbItems = [
-            {
-                label: 'Evaluación ERE',
-                routerLink: '/ere/evaluacion/areas',
-            },
-            {
-                label: this.evaluacion.cEvaluacionNombre,
-            },
-            {
-                label:
-                    this.evaluacion.cGradoAbreviacion +
-                    ' ' +
-                    this.evaluacion.cCursoNombre +
-                    ' ' +
-                    this.evaluacion.cNivelTipoNombre,
-            },
-            {
-                label: 'Rendir',
-                routerLink: `/ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
-            },
-            { label: 'Iniciar evaluación' },
-        ]
-        this.breadCrumbHome = {
-            icon: 'pi pi-home',
-            routerLink: '/',
-        }
+        //this.evaluacion = this.store.getItem('evaluacion')
+        this.obtenerEvaluacionxiEvaluacionId()
         this.obtenerPreguntaxiEvaluacionId()
     }
-    // meto de al seleccionar una opción
+
+    obtenerEvaluacionxiEvaluacionId() {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'evaluacion',
+            ruta: 'obtenerEvaluacionxiEvaluacionIdxiCursoNivelGradIdxiIieeId',
+            data: {
+                opcion: 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId',
+                iEvaluacionId: this.iEvaluacionId,
+                iCursoNivelGradId: this.iCursoNivelGradId,
+                iIieeId: this._ConstantesService.iIieeId,
+            },
+        }
+        this.getInformation(params, params.data.opcion)
+    }
+
     seleccionarOpcion(opcion: string) {
         this.seleccion = opcion
     }
@@ -261,6 +251,38 @@ export class RendirExamenComponent implements OnInit {
         const { message } = elemento
         //this.cGradoNombre = this.cGradoNombre.toLowerCase()
         switch (accion) {
+            case 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId':
+                this.evaluacion = item.length ? item[0] : null
+                this.tiempoActual = new Date(this.evaluacion.dtHoraActual)
+                this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
+                this.breadCrumbItems = [
+                    {
+                        label: 'Evaluación ERE',
+                        routerLink: '/ere/evaluacion/areas',
+                    },
+                    {
+                        label: this.evaluacion.cEvaluacionNombre,
+                    },
+                    {
+                        label:
+                            this.evaluacion.cGradoAbreviacion +
+                            ' ' +
+                            this.evaluacion.cCursoNombre +
+                            ' ' +
+                            this.evaluacion.cNivelTipoNombre,
+                    },
+                    {
+                        label: 'Rendir',
+                        routerLink: `/ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
+                    },
+                    { label: 'Iniciar evaluación' },
+                ]
+                this.breadCrumbHome = {
+                    icon: 'pi pi-home',
+                    routerLink: '/',
+                }
+                //this.obtenerPreguntaxiEvaluacionId()
+                break
             case 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId':
                 this.finalizado = false
                 if (
@@ -292,7 +314,7 @@ export class RendirExamenComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Pregunta Múltiple',
+                            title: 'Pregunta múltiple',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                         })
                     }

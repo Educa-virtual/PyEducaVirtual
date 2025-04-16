@@ -49,6 +49,15 @@ export const routes: Routes = [
                         './sistema/especialista-ugel/especialista-ugel.routes'
                     ),
             },
+
+            // ruta de rol asignado
+            {
+                path: 'sin-rol-asignado',
+                loadChildren: () =>
+                    import(
+                        './sistema/sin-rol-asignado/sin-rol-asignado.routes'
+                    ),
+            },
         ],
     },
     {

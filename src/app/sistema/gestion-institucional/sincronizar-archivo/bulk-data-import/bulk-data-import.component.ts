@@ -259,7 +259,7 @@ export class BulkDataImportComponent implements OnInit {
                     this.responseDataImport =
                         this.collection.response(response) ?? undefined
                 },
-                error: () => {
+                error: (error) => {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Importación de datos',

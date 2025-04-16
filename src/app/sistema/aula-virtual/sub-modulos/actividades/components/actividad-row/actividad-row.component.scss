@@ -29,3 +29,32 @@
 .detalle-actividad:hover {
     background: var(--green-100) !important;
 }
+
+// para que la etiqueta de comunicado sobresalga del card
+.tag {
+    position: absolute;
+    top: -15px; /* Para que sobresalga del card */
+    left: 10%;
+    transform: translateX(-50%);
+    background-color: #fa8f45; /* Asegura que tenga un fondo */
+    padding: 5px 5px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    color: white;
+}
+
+.background-evaluacion {
+    // color: #6c757d; /* Gris */
+    background-color: #3e67a9;
+}
+
+.background-foro {
+    // color: #ffc107; /* Amarillo */
+    background-color: #077d38;
+}
+
+.background-tarea {
+    // color: #dc3545; /* Rojo */
+    background-color: #b51f32;
+}

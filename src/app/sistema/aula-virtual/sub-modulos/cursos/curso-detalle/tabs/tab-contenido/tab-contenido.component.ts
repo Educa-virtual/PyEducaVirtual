@@ -43,6 +43,7 @@ import { TareaFormContainerComponent } from '../../../../actividades/actividad-t
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -60,6 +61,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
         TareaFormContainerComponent,
         FormEvaluacionComponent,
         NoDataComponent,
+        ToolbarPrimengComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -94,9 +96,12 @@ export class TabContenidoComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _evalService = inject(ApiEvaluacionesService)
 
-    private semanaSeleccionada
+    // para mostrar las actividades de la semana
+    // private semanaSeleccionadaS
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
+
+    semanaSeleccionada: any = null
 
     // lista de acciones base para la semana
     private handleActionsMap: Record<
@@ -128,6 +133,12 @@ export class TabContenidoComponent implements OnInit {
         this.rangeDates = [today, nextWeek]
 
         this.getData()
+        this.obtenerTipoActivadad()
+    }
+
+    // maneja el evento de seleccion de semana
+    mostrarDetalleSemana(semana: any) {
+        this.semanaSeleccionada = semana
     }
 
     private getData() {
@@ -139,6 +150,7 @@ export class TabContenidoComponent implements OnInit {
         this._aulaService.obtenerTipoActividades().subscribe({
             next: (tipoActivadeds) => {
                 this.tipoActivadedes = tipoActivadeds
+                console.log('las actividades', this.tipoActivadedes)
                 this.generarAccionesContenido()
             },
         })

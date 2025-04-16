@@ -60,6 +60,8 @@ export class EvaluacionPracticaComponent implements OnInit {
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
 
+    evaluacionPractica: string = 'Evaluación'
+
     constructor(
         private store: LocalStoreService,
         private confirmationService: ConfirmationService
@@ -728,6 +730,10 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     finalizado: boolean = false
+
+    evaluacionErePractica: string = 'Evaluación ERE'
+    practicaCurso: string = 'Evaluación Practica'
+    rendirPractica: string = 'Rendir'
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -740,24 +746,17 @@ export class EvaluacionPracticaComponent implements OnInit {
                 this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
                 this.breadCrumbItems = [
                     {
-                        label: 'Evaluación ERE',
-                        routerLink: '/ere/evaluacion/areas',
+                        label: this.evaluacionErePractica,
                     },
                     {
                         label: this.evaluacion.cEvaluacionNombre,
                     },
                     {
-                        label:
-                            this.evaluacion.cGradoAbreviacion +
-                            ' ' +
-                            this.evaluacion.cCursoNombre +
-                            ' ' +
-                            this.evaluacion.cNivelTipoNombre,
+                        label: this.practicaCurso,
                     },
                     {
-                        label: 'Rendir',
-                        routerLink: `/ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
-                    },
+                        label: this.rendirPractica,
+                    }, //iCursoNivelGradId
                     { label: 'Iniciar evaluación' },
                 ]
                 this.breadCrumbHome = {

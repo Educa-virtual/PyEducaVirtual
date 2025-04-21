@@ -18,13 +18,6 @@ export class CursoCardComponent {
     backend = environment.backend
     @Input() curso: ICurso
 
-    messages = [
-        {
-            severity: 'info',
-            detail: 'En esta sección podrá visualizar las áreas curriculares asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
-        },
-    ]
-
     updateUrl(item) {
         item.cCursoImagen = 'cursos/images/no-image.jpg'
     }

@@ -105,23 +105,6 @@ export class CursosComponent implements OnDestroy, OnInit {
         this.obtenerCursos(params)
     }
 
-    // getCursosDocente(year) {
-    //     const params = {
-    //         petition: 'post',
-    //         group: 'acad',
-    //         prefix: 'docente',
-    //         ruta: 'docente_curso',
-    //         data: {
-    //             opcion: 'CONSULTARxiPersIdxiYearId',
-    //             iCredId: this._constantesService.iCredId,
-    //             valorBusqueda: year, //iYearId
-    //             iSemAcadId: null,
-    //             iIieeId: null,
-    //         },
-    //         params: { skipSuccessMessage: true },
-    //     }
-    //     this.obtenerCursos(params)
-    // }
     getCursosEstudiante(year) {
         const params = {
             petition: 'post',

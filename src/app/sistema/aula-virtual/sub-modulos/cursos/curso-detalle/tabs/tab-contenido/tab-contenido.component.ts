@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     EVALUACION,
     FORO,
@@ -13,7 +12,6 @@ import {
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { MenuItem } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import {
     matFactCheck,
@@ -25,7 +23,6 @@ import {
 } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -44,6 +41,7 @@ import { FormEvaluacionComponent } from '../../../../actividades/actividad-evalu
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -52,15 +50,12 @@ import { VideoconferenciaFormContainerComponent } from '../../../../actividades/
         CommonModule,
         FullCalendarModule,
         FormsModule,
-        ActividadRowComponent,
         ActividadListaComponent,
-        VideoconferenciaContainerFormComponent,
-        IconComponent,
         DynamicDialogModule,
         PrimengModule,
-        TareaFormContainerComponent,
         FormEvaluacionComponent,
         NoDataComponent,
+        ToolbarPrimengComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',

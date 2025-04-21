@@ -351,18 +351,15 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
             })
     }
-    // Método para actualizar los datos en la base de datos
 
     actualizarEvaluacion() {
-        // Obtén los valores de fecha del formulario
         const fechaInicioOriginal = this.evaluacionFormGroup.get(
             'dtEvaluacionFechaInicio'
         ).value
         const fechaFinOriginal = this.evaluacionFormGroup.get(
             'dtEvaluacionFechaFin'
         ).value
-
-        // Agregar logs para depuración
+        // Se agrega logs para depuración
         console.log('Fecha Inicio (original):', fechaInicioOriginal)
         console.log('Tipo de fecha inicio:', typeof fechaInicioOriginal)
         console.log('Es Date?', fechaInicioOriginal instanceof Date)
@@ -371,16 +368,13 @@ export class EvaluacionesFormComponent implements OnInit {
         console.log('Tipo de fecha fin:', typeof fechaFinOriginal)
         console.log('Es Date?', fechaFinOriginal instanceof Date)
 
-        // Función para formatear la fecha en formato SQL Server (YYYY-MM-DD)
         const formatearFecha = (fecha) => {
             if (!fecha) return null
 
-            // Si es objeto Date
             if (fecha instanceof Date) {
-                return fecha.toISOString().split('T')[0] // Formato YYYY-MM-DD
+                return fecha.toISOString().split('T')[0]
             }
 
-            // Si es string con formato dd/mm/yyyy
             if (typeof fecha === 'string') {
                 if (fecha.includes('/')) {
                     const partes = fecha.split('/')
@@ -390,14 +384,11 @@ export class EvaluacionesFormComponent implements OnInit {
                         const anio = partes[2]
                         return `${anio}-${mes}-${dia}`
                     }
-                }
-                // Si ya tiene formato YYYY-MM-DD, lo dejamos así
-                else if (fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                } else if (fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
                     return fecha
                 }
             }
 
-            // Si no podemos manejar el formato, retornamos null para evitar errores de conversión
             console.log('Formato de fecha no reconocido:', fecha)
             return null
         }
@@ -426,7 +417,6 @@ export class EvaluacionesFormComponent implements OnInit {
 
         console.log('Datos para actualizar (con fechas formateadas):', data)
 
-        // Verificar que las fechas estén correctamente formateadas antes de enviar
         if (!data.dtEvaluacionFechaInicio || !data.dtEvaluacionFechaFin) {
             this._MessageService.add({
                 severity: 'error',

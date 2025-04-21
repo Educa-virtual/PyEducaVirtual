@@ -1,53 +1,28 @@
-<section class="flex flex-column gap-4">
-    <div class="flex flex-column">
-        <div class="grid">
-            <p-toolbar class="col-12">
-                <div class="block">
-                    <h2 class="text-primary text-white font-bold block">
-                        {{ curso?.cNivelNombreCursos.toUpperCase() }} :
-                        {{ curso?.cCursoNombre }}
-                    </h2>
-                    <div class="text-primary text-white font-bold block">
-                        Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo:
-                        {{ curso?.cCicloRomanos }} | Grado:
-                        {{ curso?.cGradoAbreviacion }} | Seccion:
-                        {{ curso?.cSeccionNombre }}
-                    </div>
-                </div>
-                <div class="p-toolbar-group-end">
-                    <p-button
-                        icon="pi pi-undo"
-                        [rounded]="true"
-                        pTooltip="Regresar"
-                        tooltipPosition="top"
-                        [routerLink]="['..']"
-                    />
-                </div>
-            </p-toolbar>
-        </div>
-        <div class="flex justify-content-between">
-            <p-menu #menu [model]="items" [popup]="true">
-                <ng-template pTemplate="start">
-                    <app-curso-detalle-navigation
-                        [actualTab]="tab"
-                        (tabChange)="updateTab($event); menu.toggle(null)"
-                    />
-                </ng-template>
-                <ng-template pTemplate="end" let-item></ng-template>
-            </p-menu>
-            <button class="p-link menu-button" (click)="menu.toggle($event)">
-                <i class="pi pi-bars"></i>
-            </button>
-        </div>
+<app-toolbar-primeng
+    [title]="
+        (curso?.cNivelNombreCursos.toUpperCase() || '') +
+        ': ' +
+        (curso?.cCursoNombre || '')
+    "
+>
+    <div class="text-white font-bold block">
+        Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo:
+        {{ curso?.cCicloRomanos }} | Grado: {{ curso?.cGradoAbreviacion }} |
+        Seccion:
+        {{ curso?.cSeccion }}
     </div>
-    <app-curso-detalle-navigation
-        [actualTab]="tab"
-        (tabChange)="updateTab($event)"
-        class="sidebar-menu"
-    />
-    <div class="curso-detalle__content">
-        @switch (tab) {
-            @case ('inicio') {
+</app-toolbar-primeng>
+<div class="grid">
+    <app-tabs-primeng
+        class="col-12"
+        [activeIndex]="selectTab"
+        [tabs]="tabs"
+        (updateTab)="updateTab($event)"
+    >
+    </app-tabs-primeng>
+    <div class="col-12">
+        @switch (selectTab) {
+            @case (0) {
                 <app-tab-inicio
                     [_iSilaboId]="iSilaboId"
                     [iCursoId]="curso?.iCursoId"
@@ -55,7 +30,7 @@
                     [curso]="curso"
                 ></app-tab-inicio>
             }
-            @case ('contenido') {
+            @case (1) {
                 <app-tab-contenido
                     [_iSilaboId]="iSilaboId"
                     [iCursoId]="curso?.iCursoId"
@@ -63,12 +38,7 @@
                     [curso]="curso"
                 ></app-tab-contenido>
             }
-            <!-- @case ('estudiantes') {
-                <app-tab-estudiantes
-                    [estudiantes]="estudiantes"
-                ></app-tab-estudiantes>
-            } -->
-            @case ('resultados') {
+            @case (2) {
                 <app-tab-resultados
                     [_iSilaboId]="iSilaboId"
                     [iCursoId]="curso?.iCursoId"
@@ -76,12 +46,6 @@
                     [curso]="curso"
                 ></app-tab-resultados>
             }
-            <!-- @case ('asistencia') {
-                <app-asistencia></app-asistencia>
-            } -->
-            @default {}
         }
-
-        <router-outlet></router-outlet>
     </div>
-</section>
+</div>

@@ -1,20 +1,19 @@
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { ICurso } from '../../../interfaces/curso.interface'
-import { TableModule } from 'primeng/table'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 //Message,
 import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
-import { ButtonModule } from 'primeng/button'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
-    imports: [TableModule, PrimengModule, ButtonModule],
+    imports: [PrimengModule, CardOrderListComponent],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })

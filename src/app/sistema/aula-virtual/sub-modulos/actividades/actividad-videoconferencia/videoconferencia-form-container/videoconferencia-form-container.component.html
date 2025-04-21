@@ -1,0 +1,149 @@
+<form [formGroup]="formConferencia" class="flex flex-column gap-3 w-full">
+    <div class="grid">
+        <div class="col-12" [hidden]="!contenidoSemana">
+            <p-messages
+                [(value)]="semana"
+                [enableService]="false"
+                [closable]="false"
+            />
+            <label for="descripcion" class="mt-1"
+                >Título
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Título </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        class="flex-auto w-full"
+                        formControlName="nombreConferencia"
+                        maxlength="250"
+                    />
+                </p-inputGroup>
+                <div
+                    *ngIf="
+                        nombreConferencia?.hasError('maxlength') &&
+                        nombreConferencia?.touched
+                    "
+                    class="text-red-500 text-sm"
+                >
+                    Máximo 250 caracteres permitidos.
+                </div>
+            </div>
+        </div>
+
+        <!-- Agregar fecha y hora de la video conferencia -->
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Horario
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="grid">
+                <div class="col-5 mt-2">
+                    <p-inputGroup>
+                        <p-inputGroupAddon> Fecha de Inicio </p-inputGroupAddon>
+                        <!-- Componente de calendario para seleccionar una fecha y hora -->
+                        <p-calendar
+                            formControlName="fecha"
+                            [iconDisplay]="'input'"
+                            [showIcon]="true"
+                            inputId="dtInicio"
+                            dateFormat="dd/mm/yy"
+                            appendTo="body"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-5 mt-2">
+                    <p-inputGroup>
+                        <p-inputGroupAddon> Hora de Inicio </p-inputGroupAddon>
+                        <p-calendar
+                            [iconDisplay]="'input'"
+                            [showIcon]="true"
+                            [timeOnly]="true"
+                            inputId="templatedisplay"
+                        >
+                            <ng-template
+                                pTemplate="inputicon"
+                                let-clickCallBack="clickCallBack"
+                            >
+                                <i
+                                    class="pi pi-clock"
+                                    (onclick)="clickCallBack($event)"
+                                ></i>
+                            </ng-template>
+                        </p-calendar>
+                    </p-inputGroup>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mostrar descripción -->
+        <!-- <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Descripción
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    id="descripcion"
+                    placeholder="Escribe una Descripción "
+                    formControlName="cForoDescripcion"
+                    [style]="{ height: 'auto', overflow: 'hidden' }"
+                />
+            </div>
+            
+        </div> -->
+        <!-- Mostrar link de video conferencia -->
+        <div class="col-8">
+            <label for="descripcion" class="mt-1"
+                >Link
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon class="flex-auto w-25rem">
+                        Link del video Conferencia:</p-inputGroupAddon
+                    >
+                    <input
+                        pInputText
+                        class="flex-auto w-full"
+                        formControlName="linkConferencia"
+                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                        placeholder="https://meet.google.com/"
+                    />
+                </p-inputGroup>
+            </div>
+            <div
+                *ngIf="
+                    formConferencia.controls.linkConferencia.invalid &&
+                    formConferencia.controls.linkConferencia.touched
+                "
+                class="text-red-500 text-sm"
+            >
+                La URL debe comenzar con http:// o https://
+            </div>
+        </div>
+    </div>
+</form>
+<!-- button de cancelar y guardar -->
+<div class="flex justify-content-center gap-2 pt-3">
+    <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        type="button"
+        size="small"
+        (click)="closeModal(null)"
+    ></button>
+    <button
+        pButton
+        pRipple
+        [label]="opcion"
+        icon="pi pi-check"
+        size="small"
+        class="p-button-primary"
+        (click)="guardar()"
+    ></button>
+</div>

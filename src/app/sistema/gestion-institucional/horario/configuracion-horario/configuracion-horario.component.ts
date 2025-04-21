@@ -13,6 +13,7 @@ import { AddHorarioComponent } from '../add-horario/add-horario.component'
 import { AddDocenteComponent } from '../add-docente/add-docente.component'
 
 import { BlockHorarioComponent } from '../block-horario/block-horario.component'
+import { ConfHorariosComponent } from '@/app/shared/horario/conf-horario.component'
 
 @Component({
     selector: 'app-configuracion-horario',
@@ -21,7 +22,7 @@ import { BlockHorarioComponent } from '../block-horario/block-horario.component'
     styleUrls: ['./configuracion-horario.component.scss'],
     imports: [
         PrimengModule,
-
+        ConfHorariosComponent,
         GridHorarioComponent,
         AddHorarioComponent,
         AddDocenteComponent,

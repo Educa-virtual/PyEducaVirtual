@@ -1,0 +1,105 @@
+<div class="flex gap-2">
+    <div class="flex flex-column gap-2">
+        <div class="flex flex-column gap-1">
+            <span class="text-lg font-bold">Cursos Disponibles </span>
+            <span>Selecciona los cursos que deseas tomar</span>
+        </div>
+
+        <ul class="list-none p-0 m-0">
+            @for (curso of cursos; track curso.id) {
+                <li
+                    role="button"
+                    tabindex="0"
+                    (click)="cursoSeleccionado = curso"
+                    (keydown.enter)="cursoSeleccionado = curso"
+                    (keydown.space)="cursoSeleccionado = curso"
+                    class="w-full list-none curso py-4 px-4 flex flex-column gap-3 cursor-pointer"
+                    [ngClass]="{
+                        cursoSeleccionado: cursoSeleccionado === curso,
+                    }"
+                >
+                    <div class="flex flex-column gap-1">
+                        <span class="text-lg font-bold">{{ curso.curso }}</span>
+                        <span>Docente: {{ curso.profesor }}</span>
+                    </div>
+
+                    <div class="flex flex-column gap-2">
+                        <span
+                            >Horas asignadas: {{ curso.horasAsignadas }} de
+                            {{ curso.horasDisponibles }}
+                        </span>
+                        <p-meterGroup
+                            class="w-29rem"
+                            [value]="[
+                                {
+                                    value: curso.horasAsignadas,
+                                    color: '#7CABF9',
+                                },
+                            ]"
+                            [max]="curso.horasDisponibles"
+                        />
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        <p-table
+            styleClass="p-datatable-gridlines"
+            [columns]="dias"
+            [value]="bloquesHorarios"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    @for (dia of columns; track $index) {
+                        <th>{{ dia.header }}</th>
+                    }
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-bloque let-columns="columns">
+                <tr>
+                    @for (col of columns; track col) {
+                        @if (isBloque(bloque[col.field])) {
+                            <td>{{ bloque[col.field] }}</td>
+                        } @else if (isDay(bloque[col.field])) {
+                            <td class="cursoHorario">
+                                <div
+                                    class="flex flex-column gap-1 align-items-center"
+                                >
+                                    {{ bloque[col.field].curso }}
+                                    <i
+                                        class="pi pi-times border-circle p-2 cursor-pointer hover:bg-white-alpha-90"
+                                        role="button"
+                                        tabindex="0"
+                                        (click)="
+                                            removeCurso(bloque.id, col.field)
+                                        "
+                                        (keydown.enter)="
+                                            removeCurso(bloque.id, col.field)
+                                        "
+                                        (keydown.space)="
+                                            removeCurso(bloque.id, col.field)
+                                        "
+                                    ></i>
+                                </div>
+                            </td>
+                        } @else {
+                            <td
+                                class="cursor-pointer bloqueDisponible"
+                                role="button"
+                                tabindex="0"
+                                (click)="addCurso(bloque.id, col.field)"
+                                (keydown.enter)="addCurso(bloque.id, col.field)"
+                                (keydown.space)="addCurso(bloque.id, col.field)"
+                            >
+                                Disponible
+                            </td>
+                        }
+                    }
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

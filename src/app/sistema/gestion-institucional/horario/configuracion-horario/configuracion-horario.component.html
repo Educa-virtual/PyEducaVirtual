@@ -173,14 +173,16 @@
     </form>
 </div>
 @if (visible_grid) {
-    <app-grid-horario
+    <!-- <app-grid-horario
         [events]="1"
         [curricula]="areas"
         [bloque_horario]="items"
         [horarios]="registros"
         (filtrarCurso)="asignarHorario($event)"
     >
-    </app-grid-horario>
+    </app-grid-horario> -->
+
+    <app-conf-horario></app-conf-horario>
 }
 @if (visible_bloque) {
     <app-block-horario

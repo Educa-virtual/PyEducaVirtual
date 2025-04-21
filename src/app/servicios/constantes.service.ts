@@ -244,13 +244,13 @@ const administracion = [
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    {
-                        label: 'Registro de año escolar',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/calendarioAcademico',
-                        ],
-                    },
+                    // {
+                    //     label: 'Registro de año escolar',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: [
+                    //         '/gestion-institucional/calendarioAcademico',
+                    //     ],
+                    // },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',

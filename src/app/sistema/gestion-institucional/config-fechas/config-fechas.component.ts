@@ -14,6 +14,9 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ApiService } from '@/app/servicios/api.service'
+import { UtilService } from '@/app/servicios/utils.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-fechas',
@@ -29,7 +32,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 })
 export class ConfigFechasComponent implements OnInit {
     form: FormGroup
-    yearCalendarios: []
+    yearCalendarios: any = []
     fechas: []
     tipo_feriado: []
     iSedeId: number
@@ -38,6 +41,7 @@ export class ConfigFechasComponent implements OnInit {
     visible: boolean = false
     caption: string
     option: string
+    datePipe: any
 
     constructor(
         private stepService: AdmStepGradoSeccionService,
@@ -46,7 +50,10 @@ export class ConfigFechasComponent implements OnInit {
         private messageService: MessageService,
         private store: LocalStoreService,
         private query: GeneralService,
-        private msg: StepConfirmationService
+        private msg: StepConfirmationService,
+        private apiService: ApiService,
+        private utils: UtilService,
+        private dialog: ConfirmationModalService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
@@ -74,25 +81,100 @@ export class ConfigFechasComponent implements OnInit {
         this.getfechasAcademico()
         this.getCalendarioAcademico()
         this.getTipoFeriado()
+
+        this.form.valueChanges.subscribe((value) => {
+            console.log(value)
+        })
     }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
-            console.log(item, 'btnTable')
+            this.updateForm(item)
+            this.visible = true
+            this.caption = 'Registro para editar fechas especiales'
+            this.option = 'editar'
         }
         if (accion === 'agregar') {
             this.visible = true
             this.caption = 'Registro para agregar fechas especiales'
             this.option = 'crear'
         }
+        if (accion === 'editar') {
+            this.visible = true
+            this.caption = 'Registro para editar fechas especiales'
+            this.option = 'editar'
+
+            this.form.patchValue({
+                iFechaImpId: item.iFechaImpId,
+                iTipoFerId: item.iTipoFerId,
+                iCalAcadId: item.iCalAcadId,
+                bFechaImpSeraLaborable: Number(item.bFechaImpSeraLaborable),
+                cFechaImpNombre: item.cFechaImpNombre,
+                dtFechaImpFecha: new Date(item.dtFechaImpFecha),
+                cFechaImpURLDocumento: item.cFechaImpURLDocumento,
+                cFechaImpInfoAdicional: item.cFechaImpInfoAdicional,
+            })
+        }
+
+        if (accion === 'eliminar') {
+            this.dialog.openConfirm({
+                header: 'Eliminar Registro',
+                accept: () => {
+                    this.option = 'eliminar'
+
+                    this.apiService.deleteData({
+                        esquema: 'acad',
+                        tabla: 'fechas_importantes',
+                        campoId: 'iFechaImpId',
+                        valorId: item.iFechaImpId,
+                    })
+                },
+                reject: () => {
+                    this.option = 'cancelar'
+                },
+            })
+        }
     }
     accionBtnItem(accion) {
         switch (accion) {
             case 'guardar':
-                console.log('grabar')
                 this.AddFechaImportante()
                 break
+
+            case 'editar':
+                this.apiService.updateData({
+                    esquema: 'acad',
+                    tabla: 'fechas_importantes',
+                    campos: {
+                        iTipoFerId: this.form.value.iTipoFerId,
+                        iCalAcadId: this.form.value.iCalAcadId,
+                        cFechaImpNombre: this.form.value.cFechaImpNombre,
+                        dtFechaImpFecha: this.utils.convertToSQLDateTime(
+                            this.form.value.dtFechaImpFecha
+                        ),
+                        bFechaImpSeraLaborable:
+                            this.form.value.bFechaImpSeraLaborable,
+                        cFechaImpURLDocumento:
+                            this.form.value.cFechaImpURLDocumento,
+                        cFechaImpInfoAdicional:
+                            this.form.value.cFechaImpInfoAdicional,
+                    },
+                    where: {
+                        COLUMN_NAME: 'iFechaImpId',
+                        VALUE: this.form.value.iFechaImpId,
+                    },
+                })
+
+                this.getfechasAcademico()
+                break
+
+            case 'eliminar':
+                console.log('eliminar fecha importante??')
+
+                break
         }
+
+        this.visible = false
     }
 
     AddFechaImportante() {
@@ -106,7 +188,7 @@ export class ConfigFechasComponent implements OnInit {
                     bFechaImpSeraLaborable:
                         this.form.value.bFechaImpSeraLaborable,
                     cFechaImpNombre: this.form.value.cFechaImpNombre,
-                    dtFechaImpFecha: this.form.value.dtFechaImpFecha,
+                    dtFechaImpFecha: new Date(this.form.value.dtFechaImpFecha),
                     cFechaImpURLDocumento:
                         this.form.value.cFechaImpURLDocumento,
                     cFechaImpInfoAdicional:
@@ -138,13 +220,14 @@ export class ConfigFechasComponent implements OnInit {
                     iSedeId: this.iSedeId,
                     iYAcadId: this.iYAcadId,
                 }),
-                _opcion: 'getCalendarioSedeYear',
+                _opcion: 'getCalendarioIESede2', //getCalendarioSedeYear,
             })
             .subscribe({
                 next: (data: any) => {
+                    //  this.iCalAcadId = Number(data.data[0]['iCalAcadId'])
                     this.yearCalendarios = data.data
-                    this.iCalAcadId = Number(data.data[0]['iCalAcadId'])
-                    console.log(this.yearCalendarios)
+
+                    console.log(this.yearCalendarios, 'yearCalendarios')
                 },
                 error: (error) => {
                     console.error('Error fetching Años Académicos:', error)
@@ -200,6 +283,27 @@ export class ConfigFechasComponent implements OnInit {
                 },
             })
     }
+
+    updateForm(item) {
+        const fecha = new Date(item.dtFechaImpFecha)
+
+        this.form.patchValue({
+            iFechaImpId: item.iFechaImpId,
+            iTipoFerId: item.iTipoFerId,
+            iCalAcadId: item.iCalAcadId,
+            bFechaImpSeraLaborable: item.bFechaImpSeraLaborable,
+            cFechaImpNombre: item.cFechaImpNombre,
+            dtFechaImpFecha: fecha,
+            cFechaImpURLDocumento: item.cFechaImpURLDocumento,
+            cFechaImpInfoAdicional: item.cFechaImpInfoAdicional,
+        })
+        this.iCalAcadId = item.iCalAcadId
+        this.visible = true
+        this.caption = 'Registro para editar fechas especiales'
+        this.option = 'editar'
+    }
+
+    // ESTRUCTURA DE ACCIONES
 
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [

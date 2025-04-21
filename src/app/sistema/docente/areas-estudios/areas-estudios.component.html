@@ -1,31 +1,4 @@
 <div class="grid">
-    <!-- <p-toolbar class="col-12">
-        <div class="p-toolbar-group-start">
-            <h4 class="text-primary font-bold">
-                Mis Áreas Curriculares
-            </h4>
-        </div>
-        <div class="p-toolbar-group-end">
-            <span class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                    pInputText
-                    placeholder="Buscar área curricular"
-                    style="width: 350px"
-                    (input)="onGlobalFilter(dv, $event)"
-                />
-            </span>
-            <p-button
-                icon="pi pi-sync"
-                pTooltip="Refrescar áreas curriculares"
-                tooltipPosition="top"
-                [rounded]="true"
-                [text]="true"
-                severity="danger"
-                (onClick)="getCursos()"
-            />
-        </div>
-    </p-toolbar> -->
     <div class="col-12">
         <p-messages [(value)]="messages" [enableService]="false" />
     </div>
@@ -264,10 +237,9 @@
             </tr>
         </ng-template>
     </p-table>
-    @if (iPerfilId === DOCENTE) {
+    @if (iPerfilId === DOCENTE && data.length) {
         <div class="col-12 flex flex-column md:flex-row my-5 mx-5">
             <p class="font-bold ml-2 mt-1">Leyenda:</p>
-
             <p-tag
                 severity="warning"
                 value="Avance de la Programación curricular"

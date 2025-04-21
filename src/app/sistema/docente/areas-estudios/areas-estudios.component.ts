@@ -1,5 +1,4 @@
 import { PrimengModule } from '@/app/primeng.module'
-// import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import {
     Component,
     OnInit,
@@ -9,8 +8,6 @@ import {
     OnChanges,
     ViewChild,
 } from '@angular/core'
-// import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
-// import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
 import { Router } from '@angular/router'
 import { Table } from 'primeng/table'
 import { GeneralService } from '@/app/servicios/general.service'
@@ -31,12 +28,7 @@ interface Data {
 @Component({
     selector: 'app-areas-estudios',
     standalone: true,
-    imports: [
-        // ContainerPageComponent,
-        PrimengModule,
-        // TablePrimengComponent,
-        // RecursosDidacticosComponent,
-    ],
+    imports: [PrimengModule],
     templateUrl: './areas-estudios.component.html',
     styleUrl: './areas-estudios.component.scss',
     providers: [MessageService],
@@ -76,13 +68,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
         this.items = [
-            // {
-            //     label: 'Fichas de Aprendizaje',
-            //     icon: 'pi pi-angle-right',
-            //     command: () => {
-            //         this.goSection('ficha-aprendizaje')
-            //     },
-            // },
             {
                 label: 'Programación curricular',
                 icon: 'pi pi-angle-right',
@@ -90,19 +75,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                     this.goSection('silabo')
                 },
             },
-
-            // {
-            //     label: 'Sesiones de Aprendizaje',
-            //     icon: 'pi pi-angle-right',
-            //     command: () => {
-            //         this.goSection('sesion-aprendizaje')
-            //     },
-            // },
-            // {
-            //     label: 'Registro de evaluación',
-            //     icon: 'pi pi-angle-right',
-            //     command: () => {},
-            // },
             {
                 label: 'Material Educativo',
                 icon: 'pi pi-angle-right',
@@ -110,21 +82,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                     this.goSection('material-educativo')
                 },
             },
-            // {
-            //     label: 'Cuaderno de campo',
-            //     icon: 'pi pi-angle-right',
-            //     command: () => {},
-            // },
-            // {
-            //     label: 'Instrumentos de Evaluación',
-            //     icon: 'pi pi-angle-right',
-            //     command: () => {},
-            // },
-            // {
-            //     label: 'Plan de trabajo',
-            //     icon: 'pi pi-angle-right',
-            //     command: () => {},
-            // },
             {
                 label: 'Asistencia',
                 icon: 'pi pi-angle-right',
@@ -230,18 +187,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                         )
                 )
                 break
-            // case 'calendario':
-            //     this.router.navigateByUrl(
-            //         'docente/calendario/' +
-            //             this.selectedData['idDocCursoId'] +
-            //             '/' +
-            //             this.selectedData['iYAcadId'] +
-            //             '/' +
-            //             this.selectedData['iCursoId'] +
-            //             '/' +
-            //             this.selectedData['iSeccionId']
-            //     )
-            //     break
         }
     }
     getCursos() {

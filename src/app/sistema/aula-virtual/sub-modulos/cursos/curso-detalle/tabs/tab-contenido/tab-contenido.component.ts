@@ -43,6 +43,7 @@ import { TareaFormContainerComponent } from '../../../../actividades/actividad-t
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -287,19 +288,48 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleVideoconferenciaAction(action: string, actividad: IActividad) {
-        if (action === 'EDITAR' || action === 'CREAR') {
-            let data = null
-            let header = 'Crear Videoconferencia'
-            if (action === 'EDITAR') {
-                data = actividad
-                header = 'Editar Videoconferencia'
-            }
-            this._dialogService.open(VideoconferenciaContainerFormComponent, {
-                ...MODAL_CONFIG,
-                data: data,
-                header: header,
-            })
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                const ref: DynamicDialogRef = this._dialogService.open(
+                    VideoconferenciaFormContainerComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        data: {
+                            contenidoSemana: this.semanaSeleccionada,
+                            iActTipoId: actividad.iActTipoId,
+                            actividad: actividad,
+                            action:
+                                action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                        },
+                        header:
+                            action === 'EDITAR'
+                                ? 'Editar Videoconferencia'
+                                : 'Crear Videoconferencia',
+                    }
+                )
+                ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.getData()
+                        console.log('Formulario enviado', result)
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
         }
+        // if (action === 'EDITAR' || action === 'CREAR') {
+        //     let data = null
+        //     let header = 'Crear Videoconferencia'
+        //     if (action === 'EDITAR') {
+        //         data = actividad
+        //         header = 'Editar Videoconferencia'
+        //     }
+        //     this._dialogService.open(VideoconferenciaFormContainerComponent, {
+        //         ...MODAL_CONFIG,
+        //         data: data,
+        //         header: header,
+        //     })
+        // }
     }
 
     handleForoAction(action: string, actividad: IActividad) {

@@ -1,8 +1,6 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { CommonModule } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
-import { DataViewModule, DataView } from 'primeng/dataview'
-import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
+import { DataView } from 'primeng/dataview'
 import { CursoCardComponent } from '../components/curso-card/curso-card.component'
 import { ICurso } from '../interfaces/curso.interface'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -19,10 +17,7 @@ export type Layout = 'list' | 'grid'
     selector: 'app-cursos',
     standalone: true,
     imports: [
-        CommonModule,
         ContainerPageComponent,
-        DataViewModule,
-        TablePrimengComponent,
         CursoCardComponent,
         AreasEstudiosComponent,
         PrimengModule,
@@ -52,11 +47,11 @@ export class CursosComponent implements OnDestroy, OnInit {
     ngOnInit(): void {
         const modulo = this._store.getItem('dremoModulo')
         switch (Number(modulo.iModuloId)) {
-            case 2:
-                this.layout = 'list'
-                break
             case 1:
                 this.layout = 'grid'
+                break
+            case 2:
+                this.layout = 'list'
                 break
             default:
                 break

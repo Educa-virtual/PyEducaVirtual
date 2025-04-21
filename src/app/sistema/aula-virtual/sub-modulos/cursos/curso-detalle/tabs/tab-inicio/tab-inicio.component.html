@@ -1,7 +1,7 @@
 <div class="">
     <div class="grid">
-        <!-- <div class="col-12 md:col-4">
-            <div class="card mb-2">
+        <div class="col-12 lg:col-3 md:col-12">
+            <div class="card">
                 <div class="text-primary font-bold">Información General</div>
                 <p>
                     <strong>Docente:</strong><br />Carlos Jose Valderrama
@@ -16,163 +16,168 @@
                             ></a
                         >
                     </li>
-                    <li>
-                        <a
-                            ><i class="pi pi-calendar"></i>&nbsp;<b
-                                >Descargar Horario
-                            </b></a
-                        >
-                    </li>
                 </ul>
-               
-            </div>
-        </div> -->
-        <div class="col-12 md:col-12" [hidden]="iPerfilId !== DOCENTE">
-            <div class="card">
-                <div class="col-12">
-                    <label
-                        for=""
-                        class=""
-                        style="font-weight: bold; font-size: 16px"
-                    >
-                        Anuncia algo aquí para toda la clase:
-                    </label>
-                </div>
-                <!-- <label for="cTareaDescripcion" class="font-bold"
-                    >Anuncia algo aquí Para toda la clase</label
-                > -->
-                <!-- <div class="mt-2"></div> -->
-                <p-toast></p-toast>
-                <form
-                    [formGroup]="guardarPublicacion"
-                    class="flex flex-column gap-3 w-full"
-                >
-                    <p-editor
-                        id="cTareaDescripcion"
-                        placeholder="Agregar un comentario para los estudiantes..."
-                        formControlName="cForoDescripcion"
-                    ></p-editor>
-                </form>
-
-                <br />
-                <!-- <button
-                    pButton
-                    type="button"
-                    label="Link"
-                    icon="pi pi-link"
-                ></button>
-                <button
-                    pButton
-                    type="button"
-                    label="Cancelar"
-                    icon="pi pi-times"
-                    class="p-button-danger"
-                ></button> -->
-                <button
-                    pButton
-                    type="button"
-                    label="Publicar"
-                    icon="pi pi-users"
-                    class="p-button-success"
-                    (click)="guardarPublicacionDocente()"
-                ></button>
+                <p>Lista de Estudiantes</p>
+                <app-card-orderlist> </app-card-orderlist>
             </div>
         </div>
-    </div>
-    <div class="card col-12">
-        <div class="col-12 pb-2">
-            <label for="" class="" style="font-weight: bold; font-size: 16px">
-                Anuncios del curso:
-            </label>
-        </div>
-        <p-orderList class="listAlumno" [value]="anunciosDocente">
-            <ng-template
-                let-respuestas
-                of
-                comentarios
-                pTemplate="listItem"
-                let-i="index"
-                class="templateancios"
-            >
-                <!-- Agregar el length -->
-                @if (1 > 0) {
-                    <div class="perfiles-list-item text-left" tabindex="0">
-                        <div class="perfiles-list-detail">
-                            <div class="flex">
-                                <div>
-                                    <img
-                                        src="assets/demo/images/matemit/user.png"
-                                        [alt]="respuestas.name"
-                                        class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
-                                    />
-                                </div>
-                                <div>
-                                    <div class="pb-2 perfil-name">
-                                        <b>
-                                            <span class="perfil-name">
-                                                Doc:
-                                                {{ respuestas.cNombres }} (
-                                                {{
-                                                    respuestas?.dtCreado
-                                                        | date: 'short'
-                                                }}
-                                                )
-                                            </span>
-                                        </b>
-                                        <!-- Button para la accion de eliminar y editar -->
-                                        <!-- <p-button
-                                        type="button"
-                                        icon="pi pi-ellipsis-v"
-                                        class="menu-container p-button-text"
-                                        (click)="
-                                            itemRespuesta = respuestas;
-                                            menu.toggle($event)
-                                        "
-                                        aria-label="Abrir menú de configuración"
-                                    /> -->
-                                    </div>
-                                    <div class="" style="text-align: justify">
-                                        <span *ngIf="!respuestas.expanded">
-                                            {{
-                                                respuestas?.cForoDescripcion
-                                                    | slice: 0 : 150
-                                            }}...
-                                        </span>
-                                        <span *ngIf="respuestas.expanded">
-                                            {{ respuestas?.cForoDescripcion }}
-                                        </span>
-                                        <!-- Para Leer mas.. -->
-                                        <button
-                                            (click)="toggleExpand(respuestas)"
-                                            class="toggle-link"
-                                        >
-                                            {{
-                                                respuestas.expanded
-                                                    ? 'Leer menos'
-                                                    : 'Leer más'
-                                            }}
-                                        </button>
-                                    </div>
-                                    <!-- [style.display]="
-                                            !respuestas.iEstudianteId
-                                                ? respuestas.iDocenteId ===
-                                                    iDocenteId
-                                                : respuestas.iEstudianteId ===
-                                                    iEstudianteId
-                                        "
-                                        pButton -->
-                                </div>
-                            </div>
-                        </div>
+        <div class="col-12 lg:col-9 md:col-12">
+            <div class="card grid">
+                @if (iPerfilId === DOCENTE) {
+                    <div class="col-12">
+                        <label
+                            for=""
+                            class="text-primary"
+                            style="font-weight: bold; font-size: 16px"
+                        >
+                            Anuncia algo aquí para toda la clase:
+                        </label>
                     </div>
-                } @else {
-                    <!-- <app-empty-section
-                        class="w-full"
-                        [message]="'Ningun Comentario'"
-                    ></app-empty-section> -->
+                    <form
+                        class="col-12"
+                        [formGroup]="guardarPublicacion"
+                        class="flex flex-column gap-3 w-full"
+                    >
+                        <p-editor
+                            [style]="{ height: '220px' }"
+                            id="cTareaDescripcion"
+                            placeholder="Agregar un comentario..."
+                            formControlName="cForoDescripcion"
+                        ></p-editor>
+                    </form>
+                    <div class="col-12 flex justify-content-end">
+                        <button
+                            pButton
+                            type="button"
+                            label="Publicar"
+                            icon="pi pi-plus"
+                            class="p-button-success"
+                            (click)="guardarPublicacionDocente()"
+                        ></button>
+                    </div>
                 }
-            </ng-template>
-        </p-orderList>
+                @if (anunciosDocente.length) {
+                    <div class="col-12 pb-2">
+                        <label
+                            for=""
+                            class=""
+                            style="font-weight: bold; font-size: 16px"
+                        >
+                            Anuncios del curso:
+                        </label>
+                    </div>
+                    <p-orderList
+                        class="col-12"
+                        class="listAlumno"
+                        [value]="anunciosDocente"
+                    >
+                        <ng-template
+                            let-respuestas
+                            of
+                            comentarios
+                            pTemplate="listItem"
+                            let-i="index"
+                            class="templateancios"
+                        >
+                            <!-- Agregar el length -->
+                            @if (1 > 0) {
+                                <div
+                                    class="perfiles-list-item text-left"
+                                    tabindex="0"
+                                >
+                                    <div class="perfiles-list-detail">
+                                        <div class="flex">
+                                            <div>
+                                                <img
+                                                    src="assets/demo/images/matemit/user.png"
+                                                    [alt]="respuestas.name"
+                                                    class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
+                                                />
+                                            </div>
+                                            <div>
+                                                <div class="pb-2 perfil-name">
+                                                    <b>
+                                                        <span
+                                                            class="perfil-name"
+                                                        >
+                                                            Doc:
+                                                            {{
+                                                                respuestas.cNombres
+                                                            }}
+                                                            (
+                                                            {{
+                                                                respuestas?.dtCreado
+                                                                    | date
+                                                                        : 'short'
+                                                            }}
+                                                            )
+                                                        </span>
+                                                    </b>
+                                                    <!-- Button para la accion de eliminar y editar -->
+                                                    <p-button
+                                                        type="button"
+                                                        icon="pi pi-ellipsis-v"
+                                                        class="menu-container p-button-text"
+                                                        (click)="
+                                                            itemRespuesta =
+                                                                respuestas;
+                                                            menu.toggle($event)
+                                                        "
+                                                        aria-label="Abrir menú de configuración"
+                                                    />
+                                                </div>
+                                                <div
+                                                    class=""
+                                                    style="text-align: justify"
+                                                >
+                                                    <span
+                                                        *ngIf="
+                                                            !respuestas.expanded
+                                                        "
+                                                    >
+                                                        {{
+                                                            respuestas?.cForoDescripcion
+                                                                | slice
+                                                                    : 0
+                                                                    : 150
+                                                        }}...
+                                                    </span>
+                                                    <span
+                                                        *ngIf="
+                                                            respuestas.expanded
+                                                        "
+                                                    >
+                                                        {{
+                                                            respuestas?.cForoDescripcion
+                                                        }}
+                                                    </span>
+                                                    <!-- Para Leer mas.. -->
+                                                    <button
+                                                        (click)="
+                                                            toggleExpand(
+                                                                respuestas
+                                                            )
+                                                        "
+                                                        class="toggle-link"
+                                                    >
+                                                        {{
+                                                            respuestas.expanded
+                                                                ? 'Leer menos'
+                                                                : 'Leer más'
+                                                        }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </ng-template>
+                    </p-orderList>
+                }
+            </div>
+        </div>
     </div>
 </div>
 <p-menu #menu [model]="menuItems" [popup]="true"> </p-menu>
+<p-toast></p-toast>

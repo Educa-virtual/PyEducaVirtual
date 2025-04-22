@@ -56,6 +56,7 @@ export class ActividadRowComponent implements OnInit {
     iPerfilId: number = null
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
+
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
         console.log('actividad', this.actividad)

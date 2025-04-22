@@ -119,6 +119,7 @@ export class TabContenidoComponent implements OnInit {
     iPerfilId: number = null
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
+
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()
@@ -166,7 +167,7 @@ export class TabContenidoComponent implements OnInit {
                     this.loadingContenidoSemanas = false
                     this.contenidoSemanas = data
                     // console.log('contenido semanas')
-                    // console.log(this.contenidoSemanas)
+                    console.log('cotenidos', this.contenidoSemanas)
                 },
                 error: (error) => {
                     console.log(error)

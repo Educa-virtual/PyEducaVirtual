@@ -109,6 +109,7 @@
                     <p-dropdown
                         [options]="tipoActivadedes"
                         styleClass="w-full"
+                        [showClear]="true"
                         formControlName="iActTipoId"
                         placeholder="Seleccione el tipo"
                         optionValue="iActTipoId"
@@ -148,10 +149,22 @@
                     </app-actividad-lista>
                 }
             </ng-container>
-
+            <!-- para mostrar cuando no tiene una semana seleccionado -->
             <ng-container *ngIf="!semanaSeleccionada">
                 <div class="card">
-                    <app-no-data></app-no-data>
+                    <div class="grid mt-4">
+                        <div class="col-12 mt-5" align="center">
+                            <img
+                                src="assets/images/icons/sin-datos.gif"
+                                alt="logo"
+                                width="20%"
+                            />
+
+                            <h4 class="text-primary">
+                                No esta seleccionado una semana
+                            </h4>
+                        </div>
+                    </div>
                 </div>
                 <!-- <p class="text-gray-500">Selecciona una semana para ver los detalles.</p> -->
             </ng-container>

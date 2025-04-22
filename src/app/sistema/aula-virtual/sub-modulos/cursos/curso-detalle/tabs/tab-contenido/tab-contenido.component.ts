@@ -96,6 +96,7 @@ export class TabContenidoComponent implements OnInit {
     tipoActivadedes = []
 
     semanaSeleccionada: any = null
+    semanaActivado: number | null = null
 
     // lista de acciones base para la semana
     private handleActionsMap: Record<
@@ -132,6 +133,7 @@ export class TabContenidoComponent implements OnInit {
 
     // maneja el evento de seleccion de semana
     mostrarDetalleSemana(semana: any) {
+        this.semanaActivado = semana.iContenidoSemId
         this.semanaSeleccionada = semana
     }
 

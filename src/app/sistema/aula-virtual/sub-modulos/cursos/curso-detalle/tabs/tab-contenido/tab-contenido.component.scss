@@ -16,3 +16,23 @@
         color: var(--primary-color-text) !important;
     }
 }
+
+@media (max-width: 868px) {
+    .col-4,
+    .col-5,
+    .col-7 {
+        width: 100% !important;
+    }
+}
+.btnsemanas {
+    color: black;
+    background-color: white; //34C759
+    border-color: white;
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
+    height: 90px;
+}
+/* estilos.component.css */
+.activo {
+    background-color: #ebf3fe;
+    color: rgb(65, 135, 255);
+}

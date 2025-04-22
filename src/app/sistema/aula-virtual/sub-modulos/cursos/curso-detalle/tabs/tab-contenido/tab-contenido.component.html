@@ -9,102 +9,37 @@
                     semana of contenidoSemanas;
                     track semana.iContenidoSemId
                 ) {
-                    <p-accordion
-                        [multiple]="true"
-                        expandIcon="pi pi-angle-right"
-                        collapseIcon="pi pi-angle-down"
+                    <button
+                        pButton
+                        pRipple
+                        (click)="mostrarDetalleSemana(semana)"
+                        [ngClass]="{
+                            activo:
+                                semana.iContenidoSemId ===
+                                semanaSeleccionada?.iContenidoSemId,
+                        }"
+                        class="mb-3 btnsemanas"
                     >
-                        <p-accordionTab header="" class="" iconPos="end">
-                            <ng-template pTemplate="header">
-                                <div
-                                    class="flex flex-column w-full"
-                                    (onclick)="mostrarDetalleSemana(semana)"
-                                >
-                                    <div class="flex">
-                                        <p class="text-xs">
-                                            SEMANA
-                                            {{ semana.cContenidoSemNumero }}
-                                            <!--| (Desde: 01/01/2020 - Hasta:
-                                    04/04/2020)-->
-                                        </p>
-                                    </div>
-                                    <div class="flex">
-                                        Tema:
-                                        {{
-                                            semana.cContenidoSemTitulo.length >
-                                            150
-                                                ? (semana.cContenidoSemTitulo
-                                                      | slice: 0 : 150) + '...'
-                                                : semana.cContenidoSemTitulo
-                                        }}
-                                    </div>
-                                </div>
-                                @if (iPerfilId === DOCENTE) {
-                                    <div
-                                        class="flex align-items-end justify-content-end mx-4"
-                                    >
-                                        <button
-                                            size="small"
-                                            [rounded]="true"
-                                            pButton
-                                            pRipple
-                                            (click)="
-                                                $event.stopPropagation();
-                                                setSemanaSeleccionada(semana);
-                                                menuContenido.toggle($event)
-                                            "
-                                            ngClass="p-button-primary"
-                                        >
-                                            <i class="pi pi-plus"></i>
-                                            &nbsp;Actividad
-                                        </button>
-                                    </div>
-                                }
-                            </ng-template>
-
-                            <div class="flex justify-content-center">
-                                <p-button
-                                    icon="pi pi-pencil"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="danger"
-                                />
-                                <p-button
-                                    icon="pi pi-comments"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="success"
-                                />
-                                <p-button
-                                    icon="pi pi-check-square"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="info"
-                                />
-                                <p-button
-                                    icon="pi pi-video"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="secondary"
-                                />
+                        <div class="flex flex-column w-full">
+                            <div class="flex">
+                                <p class="text-xs font-bold">
+                                    SEMANA
+                                    {{ semana.cContenidoSemNumero }}
+                                    <!--| (Desde: 01/01/2020 - Hasta:
+                                04/04/2020)-->
+                                </p>
                             </div>
-
-                            <!-- @for (fecha of semana.fechas; track $index) { -->
-                            <!-- <h3 class="text-primary text-xl">
-                        {{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
-                    </h3>
-                    <hr /> -->
-                            <!-- <app-actividad-lista
-                                    [actividades]="fecha.actividades"
-                                    (actionSelected)="
-                                        setSemanaSeleccionada(semana);
-                                        actionSelected($event)
-                                    "
-                                    ><p-divider></p-divider
-                                ></app-actividad-lista> -->
-                            <!-- } -->
-                        </p-accordionTab>
-                    </p-accordion>
+                            <div class="flex">
+                                Tema:
+                                {{
+                                    semana.cContenidoSemTitulo.length > 150
+                                        ? (semana.cContenidoSemTitulo
+                                              | slice: 0 : 150) + '...'
+                                        : semana.cContenidoSemTitulo
+                                }}
+                            </div>
+                        </div>
+                    </button>
                 }
             }
             @if (!loadingContenidoSemanas && contenidoSemanas.length === 0) {
@@ -139,7 +74,34 @@
         ></app-form-evaluacion>
     </div>
     <div class="card col">
-        <app-toolbar-primeng title="titulo"> hola</app-toolbar-primeng>
+        <ng-container *ngIf="semanaSeleccionada">
+            <app-toolbar-primeng
+                title="{{ semanaSeleccionada.cContenidoSemNumero }} {{
+                    semanaSeleccionada.cContenidoSemTitulo
+                }}"
+            >
+                @if (iPerfilId === DOCENTE) {
+                    <div class="flex align-items-end justify-content-end mx-4">
+                        <button
+                            size="small"
+                            [rounded]="true"
+                            class="btn"
+                            pButton
+                            pRipple
+                            (click)="
+                                $event.stopPropagation();
+                                menuContenido.toggle($event)
+                            "
+                            ngClass="p-button-primary"
+                        >
+                            <i class="pi pi-plus"></i>
+                            &nbsp;Actividad
+                        </button>
+                    </div>
+                }
+            </app-toolbar-primeng>
+        </ng-container>
+
         <div class="grid">
             <div class="col-5">
                 <p-inputGroup>

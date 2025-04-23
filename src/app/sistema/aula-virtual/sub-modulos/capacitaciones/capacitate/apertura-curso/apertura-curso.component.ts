@@ -13,6 +13,7 @@ import { InputSwitchModule } from 'primeng/inputswitch'
 import { FormBuilder, Validators } from '@angular/forms'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ImagenSelectComponent } from '@/app/shared/imagen-select/imagen-select.component'
 
 @Component({
     selector: 'app-apertura-curso',
@@ -26,6 +27,7 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
         FileUploadModule,
         InputSwitchModule,
         CommonInputComponent,
+        ImagenSelectComponent,
     ],
     providers: [MessageService],
 })
@@ -41,6 +43,7 @@ export class AperturaCursoComponent implements OnInit {
     publicoObjetivo: any[] = []
     cursos: any[] = []
     iCapacitacionId: string = ''
+    mostrarModalImagenes = false
 
     modoFormulario: 'crear' | 'editar' = 'crear'
 
@@ -166,6 +169,9 @@ export class AperturaCursoComponent implements OnInit {
             summary: 'File Uploaded',
             detail: '',
         })
+    }
+    abrirModal() {
+        this.mostrarModalImagenes = true
     }
     // metodo para guardar el curso creado
     crearCurso() {

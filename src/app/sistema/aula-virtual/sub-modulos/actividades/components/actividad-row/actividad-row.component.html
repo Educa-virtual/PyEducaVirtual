@@ -2,14 +2,12 @@
     class="card mb-5 relative overflow-visible"
     [style]="obtenerStyleActividad(actividad['iEstadoActividad'])"
 >
-    <div class="flex justify-start items-start">
-        <span
-            [ngClass]="asignarColorActividad()"
-            class="tag ml-3 font-bold text-left"
-        >
+    <div class="w-full flex justify-start">
+        <span [ngClass]="asignarColorActividad()" class="tag ml-3 font-bold">
             {{ actividad.cActTipoNombre }}
         </span>
     </div>
+
     <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
         <div class="flex gap-4 font-normal">
             <app-icon

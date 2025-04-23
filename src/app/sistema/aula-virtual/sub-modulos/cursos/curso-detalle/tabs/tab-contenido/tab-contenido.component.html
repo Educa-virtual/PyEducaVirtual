@@ -18,7 +18,7 @@
                                 semana.iContenidoSemId ===
                                 semanaSeleccionada?.iContenidoSemId,
                         }"
-                        class="mb-3 btnsemanas"
+                        class="btnsemanas"
                     >
                         <div class="flex flex-column w-full">
                             <div class="flex">
@@ -40,6 +40,7 @@
                             </div>
                         </div>
                     </button>
+                    <p-divider></p-divider>
                 }
             }
             @if (!loadingContenidoSemanas && contenidoSemanas.length === 0) {
@@ -101,7 +102,6 @@
                 }
             </app-toolbar-primeng>
         </ng-container>
-
         <div class="grid">
             <div class="col-5">
                 <p-inputGroup>
@@ -131,6 +131,7 @@
                 </p-inputGroup>
             </div>
         </div>
+
         <div class="col">
             <ng-container *ngIf="semanaSeleccionada">
                 <h3 class="text-primary">

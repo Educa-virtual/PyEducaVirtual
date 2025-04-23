@@ -271,6 +271,12 @@
                                 </ng-template>
                             </p-fileUpload>
                         </div>
+                        <p-button
+                            icon="pi pi-plus"
+                            label="Agregar"
+                            class="p-button-success"
+                            (click)="abrirModal()"
+                        ></p-button>
                     </div>
 
                     <!-- Agregar los bottones -->
@@ -310,3 +316,38 @@
         </div>
     </div>
 </section>
+
+<p-dialog
+    [style]="{ width: '50%' }"
+    class="p-fluid"
+    [modal]="true"
+    [(visible)]="mostrarModalImagenes"
+    header="Seleccionar imagen para la portada"
+>
+    <app-imagen-select></app-imagen-select>
+    <!-- <div class="reply-container">
+            <div class="button-container">
+                <button
+                    pButton
+                    pRipple
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    class="p-button-secondary mx-3"
+                    type="button"
+                    size="small"
+                    
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Enviar"
+                    icon="pi pi-send"
+                    size="small"
+                    class="p-button-primary"
+                   
+                ></button>
+                
+            </div> 
+        </div>-->
+</p-dialog>

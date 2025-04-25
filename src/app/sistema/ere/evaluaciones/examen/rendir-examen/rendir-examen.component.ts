@@ -138,16 +138,52 @@ export class RendirExamenComponent implements OnInit {
         })
 
         if (cantidadPreguntas == cantidadPreguntasMarcadas) {
-            /*for (const i of this.preguntas[this.activeIndex].pregunta) {
-                if (i.iPreguntaId == alternativa.iPreguntaId) {
-                    this.preguntas[this.activeIndex].iMarcado = 1
-                    break
-                }
-            }*/
             this.preguntas[this.activeIndex].iMarcado = 1
         } else {
             this.preguntas[this.activeIndex].iMarcado = 0
         }
+    }
+
+    calcularPreguntasPendientes() {
+        //let cantidadPreguntas = 0
+        //let cantidadPreguntasSinMarcar = 0
+        let cantidadPreguntasPendientes = 0
+        this.preguntas.forEach((pregunta) => {
+            //cantidadPreguntas += pregunta.pregunta.length
+
+            pregunta.pregunta.forEach((item) => {
+                let pendienteResponder = true
+                item.alternativas.forEach((alter) => {
+                    if (alter.iMarcado == 1) {
+                        pendienteResponder = false
+                    }
+                })
+                if (pendienteResponder) {
+                    cantidadPreguntasPendientes++
+                }
+            })
+        })
+        return cantidadPreguntasPendientes
+        //console.log("Ctd. preguntas: "+cantidadPreguntas)
+        //console.log("Ctd. preguntas sin marcar: "+cantidadPreguntasSinMarcar)
+        //this.cantidadPreguntasPendientes
+        /*const cantidadPreguntas =
+            this.preguntas[this.activeIndex].pregunta.length
+        let cantidadPreguntasMarcadas = 0
+
+        this.preguntas[this.activeIndex].pregunta.forEach((item) => {
+            item.alternativas.forEach((alter) => {
+                if (alter.iMarcado == 1) {
+                    cantidadPreguntasMarcadas++
+                }
+            })
+        })
+
+        if (cantidadPreguntas == cantidadPreguntasMarcadas) {
+            this.preguntas[this.activeIndex].iMarcado = 1
+        } else {
+            this.preguntas[this.activeIndex].iMarcado = 0
+        }*/
     }
 
     guardarPregunta(alternativas, alternativa, marcado) {
@@ -188,8 +224,25 @@ export class RendirExamenComponent implements OnInit {
     }
 
     preguntarTerminarExamen() {
+        const cantidadPreguntasPendientes = this.calcularPreguntasPendientes()
+        let mensaje = ''
+        switch (cantidadPreguntasPendientes) {
+            case 0:
+                mensaje = 'El examen se dará por terminado. ¿Desea continuar?'
+                break
+            case 1:
+                mensaje =
+                    'Hay 1 pregunta pendiente de responder. ¿Desea continuar?'
+                break
+            default:
+                mensaje =
+                    'Hay ' +
+                    cantidadPreguntasPendientes +
+                    ' preguntas pendientes de responder. ¿Desea continuar?'
+                break
+        }
         this._ConfirmationModalService.openConfirm({
-            header: 'El examen se dará por terminado. ¿Desea continuar?',
+            header: mensaje,
             accept: () => {
                 this.terminarExamen()
             },
@@ -244,6 +297,25 @@ export class RendirExamenComponent implements OnInit {
             },
         })
     }
+
+    timeEvent($event) {
+        if (this.evaluacion == null) {
+            return
+        }
+        const { accion } = $event
+        switch (accion) {
+            case 'tiempo-finalizado':
+                this.finalizado = true
+                break
+            case 'tiempo-1-minuto-restante':
+                this._MessageService.add({
+                    severity: 'warn',
+                    detail: 'Queda 1 minuto para finalizar la evaluación',
+                })
+                break
+        }
+    }
+
     finalizado: boolean = false
     accionBtnItem(elemento): void {
         const { accion } = elemento
@@ -336,11 +408,7 @@ export class RendirExamenComponent implements OnInit {
                             let iMarcado = 0
                             pregunta.pregunta.forEach((item) => {
                                 this.totalPregunta = this.totalPregunta + 1
-                                item.title =
-                                    'Pregunta #' +
-                                    this.totalPregunta +
-                                    ': ' +
-                                    (item.cPregunta || '')
+                                item.title = 'Pregunta #' + this.totalPregunta
                                 item.alternativas = item.alternativas
                                     ? JSON.parse(item.alternativas)
                                     : item.alternativas
@@ -391,10 +459,6 @@ export class RendirExamenComponent implements OnInit {
                     item.length &&
                     item[item.length - 1]['iFinalizado'] === '0'
                 ) {
-                    this._MessageService.add({
-                        severity: 'success',
-                        detail: message,
-                    })
                     this.finalizado = true
                     //window.location.reload()
                 }

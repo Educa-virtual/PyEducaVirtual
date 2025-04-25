@@ -1,5 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { TokenStorageService } from '@/app/servicios/token.service'
 import { Component, Input, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-modal-evaluacion-finalizada',
@@ -10,9 +13,14 @@ import { Component, Input, OnInit } from '@angular/core'
 })
 export class ModalEvaluacionFinalizadaComponent implements OnInit {
     @Input() grado: string
-
     visible: boolean = true
     mostrarBotonEncuesta: boolean = false
+
+    constructor(
+        private store: LocalStoreService,
+        private router: Router,
+        private tokenStorageService: TokenStorageService
+    ) {}
 
     ngOnInit() {
         //Desactivado porque solo era para el piloto
@@ -40,5 +48,11 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
                 )
                 break
         }
+    }
+
+    logout(): void {
+        this.store.clear()
+        this.tokenStorageService.signOut()
+        window.location.reload()
     }
 }

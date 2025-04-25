@@ -308,10 +308,19 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             grados: groupedData[nivel],
         }))
     }
+
     guardarFechaCantidadExamenCursos(curso, campoActualizar: string) {
         if (this.accion === 'ver') {
             return
         }
+
+        // Agregar log para depuración
+        console.log(
+            'Guardando:',
+            campoActualizar,
+            curso.iExamenCantidadPreguntas
+        )
+
         if (!this._iEvaluacionId) {
             console.error('No se ha proporcionado un iEvaluacionId válido')
             this._MessageService.add({
@@ -321,7 +330,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
             return
         }
-        // Validar si los cursos contienen el campo `iCursoNivelGradId`
 
         if (!curso.iCursoNivelGradId) {
             console.error(
@@ -333,6 +341,21 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 detail: 'Algunos cursos no contienen iCursoNivelGradId.',
             })
             return
+        }
+
+        // Para asegurar que los valores numéricos son tratados como números
+        if (campoActualizar === 'preguntas' && curso.iExamenCantidadPreguntas) {
+            curso.iExamenCantidadPreguntas = parseInt(
+                curso.iExamenCantidadPreguntas.toString(),
+                10
+            )
+        }
+
+        if (campoActualizar === 'duracion' && curso.iExamenDuracionMinutos) {
+            curso.iExamenDuracionMinutos = parseInt(
+                curso.iExamenDuracionMinutos.toString(),
+                10
+            )
         }
 
         // Llamar a la API para insertar los cursos
@@ -382,6 +405,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
+
     // Habilitar el calendar y input, si esta seleccionado áres y grado
     habiltarButton(grados: any, curso: any): boolean {
         let gradoKey
@@ -398,7 +422,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         return false
     }
+
     ngOnDestroy() {
         this.unsubscribe$.next(true)
+        this.unsubscribe$.complete() // Añadido para limpiar correctamente las suscripciones
     }
 }

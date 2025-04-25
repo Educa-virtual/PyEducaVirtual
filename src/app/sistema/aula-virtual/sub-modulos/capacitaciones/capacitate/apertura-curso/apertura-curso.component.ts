@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, model, OnInit } from '@angular/core'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import {
     TablePrimengComponent,
@@ -129,6 +129,42 @@ export class AperturaCursoComponent implements OnInit {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
+    //
+    images = model([])
+
+    get activeIndex(): number {
+        return this._activeIndex
+    }
+
+    set activeIndex(newValue) {
+        if (
+            this.images &&
+            0 <= newValue &&
+            newValue <= this.images.length - 1
+        ) {
+            this._activeIndex = newValue
+        }
+    }
+
+    _activeIndex: number = 2
+
+    responsiveOptions: any[] = [
+        {
+            breakpoint: '1300px',
+            numVisible: 4,
+        },
+        {
+            breakpoint: '575px',
+            numVisible: 1,
+        },
+    ]
+    next() {
+        this.activeIndex++
+    }
+
+    prev() {
+        this.activeIndex--
+    }
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -172,6 +208,10 @@ export class AperturaCursoComponent implements OnInit {
     }
     abrirModal() {
         this.mostrarModalImagenes = true
+    }
+    // obtener imagen de portada para el curso
+    imagenesSeleccionada(imagen: any) {
+        console.log('imagenes seleccionadas', imagen)
     }
     // metodo para guardar el curso creado
     crearCurso() {

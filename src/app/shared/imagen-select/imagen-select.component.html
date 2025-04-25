@@ -20,54 +20,95 @@
   </li>
 </ul> -->
 
-<div class="col card">
+<!-- <div class="card my-3">
     <p-carousel
         [value]="products"
         [numVisible]="3"
-        [numScroll]="3"
-        [circular]="true"
-        [responsiveOptions]="responsiveOptions"
-        autoplayInterval="3000"
+        [numScroll]="1"
+        [circular]="false"
+        [responsiveOptions]="responsiveOptions"        
     >
         <ng-template let-product pTemplate="item">
             <div class="border-1 surface-border border-round m-2 p-3">
                 <div class="mb-3">
                     <div class="relative mx-auto">
+                      <input type="checkbox" id="myCheckbox3" />
+                      <label for="myCheckbox3">
                         <img
-                            src="https://primefaces.org/cdn/primeng/images/demo/product/{{
-                                product.image
-                            }}"
-                            [alt]="product.name"
-                            class="w-full border-round"
+                          src="{{ product.image}}"
+                          [alt]="product.name"
+                          class="w-full border-round"
                         />
+                      </label>
                         <p-tag
                             [value]="product.inventoryStatus"
                             class="absolute"
+                            [severity]="getSeverity(product.inventoryStatus)" 
                             [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
                         />
                     </div>
-                    <!-- [severity]="getSeverity(product.inventoryStatus)"  -->
+                    
                 </div>
                 <div class="mb-3 font-medium">
                     {{ product.name }}
                 </div>
-                <div class="flex justify-content-between align-items-center">
-                    <div class="mt-0 font-semibold text-xl">
-                        {{ '$' + product.price }}
+                
+            </div>
+        </ng-template>
+    </p-carousel>
+</div> -->
+<!-- id="myCheckbox3" [checked]="isSelected(product)" 
+                          (change)="toggleSelection(product)" 
+                          [id]="'checkbox-' + product.id"  -->
+<!-- <label for="myCheckbox3"> 
+                          <img 
+                              src="{{ product.image }}" 
+                              [alt]="product.name" 
+                              class="w-full border-round" />
+                        </label> -->
+
+<div class="card">
+    <p-carousel
+        [value]="products"
+        [numVisible]="3"
+        [numScroll]="1"
+        [responsiveOptions]="responsiveOptions"
+    >
+        <ng-template let-product pTemplate="item">
+            <div class="border-1 surface-border border-round m-2 p-3">
+                <div class="mb-3">
+                    <div class="relative mx-auto">
+                        <!-- <input type="checkbox" [id]="'checkbox-' + product.id" /> -->
+                        <input
+                            type="checkbox"
+                            [id]="'checkbox-' + product.id"
+                            [checked]="isSelected(product)"
+                            (change)="toggleSelection(product)"
+                        />
+
+                        <label [for]="'checkbox-' + product.id">
+                            <img
+                                [src]="product.image"
+                                [alt]="product.name"
+                                class="w-full border-round"
+                            />
+                        </label>
                     </div>
-                    <span>
-                        <p-button
-                            icon="pi pi-heart"
-                            severity="secondary"
-                            [outlined]="true"
-                        />
-                        <p-button
-                            icon="pi pi-shopping-cart"
-                            styleClass="ml-2"
-                        />
-                    </span>
+                </div>
+                <div class="mb-3 font-medium">
+                    {{ product.name }}
                 </div>
             </div>
         </ng-template>
     </p-carousel>
+    <div class="text-right mt-3" *ngIf="selectedProducts.length > 0">
+        <button
+            pButton
+            type="button"
+            label="guardar imagenes"
+            icon="pi pi-save"
+            class="p-Button-success"
+            (click)="guardarImagenes()"
+        ></button>
+    </div>
 </div>

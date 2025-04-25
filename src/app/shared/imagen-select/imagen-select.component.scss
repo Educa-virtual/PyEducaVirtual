@@ -38,10 +38,16 @@ label:before {
 }
 
 label img {
-    height: 100px;
-    width: 100px;
+    height: 200px;
+    width: 200px;
     transition-duration: 0.2s;
     transform-origin: 50% 50%;
+}
+@media (max-width: 868px) {
+    label img {
+        height: 100%;
+        width: 100%;
+    }
 }
 
 :checked + label {

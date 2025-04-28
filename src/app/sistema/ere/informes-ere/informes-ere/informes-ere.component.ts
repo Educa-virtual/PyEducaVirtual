@@ -43,13 +43,15 @@ export class InformesEreComponent implements OnInit {
 
     evaluaciones_cursos_ies: Array<object>
     evaluaciones: Array<object>
-    cursos: Array<object>
+    areas: Array<object>
     nivel_tipos: Array<object>
     nivel_grados: Array<object>
     distritos: Array<object>
     ies: Array<object>
     secciones: Array<object>
     sexos: Array<object>
+    zonas: Array<object>
+    tipo_sectores: Array<object>
 
     private _MessageService = inject(MessageService)
 
@@ -80,6 +82,8 @@ export class InformesEreComponent implements OnInit {
                 iCursoId: [null, Validators.required],
                 iNivelTipoId: [null, Validators.required],
                 iNivelGradoId: [null, Validators.required],
+                iZonaId: [null],
+                iTipoSectorId: [null],
                 iDsttId: [null],
                 iIieeId: [null],
                 iSeccionId: [null],
@@ -91,61 +95,96 @@ export class InformesEreComponent implements OnInit {
 
         this.sexos = this.datosInformes.getSexos()
         this.datosInformes
-            .obtenerEvaluacionesCursosIes(this.formFiltros.value)
-            .subscribe({
-                next: (data: any) => {
-                    this.evaluaciones_cursos_ies = data.data
-                    this.filterEvaluaciones()
-                    this.filterNivelTipos()
-                },
-                error: (error) => {
-                    console.error(
-                        'Error consultando datos de evaluaciones:',
-                        error
-                    )
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
+            .obtenerParametros(this.formFiltros.value)
+            .subscribe((data: any) => {
+                this.evaluaciones = this.datosInformes.getEvaluaciones(
+                    data?.evaluaciones
+                )
+                this.distritos = this.datosInformes.getDistritos(
+                    data?.distritos
+                )
+                this.secciones = this.datosInformes.getSecciones(
+                    data?.secciones
+                )
+                this.zonas = this.datosInformes.getZonas(data?.zonas)
+                this.tipo_sectores = this.datosInformes.getTipoSectores(
+                    data?.tipo_sectores
+                )
+
+                this.datosInformes.getNivelesTipos(data?.nivel_tipos)
+                this.datosInformes.getNivelesGrados(data?.nivel_grados)
+                this.datosInformes.getAreas(data?.areas)
+                this.datosInformes.getInstitucionesEducativas(
+                    data?.instituciones_educativas
+                )
             })
 
         this.formFiltros
             .get('iEvaluacionId')
             .valueChanges.subscribe((value) => {
-                this.cursos = []
-                this.distritos = []
-                this.formFiltros.get('iCursoId')?.setValue(null)
-                this.formFiltros.get('iDsttId')?.setValue(null)
-                if (value) {
-                    this.filterCursos(value)
-                    this.filterDistritos(value)
-                }
+                this.formFiltros.get('iNivelTipoId')?.setValue(null)
+                this.nivel_tipos = null
+                this.filterNivelesTipos(value)
+
+                this.formFiltros.get('iIieeId')?.setValue(null)
+                this.ies = null
+                this.filterInstitucionesEducativas()
             })
-        this.formFiltros.get('iDsttId').valueChanges.subscribe((value) => {
-            this.ies = []
-            this.formFiltros.get('iIieeId')?.setValue(null)
-            if (value) {
-                this.filterIes(value)
-            }
-        })
         this.formFiltros.get('iNivelTipoId').valueChanges.subscribe((value) => {
-            this.nivel_grados = []
-            this.secciones = []
             this.formFiltros.get('iNivelGradoId')?.setValue(null)
-            this.formFiltros.get('iSeccionId')?.setValue(null)
-            if (value) {
-                this.filterGrados(value)
-            }
+            this.nivel_grados = null
+            this.filterNivelesGrados(value)
+
+            this.formFiltros.get('iCursoId')?.setValue(null)
+            this.areas = null
+            this.filterAreas(value)
+
+            this.formFiltros.get('iIieeId')?.setValue(null)
+            this.ies = null
+            this.filterInstitucionesEducativas()
         })
-        this.formFiltros
-            .get('iNivelGradoId')
-            .valueChanges.subscribe((value) => {
-                this.secciones = []
-                this.formFiltros.get('iSeccionId')?.setValue(null)
-                if (value) {
-                    this.filterSecciones(value)
-                }
-            })
+        this.formFiltros.get('iDsttId').valueChanges.subscribe(() => {
+            this.formFiltros.get('iIieeId')?.setValue(null)
+            this.ies = null
+            this.filterInstitucionesEducativas()
+        })
+        this.formFiltros.get('iZonaId').valueChanges.subscribe(() => {
+            this.formFiltros.get('iIieeId')?.setValue(null)
+            this.ies = null
+            this.filterInstitucionesEducativas()
+        })
+        this.formFiltros.get('iTipoSectorId').valueChanges.subscribe(() => {
+            this.formFiltros.get('iIieeId')?.setValue(null)
+            this.ies = null
+            this.filterInstitucionesEducativas()
+        })
+    }
+
+    filterNivelesTipos(iEvaluacionId: number) {
+        this.nivel_tipos = this.datosInformes.filterNivelesTipos(iEvaluacionId)
+    }
+
+    filterNivelesGrados(iNivelTipoId: number) {
+        this.nivel_grados = this.datosInformes.filterNivelesGrados(iNivelTipoId)
+    }
+
+    filterAreas(iNivelTipoId: number) {
+        this.areas = this.datosInformes.filterAreas(iNivelTipoId)
+    }
+
+    filterInstitucionesEducativas() {
+        const iEvaluacionId = this.formFiltros.get('iEvaluacionId')?.value
+        const iNivelTipoId = this.formFiltros.get('iNivelTipoId')?.value
+        const iDsttId = this.formFiltros.get('iDsttId')?.value
+        const iZonaId = this.formFiltros.get('iZonaId')?.value
+        const iTipoSectorId = this.formFiltros.get('iTipoSectorId')?.value
+        this.ies = this.datosInformes.filterInstitucionesEducativas(
+            iEvaluacionId,
+            iNivelTipoId,
+            iDsttId,
+            iZonaId,
+            iTipoSectorId
+        )
     }
 
     btn_exportar: Array<MenuItem> = [
@@ -164,172 +203,6 @@ export class InformesEreComponent implements OnInit {
             },
         },
     ]
-
-    filterEvaluaciones() {
-        this.evaluaciones = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iEvaluacionId &&
-                        item.label == current.cEvaluacionNombre
-                )
-                if (!x) {
-                    return prev.concat([
-                        {
-                            value: current.iEvaluacionId,
-                            label: current.cEvaluacionNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-    }
-
-    filterCursos(iEvaluacionId: any) {
-        this.cursos = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iCursoId &&
-                        item.label == current.cCursoNombre
-                )
-                if (!x && current.iEvaluacionId == iEvaluacionId) {
-                    return prev.concat([
-                        {
-                            value: current.iCursoId,
-                            label: current.cCursoNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-    }
-
-    filterNivelTipos() {
-        this.nivel_tipos = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iNivelTipoId &&
-                        item.label == current.cNivelTipoNombre
-                )
-                if (!x) {
-                    return prev.concat([
-                        {
-                            value: current.iNivelTipoId,
-                            label: current.cNivelTipoNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-    }
-
-    filterGrados(iNivelTipoId: any) {
-        this.nivel_grados = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iNivelGradoId &&
-                        item.label == current.cGradoNombre
-                )
-                if (!x && current.iNivelTipoId == iNivelTipoId) {
-                    return prev.concat([
-                        {
-                            value: current.iNivelGradoId,
-                            label: current.cGradoNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-    }
-
-    filterDistritos(iEvaluacionId: any) {
-        this.distritos = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iDsttId &&
-                        item.label == current.cDsttNombre
-                )
-                if (!x && current.iEvaluacionId == iEvaluacionId) {
-                    return prev.concat([
-                        {
-                            value: current.iDsttId,
-                            label: current.cDsttNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-    }
-
-    filterIes(iDsttId: any) {
-        this.ies = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iIieeId &&
-                        item.label == current.cIieeNombre
-                )
-                if (!x && current.iDsttId == iDsttId) {
-                    return prev.concat([
-                        {
-                            value: current.iIieeId,
-                            label: current.cIieeNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-    }
-
-    filterSecciones(iNivelGradoId: any) {
-        this.secciones = this.evaluaciones_cursos_ies.reduce(
-            (prev: any, current: any) => {
-                const x = prev.find(
-                    (item) =>
-                        item.value == current.iSeccionId &&
-                        item.label == current.cSeccionNombre
-                )
-                if (!x && current.iNivelGradoId == iNivelGradoId) {
-                    return prev.concat([
-                        {
-                            value: current.iSeccionId,
-                            label: current.cSeccionNombre,
-                        },
-                    ])
-                } else {
-                    return prev
-                }
-            },
-            []
-        )
-        if (this.secciones.length === 1) {
-            this.formFiltros
-                .get('iSeccionId')
-                ?.setValue(this.secciones[0]['id'])
-        }
-    }
 
     searchResultados() {
         if (this.formFiltros.invalid) {

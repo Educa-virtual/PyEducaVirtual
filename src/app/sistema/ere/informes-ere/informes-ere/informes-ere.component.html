@@ -12,18 +12,9 @@
                         formControlName="iEvaluacionId"
                         placeholder="Seleccione una evaluación"
                         styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
                     />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Área *</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="cursos"
-                        formControlName="iCursoId"
-                        placeholder="Seleccione un curso"
-                        styleClass="group-element"
-                    ></p-dropdown>
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-6">
@@ -35,6 +26,7 @@
                         formControlName="iNivelTipoId"
                         placeholder="Seleccione un nivel"
                         styleClass="group-element"
+                        [appendTo]="'body'"
                     ></p-dropdown>
                 </p-inputGroup>
             </div>
@@ -47,6 +39,21 @@
                         formControlName="iNivelGradoId"
                         placeholder="Seleccione un grado"
                         styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Área *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="areas"
+                        formControlName="iCursoId"
+                        placeholder="Seleccione un área"
+                        styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
                     ></p-dropdown>
                 </p-inputGroup>
             </div>
@@ -62,6 +69,34 @@
                 @if (es_especialista) {
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
+                            <p-inputGroupAddon>Tipo de zona</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="zonas"
+                                [showClear]="true"
+                                formControlName="iZonaId"
+                                placeholder="Seleccione un tipo de zona"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Tipo de Gestión</p-inputGroupAddon
+                            >
+                            <p-dropdown
+                                [options]="tipo_sectores"
+                                [showClear]="true"
+                                formControlName="iTipoSectorId"
+                                placeholder="Seleccione un tipo de gestión"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
                             <p-inputGroupAddon>Distrito</p-inputGroupAddon>
                             <p-dropdown
                                 [options]="distritos"
@@ -69,6 +104,8 @@
                                 formControlName="iDsttId"
                                 placeholder="Seleccione un distrito"
                                 styleClass="group-element"
+                                [appendTo]="'body'"
+                                filter="true"
                             ></p-dropdown>
                         </p-inputGroup>
                     </div>
@@ -81,6 +118,8 @@
                                 formControlName="iIieeId"
                                 placeholder="Seleccione una Institución Educativa"
                                 styleClass="group-element"
+                                [appendTo]="'body'"
+                                filter="true"
                             ></p-dropdown>
                         </p-inputGroup>
                     </div>
@@ -94,6 +133,8 @@
                             formControlName="iSeccionId"
                             placeholder="Seleccione una sección"
                             styleClass="group-element"
+                            [appendTo]="'body'"
+                            filter="true"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
@@ -106,6 +147,7 @@
                             formControlName="cPersSexo"
                             placeholder="Seleccione un sexo"
                             styleClass="group-element"
+                            [appendTo]="'body'"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
@@ -141,7 +183,7 @@
                             pRipple
                             severity="success"
                             label="Exportar"
-                            icon="pi pi-fw pi-ellipsis-v"
+                            icon="pi pi-fw pi-print"
                         />
                     </div>
                 }
@@ -168,9 +210,7 @@
                         (accionBtnItem)="accionBtnItemTable($event)"
                         [showPaginator]="true"
                         [showSortIcon]="false"
-                        sortMode="single"
-                        sortField="estudiante"
-                        [sortOrder]="1"
+                        sortMode="multiple"
                         [(selectedRowData)]="selectedItems"
                         [actions]="actions"
                     />

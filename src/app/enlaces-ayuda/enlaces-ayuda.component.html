@@ -1,4 +1,4 @@
-<!-- <div class="card flex justify-content-center">
+<!-- <!-- <div class="card flex justify-content-center">
   <p-card header="Reproductor de Video" subheader="Video 1" [style]="{ width: '360px' }">
     <ng-template pTemplate="header">
 
@@ -14,457 +14,58 @@
     </ng-template>
   </p-card>
 </div> -->
-<!-- <p-messages [(value)]="messages" [enableService]="false" /> -->
+<p-messages [(value)]="messages" [enableService]="false" />
 
 <p-accordion [activeIndex]="0">
-    <p-accordionTab header="INSTRUCTIVO PARA DOCENTES Y DIRECTORES - ERE">
-        <div class="card-container">
-            <div class="card-grid">
-                <p-card
-                    header="Video 1"
-                    subheader="Director - Implementación de Horario para Desarrollo de la ERE."
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/7o_oeT7C-3Y'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 2"
-                    subheader="Director - Implementación de Horario para Desarrollo de la ERE."
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/7o_oeT7C-3Y'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 3"
-                    subheader="Director - Visualización de Resultados de la ERE."
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/OYwSpn4ak1o'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 4"
-                    subheader="Director - Importación de Datos de Estudiante"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/yUYaUlFZfNQ'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
+    @for (seccion of enlacesAyuda; track $index) {
+        <p-accordionTab [header]="seccion.title">
+            <div class="card-container">
+                <div class="card-grid">
+                    @if (seccion.videos) {
+                        @for (video of seccion.videos; track $index) {
+                            <p-card
+                                [header]="video.title"
+                                [subheader]="video.description"
+                                [style]="{ width: '100%' }"
+                            >
+                                <div>
+                                    <iframe
+                                        width="100%"
+                                        height="200"
+                                        [src]="
+                                            sanitizer.bypassSecurityTrustResourceUrl(
+                                                video.url
+                                            )
+                                        "
+                                        frameborder="0"
+                                        allowfullscreen
+                                    >
+                                    </iframe>
+                                </div>
+                            </p-card>
+                        }
+                    }
 
-                <p-card
-                    header="Video 5"
-                    subheader="Director - Importar evaluaciones ERE desde excel"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/nH1eIDFsCBg'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 6"
-                    subheader="Director - Descargar Archivo SIAGIE"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/rnFZUOpEO14'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
+                    @if (seccion.urls) {
+                        @for (url of seccion.urls; track $index) {
+                            <a
+                                [href]="url.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Materiales educativos y recursos digitales"
+                                class="help-link"
+                            >
+                                <img
+                                    [src]="url.img"
+                                    class="icon"
+                                    [alt]="url.alt"
+                                    title="Materiales educativos y recursos digitales"
+                                />
+                            </a>
+                        }
+                    }
+                </div>
             </div>
-        </div>
-    </p-accordionTab>
-    <p-accordionTab header="INSTRUCTIVO PARA ESTUDIANTES - ERE ">
-        <div class="card-container">
-            <div class="card-grid">
-                <p-card
-                    header="Video 1"
-                    subheader="Estudiante - Rendir Examen"
-                    [style]="{ width: '35%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/VxLi75nTpuI'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-            </div>
-        </div>
-    </p-accordionTab>
-    <p-accordionTab header="INSTRUCTIVO PARA ESPECIALISTAS - ERE ">
-        <div class="card-container">
-            <div class="card-grid">
-                <p-card
-                    header="Video 1"
-                    subheader="Estudiante - Rendir Examen"
-                    [style]="{ width: '35%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/VxLi75nTpuI'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-            </div>
-        </div>
-    </p-accordionTab>
-
-    <p-accordionTab header="TUTORIALES DE SEGURIDAD ">
-        <div class="card-container">
-            <div class="card-grid">
-                <p-card
-                    header="Video 1"
-                    subheader="Protege contraseñas"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/Mx0QcOuyhUE'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-
-                <p-card
-                    header="Video 2"
-                    subheader="Cuidado con phishing"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/Tyu66X9sugc'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-
-                <p-card
-                    header="Video 3"
-                    subheader="Reconoce aplicaciones maliciosas"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/k52bnzkcR50'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-
-                <p-card
-                    header="Video 4"
-                    subheader="Escoge buen antivirus"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/vo1QXahwV-g'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 5"
-                    subheader="Director - Implementación de Horario para Desarrollo de la ERE."
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/7o_oeT7C-3Y'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 5"
-                    subheader="Director - Implementación de Horario para Desarrollo de la ERE."
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/7o_oeT7C-3Y'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 6"
-                    subheader="Director - Visualización de Resultados de la ERE."
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/OYwSpn4ak1o'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-                <p-card
-                    header="Video 7"
-                    subheader="Director - Importación de Datos de Estudiante"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/yUYaUlFZfNQ'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-
-                <p-card
-                    header="Video 8"
-                    subheader="Estudiante - Rendir Examen"
-                    [style]="{ width: '100%' }"
-                >
-                    <div>
-                        <iframe
-                            width="100%"
-                            height="200"
-                            [src]="
-                                sanitizer.bypassSecurityTrustResourceUrl(
-                                    'https://www.youtube.com/embed/VxLi75nTpuI'
-                                )
-                            "
-                            frameborder="0"
-                            allowfullscreen
-                        >
-                        </iframe>
-                    </div>
-                </p-card>
-            </div>
-        </div>
-    </p-accordionTab>
-    <p-accordionTab header="ENLACES DE INTERES">
-        <div class="card-container">
-            <div class="card-grid">
-                <a
-                    href="https://www.aprendoencasa.pe"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Materiales educativos y recursos digitales"
-                    class="help-link"
-                >
-                    <img
-                        src="https://aprendoencasa.pe/static/comunicado-87a67119dc3acff3306fe31ac2d77370.png"
-                        alt="Materiales educativos y recursos digitales"
-                        class="icon"
-                        title="Materiales educativos y recursos digitales"
-                    />
-                </a>
-
-                <a
-                    href="https://www.gob.pe/institucion/minedu/normas-legales"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Edades normativas"
-                    class="help-link"
-                >
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwfd9xc-ckP9UuR6MWngWwJM1C-8vbQJxPsg&s"
-                        alt="Edades normativas"
-                        class="icon"
-                        title="Edades normativas"
-                    />
-                </a>
-
-                <a
-                    href="https://www.minedu.gob.pe/curriculo/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Curriculo Nacional"
-                    class="help-link"
-                >
-                    <img
-                        src="https://www.minedu.gob.pe/curriculo/imagenes/banner-curriculo.jpg"
-                        alt="Curriculo Nacional"
-                        title="Curriculo Nacional"
-                        class="icon"
-                    />
-                </a>
-
-                <a
-                    href="https://escale.minedu.gob.pe/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Estadísticas y seguimiento educativo"
-                    class="help-link"
-                >
-                    <img
-                        src="https://escale.minedu.gob.pe/image/layout_set_logo?img_id=2974246&amp;t=1732854934305"
-                        alt="Estadísticas y seguimiento educativo"
-                        title="Estadísticas y seguimiento educativo"
-                        class="icon"
-                    />
-                </a>
-
-                <a
-                    href="https://repositorio.minedu.gob.pe/handle/20.500.12799/4445"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="'Manual de Tutoría y Orientación Educativa"
-                    class="help-link"
-                >
-                    <img
-                        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhleT9stmAAIGm-mEbyWxXcTOasBblNBDOqxJoAhsr8W9bYPxuW7512MOq9kvrdWjHBBltNY-RvtZlQfzJQdfvv8fD7nqMv5kOYmO17QfjCev-UTr7SiI22drSwlJ5rEN-UXMvZf-LJ1VMPjZdvjRfEGWBJ2f9431XFTisAoK8wFvAhRTW8S6fJN-JoDg/s5040/manual%20de%20tutoria.jpg"
-                        alt="'Manual de Tutoría y Orientación Educativa"
-                        title="Manual de Tutoría y Orientación Educativa"
-                        class="icon"
-                    />
-                </a>
-            </div>
-        </div>
-    </p-accordionTab>
+        </p-accordionTab>
+    }
 </p-accordion>

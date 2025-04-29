@@ -75,68 +75,115 @@
     </ng-container>
 
     <ng-template pTemplate="header" let-columns>
-        <tr class="text-uppercase">
-            @for (col of columnasSeleccionadas; track $index) {
-                <th
-                    [pSortableColumn]="col.field"
-                    [style.width]="col.width"
-                    [style.padding]="col.padding"
-                    [pSortableColumnDisabled]="enableCellSelection"
-                >
-                    @switch (col.type) {
-                        @case ('actions') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
+        @switch (typeHeaderColumn) {
+            @case ('group') {
+                @for (columns of columnsGroupSeleccionadas; track $index) {
+                    <tr class="text-uppercase">
+                        @for (col of columns; track $index) {
+                            <th
+                                [pSortableColumn]="col.field"
+                                [style.width]="col.width"
+                                [style.padding]="col.padding"
+                                [colSpan]="col.colspan"
+                                [rowSpan]="col.rowspan"
+                                [ngStyle]="getStyleColumnGroup(col, $index)"
+                                [pSortableColumnDisabled]="enableCellSelection"
+                            >
+                                <div
+                                    [style.text-align]="col.text_header"
+                                    class=""
+                                >
+                                    <span> {{ col.header }}</span>
+                                    @if (showSortIcon) {
+                                        <p-sortIcon
+                                            [field]="col.header"
+                                        ></p-sortIcon>
+                                    }
+                                    @if (showAdvancedFilter) {
+                                        <p-columnFilter
+                                            [type]="col.type"
+                                            [field]="col.field"
+                                            display="menu"
+                                            matchMode="contains"
+                                            [showMatchModes]="false"
+                                            [showOperator]="false"
+                                            [showAddButton]="false"
+                                        />
+                                    }
+                                </div>
+                            </th>
                         }
-                        @case ('item') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('checkbox') {
-                            <p-tableHeaderCheckbox />
-                        }
-                        @case ('expansion') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('cell-editor') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('item-checkbox') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @default {
-                            <div [style.text-align]="col.text_header" class="">
-                                <span> {{ col.header }}</span>
-                                @if (showSortIcon) {
-                                    <p-sortIcon
-                                        [field]="col.header"
-                                    ></p-sortIcon>
-                                }
-                                @if (showAdvancedFilter) {
-                                    <p-columnFilter
-                                        [type]="col.type"
-                                        [field]="col.field"
-                                        display="menu"
-                                        matchMode="contains"
-                                        [showMatchModes]="false"
-                                        [showOperator]="false"
-                                        [showAddButton]="false"
-                                    />
-                                }
-                            </div>
-                        }
-                    }
-                </th>
+                    </tr>
+                }
             }
-        </tr>
+            @default {
+                <tr class="text-uppercase">
+                    @for (col of columnasSeleccionadas; track $index) {
+                        <th
+                            [pSortableColumn]="col.field"
+                            [style.width]="col.width"
+                            [style.padding]="col.padding"
+                            [pSortableColumnDisabled]="enableCellSelection"
+                        >
+                            @switch (col.type) {
+                                @case ('actions') {
+                                    <div [style.text-align]="col.text_header">
+                                        {{ col.header }}
+                                    </div>
+                                }
+                                @case ('item') {
+                                    <div [style.text-align]="col.text_header">
+                                        {{ col.header }}
+                                    </div>
+                                }
+                                @case ('checkbox') {
+                                    <p-tableHeaderCheckbox />
+                                }
+                                @case ('expansion') {
+                                    <div [style.text-align]="col.text_header">
+                                        {{ col.header }}
+                                    </div>
+                                }
+                                @case ('cell-editor') {
+                                    <div [style.text-align]="col.text_header">
+                                        {{ col.header }}
+                                    </div>
+                                }
+                                @case ('item-checkbox') {
+                                    <div [style.text-align]="col.text_header">
+                                        {{ col.header }}
+                                    </div>
+                                }
+                                @default {
+                                    <div
+                                        [style.text-align]="col.text_header"
+                                        class=""
+                                    >
+                                        <span> {{ col.header }}</span>
+                                        @if (showSortIcon) {
+                                            <p-sortIcon
+                                                [field]="col.header"
+                                            ></p-sortIcon>
+                                        }
+                                        @if (showAdvancedFilter) {
+                                            <p-columnFilter
+                                                [type]="col.type"
+                                                [field]="col.field"
+                                                display="menu"
+                                                matchMode="contains"
+                                                [showMatchModes]="false"
+                                                [showOperator]="false"
+                                                [showAddButton]="false"
+                                            />
+                                        }
+                                    </div>
+                                }
+                            }
+                        </th>
+                    }
+                </tr>
+            }
+        }
     </ng-template>
     @if (template === 'body') {
         <ng-template

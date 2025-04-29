@@ -351,27 +351,47 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
             })
     }
-    // Método para actualizar los datos en la base de datos
+
     actualizarEvaluacion() {
-        /*let fechaInicio = this.evaluacionFormGroup.get(
+        const fechaInicioOriginal = this.evaluacionFormGroup.get(
             'dtEvaluacionFechaInicio'
         ).value
-        let fechaFin = this.evaluacionFormGroup.get(
+        const fechaFinOriginal = this.evaluacionFormGroup.get(
             'dtEvaluacionFechaFin'
-        ).value*/
+        ).value
+        // Se agrega logs para depuración
+        console.log('Fecha Inicio (original):', fechaInicioOriginal)
+        console.log('Tipo de fecha inicio:', typeof fechaInicioOriginal)
+        console.log('Es Date?', fechaInicioOriginal instanceof Date)
 
-        // Convertir fechas al formato que necesita SQL Server (YYYY-MM-DD) // no cambiar esta conversion
-        /*if (typeof fechaInicio === 'string' && fechaInicio.includes('/')) {
-            const [dia, mes, anio] = fechaInicio.split('/')
-            fechaInicio = `${anio}-${mes}-${dia}`
+        console.log('Fecha Fin (original):', fechaFinOriginal)
+        console.log('Tipo de fecha fin:', typeof fechaFinOriginal)
+        console.log('Es Date?', fechaFinOriginal instanceof Date)
+
+        const formatearFecha = (fecha) => {
+            if (!fecha) return null
+
+            if (fecha instanceof Date) {
+                return fecha.toISOString().split('T')[0]
+            }
+
+            if (typeof fecha === 'string') {
+                if (fecha.includes('/')) {
+                    const partes = fecha.split('/')
+                    if (partes.length === 3) {
+                        const dia = partes[0].padStart(2, '0')
+                        const mes = partes[1].padStart(2, '0')
+                        const anio = partes[2]
+                        return `${anio}-${mes}-${dia}`
+                    }
+                } else if (fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    return fecha
+                }
+            }
+
+            console.log('Formato de fecha no reconocido:', fecha)
+            return null
         }
-
-        if (typeof fechaFin === 'string' && fechaFin.includes('/')) {
-            const [dia, mes, anio] = fechaFin.split('/')
-            fechaFin = `${anio}-${mes}-${dia}`
-        }*/
-
-        // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
 
         const data = {
             iEvaluacionId: Number(
@@ -391,41 +411,40 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-
-            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
-                'dtEvaluacionFechaInicio'
-            ).value,
-            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
-                'dtEvaluacionFechaFin'
-            ).value,
+            dtEvaluacionFechaInicio: formatearFecha(fechaInicioOriginal),
+            dtEvaluacionFechaFin: formatearFecha(fechaFinOriginal),
         }
 
-        //console.log('Datos para actualizar (con fechas ISO):', data)
+        console.log('Datos para actualizar (con fechas formateadas):', data)
 
-        //console.log('datos para acualizar', data)
+        if (!data.dtEvaluacionFechaInicio || !data.dtEvaluacionFechaFin) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error de formato',
+                detail: 'Las fechas de inicio y/o fin no tienen un formato válido',
+            })
+            return
+        }
+
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
                 console.log('respuesta de actualizacion', resp)
-
                 this._MessageService.add({
                     severity: 'success',
                     summary: 'Actualización exitosa',
                     detail: 'Los datos de la evaluación han sido actualizados.',
                 })
-                resp
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)
-
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error de actualización',
                     detail: 'No se pudo actualizar la evaluación. Por favor intente de nuevo.',
                 })
             },
-
             complete: () => {
-                console.log('Actualizacion completada')
+                console.log('Actualización completada')
             },
         })
     }

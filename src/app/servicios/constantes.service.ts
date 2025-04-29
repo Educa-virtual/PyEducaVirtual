@@ -152,6 +152,11 @@ const administrador = [
                 routerLink: ['/administrador/componentes'],
             },
             {
+                label: 'Registro de fechas especiales',
+                icon: 'pi pi-calendar',
+                routerLink: ['/gestion-institucional/fechas'],
+            },
+            {
                 label: 'Backup de BD',
                 icon: 'pi pi-fw pi-database',
                 routerLink: ['/administrador/backup-bd'],
@@ -242,13 +247,13 @@ const administracion = [
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    {
-                        label: 'Registro de año escolar',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/calendarioAcademico',
-                        ],
-                    },
+                    // {
+                    //     label: 'Registro de año escolar',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: [
+                    //         '/gestion-institucional/calendarioAcademico',
+                    //     ],
+                    // },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',
@@ -279,17 +284,6 @@ const administracion = [
                         label: 'Apertura de año escolar',
                         icon: 'pi pi-lock-open',
                         routerLink: ['/gestion-institucional/apertura'],
-                    },
-                    {
-                        label: 'Registro de fechas especiales',
-                        icon: 'pi pi-calendar',
-                        routerLink: ['/gestion-institucional/fechas'],
-                    },
-
-                    {
-                        label: 'Cierre de año escolar',
-                        icon: 'pi pi-lock',
-                        routerLink: ['/configuracion/configuracion'],
                     },
                 ],
             },

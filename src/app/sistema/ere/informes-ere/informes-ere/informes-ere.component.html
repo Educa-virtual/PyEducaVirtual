@@ -82,14 +82,12 @@
                     </div>
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
-                            <p-inputGroupAddon
-                                >Tipo de Gestión</p-inputGroupAddon
-                            >
+                            <p-inputGroupAddon>UGEL</p-inputGroupAddon>
                             <p-dropdown
-                                [options]="tipo_sectores"
+                                [options]="ugeles"
                                 [showClear]="true"
-                                formControlName="iTipoSectorId"
-                                placeholder="Seleccione un tipo de gestión"
+                                formControlName="iUgelId"
+                                placeholder="Seleccione una UGEL"
                                 styleClass="group-element"
                                 [appendTo]="'body'"
                             ></p-dropdown>

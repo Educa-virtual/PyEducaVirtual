@@ -52,6 +52,7 @@ export class InformesEreComponent implements OnInit {
     sexos: Array<object>
     zonas: Array<object>
     tipo_sectores: Array<object>
+    ugeles: Array<object>
 
     private _MessageService = inject(MessageService)
 
@@ -84,6 +85,7 @@ export class InformesEreComponent implements OnInit {
                 iNivelGradoId: [null, Validators.required],
                 iZonaId: [null],
                 iTipoSectorId: [null],
+                iUgelId: [null],
                 iDsttId: [null],
                 iIieeId: [null],
                 iSeccionId: [null],
@@ -110,6 +112,7 @@ export class InformesEreComponent implements OnInit {
                 this.tipo_sectores = this.datosInformes.getTipoSectores(
                     data?.tipo_sectores
                 )
+                this.ugeles = this.datosInformes.getUgeles(data?.ugeles)
 
                 this.datosInformes.getNivelesTipos(data?.nivel_tipos)
                 this.datosInformes.getNivelesGrados(data?.nivel_grados)
@@ -158,6 +161,11 @@ export class InformesEreComponent implements OnInit {
             this.ies = null
             this.filterInstitucionesEducativas()
         })
+        this.formFiltros.get('iUgelId').valueChanges.subscribe(() => {
+            this.formFiltros.get('iIieeId')?.setValue(null)
+            this.ies = null
+            this.filterInstitucionesEducativas()
+        })
     }
 
     filterNivelesTipos(iEvaluacionId: number) {
@@ -178,12 +186,14 @@ export class InformesEreComponent implements OnInit {
         const iDsttId = this.formFiltros.get('iDsttId')?.value
         const iZonaId = this.formFiltros.get('iZonaId')?.value
         const iTipoSectorId = this.formFiltros.get('iTipoSectorId')?.value
+        const iUgelId = this.formFiltros.get('iUgelId')?.value
         this.ies = this.datosInformes.filterInstitucionesEducativas(
             iEvaluacionId,
             iNivelTipoId,
             iDsttId,
             iZonaId,
-            iTipoSectorId
+            iTipoSectorId,
+            iUgelId
         )
     }
 

@@ -190,17 +190,30 @@ export class DatosInformesService {
         return this.tipo_sectores
     }
 
+    getUgeles(data: any) {
+        if (!this.ugeles && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.ugeles = items.map((ugel) => ({
+                value: ugel.iUgelId,
+                label: ugel.cUgelNombre,
+            }))
+            return this.ugeles
+        }
+        return this.ugeles
+    }
+
     getInstitucionesEducativas(data: any) {
         if (!this.instituciones_educativas && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
             this.instituciones_educativas = items.map((ie) => ({
                 value: ie.iIieeId,
                 label: ie.cIieeNombre,
-                iDsttId: ie.iDsttId,
-                iNivelTipoId: ie.iNivelTipoId,
-                iZonaId: ie.iZonaId,
-                iTipoSectorId: ie.iTipoSectorId,
-                evaluaciones: ie.evaluaciones,
+                iDsttId: ie?.iDsttId,
+                iNivelTipoId: ie?.iNivelTipoId,
+                iZonaId: ie?.iZonaId,
+                iTipoSectorId: ie?.iTipoSectorId,
+                iUgelId: ie?.iUgelId,
+                evaluaciones: ie?.evaluaciones,
             }))
             return this.instituciones_educativas
         }
@@ -212,7 +225,8 @@ export class DatosInformesService {
         iNivelTipoId: any,
         iDsttId: any,
         iZonaId: any,
-        iTipoSectorId: any
+        iTipoSectorId: any,
+        iUgelId: any
     ) {
         console.log(
             iEvaluacionId,
@@ -226,6 +240,7 @@ export class DatosInformesService {
         }
         if (iEvaluacionId) {
             ies_tmp = ies_tmp.filter((ie: any) => {
+                if (!ie.evaluaciones) return null
                 const esta_en_evaluacion = ie.evaluaciones.filter(
                     (evaluacion: any) => {
                         if (evaluacion.iEvaluacionId == iEvaluacionId) {
@@ -267,6 +282,14 @@ export class DatosInformesService {
         if (iTipoSectorId) {
             ies_tmp = ies_tmp.filter((ie: any) => {
                 if (ie.iTipoSectorId == iTipoSectorId) {
+                    return ie
+                }
+                return null
+            })
+        }
+        if (iUgelId) {
+            ies_tmp = ies_tmp.filter((ie: any) => {
+                if (ie.iUgelId == iUgelId) {
                     return ie
                 }
                 return null

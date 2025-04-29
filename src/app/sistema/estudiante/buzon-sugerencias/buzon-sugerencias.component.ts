@@ -1,19 +1,19 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+//import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, OnInit } from '@angular/core' //inject,
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { MessageService } from 'primeng/api'
-import { DatosSugerenciaService } from '../../services/datos.sugerencia.service'
-import { Router } from '@angular/router'
-import { DerivarSugerenciaComponent } from '../derivar-sugerencia/derivar-sugerencia.component'
-import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-sugerencia.component'
+//import { MessageService } from 'primeng/api'
+//import { Router } from '@angular/router'
+import { DerivarSugerenciaComponent } from './derivar-sugerencia/derivar-sugerencia.component'
+import { RegistrarSugerenciaComponent } from './registrar-sugerencia/registrar-sugerencia.component'
+//import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
 
 @Component({
-    selector: 'app-gestionar-sugerencias',
+    selector: 'app-buzon-sugerencias',
     standalone: true,
     imports: [
         PrimengModule,
@@ -21,154 +21,118 @@ import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-
         DerivarSugerenciaComponent,
         RegistrarSugerenciaComponent,
     ],
-    templateUrl: './gestionar-sugerencias.component.html',
-    styleUrl: './gestionar-sugerencias.component.scss',
+    templateUrl: './buzon-sugerencias.component.html',
+    styleUrl: './buzon-sugerencias.component.scss',
 })
-export class GestionarSugerenciasComponent implements OnInit {
-    form: FormGroup
-    sede: any[]
-    iSedeId: number
-    iYAcadId: number
-
-    registrar_visible: boolean = false
-    derivar_visible: boolean = false
-    caption: string = ''
-    c_accion: string
-
-    sugerencias: any[]
-    sugerencia_registrada: boolean = false
+export class BuzonSugerenciasComponent implements OnInit {
     prioridades: Array<object>
-    destinos: Array<object>
-    dialog_header: string
-    uploadedFiles: any[] = []
+    formularioNuevoHeader: string
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
-    es_estudiante: boolean = this.perfil.iPerfilId == 80
-    disable_form: boolean = false
-
-    private _MessageService = inject(MessageService) // dialog Mensaje simple
-    private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
-
+    usuarioEstudiante: boolean = this.perfil.iPerfilId == 80
+    form: FormGroup
+    dataSugerencias: any[]
+    /**
+     * Columnas de la tabla
+     * @type {any[]}
+     */
+    columns = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'date',
+            width: '3rem',
+            field: 'fecha',
+            header: 'Fecha',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '15rem',
+            field: 'asunto',
+            header: 'Asunto',
+            text_header: 'center',
+            text: 'left',
+        },
+        {
+            type: 'tag',
+            width: '2rem',
+            field: 'prioridad',
+            header: 'Prioridad',
+            styles: {
+                Alta: 'danger',
+                Baja: 'success',
+                Media: 'warning',
+            },
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '8rem',
+            field: 'text',
+            header: 'Mensaje respuesta',
+            text_header: 'center',
+            text: 'left',
+        },
+        {
+            type: 'actions',
+            width: '3rem',
+            field: 'actions',
+            header: 'Acciones',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
+    mostrarFormularioNuevo: boolean = false
+    //private buzonSugerenciasService = inject(BuzonSugerenciasService)
     constructor(
-        private fb: FormBuilder,
-        private datosSugerenciaService: DatosSugerenciaService,
-        private router: Router
-    ) {}
+        private fb: FormBuilder
+        //private router: Router,
+    ) {} //private buzonSugerenciasService: BuzonSugerenciasService
 
     ngOnInit(): void {
-        console.log(this.es_estudiante)
-        try {
-            this.form = this.fb.group({
-                iPrioridadId: [null, Validators.required],
-                iDestinoId: [null, Validators.required],
-                cAsunto: [null, Validators.required],
-                cSugerencia: [null, Validators.required],
-            })
-        } catch (error) {
-            console.log(error, 'error de formulario')
-        }
-
-        this.buscarPrioridades()
-        this.buscarDestinos()
-        this.buscarSugerencias()
-    }
-
-    registroVisible(event: any) {
-        return (this.registrar_visible = event.value)
-    }
-
-    derivacionVisible(event: any) {
-        return (this.derivar_visible = event.value)
-    }
-
-    /**
-     * Buscar sugerencias segun criterios de busqueda
-     */
-    buscarSugerencias() {
-        this.sugerencias = [
-            {
-                id: 1,
-                destino_id: [1, 3],
-                fecha: '2024-01-01',
-                asunto: 'Notificarme cuando el profesar ponga nota a mi examen',
-                estado_id: 2,
-                estado: 'RECIBIDO',
-                prioridad: 'MEDIA',
-                prioridad_id: 2,
-                sugerencia:
-                    '<h1>Notificarme cuando el profesar ponga nota a mi examen</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
-            },
-            {
-                id: 2,
-                destino_id: [1],
-                fecha: '2024-01-02',
-                asunto: 'Opciones de preguntas deben ser mas grandes en celular',
-                estado_id: 1,
-                estado: 'PENDIENTE',
-                prioridad: 'BAJA',
-                prioridad_id: 1,
-                sugerencia:
-                    '<h1>Opciones de preguntas deben ser mas grandes en celular</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
-            },
-            {
-                id: 3,
-                destino_id: [1, 2],
-                fecha: '2024-01-03',
-                asunto: 'Explicar como se calcula promedio final',
-                estado_id: 3,
-                estado: 'ATENDIDO',
-                prioridad: 'ALTA',
-                prioridad_id: 3,
-                sugerencia:
-                    '<h1>Explicar como se calcula promedio final</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
-            },
-            {
-                id: 4,
-                destino_id: [4],
-                fecha: '2024-01-04',
-                asunto: 'Mas explicaciones en examenes de matematica',
-                estado_id: 4,
-                estado: 'DERIVADO',
-                prioridad: 'BAJA',
-                prioridad_id: 2,
-                sugerencia:
-                    '<h1>Mas explicaciones en examenes de matematica</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
-            },
-        ]
-    }
-
-    buscarDestinos() {
-        this.destinos = [
-            { id: 1, nombre: 'EQUIPO TECNICO' },
-            { id: 2, nombre: 'DIRECCION' },
-            { id: 3, nombre: 'PROFESORES' },
-            { id: 4, nombre: 'ESPECIALISTAS' },
-        ]
-    }
-
-    buscarPrioridades() {
         this.prioridades = [
-            { id: 1, nombre: 'BAJA' },
-            { id: 2, nombre: 'MEDIA' },
-            { id: 3, nombre: 'ALTA' },
+            { id: 1, nombre: 'Baja' },
+            { id: 2, nombre: 'Media' },
+            { id: 3, nombre: 'Alta' },
         ]
+        this.form = this.fb.group({
+            iPrioridadId: [null, Validators.required],
+            iDestinoId: [null, Validators.required],
+            cAsunto: [null, Validators.required],
+            cSugerencia: [null, Validators.required],
+        })
     }
 
-    /**
-     * Mostrar modal para agregar nueva sugerencia
-     */
-    agregarSugerencia() {
-        this.dialog_header = 'Registrar sugerencia'
-        this.disable_form = false
-        this.registrar_visible = true
-        this.resetearInputs()
-        this.disableForm(false)
+    escucharEsVisible(event: any) {
+        //return (this.mostrarFormularioNuevo = event.value)
+        this.mostrarFormularioNuevo = event.value
     }
 
-    /**
-     * Enviar datos de nueva sugerencia a backend
-     */
+    nuevaSugerencia() {
+        this.formularioNuevoHeader = 'Nueva sugerencia'
+        this.mostrarFormularioNuevo = true
+        //this.disable_form = false
+        //this.registrar_visible = true
+        //this.resetearInputs()
+        //this.disableForm(false)
+    }
+
+    resetearInputs() {
+        this.form.reset()
+    }
+
     guardarSugerencia() {
-        this.datosSugerenciaService
+        console.log('ok')
+        /**/
+        /*this.datosSugerenciaService
             .guardarSugerencia(this.form.value)
             .subscribe({
                 next: (data: any) => {
@@ -192,15 +156,117 @@ export class GestionarSugerenciasComponent implements OnInit {
                 complete: () => {
                     console.log('Request completed')
                 },
-            })
+            })*/
     }
+
+    /*sede: any[]
+    iSedeId: number
+    iYAcadId: number
+
+
+    derivar_visible: boolean = false
+    caption: string = ''
+    c_accion: string
+
+
+    sugerencia_registrada: boolean = false
+
+    destinos: Array<object>
+
+    uploadedFiles: any[] = []
+    perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
+    es_estudiante: boolean = this.perfil.iPerfilId == 80
+    disable_form: boolean = false
+*/
+    //private _MessageService = inject(MessageService) // dialog Mensaje simple
+    //private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
+
+    /*
+
+    derivacionVisible(event: any) {
+        return (this.derivar_visible = event.value)
+    }*/
+
+    /**
+     * Buscar sugerencias segun criterios de busqueda
+     */
+    /*buscarSugerencias() {
+        this.sugerencias = [
+            {
+                id: 1,
+                destino_id: [1, 3],
+                fecha: '2024-01-01',
+                asunto: 'Notificarme cuando el profesar ponga nota a mi examen',
+                estado_id: 2,
+                estado: 'RECIBIDO',
+                prioridad: 'Media',
+                prioridad_id: 2,
+                sugerencia:
+                    '<h1>Notificarme cuando el profesar ponga nota a mi examen</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+            {
+                id: 2,
+                destino_id: [1],
+                fecha: '2024-01-02',
+                asunto: 'Opciones de preguntas deben ser mas grandes en celular',
+                estado_id: 1,
+                estado: 'PENDIENTE',
+                prioridad: 'Baja',
+                prioridad_id: 1,
+                sugerencia:
+                    '<h1>Opciones de preguntas deben ser mas grandes en celular</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+            {
+                id: 3,
+                destino_id: [1, 2],
+                fecha: '2024-01-03',
+                asunto: 'Explicar como se calcula promedio final',
+                estado_id: 3,
+                estado: 'ATENDIDO',
+                prioridad: 'Alta',
+                prioridad_id: 3,
+                sugerencia:
+                    '<h1>Explicar como se calcula promedio final</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+            {
+                id: 4,
+                destino_id: [4],
+                fecha: '2024-01-04',
+                asunto: 'Mas explicaciones en examenes de matematica',
+                estado_id: 4,
+                estado: 'DERIVADO',
+                prioridad: 'BAJA',
+                prioridad_id: 2,
+                sugerencia:
+                    '<h1>Mas explicaciones en examenes de matematica</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+        ]
+    }*/
+
+    /*buscarDestinos() {
+        this.destinos = [
+            { id: 1, nombre: 'EQUIPO TECNICO' },
+            { id: 2, nombre: 'DIRECCION' },
+            { id: 3, nombre: 'PROFESORES' },
+            { id: 4, nombre: 'ESPECIALISTAS' },
+        ]
+    }*/
+
+    /**
+     * Mostrar modal para agregar nueva sugerencia
+     */
+
+    /**
+     * Enviar datos de nueva sugerencia a backend
+     */
 
     /**
      * Eliminar sugerencia segun id
      * @param item sugerencia a eliminar
      */
     eliminarSugerencia(item: any) {
-        this._confirmService.openConfirm({
+        console.log(item)
+        /*this._confirmService.openConfirm({
             header: 'Eliminar sugerencia',
             icon: 'pi pi-exclamation-triangle',
             message: '¿Está seguro de eliminar la sugerencia seleccionada?',
@@ -231,37 +297,37 @@ export class GestionarSugerenciasComponent implements OnInit {
                     },
                 })
             },
-        })
+        })*/
     }
 
     /**
      * Mostrar modal para editar sugerencia
      * @param item sugerencia seleccionada en tabla
      */
-    editarSugerencia(item: any) {
-        this.dialog_header = 'Editar sugerencia'
+    /*editarSugerencia(item: any) {
+        this.formularioHeader = 'Editar sugerencia'
         this.disable_form = false
         this.setFormSugerencia(item)
         this.registrar_visible = true
-    }
+    }*/
 
     /**
      * Mostrar modal para ver sugerencia
      * @param item sugerencia seleccionada en tabla
      */
-    mostrarSugerencia(item: any) {
-        this.dialog_header = 'Ver sugerencia'
+    /*mostrarSugerencia(item: any) {
+        this.formularioHeader = 'Ver sugerencia'
         this.disable_form = true
         this.setFormSugerencia(item)
         this.registrar_visible = true
         this.disableForm(true)
-    }
+    }*/
 
     /**
      * Actualizar sugerencia segun formulario
      */
     actualizarSugerencia() {
-        this.datosSugerenciaService
+        /*this.datosSugerenciaService
             .actualizarSugerencia(this.form.value)
             .subscribe({
                 next: (data: any) => {
@@ -283,29 +349,26 @@ export class GestionarSugerenciasComponent implements OnInit {
                 complete: () => {
                     console.log('Request completed')
                 },
-            })
+            })*/
     }
 
     /**
      * Ir a vista para dar seguimiento a sugerencia
      * @param item sugerencia seleccionada en tabla
      */
-    seguimientoSugerencia(item: any) {
+    /*seguimientoSugerencia(item: any) {
         console.log(item, 'seguimientoSugerencia')
-    }
+    }*/
 
     /**
      * Limpiar formulario
      */
-    resetearInputs() {
-        this.form.reset()
-    }
 
     /**
      * Deshabilitar inputs de formulario
      * @param disable booleano para deshabilitar o habilitar
      */
-    disableForm(disable: boolean) {
+    /*disableForm(disable: boolean) {
         if (disable) {
             this.form.get('cAsunto')?.disable()
             this.form.get('cSugerencia')?.enable()
@@ -317,13 +380,13 @@ export class GestionarSugerenciasComponent implements OnInit {
             this.form.get('iDestinoId')?.enable()
             this.form.get('iPrioridadId')?.enable()
         }
-    }
+    }*/
 
     /**
      * Rellenar formulario con datos de sugerencia
      * @param item sugerencia seleccionada en tabla
      */
-    setFormSugerencia(item: any) {
+    /*setFormSugerencia(item: any) {
         this.form.get('cAsunto')?.setValue(item.asunto)
         this.form.get('cSugerencia')?.setValue(item.sugerencia)
         this.form.get('iDestinoId')?.setValue(item.destino_id)
@@ -333,7 +396,7 @@ export class GestionarSugerenciasComponent implements OnInit {
 
     onUpload(event: any) {
         this.uploadedFiles = event.files
-    }
+    }*/
 
     /**
      * Acciones para botones en cada fila de tabla
@@ -341,7 +404,8 @@ export class GestionarSugerenciasComponent implements OnInit {
      * @param {object} item datos de la fila seleccionada
      */
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'editar') {
+        console.log(accion, item)
+        /*if (accion === 'editar') {
             this.editarSugerencia(item)
         }
         if (accion === 'ver') {
@@ -357,7 +421,7 @@ export class GestionarSugerenciasComponent implements OnInit {
         }
         if (accion === 'anular') {
             this.eliminarSugerencia(item)
-        }
+        }*/
     }
 
     selectedItems = []
@@ -367,7 +431,7 @@ export class GestionarSugerenciasComponent implements OnInit {
      * @type {IActionTable[]}
      */
     actions: IActionTable[] = [
-        {
+        /*{
             labelTooltip: 'Derivar',
             icon: 'pi pi-send',
             accion: 'derivar',
@@ -386,7 +450,7 @@ export class GestionarSugerenciasComponent implements OnInit {
             isVisible: (row) => {
                 return row.estado_id === 1 && 2 == this.perfil.iCredId
             },
-        },
+        },*/
         {
             labelTooltip: 'Ver sugerencia',
             icon: 'pi pi-eye',
@@ -394,75 +458,14 @@ export class GestionarSugerenciasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },
-        {
+        /*{
             labelTooltip: 'Seguimiento',
             icon: 'pi pi-search',
             accion: 'seguimiento',
             type: 'item',
             class: 'p-button-rounded p-button-secondary p-button-text',
-        },
+        },*/
     ]
 
     actionsLista: IActionTable[]
-
-    /**
-     * Columnas de la tabla
-     * @type {any[]}
-     */
-    columns = [
-        {
-            type: 'item',
-            width: '1rem',
-            field: 'item',
-            header: 'Item',
-            text_header: 'left',
-            text: 'center',
-        },
-        {
-            type: 'date',
-            width: '3rem',
-            field: 'fecha',
-            header: 'Fecha',
-            text_header: 'left',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '15rem',
-            field: 'asunto',
-            header: 'Asunto',
-            text_header: 'center',
-            text: 'left',
-        },
-        {
-            type: 'tag',
-            width: '5rem',
-            field: 'estado',
-            header: 'Estado',
-            styles: {
-                PENDIENTE: 'danger', // REGISTRADO/PENDIENTE
-                RECIBIDO: 'success', // RECIBIDO
-                DERIVADO: 'secondary', // DERIVADO
-                ATENDIDO: 'info', // ATENDIDO
-            },
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '3rem',
-            field: 'prioridad',
-            header: 'Prioridad',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'right',
-        },
-    ]
 }

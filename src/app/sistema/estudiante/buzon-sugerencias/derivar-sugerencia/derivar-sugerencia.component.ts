@@ -12,7 +12,6 @@ import {
     EventEmitter,
 } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { CompartirSugerenciaService } from '../services/compartir-sugerencia.service'
 import { MessageService } from 'primeng/api'
 
 @Component({
@@ -38,10 +37,7 @@ export class DerivarSugerenciaComponent implements OnInit {
 
     private _MessageService = inject(MessageService)
 
-    constructor(
-        private fb: FormBuilder,
-        private compartirSugerenciaService: CompartirSugerenciaService
-    ) {}
+    constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
         this.destinos = [
@@ -52,7 +48,7 @@ export class DerivarSugerenciaComponent implements OnInit {
         ]
 
         this.form = this.fb.group({
-            iSugerenciaId: this.compartirSugerenciaService.getiSugerenciaId(),
+            //iSugerenciaId: this.compartirSugerenciaService.getiSugerenciaId(),
             iDestinoId: [null, Validators.required],
             cProveido: [null, Validators.required],
         })

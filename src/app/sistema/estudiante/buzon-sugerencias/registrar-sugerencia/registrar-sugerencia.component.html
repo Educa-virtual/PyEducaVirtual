@@ -1,6 +1,6 @@
 <form [formGroup]="form">
     <div class="grid p-fluid mt-3">
-        <div class="field col-12">
+        <!--<div class="field col-12">
             <p-inputGroup>
                 <p-inputGroupAddon>Destino *</p-inputGroupAddon>
                 <p-multiSelect
@@ -17,7 +17,7 @@
                     [style]="{ flex: '1', width: '100%' }"
                 />
             </p-inputGroup>
-        </div>
+        </div>-->
         <div class="field col-12 md:col-8">
             <p-inputGroup>
                 <p-inputGroupAddon>Asunto *</p-inputGroupAddon>
@@ -33,8 +33,6 @@
                     optionLabel="nombre"
                     [checkmark]="true"
                     optionValue="id"
-                    [showClear]="true"
-                    [filter]="true"
                     [appendTo]="'body'"
                     [style]="{ flex: '1', width: '100%' }"
                 />
@@ -44,11 +42,34 @@
             <p-editor
                 formControlName="cSugerencia"
                 [style]="{ height: '150px' }"
-                placeholder="Explique su sugerencia *"
+                placeholder="Escriba su sugerencia *"
                 [readonly]="disable_form"
             />
         </div>
-        @if (disable_form) {
+        <div class="field col-12">
+            <p-fileUpload
+                name="demo[]"
+                showUploadButton="false"
+                [multiple]="true"
+                chooseLabel="Seleccione archivos"
+                fileLimit="3"
+                maxFileSize="10240000"
+                [showCancelButton]="false"
+            >
+                <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFiles.length">
+                        <li *ngFor="let file of uploadedFiles">
+                            {{ file.name }} - {{ file.size }} bytes
+                        </li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+            <small class="text-muted"
+                >Máx. 3 archivos, 100MB en total. Asteriscos (*) son campos
+                obligatorios.</small
+            >
+        </div>
+        <!--@if (disable_form) {
             <div class="field col-12">
                 <a
                     href="#"
@@ -80,26 +101,8 @@
                 </a>
             </div>
         } @else {
-            <div class="field col-12">
-                <p-fileUpload
-                    name="demo[]"
-                    showUploadButton="false"
-                    [multiple]="true"
-                    chooseLabel="Seleccione hasta 3 archivos (max. 10 MB)"
-                    cancelLabel="Quitar archivos"
-                    fileLimit="3"
-                    maxFileSize="10240000"
-                >
-                    <ng-template pTemplate="content">
-                        <ul *ngIf="uploadedFiles.length">
-                            <li *ngFor="let file of uploadedFiles">
-                                {{ file.name }} - {{ file.size }} bytes
-                            </li>
-                        </ul>
-                    </ng-template>
-                </p-fileUpload>
-            </div>
-        }
+
+        }-->
     </div>
     <div class="flex justify-content-end" *ngIf="!disable_form">
         <p-button

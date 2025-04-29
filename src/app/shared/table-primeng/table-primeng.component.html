@@ -58,21 +58,17 @@
                             />
                         </p-inputGroup> -->
                     </div>
-                    @if (showColumnFilter) {
-                        <div class="col-auto align-content-center">
-                            <div
-                                class="flex flex-wrap gap-2 justify-content-end"
-                            >
-                                <ng-content
-                                    select="[slot='caption-content']"
-                                ></ng-content>
-                                <app-table-column-filter
-                                    [columns]="columnas"
-                                    (columnsChange)="onColumnSelected($event)"
-                                ></app-table-column-filter>
-                            </div>
+                    <div class="col-2 align-content-center">
+                        <div class="flex flex-wrap gap-2 justify-content-end">
+                            <ng-content
+                                select="[slot='caption-content']"
+                            ></ng-content>
+                            <app-table-column-filter
+                                [columns]="columnas"
+                                (columnsChange)="onColumnSelected($event)"
+                            ></app-table-column-filter>
                         </div>
-                    }
+                    </div>
                 </div>
             }
         </ng-template>

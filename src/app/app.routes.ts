@@ -40,6 +40,11 @@ export const routes: Routes = [
                 path: 'ere',
                 loadChildren: () => import('./sistema/ere/ere.routes'),
             },
+            {
+                path: 'estudiante',
+                loadChildren: () =>
+                    import('./sistema/estudiante/estudiante.routes'),
+            },
             // Ruta de Especialista
             {
                 path: 'especialista-ugel',

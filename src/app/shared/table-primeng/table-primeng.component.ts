@@ -65,7 +65,6 @@ export interface IColumn {
         trueText: string
         falseText: string
     }
-    styles?: object | undefined
 }
 
 export interface IActionTable {

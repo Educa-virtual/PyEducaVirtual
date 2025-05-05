@@ -63,11 +63,11 @@ export interface IColumn {
         value: string
     }[]
     text: string
+    styles?: object | undefined
     customFalsy?: {
         trueText: string
         falseText: string
     }
-    styles?: object | undefined
 }
 
 export interface IActionTable {

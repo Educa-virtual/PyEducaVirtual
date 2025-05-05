@@ -127,6 +127,11 @@ const estudiante = [
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
             },
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/estudiante/buzon-sugerencias'],
+            },
         ],
     },
 ]
@@ -342,6 +347,13 @@ const administracion = [
                         badge: 'NEW',
                         routerLink: [
                             '/gestion-institucional/estudiante/registro',
+                        ],
+                    },
+                    {
+                        label: 'Buzon de Sugerencias',
+                        icon: 'pi pi-fw pi-envelope',
+                        routerLink: [
+                            '/gestion-institucional/gestionar-sugerencias',
                         ],
                     },
                 ],

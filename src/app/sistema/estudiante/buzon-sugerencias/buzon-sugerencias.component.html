@@ -1,0 +1,73 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                Buzón de sugerencias
+            </h3>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                pButton
+                pRipple
+                pTooltip="Nueva sugerencia"
+                tooltipPosition="top"
+                (click)="nuevaSugerencia()"
+                class="p-button-primary"
+                *ngIf="usuarioEstudiante"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="ml-2 hidden sm:block">Nueva sugerencia</span>
+            </button>
+        </div>
+    </ng-template>
+
+    <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="dataSugerencias"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        sortMode="single"
+        sortField="_cPersNomape"
+        [sortOrder]="1"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+    >
+    </app-table-primeng>
+</p-panel>
+
+<p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="formularioNuevoHeader"
+    [(visible)]="mostrarFormularioNuevo"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    (onHide)="resetearInputs()"
+>
+    <ng-content>
+        <app-registrar-sugerencia
+            (eventEsVisible)="escucharEsVisible($event)"
+        /><!---->
+    </ng-content>
+</p-dialog>
+<!--<p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    header="Registrar derivación"
+    [(visible)]="derivar_visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    [contentStyle]="{ overflow: 'auto' }"
+>-->
+<!--<ng-content>
+        <app-derivar-sugerencia (es_visible)="derivacionVisible($event)" />
+    </ng-content>
+</p-dialog>-->
+<p-toast></p-toast>

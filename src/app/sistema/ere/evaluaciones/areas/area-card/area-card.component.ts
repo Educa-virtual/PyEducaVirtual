@@ -95,7 +95,7 @@ export class AreaCardComponent implements OnInit {
                 disabled: this.iPerfilId === DIRECTOR_IE,
             },
             {
-                label: 'Subir PDF',
+                label: 'Subir eval. PDF',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.dialogSubirArchivoEvent.emit({
@@ -107,7 +107,7 @@ export class AreaCardComponent implements OnInit {
                     this.iPerfilId !== ESPECIALISTA_DREMO,
             },
             {
-                label: 'Descargar PDF',
+                label: 'Descargar eval. en PDF',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     if (this.curso.bTieneArchivo) {

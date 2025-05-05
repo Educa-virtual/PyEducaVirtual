@@ -37,7 +37,7 @@ export class UserAccountComponent implements OnInit {
                     //     icon: 'pi pi-user',
                     // },
                     {
-                        label: 'Salir Sesión',
+                        label: 'Salir sesión',
                         icon: 'pi pi-sign-out',
                         command: () => {
                             this.actionTopBar.emit({ accion: 'logout' })
@@ -55,7 +55,6 @@ export class UserAccountComponent implements OnInit {
                 (item) => item.iModuloId === this.selectedModulo
             ),
         }
-        console.log(this.modulos, 'this.modulos')
         this.actionTopBar.emit(data)
     }
 }

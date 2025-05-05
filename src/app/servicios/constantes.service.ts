@@ -122,6 +122,11 @@ const estudiante = [
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion/areas'],
             },
+            {
+                label: 'Practicar evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion-practica'],
+            },
         ],
     },
 ]
@@ -140,6 +145,11 @@ const administrador = [
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
+            },
+            {
+                label: 'Registro de fechas especiales',
+                icon: 'pi pi-calendar',
+                routerLink: ['/gestion-institucional/fechas'],
             },
             {
                 label: 'Backup de BD',
@@ -269,17 +279,6 @@ const administracion = [
                         label: 'Apertura de año escolar',
                         icon: 'pi pi-lock-open',
                         routerLink: ['/gestion-institucional/apertura'],
-                    },
-                    {
-                        label: 'Registro de fechas especiales',
-                        icon: 'pi pi-calendar',
-                        routerLink: ['/gestion-institucional/fechas'],
-                    },
-
-                    {
-                        label: 'Cierre de año escolar',
-                        icon: 'pi pi-lock',
-                        routerLink: ['/configuracion/configuracion'],
                     },
                 ],
             },

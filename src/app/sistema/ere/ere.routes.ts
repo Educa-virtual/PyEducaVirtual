@@ -30,6 +30,12 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
+        path: 'evaluacion/practicar',
+        redirectTo: 'evaluacion-practica',
+        pathMatch: 'full',
+    },
+
+    {
         path: 'evaluaciones/:iEvaluacionId/areas',
         component: ListaAreasComponent,
         canActivate: [RoleGuard],
@@ -113,6 +119,15 @@ const routes: Routes = [
                 (c) => c.InformesEreComponent
             ),
     },
+
+    {
+        path: 'evaluacion-practica',
+        loadComponent: () =>
+            import(
+                './evaluaciones/evaluacion-practica/evaluacion-practica.component'
+            ).then((c) => c.EvaluacionPracticaComponent),
+    },
+
     {
         path: 'evaluacion/areas',
         component: AreasRendirExamenComponent,

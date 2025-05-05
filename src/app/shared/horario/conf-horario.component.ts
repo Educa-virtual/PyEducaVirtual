@@ -1,169 +1,191 @@
-import { Component, OnInit } from '@angular/core'
-import { AccordionModule } from 'primeng/accordion'
-import { CheckboxModule } from 'primeng/checkbox'
-import { FullCalendarModule } from '@fullcalendar/angular'
-import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
-import { TableModule } from 'primeng/table'
-import { ListboxModule } from 'primeng/listbox'
-import { MeterGroupModule } from 'primeng/metergroup'
-import { ApiService } from '@/app/servicios/api.service'
-
-interface Curso {
-    id: number
-    curso: string
-    profesor: string
-    horasDisponibles: number
-    horasAsignadas: number
-}
-
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    ViewChild,
+} from '@angular/core'
+import { PrimengModule } from '@/app/primeng.module'
+import { NgIf } from '@angular/common'
+import { NoDataComponent } from '../no-data/no-data.component'
 @Component({
     selector: 'app-conf-horario',
     standalone: true,
-    imports: [
-        AccordionModule,
-        FormsModule,
-        CheckboxModule,
-        MeterGroupModule,
-        ListboxModule,
-        TableModule,
-        FullCalendarModule,
-        CommonModule,
-    ],
+    imports: [PrimengModule, NgIf, NoDataComponent],
     templateUrl: './conf-horario.component.html',
     styleUrls: ['./conf-horario.component.scss'],
 })
-export class ConfHorariosComponent implements OnInit {
-    addCurso(bloqueId, diaCurso: any) {
-        const curso = this.cursoSeleccionado
+export class ConfHorariosComponent implements OnChanges {
+    @Output() accionBtnItem = new EventEmitter()
 
-        if (!curso || curso.horasAsignadas >= curso.horasDisponibles) {
-            console.warn('Curso sin horas disponibles')
-            return
-        }
+    @Input() cursos = []
+    @Input() dias = []
+    @Input() horas = []
+    @Input() horario = []
 
-        // Actualizar bloquesHorarios
-        this.bloquesHorarios = this.bloquesHorarios.map((bloque) => {
-            if (bloque.id === bloqueId) {
-                return {
-                    ...bloque,
-                    [diaCurso]: curso,
-                }
-            }
-            return bloque
-        })
+    @ViewChild('cursosContainer', { static: false })
+    cursosContainer!: ElementRef
 
-        // Actualizar cursos
-        this.cursos = this.cursos.map((c) => {
-            if (c.id === curso.id) {
-                const actualizado = {
-                    ...c,
-                    horasAsignadas: c.horasAsignadas + 1,
-                }
-
-                // actualizar cursoSeleccionado también para mantenerlo en sincronía
-                this.cursoSeleccionado = actualizado
-
-                return actualizado
-            }
-            return c
+    scrollCursos(direction: number): void {
+        const container = this.cursosContainer.nativeElement
+        const scrollAmount = 270 // ajusta según el ancho de tus tarjetas
+        container.scrollBy({
+            left: scrollAmount * direction,
+            behavior: 'smooth',
         })
     }
-
-    removeCurso(bloqueId: number, diaCurso: string) {
-        // Encontrar el curso que está en ese bloque y día
-        const cursoRemovido = this.bloquesHorarios.find(
-            (b) => b.id === bloqueId
-        )?.[diaCurso]
-
-        if (!cursoRemovido || !cursoRemovido.id) {
-            console.warn('No hay curso asignado para remover.')
-            return
+    cursoSeleccionado
+    ngOnChanges(changes) {
+        if (changes.cursos.currentValue) {
+            this.cursos = changes.cursos.currentValue
         }
-
-        // Remover el curso del bloque
-        this.bloquesHorarios = this.bloquesHorarios.map((bloque) => {
-            if (bloque.id === bloqueId) {
-                // Puedes poner undefined o eliminar la clave si prefieres
-                const { [diaCurso]: _, ...resto } = bloque
-                return {
-                    ..._,
-                    ...resto,
-                    [diaCurso]: undefined,
-                }
-            }
-            return bloque
-        })
-
-        // Disminuir la cantidad de horas asignadas al curso removido
-        this.cursos = this.cursos.map((curso) => {
-            if (curso.id === cursoRemovido.id) {
-                const actualizado = {
-                    ...curso,
-                    horasAsignadas: curso.horasAsignadas - 1,
-                }
-
-                // Si justo estamos mostrando ese curso como seleccionado, actualiza también
-                if (this.cursoSeleccionado?.id === actualizado.id) {
-                    this.cursoSeleccionado = actualizado
-                }
-
-                return actualizado
-            }
-            return curso
-        })
+        if (changes.dias.currentValue) {
+            this.dias = changes.dias.currentValue
+        }
+        if (changes.horas.currentValue) {
+            this.horas = changes.horas.currentValue
+        }
+        if (changes.horario.currentValue) {
+            this.horario = changes.horario.currentValue
+        }
     }
 
-    isDay(bloque: any): boolean {
-        return (
-            typeof bloque === 'object' &&
-            bloque !== null &&
-            Object.keys(bloque).length > 0
+    existeCursoHoraEnDia(iDiaId: number, iHorarioIeDetId: number): boolean {
+        return this.horario.some(
+            (hour) =>
+                hour.iDiaId === iDiaId &&
+                hour.iHorarioIeDetId === iHorarioIeDetId
         )
     }
 
-    isBloque(bloque: any): boolean {
-        return typeof bloque === 'string'
+    obtenerNombreCursoHoraEnDia(
+        iDiaId: number,
+        iHorarioIeDetId: number
+    ): string {
+        const horario = this.horario.find(
+            (hour) =>
+                hour.iDiaId === iDiaId &&
+                hour.iHorarioIeDetId === iHorarioIeDetId
+        )
+        return horario ? horario.cCursoNombre : ''
     }
-    cursos: Curso[] = [
-        {
-            id: 1,
-            curso: 'Matemáticas',
-            profesor: 'Dr. García',
-            horasDisponibles: 6,
-            horasAsignadas: 0,
-        },
-        {
-            id: 2,
-            curso: 'Física',
-            profesor: 'Dra. Rodríguez',
-            horasDisponibles: 4,
-            horasAsignadas: 0,
-        },
-        {
-            id: 3,
-            curso: 'Química',
-            profesor: 'Lic. Pérez',
-            horasDisponibles: 3,
-            horasAsignadas: 0,
-        },
-        {
-            id: 4,
-            curso: 'Historia',
-            profesor: 'Mg. Ramírez',
-            horasDisponibles: 5,
-            horasAsignadas: 0,
-        },
-        {
-            id: 5,
-            curso: 'Lenguaje',
-            profesor: 'Lic. Torres',
-            horasDisponibles: 4,
-            horasAsignadas: 0,
-        },
-    ]
 
-    cursoSeleccionado
+    agregarRemoverHorario(horario, dia, curso, accion) {
+        const item = {
+            iCursoId: 1,
+            cCursoNombre: curso.cCursoNombre,
+            iDiaId: dia.iDiaId,
+            cDiaNombre: dia.cDiaNombre,
+            iHorarioIeId: horario.iHorarioIeId,
+            inicio: horario.inicio,
+            fin: horario.fin,
+            cDocente: horario.cDocente,
+            iHorarioIeDetId: horario.iHorarioIeDetId,
+        }
+
+        this.accionBtn(accion, item)
+    }
+    accionBtn(accion, item) {
+        const data = {
+            accion,
+            item,
+        }
+        this.accionBtnItem.emit(data)
+    }
+
+    // addCurso(bloqueId, diaCurso: any) {
+    //     const curso = this.cursoSeleccionado
+
+    //     if (!curso || curso.horasAsignadas >= curso.horasDisponibles) {
+    //         console.warn('Curso sin horas disponibles')
+    //         return
+    //     }
+
+    //     // Actualizar bloquesHorarios
+    //     this.bloquesHorarios = this.bloquesHorarios.map((bloque) => {
+    //         if (bloque.id === bloqueId) {
+    //             return {
+    //                 ...bloque,
+    //                 [diaCurso]: curso,
+    //             }
+    //         }
+    //         return bloque
+    //     })
+
+    //     // Actualizar cursos
+    //     this.cursos = this.cursos.map((c) => {
+    //         if (c.id === curso.id) {
+    //             const actualizado = {
+    //                 ...c,
+    //                 horasAsignadas: c.horasAsignadas + 1,
+    //             }
+
+    //             // actualizar cursoSeleccionado también para mantenerlo en sincronía
+    //             this.cursoSeleccionado = actualizado
+
+    //             return actualizado
+    //         }
+    //         return c
+    //     })
+    // }
+
+    // removeCurso(bloqueId: number, diaCurso: string) {
+    //     // Encontrar el curso que está en ese bloque y día
+    //     const cursoRemovido = this.bloquesHorarios.find(
+    //         (b) => b.id === bloqueId
+    //     )?.[diaCurso]
+
+    //     if (!cursoRemovido || !cursoRemovido.id) {
+    //         console.warn('No hay curso asignado para remover.')
+    //         return
+    //     }
+
+    //     // Remover el curso del bloque
+    //     this.bloquesHorarios = this.bloquesHorarios.map((bloque) => {
+    //         if (bloque.id === bloqueId) {
+    //             // Puedes poner undefined o eliminar la clave si prefieres
+    //             const { [diaCurso]: _, ...resto } = bloque
+    //             return {
+    //                 ..._,
+    //                 ...resto,
+    //                 [diaCurso]: undefined,
+    //             }
+    //         }
+    //         return bloque
+    //     })
+
+    //     // Disminuir la cantidad de horas asignadas al curso removido
+    //     this.cursos = this.cursos.map((curso) => {
+    //         if (curso.id === cursoRemovido.id) {
+    //             const actualizado = {
+    //                 ...curso,
+    //                 horasAsignadas: curso.horasAsignadas - 1,
+    //             }
+
+    //             // Si justo estamos mostrando ese curso como seleccionado, actualiza también
+    //             if (this.cursoSeleccionado?.id === actualizado.id) {
+    //                 this.cursoSeleccionado = actualizado
+    //             }
+
+    //             return actualizado
+    //         }
+    //         return curso
+    //     })
+    // }
+
+    // isDay(bloque: any): boolean {
+    //     return (
+    //         typeof bloque === 'object' &&
+    //         bloque !== null &&
+    //         Object.keys(bloque).length > 0
+    //     )
+    // }
+
+    // isBloque(bloque: any): boolean {
+    //     return typeof bloque === 'string'
+    // }
 
     bloquesHorarios: Array<{ id: number; Bloque: string; [dia: string]: any }> =
         [
@@ -214,21 +236,6 @@ export class ConfHorariosComponent implements OnInit {
             },
         ]
 
-    dias = [
-        { field: 'Bloque', header: '' },
-        { field: 'Lun', header: 'Lunes' },
-        { field: 'Mar', header: 'Martes' },
-        { field: 'Mie', header: 'Miércoles' },
-        { field: 'Jue', header: 'Jueves' },
-        { field: 'Vie', header: 'Viernes' },
-    ].map((day, index) => ({ ...day, col: index }))
-    horas: string[] = [
-        '8:00 - 9:30',
-        '9:45 - 11:15',
-        '11:30 - 13:00',
-        '14:30 - 16:00',
-    ]
-
     festividades
     eventoFestividades
     actividades
@@ -243,96 +250,75 @@ export class ConfHorariosComponent implements OnInit {
     dialogOpen: boolean = false
     bloqueSeleccionado: number | null = null
 
-    constructor(private apiService: ApiService) {}
+    // toggleCurso(cursoId: number): void {
+    //     const index = this.cursosSeleccionados.indexOf(cursoId)
+    //     if (index !== -1) {
+    //         this.cursosSeleccionados.splice(index, 1)
+    //     } else {
+    //         this.cursosSeleccionados.push(cursoId)
+    //     }
+    // }
 
-    async ngOnInit() {
-        const dias = await this.apiService.getData({
-            esquema: 'grl',
-            tabla: 'dias',
-            campos: '*',
-            where: '1=1',
-        })
-        const cursos = await this.apiService.getData({
-            esquema: '',
-            tabla: '',
-            campos: '*',
-            where: '',
-        })
+    // calcularHorasAsignadas(cursoId: number): number {
+    //     const cantidad = Object.values(this.asignaciones).filter(
+    //         (id) => id === cursoId
+    //     ).length
+    //     return cantidad * this.DURACION_BLOQUE
+    // }
 
-        console.log('horario')
-        console.log(dias)
-        console.log(cursos)
-    }
+    // tieneHorasDisponibles(cursoId: number): boolean {
+    //     const curso = this.cursos.find((c) => c.id === cursoId)
+    //     if (!curso) return false
+    //     return this.calcularHorasAsignadas(cursoId) < curso.horasDisponibles
+    // }
 
-    toggleCurso(cursoId: number): void {
-        const index = this.cursosSeleccionados.indexOf(cursoId)
-        if (index !== -1) {
-            this.cursosSeleccionados.splice(index, 1)
-        } else {
-            this.cursosSeleccionados.push(cursoId)
-        }
-    }
+    // getBloqueId(diaIndex: number, horaIndex: number): number {
+    //     return diaIndex * this.horas.length + horaIndex + 1
+    // }
 
-    calcularHorasAsignadas(cursoId: number): number {
-        const cantidad = Object.values(this.asignaciones).filter(
-            (id) => id === cursoId
-        ).length
-        return cantidad * this.DURACION_BLOQUE
-    }
+    // getCursoEnBloque(bloqueId: number): any | undefined {
+    //     const cursoId = this.asignaciones[bloqueId]
+    //     return this.cursos.find((curso) => curso.id === cursoId)
+    // }
 
-    tieneHorasDisponibles(cursoId: number): boolean {
-        const curso = this.cursos.find((c) => c.id === cursoId)
-        if (!curso) return false
-        return this.calcularHorasAsignadas(cursoId) < curso.horasDisponibles
-    }
+    // asignarCursoABloque(bloqueId: number, cursoId: number): void {
+    //     if (this.tieneHorasDisponibles(cursoId)) {
+    //         this.asignaciones[bloqueId] = cursoId
+    //     }
+    // }
 
-    getBloqueId(diaIndex: number, horaIndex: number): number {
-        return diaIndex * this.horas.length + horaIndex + 1
-    }
+    // eliminarAsignacion(bloqueId: number): void {
+    //     delete this.asignaciones[bloqueId]
+    // }
 
-    getCursoEnBloque(bloqueId: number): Curso | undefined {
-        const cursoId = this.asignaciones[bloqueId]
-        return this.cursos.find((curso) => curso.id === cursoId)
-    }
+    // abrirDialogo(bloqueId: number): void {
+    //     this.bloqueSeleccionado = bloqueId
+    //     this.dialogOpen = true
+    // }
 
-    asignarCursoABloque(bloqueId: number, cursoId: number): void {
-        if (this.tieneHorasDisponibles(cursoId)) {
-            this.asignaciones[bloqueId] = cursoId
-        }
-    }
+    // cerrarDialogo(): void {
+    //     this.dialogOpen = false
+    //     this.bloqueSeleccionado = null
+    // }
 
-    eliminarAsignacion(bloqueId: number): void {
-        delete this.asignaciones[bloqueId]
-    }
+    // calcularPorcentaje(cursoId: number): number {
+    //     const curso = this.cursos.find((c) => c.id === cursoId)
+    //     if (!curso) return 0
 
-    abrirDialogo(bloqueId: number): void {
-        this.bloqueSeleccionado = bloqueId
-        this.dialogOpen = true
-    }
+    //     const asignadas = this.calcularHorasAsignadas(cursoId)
+    //     return (asignadas / curso.horasDisponibles) * 100
+    // }
 
-    cerrarDialogo(): void {
-        this.dialogOpen = false
-        this.bloqueSeleccionado = null
-    }
+    // getCursoPorId(cursoId: number) {
+    //     return this.cursos.find((c) => c.id === cursoId)
+    // }
 
-    calcularPorcentaje(cursoId: number): number {
-        const curso = this.cursos.find((c) => c.id === cursoId)
-        if (!curso) return 0
+    // onClickBloque(bloqueId: number, horaIndex: number) {
+    //     console.log('Bloque:', bloqueId, 'Hora Index:', horaIndex)
+    // }
 
-        const asignadas = this.calcularHorasAsignadas(cursoId)
-        return (asignadas / curso.horasDisponibles) * 100
-    }
-
-    getCursoPorId(cursoId: number) {
-        return this.cursos.find((c) => c.id === cursoId)
-    }
-
-    onClickBloque(bloqueId: number, horaIndex: number) {
-        console.log('Bloque:', bloqueId, 'Hora Index:', horaIndex)
-    }
-
-    asignarCursoDesdeDialog(cursoId) {
-        // lógica para asignar curso desde el diálogo
-        console.log('Asignando curso desde diálogo...' + cursoId)
-    }
+    // asignarCursoDesdeDialog(cursoId) {
+    //     // lógica para asignar curso desde el diálogo
+    //     console.log('Asignando curso desde diálogo...' + cursoId)
+    // }
 }

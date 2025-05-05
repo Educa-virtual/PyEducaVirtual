@@ -10,4 +10,5 @@ import { Component, Input } from '@angular/core'
 })
 export class ToolbarPrimengComponent {
     @Input() title: string = ''
+    @Input() subtitle: string = ''
 }

@@ -1,8 +1,13 @@
 <div class="grid">
     <p-toolbar class="col-12">
-        <h2 class="text-white font-bold">
-            {{ title }}
-        </h2>
+        <div class="flex flex-column">
+            <h2 class="text-white font-bold mb-1">
+                {{ title }}
+            </h2>
+            <h2 class="text-white mt-0">
+                {{ subtitle }}
+            </h2>
+        </div>
         <ng-content></ng-content>
     </p-toolbar>
 </div>

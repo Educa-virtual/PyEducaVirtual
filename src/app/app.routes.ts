@@ -116,6 +116,10 @@ export const routes: Routes = [
                 (m) => m.ApoderadoModule
             ),
     },
+    {
+        path: 'encuestas',
+        loadChildren: () => import('./sistema/encuestas/encuestas.routes'),
+    },
 
     { path: 'notfound', component: NotfoundComponent },
 

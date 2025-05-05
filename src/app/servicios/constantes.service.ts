@@ -167,6 +167,27 @@ const administrador = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Encuestas',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Configuración Encuestas',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/encuestas/configuracion-encuesta'],
+                    },
+                    {
+                        label: 'Preguntas Cuestionario',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/encuestas/preguntas-cuestionario'],
+                    },
+                    {
+                        label: 'Resultados Encuestas',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/encuestas/resultados-encuestas'],
+                    },
+                ],
+            },
         ],
     },
 ]

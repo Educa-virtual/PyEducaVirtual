@@ -23,17 +23,25 @@ import { Observable } from 'rxjs'
     providedIn: 'root',
 })
 export class EstudiantesService {
-    private apiUrl = 'http://127.0.0.1:8000/api/bienestar/searchApoderados' // URL de Laravel
+    //Revisar la URL en el Backend para descarte
+    private apiUrl = 'http://localhost:8000/api/estudiantes' // URL de Laravel
 
     constructor(private http: HttpClient) {}
 
-    // Método existente para obtener estudiantes por institución educativa
+    //Método existente para obtener estudiantes por institución educativa
     getEstudiantes(iIieeId: number): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/${iIieeId}`)
     }
 
-    // 🔹 Nuevo método para obtener estudiantes filtrando por año
-    getEstudiantesPorAnio(iIieeId: number, anio: number): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/${iIieeId}/${anio}`)
+    //  return this.http.get<any[]>(`${this.apiUrl}/${iIieeId}/${anio}`)
+
+    getEstudiantesPorAnio(
+        iPerApodr: number,
+        iIieeId: number,
+        anio: number
+    ): Observable<any[]> {
+        return this.http.get<any[]>(
+            `${this.apiUrl}/${iPerApodr}/${iIieeId}/${anio}`
+        )
     }
 }

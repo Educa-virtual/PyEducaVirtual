@@ -17,6 +17,13 @@ import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
+import {
+    CdkDragDrop,
+    CdkDropList,
+    CdkDrag,
+    moveItemInArray,
+} from '@angular/cdk/drag-drop'
+
 @Component({
     selector: 'app-evaluacion-agregar-preguntas',
     standalone: true,
@@ -29,6 +36,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
         RemoveHTMLCSSPipe,
         TruncatePipe,
         NoDataComponent,
+        CdkDropList,
+        CdkDrag,
     ],
 })
 export class EvaluacionAgregarPreguntasComponent implements OnInit {
@@ -53,6 +62,8 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
     isSecundaria: boolean = false
     isDisabled: boolean = true
     showModalSecciones: boolean = false
+    accionSeleccionada: number | null = null
+
     preguntaPeso = [
         {
             iPreguntaPesoId: 1,
@@ -114,6 +125,29 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
             iSeccionId: 3,
         },
     ]
+    acciones = [
+        {
+            iAccionId: 1,
+            label: 'Respuesta corta',
+            icon: 'pi pi-pencil',
+            command: (pregunta) => {
+                this.confirmarEliminarPregunta(pregunta)
+            },
+        },
+        {
+            iAccionId: 2,
+            label: 'Párrafo',
+            icon: 'pi pi-plus',
+            command: () => {
+                this.mostrarModalSecciones()
+            },
+        },
+        {
+            iAccionId: 3,
+            label: 'Varias opciones',
+            icon: 'pi pi-plus',
+        },
+    ]
 
     alternativas = []
     showModalBancoPreguntas: boolean = false
@@ -148,7 +182,10 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
         descripcionSeccion: ['', [Validators.required]],
         iSeccionId: ['', [Validators.required]],
     })
-
+    // form group para crear nueva pregunta
+    public formAccion: FormGroup = this._formBuilder.group({
+        iAccionId: [null],
+    })
     handleNuevaPregunta(enunciado) {
         if (!enunciado) {
             this.guardarPreguntaSinEnunciadoSinData()
@@ -159,6 +196,9 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
 
     ngOnInit() {
         console.log('Iniciando el componente')
+        this.formAccion.get('iAccionId').valueChanges.subscribe((value) => {
+            console.log(value)
+        })
     }
     // mostrar el modal de agregar secciones a la encuesta
     mostrarModalSecciones() {
@@ -177,6 +217,26 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
         this.preguntas.push(value)
         console.log(this.preguntas)
         this.showModalSecciones = false
+    }
+    // dar color al card
+    obtenerStyleActividad(iEstadoActividad) {
+        let styleActividad = ''
+        switch (Number(iEstadoActividad)) {
+            case 1: //PROCESO
+                styleActividad = 'border-left:5px solid var(--green-500);'
+                break
+            case 2: //NO PUBLICADO
+                styleActividad = 'border-left:15px solid var(--yellow-500);'
+                break
+            case 0: //CULMINADO
+                styleActividad = 'border-left:15px solid var(--red-500);'
+                break
+        }
+        return styleActividad
+    }
+    // drag and drop para mover las preguntas
+    drop(event: CdkDragDrop<string[]>) {
+        moveItemInArray(this.preguntas, event.previousIndex, event.currentIndex)
     }
 
     obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId() {

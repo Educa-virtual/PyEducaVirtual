@@ -110,56 +110,135 @@
                                     </span>
                                 </span>
                             </ng-template>
+
                             @for (
                                 item of list.pregunta;
                                 track idx;
                                 let idx = $index
                             ) {
-                                <div class="grid">
-                                    <div class="col-12">
-                                        <div class="col-6">
-                                            <label
-                                                for="enunciado"
-                                                class="mt-2 font-bold"
-                                                >Pregunta
-                                                <span
-                                                    class="text-red-500 text-xs"
-                                                    >(*) Obligatorio</span
-                                                ></label
+                                <div class="grid col-11">
+                                    <div
+                                        class="card mb-5 relative overflow-visible col-12"
+                                        [style]="obtenerStyleActividad(1)"
+                                    >
+                                        <div class="grid col-12">
+                                            <div class="col-6">
+                                                <label
+                                                    for="enunciado"
+                                                    class="mt-2 font-bold"
+                                                    >Pregunta
+                                                    <span
+                                                        class="text-red-500 text-xs"
+                                                        >(*) Obligatorio</span
+                                                    ></label
+                                                >
+                                                <!-- <editor
+                                                        [init]="init"
+                                                        [(ngModel)]="item.cPregunta"
+                                                    /> -->
+                                                <p-editor
+                                                    [(ngModel)]="item.cPregunta"
+                                                    [style]="{ height: 'auto' }"
+                                                >
+                                                    <ng-template
+                                                        pTemplate="header"
+                                                    >
+                                                        <span
+                                                            class="ql-formats"
+                                                        >
+                                                            <button
+                                                                type="button"
+                                                                class="ql-bold"
+                                                                aria-label="Bold"
+                                                            ></button>
+                                                            <button
+                                                                type="button"
+                                                                class="ql-italic"
+                                                                aria-label="Italic"
+                                                            ></button>
+                                                            <button
+                                                                type="button"
+                                                                class="ql-underline"
+                                                                aria-label="Underline"
+                                                            ></button>
+                                                        </span>
+                                                    </ng-template>
+                                                </p-editor>
+                                            </div>
+                                            <!-- mostrar el dropdown de acciones de texto -->
+                                            <div
+                                                class="col-6 align-content-center"
                                             >
-                                            <!-- <editor
-                                                [init]="init"
-                                                [(ngModel)]="item.cPregunta"
-                                            /> -->
-                                            <p-editor
-                                                [(ngModel)]="item.cPregunta"
-                                                [style]="{ height: 'auto' }"
+                                                <p-dropdown
+                                                    [options]="acciones"
+                                                    [(ngModel)]="
+                                                        accionSeleccionada
+                                                    "
+                                                    optionValue="iAccionId"
+                                                    optionLabel="label"
+                                                    placeholder="Seleccione una acción"
+                                                    [style]="{ width: '100%' }"
+                                                    [showClear]="true"
+                                                    appendTo="body"
+                                                ></p-dropdown>
+                                            </div>
+                                            <!-- Campo de texto si selecciona opción 1 -->
+                                            <div
+                                                *ngIf="accionSeleccionada === 1"
+                                                class="col-6 mt-3"
                                             >
-                                                <ng-template pTemplate="header">
-                                                    <span class="ql-formats">
-                                                        <button
-                                                            type="button"
-                                                            class="ql-bold"
-                                                            aria-label="Bold"
-                                                        ></button>
-                                                        <button
-                                                            type="button"
-                                                            class="ql-italic"
-                                                            aria-label="Italic"
-                                                        ></button>
-                                                        <button
-                                                            type="button"
-                                                            class="ql-underline"
-                                                            aria-label="Underline"
-                                                        ></button>
-                                                    </span>
-                                                </ng-template>
-                                            </p-editor>
+                                                <input
+                                                    pInputText
+                                                    type="text"
+                                                    placeholder="Texto de respuesta corta"
+                                                    class="w-full"
+                                                    readonly
+                                                />
+                                            </div>
+                                            <!-- Campo de texto si selecciona opción 1 -->
+                                            <div
+                                                *ngIf="accionSeleccionada === 2"
+                                                class="col-6 mt-3"
+                                            >
+                                                <input
+                                                    pInputText
+                                                    type="text"
+                                                    placeholder="Texto de respuesta larga"
+                                                    class="w-full"
+                                                    readonly
+                                                />
+                                            </div>
+                                            <!-- Mostrar radio buttons si la acción seleccionada es 2 -->
+                                            <div
+                                                *ngIf="accionSeleccionada === 3"
+                                                class="col-6 mt-3"
+                                            >
+                                                <div
+                                                    class="flex flex-column gap-2"
+                                                >
+                                                    <p-radioButton
+                                                        name="opcion"
+                                                        value="A"
+                                                        [(ngModel)]="
+                                                            accionSeleccionada
+                                                        "
+                                                        label="Opción A"
+                                                    ></p-radioButton>
+                                                    <p-radioButton
+                                                        name="opcion"
+                                                        value="B"
+                                                        [(ngModel)]="
+                                                            accionSeleccionada
+                                                        "
+                                                        label="Opción B"
+                                                    ></p-radioButton>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div></div>
                                     </div>
 
-                                    <div class="col-12 mt-1">
+                                    <!-- text de listar alternativas -->
+                                    <!-- <div class="col-12 mt-1">
                                         <div class="flex font-bold text-center">
                                             <div
                                                 class="flex font-bold align-items-center text-primary"
@@ -167,8 +246,9 @@
                                                 Lista de Alternativas
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
+                                    </div> -->
+                                    <!-- comentar la accion de agregar alternativas -->
+                                    <!-- <div class="col-12">
                                         @for (
                                             alternativa of item.alternativas;
                                             track ida;
@@ -310,8 +390,8 @@
                                                 }
                                             </div>
                                         }
-                                    </div>
-                                    <div class="col-12">
+                                    </div> -->
+                                    <!-- <div class="col-12">
                                         <div class="text-center">
                                             <button
                                                 *ngIf="isDisabled"
@@ -327,7 +407,7 @@
                                                 Añadir Alternativa
                                             </button>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-12">
                                         <div class="text-center">
                                             <button

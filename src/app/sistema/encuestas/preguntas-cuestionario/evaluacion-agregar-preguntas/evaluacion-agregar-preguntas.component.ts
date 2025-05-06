@@ -3,7 +3,6 @@ import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
-import { BancoPreguntasComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/banco-preguntas.component'
 import { NgIf } from '@angular/common'
 
 import { EditorComponent } from '@tinymce/tinymce-angular'
@@ -13,7 +12,6 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { HttpClient } from '@angular/common/http'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { environment } from '@/environments/environment'
-import { DOCENTE } from '@/app/servicios/perfilesConstantes'
 import { catchError, map, throwError } from 'rxjs'
 import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
@@ -30,7 +28,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
         NgIf,
         RemoveHTMLCSSPipe,
         TruncatePipe,
-        BancoPreguntasComponent,
         NoDataComponent,
     ],
 })
@@ -54,7 +51,7 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
     matrizCapacidadFiltrado = []
     nIndexAcordionTab: number = null
     isSecundaria: boolean = false
-    isDisabled: boolean = this._ConstantesService.iPerfilId === DOCENTE
+    isDisabled: boolean = true
     showModalSecciones: boolean = false
     preguntaPeso = [
         {
@@ -161,8 +158,7 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.obtenerMatrizCompetencias()
-        this.obtenerMatrizCapacidad()
+        console.log('Iniciando el componente')
     }
     // mostrar el modal de agregar secciones a la encuesta
     mostrarModalSecciones() {
@@ -172,7 +168,13 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
     guardarSeccion() {
         const value = this.formSeccion.value
         console.log(value)
-        this.preguntas = value
+        value.pregunta = [
+            {
+                cPregunta: '',
+                alternativas: [],
+            },
+        ]
+        this.preguntas.push(value)
         console.log(this.preguntas)
         this.showModalSecciones = false
     }
@@ -190,29 +192,6 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
             },
         }
         this.getInformation(params, params.data.opcion)
-    }
-
-    obtenerMatrizCompetencias(): void {
-        this._apiEre.obtenerMatrizCompetencias({}).subscribe({
-            next: (resp: any) => {
-                this.matrizCompetencia = resp.data.fullData
-            },
-            error: (err) => {
-                console.error('Error al cargar datos:', err)
-            },
-        })
-    }
-
-    obtenerMatrizCapacidad() {
-        this._apiEre.obtenerMatrizCapacidades({}).subscribe({
-            next: (resp: any) => {
-                this.matrizCapacidad = resp.data.fullData
-                this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
-            },
-            error: (err) => {
-                console.error('Error al cargar datos:', err)
-            },
-        })
     }
 
     confirmarEliminarPregunta(pregunta) {

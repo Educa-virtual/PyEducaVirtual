@@ -1,0 +1,58 @@
+.accordion-header {
+    background-color: #f9fafb;
+    border-color: #e5e7eb;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: 700;
+    height: 51px;
+    text-transform: uppercase;
+    border-radius: 6px 6px 0 0;
+}
+
+.accordion-header-title {
+    color: var(--primary-color);
+}
+
+.accordion-body {
+    border: 1px solid #e5e7eb;
+    border-width: 0 1px 1px 1px;
+}
+
+::ng-deep .p-overlaypanel::before,
+::ng-deep .p-overlaypanel::after {
+    display: none;
+}
+
+::ng-deep .p-overlaypanel .p-overlaypanel-content {
+    padding: 0;
+}
+
+.cdk-drag-preview {
+    border: none;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+    background: #ccc;
+    border: dotted 3px #999;
+    min-height: 90px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+    border: none;
+}
+
+.accordion-body.cdk-drop-list-dragging .content:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

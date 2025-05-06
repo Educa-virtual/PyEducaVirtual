@@ -1,0 +1,110 @@
+<div
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    class="flex flex-column gap-4"
+>
+    @for (i of panelOrder; track $index) {
+        @let accordionPanel = accordionsPanels.get(i);
+        @if (accordionPanel.optionsPanel.visible) {
+            <div cdkDrag [cdkDragDisabled]="!_optionsSections.isOrderActivity">
+                <div *cdkDragPlaceholder></div>
+                <div
+                    class="accordion-header flex justify-content-between w-full tab-content border border-gray-300 rounded-md align-items-center h-5rem"
+                >
+                    <div
+                        class="accordion-header-title p-3 flex flex-1 h-full gap-2 align-items-center"
+                        [class.cursor-move]="
+                            _optionsSections.isOrderActivity &&
+                            !_optionsAccordion.isOrderActivity
+                        "
+                        [class.cursor-pointer]="
+                            !_optionsAccordion.isOrderActivity
+                        "
+                        (click)="toggleAccordions(i)"
+                        (keydown.enter)="toggleAccordions(i)"
+                        tabindex="0"
+                        role="button"
+                        attr.aria-expanded="{{
+                            accordionPanel.optionsPanel.expand
+                        }}"
+                    >
+                        <i
+                            [class.pi]="true"
+                            [class.pi-chevron-up]="
+                                accordionPanel.optionsPanel.expand
+                            "
+                            [class.pi-chevron-down]="
+                                !accordionPanel.optionsPanel.expand
+                            "
+                        ></i>
+                        <span pTooltip="" class="select-none">{{
+                            accordionPanel.panelTitle
+                        }}</span>
+                    </div>
+                    @if (!accordionPanel.optionsPanel.order) {
+                        <div class="accordion-actions p-3">
+                            @for (action of actions; track $index) {
+                                <p-button
+                                    [pTooltip]="action?.labelTooltip"
+                                    size="small"
+                                    [outlined]="true"
+                                    severity="secondary"
+                                    [text]="true"
+                                    [class]="action.class"
+                                    [icon]="action.icon"
+                                    (click)="
+                                        btnActions({
+                                            tab: accordionPanel,
+                                            action: action,
+                                        })
+                                    "
+                                >
+                                </p-button>
+                            }
+                            <p-overlayPanel
+                                #op
+                                styleClass="overlay-acciones"
+                                class="overlay"
+                                #overlayPanel
+                                [dismissable]="true"
+                            >
+                                <p-listbox
+                                    [options]="options"
+                                    styleClass="w-max"
+                                    optionLabel="name"
+                                    (onClick)="
+                                        btnOptionsSections({
+                                            tab: accordionPanel,
+                                            option: $event.option,
+                                        })
+                                    "
+                                    [listStyle]="{ 'max-height': '220px' }"
+                                >
+                                    <ng-template let-option pTemplate="item">
+                                        <div
+                                            class="flex align-items-center gap-2"
+                                        >
+                                            <i [class]="option.icon"></i>
+                                            <div>{{ option.name }}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-listbox>
+                            </p-overlayPanel>
+                            <!-- <p-listbox 
+                              [options]="options" 
+                              >
+                            </p-listbox> -->
+                            <!-- <div class="relative capitalize">
+                            </div> -->
+                        </div>
+                    }
+                </div>
+                <div>
+                    <ng-container
+                        [ngTemplateOutlet]="accordionPanel.content"
+                    ></ng-container>
+                </div>
+            </div>
+        }
+    }
+</div>

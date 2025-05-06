@@ -90,18 +90,24 @@
                                             | removeHTMLCSS
                                             | truncateText: 80
                                     }}</span>
-                                    <p-button
-                                        *ngIf="isDisabled"
-                                        icon="pi pi-trash"
-                                        iconPos="left"
-                                        severity="danger"
-                                        class="ml-auto mr-2"
-                                        [rounded]="true"
-                                        (onClick)="
-                                            $event.stopPropagation();
-                                            confirmarEliminarPregunta(list)
-                                        "
-                                    ></p-button>
+                                    <span
+                                        class="flex items-center gap-2 ml-auto mr-3"
+                                    >
+                                        <p-button
+                                            icon="pi pi-pencil"
+                                            severity="warning"
+                                        />
+                                        <p-button
+                                            *ngIf="isDisabled"
+                                            icon="pi pi-trash"
+                                            severity="danger"
+                                            iconPos="left"
+                                            (onClick)="
+                                                $event.stopPropagation();
+                                                confirmarEliminarPregunta(list)
+                                            "
+                                        />
+                                    </span>
                                 </span>
                             </ng-template>
                             @for (
@@ -111,18 +117,46 @@
                             ) {
                                 <div class="grid">
                                     <div class="col-12">
-                                        <label
-                                            for="enunciado"
-                                            class="mt-1 font-bold"
-                                            >Pregunta
-                                            <span class="text-red-500 text-xs"
-                                                >(*) Obligatorio</span
-                                            ></label
-                                        >
-                                        <editor
-                                            [init]="init"
-                                            [(ngModel)]="item.cPregunta"
-                                        />
+                                        <div class="col-6">
+                                            <label
+                                                for="enunciado"
+                                                class="mt-2 font-bold"
+                                                >Pregunta
+                                                <span
+                                                    class="text-red-500 text-xs"
+                                                    >(*) Obligatorio</span
+                                                ></label
+                                            >
+                                            <!-- <editor
+                                                [init]="init"
+                                                [(ngModel)]="item.cPregunta"
+                                            /> -->
+                                            <p-editor
+                                                [(ngModel)]="item.cPregunta"
+                                                [style]="{ height: 'auto' }"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <span class="ql-formats">
+                                                        <button
+                                                            type="button"
+                                                            class="ql-bold"
+                                                            aria-label="Bold"
+                                                        ></button>
+                                                        <button
+                                                            type="button"
+                                                            class="ql-italic"
+                                                            aria-label="Italic"
+                                                        ></button>
+                                                        <button
+                                                            type="button"
+                                                            class="ql-underline"
+                                                            aria-label="Underline"
+                                                        ></button>
+                                                    </span>
+                                                </ng-template>
+                                            </p-editor>
+                                        </div>
+                                        <div></div>
                                     </div>
 
                                     <div class="col-12 mt-1">

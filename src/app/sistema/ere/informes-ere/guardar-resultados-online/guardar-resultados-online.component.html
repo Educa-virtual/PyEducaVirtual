@@ -59,7 +59,7 @@
 </p-dialog>
 <p-toast></p-toast> -->
 <p-dialog
-    header="hola {{ titulo }}"
+    header="Cuestionario de Notas"
     [(visible)]="visible"
     [style]="{ width: '90rem' }"
     [modal]="true"
@@ -68,15 +68,15 @@
 >
     <section>
         <div class="col-12 flex justify-content-center">
-            <span class="font-bold text-3xl"
+            <span class="font-bold text-3xl mt-10"
                 >CONSOLIDAD DE RESULTADOS DE AULA - ERE INICIO 2025</span
             >
         </div>
         <form [formGroup]="formCurso">
             <div class="grid p-fluid mt-3 col">
-                <div class="grid card col-9 mr-3">
+                <div class="grid card col-9 mr-3 relative">
                     <div>
-                        <samp class="btn absolute"> DATOS I.E. </samp>
+                        <span class="btn">Datos I.E.</span>
                     </div>
                     <div class="col-8">
                         <span class="p-float-label mt-4">

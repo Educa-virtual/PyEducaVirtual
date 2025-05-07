@@ -108,6 +108,7 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
     }
     encabezado = ''
     preguntas = []
+
     secciones = [
         {
             title: 'Sección 1',
@@ -145,6 +146,16 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
         {
             iAccionId: 3,
             label: 'Varias opciones',
+            icon: 'pi pi-plus',
+        },
+        {
+            iAccionId: 4,
+            label: 'Fecha',
+            icon: 'pi pi-plus',
+        },
+        {
+            iAccionId: 5,
+            label: 'Hora',
             icon: 'pi pi-plus',
         },
     ]

@@ -1,0 +1,70 @@
+<!-- <p-dialog
+    [header]="'AGREGAR SECCIÓN'"
+    [modal]="true"
+    [(visible)]="showModalSecciones"
+    [style]="{ width: '35rem' }"
+    class="scssmodal"
+>
+    <form [formGroup]="formSeccion" class="flex flex-column gap-3 w-full">
+        <div class="col-12">
+            <div class="flex justify-content-start my-5">
+                <p-floatLabel class="w-full">
+                    <input
+                        pInputText
+                        id="username"
+                        formControlName="title"
+                        class="w-full"
+                    />
+                    <label for="username" class="font-bold"
+                        >Nombre
+                        <span class="text-red-500 text-xs">
+                            (*) Obligatorio</span
+                        >
+                    </label>
+                </p-floatLabel>
+            </div>
+            <div class="mb-3 flex justify-content-start">
+                <p-floatLabel class="w-full">
+                    <input
+                        pInputText
+                        id="username"
+                        formControlName="descripcionSeccion"
+                        class="w-full"
+                    />
+                    <label for="username" class="font-bold"
+                        >Descripción
+                        <span class="text-red-500 text-xs">
+                            (*) Obligatorio
+                        </span>
+                    </label>
+                </p-floatLabel>
+            </div>
+            <div class="">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Agregar después de: </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="secciones"
+                        formControlName="iSeccionId"
+                        optionValue="iSeccionId"
+                        optionLabel="title"
+                        placeholder="Seleccione una sección"
+                        [style]="{ width: '100%' }"
+                        [showClear]="true"
+                        appendTo="body"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+        </div>
+    </form>
+    <div class="flex justify-content-end mt-2">
+        <button
+            pButton
+            type="button"
+            label="Guardar Sección"
+            icon="pi pi-check"
+            class="p-button-success"
+            (click)="guardarSeccion()"
+            [disabled]="formSeccion.invalid"
+        ></button>
+    </div>
+</p-dialog> -->

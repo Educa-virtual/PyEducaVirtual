@@ -234,6 +234,48 @@
                                                     ></p-radioButton>
                                                 </div>
                                             </div>
+                                            <!-- Mostrar la fecha -->
+                                            <div
+                                                *ngIf="accionSeleccionada === 4"
+                                                class="col-6 mt-3"
+                                            >
+                                                <p-calendar
+                                                    [showIcon]="true"
+                                                    [showButtonBar]="true"
+                                                    [placeholder]="
+                                                        'Día/Mes/Año'
+                                                    "
+                                                    [style]="{ width: '100%' }"
+                                                ></p-calendar>
+                                            </div>
+                                            <!-- Mostrar las hora -->
+                                            <div
+                                                *ngIf="accionSeleccionada === 5"
+                                                class="col-6 mt-3"
+                                            >
+                                                <p-calendar
+                                                    [iconDisplay]="'input'"
+                                                    [showIcon]="true"
+                                                    [timeOnly]="true"
+                                                    [style]="{ width: '100%' }"
+                                                    [placeholder]="'Hora'"
+                                                    inputId="templatedisplay"
+                                                >
+                                                    <ng-template
+                                                        pTemplate="inputicon"
+                                                        let-clickCallBack="clickCallBack"
+                                                    >
+                                                        <i
+                                                            class="pi pi-clock pointer-events-none"
+                                                            (onclick)="
+                                                                clickCallBack(
+                                                                    $event
+                                                                )
+                                                            "
+                                                        ></i>
+                                                    </ng-template>
+                                                </p-calendar>
+                                            </div>
                                         </div>
                                     </div>
 

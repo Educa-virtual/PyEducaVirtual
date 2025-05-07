@@ -3,101 +3,60 @@
 ></app-toolbar-primeng>
 <div class="card">
     <div class="grid">
-        <div class="col-12 md:col-3">
-            <div class="col-12">
-                <span class="text-lg text-primary font-bold"
-                    >Búsqueda de Áreas Curriculares</span
-                >
-            </div>
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
-                    <p-dropdown
-                        [(ngModel)]="iGradoId"
-                        styleClass="w-full"
-                        placeholder="Seleccione Grado"
-                        optionValue="iGradoId"
-                        [options]="grados"
-                        optionLabel="cGradoNombre"
-                        (onChange)="obtenerSecciones()"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
-                    <p-dropdown
-                        [(ngModel)]="iSeccionId"
-                        styleClass="w-full"
-                        placeholder="Seleccione Sección"
-                        optionValue="iSeccionId"
-                        [options]="secciones"
-                        optionLabel="cSeccionNombre"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 text-right">
-                <button
-                    pButton
-                    pRipple
-                    type="button"
-                    class="p-button-primary"
-                    [disabled]="!iGradoId || !iSeccionId"
-                    (click)="obtenerCursosxiGradoIdxiSeccionId()"
-                >
-                    <i class="pi pi-search"></i>&nbsp; Buscar
-                </button>
-                <p-divider></p-divider>
-            </div>
-            <div class="col-12">
-                <span class="text-lg text-primary font-bold"
-                    >Configuración de Bloque</span
-                >
-            </div>
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Hora Inicio</p-inputGroupAddon>
-                    <p-calendar
-                        [iconDisplay]="'input'"
-                        [showIcon]="true"
-                        [timeOnly]="true"
-                        [disabledDays]="[0, 6]"
-                        inputId="icondisplay"
-                    >
-                    </p-calendar>
-                </p-inputGroup>
-            </div>
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Hora Fin</p-inputGroupAddon>
-                    <p-calendar
-                        [iconDisplay]="'input'"
-                        [showIcon]="true"
-                        [timeOnly]="true"
-                        [disabledDays]="[0, 6]"
-                        inputId="icondisplay"
-                    >
-                    </p-calendar>
-                </p-inputGroup>
-            </div>
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Intervalo</p-inputGroupAddon>
-                    <p-inputNumber mode="decimal" inputStyleClass="w-full" />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 text-center">
-                <p-button [label]="'Generar Bloque'" />
-            </div>
+        <div class="col-12">
+            <span class="text-lg text-primary font-bold"
+                >Búsqueda de Áreas Curriculares</span
+            >
         </div>
-        <div class="col-12 md:col-9 mt-2">
-            <app-conf-horario
-                [cursos]="cursos"
-                [dias]="dias"
-                [horas]="configHoras"
-                [horario]="horario"
-                (accionBtnItem)="accionBtn($event)"
-            ></app-conf-horario>
+        <div class="col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Grado</p-inputGroupAddon>
+                <p-dropdown
+                    [(ngModel)]="iGradoId"
+                    styleClass="w-full"
+                    placeholder="Seleccione Grado"
+                    optionValue="iGradoId"
+                    [options]="grados"
+                    optionLabel="cGradoNombre"
+                    (onChange)="obtenerSecciones()"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                <p-dropdown
+                    [(ngModel)]="iSeccionId"
+                    styleClass="w-full"
+                    placeholder="Seleccione Sección"
+                    optionValue="iSeccionId"
+                    [options]="secciones"
+                    optionLabel="cSeccionNombre"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4 text-right">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-primary"
+                [disabled]="!iGradoId || !iSeccionId"
+                (click)="obtenerCursosxiGradoIdxiSeccionId()"
+            >
+                <i class="pi pi-search"></i>&nbsp; Buscar
+            </button>
+            <p-divider></p-divider>
         </div>
     </div>
+    <div class="col-12">
+        <app-conf-horario
+            [cursos]="cursos"
+            [dias]="dias"
+            [horario]="horario"
+            [bloques]="bloques"
+            (accionBtnItem)="accionBtn($event)"
+        ></app-conf-horario>
+    </div>
 </div>
+<p-toast></p-toast>

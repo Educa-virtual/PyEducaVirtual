@@ -1,0 +1,224 @@
+<!-- <p-dialog
+    [header]="titulo"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="resetearInput()"
+    (onShow)="resetearResultados()"
+    (accionBtnItem)="accionBtn($event)"
+>
+    <ng-content>
+        <form [formGroup]="form" (ngSubmit)="handleFormSubmit()">
+            @if (!exito) {
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12">
+                        <p-inputGroup class="mt-1">
+                            <app-input-file-upload
+                                class="w-full"
+                                label="Seleccionar archivo"
+                                acceptTypes=".xls,.xlsx,.xlsm"
+                                formControlName="archivo"
+                                (change)="handleArchivo($event)"
+                                [canViewLocalFile]="false"
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12">
+                        <p-button
+                            type="submit"
+                            label="Cargar"
+                            styleClass="p-button-primary"
+                        />
+                    </div>
+                </div>
+            }
+            @if (exito) {
+                <h4>
+                    Se subieron todos los resultados con éxito. Puede cerrar
+                    esta ventana.
+                </h4>
+            }
+            <app-table-primeng
+                [columnas]="columns"
+                [showCaption]="true"
+                [data]="resultados"
+                [showPaginator]="true"
+                sortMode="single"
+                sortField="resultado_importado"
+                [sortOrder]="1"
+                [(selectedRowData)]="selectedItems"
+                [actions]="actions"
+                [showCaption]="false"
+                [hidden]="!hay_excluidos"
+            />
+        </form>
+    </ng-content>
+</p-dialog>
+<p-toast></p-toast> -->
+<p-dialog
+    header="hola {{ titulo }}"
+    [(visible)]="visible"
+    [style]="{ width: '90rem' }"
+    [modal]="true"
+    [maximizable]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <section>
+        <div class="col-12 flex justify-content-center">
+            <span class="font-bold text-3xl"
+                >CONSOLIDAD DE RESULTADOS DE AULA - ERE INICIO 2025</span
+            >
+        </div>
+        <form [formGroup]="formCurso">
+            <div class="grid p-fluid mt-3 col">
+                <div class="grid card col-9 mr-3">
+                    <div>
+                        <samp class="btn absolute"> DATOS I.E. </samp>
+                    </div>
+                    <div class="col-8">
+                        <span class="p-float-label mt-4">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cPersDocumento"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cPersDocumento" class="font-bold"
+                                >I.E.</label
+                            >
+                        </span>
+                        <span class="p-float-label mt-4">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cCursoNombre"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cCursoNombre" class="font-bold"
+                                >ÁREA:</label
+                            >
+                        </span>
+                        <div class="grid mt-4">
+                            <!-- Mostrar grado -->
+                            <div class="col-6">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersDocumento"
+                                        formControlName="cGradoAbreviacion"
+                                        aria-describedby="cPersDocumento-help"
+                                    />
+                                    <label
+                                        for="cGradoAbreviacion"
+                                        class="font-bold"
+                                        >GRADO:</label
+                                    >
+                                </span>
+                            </div>
+
+                            <!-- Mostrar SECCIÓN -->
+                            <div class="col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="secciones"
+                                        [style]="{ width: '100%' }"
+                                        filterBy="label"
+                                        optionLabel="label"
+                                        optionValue="idSeccion"
+                                        formControlName=""
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="tipoBusqueda" class="font-bold"
+                                        >Seleccione Sección</label
+                                    >
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <span class="p-float-label mt-4">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cNivelTipoNombre"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cNivelTipoNombre" class="font-bold"
+                                >NIVEL:</label
+                            >
+                        </span>
+                        <span class="p-float-label mt-4">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cPersDocumento"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cPersDocumento" class="font-bold"
+                                >DISTRITO:</label
+                            >
+                        </span>
+                        <span class="p-float-label mt-4">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cPersDocumento"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cPersDocumento" class="font-bold"
+                                >GESTIÓN:</label
+                            >
+                        </span>
+                    </div>
+                </div>
+                <div class="">
+                    <h1>hola</h1>
+                </div>
+            </div>
+            <div class="grid p-fluid mt-3">
+                <div class="col-6 mt-2">
+                    <p-inputGroup>
+                        <p-inputGroupAddon> DNI Docente: </p-inputGroupAddon>
+                        <input
+                            type="text"
+                            pInputText
+                            placeholder="Ingresar dni...."
+                            formControlName="nombreLargo"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-6">
+                    <span class="p-float-label mt-2">
+                        <input
+                            pInputText
+                            id="cPersDocumento"
+                            formControlName="cPersDocumento"
+                            aria-describedby="cPersDocumento-help"
+                        />
+                        <label for="cPersDocumento" class="font-bold"
+                            >Nombre del docente:</label
+                        >
+                    </span>
+                </div>
+            </div>
+        </form>
+        <div class="col">
+            <app-table-primeng
+                [columnas]="columnas"
+                [data]="alumnos"
+                (accionBtnItem)="accionesTabla($event)"
+                [actions]="botonesTabla"
+                [showPaginator]="true"
+                [indiceColumnaBuscar]="3"
+                [showCaption]="true"
+                [showSortIcon]="false"
+            >
+                <input type="text" />
+            </app-table-primeng>
+        </div>
+    </section>
+</p-dialog>
+<p-toast></p-toast>

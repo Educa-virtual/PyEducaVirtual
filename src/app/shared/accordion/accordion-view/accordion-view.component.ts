@@ -67,10 +67,21 @@ interface action {
 })
 export class AccordionViewComponent implements AfterViewInit {
     perfilesFilter(perfilesActivos: number[]): string {
+        if (!perfilesActivos) return 'Nadie'
+
+        console.log('perfilesActivos')
+
+        console.log(
+            this.perfiles
+                .filter((valor) => perfilesActivos?.includes(valor.code))
+                .map((valor) => valor.name) // <-- extraemos solo los nombres
+                .join(',\n ')
+        )
+
         return this.perfiles
-            .filter((valor) => perfilesActivos.includes(valor.code))
-            .map((valor) => valor.name) // <-- extraemos solo los nombres
-            .join(', ') // <-- los convertimos a un solo string
+            .filter((valor) => perfilesActivos?.includes(valor.code))
+            .map((valor) => `${valor.name}`) // <-- extraemos solo los nombres
+            .join(',\n ') // <-- los convertimos a un solo string
     }
 
     accordions

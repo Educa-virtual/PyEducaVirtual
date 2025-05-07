@@ -31,17 +31,33 @@
                         <i
                             [class.pi]="true"
                             [class.pi-chevron-up]="
+                                !optionsSections.isOrderActivity &&
                                 accordionPanel.optionsPanel.expand
                             "
                             [class.pi-chevron-down]="
+                                !optionsSections.isOrderActivity &&
                                 !accordionPanel.optionsPanel.expand
                             "
+                            [class.pi-list]="optionsSections.isOrderActivity"
                         ></i>
                         <span pTooltip="" class="select-none">{{
                             accordionPanel.panelTitle
                         }}</span>
+                        <i
+                            class="pi pi-users"
+                            [pTooltip]="
+                                'Visible para: ' +
+                                    perfilesFilter(
+                                        accordionPanel.perfilesActives
+                                    ) | titlecase
+                            "
+                            tooltipPosition="top"
+                        ></i>
                     </div>
-                    @if (!accordionPanel.optionsPanel.order) {
+                    @if (
+                        !accordionPanel.optionsPanel.order &&
+                        !optionsSections.isOrderActivity
+                    ) {
                         <div class="accordion-actions p-3">
                             @for (action of actions; track $index) {
                                 <p-button

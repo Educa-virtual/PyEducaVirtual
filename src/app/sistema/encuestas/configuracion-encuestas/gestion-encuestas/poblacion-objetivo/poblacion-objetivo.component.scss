@@ -1,0 +1,17 @@
+::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* cambia según lo que necesites */
+}
+::ng-deep .p-accordion .p-accordion-header .p-accordion-toggle-icon {
+    order: 2; /* cambia el orden del ícono */
+    margin-left: auto; /* opcional para empujarlo al final */
+}
+
+::ng-deep .p-accordion .p-accordion-header * {
+    color: white;
+}
+
+::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link {
+    background-color: #3e67a9;
+}

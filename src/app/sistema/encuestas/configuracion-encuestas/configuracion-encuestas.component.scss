@@ -1,0 +1,15 @@
+::ng-deep app-container-page p-panel .p-panel-header {
+    background-color: #3e67a9;
+}
+
+::ng-deep app-container-page p-panel .p-panel-header * {
+    color: #ffffff !important;
+}
+
+::ng-deep p-steps .p-steps-number {
+    color: #3e67a9 !important;
+}
+
+::ng-deep p-steps .p-highlight .p-steps-number {
+    background-color: #b4c4de !important;
+}

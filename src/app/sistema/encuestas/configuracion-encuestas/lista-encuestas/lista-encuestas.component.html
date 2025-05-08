@@ -1,0 +1,10 @@
+<app-container-page
+    [title]="title"
+    [actions]="listaEncuestasContainerActions"
+    (accionBtnItem)="handleActions($event)"
+>
+    <app-table-primeng
+        [showSortIcon]="false"
+        [columnas]="listaEncuestaColumns"
+    />
+</app-container-page>

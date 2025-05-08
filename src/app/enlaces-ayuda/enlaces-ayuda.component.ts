@@ -164,4 +164,10 @@ export class EnlacesAyudaComponent implements OnInit {
             header: 'd',
         })
     }
+
+    openModal() {
+        this.dialog.openConfirm({
+            header: 'd',
+        })
+    }
 }

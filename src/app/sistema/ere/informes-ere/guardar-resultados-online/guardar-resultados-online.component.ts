@@ -23,41 +23,34 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
     // formulario guardar resultados online
     public formCurso: FormGroup = this._formBuilder.group({
+        cIeNombre: ['', [Validators.required]],
         cCursoNombre: ['', [Validators.required]],
         cGradoAbreviacion: ['', [Validators.required]],
         cNivelTipoNombre: ['', [Validators.required]],
+        cNombreDistrito: ['', [Validators.required]],
+        cNombreGestion: ['', [Validators.required]],
+        cDniDocente: ['', [Validators.required]],
+        cNombreDocente: ['', [Validators.required]],
     })
     secciones = [
         {
             label: 'A',
             idSeccion: 1,
             icon: 'pi pi-fw pi-home',
-            routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
         },
         {
             label: 'B',
             idSeccion: 2,
             icon: 'pi pi-fw pi-home',
-            routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
         },
         {
             label: 'UNICA',
             idSeccion: 3,
             icon: 'pi pi-fw pi-home',
-            routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
         },
     ]
+    // datos de prueba
     alumnos = [
-        {
-            label: 'A',
-            dni: '12345678',
-            apellidoPaterno: 'PEREZ',
-            apellidoMaterno: 'GARCIA',
-            nombres: 'JUAN',
-            idSeccion: 1,
-            icon: 'pi pi-fw pi-home',
-            routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        },
         {
             label: 'B',
             dni: '12345678',
@@ -179,7 +172,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         {
             labelTooltip: 'guardar',
             icon: 'pi pi-check',
-            accion: 'ver',
+            accion: 'guardar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },
@@ -420,11 +413,21 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     // acciones de la tabla
     accionesTabla({ accion, item }) {
         switch (accion) {
-            case 'ver':
-                console.log('visto')
+            case 'guardar':
+                // datos para guardar de las notas.
+                console.log('datos de estudiantes', item)
                 break
-            case 'setearDataxseleccionado':
-                console.log(item, 'item')
+        }
+    }
+    accionBtn(elemento: any): void {
+        const { accion } = elemento
+
+        switch (accion) {
+            case 'close-modal':
+                // this.archivoSubidoEvent.emit({
+                //     curso: this.curso,
+                // })
+                console.log('cerrar modal')
                 break
         }
     }

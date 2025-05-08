@@ -199,96 +199,105 @@
         </div>
     </ng-template>
 
-    <div class="flex justify-content-between align-items-center">
-        <span> Mostrando todas las secciones (modo ???) </span>
-
-        <div class="flex gap-4">
-            @if (optionsSections.isOrderActivity) {
-                <p-button
-                    (onClick)="
-                        optionsSections = {
-                            isOrderActivity: false,
-                            typeOrder: 'guardar',
-                        }
-                    "
-                    icon="pi pi-save"
-                    label="Guardar cambios"
-                ></p-button>
-                <p-button
-                    (onClick)="
-                        optionsSections = {
-                            isOrderActivity: false,
-                            typeOrder: 'cancelar',
-                        }
-                    "
-                    icon="pi pi-times"
-                    label="Cancelar"
-                ></p-button>
-            }
-            @if (optionsAccordion.isOrderActivity) {
-                <p-button
-                    (onClick)="
-                        optionsAccordion = {
-                            isOrderActivity: false,
-                            typeOrder: 'guardar',
-                        }
-                    "
-                    icon="pi pi-save"
-                    label="Guardar cambios"
-                ></p-button>
-                <p-button
-                    (onClick)="
-                        optionsAccordion = {
-                            isOrderActivity: false,
-                            typeOrder: 'cancelar',
-                        }
-                    "
-                    icon="pi pi-times"
-                    label="Cancelar"
-                ></p-button>
-            }
-
-            @if (
-                !optionsAccordion.isOrderActivity &&
-                !optionsSections.isOrderActivity
-            ) {
-                <p-button
-                    icon="pi pi-list"
-                    label="Ordenar secciones"
-                    (onClick)="
-                        optionsSections = {
-                            isOrderActivity: true,
-                            typeOrder: 'order',
-                        }
-                    "
-                ></p-button>
-                <p-button
-                    (onClick)="dialogVisibles.nuevaSeccion = true"
-                    icon="pi pi-plus-circle"
-                    label="Nueva sección"
-                ></p-button>
-                <p-button
-                    (onClick)="dialogVisibles.nuevoVideo = true"
-                    icon="pi pi-plus-circle"
-                    label="Nuevo video"
-                ></p-button>
-            }
-        </div>
-    </div>
-
-    <app-accordion-view
-        [optionsSections]="optionsSections"
-        type="draggable"
-        [optionsAccordion]="optionsAccordion"
+    <div
+        class="flex flex-column gap-4"
+        [ngClass]="{
+            'user-select':
+                !optionsSections.isOrderActivity ||
+                optionsAccordion.isOrderActivity,
+        }"
     >
-        @for (enlace of enlacesAyuda; track enlace) {
-            <app-accordion-panel
-                [panelTitle]="enlace.title"
-                [contents]="enlace.contents"
-                [perfilesActives]="enlace.perfiles"
-            />
-        }
-    </app-accordion-view>
+        <div class="flex justify-content-between align-items-center">
+            <span> Mostrando todas las secciones (modo ???) </span>
+
+            <div class="flex gap-4">
+                @if (optionsSections.isOrderActivity) {
+                    <p-button
+                        (onClick)="
+                            optionsSections = {
+                                isOrderActivity: false,
+                                typeOrder: 'guardar',
+                            }
+                        "
+                        icon="pi pi-save"
+                        label="Guardar cambios"
+                    ></p-button>
+                    <p-button
+                        (onClick)="
+                            optionsSections = {
+                                isOrderActivity: false,
+                                typeOrder: 'cancelar',
+                            }
+                        "
+                        icon="pi pi-times"
+                        label="Cancelar"
+                    ></p-button>
+                }
+                @if (optionsAccordion.isOrderActivity) {
+                    <p-button
+                        (onClick)="
+                            optionsAccordion = {
+                                isOrderActivity: false,
+                                typeOrder: 'guardar',
+                            }
+                        "
+                        icon="pi pi-save"
+                        label="Guardar cambios"
+                    ></p-button>
+                    <p-button
+                        (onClick)="
+                            optionsAccordion = {
+                                isOrderActivity: false,
+                                typeOrder: 'cancelar',
+                            }
+                        "
+                        icon="pi pi-times"
+                        label="Cancelar"
+                    ></p-button>
+                }
+
+                @if (
+                    !optionsAccordion.isOrderActivity &&
+                    !optionsSections.isOrderActivity
+                ) {
+                    <p-button
+                        icon="pi pi-list"
+                        label="Ordenar secciones"
+                        (onClick)="
+                            optionsSections = {
+                                isOrderActivity: true,
+                                typeOrder: 'order',
+                            }
+                        "
+                    ></p-button>
+                    <p-button
+                        (onClick)="dialogVisibles.nuevaSeccion = true"
+                        icon="pi pi-plus-circle"
+                        label="Nueva sección"
+                    ></p-button>
+                    <p-button
+                        (onClick)="dialogVisibles.nuevoVideo = true"
+                        icon="pi pi-plus-circle"
+                        label="Nuevo video"
+                    ></p-button>
+                }
+            </div>
+        </div>
+
+        <app-accordion-view
+            [optionsSections]="optionsSections"
+            type="draggable"
+            [optionsAccordion]="optionsAccordion"
+        >
+            @for (enlace of enlacesAyuda; track enlace) {
+                <app-accordion-panel
+                    [panelTitle]="enlace.title"
+                    [contents]="enlace.contents"
+                    [perfilesActives]="enlace.perfiles"
+                />
+            }
+        </app-accordion-view>
+    </div>
 
     <!-- <p-accordion [activeIndex]="0">
         @for (seccion of enlacesAyuda; track $index) {

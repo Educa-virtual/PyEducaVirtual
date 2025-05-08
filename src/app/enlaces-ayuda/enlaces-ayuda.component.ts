@@ -6,11 +6,11 @@ import { Message } from 'primeng/api'
 import { MessagesModule } from 'primeng/messages'
 import { AccordionModule } from 'primeng/accordion'
 import { ToolbarModule } from 'primeng/toolbar'
-import { EnlacesAyuda } from './config/enlaces-ayuda'
+import { EnlacesAyudaService } from './config/enlaces-ayuda.service'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ListboxModule } from 'primeng/listbox'
 import { OverlayPanelModule } from 'primeng/overlaypanel'
-import * as tiposDePerfiles from '../../app/servicios/seg/tiposPerfiles'
+import * as tiposDePerfiles from '@/app/servicios/seg/tiposPerfiles'
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal/confirm-modal.component'
 import { ConfirmationModalService } from '../shared/confirm-modal/confirmation-modal.service'
 import { DialogModule } from 'primeng/dialog'
@@ -46,6 +46,7 @@ import { CommonModule } from '@angular/common'
         ToolbarModule,
     ],
     templateUrl: './enlaces-ayuda.component.html',
+
     styleUrl: './enlaces-ayuda.component.scss',
 })
 export class EnlacesAyudaComponent implements OnInit {
@@ -67,101 +68,40 @@ export class EnlacesAyudaComponent implements OnInit {
         nuevoVideo: false,
     }
 
-    enlaces = [
-        {
-            title: 'INSTRUCTIVO PARA DOCENTES Y DIRECTORES 1 - ERE',
-            content: [
-                {
-                    title: 'Bienvenida al curso',
-                    description:
-                        'Video de bienvenida y presentación del instructor.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-                {
-                    title: 'Configuración del entorno de trabajo',
-                    description:
-                        'Explicación paso a paso para instalar herramientas necesarias.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-                {
-                    title: 'Primeros pasos con la herramienta/lenguaje',
-                    description:
-                        'Ejercicio práctico simple para familiarizarse.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-            ],
-        },
-        {
-            title: 'INSTRUCTIVO PARA DOCENTES Y DIRECTORES 2 - ERE',
-            content: [
-                {
-                    title: 'Bienvenida al curso',
-                    description:
-                        'Video de bienvenida y presentación del instructor.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-                {
-                    title: 'Configuración del entorno de trabajo',
-                    description:
-                        'Explicación paso a paso para instalar herramientas necesarias.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-                {
-                    title: 'Primeros pasos con la herramienta/lenguaje',
-                    description:
-                        'Ejercicio práctico simple para familiarizarse.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-            ],
-        },
-        {
-            title: 'INSTRUCTIVO PARA DOCENTES Y DIRECTORES 3 - ERE',
-            content: [
-                {
-                    title: 'Bienvenida al curso',
-                    description:
-                        'Video de bienvenida y presentación del instructor.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-                {
-                    title: 'Configuración del entorno de trabajo',
-                    description:
-                        'Explicación paso a paso para instalar herramientas necesarias.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-                {
-                    title: 'Primeros pasos con la herramienta/lenguaje',
-                    description:
-                        'Ejercicio práctico simple para familiarizarse.',
-                    img: 'https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg',
-                },
-            ],
-        },
-    ]
-
     perfiles = Object.entries(tiposDePerfiles).map(([key, value]) => ({
         name: key.replaceAll('_', ' '),
         code: value,
     }))
 
     sourcePerfiles = []
-
     enlacesAyuda
+    chargeEnlacesAyuda = false
 
     constructor(
         public sanitizer: DomSanitizer,
-        private enlacesAyudaService: EnlacesAyuda,
+        public enlacesAyudaService: EnlacesAyudaService,
         private dialog: ConfirmationModalService
         // private dialog: Modal
     ) {}
 
     ngOnInit() {
         this.messages = [{ severity: 'info', detail: 'Videos de Seguridad' }]
-    }
 
-    openModal() {
-        this.dialog.openConfirm({
-            header: 'd',
+        this.enlacesAyudaService.getEnlacesAyuda().subscribe({
+            next: (enlaces: any) => {
+                // this.enlacesAyuda = enlaces
+                setTimeout(() => {
+                    this.enlacesAyuda = enlaces
+                })
+
+                console.log(enlaces)
+            },
+            error: (error) => {
+                console.error('Error loading enlaces ayuda:', error)
+            },
+            complete: () => {
+                this.chargeEnlacesAyuda = true
+            },
         })
     }
 

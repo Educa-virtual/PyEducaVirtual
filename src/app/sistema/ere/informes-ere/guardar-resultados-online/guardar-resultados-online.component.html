@@ -74,7 +74,7 @@
         </div>
         <form [formGroup]="formCurso">
             <div class="grid p-fluid mt-3 col">
-                <div class="grid card col-9 mr-3 relative">
+                <div class="grid card col-10 mr-3 relative">
                     <div>
                         <span class="btn">Datos I.E.</span>
                     </div>
@@ -174,8 +174,19 @@
                         </span>
                     </div>
                 </div>
-                <div class="">
-                    <h1>hola</h1>
+                <div class="col ml-3">
+                    <div class="mt-5">
+                        <div class="flex justify-content-center">
+                            <span class="text-7xl font-bold text-primary"
+                                >13</span
+                            >
+                        </div>
+                        <div class="flex justify-content-center">
+                            <span class="text-base text-gray-600 mt-2"
+                                >Estudiantes Registrados</span
+                            >
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="grid p-fluid mt-3">
@@ -218,6 +229,15 @@
             >
                 <input type="text" />
             </app-table-primeng>
+        </div>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12">
+                <p-button
+                    type="submit"
+                    label="Guardar"
+                    styleClass="p-button-primary"
+                />
+            </div>
         </div>
     </section>
 </p-dialog>

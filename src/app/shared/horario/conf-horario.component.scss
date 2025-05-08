@@ -3,11 +3,13 @@
 }
 
 .curso:hover {
-    background-color: #f8e9eb;
+    background-color: var(--blue-50);
+    color: black;
 }
 
 .cursoSeleccionado {
-    background-color: #f8e9eb;
+    background-color: var(--blue-600);
+    color: white;
 }
 
 .cursoHorario {
@@ -20,4 +22,78 @@
 
 .bloqueDisponible:hover {
     background-color: #f3f4f6;
+}
+
+::ng-deep .p-metergroup-labels {
+    display: none;
+}
+
+.curso.cursoSeleccionado:hover {
+    background-color: var(--blue-600);
+    color: white;
+}
+
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+}
+.hoverTable tr th {
+    background-color: var(--blue-500) !important;
+    color: white;
+}
+.cursor-pointer:hover {
+    background-color: #e3f7ff;
+    cursor: pointer;
+}
+.hoverTable td {
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+}
+.horario {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.horaSelected {
+    background-color: var(--green-500);
+    border-radius: 4px;
+    font-size: 1rem;
+    color: white;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.03);
+}
+
+.horaSelected:hover {
+    background-color: var(--green-500); /* un tono más oscuro */
+    transform: scale(1.05);
+}
+
+.curso-container {
+    position: relative;
+}
+
+.curso-container .pi-times {
+    position: fixed;
+    top: 4px;
+    right: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: var(--green-500);
+    color: white;
+    border-radius: 50%;
+    padding: 4px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.curso-container .pi-times:hover {
+    color: var(--green-500);
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
 }

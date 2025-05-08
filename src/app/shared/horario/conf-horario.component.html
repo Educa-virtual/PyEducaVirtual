@@ -1,101 +1,190 @@
-<div class="flex gap-2">
-    <div class="flex flex-column gap-2">
-        <div class="flex flex-column gap-1">
-            <span class="text-lg font-bold">Cursos Disponibles </span>
-            <span>Selecciona los cursos que deseas tomar</span>
+<div class="grid" *ngIf="cursos.length; else noCursos">
+    <div class="col-12">
+        <div class="flex flex-column gap-2">
+            <div class="flex flex-column gap-1">
+                <div>
+                    <span class="text-lg text-primary font-bold"
+                        >Lista de Áreas Curriculares Disponibles
+                    </span>
+                    <span class="text-sm"
+                        >( Seleccione el área para agregar horario )</span
+                    >
+                </div>
+            </div>
         </div>
-
-        <ul class="list-none p-0 m-0">
-            @for (curso of cursos; track curso.id) {
-                <li
+        <p-divider></p-divider>
+        <div class="relative w-full">
+            <div class="flex items-center w-full">
+                <i
                     role="button"
                     tabindex="0"
-                    (click)="cursoSeleccionado = curso"
-                    (keydown.enter)="cursoSeleccionado = curso"
-                    (keydown.space)="cursoSeleccionado = curso"
-                    class="w-full list-none curso py-4 px-4 flex flex-column gap-3 cursor-pointer"
-                    [ngClass]="{
-                        cursoSeleccionado: cursoSeleccionado === curso,
-                    }"
+                    class="pi pi-angle-left absolute left-0 z-10 bg-white shadow-md rounded-full py-7"
+                    style="color: var(--blue-600); cursor: pointer"
+                    (click)="scrollCursos(-1)"
+                    (keydown.enter)="scrollCursos(-1)"
+                ></i>
+
+                <div
+                    #cursosContainer
+                    class="flex overflow-x-auto scroll-smooth"
+                    style="scrollbar-width: none; -ms-overflow-style: none"
                 >
-                    <div class="flex flex-column gap-1">
-                        <span class="text-lg font-bold">{{ curso.curso }}</span>
-                        <span>Docente: {{ curso.profesor }}</span>
-                    </div>
-
-                    <div class="flex flex-column gap-2">
-                        <span
-                            >Horas asignadas: {{ curso.horasAsignadas }} de
-                            {{ curso.horasDisponibles }}
-                        </span>
-                        <p-meterGroup
-                            class="w-29rem"
-                            [value]="[
-                                {
-                                    value: curso.horasAsignadas,
-                                    color: '#7CABF9',
-                                },
-                            ]"
-                            [max]="curso.horasDisponibles"
-                        />
-                    </div>
-                </li>
-            }
-        </ul>
+                    <ul class="flex flex-nowrap">
+                        @for (curso of cursos; track curso.iCursoId) {
+                            <li
+                                role="button"
+                                tabindex="0"
+                                [class]="
+                                    cursoSeleccionado?.iCursoId ===
+                                    curso.iCursoId
+                                        ? 'cursoSeleccionado'
+                                        : ''
+                                "
+                                class="list-none curso py-2 px-2 flex flex-column gap-3 cursor-pointer border-round-sm border-1 surface-border"
+                                (click)="cursoSeleccionado = curso"
+                                (keydown.enter)="cursoSeleccionado = curso"
+                                (keydown.space)="cursoSeleccionado = curso"
+                            >
+                                <div class="flex flex-column gap-1 w-20rem">
+                                    <span class="text-lg font-bold">{{
+                                        curso.cCursoNombre
+                                    }}</span>
+                                    <span>Docente: {{ curso.cDocente }}</span>
+                                    <span
+                                        >Horas asignadas:
+                                        {{ curso.iHorasAsignadas }} de
+                                        {{ curso.iHoras }}
+                                    </span>
+                                    <p-meterGroup
+                                        class="w-full"
+                                        [value]="[
+                                            {
+                                                value: curso.iHorasAsignadas,
+                                                color:
+                                                    curso.iHorasAsignadas ===
+                                                    curso.iHoras
+                                                        ? '#22c55e'
+                                                        : '#7CABF9',
+                                            },
+                                        ]"
+                                        [max]="curso.iHorasAsignadas"
+                                    />
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <i
+                    role="button"
+                    tabindex="0"
+                    class="pi pi-angle-right absolute right-0 z-10 bg-white shadow-md rounded-full py-7"
+                    style="color: var(--blue-600); cursor: pointer"
+                    (click)="scrollCursos(1)"
+                    (keydown.enter)="scrollCursos(1)"
+                ></i>
+            </div>
+        </div>
     </div>
-
-    <div>
+    <div class="col-12" *ngIf="dias.length && horario.length">
+        <div class="flex flex-column gap-2 mb-2">
+            <div class="flex flex-column gap-1">
+                <div class="text-center text-lg text-primary font-bold">
+                    Horario
+                </div>
+                <span class="text-lg font-semibold"
+                    >Curso seleccionado:
+                    {{ cursoSeleccionado?.cCursoNombre || 'Ninguno' }}</span
+                >
+            </div>
+        </div>
         <p-table
-            styleClass="p-datatable-gridlines"
+            class="hoverTable"
             [columns]="dias"
-            [value]="bloquesHorarios"
-            [tableStyle]="{ 'min-width': '50rem' }"
+            [value]="getRango(bloques)"
         >
             <ng-template pTemplate="header" let-columns>
                 <tr>
+                    <th style="width: 0.5rem" class="text-center">BLOQUE</th>
                     @for (dia of columns; track $index) {
-                        <th>{{ dia.header }}</th>
+                        <th class="text-center">{{ dia.cDiaNombre }}</th>
                     }
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-bloque let-columns="columns">
+            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
                 <tr>
-                    @for (col of columns; track col) {
-                        @if (isBloque(bloque[col.field])) {
-                            <td>{{ bloque[col.field] }}</td>
-                        } @else if (isDay(bloque[col.field])) {
-                            <td class="cursoHorario">
-                                <div
-                                    class="flex flex-column gap-1 align-items-center"
+                    <td
+                        class="text-center"
+                        style="background-color: rgb(248, 245, 245)"
+                    >
+                        {{ item }}
+                    </td>
+                    @for (dia of dias; track dia) {
+                        @for (hora of getHorarioxiBloque(item); track hora) {
+                            @if (hora.iDiaId === dia.iDiaId) {
+                                <td
+                                    [ngClass]="
+                                        hora.idDocCursoId && hora.iCursoId
+                                            ? 'horaSelected'
+                                            : 'cursor-pointer'
+                                    "
                                 >
-                                    {{ bloque[col.field].curso }}
-                                    <i
-                                        class="pi pi-times border-circle p-2 cursor-pointer hover:bg-white-alpha-90"
-                                        role="button"
-                                        tabindex="0"
-                                        (click)="
-                                            removeCurso(bloque.id, col.field)
-                                        "
-                                        (keydown.enter)="
-                                            removeCurso(bloque.id, col.field)
-                                        "
-                                        (keydown.space)="
-                                            removeCurso(bloque.id, col.field)
-                                        "
-                                    ></i>
-                                </div>
-                            </td>
-                        } @else {
-                            <td
-                                class="cursor-pointer bloqueDisponible"
-                                role="button"
-                                tabindex="0"
-                                (click)="addCurso(bloque.id, col.field)"
-                                (keydown.enter)="addCurso(bloque.id, col.field)"
-                                (keydown.space)="addCurso(bloque.id, col.field)"
-                            >
-                                Disponible
-                            </td>
+                                    @if (hora.idDocCursoId && hora.iCursoId) {
+                                        <div class="curso-container">
+                                            <i
+                                                class="pi pi-times text-center text-xs"
+                                                role="button"
+                                                tabindex="0"
+                                                (click)="
+                                                    agregarRemoverHorario(
+                                                        hora,
+                                                        'remover-horario'
+                                                    )
+                                                "
+                                                (keydown.enter)="
+                                                    agregarRemoverHorario(
+                                                        hora,
+                                                        'remover-horario'
+                                                    )
+                                                "
+                                                (keydown.space)="
+                                                    agregarRemoverHorario(
+                                                        hora,
+                                                        'remover-horario'
+                                                    )
+                                                "
+                                            ></i>
+                                            <div class="text-center mt-1rem">
+                                                {{ hora.cCursoNombre }}
+                                            </div>
+                                        </div>
+                                    } @else {
+                                        <div
+                                            role="button"
+                                            tabindex="0"
+                                            (click)="
+                                                agregarRemoverHorario(
+                                                    hora,
+                                                    'agregar-horario'
+                                                )
+                                            "
+                                            (keydown.enter)="
+                                                agregarRemoverHorario(
+                                                    hora,
+                                                    'agregar-horario'
+                                                )
+                                            "
+                                            (keydown.space)="
+                                                agregarRemoverHorario(
+                                                    hora,
+                                                    'agregar-horario'
+                                                )
+                                            "
+                                        >
+                                            Disponible
+                                        </div>
+                                    }
+                                </td>
+                            }
                         }
                     }
                 </tr>
@@ -103,3 +192,9 @@
         </p-table>
     </div>
 </div>
+<ng-template #noCursos>
+    <app-no-data
+        [showIcon]="'NO-DATA'"
+        [mensaje]="'No hay áreas curriculares disponibles'"
+    ></app-no-data>
+</ng-template>

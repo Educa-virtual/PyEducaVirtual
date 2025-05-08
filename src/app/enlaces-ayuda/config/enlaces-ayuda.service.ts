@@ -6,7 +6,7 @@ import type { secciones } from './types/enlaces-ayuda'
 @Injectable({
     providedIn: 'root',
 })
-export class EnlacesAyuda {
+export class EnlacesAyudaService {
     // Path to the JSON file
     filePath: string = 'http://127.0.0.1:8000/api/enlaces-ayuda'
 

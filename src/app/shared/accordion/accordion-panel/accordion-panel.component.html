@@ -1,0 +1,97 @@
+<ng-template #template>
+    <div
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+        #draggableElement
+        [ngClass]="{
+            'cursor-move': _optionsPanel.order,
+            'select-none': _optionsPanel.order,
+        }"
+        [@expandCollapse]="_optionsPanel.expand ? 'expanded' : 'collapsed'"
+        class="p-0 accordion-body flex flex-column"
+    >
+        @switch (this._optionsPanel.type) {
+            @case ('draggable') {
+                @for (content of contents; track $index) {
+                    <div cdkDrag [cdkDragDisabled]="!_optionsPanel.order">
+                        <div *cdkDragPlaceholder></div>
+                        <div class="content flex gap-4 align-items-center">
+                            @if (_optionsPanel.order) {
+                                <div class="px-2">
+                                    <ng-icon
+                                        name="matDragIndicator"
+                                        color="#64748b"
+                                        size="28"
+                                        strokeWidth="2"
+                                        class="w-full"
+                                    ></ng-icon>
+                                </div>
+                            }
+                            <img
+                                src="https://i.ytimg.com/vi/7o_oeT7C-3Y/hqdefault.jpg"
+                                alt=""
+                            />
+
+                            <div
+                                class="flex flex-column gap-2 align-self-stretch w-full py-3"
+                            >
+                                <div class="text-lg font-bold">
+                                    {{ content.title }}
+                                </div>
+                                <div>{{ content.description }}</div>
+                            </div>
+
+                            @if (!_optionsPanel.order) {
+                                <p-button
+                                    size="small"
+                                    [outlined]="true"
+                                    severity="secondary"
+                                    (onClick)="op.toggle($event)"
+                                    [text]="true"
+                                    icon="pi pi-ellipsis-h"
+                                >
+                                </p-button>
+
+                                <p-overlayPanel
+                                    #op
+                                    styleClass="overlay-acciones"
+                                    class="overlay"
+                                    #overlayPanel
+                                    [dismissable]="true"
+                                >
+                                    <p-listbox
+                                        [options]="options"
+                                        styleClass="w-max"
+                                        optionLabel="name"
+                                        (onClick)="
+                                            btnOptionsSections({
+                                                content: content,
+                                                option: $event.option,
+                                            })
+                                        "
+                                        [listStyle]="{ 'max-height': '220px' }"
+                                    >
+                                        <ng-template
+                                            let-option
+                                            pTemplate="item"
+                                        >
+                                            <div
+                                                class="flex align-items-center gap-2"
+                                            >
+                                                <i [class]="option.icon"></i>
+                                                <div>{{ option.name }}</div>
+                                            </div>
+                                        </ng-template>
+                                    </p-listbox>
+                                </p-overlayPanel>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            @default {
+                <ng-content></ng-content>
+            }
+        }
+    </div>
+</ng-template>

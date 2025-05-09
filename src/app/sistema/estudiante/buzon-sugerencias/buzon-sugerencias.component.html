@@ -32,7 +32,7 @@
         sortMode="single"
         sortField="_cPersNomape"
         [sortOrder]="1"
-        [(selectedRowData)]="selectedItems"
+        [(selectedRowData)]="selectedItem"
         [actions]="actions"
         [showAdvancedFilter]="true"
         [indiceColumnaBuscar]="2"
@@ -56,6 +56,23 @@
         #registrarSugerenciaComponent
         (eventSugerenciaRegistrada)="listenSugerenciaRegistrada($event)"
     ></app-registrar-sugerencia>
+</p-dialog>
+
+<p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="formularioVerHeader"
+    [(visible)]="mostrarFormularioVer"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+    <app-ver-sugerencia
+        (cerrarDialogVerSugerenciaEvent)="listenDialogVerSugerencia($event)"
+        [selectedItem]="selectedItem"
+        #verSugerenciaComponent
+    ></app-ver-sugerencia>
 </p-dialog>
 
 <p-toast></p-toast>

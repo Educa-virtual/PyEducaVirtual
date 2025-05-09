@@ -24,13 +24,28 @@ export class BuzonSugerenciasService {
         )
     }
 
+    obtenerListaArchivosSugerencia(iSugerenciaId: any) {
+        return this.http.get(
+            `${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias/${iSugerenciaId}/archivos`
+        )
+    }
+
     obtenerPrioridades() {
         return this.http.get(`${this.urlBackendApi}/grl/prioridades`)
     }
 
-    eliminarSugerencia(id: any) {
+    eliminarSugerencia(iSugerenciaId: any) {
         return this.http.delete(
-            `${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias/${id}`
+            `${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias/${iSugerenciaId}`
+        )
+    }
+
+    descargarArchivoSugerencia(iSugerenciaId: any, archivo: string) {
+        return this.http.get(
+            `${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias/${iSugerenciaId}/archivos/${archivo}`,
+            {
+                responseType: 'blob',
+            }
         )
     }
 

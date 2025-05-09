@@ -11,6 +11,7 @@ import { RegistrarSugerenciaComponent } from './registrar-sugerencia/registrar-s
 import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { VerSugerenciaComponent } from './ver-sugerencia/ver-sugerencia.component'
 //import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
 
 @Component({
@@ -20,6 +21,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         PrimengModule,
         TablePrimengComponent,
         RegistrarSugerenciaComponent,
+        VerSugerenciaComponent,
     ],
     templateUrl: './buzon-sugerencias.component.html',
     styleUrl: './buzon-sugerencias.component.scss',
@@ -27,13 +29,15 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 export class BuzonSugerenciasComponent implements OnInit {
     prioridades: any[]
     formularioNuevoHeader: string
+    mostrarFormularioNuevo: boolean = false
+    formularioVerHeader: string
+    mostrarFormularioVer: boolean = false
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
     usuarioEstudiante: boolean = this.perfil.iPerfilId == 80
     //form: FormGroup
     dataSugerencias: any[]
-    selectedItems = []
+    selectedItem: any
     actionsLista: IActionTable[]
-    mostrarFormularioNuevo: boolean = false
 
     columns = [
         {
@@ -117,9 +121,20 @@ export class BuzonSugerenciasComponent implements OnInit {
         }
     }
 
+    listenDialogVerSugerencia(event: boolean) {
+        if (event == false) {
+            this.mostrarFormularioVer = false
+        }
+    }
+
     nuevaSugerencia() {
         this.formularioNuevoHeader = 'Nueva sugerencia'
         this.mostrarFormularioNuevo = true
+    }
+
+    verSugerencia() {
+        this.formularioVerHeader = 'Ver sugerencia'
+        this.mostrarFormularioVer = true
     }
 
     /*resetearInputs() {
@@ -237,6 +252,10 @@ export class BuzonSugerenciasComponent implements OnInit {
                         this.eliminarSugerencia(item)
                     },
                 })
+                break
+            case 'ver':
+                this.selectedItem = item
+                this.verSugerencia()
                 break
         }
     }

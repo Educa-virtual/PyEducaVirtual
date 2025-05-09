@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table'
 import { ButtonModule } from 'primeng/button'
 import { TooltipModule } from 'primeng/tooltip'
 import { RippleModule } from 'primeng/ripple'
+import { PrimengModule } from '@/app/primeng.module'
 
 interface Institucion {
     nombre: string
@@ -46,6 +47,7 @@ interface AsignacionRol {
         ButtonModule,
         TooltipModule,
         RippleModule,
+        PrimengModule,
     ],
     templateUrl: './asignar-rol-personal.component.html',
     styleUrls: ['./asignar-rol-personal.component.scss'],
@@ -63,7 +65,13 @@ export class AsignarRolPersonalComponent implements OnInit {
 
     asignaciones: AsignacionRol[] = []
 
+    //dialog
+    @Input() visible: boolean = false
+    @Output() visibleChange = new EventEmitter<boolean>()
+
     ngOnInit() {
+        //dialog
+        this.visible = true
         // Datos de ejemplo para los dropdowns
         this.instituciones = [
             { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },

@@ -8,6 +8,8 @@ import { NotfoundComponent } from './shared/notfound/notfound.component'
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component'
+import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
+import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -67,6 +69,14 @@ export const routes: Routes = [
             {
                 path: 'new-mantenimiento-usuario',
                 component: NewMantenimientoUsuarioComponent,
+            },
+            {
+                path: 'asignar-rol-personal',
+                component: AsignarRolPersonalComponent,
+            },
+            {
+                path: 'agregar-personal-platafoma',
+                component: AgregarPersonalPlataformaComponent,
             },
         ],
     },

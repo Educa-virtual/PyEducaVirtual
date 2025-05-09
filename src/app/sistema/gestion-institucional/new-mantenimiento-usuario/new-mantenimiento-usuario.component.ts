@@ -5,9 +5,10 @@ import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { DropdownModule } from 'primeng/dropdown'
 import { PaginatorModule } from 'primeng/paginator'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { ButtonModule } from 'primeng/button'
 import { TooltipModule } from 'primeng/tooltip'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { RippleModule } from 'primeng/ripple'
 
 interface Usuario {
     id: number
@@ -20,7 +21,6 @@ interface Usuario {
 @Component({
     selector: 'app-new-mantenimiento-usuario',
     standalone: true,
-
     imports: [
         CommonModule,
         FormsModule,
@@ -30,17 +30,15 @@ interface Usuario {
         DropdownModule,
         PaginatorModule,
         TooltipModule,
-        TablePrimengComponent,
+        InputGroupModule,
+        RippleModule,
     ],
     templateUrl: './new-mantenimiento-usuario.component.html',
-    styleUrl: './new-mantenimiento-usuario.component.scss',
+    styleUrls: ['./new-mantenimiento-usuario.component.scss'],
 })
 export class NewMantenimientoUsuarioComponent implements OnInit {
-    usuarios: Usuario[] = []
+    user: Usuario[] = []
     searchText: string = ''
-    selectedSearchType: any = { name: 'Documento', code: 'documento' }
-    selectedFilter: any = { name: 'Dremo', code: 'dremo' }
-    selectedStatusFilter: any = { name: 'Todos', code: 'todos' }
 
     searchTypes = [
         { name: 'Documento', code: 'documento' },
@@ -59,12 +57,20 @@ export class NewMantenimientoUsuarioComponent implements OnInit {
         { name: 'Activos', code: 'activos' },
         { name: 'Inactivos', code: 'inactivos' },
     ]
-    iPerfilId: any
+
+    selectedSearchType: any = { name: 'Documento', code: 'documento' }
+    selectedFilter: any = { name: 'Dremo', code: 'dremo' }
+    selectedStatusFilter: any = { name: 'Todos', code: 'todos' }
+
+    documento: any[] = [
+        { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },
+        { nombre: 'I.E. Simón Bolívar', codigo: 'SIM' },
+    ]
 
     constructor() {}
 
     ngOnInit() {
-        this.usuarios = [
+        this.user = [
             {
                 id: 1,
                 documento: '47382910',

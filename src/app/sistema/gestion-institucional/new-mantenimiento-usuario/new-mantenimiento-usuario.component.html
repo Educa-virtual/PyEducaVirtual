@@ -108,9 +108,9 @@
                             pButton
                             icon="pi pi-user"
                             class="p-button-text p-button-info"
-                            pTooltip="Ver"
+                            pTooltip="Asignar perfil"
                             tooltipPosition="top"
-                            (click)="verUsuario(user)"
+                            (click)="abrirDialogoAsignarRol(user)"
                         ></button>
                         <button
                             pButton
@@ -136,5 +136,10 @@
         </p-paginator>
     </div>
 
-    <app-new-mantenimiento-usuario></app-new-mantenimiento-usuario>
+    <app-asignar-rol-personal
+        [visible]="modalRolVisible"
+        (visibleChange)="modalRolVisible = $event"
+        [personalData]="selectedUser"
+    >
+    </app-asignar-rol-personal>
 </div>

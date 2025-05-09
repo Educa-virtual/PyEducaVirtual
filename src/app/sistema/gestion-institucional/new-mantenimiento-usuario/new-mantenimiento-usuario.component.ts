@@ -9,6 +9,9 @@ import { ButtonModule } from 'primeng/button'
 import { TooltipModule } from 'primeng/tooltip'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { RippleModule } from 'primeng/ripple'
+import { ToastModule } from 'primeng/toast'
+import { MessageService } from 'primeng/api'
+import { AsignarRolPersonalComponent } from './asignar-rol-personal/asignar-rol-personal.component'
 
 interface Usuario {
     id: number
@@ -32,7 +35,10 @@ interface Usuario {
         TooltipModule,
         InputGroupModule,
         RippleModule,
+        AsignarRolPersonalComponent,
+        ToastModule,
     ],
+    providers: [MessageService],
     templateUrl: './new-mantenimiento-usuario.component.html',
     styleUrls: ['./new-mantenimiento-usuario.component.scss'],
 })
@@ -67,7 +73,11 @@ export class NewMantenimientoUsuarioComponent implements OnInit {
         { nombre: 'I.E. Simón Bolívar', codigo: 'SIM' },
     ]
 
-    constructor() {}
+    // Variables para controlar el diálogo
+    modalRolVisible: boolean = false
+    selectedUser: Usuario | null = null
+
+    constructor(private messageService: MessageService) {}
 
     ngOnInit() {
         this.user = [
@@ -87,65 +97,44 @@ export class NewMantenimientoUsuarioComponent implements OnInit {
             },
             {
                 id: 3,
-                documento: '74829163',
-                rol: 'Director',
-                apellidosNombres: 'Torres Valdivia, Juan Carlos',
-                institucion: 'I.E. José Carlos Mariátegui',
+                documento: '47382910',
+                rol: 'Especialista UGEL',
+                apellidosNombres: 'Cárdenas Huamán, Luis Alberto',
+                institucion: 'UGEL Sánchez Cerro',
             },
             {
                 id: 4,
-                documento: '83647219',
-                rol: 'Docente',
-                apellidosNombres: 'Flores Quispe, Rosa Elena',
-                institucion: 'I.E. Santa Fortunata',
+                documento: '50938472',
+                rol: 'Especialista DREMO',
+                apellidosNombres: 'Ramírez Mamani, Ana Mercedes',
+                institucion: 'DREMO',
             },
             {
                 id: 5,
-                documento: '92738451',
-                rol: 'Estudiante',
-                apellidosNombres: 'Mendoza Ccallo, Diego Sebastián',
-                institucion: 'I.E. Daniel Becerra Ocampo',
+                documento: '47382910',
+                rol: 'Especialista UGEL',
+                apellidosNombres: 'Cárdenas Huamán, Luis Alberto',
+                institucion: 'UGEL Sánchez Cerro',
             },
             {
                 id: 6,
-                documento: '61729485',
-                rol: 'Director',
-                apellidosNombres: 'Gutiérrez Apaza, Carmen Beatriz',
-                institucion: 'I.E. Daniel Becerra Ocampo',
-            },
-            {
-                id: 7,
-                documento: '35928174',
-                rol: 'Director',
-                apellidosNombres: 'Nina Huanca, Marco Antonio',
-                institucion: 'I.E. María Auxiliadora',
-            },
-            {
-                id: 8,
-                documento: '78293561',
-                rol: 'Director',
-                apellidosNombres: 'Herrera Coaquira, Silvia Milagros',
-                institucion: 'I.E. Simón Bolívar',
-            },
-            {
-                id: 9,
-                documento: '64918372',
-                rol: 'Especialista UGEL',
-                apellidosNombres: 'Soto Luque, Enrique Rafael',
-                institucion: 'UGEL Mariscal Nieto',
-            },
-            {
-                id: 10,
-                documento: '51938276',
-                rol: 'Director',
-                apellidosNombres: 'Valdivia Ramos, Julio César',
-                institucion: 'I.E. Santa Fortunata',
+                documento: '50938472',
+                rol: 'Especialista DREMO',
+                apellidosNombres: 'Ramírez Mamani, Ana Mercedes',
+                institucion: 'DREMO',
             },
         ]
     }
 
-    agregarNuevoUsuario() {
-        console.log('Agregar nuevo usuario')
+    // Método para abrir el diálogo de asignar rol
+    abrirDialogoAsignarRol(usuario: Usuario) {
+        this.selectedUser = usuario
+        this.modalRolVisible = true
+    }
+
+    agregarNuevo() {
+        this.selectedUser = null
+        this.modalRolVisible = true
     }
 
     editarUsuario(usuario: Usuario) {

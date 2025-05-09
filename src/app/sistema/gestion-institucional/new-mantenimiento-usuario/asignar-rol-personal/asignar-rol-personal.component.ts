@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    OnInit,
+    OnChanges,
+    SimpleChanges,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
@@ -7,6 +15,7 @@ import { ButtonModule } from 'primeng/button'
 import { TooltipModule } from 'primeng/tooltip'
 import { RippleModule } from 'primeng/ripple'
 import { PrimengModule } from '@/app/primeng.module'
+import { DialogModule } from 'primeng/dialog'
 
 interface Institucion {
     nombre: string
@@ -48,11 +57,12 @@ interface AsignacionRol {
         TooltipModule,
         RippleModule,
         PrimengModule,
+        DialogModule,
     ],
     templateUrl: './asignar-rol-personal.component.html',
     styleUrls: ['./asignar-rol-personal.component.scss'],
 })
-export class AsignarRolPersonalComponent implements OnInit {
+export class AsignarRolPersonalComponent implements OnInit, OnChanges {
     instituciones: Institucion[] = []
     niveles: Nivel[] = []
     modulos: Modulo[] = []
@@ -65,13 +75,23 @@ export class AsignarRolPersonalComponent implements OnInit {
 
     asignaciones: AsignacionRol[] = []
 
-    //dialog
+    // Propiedades para el diálogo
     @Input() visible: boolean = false
+    @Input() personalData: any = null
     @Output() visibleChange = new EventEmitter<boolean>()
+    @Output() rolAsignado = new EventEmitter<any>()
 
     ngOnInit() {
-        //dialog
-        this.visible = true
+        this.inicializarDatos()
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['visible'] && changes['visible'].currentValue === true) {
+            this.inicializarDatos()
+        }
+    }
+
+    inicializarDatos() {
         // Datos de ejemplo para los dropdowns
         this.instituciones = [
             { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },
@@ -94,6 +114,10 @@ export class AsignarRolPersonalComponent implements OnInit {
             { nombre: 'Estudiante', codigo: 'EST' },
             { nombre: 'Director', codigo: 'DIR' },
         ]
+
+        if (this.personalData) {
+            console.log('Cargando datos del usuario:', this.personalData)
+        }
 
         this.asignaciones = [
             {
@@ -141,7 +165,10 @@ export class AsignarRolPersonalComponent implements OnInit {
 
             this.asignaciones = [...this.asignaciones, nuevaAsignacion]
 
+            // Resetear la selección del rol
             this.rolSeleccionado = null
+        } else {
+            console.error('Falta seleccionar algún campo')
         }
     }
 
@@ -154,5 +181,20 @@ export class AsignarRolPersonalComponent implements OnInit {
         const mes = (fecha.getMonth() + 1).toString().padStart(2, '0')
         const anio = fecha.getFullYear()
         return `${dia}/${mes}/${anio}`
+    }
+
+    closeDialog() {
+        this.visible = false
+        this.visibleChange.emit(false)
+    }
+
+    guardarCambios() {
+        this.rolAsignado.emit({
+            asignaciones: this.asignaciones,
+            personalData: this.personalData,
+        })
+
+        // Cerrar el diálogo
+        this.closeDialog()
     }
 }

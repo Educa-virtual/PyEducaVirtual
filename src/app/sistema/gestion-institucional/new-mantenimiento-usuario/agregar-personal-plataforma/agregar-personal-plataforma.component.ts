@@ -6,8 +6,6 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
-
-// PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext'
 import { ButtonModule } from 'primeng/button'
 import { DropdownModule } from 'primeng/dropdown'
@@ -55,7 +53,6 @@ export class AgregarPersonalPlataformaComponent implements OnInit {
     validar() {
         if (this.personalForm.valid) {
             console.log('Formulario válido:', this.personalForm.value)
-            // Aquí puedes agregar tu lógica de validación o envío de datos
         } else {
             console.log('Formulario inválido, complete todos los campos')
             this.personalForm.markAllAsTouched()
@@ -68,7 +65,6 @@ export class AgregarPersonalPlataformaComponent implements OnInit {
                 'Agregando personal y asignando rol:',
                 this.personalForm.value
             )
-            // Aquí puedes agregar tu lógica para asignar rol
         } else {
             console.log('Formulario inválido, complete todos los campos')
             this.personalForm.markAllAsTouched()

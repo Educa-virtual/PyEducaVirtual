@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import {
     FormBuilder,
@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { ButtonModule } from 'primeng/button'
 import { DropdownModule } from 'primeng/dropdown'
 import { TooltipModule } from 'primeng/tooltip'
+import { DialogModule } from 'primeng/dialog'
 
 @Component({
     selector: 'app-agregar-personal-plataforma',
@@ -21,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip'
         ButtonModule,
         DropdownModule,
         TooltipModule,
+        DialogModule,
     ],
     templateUrl: './agregar-personal-plataforma.component.html',
     styleUrl: './agregar-personal-plataforma.component.scss',
@@ -35,6 +37,12 @@ export class AgregarPersonalPlataformaComponent implements OnInit {
 
     constructor(private fb: FormBuilder) {}
 
+    // Propiedades para el diálogo
+    @Input() visible: boolean = false
+    @Input() personalData: any = null
+    @Output() visibleChange = new EventEmitter<boolean>()
+    @Output() rolAsignado = new EventEmitter<any>()
+
     ngOnInit() {
         this.initForm()
     }
@@ -48,6 +56,11 @@ export class AgregarPersonalPlataformaComponent implements OnInit {
             nombres: ['', Validators.required],
             sexo: ['', Validators.required],
         })
+    }
+
+    closeDialog() {
+        this.visible = false
+        this.visibleChange.emit(false)
     }
 
     validar() {

@@ -70,6 +70,7 @@
                         pRipple
                         label="+ Agregar Nuevo"
                         class="p-button-success"
+                        (click)="agregarNuevoPersonal()"
                     ></button>
                 </div>
             </div>
@@ -142,4 +143,11 @@
         [personalData]="selectedUser"
     >
     </app-asignar-rol-personal>
+
+    <app-agregar-personal-plataforma
+        [visible]="modalAgregarPersonalVisible"
+        (visibleChange)="modalAgregarPersonalVisible = $event"
+        [personalData]="selectedUser"
+    >
+    </app-agregar-personal-plataforma>
 </div>

@@ -12,7 +12,7 @@ import { RippleModule } from 'primeng/ripple'
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
 import { AsignarRolPersonalComponent } from './asignar-rol-personal/asignar-rol-personal.component'
-
+import { AgregarPersonalPlataformaComponent } from './agregar-personal-plataforma/agregar-personal-plataforma.component'
 interface Usuario {
     id: number
     documento: string
@@ -37,6 +37,7 @@ interface Usuario {
         RippleModule,
         AsignarRolPersonalComponent,
         ToastModule,
+        AgregarPersonalPlataformaComponent,
     ],
     providers: [MessageService],
     templateUrl: './new-mantenimiento-usuario.component.html',
@@ -76,6 +77,11 @@ export class NewMantenimientoUsuarioComponent implements OnInit {
     // Variables para controlar el diálogo
     modalRolVisible: boolean = false
     selectedUser: Usuario | null = null
+
+    // modal 2
+    modalAgregarPersonalVisible: boolean = false
+    modalPersonalVisible: boolean = false
+    selectedPersonal: Usuario | null = null
 
     constructor(private messageService: MessageService) {}
 
@@ -126,11 +132,21 @@ export class NewMantenimientoUsuarioComponent implements OnInit {
         ]
     }
 
-    // Método para abrir el diálogo de asignar rol
+    agregarNuevoPersonal() {
+        this.selectedUser = null
+        this.modalAgregarPersonalVisible = true
+    }
+
     abrirDialogoAsignarRol(usuario: Usuario) {
         this.selectedUser = usuario
         this.modalRolVisible = true
     }
+    /*
+    abrirDialogoAsignarRol(usuario: Usuario) {
+        this.selectedUser = usuario
+        this.modalRolVisible = true
+    }
+    */
 
     agregarNuevo() {
         this.selectedUser = null

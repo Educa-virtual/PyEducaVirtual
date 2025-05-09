@@ -92,7 +92,6 @@ export class AsignarRolPersonalComponent implements OnInit, OnChanges {
     }
 
     inicializarDatos() {
-        // Datos de ejemplo para los dropdowns
         this.instituciones = [
             { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },
             { nombre: 'I.E. Simón Bolívar', codigo: 'SIM' },
@@ -165,7 +164,6 @@ export class AsignarRolPersonalComponent implements OnInit, OnChanges {
 
             this.asignaciones = [...this.asignaciones, nuevaAsignacion]
 
-            // Resetear la selección del rol
             this.rolSeleccionado = null
         } else {
             console.error('Falta seleccionar algún campo')

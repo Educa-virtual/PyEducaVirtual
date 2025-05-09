@@ -7,6 +7,7 @@ import { InicioComponent } from './sistema/inicio/inicio.component'
 import { NotfoundComponent } from './shared/notfound/notfound.component'
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
+import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -62,6 +63,10 @@ export const routes: Routes = [
                     import(
                         './sistema/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
+            },
+            {
+                path: 'new-mantenimiento-usuario',
+                component: NewMantenimientoUsuarioComponent,
             },
         ],
     },

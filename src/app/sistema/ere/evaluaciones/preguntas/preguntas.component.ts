@@ -427,18 +427,53 @@ export class PreguntasComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
 
+    hayAlternativaSeleccionada(alternativas): boolean {
+        if (!alternativas) return false
+        return alternativas.some((alt) => alt.bAlternativaCorrecta)
+    }
+
+    /*cambiarEstadoCheckbox(iAlternativaId, alternativas) {
+        if (!this.isDisabled) {
+            return;
+        }
+        
+        // Solo permitimos una opción seleccionada a la vez
+        alternativas.forEach((alternativa) => {
+            if (alternativa.iAlternativaId != iAlternativaId) {
+                alternativa.bAlternativaCorrecta = false;
+                alternativa.cAlternativaExplicacion = null;
+            } else {
+                // Aseguramos que el seleccionado permanezca marcado
+                alternativa.bAlternativaCorrecta = true;
+            }
+        });
+    }*/
+
     cambiarEstadoCheckbox(iAlternativaId, alternativas) {
         if (!this.isDisabled) {
             return
         }
-        alternativas.forEach((alternativa) => {
-            {
-                if (alternativa.iAlternativaId != iAlternativaId) {
+
+        const index = alternativas.findIndex(
+            (alt) =>
+                (alt.iAlternativaId !== null &&
+                    alt.iAlternativaId == iAlternativaId) ||
+                (alt.iAlternativaId === null &&
+                    alt === alternativas[iAlternativaId])
+        )
+
+        if (index === -1) return
+
+        if (!alternativas[index].bAlternativaCorrecta) {
+            alternativas[index].cAlternativaExplicacion = null
+        } else {
+            alternativas.forEach((alternativa, i) => {
+                if (i !== index) {
                     alternativa.bAlternativaCorrecta = false
                     alternativa.cAlternativaExplicacion = null
                 }
-            }
-        })
+            })
+        }
     }
 
     agregarAlternativa(preguntas) {
@@ -448,6 +483,7 @@ export class PreguntasComponent implements OnInit {
         if (!preguntas['alternativas']) {
             preguntas['alternativas'] = []
         }
+
         preguntas.alternativas.push({
             bAlternativaCorrecta: false,
             cAlternativaDescripcion: null,
@@ -456,6 +492,11 @@ export class PreguntasComponent implements OnInit {
             iAlternativaId: null,
         })
         this.ordenarAlternativaLetra(preguntas.alternativas)
+    }
+    private lastTempId = -1
+    private getTempId(): number {
+        this.lastTempId--
+        return this.lastTempId
     }
 
     eliminarAlternativa(index: number, alternativas) {
@@ -488,8 +529,8 @@ export class PreguntasComponent implements OnInit {
             return
         }
         alternativas.forEach((alternativa, i) => {
-            const letra = abecedario[i] // Obtiene la letra según el índice
-            alternativa.cAlternativaLetra = letra ? letra.code : '' // Asigna la nueva letra
+            const letra = abecedario[i]
+            alternativa.cAlternativaLetra = letra ? letra.code : ''
         })
     }
 

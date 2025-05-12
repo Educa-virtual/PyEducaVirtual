@@ -432,6 +432,22 @@ export class UsuarioPerfilComponent implements OnChanges, OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.perfil_usuario = data.data
+
+                    // Agregar un nuevo campo a cada elemento del array
+                    this.perfil_usuario = this.perfil_usuario.map((item) => {
+                        return {
+                            ...item,
+                            nom_perffil:
+                                item.cPerfilNombre +
+                                '-' +
+                                item.cIieeCodigoModular +
+                                ' :: ' +
+                                item.cIieeNombre +
+                                '-(' +
+                                item.nivel +
+                                ')',
+                        }
+                    })
                 },
                 error: (error) => {
                     console.error(
@@ -657,7 +673,7 @@ export class UsuarioPerfilComponent implements OnChanges, OnInit {
             field: 'nom_perffil',
             header: 'Perfil',
             text_header: 'center',
-            text: 'center',
+            text: 'left',
         },
 
         {

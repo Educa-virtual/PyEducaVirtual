@@ -60,4 +60,13 @@ export class RolesDropdownComponent implements OnChanges, OnInit {
                 break
         }
     }
+    isAdminOrEspecialistaDremo(): boolean {
+        if (!this.selectedPerfil) return false
+
+        const perfilNombre = this.selectedPerfil.cPerfilNombre?.toLowerCase()
+        return (
+            perfilNombre === 'administrador dremo' ||
+            perfilNombre === 'especialista dremo'
+        )
+    }
 }

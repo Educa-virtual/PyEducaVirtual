@@ -17,6 +17,11 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ApiService } from '@/app/servicios/api.service'
 import { UtilService } from '@/app/servicios/utils.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { BtnFileUploadComponent } from '../../../shared/btn-file-upload/btn-file-upload.component'
+import * as XLSX from 'xlsx'
+import { dateSpecialStructureImport } from './config/date-special-import'
+import { SheetToMatrix } from '../sincronizar-archivo/bulk-data-import/utils/sheetToMatrix'
+import { DateSpecialService } from './service/date-special.service'
 
 @Component({
     selector: 'app-config-fechas',
@@ -26,11 +31,94 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         ContainerPageComponent,
         TablePrimengComponent,
         CalendarModule,
+        BtnFileUploadComponent,
     ],
     templateUrl: './config-fechas.component.html',
     styleUrl: './config-fechas.component.scss',
 })
 export class ConfigFechasComponent implements OnInit {
+    importLoad
+    dateSpecialImport() {
+        this.importLoad = true
+        if (!this.dateSpecialData) return
+        const dataImport = SheetToMatrix.getInstance(
+            'hojaDeDatosAImportar'
+        ).setDataAccordingColumns()
+
+        console.log('dataImport')
+        console.log(dataImport)
+
+        this.dateSpecialService.importDataCollection(dataImport).subscribe({
+            next: () => {},
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Importación de datos',
+                    detail:
+                        error ?? 'Ha ocurrido un error al importar los datos',
+                    life: 3000,
+                })
+
+                this.importLoad = false
+            },
+            complete: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Importación de datos',
+                    detail: 'Los datos han sido importados correctamente',
+                    life: 3000,
+                })
+
+                this.importLoad = false
+            },
+        })
+    }
+
+    collection = dateSpecialStructureImport
+
+    dateSpecialData
+    dateSpecialColumns
+
+    file: any
+
+    uploadFile(file: any) {
+        this.dateSpecialData = undefined
+        this.dateSpecialColumns = []
+        SheetToMatrix.resetInstance('hojaDeDatosAImportar')
+
+        if (!file) return
+
+        this.file = file
+
+        const reader = new FileReader()
+
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+            const data = new Uint8Array(e.target?.result as ArrayBuffer)
+            const workbook = XLSX.read(data, { type: 'array' })
+
+            const firstSheetName = workbook.SheetNames[0]
+
+            const worksheet =
+                workbook.Sheets[this.collection?.sheetName ?? firstSheetName]
+
+            const excelData = SheetToMatrix.setInstance(
+                'hojaDeDatosAImportar',
+                worksheet,
+                {
+                    structures: this.collection.structures,
+                }
+            )
+
+            console.log('excelData')
+            console.log(excelData)
+
+            // this.columnsGroup = excelData.inTableColumnsGroup
+            this.dateSpecialColumns = excelData.inTableColumns
+            this.dateSpecialData = excelData.inTableData
+        }
+
+        reader.readAsArrayBuffer(file)
+    }
     form: FormGroup
     yearCalendarios: any = []
     fechas: []
@@ -39,6 +127,7 @@ export class ConfigFechasComponent implements OnInit {
     iCalAcadId: number
     iYAcadId: number
     visible: boolean = false
+    visibleImport: boolean = false
     caption: string
     option: string
     datePipe: any
@@ -53,7 +142,8 @@ export class ConfigFechasComponent implements OnInit {
         private msg: StepConfirmationService,
         private apiService: ApiService,
         private utils: UtilService,
-        private dialog: ConfirmationModalService
+        private dialog: ConfirmationModalService,
+        private dateSpecialService: DateSpecialService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
@@ -88,6 +178,12 @@ export class ConfigFechasComponent implements OnInit {
     }
 
     accionBtnItemTable({ accion, item }) {
+        if (accion === 'importar') {
+            this.visibleImport = true
+            this.caption = 'Importar fechas especiales'
+            this.option = 'importar'
+        }
+
         if (accion === 'editar') {
             this.updateForm(item)
             this.visible = true
@@ -220,7 +316,7 @@ export class ConfigFechasComponent implements OnInit {
                     iSedeId: this.iSedeId,
                     iYAcadId: this.iYAcadId,
                 }),
-                _opcion: 'getCalendarioIESede2', //getCalendarioSedeYear,
+                _opcion: 'getCalendarioIESede', //getCalendarioSedeYear,
             })
             .subscribe({
                 next: (data: any) => {
@@ -307,6 +403,13 @@ export class ConfigFechasComponent implements OnInit {
 
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Crear fechas',
+            text: 'Importar fechas especiales',
+            icon: 'pi pi-file-import',
+            accion: 'importar',
+            class: 'p-button-primary',
+        },
         {
             labelTooltip: 'Crear fechas',
             text: 'Crear fechas especiales',

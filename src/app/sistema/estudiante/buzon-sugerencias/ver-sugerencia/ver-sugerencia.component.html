@@ -76,6 +76,43 @@
             } @else {
                 <p-message severity="info" text="No se han subido archivos." />
             }
+            <div>
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-8">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>{{
+                                nombreDirector
+                            }}</p-inputGroupAddon>
+                            <input
+                                pInputText
+                                type="text"
+                                [readOnly]="true"
+                                disabled
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>{{
+                                fechaRespuesta
+                            }}</p-inputGroupAddon>
+                            <input
+                                pInputText
+                                type="text"
+                                [readOnly]="true"
+                                disabled
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+                <div class="card">
+                    <p-editor
+                        [readonly]="true"
+                        [style]="{ height: '320px' }"
+                        [modules]="{ toolbar: false }"
+                    />
+                </div>
+            </div>
         </div>
     </div>
     <!--*ngIf="!disable_form" (onClick)="guardarSugerencia()"-->

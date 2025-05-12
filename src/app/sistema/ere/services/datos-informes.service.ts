@@ -228,12 +228,6 @@ export class DatosInformesService {
         iTipoSectorId: any,
         iUgelId: any
     ) {
-        console.log(
-            iEvaluacionId,
-            iNivelTipoId,
-            iDsttId,
-            'filterInstitucionesEducativas'
-        )
         let ies_tmp: Array<object> = this.instituciones_educativas
         if (!iEvaluacionId && !iNivelTipoId) {
             return null
@@ -255,7 +249,6 @@ export class DatosInformesService {
             })
         }
         if (iNivelTipoId) {
-            console.log(ies_tmp, 'ies_tmp')
             ies_tmp = ies_tmp.filter((ie: any) => {
                 if (ie.iNivelTipoId == iNivelTipoId) {
                     return ie

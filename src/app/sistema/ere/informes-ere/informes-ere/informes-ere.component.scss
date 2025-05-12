@@ -15,6 +15,14 @@
     }
 }
 
+:host ::ng-deep .p-panel.p-panel-toggleable {
+    cursor: pointer !important;
+}
+
+:host ::ng-deep .p-panel.p-panel-toggleable .p-panel-toggler {
+    background-color: inherit !important;
+}
+
 :host ::ng-deep .p-panel.p-panel-toggleable.p-panel-expanded > .p-panel-header {
     border-bottom-right-radius: 0rem !important;
     border-bottom-left-radius: 0rem !important;

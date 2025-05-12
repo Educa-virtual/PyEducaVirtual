@@ -1,27 +1,14 @@
 <form [formGroup]="form">
     <div class="grid p-fluid mt-3">
-        <!--<div class="field col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon>Destino *</p-inputGroupAddon>
-                <p-multiSelect
-                    [options]="destinos"
-                    formControlName="iDestinoId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [showClear]="true"
-                    display="chip"
-                    [filter]="true"
-                    [maxSelectedLabels]="undefined"
-                    [showToggleAll]="false"
-                    [appendTo]="'body'"
-                    [style]="{ flex: '1', width: '100%' }"
-                />
-            </p-inputGroup>
-        </div>-->
         <div class="field col-12 md:col-8">
             <p-inputGroup>
                 <p-inputGroupAddon>Asunto *</p-inputGroupAddon>
-                <input pInputText type="text" formControlName="cAsunto" />
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cAsunto"
+                    placeholder="Ingrese un asunto"
+                />
             </p-inputGroup>
         </div>
         <div class="field col-12 md:col-4">
@@ -30,9 +17,9 @@
                 <p-dropdown
                     [options]="prioridades"
                     formControlName="iPrioridadId"
-                    optionLabel="nombre"
+                    optionLabel="cPrioridadNombre"
                     [checkmark]="true"
-                    optionValue="id"
+                    optionValue="iPrioridadId"
                     [appendTo]="'body'"
                     [style]="{ flex: '1', width: '100%' }"
                 />
@@ -48,61 +35,23 @@
         </div>
         <div class="field col-12">
             <p-fileUpload
-                name="demo[]"
+                #uploader
+                name="fArchivos[]"
                 showUploadButton="false"
                 [multiple]="true"
-                chooseLabel="Seleccione archivos"
+                (onSelect)="onFileSelect($event)"
+                chooseLabel="Seleccione archivos (opcional)"
+                [accept]="'.pdf,.jpg,.jpeg,.png,.doc,.docx'"
                 fileLimit="3"
                 maxFileSize="10240000"
                 [showCancelButton]="false"
             >
-                <ng-template pTemplate="content">
-                    <ul *ngIf="uploadedFiles.length">
-                        <li *ngFor="let file of uploadedFiles">
-                            {{ file.name }} - {{ file.size }} bytes
-                        </li>
-                    </ul>
-                </ng-template>
             </p-fileUpload>
             <small class="text-muted"
-                >Máx. 3 archivos, 100MB en total. Asteriscos (*) son campos
-                obligatorios.</small
+                >Máx. 3 archivos, 100MB en total<br />* Campos
+                obligatorios</small
             >
         </div>
-        <!--@if (disable_form) {
-            <div class="field col-12">
-                <a
-                    href="#"
-                    class="p-button-link p-button-text mr-2"
-                    target="_blank"
-                >
-                    <p-chip>
-                        <span
-                            class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center"
-                        >
-                            <i class="pi pi-file"></i>
-                        </span>
-                        <span class="ml-2"> Mi_sugerencia_2023.pdf </span>
-                    </p-chip>
-                </a>
-                <a
-                    href="#"
-                    class="p-button-link p-button-text mx-2"
-                    target="_blank"
-                >
-                    <p-chip>
-                        <span
-                            class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center"
-                        >
-                            <i class="pi pi-file"></i>
-                        </span>
-                        <span class="ml-2"> Foto_adjunta_20230101.jpg </span>
-                    </p-chip>
-                </a>
-            </div>
-        } @else {
-
-        }-->
     </div>
     <div class="flex justify-content-end" *ngIf="!disable_form">
         <p-button
@@ -110,14 +59,6 @@
             (onClick)="guardarSugerencia()"
             severity="success"
             [disabled]="form.invalid"
-            [hidden]="sugerencia_registrada"
-        />
-        <p-button
-            label="Actualizar"
-            (onClick)="actualizarSugerencia()"
-            severity="success"
-            [disabled]="form.invalid"
-            [hidden]="!sugerencia_registrada"
         />
     </div>
 </form>

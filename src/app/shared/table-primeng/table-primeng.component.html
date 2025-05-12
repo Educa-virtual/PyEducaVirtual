@@ -332,11 +332,6 @@
                         @if (col.type === 'checkbox') {
                             <p-tableCheckbox [value]="rowData" />
                         }
-                        @if (col.type === 'date') {
-                            <div [style.text-align]="col.text">
-                                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
-                            </div>
-                        }
                         @if (col.type === 'radio') {
                             <p-tableRadioButton
                                 [value]="rowData"

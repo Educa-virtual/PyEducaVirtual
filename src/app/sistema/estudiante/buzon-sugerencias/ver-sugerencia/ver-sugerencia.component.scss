@@ -6,6 +6,13 @@
     }
 }
 
-:host ::ng-deep .p-inputswitch {
-    height: 1rem !important;
+div.estilo-editor {
+    min-height: 50px;
+    border: 1px solid var(--surface-border);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+#cSugerencia {
+    padding: 5px;
 }

@@ -1,8 +1,15 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit, Output, EventEmitter, inject } from '@angular/core'
+import {
+    Component,
+    OnInit,
+    Output,
+    EventEmitter,
+    ViewChild,
+} from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
 import { MessageService } from 'primeng/api'
+import { FileUpload } from 'primeng/fileupload'
 
 @Component({
     selector: 'app-registrar-sugerencia',
@@ -12,68 +19,98 @@ import { MessageService } from 'primeng/api'
     styleUrl: './registrar-sugerencia.component.scss',
 })
 export class RegistrarSugerenciaComponent implements OnInit {
-    @Output() eventEsVisible = new EventEmitter<any>()
+    //@Output() eventEsVisible = new EventEmitter<any>()
+    @Output() eventSugerenciaRegistrada = new EventEmitter<boolean>()
     form: FormGroup
     disable_form: boolean = false
     uploadedFiles: any[] = []
-    sugerencia_registrada: boolean = false
-
-    destinos: Array<object>
-    prioridades: Array<object>
-
-    private buzonSugerenciasService = inject(BuzonSugerenciasService)
-    private _MessageService = inject(MessageService)
+    @ViewChild('uploader') uploader: FileUpload
+    prioridades: any[]
 
     constructor(
         private fb: FormBuilder,
-        private sugerenciaService: BuzonSugerenciasService
+        private buzonSugerenciasService: BuzonSugerenciasService,
+        private messageService: MessageService
     ) {}
 
     ngOnInit(): void {
-        /*this.destinos = [
-            { id: 1, nombre: 'EQUIPO TECNICO' },
-            { id: 2, nombre: 'DIRECCION' },
-            { id: 3, nombre: 'PROFESORES' },
-            { id: 4, nombre: 'ESPECIALISTAS' },
-        ]*/
+        this.obtenerPrioridades()
+        this.inicializarForm()
+    }
 
-        this.prioridades = [
-            { id: 1, nombre: 'Baja' },
-            { id: 2, nombre: 'Media' },
-            { id: 3, nombre: 'Alta' },
-        ]
-
+    inicializarForm() {
+        const iPrioridadId = this.prioridades
+            ? this.prioridades[1].iPrioridadId
+            : null
         this.form = this.fb.group({
-            //iDestinoId: [null, Validators.required],
-            iPrioridadId: [2, Validators.required],
+            iPrioridadId: [iPrioridadId, Validators.required],
             cAsunto: [null, Validators.required],
             cSugerencia: [null, Validators.required],
         })
     }
 
-    guardarSugerencia() {
-        this.buzonSugerenciasService
-            .registrarSugerencia(this.form.value)
-            .subscribe({
-                next: (data: any) => {
-                    this.eventEsVisible.emit(false)
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Mensaje',
-                        detail: data.message,
-                    })
-                },
-                error: (error) => {
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Problema al registrar sugerencia',
-                        detail: error,
-                    })
-                },
-            })
+    reiniciarFormulario() {
+        this.inicializarForm()
+        this.reiniciarFileUpload()
     }
 
-    actualizarSugerencia() {
-        this.disable_form = true
+    reiniciarFileUpload() {
+        this.uploader.clear()
+        this.uploadedFiles = []
     }
+
+    obtenerPrioridades() {
+        this.buzonSugerenciasService.obtenerPrioridades().subscribe({
+            next: (response: any) => {
+                this.prioridades = response.data
+                this.form.patchValue({
+                    iPrioridadId: this.prioridades[1].iPrioridadId,
+                })
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    onFileSelect(event: { files: any[] }) {
+        this.uploadedFiles = [...event.files]
+    }
+
+    guardarSugerencia() {
+        const formData = new FormData()
+        Object.keys(this.form.value).forEach((key) => {
+            formData.append(key, this.form.value[key])
+        })
+        this.uploadedFiles.forEach((file, index) => {
+            formData.append(`fArchivos[${index}]`, file)
+        })
+        this.buzonSugerenciasService.registrarSugerencia(formData).subscribe({
+            next: (data: any) => {
+                this.eventSugerenciaRegistrada.emit(true)
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Mensaje',
+                    detail: data.message,
+                })
+                this.inicializarForm()
+                this.reiniciarFileUpload()
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al registrar sugerencia',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    /*actualizarSugerencia() {
+        this.disable_form = true
+    }*/
 }

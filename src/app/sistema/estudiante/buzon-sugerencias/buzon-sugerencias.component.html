@@ -32,9 +32,11 @@
         sortMode="single"
         sortField="_cPersNomape"
         [sortOrder]="1"
-        [(selectedRowData)]="selectedItems"
+        [(selectedRowData)]="selectedItem"
         [actions]="actions"
         [showAdvancedFilter]="true"
+        [indiceColumnaBuscar]="2"
+        [showAdvancedFilter]="false"
     >
     </app-table-primeng>
 </p-panel>
@@ -48,26 +50,29 @@
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
     [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-    (onHide)="resetearInputs()"
+    (onHide)="registrarSugerenciaComponent?.reiniciarFormulario()"
 >
-    <ng-content>
-        <app-registrar-sugerencia
-            (eventEsVisible)="escucharEsVisible($event)"
-        /><!---->
-    </ng-content>
+    <app-registrar-sugerencia
+        #registrarSugerenciaComponent
+        (eventSugerenciaRegistrada)="listenSugerenciaRegistrada($event)"
+    ></app-registrar-sugerencia>
 </p-dialog>
-<!--<p-dialog
+
+<p-dialog
     [draggable]="false"
     [maximizable]="true"
-    header="Registrar derivación"
-    [(visible)]="derivar_visible"
+    [header]="formularioVerHeader"
+    [(visible)]="mostrarFormularioVer"
     [style]="{ width: '56rem' }"
     [modal]="true"
-    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
     [contentStyle]="{ overflow: 'auto' }"
->-->
-<!--<ng-content>
-        <app-derivar-sugerencia (es_visible)="derivacionVisible($event)" />
-    </ng-content>
-</p-dialog>-->
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+    <app-ver-sugerencia
+        (cerrarDialogVerSugerenciaEvent)="listenDialogVerSugerencia($event)"
+        [selectedItem]="selectedItem"
+        #verSugerenciaComponent
+    ></app-ver-sugerencia>
+</p-dialog>
+
 <p-toast></p-toast>

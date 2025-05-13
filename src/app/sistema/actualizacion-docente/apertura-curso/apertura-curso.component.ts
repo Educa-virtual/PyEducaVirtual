@@ -1,49 +1,37 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, model, OnInit } from '@angular/core'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
+import { Component, inject, OnInit } from '@angular/core'
 import {
     TablePrimengComponent,
     IColumn,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
-import { FileUploadModule } from 'primeng/fileupload'
 import { MessageService } from 'primeng/api'
-import { InputSwitchModule } from 'primeng/inputswitch'
 import { FormBuilder, Validators } from '@angular/forms'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { ImagenSelectComponent } from '@/app/shared/imagen-select/imagen-select.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-apertura-curso',
     standalone: true,
     templateUrl: './apertura-curso.component.html',
     styleUrls: ['./apertura-curso.component.scss'],
-    imports: [
-        PrimengModule,
-        ToolbarPrimengComponent,
-        TablePrimengComponent,
-        FileUploadModule,
-        InputSwitchModule,
-        CommonInputComponent,
-        ImagenSelectComponent,
-    ],
+    imports: [PrimengModule, ToolbarPrimengComponent, TablePrimengComponent],
     providers: [MessageService],
 })
 export class AperturaCursoComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
+    private _ConstantesService = inject(ConstantesService)
 
-    uploadedFiles: any[] = []
     iPago: boolean = true
     tipoCapacitacion: any[] = []
     nivelPedagogico: any[] = []
     publicoObjetivo: any[] = []
     cursos: any[] = []
     iCapacitacionId: string = ''
-    mostrarModalImagenes = false
 
     modoFormulario: 'crear' | 'editar' = 'crear'
 
@@ -130,41 +118,7 @@ export class AperturaCursoComponent implements OnInit {
         },
     ]
     //
-    images = model([])
 
-    get activeIndex(): number {
-        return this._activeIndex
-    }
-
-    set activeIndex(newValue) {
-        if (
-            this.images &&
-            0 <= newValue &&
-            newValue <= this.images.length - 1
-        ) {
-            this._activeIndex = newValue
-        }
-    }
-
-    _activeIndex: number = 2
-
-    responsiveOptions: any[] = [
-        {
-            breakpoint: '1300px',
-            numVisible: 4,
-        },
-        {
-            breakpoint: '575px',
-            numVisible: 1,
-        },
-    ]
-    next() {
-        this.activeIndex++
-    }
-
-    prev() {
-        this.activeIndex--
-    }
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -172,20 +126,7 @@ export class AperturaCursoComponent implements OnInit {
                 this.modoFormulario = 'editar'
                 this.iCapacitacionId = item.iCapacitacionId
                 // console.log('Editar', item)
-                this.formNuevaCapacitacion.patchValue({
-                    iTipoCapId: item.iTipoCapId,
-                    cCapTitulo: item.cCapTitulo,
-                    iNivelPedId: item.iNivelPedId,
-                    iTipoPubId: item.iTipoPubId,
-                    cCapDescripcion: item.cCapDescripcion,
-                    iTotalHrs: item.iTotalHrs,
-                    dFechaInicio: item.dFechaInicio,
-                    dFechaFin: item.dFechaFin,
-                    iCosto: item.iCosto,
-                    nCosto: item.nCosto,
-                    cHorario: item.cHorario,
-                    iCantidad: item.iCantidad,
-                })
+                this.formNuevaCapacitacion.patchValue(item)
                 // this.selectedItems = []
                 // this.selectedItems = [item]
                 break
@@ -194,25 +135,7 @@ export class AperturaCursoComponent implements OnInit {
                 break
         }
     }
-    //para subir la imagen
-    onUpload(event: any) {
-        let file
-        for (file of event.files) {
-            this.uploadedFiles.push(file)
-        }
-        this.messageService.add({
-            severity: 'info',
-            summary: 'File Uploaded',
-            detail: '',
-        })
-    }
-    abrirModal() {
-        this.mostrarModalImagenes = true
-    }
-    // obtener imagen de portada para el curso
-    imagenesSeleccionada(imagen: any) {
-        console.log('imagenes seleccionadas', imagen)
-    }
+
     // metodo para guardar el curso creado
     crearCurso() {
         // if(this.formNuevaCapacitacion.invalid) return;
@@ -227,7 +150,7 @@ export class AperturaCursoComponent implements OnInit {
                 header: `¿Esta seguro que desea Editar: ${titulo} ?`,
                 accept: () => {
                     const iDocenteId = 1
-                    const iCredId = 2
+                    const iCredId = this._ConstantesService.iCredId
                     // Agregar datos al formulario
                     const data = {
                         ...this.formNuevaCapacitacion.value,
@@ -283,7 +206,7 @@ export class AperturaCursoComponent implements OnInit {
                     header: `¿Esta seguro que desea guardar: ${titulo} ?`,
                     accept: () => {
                         const iDocenteId = 1
-                        const iCredId = 2
+                        const iCredId = this._ConstantesService.iCredId
                         // Agregar datos al formulario
                         const data = {
                             ...this.formNuevaCapacitacion.value,
@@ -341,7 +264,7 @@ export class AperturaCursoComponent implements OnInit {
         const titulo = item.cCapTitulo
         const data = {
             iCapacitacionId: item.iCapacitacionId,
-            iCredId: 1,
+            iCredId: this._ConstantesService.iCredId,
         }
         // alert antes de guardar el curso creado
         this._confirmService.openConfiSave({
@@ -408,7 +331,7 @@ export class AperturaCursoComponent implements OnInit {
     // obtener las capacitaciones
     obtenerCapacitaciones() {
         const iEstado = 1
-        const iCredId = 1
+        const iCredId = this._ConstantesService.iCredId
         const data = {
             iEstado: iEstado,
             iCredId: iCredId,

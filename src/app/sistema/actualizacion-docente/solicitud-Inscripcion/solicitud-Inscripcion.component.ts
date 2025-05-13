@@ -1,15 +1,13 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
-import { BadgeModule } from 'primeng/badge'
-import { TabViewModule } from 'primeng/tabview'
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 import {
     TablePrimengComponent,
     IColumn,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component'
-import { MenuItem } from 'primeng/api'
+import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component'
 
 @Component({
     selector: 'app-solicitud-inscripcion',
@@ -21,39 +19,29 @@ import { MenuItem } from 'primeng/api'
         ToolbarPrimengComponent,
         TablePrimengComponent,
         AperturaCursoComponent,
-        BadgeModule,
-        TabViewModule,
+        TabsPrimengComponent,
     ],
 })
-export class SolicitudInscripcionComponent implements OnInit {
+export class SolicitudInscripcionComponent {
     activeIndex: number = 0
-    breadCrumbItems: MenuItem[]
-    breadCrumbHome: MenuItem
-    alumnos = [
+
+    tabs = [
         {
-            nombreApellido: 'Flores Caguana Miguel',
-            docente: 'SI',
-            dni: '76543621',
-            telefono: '943567892',
-            modalidad: 'Virtual',
+            title: 'Apertura de Curso',
+            icon: 'pi pi-book',
+            tab: 'contenido',
         },
         {
-            nombreApellido: 'Flores Caguana Maria',
-            docente: 'NO',
-            dni: '76543634',
-            telefono: '943567692',
-            modalidad: 'Presencial',
+            title: 'Solicitud de Inscripción',
+            icon: 'pi pi-home',
+            tab: 'inicio',
         },
     ]
-    constructor() {}
 
-    ngOnInit() {
-        this.breadCrumbItems = [
-            { label: 'Aula virtual' },
-            { label: 'Capacitaciones' },
-        ]
-        this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' }
+    updateTab(tab): void {
+        this.activeIndex = tab
     }
+
     public columnasTabla: IColumn[] = [
         {
             type: 'item',

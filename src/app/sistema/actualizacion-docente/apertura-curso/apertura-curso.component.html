@@ -1,6 +1,6 @@
 <section>
     <div class="grid">
-        <div class="card col-5 m-1">
+        <div class="col-5 card m-1">
             <app-toolbar-primeng
                 title="Listado de Capacitación Activas"
             ></app-toolbar-primeng>
@@ -20,9 +20,13 @@
                 </p-dataView>
             </section>
         </div>
-        <div class="card col">
+        <div class="col card">
             <app-toolbar-primeng
-                title="Apertura Nueva Capacitación"
+                [title]="
+                    modoFormulario === 'editar'
+                        ? 'Actualizar Capacitación'
+                        : 'Aperturar Nueva Capacitación'
+                "
             ></app-toolbar-primeng>
             <form
                 [formGroup]="formNuevaCapacitacion"
@@ -80,7 +84,7 @@
                             <div class="col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Nivel Educativo:</p-inputGroupAddon
+                                        >Nivel Pedagógico:</p-inputGroupAddon
                                     >
                                     <p-dropdown
                                         [options]="nivelPedagogico"
@@ -137,10 +141,10 @@
                     <!-- agregar horas -->
                     <div class="col">
                         <div class="grid">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Total de horas:
+                                        >Horas:
                                     </p-inputGroupAddon>
                                     <input
                                         type="number"
@@ -172,10 +176,10 @@
                                     El título es obligatorio.
                                 </small>
                             </div>
-                            <div class="col-4">
+                            <div class="col-5">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Fecha de Inicio:</p-inputGroupAddon
+                                        >Fecha Inicio:</p-inputGroupAddon
                                     >
                                     <p-calendar
                                         id="fechaFin"
@@ -191,7 +195,7 @@
                             <div class="col-4">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Fecha de Fin:</p-inputGroupAddon
+                                        >Fecha Fin:</p-inputGroupAddon
                                     >
                                     <p-calendar
                                         id="fechaFin"
@@ -221,17 +225,17 @@
                                     />
                                 </p-inputGroup>
                             </div>
-                            <div class="col align-content-center">
-                                <div class="flex">
+                            <div class="col">
+                                <div
+                                    class="flex align-items-center justify-content-between"
+                                >
                                     <label for="" class="pr-3"
                                         >¿Tiene Costo?</label
                                     >
-                                    <div class="align-content-center">
-                                        <p-inputSwitch
-                                            formControlName="iCosto"
-                                            class="pr-3"
-                                        />
-                                    </div>
+                                    <p-inputSwitch
+                                        formControlName="iCosto"
+                                        class="pr-3"
+                                    />
                                     <!-- Input visible solo si iPago está activado -->
                                     <input
                                         *ngIf="
@@ -246,42 +250,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col">
-                        <div class="card col-12">
-                            <label for="descripcion" class="mt-1 font-bold"
-                                >Subir Imagen de portada:</label
-                            >
-                            <p-toast />
-
-                            <!-- <div *ngIf="imagenPortada">
-                                <p>Imagen seleccionada:</p>
-                                <img [src]="imagenPortada.url" alt="Portada" width="200" class="mb-2" />
-                              </div> -->
-                            <!-- <p-fileUpload
-                                name="demo[]"
-                                url="https://www.primefaces.org/cdn/api/upload.php"
-                                (onUpload)="onUpload($event)"
-                                [multiple]="true"
-                                accept="image/*"
-                                maxFileSize="1000000"
-                            >
-                                <ng-template pTemplate="content">
-                                    <ul *ngIf="uploadedFiles.length">
-                                        <li *ngFor="let file of uploadedFiles">
-                                            {{ file.name }} -
-                                            {{ file.size }} bytes
-                                        </li>
-                                    </ul>
-                                </ng-template>
-                            </p-fileUpload> -->
-                        </div>
-                        <p-button
-                            icon="pi pi-plus"
-                            label="Agregar Imagenes"
-                            class="p-button-success"
-                            (click)="abrirModal()"
-                        ></p-button>
                     </div>
 
                     <!-- Agregar los bottones -->
@@ -321,15 +289,3 @@
         </div>
     </div>
 </section>
-
-<p-dialog
-    [style]="{ width: '50%' }"
-    class="p-fluid"
-    [modal]="true"
-    [(visible)]="mostrarModalImagenes"
-    header="Seleccionar imagen para la portada"
->
-    <app-imagen-select
-        (imagenSeleccionada)="imagenesSeleccionada($event)"
-    ></app-imagen-select>
-</p-dialog>

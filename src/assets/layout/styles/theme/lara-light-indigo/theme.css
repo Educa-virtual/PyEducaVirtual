@@ -7463,15 +7463,18 @@
   .p-dialog-header {
     background: var(--bg-header-modal) !important;
     color: white !important;
+
     .p-icon {
       color: white !important;
+
       &:hover {
         background: white !important;
         color: var(--bg-header-modal) !important;
       }
     }
   }
-  .p-overflow-hidden{
+
+  .p-overflow-hidden {
     overflow: scroll !important;
   }
 }

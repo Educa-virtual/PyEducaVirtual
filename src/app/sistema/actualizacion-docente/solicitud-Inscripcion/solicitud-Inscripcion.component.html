@@ -1,0 +1,25 @@
+<app-toolbar-primeng title="Capacitaciones"></app-toolbar-primeng>
+<div class="grid">
+    <app-tabs-primeng
+        class="col-12"
+        [activeIndex]="activeIndex"
+        [tabs]="tabs"
+        (updateTab)="updateTab($event)"
+    >
+    </app-tabs-primeng>
+</div>
+<div class="col-12">
+    @switch (activeIndex) {
+        @case (0) {
+            <app-apertura-curso></app-apertura-curso>
+        }
+        @case (1) {
+            <app-table-primeng
+                [columnas]="columnasTabla"
+                [data]="[]"
+                [actions]="accionesTabla"
+            >
+            </app-table-primeng>
+        }
+    }
+</div>

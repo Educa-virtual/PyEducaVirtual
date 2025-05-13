@@ -37,6 +37,13 @@ export class UserAccountComponent implements OnInit {
                     //     icon: 'pi pi-user',
                     // },
                     {
+                        label: 'Cambiar contraseña',
+                        icon: 'pi pi-bars',
+                        command: () => {
+                            this.actionTopBar.emit({ accion: 'logout' })
+                        },
+                    },
+                    {
                         label: 'Salir sesión',
                         icon: 'pi pi-sign-out',
                         command: () => {

@@ -20,6 +20,8 @@ export class ResponderSugerenciaComponent implements OnInit {
     form: FormGroup
     private _selectedItem: any
     @Output() eventSugerenciaRespondida = new EventEmitter<boolean>()
+    //subir archivos propiedad
+    archivos: any
 
     @Input()
     set selectedItem(value: any) {

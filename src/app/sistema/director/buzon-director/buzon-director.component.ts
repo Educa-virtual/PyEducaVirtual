@@ -4,7 +4,7 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component, OnInit } from '@angular/core'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { VerSugerenciaComponent } from '../../estudiante/buzon-sugerencias/ver-sugerencia/ver-sugerencia.component'
 import { ResponderSugerenciaComponent } from '../responder-sugerencia/responder-sugerencia.component'
@@ -31,6 +31,10 @@ export class BuzonDirectorComponent implements OnInit {
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
     selectedItem: any
 
+    //breadcrumb
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     // datos hardcodeados tabla
     dataSugerencias = [
         {
@@ -51,8 +55,7 @@ export class BuzonDirectorComponent implements OnInit {
             cAsunto: 'Problema con horarios',
             cPrioridadNombre: 'Media',
             cNombreEstudiante: 'María Rodríguez',
-            cRespuesta:
-                'Se está revisando el tema con el área correspondiente.',
+            cRespuesta: '13/05/2025',
             cSugerencia:
                 'Hay un solapamiento en los horarios de física y química para el grupo A.',
         },
@@ -74,8 +77,7 @@ export class BuzonDirectorComponent implements OnInit {
             cAsunto: 'Mejoras en la cafetería',
             cPrioridadNombre: 'Media',
             cNombreEstudiante: 'Ana Martínez',
-            cRespuesta:
-                'Gracias por tu sugerencia. Ya hemos hablado con el proveedor del servicio.',
+            cRespuesta: '13/05/2025',
             cSugerencia:
                 'Sería bueno incluir opciones vegetarianas en el menú de la cafetería.',
         },
@@ -145,7 +147,7 @@ export class BuzonDirectorComponent implements OnInit {
             field: 'cRespuesta',
             header: 'Fecha de respuesta',
             text_header: 'center',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'text',
@@ -153,7 +155,7 @@ export class BuzonDirectorComponent implements OnInit {
             field: '',
             header: 'Respuesta',
             text_header: 'center',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'actions',
@@ -173,6 +175,15 @@ export class BuzonDirectorComponent implements OnInit {
 
     ngOnInit() {
         console.log('inicialiazando buzon director')
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/inicio',
+        }
+
+        this.breadCrumbItems = [
+            { label: 'Administración' },
+            { label: 'Buzón de sugerencias' },
+        ]
     }
 
     listenDialogVerSugerencia(event: boolean) {

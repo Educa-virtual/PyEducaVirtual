@@ -53,6 +53,22 @@
                 ></div>
             </div>
         </div>
+        <!--aqui-->
+        <div class="field col-12">
+            <label for="cSugerencia">Archivos subidos</label>
+            @if (archivos?.length > 0) {
+                <div class="estilo-editor">
+                    <ul>
+                        <li *ngFor="let archivo of archivos">
+                            <a href="#">{{ archivo.nombreArchivo }}</a>
+                        </li>
+                    </ul>
+                </div>
+            } @else {
+                <p-message severity="info" text="No se han subido archivos." />
+            }
+        </div>
+        <!--aqui-->
 
         <div class="field col-12">
             <label for="cRespuesta">Respuesta:</label>

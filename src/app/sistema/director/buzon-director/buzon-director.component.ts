@@ -23,8 +23,68 @@ export class BuzonDirectorComponent implements OnInit {
     formularioResponderHeader: string
     mostrarFormularioResponder: boolean = false
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
-    dataSugerencias: any[]
     selectedItem: any
+
+    // datos hardcodeados tabla
+    dataSugerencias = [
+        {
+            item: 1,
+            iSugerenciaId: 1,
+            dtFechaCreacion: new Date('2025-04-20'),
+            cAsunto: 'Mejora en materiales de clase',
+            cPrioridadNombre: 'Alta',
+            cNombreEstudiante: 'Juan Pérez',
+            cRespuesta: '',
+            cSugerencia:
+                'Sería bueno tener acceso a más material digital para las clases de matemáticas.',
+        },
+        {
+            item: 2,
+            iSugerenciaId: 2,
+            dtFechaCreacion: new Date('2025-04-15'),
+            cAsunto: 'Problema con horarios',
+            cPrioridadNombre: 'Media',
+            cNombreEstudiante: 'María Rodríguez',
+            cRespuesta:
+                'Se está revisando el tema con el área correspondiente.',
+            cSugerencia:
+                'Hay un solapamiento en los horarios de física y química para el grupo A.',
+        },
+        {
+            item: 3,
+            iSugerenciaId: 3,
+            dtFechaCreacion: new Date('2025-04-10'),
+            cAsunto: 'Solicitud de taller adicional',
+            cPrioridadNombre: 'Baja',
+            cNombreEstudiante: 'Carlos Gómez',
+            cRespuesta: '',
+            cSugerencia:
+                'Muchos estudiantes estamos interesados en tener un taller de programación después de clases.',
+        },
+        {
+            item: 4,
+            iSugerenciaId: 4,
+            dtFechaCreacion: new Date('2025-04-05'),
+            cAsunto: 'Mejoras en la cafetería',
+            cPrioridadNombre: 'Media',
+            cNombreEstudiante: 'Ana Martínez',
+            cRespuesta:
+                'Gracias por tu sugerencia. Ya hemos hablado con el proveedor del servicio.',
+            cSugerencia:
+                'Sería bueno incluir opciones vegetarianas en el menú de la cafetería.',
+        },
+        {
+            item: 5,
+            iSugerenciaId: 5,
+            dtFechaCreacion: new Date('2025-04-01'),
+            cAsunto: 'Problema con la plataforma virtual',
+            cPrioridadNombre: 'Alta',
+            cNombreEstudiante: 'Luis Sánchez',
+            cRespuesta: '',
+            cSugerencia:
+                'La plataforma virtual se cae frecuentemente durante las horas pico.',
+        },
+    ]
 
     columns = [
         {
@@ -89,7 +149,6 @@ export class BuzonDirectorComponent implements OnInit {
             text: 'center',
         },
     ]
-    buzonSugerenciasService: any
 
     constructor(
         //private buzonSugerenciasService: BuzonSugerenciasService,
@@ -98,7 +157,7 @@ export class BuzonDirectorComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.obtenerListaSugerencias()
+        console.log('inicialiazando buzon director')
     }
 
     listenDialogVerSugerencia(event: boolean) {
@@ -110,7 +169,24 @@ export class BuzonDirectorComponent implements OnInit {
     listenSugerenciaRespondida(event: boolean) {
         if (event == true) {
             this.mostrarFormularioResponder = false
-            this.obtenerListaSugerencias()
+
+            if (this.selectedItem) {
+                this.selectedItem.cRespuesta = 'Respuesta enviada'
+                const index = this.dataSugerencias.findIndex(
+                    (item) =>
+                        item.iSugerenciaId === this.selectedItem.iSugerenciaId
+                )
+                if (index !== -1) {
+                    this.dataSugerencias[index] = { ...this.selectedItem }
+                }
+
+                // Mostramos mensaje de éxito
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Respuesta enviada correctamente',
+                })
+            }
         }
     }
 
@@ -124,8 +200,9 @@ export class BuzonDirectorComponent implements OnInit {
         this.mostrarFormularioResponder = true
     }
 
+    // metodo obtener sugerencias
     obtenerListaSugerencias() {
-        this.buzonSugerenciasService.obtenerListaSugerencias().subscribe({
+        /* this.buzonSugerenciasService.obtenerListaSugerencias().subscribe({
             next: (data: any) => {
                 this.dataSugerencias = data.data
             },
@@ -136,9 +213,10 @@ export class BuzonDirectorComponent implements OnInit {
                     detail: error,
                 })
             },
-        })
+        }) */
     }
 
+    // botones tabla
     accionBtnItemTable({ accion, item }) {
         switch (accion) {
             case 'ver':
@@ -172,21 +250,3 @@ export class BuzonDirectorComponent implements OnInit {
         },
     ]
 }
-/* import { Component } from '@angular/core';
-import { PrimengModule } from '@/app/primeng.module';
-import { TablePrimengComponent, IActionTable } from '@/app/shared/table-primeng/table-primeng.component';
-import { IActionContainer } from '@/app/shared/container-page/container-page.component';
-
-@Component({
-  selector: 'app-buzon-director',
-  standalone: true,
-  imports: [
-    PrimengModule,
-    TablePrimengComponent,
-  ],
-  templateUrl: './buzon-director.component.html',
-  styleUrl: './buzon-director.component.scss'
-})
-export class BuzonDirectorComponent  {
-  title: string = 'Buzón de sugerencias';
-} */

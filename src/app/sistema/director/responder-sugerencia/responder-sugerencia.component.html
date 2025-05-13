@@ -1,0 +1,89 @@
+<form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+        <div class="field col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Alumno</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cNombreEstudiante"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="dtFechaCreacion"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Asunto</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cAsunto"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cPrioridadNombre"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12">
+            <label for="cSugerencia">Sugerencia del alumno:</label>
+            <div class="p-inputgroup p-fluid estilo-editor">
+                <div
+                    id="cSugerencia"
+                    [innerHTML]="form.get('cSugerencia')?.value"
+                ></div>
+            </div>
+        </div>
+
+        <div class="field col-12">
+            <label for="cRespuesta">Respuesta:</label>
+            <p-editor
+                formControlName="cRespuesta"
+                [style]="{ height: '320px' }"
+            ></p-editor>
+            <small
+                class="p-error"
+                *ngIf="
+                    form.get('cRespuesta')?.invalid &&
+                    form.get('cRespuesta')?.touched
+                "
+            >
+                La respuesta es requerida
+            </small>
+        </div>
+    </div>
+
+    <div class="flex justify-content-end">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            class="mr-2"
+            (click)="cerrarDialog()"
+        ></p-button>
+        <p-button
+            label="Enviar respuesta"
+            severity="success"
+            [disabled]="form.invalid"
+            (click)="enviarRespuesta()"
+        ></p-button>
+    </div>
+</form>

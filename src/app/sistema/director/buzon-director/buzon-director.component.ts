@@ -7,11 +7,17 @@ import { Component, OnInit } from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { VerSugerenciaComponent } from '../../estudiante/buzon-sugerencias/ver-sugerencia/ver-sugerencia.component'
+import { ResponderSugerenciaComponent } from '../responder-sugerencia/responder-sugerencia.component'
 
 @Component({
     selector: 'app-buzon-director',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent, VerSugerenciaComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        VerSugerenciaComponent,
+        ResponderSugerenciaComponent,
+    ],
     templateUrl: './buzon-director.component.html',
     styleUrl: './buzon-director.component.scss',
 })
@@ -240,13 +246,13 @@ export class BuzonDirectorComponent implements OnInit {
         },
         {
             labelTooltip: 'Responder sugerencia',
-            icon: 'pi pi-reply',
+            icon: 'pi pi-pencil',
             accion: 'responder',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
-            isVisible: (row) => {
-                return !row.cRespuesta || row.cRespuesta === ''
-            },
+            //isVisible: (row) => {
+            //  return !row.cRespuesta || row.cRespuesta === ''
+            //},
         },
     ]
 }

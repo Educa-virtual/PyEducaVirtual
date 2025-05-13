@@ -1,0 +1,270 @@
+<app-container-page
+    title="Curriculas"
+    [actions]="curriculas.container.actions"
+    (accionBtnItem)="curriculas.container.accionBtnItem($event)"
+>
+    <app-table-primeng
+        [columnas]="curriculas.table.columns"
+        [actions]="curriculas.table.actions"
+        [data]="curriculas.table.data"
+        (accionBtnItem)="curriculas.table.accionBtnItem($event)"
+    >
+    </app-table-primeng>
+</app-container-page>
+
+<p-dialog
+    #dialog
+    [(visible)]="dialogVisible.curricula"
+    [modal]="true"
+    [maximizable]="true"
+    (onShow)="dialog.maximize()"
+    appendTo="body"
+    (onHide)="dialogVisible.cursos = false"
+    [style]="{ width: '75rem' }"
+>
+    <ng-template pTemplate="header">
+        <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+        >
+            <span class="font-bold white-space-nowrap">
+                {{ modal?.title }}
+            </span>
+        </div>
+    </ng-template>
+    <div class="grid h-full mt-4 row-gap-3">
+        @switch (modal?.type) {
+            @case ('curricula') {
+                <form
+                    [class.col-4]="dialogVisible.cursos"
+                    [class.col-11]="!dialogVisible.cursos"
+                    class="grid h-full"
+                    [formGroup]="curriculasForm"
+                >
+                    <div class="col-12 grid">
+                        <div class="col-10 flex flex-column gap-2">
+                            <label for="name">Nombre</label>
+                            <input
+                                pInputText
+                                id="name"
+                                formControlName="cCurrDescripcion"
+                            />
+                        </div>
+                        <div class="col-2 flex flex-column gap-2">
+                            <label for="pesoActitudinal">Es la vigente</label>
+                            <p-toggleButton
+                                styleClass="w-full"
+                                onLabel="On"
+                                offLabel="Off"
+                                formControlName="bCurrEsLaVigente"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-12 grid">
+                        <div class="col-6 flex flex-column gap-2">
+                            <label for="modalidad"
+                                >Modalidad del servicio</label
+                            >
+                            <p-dropdown
+                                id="modalidad"
+                                styleClass="w-full"
+                                [options]="modalidadesDropdownOptions"
+                                optionLabel="name"
+                                appendTo="body"
+                                formControlName="iModalServId"
+                                placeholder="Seleccione una modalidad"
+                            />
+                        </div>
+                        <div class="col-6 flex flex-column gap-2">
+                            <label for="mencion">Mención</label>
+                            <input
+                                pInputText
+                                id="mencion"
+                                formControlName="cCurrMencion"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-12 grid">
+                        <div class="col-4 flex flex-column gap-2">
+                            <label for="nroHoras">Nro Horas</label>
+                            <input
+                                pInputText
+                                id="nroHoras"
+                                formControlName="iCurrNroHoras"
+                            />
+                        </div>
+                        <div class="col-4 flex flex-column gap-2">
+                            <label for="notaMinima">Nota minima</label>
+                            <input
+                                pInputText
+                                id="notaMinima"
+                                formControlName="iCurrNotaMinima"
+                            />
+                        </div>
+                        <div class="col-4 flex flex-column gap-2">
+                            <label for="totalCreditos">Total de créditos</label>
+                            <input
+                                pInputText
+                                id="totalCreditos"
+                                formControlName="iCurrTotalCreditos"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-12 grid">
+                        <label class="col-12" for="totalCreditos"
+                            >Perfil de egresado</label
+                        >
+                        <p-editor
+                            class="col-12"
+                            id="totalCreditos"
+                            formControlName="cCurrPerfilEgresado"
+                            [style]="{ height: '80px' }"
+                        />
+                    </div>
+
+                    <div class="col-12 grid">
+                        <div class="col-4 flex flex-column gap-2">
+                            <label for="pesoProcedimiento"
+                                >Peso de procedimiento</label
+                            >
+                            <input
+                                pInputText
+                                id="pesoProcedimiento"
+                                formControlName="nCurrPesoProcedimiento"
+                            />
+                        </div>
+                        <div class="col-4 flex flex-column gap-2">
+                            <label for="pesoConceptual"
+                                >Peso de conceptual</label
+                            >
+                            <input
+                                pInputText
+                                id="pesoConceptual"
+                                formControlName="cCurrPesoConceptual"
+                            />
+                        </div>
+                        <div class="col-4 flex flex-column gap-2">
+                            <label for="pesoActitudinal"
+                                >Peso de actitudinal</label
+                            >
+                            <input
+                                pInputText
+                                id="pesoActitudinal"
+                                formControlName="cCurrPesoActitudinal"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="col-12 grid">
+                        <div class="col-6 flex flex-column gap-2">
+                            <label for="enlaceResolucion"
+                                >URL de la resolución</label
+                            >
+                            <input
+                                pInputText
+                                id="enlaceResolucion"
+                                formControlName="cCurrRsl"
+                            />
+                        </div>
+                        <div class="col-6 flex flex-column gap-2">
+                            <label for="fechaResolucion"
+                                >Fecha de la resolución</label
+                            >
+                            <input
+                                pInputText
+                                id="fechaResolucion"
+                                formControlName="dtCurrRsl"
+                            />
+                        </div>
+                    </div>
+                </form>
+                <!-- <p-button
+                    styleClass="w-full"
+                    icon="pi pi-plus"
+                    class="col-12 grid align-content-center justify-content-center gap-3 text-bold text-xl"
+                    label="Cursos"
+                >
+                </p-button> -->
+                @if (!dialogVisible.cursos) {
+                    <div class="col-1">
+                        <button
+                            class="border-none text-s bg-blue-500 text-white font-bold px-1 border-round w-full h-full mb-2 cursor-pointer"
+                            (click)="showCursos()"
+                        >
+                            <div class="grid text-xl row-gap-5">
+                                <i class="col-12 text-2xl pi pi-cog"></i>
+                                <div class="col-12 grid m-0 row-gap-2">
+                                    <span
+                                        class="col-12"
+                                        *ngFor="let char of 'CURSOS'.split('')"
+                                        >{{ char }}</span
+                                    >
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                }
+                @if (dialogVisible.cursos) {
+                    <p-divider type="solid" layout="vertical" />
+                    <div class="col grid align-content-start">
+                        <span class="col-12 font-bold text-2xl"
+                            >Cursos curriculares</span
+                        >
+                        <div class="col-12 grid justify-content-end">
+                            <p-button
+                                icon="pi pi-plus"
+                                label="Añadir curso"
+                            ></p-button>
+                        </div>
+
+                        <app-table-primeng
+                            class="w-full"
+                            [columnas]="cursos.table.columns"
+                        />
+
+                        <form class="col-12 grid">
+                            <div class="col-12 grid">
+                                <div class="col-6 flex flex-column gap-2">
+                                    <label for="modalidad">Nombre</label>
+                                    <p-dropdown
+                                        id="modalidad"
+                                        styleClass="w-full"
+                                        [options]="modalidadesDropdownOptions"
+                                        optionLabel="name"
+                                        appendTo="body"
+                                        placeholder="Seleccione una modalidad"
+                                    />
+                                </div>
+                                <div class="col-6 flex flex-column gap-2">
+                                    <label for="mencion">Mención</label>
+                                    <input pInputText id="mencion" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                }
+            }
+
+            @default {}
+        }
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-between">
+            <p-button
+                label="Cancel"
+                [text]="true"
+                severity="secondary"
+                (onClick)="
+                    dialogVisible.curricula = false;
+                    dialogVisible.cursos = false
+                "
+            />
+            <p-button
+                label="Guardar"
+                [outlined]="true"
+                severity="secondary"
+                (onClick)="saveInformation()"
+            />
+        </div>
+    </ng-template>
+</p-dialog>

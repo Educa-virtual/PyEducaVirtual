@@ -11,6 +11,7 @@ import { FormBuilder, Validators } from '@angular/forms'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import imagenesRecursos from '@/app/shared/imagenes/recursos'
 
 @Component({
     selector: 'app-apertura-curso',
@@ -21,6 +22,8 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     providers: [MessageService],
 })
 export class AperturaCursoComponent implements OnInit {
+    portada = imagenesRecursos
+
     private _formBuilder = inject(FormBuilder)
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)

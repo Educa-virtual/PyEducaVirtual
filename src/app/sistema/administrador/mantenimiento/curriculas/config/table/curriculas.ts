@@ -1,6 +1,7 @@
 import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { CurriculasComponent } from '../../curriculas.component'
+import { payload } from '../types/curricula'
 
 export const curriculasColumns: IColumn[] = [
     {
@@ -64,6 +65,8 @@ export const curriculasContainerActions: IActionContainer[] = [
 ]
 
 export function accionBtnContainer(this: CurriculasComponent, { accion }) {
+    this.forms.curriculas.reset()
+
     switch (accion) {
         case 'agregar':
             this.dialogVisible.curricula = true
@@ -88,6 +91,8 @@ export function curriculasAccionBtnTable(
         case 'editar':
             this.dialogVisible.curricula = true
 
+            this.forms.curriculas.reset()
+
             this.modal = {
                 title: 'Editar Curricula',
                 type: 'curricula',
@@ -96,7 +101,8 @@ export function curriculasAccionBtnTable(
             console.log('item')
             console.log(item)
 
-            this.curriculasForm.patchValue({
+            this.forms.curriculas.patchValue({
+                iCurrId: item.iCurrId,
                 iModalServId: item.iModalServId,
                 iCurrNotaMinima: item.iCurrNotaMinima,
                 iCurrTotalCreditos: item.iCurrTotalCreditos,
@@ -112,8 +118,6 @@ export function curriculasAccionBtnTable(
                 cCurrDescripcion: item.cCurrDescripcion,
             })
 
-            console.log(this.curriculasForm.value)
-
             break
 
         default:
@@ -121,8 +125,33 @@ export function curriculasAccionBtnTable(
     }
 }
 
-export function curriculasSave() {
-    return
+export function curriculasSave(this: CurriculasComponent) {
+    const formCurricula = this.forms.curriculas.value
+
+    const payload: payload = {
+        iModalServId: formCurricula.iModalServId,
+        iCurrNotaMinima: formCurricula.iCurrNotaMinima,
+        iCurrTotalCreditos: formCurricula.iCurrTotalCreditos,
+        iCurrNroHoras: formCurricula.iCurrNroHoras,
+        cCurrPerfilEgresado: formCurricula.cCurrPerfilEgresado,
+        cCurrMencion: formCurricula.cCurrMencion,
+        nCurrPesoProcedimiento: Number(formCurricula.nCurrPesoProcedimiento),
+        cCurrPesoConceptual: Number(formCurricula.cCurrPesoConceptual),
+        cCurrPesoActitudinal: Number(formCurricula.cCurrPesoActitudinal),
+        bCurrEsLaVigente: formCurricula.bCurrEsLaVigente,
+        cCurrRsl: formCurricula.cCurrRsl,
+        dtCurrRsl: formCurricula.dtCurrRsl,
+        cCurrDescripcion: formCurricula.cCurrDescripcion,
+    }
+
+    if (!formCurricula.iCurrId) {
+        return this.curriculasService.insCurriculas(payload)
+    } else {
+        return this.curriculasService.updCurriculas({
+            ...payload,
+            iCurrId: formCurricula.iCurrId,
+        })
+    }
 }
 
 export const editar = {

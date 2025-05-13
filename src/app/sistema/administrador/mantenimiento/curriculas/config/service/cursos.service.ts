@@ -16,16 +16,19 @@ export class CursosService {
         private apiService: ApiService
     ) {}
 
-    getCursos() {
+    getCursos(iCurrId) {
         return this.apiService.getDataObs({
             esquema: 'acad',
-            tabla: 'curriculas',
+            tabla: 'cursos',
             campos: '*',
-            where: '1=1',
+            where: 'iCurrId=' + iCurrId,
         })
     }
 
     insCursos(data) {
-        return this.http.post(this.endPoint, data)
+        return this.http.post(this.endPoint, {
+            json: JSON.stringify(data),
+            opcion: 'addCursos',
+        })
     }
 }

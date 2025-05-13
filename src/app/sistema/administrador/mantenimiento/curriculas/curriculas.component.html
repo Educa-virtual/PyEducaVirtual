@@ -38,7 +38,7 @@
                     [class.col-4]="dialogVisible.cursos"
                     [class.col-11]="!dialogVisible.cursos"
                     class="grid h-full"
-                    [formGroup]="curriculasForm"
+                    [formGroup]="this.forms.curriculas"
                 >
                     <div class="col-12 grid">
                         <div class="col-10 flex flex-column gap-2">
@@ -48,6 +48,18 @@
                                 id="name"
                                 formControlName="cCurrDescripcion"
                             />
+
+                            @if (
+                                forms.curriculas.get('cCurrDescripcion')
+                                    .dirty &&
+                                forms.curriculas.get('cCurrDescripcion')
+                                    .invalid &&
+                                forms.curriculas.get('cCurrDescripcion').touched
+                            ) {
+                                <small class="text-red-500">
+                                    Este campo es obligatorio.
+                                </small>
+                            }
                         </div>
                         <div class="col-2 flex flex-column gap-2">
                             <label for="pesoActitudinal">Es la vigente</label>
@@ -69,10 +81,20 @@
                                 styleClass="w-full"
                                 [options]="modalidadesDropdownOptions"
                                 optionLabel="name"
+                                optionValue="code"
                                 appendTo="body"
                                 formControlName="iModalServId"
                                 placeholder="Seleccione una modalidad"
                             />
+                            @if (
+                                forms.curriculas.get('iModalServId').dirty &&
+                                forms.curriculas.get('iModalServId').invalid &&
+                                forms.curriculas.get('iModalServId').touched
+                            ) {
+                                <small class="text-red-500">
+                                    Debe seleccionar una opción.
+                                </small>
+                            }
                         </div>
                         <div class="col-6 flex flex-column gap-2">
                             <label for="mencion">Mención</label>
@@ -126,9 +148,12 @@
                             <label for="pesoProcedimiento"
                                 >Peso de procedimiento</label
                             >
-                            <input
-                                pInputText
-                                id="pesoProcedimiento"
+                            <p-inputNumber
+                                inputId="pesoProcedimiento"
+                                mode="decimal"
+                                styleClass="w-full"
+                                [minFractionDigits]="0"
+                                [maxFractionDigits]="2"
                                 formControlName="nCurrPesoProcedimiento"
                             />
                         </div>
@@ -136,9 +161,12 @@
                             <label for="pesoConceptual"
                                 >Peso de conceptual</label
                             >
-                            <input
-                                pInputText
-                                id="pesoConceptual"
+                            <p-inputNumber
+                                inputId="pesoConceptual"
+                                mode="decimal"
+                                styleClass="w-full"
+                                [minFractionDigits]="0"
+                                [maxFractionDigits]="2"
                                 formControlName="cCurrPesoConceptual"
                             />
                         </div>
@@ -146,9 +174,12 @@
                             <label for="pesoActitudinal"
                                 >Peso de actitudinal</label
                             >
-                            <input
-                                pInputText
-                                id="pesoActitudinal"
+                            <p-inputNumber
+                                inputId="pesoActitudinal"
+                                mode="decimal"
+                                styleClass="w-full"
+                                [minFractionDigits]="0"
+                                [maxFractionDigits]="2"
                                 formControlName="cCurrPesoActitudinal"
                             />
                         </div>
@@ -219,27 +250,9 @@
                         <app-table-primeng
                             class="w-full"
                             [columnas]="cursos.table.columns"
+                            [data]="cursos.table.data"
+                            [actions]="cursos.table.actions"
                         />
-
-                        <form class="col-12 grid">
-                            <div class="col-12 grid">
-                                <div class="col-6 flex flex-column gap-2">
-                                    <label for="modalidad">Nombre</label>
-                                    <p-dropdown
-                                        id="modalidad"
-                                        styleClass="w-full"
-                                        [options]="modalidadesDropdownOptions"
-                                        optionLabel="name"
-                                        appendTo="body"
-                                        placeholder="Seleccione una modalidad"
-                                    />
-                                </div>
-                                <div class="col-6 flex flex-column gap-2">
-                                    <label for="mencion">Mención</label>
-                                    <input pInputText id="mencion" />
-                                </div>
-                            </div>
-                        </form>
                     </div>
                 }
             }
@@ -263,7 +276,7 @@
                 label="Guardar"
                 [outlined]="true"
                 severity="secondary"
-                (onClick)="saveInformation()"
+                (onClick)="this.saveCurriculas()"
             />
         </div>
     </ng-template>

@@ -1,4 +1,6 @@
 import { TableColumn } from '@/app/shared/table-primeng/table-primeng.component'
+import { CurriculasComponent } from '../../curriculas.component'
+import { payload } from '../types/cursos'
 
 export const cursosColumns: TableColumn = {
     inTableColumnsGroup: [
@@ -47,32 +49,8 @@ export const cursosColumns: TableColumn = {
         {
             type: 'text',
             width: '5rem',
-            field: 'nCursoCredTeoria',
-            header: 'Créditos teoría',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'nCursoCredPractica',
-            header: 'Créditos prácticos',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
             field: 'nCursoTotalCreditos',
             header: 'Créditos totales',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cCursoPerfilDocente',
-            header: 'Docente',
             text_header: 'center',
             text: 'center',
         },
@@ -85,7 +63,7 @@ export const cursosColumns: TableColumn = {
             text: 'center',
         },
         {
-            type: 'text',
+            type: 'estado-activo',
             width: '5rem',
             field: 'iCursoEstado',
             header: 'Estado',
@@ -103,4 +81,29 @@ export const cursosColumns: TableColumn = {
     ],
 }
 
-export function cursosSave() {}
+export function cursosSave(this: CurriculasComponent) {
+    const formCurso = this.forms.curriculas.value
+
+    const payload: payload = {
+        iCurrId: formCurso.iCurrId,
+        iTipoCursoId: formCurso.iTipoCursoId,
+        cCursoNombre: formCurso.cCursoNombre,
+        nCursoCredTeoria: formCurso.nCursoCredTeoria,
+        nCursoCredPractica: formCurso.nCursoCredPractica,
+        cCursoDescription: formCurso.cCursoDescription,
+        nCursoTotalCreditos: formCurso.nCursoTotalCreditos,
+        cCursoPerfilDocente: formCurso.cCursoPerfilDocente,
+        iCursoTotalHoras: formCurso.iCursoTotalHoras,
+        iCursoEstado: formCurso.iCursoEstado,
+        cCursoImagen: formCurso.cCursoImagen,
+    }
+
+    if (!formCurso.iCurrId) {
+        return this.cursosService.insCursos(payload)
+    } else {
+        return this.cursosService.insCursos({
+            ...payload,
+            iCursoId: formCurso.iCursoId,
+        })
+    }
+}

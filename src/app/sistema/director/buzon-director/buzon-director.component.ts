@@ -105,9 +105,18 @@ export class BuzonDirectorComponent implements OnInit {
             type: 'date',
             width: '3rem',
             field: 'dtFechaCreacion',
-            header: 'Fecha',
+            header: 'Fecha de sugerencia',
             text_header: 'center',
             text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cNombreEstudiante',
+            header: 'Estudiante',
+            text_header: 'center',
+            text: 'left',
         },
         {
             type: 'text',
@@ -132,17 +141,17 @@ export class BuzonDirectorComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
-            field: 'cNombreEstudiante',
-            header: 'Estudiante',
+            width: '8rem',
+            field: 'cRespuesta',
+            header: 'Fecha de respuesta',
             text_header: 'center',
             text: 'left',
         },
         {
             type: 'text',
             width: '8rem',
-            field: 'cRespuesta',
-            header: 'Estado de respuesta',
+            field: '',
+            header: 'Respuesta',
             text_header: 'center',
             text: 'left',
         },
@@ -250,9 +259,9 @@ export class BuzonDirectorComponent implements OnInit {
             accion: 'responder',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
-            //isVisible: (row) => {
-            //  return !row.cRespuesta || row.cRespuesta === ''
-            //},
+            isVisible: (row) => {
+                return !row.cRespuesta || row.cRespuesta === ''
+            },
         },
     ]
 }

@@ -372,4 +372,14 @@ export class GeneralService {
             data
         )
     }
+    insertarCurriculaCusros(data: any) {
+        return this.http.post(`${baseUrl}/administrador/addCurriculas`, data)
+    }
+
+    obtenerEstudiantesMatriculados(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/obtenerEstudiantesMatriculados`,
+            data
+        )
+    }
 }

@@ -1,13 +1,15 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, OnInit } from '@angular/core'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { MessageService } from 'primeng/api'
 import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-
+import { GeneralService } from '@/app/servicios/general.service'
 @Component({
     selector: 'app-guardar-resultados-online',
     standalone: true,
@@ -20,6 +22,10 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     curso: ICurso
     visible: boolean = false
     titulo: string = ''
+    iYAcadId: number
+    iSedeId: number
+    estudiantes: any
+    perfil: any
 
     // formulario guardar resultados online
     public formCurso: FormGroup = this._formBuilder.group({
@@ -27,10 +33,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         cCursoNombre: ['', [Validators.required]],
         cGradoAbreviacion: ['', [Validators.required]],
         cNivelTipoNombre: ['', [Validators.required]],
+        iCursosNivelGradId: ['', [Validators.required]], // GRADO DEL AREA CURRICULAR
         cNombreDistrito: ['', [Validators.required]],
         cNombreGestion: ['', [Validators.required]],
         cDniDocente: ['', [Validators.required]],
         cNombreDocente: ['', [Validators.required]],
+        iSeccionId: ['', [Validators.required]], // ID DE LA SECCION
     })
     secciones = [
         {
@@ -162,11 +170,18 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
         },
     ]
+    private _messageService = inject(MessageService)
 
-    constructor() {}
+    constructor(
+        private store: LocalStoreService,
+        private query: GeneralService
+    ) {}
 
     ngOnInit() {
         console.log('jj')
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
+        this.iSedeId = this.store.getItem('dremoPerfil').iSedeId
+        this.perfil = this.store.getItem('dremoPerfil')
     }
     botonesTabla: IActionTable[] = [
         {
@@ -406,9 +421,56 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.formCurso
             .get('cNivelTipoNombre')
             .patchValue(datos.curso.cNivelTipoNombre)
+        this.formCurso
+            .get('iCursosNivelGradId')
+            .patchValue(datos.curso.iCursosNivelGradId)
         // this.curso = datos.curso
         // this.form.reset()
         console.log(datos, 'datos')
+
+        this.getEstudiante()
+    }
+
+    getEstudiante() {
+        const iCursosNivelGradId =
+            this.formCurso.get('iCursosNivelGradId').value
+        const body = {
+            iSedeId: this.iSedeId,
+            iYAcadId: this.iYAcadId,
+            iCursosNivelGradId: iCursosNivelGradId,
+            iCredEntPerfId: this.perfil.iCredEntPerfId,
+        }
+
+        this.query.obtenerEstudiantesMatriculados(body).subscribe({
+            next: (data: any) => {
+                console.log(data, 'estudiantes')
+                this.estudiantes = data.data
+                console.log(this.estudiantes, 'estudiantes')
+            },
+            error: (error) => {
+                console.error('Error subiendo archivo:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+            complete: () => {
+                console.log('Request completed')
+
+                this.alumnos = this.estudiantes.map((est) => ({
+                    label: est.cSeccionNombre,
+                    dni: est.cPersDocumento,
+                    apellidoPaterno: est.cPersPaterno,
+                    apellidoMaterno: est.cPersMaterno,
+                    nombres: est.cPersNombre,
+                    idSeccion: +est.iSeccionId, // convertir a number
+                    icon: 'pi pi-fw pi-home',
+                    routerLink:
+                        '/sistema/ere/informes-ere/guardar-resultados-online',
+                }))
+            },
+        })
     }
     // acciones de la tabla
     accionesTabla({ accion, item }) {

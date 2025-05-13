@@ -108,6 +108,7 @@ export class AperturaCursoComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-succes p-button-text',
+            isVisible: (row) => [1, 2, 3].includes(row.iEstado),
         },
         {
             labelTooltip: 'Eliminar',
@@ -115,6 +116,7 @@ export class AperturaCursoComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: (row) => row.iEstado === 1,
         },
     ]
     //

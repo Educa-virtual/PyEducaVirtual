@@ -7,6 +7,7 @@ import { NotfoundComponent } from './shared/notfound/notfound.component'
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component'
+import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -59,6 +60,10 @@ export const routes: Routes = [
             {
                 path: 'new-mantenimiento-usuario',
                 component: NewMantenimientoUsuarioComponent,
+            },
+            {
+                path: 'buzon-director',
+                component: BuzonDirectorComponent,
             },
         ],
     },

@@ -455,6 +455,11 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/director/buzon-sugerencias'],
+            },
             // {
             //     label: 'Generar Reportes y Estadisticas',
             //     icon: 'pi pi-chart-scatter',

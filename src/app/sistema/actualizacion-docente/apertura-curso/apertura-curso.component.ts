@@ -35,6 +35,8 @@ export class AperturaCursoComponent implements OnInit {
     publicoObjetivo: any[] = []
     cursos: any[] = []
     iCapacitacionId: string = ''
+    responsiveOptions: any[] | undefined
+    showModalHorarios: boolean = false
 
     modoFormulario: 'crear' | 'editar' = 'crear'
 
@@ -64,8 +66,33 @@ export class AperturaCursoComponent implements OnInit {
         this.obtenerNivelPedagogico()
         this.obtenerTipodePublico()
 
+        console.log('Imgenes', this.portada)
         // Obtener las capacitaciones:
         this.obtenerCapacitaciones()
+
+        //
+        this.responsiveOptions = [
+            {
+                breakpoint: '1400px',
+                numVisible: 2,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '1199px',
+                numVisible: 3,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '767px',
+                numVisible: 2,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '575px',
+                numVisible: 1,
+                numScroll: 1,
+            },
+        ]
     }
     // mostrar los headr de las tablas
     public columnasTabla: IColumn[] = [
@@ -111,7 +138,7 @@ export class AperturaCursoComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-succes p-button-text',
-            isVisible: (row) => [1, 2, 3].includes(row.iEstado),
+            isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
         },
         {
             labelTooltip: 'Eliminar',
@@ -119,10 +146,13 @@ export class AperturaCursoComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: (row) => row.iEstado === 1,
+            isVisible: (row) => row.iEstado === '1',
         },
     ]
     //
+    showHorarios() {
+        this.showModalHorarios = true
+    }
 
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {

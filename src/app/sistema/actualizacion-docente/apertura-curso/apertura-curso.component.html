@@ -1,6 +1,6 @@
 <section>
     <div class="grid">
-        <div class="col-5 card m-1">
+        <div class="col card m-1">
             <app-toolbar-primeng
                 title="Listado de Capacitación Activas"
             ></app-toolbar-primeng>
@@ -20,7 +20,7 @@
                 </p-dataView>
             </section>
         </div>
-        <div class="col card">
+        <div class="col-7 card">
             <app-toolbar-primeng
                 [title]="
                     modoFormulario === 'editar'
@@ -33,7 +33,7 @@
                 class="flex flex-column gap-3 w-full"
             >
                 <section>
-                    <div class="col-8">
+                    <div class="col">
                         <p-inputGroup>
                             <p-inputGroupAddon
                                 >Tipo de Capacitación:</p-inputGroupAddon
@@ -210,6 +210,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- instructor y pago -->
                     <div class="col">
                         <div class="grid">
                             <div class="col-7">
@@ -251,6 +252,62 @@
                             </div>
                         </div>
                     </div>
+                    <!-- agregar imagenes para el curso -->
+                    <div class="col">
+                        <div class="border-round w-full btnimag">
+                            <div class="flex justify-content-between flex-wrap">
+                                <div
+                                    class="flex align-items-center justify-content-center m-2"
+                                >
+                                    Añadir imagen de portada del curso
+                                </div>
+                                <div
+                                    class="flex align-items-center justify-content-center m-2"
+                                >
+                                    <p-inputSwitch
+                                        formControlName=""
+                                        class="pr-3"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card w-full mt-2">
+                            <p-carousel
+                                [value]="portada"
+                                [numVisible]="3"
+                                [numScroll]="1"
+                                [responsiveOptions]="responsiveOptions"
+                            >
+                                <ng-template let-product pTemplate="item">
+                                    <div
+                                        class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4"
+                                    >
+                                        <div class="mb-4">
+                                            <div class="relative mx-auto">
+                                                <img
+                                                    [src]="product.url"
+                                                    [alt]="product.name"
+                                                    class="w-full rounded-border"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-carousel>
+                            <!-- <p-carousel [value]="portada" [numVisible]="3" [numScroll]="1">
+                                <ng-template let-product pTemplate="item">
+                                    <div class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4">
+                                        <div class="mb-4">
+                                            <div class="relative mx-auto">
+                                                <img [src]="product.url" [alt]="product.name" class="w-full rounded-border" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-4 font-medium">{{ product.name }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-carousel> -->
+                        </div>
+                    </div>
 
                     <!-- Agregar los bottones -->
                     <div class="col">
@@ -262,6 +319,13 @@
                                     severity="danger"
                                     class="pr-2"
                                     (click)="limpiarFormulario()"
+                                />
+                                <p-button
+                                    icon="pi pi-clock   "
+                                    label="Configurar horarios"
+                                    severity="success"
+                                    class="pr-2"
+                                    (click)="showHorarios()"
                                 />
                             </div>
                             <div class="text-right">
@@ -289,3 +353,55 @@
         </div>
     </div>
 </section>
+
+<p-dialog
+    header="Configuración de Horarios"
+    [(visible)]="showModalHorarios"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+>
+    <form action="">
+        <!-- agregar de inicio y fin de fechas -->
+        <div class="col-12 mt-3 grid">
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
+                    <p-calendar
+                        id="fechaFin"
+                        formControlName="dFechaInicio"
+                        styleClass="w-full"
+                        dateFormat="dd/mm/yy"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="icondisplay"
+                        appendTo="body"
+                    ></p-calendar>
+                </p-inputGroup>
+            </div>
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
+                    <p-calendar
+                        id="fechaFin"
+                        formControlName="dFechaFin"
+                        styleClass="w-full"
+                        dateFormat="dd/mm/yy"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="icondisplay"
+                        appendTo="body"
+                    ></p-calendar>
+                </p-inputGroup>
+            </div>
+        </div>
+        <!-- Seleccionar días -->
+        <div class="card relative mt-4">
+            <samp class="btntag">Seleccionar los días.</samp>
+        </div>
+        <!-- Asignar horario -->
+        <div class="card mt-4 relative">
+            <samp class="btnh">Horario</samp>
+            <samp>El horario es el mismo todos los días seleccionados?</samp>
+        </div>
+    </form>
+</p-dialog>

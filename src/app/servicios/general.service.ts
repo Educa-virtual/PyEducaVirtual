@@ -372,4 +372,11 @@ export class GeneralService {
             data
         )
     }
+
+    agregarNiveles(data: any) {
+        return this.http.post(`${baseUrl}/administrador/addNiveles`, data)
+    }
+    actualizarNiveles(data: any) {
+        return this.http.post(`${baseUrl}/administrador/updNiveles`, data)
+    }
 }

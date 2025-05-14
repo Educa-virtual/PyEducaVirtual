@@ -28,6 +28,7 @@ export class InformesEreComponent implements OnInit {
     options_doughnut: any
     data_bar: any
     options_bar: ChartOptions
+    hide_filters: boolean = false
 
     resultados: Array<object>
     resumen: Array<object>
@@ -53,6 +54,7 @@ export class InformesEreComponent implements OnInit {
     zonas: Array<object>
     tipo_sectores: Array<object>
     ugeles: Array<object>
+    tipos_reportes: Array<object>
 
     private _MessageService = inject(MessageService)
 
@@ -90,12 +92,14 @@ export class InformesEreComponent implements OnInit {
                 iIieeId: [null],
                 iSeccionId: [null],
                 cPersSexo: [null],
+                cTipoReporte: ['ESTUDIANTES', Validators.required],
             })
         } catch (error) {
             console.log(error, 'error de formulario')
         }
 
         this.sexos = this.datosInformes.getSexos()
+        this.tipos_reportes = this.datosInformes.getTiposReportes()
         this.datosInformes
             .obtenerParametros(this.formFiltros.value)
             .subscribe((data: any) => {
@@ -217,7 +221,7 @@ export class InformesEreComponent implements OnInit {
     searchResultados() {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe seleccionar los filtros requeridos',
             })
@@ -227,12 +231,36 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
+                    this.hide_filters = true
                     this.resultados = data.data[1]
                     this.niveles = data.data[2]
                     this.resumen = data.data[3]
                     this.matriz = data.data[4]
                     this.mostrarEstadisticaNivel()
                     this.generarColumnas(this.resumen)
+                    if (
+                        this.formFiltros.get('cTipoReporte').value ==
+                        'ESTUDIANTES'
+                    ) {
+                        this.columns = this.columns_estudiantes
+                    } else {
+                        this.resultados = this.resultados.map((item: any) => {
+                            let sumatoria = 0
+                            this.niveles.forEach((nivel: any) => {
+                                sumatoria += Number(item[nivel.nivel_logro_id])
+                            })
+                            this.niveles.forEach((nivel: any) => {
+                                item[nivel.nivel_logro_id] = Number(
+                                    (Number(item[nivel.nivel_logro_id]) /
+                                        sumatoria) *
+                                        100
+                                ).toFixed(2)
+                            })
+                            item.total = sumatoria
+                            return item
+                        })
+                        this.generarColumnasAgrupado()
+                    }
                     this.mostrarEstadisticaPregunta()
                 },
                 error: (error) => {
@@ -335,6 +363,49 @@ export class InformesEreComponent implements OnInit {
             })
         }
         this.columns_resumen = columnas
+    }
+
+    generarColumnasAgrupado() {
+        if (this.niveles.length == 0) {
+            return
+        }
+        const columnas = [
+            {
+                type: 'item',
+                width: '5%',
+                field: 'item',
+                header: '#',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '40%',
+                field: 'agrupado',
+                header: 'Agrupado por',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '1rem',
+                field: `total`,
+                header: `Total`,
+                text_header: 'center',
+                text: 'center',
+            },
+        ]
+        this.niveles.forEach((item: any) => {
+            columnas.push({
+                type: 'text',
+                width: '1rem',
+                field: `${item.nivel_logro_id}`,
+                header: `% ${item.nivel_logro}`,
+                text_header: 'center',
+                text: 'center',
+            })
+        })
+        this.columns = columnas
     }
 
     mostrarEstadisticaPregunta() {
@@ -501,7 +572,9 @@ export class InformesEreComponent implements OnInit {
 
     actionsLista: IActionTable[]
 
-    columns = [
+    columns = []
+
+    columns_estudiantes = [
         {
             type: 'item',
             width: '5%',
@@ -570,9 +643,36 @@ export class InformesEreComponent implements OnInit {
             type: 'text',
             width: '10%',
             field: 'nivel_logro',
-            header: 'NIVEL',
+            header: 'Nivel de logro',
             text_header: 'center',
             text: 'center',
+        },
+    ]
+
+    columns_group = [
+        {
+            type: 'text',
+            width: '5%',
+            field: 'item',
+            header: '#',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'agrupado',
+            header: 'Agrupado por',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'nivel_logro',
+            header: 'Nivel',
+            text_header: 'left',
+            text: 'left',
         },
     ]
 

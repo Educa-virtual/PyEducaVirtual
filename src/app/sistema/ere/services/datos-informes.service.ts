@@ -229,7 +229,7 @@ export class DatosInformesService {
         iUgelId: any
     ) {
         let ies_tmp: Array<object> = this.instituciones_educativas
-        if (!iEvaluacionId && !iNivelTipoId) {
+        if (!iEvaluacionId || !iNivelTipoId) {
             return null
         }
         if (iEvaluacionId) {
@@ -289,6 +289,15 @@ export class DatosInformesService {
             })
         }
         return ies_tmp
+    }
+
+    getTiposReportes() {
+        return [
+            { value: 'ESTUDIANTES', label: 'DETALLE DE ESTUDIANTES' },
+            { value: 'UGEL', label: 'AGRUPADO POR UGEL' },
+            { value: 'DISTRITO', label: 'AGRUPADO POR DISTRITO' },
+            { value: 'IE', label: 'AGRUPADO POR INSTITUCION EDUCATIVA' },
+        ]
     }
 
     obtenerInformeResumen(data: any) {

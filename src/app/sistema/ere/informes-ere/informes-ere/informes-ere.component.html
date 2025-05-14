@@ -5,7 +5,7 @@
     <form [formGroup]="formFiltros">
         <div class="grid p-fluid">
             <div class="col-12 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup title="* Campo requerido">
                     <p-inputGroupAddon>Evaluación *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="evaluaciones"
@@ -18,7 +18,7 @@
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup title="* Campo requerido">
                     <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="nivel_tipos"
@@ -31,7 +31,7 @@
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup title="* Campo requerido">
                     <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="nivel_grados"
@@ -45,7 +45,7 @@
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-6">
-                <p-inputGroup>
+                <p-inputGroup title="* Campo requerido">
                     <p-inputGroupAddon>Área *</p-inputGroupAddon>
                     <p-dropdown
                         [options]="areas"
@@ -60,13 +60,40 @@
         </div>
 
         <p-panel
-            header="Aplicar Filtros Opcionales"
+            header="Filtros Adicionales"
             [toggleable]="true"
             toggler="header"
-            [collapsed]="true"
+            [collapsed]="hide_filters"
         >
             <div class="grid p-fluid">
                 @if (es_especialista) {
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup title="* Campo requerido">
+                            <p-inputGroupAddon
+                                >Tipo de reporte *</p-inputGroupAddon
+                            >
+                            <p-dropdown
+                                [options]="tipos_reportes"
+                                formControlName="cTipoReporte"
+                                placeholder="Seleccione un tipo de reporte"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Sector</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="tipo_sectores"
+                                [showClear]="true"
+                                formControlName="iTipoSectorId"
+                                placeholder="Seleccione un sector"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
                             <p-inputGroupAddon>Tipo de zona</p-inputGroupAddon>
@@ -199,8 +226,8 @@
         }
 
         <div>
-            <p-accordion [activeIndex]="0">
-                <p-accordionTab header="Resultados por Estudiante">
+            <p-accordion [activeIndex]="[0]" [multiple]="true">
+                <p-accordionTab header="Detalle de Resultados">
                     <app-table-primeng
                         [columnas]="columns"
                         [showCaption]="false"

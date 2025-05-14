@@ -218,11 +218,14 @@
                                     <p-inputGroupAddon
                                         >Instructor:
                                     </p-inputGroupAddon>
-                                    <input
-                                        type="text"
-                                        pInputText
-                                        placeholder="Nombre del Instructor"
-                                        formControlName="iDocenteId"
+                                    <p-treeSelect
+                                        class="md:w-20rem w-full"
+                                        containerStyleClass="w-full"
+                                        formControlName="selectedNodes"
+                                        [options]="instructores"
+                                        placeholder="Seleccionar Instructor"
+                                        [filter]="true"
+                                        [filterInputAutoFocus]="true"
                                     />
                                 </p-inputGroup>
                             </div>
@@ -271,8 +274,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card w-full mt-2">
-                            <p-carousel
+                        <div class="card w-full mt-2 justify-content-center">
+                            <!-- <p-carousel
                                 [value]="portada"
                                 [numVisible]="3"
                                 [numScroll]="1"
@@ -293,7 +296,7 @@
                                         </div>
                                     </div>
                                 </ng-template>
-                            </p-carousel>
+                            </p-carousel> -->
                             <!-- <p-carousel [value]="portada" [numVisible]="3" [numScroll]="1">
                                 <ng-template let-product pTemplate="item">
                                     <div class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4">
@@ -306,6 +309,84 @@
                                     </div>
                                 </ng-template>
                             </p-carousel> -->
+                            <!-- <div class="flex justify-content-center">
+                                <p-galleria 
+                                    [value]="portada" 
+                                    [responsiveOptions]="responsiveOptions" 
+                                    [containerStyle]="{ 'max-width': '640px' }" 
+                                    [numVisible]="5"> 
+                                        <ng-template pTemplate="item" let-item>
+                                            <input type="checkbox" id="myCheckbox1" />
+                                            <label for="myCheckbox2"><img [src]="item.url" style="width: 100%;" /></label>
+                                        </ng-template>
+                                        <ng-template pTemplate="thumbnail" let-item>
+                                            <div class="grid grid-nogutter justify-content-center">
+                                                <img [src]="item.url" />
+                                            </div>
+                                        </ng-template>
+                                </p-galleria>
+                            </div> -->
+                            <!-- <div class="">
+                                <p-galleria [value]="portada" [responsiveOptions]="responsiveOptions" [containerStyle]="{ 'max-width': '640px' }" [numVisible]="5"
+                                    (click)="seleccionarImagen($event)">
+                                    <ng-template pTemplate="item" let-item>
+                                        <img [src]="item.url" style="width:100%" />
+                                    </ng-template>
+                                    <ng-template pTemplate="thumbnail" let-item>
+                                        <img [src]="item.url" />
+                                    </ng-template>
+                                </p-galleria>
+
+                            </div> -->
+                            <div class="container">
+                                <!-- <h2>Selecciona una imagen</h2> -->
+                                <!-- (ngSubmit)="onSubmit()" -->
+                                <p-carousel
+                                    [value]="portada"
+                                    [numVisible]="3"
+                                    [numScroll]="1"
+                                    [circular]="true"
+                                    [responsiveOptions]="responsiveOptions"
+                                >
+                                    <ng-template let-image pTemplate="item">
+                                        <div
+                                            class="image-item"
+                                            [class.selected]="isSelected(image)"
+                                            (onclick)="selectImage(image)"
+                                        >
+                                            <div class="image-container">
+                                                <img
+                                                    [src]="image.url"
+                                                    [alt]="image.title"
+                                                    class="carousel-image"
+                                                />
+                                                <div class="image-title">
+                                                    {{ image.title }}
+                                                </div>
+                                                <div
+                                                    *ngIf="isSelected(image)"
+                                                    class="selected-indicator"
+                                                >
+                                                    <i
+                                                        class="pi pi-check-circle"
+                                                    ></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-carousel>
+
+                                <div class="form-info" *ngIf="selectedImageId">
+                                    <p>
+                                        Imagen seleccionada: ID
+                                        {{ selectedImageId }}
+                                    </p>
+                                </div>
+
+                                <!-- <div class="form-actions">
+                                    <button pButton type="submit" label="Guardar selección" [disabled]="formNuevaCapacitacion.invalid"></button>
+                                    </div> -->
+                            </div>
                         </div>
                     </div>
 
@@ -367,13 +448,10 @@
                 <p-inputGroup>
                     <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
                     <p-calendar
-                        id="fechaFin"
-                        formControlName="dFechaInicio"
+                        formControlName=""
                         styleClass="w-full"
                         dateFormat="dd/mm/yy"
-                        [iconDisplay]="'input'"
                         [showIcon]="true"
-                        inputId="icondisplay"
                         appendTo="body"
                     ></p-calendar>
                 </p-inputGroup>
@@ -382,13 +460,10 @@
                 <p-inputGroup>
                     <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
                     <p-calendar
-                        id="fechaFin"
-                        formControlName="dFechaFin"
+                        formControlName=""
                         styleClass="w-full"
                         dateFormat="dd/mm/yy"
-                        [iconDisplay]="'input'"
                         [showIcon]="true"
-                        inputId="icondisplay"
                         appendTo="body"
                     ></p-calendar>
                 </p-inputGroup>
@@ -397,11 +472,28 @@
         <!-- Seleccionar días -->
         <div class="card relative mt-4">
             <samp class="btntag">Seleccionar los días.</samp>
+            <div class="flex my-3 justify-content-center">
+                <p-selectButton
+                    [options]="paymentOptions"
+                    [(ngModel)]="selectedValues"
+                    [multiple]="true"
+                    optionLabel="name"
+                    optionValue="value"
+                />
+            </div>
         </div>
         <!-- Asignar horario -->
         <div class="card mt-4 relative">
             <samp class="btnh">Horario</samp>
             <samp>El horario es el mismo todos los días seleccionados?</samp>
+            <div *ngFor="let value of selectedValues">
+                <input
+                    type="text"
+                    placeholder="Ingrese datos para {{ value }}"
+                />
+                <!-- <input *ngIf="selectedValues.length > 0" type="text" placeholder="Ingrese datos aquí" /> -->
+            </div>
+            <h1>.</h1>
         </div>
     </form>
 </p-dialog>

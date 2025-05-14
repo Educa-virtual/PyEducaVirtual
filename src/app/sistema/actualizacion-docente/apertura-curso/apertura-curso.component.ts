@@ -12,13 +12,26 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import imagenesRecursos from '@/app/shared/imagenes/recursos'
+import { GalleriaModule } from 'primeng/galleria'
+import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service'
+
+interface Image {
+    id: number
+    url: string
+    title: string
+}
 
 @Component({
     selector: 'app-apertura-curso',
     standalone: true,
     templateUrl: './apertura-curso.component.html',
     styleUrls: ['./apertura-curso.component.scss'],
-    imports: [PrimengModule, ToolbarPrimengComponent, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        ToolbarPrimengComponent,
+        TablePrimengComponent,
+        GalleriaModule,
+    ],
     providers: [MessageService],
 })
 export class AperturaCursoComponent implements OnInit {
@@ -28,6 +41,7 @@ export class AperturaCursoComponent implements OnInit {
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
+    private _capService = inject(CapacitacionesServiceService)
 
     iPago: boolean = true
     tipoCapacitacion: any[] = []
@@ -35,10 +49,24 @@ export class AperturaCursoComponent implements OnInit {
     publicoObjetivo: any[] = []
     cursos: any[] = []
     iCapacitacionId: string = ''
-    responsiveOptions: any[] | undefined
+    responsiveOptions1: any[] | undefined
     showModalHorarios: boolean = false
+    value!: number //para los dias
+    selectedValues: string[] = [] // Se guardarán los valores seleccionados
+    instructores: any
+    selectedImageId: any
 
     modoFormulario: 'crear' | 'editar' = 'crear'
+    // mostrar días:
+    paymentOptions: any[] = [
+        { name: 'Lunes', value: 1 },
+        { name: 'Martes', value: 2 },
+        { name: 'Miercoles', value: 3 },
+        { name: 'Jueves', value: 4 },
+        { name: 'Viernes', value: 5 },
+        { name: 'Sabado', value: 6 },
+        { name: 'Domingo', value: 7 },
+    ]
 
     constructor(private messageService: MessageService) {}
 
@@ -54,11 +82,26 @@ export class AperturaCursoComponent implements OnInit {
         dFechaFin: [new Date()],
         iCosto: [0],
         nCosto: [0.0],
-        iDocenteId: [''],
+        iInstId: [1],
         cHorario: [''],
         iCantidad: [0],
         cImagenUrl: [''],
+        iImageAleatorio: [1],
     })
+    responsiveOptions: any[] = [
+        {
+            breakpoint: '1024px',
+            numVisible: 5,
+        },
+        {
+            breakpoint: '768px',
+            numVisible: 3,
+        },
+        {
+            breakpoint: '560px',
+            numVisible: 1,
+        },
+    ]
 
     ngOnInit() {
         // Obtener los select:
@@ -153,7 +196,44 @@ export class AperturaCursoComponent implements OnInit {
     showHorarios() {
         this.showModalHorarios = true
     }
+    //
+    seleccionarImagen(event: any) {
+        const index = event.detail.index // Acceder al índice correcto
+        const imagenSeleccionada = this.portada[index] // Obtiene la imagen según el índice
+        console.log('Imagen seleccionada:', imagenSeleccionada)
 
+        // Guardar el ID en el formulario
+        // this.formNuevaCapacitacion.patchValue({
+        // cImagenUrl: imagenSeleccionada.id
+        // });
+    }
+
+    selectImage(image: any) {
+        this.selectedImageId = image.id
+
+        const data = {
+            id: image.id,
+            name: image.name,
+            url: image.url,
+        }
+        const jsonData = JSON.stringify(data)
+        this.formNuevaCapacitacion.patchValue({
+            cImagenUrl: jsonData,
+        })
+    }
+
+    isSelected(image: Image): boolean {
+        return this.selectedImageId === image.id
+    }
+
+    //   onSubmit() {
+    //     if (this.formNuevaCapacitacion.valid) {
+    //     //   console.log('Formulario enviado con ID de imagen:', this.formNuevaCapacitacion.value.selectedImageId);
+    //       // Aquí puedes enviar el formulario a tu backend
+    //     } else {
+    //       console.log('Por favor selecciona una imagen');
+    //     }
+    //   }
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -235,6 +315,14 @@ export class AperturaCursoComponent implements OnInit {
                     detail: 'Tiene que agregar un Título al curso',
                 })
             } else {
+                // para validar los campos que faltas datos del formulario
+                Object.keys(this.formNuevaCapacitacion.controls).forEach(
+                    (field) => {
+                        const control = this.formNuevaCapacitacion.get(field)
+                        control?.markAsTouched() // Marca como tocado (touched)
+                        control?.markAsDirty() // Marca como modificado (dirty)
+                    }
+                )
                 // alert antes de guardar el curso creado
                 this._confirmService.openConfiSave({
                     message: 'Recuerde que no podra retroceder',
@@ -248,6 +336,8 @@ export class AperturaCursoComponent implements OnInit {
                             iCredId: iCredId,
                             iDocenteId: iDocenteId,
                         }
+                        console.log(data, 'datos')
+
                         this._aulaService.guardarCapacitacion(data).subscribe({
                             next: (resp: any) => {
                                 // Mensaje de guardado(opcional)
@@ -372,6 +462,20 @@ export class AperturaCursoComponent implements OnInit {
             iCredId: iCredId,
         }
         this._aulaService.obtenerCapacitacion(data).subscribe((Data) => {
+            this.cursos = Data['data']
+            // console.log('Datos capacitacion', this.cursos)
+        })
+    }
+    //
+    obtenerInstructoresCurso() {
+        const iEstado = 1
+        const iCredId = this._ConstantesService.iCredId
+
+        const data = {
+            iEstado: iEstado,
+            iCredId: iCredId,
+        }
+        this._capService.obtenerIntructores(data).subscribe((Data) => {
             this.cursos = Data['data']
             // console.log('Datos capacitacion', this.cursos)
         })

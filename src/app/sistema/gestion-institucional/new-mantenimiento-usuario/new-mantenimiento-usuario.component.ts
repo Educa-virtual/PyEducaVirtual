@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
+import { FormGroup, FormsModule } from '@angular/forms'
 import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { DropdownModule } from 'primeng/dropdown'
@@ -13,6 +13,7 @@ import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
 import { AsignarRolPersonalComponent } from './asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './agregar-personal-plataforma/agregar-personal-plataforma.component'
+import { PrimengModule } from '@/app/primeng.module'
 interface Usuario {
     id: number
     documento: string
@@ -38,6 +39,7 @@ interface Usuario {
         AsignarRolPersonalComponent,
         ToastModule,
         AgregarPersonalPlataformaComponent,
+        PrimengModule,
     ],
     providers: [MessageService],
     templateUrl: './new-mantenimiento-usuario.component.html',
@@ -46,6 +48,7 @@ interface Usuario {
 export class NewMantenimientoUsuarioComponent implements OnInit {
     user: Usuario[] = []
     searchText: string = ''
+    form: FormGroup
 
     searchTypes = [
         { name: 'Documento', code: 'documento' },

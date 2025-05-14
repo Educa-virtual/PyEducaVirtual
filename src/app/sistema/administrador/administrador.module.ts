@@ -28,11 +28,11 @@ const routes: Routes = [
             ),*/
     },
     {
-        path: 'gestion-usuario',
+        path: 'gestion-usuarios',
         loadComponent: () =>
-            import('./usuario/usuario.component').then(
-                (m) => m.UsuarioComponent
-            ),
+            import(
+                './gestion-usuarios/lista-usuarios/lista-usuarios.component'
+            ).then((m) => m.ListaUsuariosComponent),
     },
 ]
 

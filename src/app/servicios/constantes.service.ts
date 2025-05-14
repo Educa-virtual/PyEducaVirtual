@@ -163,9 +163,9 @@ const administrador = [
             },
 
             {
-                label: 'Gestión de Usuario',
+                label: 'Gestión de usuarios',
                 icon: 'pi pi-fw pi-user',
-                routerLink: ['/administrador/gestion-usuario'],
+                routerLink: ['/administrador/gestion-usuarios'],
             },
             {
                 label: 'Enlaces de ayuda',

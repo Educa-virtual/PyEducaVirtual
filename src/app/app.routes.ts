@@ -66,6 +66,7 @@ export const routes: Routes = [
                 path: 'buzon-director',
                 component: BuzonDirectorComponent,
             },
+            // cambiar contrasena route
             {
                 path: 'cambiar-contrasena',
                 component: CambiarConstrasenaComponent,

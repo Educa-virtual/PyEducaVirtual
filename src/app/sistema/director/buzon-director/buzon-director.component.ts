@@ -266,7 +266,7 @@ export class BuzonDirectorComponent implements OnInit {
         },
         {
             labelTooltip: 'Responder sugerencia',
-            icon: 'pi pi-pencil',
+            icon: 'pi pi-pen-to-square',
             accion: 'responder',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',

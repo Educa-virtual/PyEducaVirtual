@@ -39,9 +39,7 @@ export class UserAccountComponent implements OnInit {
                     {
                         label: 'Cambiar contraseña',
                         icon: 'pi pi-bars',
-                        command: () => {
-                            this.actionTopBar.emit({ accion: 'logout' })
-                        },
+                        routerLink: ['/cambiar-contrasena'],
                     },
                     {
                         label: 'Salir sesión',

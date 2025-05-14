@@ -33,6 +33,11 @@ type TColumnType =
     | 'estado'
     | string
 
+export interface TableColumn {
+    inTableColumnsGroup?: IColumn[][]
+    inTableColumns: IColumn[]
+}
+
 export interface IColumn {
     rowspan?: number
     colspan?: number

@@ -82,12 +82,14 @@ export class AperturaCursoComponent implements OnInit {
         dFechaFin: [new Date()],
         iCosto: [0],
         nCosto: [0.0],
-        iInstId: [1],
+        iInstId: ['', [Validators.required]],
         cHorario: [''],
         iCantidad: [0],
         cImagenUrl: [''],
         iImageAleatorio: [1],
     })
+    // formGroup para horarios
+    public formHorarioCurso = this._formBuilder.group({})
     responsiveOptions: any[] = [
         {
             breakpoint: '1024px',
@@ -112,6 +114,8 @@ export class AperturaCursoComponent implements OnInit {
         console.log('Imgenes', this.portada)
         // Obtener las capacitaciones:
         this.obtenerCapacitaciones()
+        // Obtener los instructores:
+        this.obtenerInstructoresCurso()
 
         //
         this.responsiveOptions = [
@@ -226,14 +230,6 @@ export class AperturaCursoComponent implements OnInit {
         return this.selectedImageId === image.id
     }
 
-    //   onSubmit() {
-    //     if (this.formNuevaCapacitacion.valid) {
-    //     //   console.log('Formulario enviado con ID de imagen:', this.formNuevaCapacitacion.value.selectedImageId);
-    //       // Aquí puedes enviar el formulario a tu backend
-    //     } else {
-    //       console.log('Por favor selecciona una imagen');
-    //     }
-    //   }
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -357,6 +353,7 @@ export class AperturaCursoComponent implements OnInit {
                                 console.error('Comentario:', error)
                             },
                         })
+                        // ------------------------
                         // this._aulaService.guardarCapacitacion(data).subscribe((data)=>{
                         // Mensaje de guardado(opcional)
                         // this.messageService.add({
@@ -469,15 +466,24 @@ export class AperturaCursoComponent implements OnInit {
     //
     obtenerInstructoresCurso() {
         const iEstado = 1
-        const iCredId = this._ConstantesService.iCredId
+        const iCredId = Number(this._ConstantesService.iCredId)
 
         const data = {
             iEstado: iEstado,
             iCredId: iCredId,
         }
+        console.log('data', data)
         this._capService.obtenerIntructores(data).subscribe((Data) => {
-            this.cursos = Data['data']
-            // console.log('Datos capacitacion', this.cursos)
+            // this.instructores = Data['data']
+            // console.log('Instructores', this.instructores)
+            this.instructores = Data['data'].map((instructor) => ({
+                ...instructor, // Mantiene los datos existentes
+                nombreLargo: `${instructor.cPersNombre} ${instructor.cPersPaterno} ${instructor.cPersMaterno}`, // Concatenar nombres
+            }))
+            console.log('instructor', this.instructores)
+            // // Aquí actualizas el nombre en el formulario
+            //   this.formNuevaCapacitacion.patchValue({
+            //     nombreLargo: `${this.instructores.cPersPaterno} ${this.instructores.cPersMaterno} ${this.instructores.cPersNombre}`,});
         })
     }
 

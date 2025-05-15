@@ -218,15 +218,18 @@
                                     <p-inputGroupAddon
                                         >Instructor:
                                     </p-inputGroupAddon>
-                                    <p-treeSelect
-                                        class="md:w-20rem w-full"
-                                        containerStyleClass="w-full"
-                                        formControlName="selectedNodes"
+                                    <p-dropdown
                                         [options]="instructores"
-                                        placeholder="Seleccionar Instructor"
+                                        formControlName="iInstId"
+                                        optionLabel="nombreLargo"
+                                        optionValue="iInstId"
+                                        styleClass="w-full"
                                         [filter]="true"
-                                        [filterInputAutoFocus]="true"
-                                    />
+                                        filterBy="nombreLargo"
+                                        [showClear]="true"
+                                        placeholder="Seleccionar instructor"
+                                    >
+                                    </p-dropdown>
                                 </p-inputGroup>
                             </div>
                             <div class="col">
@@ -382,10 +385,6 @@
                                         {{ selectedImageId }}
                                     </p>
                                 </div>
-
-                                <!-- <div class="form-actions">
-                                    <button pButton type="submit" label="Guardar selección" [disabled]="formNuevaCapacitacion.invalid"></button>
-                                    </div> -->
                             </div>
                         </div>
                     </div>
@@ -441,7 +440,7 @@
     [modal]="true"
     [style]="{ width: '50vw' }"
 >
-    <form action="">
+    <form [formGroup]="formHorarioCurso" class="flex flex-column gap-3 w-full">
         <!-- agregar de inicio y fin de fechas -->
         <div class="col-12 mt-3 grid">
             <div class="col-6">

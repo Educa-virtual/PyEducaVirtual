@@ -23,10 +23,23 @@ export class UsuariosService {
         )
     }
 
-    cambiarEstadoUsuario(id: number, activo: number) {
+    cambiarEstadoUsuario(iCredId: number, activo: string) {
         return this.http.patch(
-            `${this.urlBackendApi}/seg/usuarios/${id}/estado`,
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/estado`,
             { iCredEstado: activo }
+        )
+    }
+
+    restablecerClaveUsuario(iCredId: number) {
+        return this.http.patch(
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/password`,
+            null
+        )
+    }
+
+    eliminarPerfilUsuario(iCredId: number, iCredEntPerfId: number) {
+        return this.http.delete(
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/perfiles/${iCredEntPerfId}`
         )
     }
 }

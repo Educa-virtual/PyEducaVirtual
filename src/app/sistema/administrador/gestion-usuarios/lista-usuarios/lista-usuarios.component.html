@@ -44,26 +44,18 @@
                     </span>
                 </div>
 
-                <div class="filter-item mr-1">
+                <!--<div class="filter-item mr-1">
                     <label for="modulos">Filtrar por:</label>
-                    <p-dropdown
-                        [options]="filtrosInstituciones"
-                        [(ngModel)]="filtroInstitucionSeleccionada"
-                        optionLabel="name"
-                        styleClass="w-full"
-                    >
+                    <p-dropdown [options]="filtrosInstituciones" [(ngModel)]="filtroInstitucionSeleccionada"
+                        optionLabel="name" styleClass="w-full">
                     </p-dropdown>
                 </div>
 
                 <div class="filter-item mr-3">
-                    <p-dropdown
-                        [options]="filtrosRoles"
-                        [(ngModel)]="filtroPerfilSeleccionado"
-                        optionLabel="name"
-                        styleClass="w-full"
-                    >
+                    <p-dropdown [options]="filtrosRoles" [(ngModel)]="filtroPerfilSeleccionado" optionLabel="name"
+                        styleClass="w-full">
                     </p-dropdown>
-                </div>
+                </div>-->
 
                 <div class="ml-auto">
                     <button
@@ -93,68 +85,70 @@
             <ng-template pTemplate="header">
                 <tr class="bg-gray-200">
                     <th style="width: 3%" class="text-center">N°</th>
-                    <th style="width: 15%" class="text-center">Documento</th>
+                    <th style="width: 15%" class="text-center">
+                        Documento / Usuario
+                    </th>
                     <th style="width: 25%" class="text-center">
                         Apellidos y nombres
                     </th>
+                    <th class="text-center">Verificado</th>
                     <th class="text-center">Estado usuario</th>
-                    <th style="width: 15%" class="text-center">Perfil</th>
-                    <th class="text-center">Nombre de la Institución</th>
+                    <th class="text-center">Fecha caducidad</th>
+                    <th class="text-center">Ctd. perfiles</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-user let-i="rowIndex">
-                <tr [ngClass]="{ 'bg-gray-50': i % 2 === 0 }">
+                <tr [ngClass]="{ 'bg-gray-100': i % 2 === 0 }">
                     <td class="text-center">{{ i + 1 }}</td>
-                    <td class="text-center">{{ user.cPersDocumento }}</td>
+                    <td class="text-center">
+                        {{ user.cPersDocumento }}
+                        @if (user.cPersDocumento !== user.cCredUsuario) {
+                            <br />
+                            (<span pTooltip="Usuario" tooltipPosition="top"
+                                >Us.:</span
+                            >
+                            {{ user.cCredUsuario }})
+                        }
+                    </td>
                     <td>{{ user.cApellidosNombres }}</td>
                     <td class="text-center">
-                        {{ user.iCredEstado === '1' ? 'Activo' : 'Inactivo' }}
+                        @if (user.bCredVerificado === '1') {
+                            <span class="text-green-600">Sí</span>
+                        } @else {
+                            <span class="text-red-600">No</span>
+                        }
                     </td>
-                    <td>
-                        <ng-container *ngIf="user.cPerfiles">
-                            <span
-                                *ngFor="
-                                    let perfil of user.cPerfiles.split(',');
-                                    let last = last
-                                "
-                            >
-                                {{ perfil }}<br *ngIf="!last" />
-                            </span>
-                        </ng-container>
+                    <td class="text-center">
+                        @if (user.iCredEstado === '1') {
+                            <span class="text-green-600">Activo</span>
+                        } @else {
+                            <span class="text-red-600">Inactivo</span>
+                        }
                     </td>
-                    <td>
-                        <ng-container *ngIf="user.cInstituciones">
-                            <span
-                                *ngFor="
-                                    let Institucion of user.cInstituciones.split(
-                                        ','
-                                    );
-                                    let last = last
-                                "
-                            >
-                                {{ Institucion }}<br *ngIf="!last" />
-                            </span>
-                        </ng-container>
+                    <td class="text-center">
+                        {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
+                        @if (usuarioExpirado(user.dtCredCaduca)) {
+                            <p class="text-red-600">Caducado</p>
+                        }
                     </td>
+                    <td class="text-center">{{ user.iCantidadPerfiles }}</td>
                     <td class="text-center action-buttons">
                         <button
                             pButton
                             icon="pi pi-user-edit"
                             class="p-button-text p-button-warning"
-                            pTooltip="Editar perfil"
+                            pTooltip="Editar perfiles"
                             tooltipPosition="top"
-                            (click)="editarRolesUsuario(user)"
+                            (click)="editarPerfilesUsuario(user)"
                         ></button>
-                        <!--<button pButton icon="pi pi-user-minus" class="p-button-text p-button-danger" pTooltip="Asignar perfil"
-                            tooltipPosition="top" (click)="abrirDialogoAsignarRol(user)"></button>-->
                         <button
                             pButton
                             icon="pi pi-key"
                             class="p-button-text p-button-info"
-                            pTooltip="Cambiar clave"
+                            pTooltip="Restablecer contraseña"
                             tooltipPosition="top"
-                            (click)="mostrarDialogCambiarClave(user)"
+                            (click)="preguntarCambiarClave(user)"
                         ></button>
                         @if (user.iCredEstado === '1') {
                             <button
@@ -175,6 +169,14 @@
                                 (click)="preguntarReactivarUsuario(user)"
                             ></button>
                         }
+                        <button
+                            pButton
+                            icon="pi pi-calendar"
+                            class="p-button-text p-button-help"
+                            pTooltip="Cambiar fecha de caducidad"
+                            tooltipPosition="top"
+                            (click)="editarPerfilesUsuario(user)"
+                        ></button>
                     </td>
                 </tr>
             </ng-template>

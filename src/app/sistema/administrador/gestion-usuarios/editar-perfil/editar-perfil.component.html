@@ -5,7 +5,7 @@
     [modal]="true"
     styleClass="p-fluid roles-dialog"
     [draggable]="false"
-    (onHide)="closeDialog()"
+    (onHide)="cerrarDialog()"
 >
     <div class="asignar-rol-container">
         <div class="grid">
@@ -52,7 +52,7 @@
                             <label for="modulos">Rol:</label>
                             <p-dropdown
                                 [options]="roles"
-                                [(ngModel)]="rolSeleccionado"
+                                [(ngModel)]="perfilSeleccionado"
                                 placeholder="Seleccione Rol"
                                 optionLabel="nombre"
                                 styleClass="dropdown-field"
@@ -72,21 +72,29 @@
 
                     <div class="mt-4">
                         <p-table
-                            [value]="asignaciones"
+                            [value]="dataPerfilesUsuario"
                             [tableStyle]="{ 'min-width': '50rem' }"
-                            [rows]="10"
+                            [rows]="20"
                             [showCurrentPageReport]="true"
                             styleClass="p-datatable-sm"
                         >
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th style="width: 5%; text-align: center">
+                                    <th style="width: 5%" class="text-center">
                                         #
                                     </th>
-                                    <th style="width: 20%">Rol</th>
-                                    <th style="width: 20%">Nivel</th>
-                                    <th style="width: 35%">Institución</th>
-                                    <th style="width: 15%">Fecha Asignación</th>
+                                    <th style="width: 20%" class="text-center">
+                                        Perfil
+                                    </th>
+                                    <th style="width: 20%" class="text-center">
+                                        Nivel
+                                    </th>
+                                    <th style="width: 35%" class="text-center">
+                                        Institución
+                                    </th>
+                                    <th style="width: 15%" class="text-center">
+                                        Fecha asignación
+                                    </th>
                                     <th style="width: 5%; text-align: center">
                                         Acciones
                                     </th>
@@ -94,27 +102,35 @@
                             </ng-template>
                             <ng-template
                                 pTemplate="body"
-                                let-asignacion
+                                let-perfil
                                 let-i="rowIndex"
                             >
-                                <tr [ngClass]="{ 'row-even': i % 2 === 0 }">
-                                    <td style="text-align: center">
-                                        {{ asignacion.id }}
+                                <tr [ngClass]="{ 'bg-gray-100': i % 2 === 0 }">
+                                    <td class="text-center">
+                                        {{ i + 1 }}
                                     </td>
-                                    <td>{{ asignacion.rol }}</td>
-                                    <td>{{ asignacion.nivel }}</td>
-                                    <td>{{ asignacion.institucion }}</td>
-                                    <td>{{ asignacion.fechaAsignacion }}</td>
-                                    <td style="text-align: center">
+                                    <td>{{ perfil.cPerfilNombre }}</td>
+                                    <td>{{ perfil.nivel }}</td>
+                                    <td>
+                                        {{ perfil.cIieeCodigoModular }} -
+                                        {{ perfil.cIieeNombre }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{
+                                            perfil.dtCredEntPerfCreado
+                                                | date: 'dd/MM/y'
+                                        }}
+                                    </td>
+                                    <td class="text-center">
                                         <button
                                             pButton
                                             pRipple
                                             icon="pi pi-trash"
                                             class="p-button-rounded p-button-danger delete-button"
-                                            pTooltip="Eliminar"
+                                            pTooltip="Eliminar perfil"
                                             tooltipPosition="top"
                                             (click)="
-                                                eliminarUsuario(asignacion.id)
+                                                preguntarEliminarPerfil(perfil)
                                             "
                                         ></button>
                                     </td>

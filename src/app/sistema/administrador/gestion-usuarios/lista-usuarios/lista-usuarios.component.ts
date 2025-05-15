@@ -20,37 +20,26 @@ export class ListaUsuariosComponent {
     private lastLazyEvent: LazyLoadEvent | undefined
     dataUsuarios: Usuario[] = []
     totalDataUsuarios: number = 0
-    criterioBusqueda: string = ''
-    //form: FormGroup
+
+    fechaServidor: Date
+    listaBotones: MenuItem[]
     loading = false
-    modalAsignarRolVisible: boolean = false
+
     usuarioSeleccionado: Usuario | null = null
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
 
-    // modal 2
+    modalAsignarRolVisible: boolean = false
     modalAgregarPersonalVisible: boolean = false
     modalPersonalVisible: boolean = false
+    criterioBusqueda: string = ''
     selectedPersonal: Usuario | null = null
-
-    opcionesBusqueda = [
-        { name: 'Documento', code: 'documento' },
-        { name: 'Apellidos', code: 'apellidos' },
-        { name: 'Nombres', code: 'nombres' },
-    ]
-    opcionBusquedaSeleccionada: any = this.opcionesBusqueda[0]
-    filtrosInstituciones = [
-        { name: 'Dremo', code: 'dremo' },
-        { name: 'UGEL', code: 'ugel' },
-        { name: 'Institución', code: 'institucion' },
-    ]
-    filtroInstitucionSeleccionada: any = this.filtrosInstituciones[0]
-    filtrosRoles = [
-        { name: 'Todos', code: 'todos' },
-        { name: 'Activos', code: 'activos' },
-        { name: 'Inactivos', code: 'inactivos' },
-    ]
-    filtroPerfilSeleccionado: any = this.filtrosRoles[0]
+    opcionesBusqueda: any[] = []
+    opcionBusquedaSeleccionada: any
+    filtrosInstituciones: any[] = []
+    filtroInstitucionSeleccionada: any
+    filtrosRoles: any[] = []
+    filtroPerfilSeleccionado: any
 
     constructor(
         private messageService: MessageService,
@@ -67,6 +56,33 @@ export class ListaUsuariosComponent {
             routerLink: '/',
         }
 
+        this.opcionesBusqueda = [
+            { name: 'Documento', code: 'documento' },
+            { name: 'Apellidos', code: 'apellidos' },
+            { name: 'Nombres', code: 'nombres' },
+        ]
+        this.opcionBusquedaSeleccionada = this.opcionesBusqueda[0]
+        this.filtrosInstituciones = [
+            { name: 'Dremo', code: 'dremo' },
+            { name: 'UGEL', code: 'ugel' },
+            { name: 'Institución', code: 'institucion' },
+        ]
+        this.filtroInstitucionSeleccionada = this.filtrosInstituciones[0]
+        this.filtrosRoles = [
+            { name: 'Todos', code: 'todos' },
+            { name: 'Activos', code: 'activos' },
+            { name: 'Inactivos', code: 'inactivos' },
+        ]
+        this.filtroPerfilSeleccionado = this.filtrosRoles[0]
+
+        this.listaBotones = [
+            {
+                label: 'Restablecer contraseña',
+                command: () => {
+                    this.preguntarCambiarClave(this.usuarioSeleccionado)
+                },
+            },
+        ]
         // Configurar debounce para el input
         this.searchChanged.pipe(debounceTime(400)).subscribe(() => {
             if (this.lastLazyEvent) {
@@ -83,11 +99,17 @@ export class ListaUsuariosComponent {
         this.searchChanged.next() // activa debounce
     }
 
+    usuarioExpirado(fechaCaducidadString: string) {
+        const fechaCaducidad = new Date(fechaCaducidadString)
+        return fechaCaducidad < this.fechaServidor
+    }
+
     obtenerListaUsuarios(params: any) {
         this.usuariosService.obtenerListaUsuarios(params).subscribe({
             next: (respuesta: any) => {
-                this.totalDataUsuarios = respuesta.data.total
-                this.dataUsuarios = respuesta.data.data
+                this.totalDataUsuarios = respuesta.data.totalFilas
+                this.dataUsuarios = respuesta.data.dataUsuarios
+                this.fechaServidor = new Date(respuesta.data.fechaServidor)
                 this.loading = false
             },
             error: (error) => {
@@ -124,7 +146,7 @@ export class ListaUsuariosComponent {
         this.modalAgregarPersonalVisible = true
     }
 
-    editarRolesUsuario(usuario: Usuario) {
+    editarPerfilesUsuario(usuario: Usuario) {
         this.usuarioSeleccionado = usuario
         this.modalAsignarRolVisible = true
     }
@@ -148,7 +170,7 @@ export class ListaUsuariosComponent {
             header: 'Desactivar usuario',
             message: `¿Está seguro de que desea desactivar el usuario de ${usuario.cApellidosNombres}?`,
             accept: () => {
-                this.cambiarEstadoUsuario(usuario, 0)
+                this.cambiarEstadoUsuario(usuario, '0')
             },
         })
     }
@@ -159,12 +181,12 @@ export class ListaUsuariosComponent {
             message: `¿Está seguro de que desea activar el usuario de ${usuario.cApellidosNombres}?`,
             icon: 'pi pi-check-circle',
             accept: () => {
-                this.cambiarEstadoUsuario(usuario, 1)
+                this.cambiarEstadoUsuario(usuario, '1')
             },
         })
     }
 
-    cambiarEstadoUsuario(usuario: Usuario, activo: number) {
+    cambiarEstadoUsuario(usuario: Usuario, activo: string) {
         this.usuariosService
             .cambiarEstadoUsuario(usuario.iCredId, activo)
             .subscribe({
@@ -180,14 +202,41 @@ export class ListaUsuariosComponent {
                 error: (error) => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Problema al obtener usuarios',
+                        summary: 'Problema al realizar el cambio',
                         detail: error,
                     })
                 },
             })
     }
 
-    mostrarDialogCambiarClave(usuario: Usuario) {
-        console.log(usuario)
+    preguntarCambiarClave(usuario: Usuario) {
+        this.confirmationModalService.openConfirm({
+            header: 'Restablecer contraseña',
+            message: `La contraseña de ${usuario.cApellidosNombres} será su usuario, ¿desea continuar?`,
+            accept: () => {
+                this.cambiarClaveUsuario(usuario)
+            },
+        })
+    }
+
+    cambiarClaveUsuario(usuario: Usuario) {
+        this.usuariosService
+            .restablecerClaveUsuario(usuario.iCredId)
+            .subscribe({
+                next: (respuesta: any) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: `Contraseña restablecida`,
+                        detail: respuesta.message,
+                    })
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al restablecer contraseña',
+                        detail: error,
+                    })
+                },
+            })
     }
 }

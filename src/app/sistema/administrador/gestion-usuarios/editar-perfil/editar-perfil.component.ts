@@ -7,19 +7,13 @@ import {
     OnChanges,
     SimpleChanges,
 } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
-import { DropdownModule } from 'primeng/dropdown'
-import { TableModule } from 'primeng/table'
-import { ButtonModule } from 'primeng/button'
-import { TooltipModule } from 'primeng/tooltip'
-import { RippleModule } from 'primeng/ripple'
 import { PrimengModule } from '@/app/primeng.module'
 import { DialogModule } from 'primeng/dialog'
 import { Usuario } from '../interfaces/usuario.interface'
 import { MessageService } from 'primeng/api'
 import { UsuariosService } from '../services/usuarios.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { PerfilAsignado } from '../interfaces/perfil-asignado.interface'
 
 interface Institucion {
     nombre: string
@@ -41,28 +35,18 @@ interface Rol {
     codigo: string
 }
 
-interface AsignacionRol {
+/*interface AsignacionRol {
     id: number
     rol: string
     nivel: string
     institucion: string
     fechaAsignacion: string
-}
+}*/
 
 @Component({
     selector: 'app-editar-perfil',
     standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule,
-        DropdownModule,
-        TableModule,
-        ButtonModule,
-        TooltipModule,
-        RippleModule,
-        PrimengModule,
-        DialogModule,
-    ],
+    imports: [PrimengModule, DialogModule],
     templateUrl: './editar-perfil.component.html',
     styleUrls: ['./editar-perfil.component.scss'],
 })
@@ -70,7 +54,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     @Input() visible: boolean = false
     @Input() usuario: Usuario = null
     @Output() visibleChange = new EventEmitter<boolean>()
-    @Output() rolAsignado = new EventEmitter<any>()
+    //@Output() perfilesAsignados = new EventEmitter<any>()
     dataPerfilesUsuario: any[] = []
 
     instituciones: Institucion[] = []
@@ -81,9 +65,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     institucionSeleccionada: Institucion | null = null
     nivelSeleccionado: Nivel | null = null
     moduloSeleccionado: Modulo | null = null
-    rolSeleccionado: Rol | null = null
-
-    asignaciones: AsignacionRol[] = []
+    perfilSeleccionado: PerfilAsignado | null = null
 
     // Propiedades para el diálogo
 
@@ -102,12 +84,12 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             .obtenerPerfilesUsuario(this.usuario.iCredId)
             .subscribe({
                 next: (respuesta: any) => {
-                    this.dataPerfilesUsuario = respuesta.data.data
+                    this.dataPerfilesUsuario = respuesta.data
                 },
                 error: (error) => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Problema al obtener usuarios',
+                        summary: 'Problema al obtener perfiles',
                         detail: error,
                     })
                 },
@@ -117,7 +99,52 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes['visible'] && changes['visible'].currentValue === true) {
             this.inicializarDatos()
+            this.obtenerPerfilesUsuario()
         }
+    }
+
+    preguntarEliminarPerfil(perfil: PerfilAsignado) {
+        this.confirmationModalService.openConfirm({
+            header: 'Restablecer contraseña',
+            message: `El perfil ${perfil.cPerfilNombre} será eliminado del usuario, ¿desea continuar?`,
+            accept: () => {
+                this.eliminarPerfil(perfil.iCredEntPerfId)
+            },
+        })
+    }
+
+    eliminarPerfil(iCredEntPerfId: number) {
+        this.usuariosService
+            .eliminarPerfilUsuario(this.usuario.iCredId, iCredEntPerfId)
+            .subscribe({
+                next: (respuesta: any) => {
+                    this.dataPerfilesUsuario = this.dataPerfilesUsuario.filter(
+                        (item) => item.iCredEntPerfId !== iCredEntPerfId
+                    )
+                    this.usuario.iCantidadPerfiles =
+                        this.dataPerfilesUsuario.length
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Perfil eliminado',
+                        detail: respuesta.message,
+                    })
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al eliminar perfil',
+                        detail: error,
+                    })
+                },
+            })
+    }
+
+    cerrarDialog() {
+        /*this.perfilesAsignados.emit({
+            cantidad: this.dataPerfilesUsuario.length,
+        })*/
+
+        this.visibleChange.emit(false)
     }
 
     inicializarDatos() {
@@ -147,7 +174,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             c*onsole.log('Cargando datos del usuario:', this.personalData)
         }*/
 
-        this.asignaciones = [
+        /*this.asignaciones = [
             {
                 id: 1,
                 rol: 'Docente',
@@ -169,11 +196,11 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                 institucion: 'I.E. Rafael Díaz',
                 fechaAsignacion: '04/07/2024',
             },
-        ]
+        ]*/
     }
 
     agregarAsignacion() {
-        if (
+        /*if (
             this.rolSeleccionado &&
             this.nivelSeleccionado &&
             this.institucionSeleccionada
@@ -188,7 +215,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                 rol: this.rolSeleccionado.nombre,
                 nivel: this.nivelSeleccionado.nombre,
                 institucion: this.institucionSeleccionada.nombre,
-                fechaAsignacion: this.formatearFecha(new Date()),
+                fechaAsignacion: '',
             }
 
             this.asignaciones = [...this.asignaciones, nuevaAsignacion]
@@ -196,32 +223,21 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             this.rolSeleccionado = null
         } else {
             console.error('Falta seleccionar algún campo')
-        }
+        }*/
     }
 
-    eliminarUsuario(id: number) {
-        this.asignaciones = this.asignaciones.filter((item) => item.id !== id)
-    }
-
-    private formatearFecha(fecha: Date): string {
-        const dia = fecha.getDate().toString().padStart(2, '0')
-        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0')
-        const anio = fecha.getFullYear()
-        return `${dia}/${mes}/${anio}`
-    }
-
-    closeDialog() {
+    /*closeDialog() {
         this.visible = false
         this.visibleChange.emit(false)
-    }
+    }*/
 
-    guardarCambios() {
+    /*guardarCambios() {
         this.rolAsignado.emit({
-            asignaciones: this.asignaciones,
+            //asignaciones: this.asignaciones,
             //personalData: this.personalData,
         })
 
         // Cerrar el diálogo
         this.closeDialog()
-    }
+    }*/
 }

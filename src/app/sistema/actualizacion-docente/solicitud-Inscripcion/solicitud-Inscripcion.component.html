@@ -10,16 +10,15 @@
 </div>
 <div class="col-12">
     @switch (activeIndex) {
-        @case (0) {
-            <app-apertura-curso></app-apertura-curso>
-        }
+        @case (0) {}
         @case (1) {
-            <app-table-primeng
-                [columnas]="columnasTabla"
-                [data]="[]"
-                [actions]="accionesTabla"
-            >
-            </app-table-primeng>
+            <div class="cursos gap-4 py-2">
+                @for (capacitacion of data; track capacitacion) {
+                    <app-card-capacitaciones
+                        [capacitacion]="capacitacion"
+                    ></app-card-capacitaciones>
+                }
+            </div>
         }
     }
 </div>

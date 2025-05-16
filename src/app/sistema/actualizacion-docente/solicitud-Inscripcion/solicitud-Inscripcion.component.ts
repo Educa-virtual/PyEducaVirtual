@@ -7,6 +7,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component'
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component'
+import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component'
 
 @Component({
     selector: 'app-solicitud-inscripcion',
@@ -18,6 +19,7 @@ import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacita
         ToolbarPrimengComponent,
         TabsPrimengComponent,
         CardCapacitacionesComponent,
+        AperturaCursoComponent,
     ],
 })
 export class SolicitudInscripcionComponent {

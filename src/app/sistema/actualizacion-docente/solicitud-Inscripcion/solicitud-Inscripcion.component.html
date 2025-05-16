@@ -10,7 +10,9 @@
 </div>
 <div class="col-12">
     @switch (activeIndex) {
-        @case (0) {}
+        @case (0) {
+            <app-apertura-curso></app-apertura-curso>
+        }
         @case (1) {
             <div class="cursos gap-4 py-2">
                 @for (capacitacion of data; track capacitacion) {

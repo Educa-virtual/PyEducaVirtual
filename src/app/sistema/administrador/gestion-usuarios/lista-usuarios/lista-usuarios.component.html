@@ -106,9 +106,8 @@
                         @if (user.cPersDocumento !== user.cCredUsuario) {
                             <br />
                             (<span pTooltip="Usuario" tooltipPosition="top"
-                                >Us.:</span
+                                >{{ user.cCredUsuario }})</span
                             >
-                            {{ user.cCredUsuario }})
                         }
                     </td>
                     <td>{{ user.cApellidosNombres }}</td>

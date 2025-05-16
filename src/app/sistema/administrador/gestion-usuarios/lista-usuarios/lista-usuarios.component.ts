@@ -92,7 +92,9 @@ export class ListaUsuariosComponent {
     }
 
     cambioOpcionBusqueda() {
-        this.loadUsuariosLazy(this.lastLazyEvent)
+        if (this.criterioBusqueda != '') {
+            this.loadUsuariosLazy(this.lastLazyEvent)
+        }
     }
 
     cambioCriterioBusqueda() {

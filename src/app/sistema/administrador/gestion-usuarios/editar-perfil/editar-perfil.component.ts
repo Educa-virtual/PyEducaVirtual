@@ -10,15 +10,11 @@ import {
 import { PrimengModule } from '@/app/primeng.module'
 import { DialogModule } from 'primeng/dialog'
 import { Usuario } from '../interfaces/usuario.interface'
-import { MessageService } from 'primeng/api'
+import { MessageService, SelectItem } from 'primeng/api'
 import { UsuariosService } from '../services/usuarios.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { PerfilAsignado } from '../interfaces/perfil-asignado.interface'
-
-interface Institucion {
-    nombre: string
-    codigo: string
-}
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
 interface Nivel {
     nombre: string
@@ -54,18 +50,26 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     @Input() visible: boolean = false
     @Input() usuario: Usuario = null
     @Output() visibleChange = new EventEmitter<boolean>()
+    formAgregarPerfil: FormGroup
     //@Output() perfilesAsignados = new EventEmitter<any>()
     dataPerfilesUsuario: any[] = []
 
-    instituciones: Institucion[] = []
+    opciones: SelectItem[] = []
+    //opcionSeleccionada: number
+    institucionesEducativas: SelectItem[] = []
+    //ieSeleccionada: number
+    ieSedes: SelectItem[] = []
+    //ieSedeSeleccionada: number
+    perfiles: SelectItem[] = []
+    //perfilSeleccionado: number
+
     niveles: Nivel[] = []
     modulos: Modulo[] = []
     roles: Rol[] = []
 
-    institucionSeleccionada: Institucion | null = null
     nivelSeleccionado: Nivel | null = null
     moduloSeleccionado: Modulo | null = null
-    perfilSeleccionado: PerfilAsignado | null = null
+    perfilUsuarioSeleccionado: PerfilAsignado | null = null
 
     // Propiedades para el diálogo
 
@@ -76,7 +80,8 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     constructor(
         private messageService: MessageService,
         private usuariosService: UsuariosService,
-        private confirmationModalService: ConfirmationModalService
+        private confirmationModalService: ConfirmationModalService,
+        private fb: FormBuilder
     ) {}
 
     obtenerPerfilesUsuario() {
@@ -94,6 +99,68 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                     })
                 },
             })
+    }
+
+    obtenerPerfilesPorTipo(tipo: string) {
+        this.usuariosService.obtenerPerfilesPorTipo(tipo).subscribe({
+            next: (respuesta: any) => {
+                //this.dataPerfilesUsuario = respuesta.data
+                this.perfiles = respuesta.data.map((perfil) => ({
+                    value: perfil.iPerfilId,
+                    label: perfil.cPerfilNombre,
+                }))
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener perfiles',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    obtenerSedesIe(iIieeId: number) {
+        this.usuariosService
+            .obtenerSedesInstitucionEducativa(iIieeId)
+            .subscribe({
+                next: (respuesta: any) => {
+                    this.ieSedes = respuesta.data.map((sede) => ({
+                        value: sede.iSedeId,
+                        label: sede.cSedeNombre,
+                    }))
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al obtener perfiles',
+                        detail: error,
+                    })
+                },
+            })
+        /*this.query
+            .searchCalAcademico({
+                esquema: 'acad',
+                tabla: 'sedes',
+                campos: 'iSedeId, iIieeId, cSedeNombre, iEstado',
+                condicion: 'iIieeId= ' + id,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.lista_sedes = data.data
+                },
+                error: (error) => {
+                    console.error('Error lista de Sedes:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje de error de Sedes',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })*/
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -143,32 +210,62 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
         /*this.perfilesAsignados.emit({
             cantidad: this.dataPerfilesUsuario.length,
         })*/
-
+        this.dataPerfilesUsuario = []
         this.visibleChange.emit(false)
     }
 
+    obtenerInstitucionesEducativas() {
+        this.usuariosService.obtenerInstitucionesEducativas().subscribe({
+            next: (respuesta: any) => {
+                this.institucionesEducativas = respuesta.data.map((ie) => ({
+                    value: ie.iIieeId,
+                    label: (
+                        ie.cIieeCodigoModular +
+                        ' - ' +
+                        ie.cIieeNombre +
+                        ' - ' +
+                        (ie.iNivelTipoId == 3 ? 'PRIMARIA' : 'SECUNDARIA')
+                    ).trim(),
+                }))
+                //this.institucionesEducativas = respuesta.data
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener instituciones educativas',
+                    detail: error,
+                })
+            },
+        })
+    }
+
     inicializarDatos() {
-        this.instituciones = [
+        this.obtenerInstitucionesEducativas()
+        this.opciones = [
+            { label: 'DREMO', value: 1 },
+            { label: 'UGEL', value: 2 },
+            { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
+        ]
+        this.formAgregarPerfil = this.fb.group({
+            opcionSeleccionada: ['', [Validators.required]],
+            ieSeleccionada: [''],
+            ieSedeSeleccionada: [''],
+            perfilSeleccionado: ['', [Validators.required]],
+            /*iEntId: ['', [Validators.required]],
+                    iOption: ['', [Validators.required]],
+                    iDremoId: [''],
+                    iUgelId: [''],
+                    iIieeId: [''],
+
+                    iSedeId: [''],
+                    iCursosNivelGradId: [''],
+
+                    iPerfilId: ['', [Validators.required]],*/
+        })
+        /*this.instituciones = [
             { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },
             { nombre: 'I.E. Simón Bolívar', codigo: 'SIM' },
-        ]
-
-        this.niveles = [
-            { nombre: 'Primario', codigo: 'PRI' },
-            { nombre: 'Secundario', codigo: 'SEC' },
-            { nombre: 'Superior', codigo: 'SUP' },
-        ]
-
-        this.modulos = [
-            { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },
-            { nombre: 'I.E. Simón Bolívar', codigo: 'SIM' },
-        ]
-
-        this.roles = [
-            { nombre: 'Docente', codigo: 'DOC' },
-            { nombre: 'Estudiante', codigo: 'EST' },
-            { nombre: 'Director', codigo: 'DIR' },
-        ]
+        ]*/
 
         /*if (this.personalData) {
             c*onsole.log('Cargando datos del usuario:', this.personalData)

@@ -42,4 +42,21 @@ export class UsuariosService {
             `${this.urlBackendApi}/seg/usuarios/${iCredId}/perfiles/${iCredEntPerfId}`
         )
     }
+
+    //Debe moverse a otro servicio
+    obtenerInstitucionesEducativas() {
+        return this.http.get(
+            `${this.urlBackendApi}/acad/instituciones-educativas`
+        )
+    }
+
+    obtenerSedesInstitucionEducativa(iIieeId: number) {
+        return this.http.get(
+            `${this.urlBackendApi}/acad/instituciones-educativas/${iIieeId}/sedes`
+        )
+    }
+
+    obtenerPerfilesPorTipo(tipo: string) {
+        return this.http.get(`${this.urlBackendApi}/seg/perfiles?tipo=${tipo}`)
+    }
 }

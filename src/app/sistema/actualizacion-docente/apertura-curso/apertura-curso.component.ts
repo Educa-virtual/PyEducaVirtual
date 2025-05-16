@@ -56,30 +56,23 @@ export class AperturaCursoComponent implements OnInit {
     instructores: any
     selectedImageId: any
 
-    diaSeleccionado: string | null = null //día seleccionado
+    diaSeleccionado: string | number = 123 //día seleccionado
     fechaSeleccionada: Date | null = null
     datosTemporales: {
-        nombre: string
-        horaIni: Date | null
+        iHoraInicio: string
+        iHoraFin: string
     }[] = [] // obtener los datos temporales
-    indiceActivo: number | null = null
 
     modoFormulario: 'crear' | 'editar' = 'crear'
-    // mostrar días:
-    // dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-    // horariosForm: { [key: string]: FormGroup } = {};
-    mostrarCalendario: string | null = null
-    horariosTemporales: {
-        [key: string]: { horaInit: string; horaFin: string }
-    } = {}
+
     dias = [
-        { nombre: 'Lunes', value: 1 },
-        { nombre: 'Martes', value: 2 },
-        { nombre: 'Miércoles', value: 3 },
-        { nombre: 'Jueves', value: 4 },
-        { nombre: 'Viernes', value: 5 },
-        { nombre: 'Sabado', value: 6 },
-        { nombre: 'Domingo', value: 7 },
+        { id: 1, nombre: 'Lunes' },
+        { id: 2, nombre: 'Martes' },
+        { id: 3, nombre: 'Miércoles' },
+        { id: 4, nombre: 'Jueves' },
+        { id: 5, nombre: 'Viernes' },
+        { id: 6, nombre: 'Sabado' },
+        { id: 7, nombre: 'Domingo' },
     ]
 
     constructor(private messageService: MessageService) {}
@@ -101,12 +94,9 @@ export class AperturaCursoComponent implements OnInit {
         iCantidad: [0],
         cImagenUrl: [''],
         iImageAleatorio: [1],
+        jsonHorario: [''],
     })
-    // formGroup para horarios
-    public formHorarioCurso = this._formBuilder.group({
-        horaInit: ['', [Validators.required]],
-        horaFin: ['', [Validators.required]],
-    })
+
     responsiveOptions: any[] = [
         {
             breakpoint: '1024px',
@@ -218,34 +208,69 @@ export class AperturaCursoComponent implements OnInit {
         this.showModalHorarios = true
     }
 
-    // datosTemporales: { [key: number]: any } = {}; // Almacena datos por cada botón seleccionado
+    // datosTemporales1: { [key: number]: any } = {}; // Almacena datos por cada botón seleccionado
     datosFinales: any[] = [] // Guarda todo al final
-    botonSeleccionado: number | null = null
-    horaSeleccionada: string = ''
-    // guardarDatos() {
-    // if (this.botonSeleccionado) {
-    //   this.datosTemporales[this.botonSeleccionado] = {
-    //     hora: this.horaSeleccionada,
-    //     info: `Información del botón ${this.botonSeleccionado}`
-    //   };
-    //   this.botonSeleccionado = null; // Restablecer selección
-    //   this.horaSeleccionada = "";
-    // }
-    //   }
+    // botonSeleccionado: number | null = null
+    horaSeleccionadaInicio: string = ''
+    horaSeleccionadaFin: string = ''
+
+    nombredia: string
     // metodo para seleccionar día
-    mostrarHorario(index: number) {
-        this.indiceActivo = index
-        console.log('indice', this.indiceActivo)
-        this.fechaSeleccionada = this.datosTemporales[index]?.horaIni || null
+    mostrarHorario(id: number) {
+        const dia = this.dias.find((d) => d.id === id)
+        this.nombredia = dia.nombre
+
+        if (dia) {
+            this.diaSeleccionado = dia.id
+        }
+        // this.diaSeleccionado = index
+        console.log('indice', this.diaSeleccionado)
+        // this.fechaSeleccionada = this.datosTemporales[index]?.horaIni || null
     }
-    //      mostrarFormulario(dia: string) {
-    //     this.mostrarCalendario = dia;
-    //   }
+
+    // guardar temporamente los datos del dia seleccionado
+    guardarDatos() {
+        if (this.diaSeleccionado) {
+            // Si no hay aún datos para ese día, inicializa como array vacío
+            if (!this.datosTemporales[this.diaSeleccionado]) {
+                this.datosTemporales[this.diaSeleccionado] = []
+            }
+
+            // Agrega nuevo horario al array del día correspondiente
+            this.datosTemporales[this.diaSeleccionado].push({
+                iHoraInicio: this.horaSeleccionadaInicio,
+                iHoraFin: this.horaSeleccionadaFin,
+            })
+
+            console.log('Datos temporales:', this.datosTemporales)
+
+            // Restablece selección
+            this.diaSeleccionado = null
+            this.horaSeleccionadaInicio = ''
+            this.horaSeleccionadaFin = ''
+        }
+    }
+    loading: boolean = false
+    json
     // datos obtenidos del segundo form
-    // guardarDatos() {
-    //     const datosFinales = JSON.stringify(this.datosTemp);
-    //     console.log("Datos guardados:", datosFinales);
-    // }
+    guardarTodo() {
+        this.loading = true
+        setTimeout(() => {
+            this.loading = false
+        }, 2000)
+
+        // Convertimos los datos temporales en un array de objetos con el nombre del día
+        this.datosFinales = Object.entries(this.datosTemporales).map(
+            ([iDiaId, iHorarioUniforme]) => ({
+                iDiaId,
+                iHorarioUniforme,
+            })
+        )
+
+        this.json = JSON.stringify(this.datosFinales)
+
+        console.log('Datos guardados:', this.json)
+    }
 
     //
     seleccionarImagen(event: any) {
@@ -378,8 +403,9 @@ export class AperturaCursoComponent implements OnInit {
                             ...this.formNuevaCapacitacion.value,
                             iCredId: iCredId,
                             iDocenteId: iDocenteId,
+                            jsonHorario: this.json,
                         }
-                        console.log(data, 'datos')
+                        console.log('datos', data)
 
                         this._aulaService.guardarCapacitacion(data).subscribe({
                             next: (resp: any) => {

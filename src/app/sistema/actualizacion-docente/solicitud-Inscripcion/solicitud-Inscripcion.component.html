@@ -14,12 +14,23 @@
             <app-apertura-curso></app-apertura-curso>
         }
         @case (1) {
-            <div class="cursos gap-4 py-2">
-                @for (capacitacion of data; track capacitacion) {
-                    <app-card-capacitaciones
-                        [capacitacion]="capacitacion"
-                    ></app-card-capacitaciones>
-                }
+            <div class="grid" #gridContainer>
+                <div class="col-12 cursos py-2">
+                    @for (capacitacion of data; track capacitacion) {
+                        <app-card-capacitaciones
+                            [capacitacion]="capacitacion"
+                        ></app-card-capacitaciones>
+                    }
+                </div>
+                <div class="col-12">
+                    <p-paginator
+                        (onPageChange)="onPageChange($event)"
+                        [first]="paginator.first"
+                        [rows]="paginator.rows"
+                        [totalRecords]="paginator.total"
+                        [rowsPerPageOptions]="paginator.rowsPerPage"
+                    />
+                </div>
             </div>
         }
     }

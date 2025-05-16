@@ -1,4 +1,3 @@
-import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { CurriculasComponent } from '../../curriculas.component'
 import { payload } from '../types/curricula'
@@ -54,25 +53,18 @@ export const curriculasColumns: IColumn[] = [
     },
 ]
 
-export const curriculasContainerActions: IActionContainer[] = [
-    {
-        labelTooltip: 'Añadir',
-        text: 'Añadir',
-        icon: 'pi pi-plus',
-        accion: 'agregar',
-        class: 'p-button-primary',
-    },
-]
-
-export function accionBtnContainer(this: CurriculasComponent, { accion }) {
+export function accionBtnContainerCurriculas(
+    this: CurriculasComponent,
+    { accion }
+) {
     this.forms.curriculas.reset()
 
     switch (accion) {
         case 'agregar':
-            this.dialogVisible.curricula = true
-            this.modal = {
+            this.dialogs.curriculas = {
+                ...this.dialogs.curriculas,
                 title: 'Agregar Curricula',
-                type: 'curricula',
+                visible: true,
             }
             break
 
@@ -85,21 +77,16 @@ export function curriculasAccionBtnTable(
     this: CurriculasComponent,
     { accion, item }
 ) {
-    console.log(accion)
+    this.forms.curriculas.reset()
+    this.forms.assignCursosInNivelesGrados.reset()
 
     switch (accion) {
         case 'editar':
-            this.dialogVisible.curricula = true
-
-            this.forms.curriculas.reset()
-
-            this.modal = {
+            this.dialogs.curriculas = {
+                ...this.dialogs.curriculas,
                 title: 'Editar Curricula',
-                type: 'curricula',
+                visible: true,
             }
-
-            console.log('item')
-            console.log(item)
 
             this.forms.curriculas.patchValue({
                 iCurrId: item.iCurrId,
@@ -118,6 +105,53 @@ export function curriculasAccionBtnTable(
                 cCurrDescripcion: item.cCurrDescripcion,
             })
 
+            this.cursosService.getCursos(item.iCurrId).subscribe({
+                next: (res: any) => {
+                    this.cursos.table.data = res.data
+                },
+            })
+
+            break
+        case 'nivelesCursos':
+            this.dialogs.nivelesCursos.visible = true
+
+            this.forms.curriculas.patchValue({
+                iCurrId: item.iCurrId,
+                iModalServId: item.iModalServId,
+                iCurrNotaMinima: item.iCurrNotaMinima,
+                iCurrTotalCreditos: item.iCurrTotalCreditos,
+                iCurrNroHoras: item.iCurrNroHoras,
+                cCurrPerfilEgresado: item.cCurrPerfilEgresado,
+                cCurrMencion: item.cCurrMencion,
+                nCurrPesoProcedimiento: item.nCurrPesoProcedimiento,
+                cCurrPesoConceptual: item.cCurrPesoConceptual,
+                cCurrPesoActitudinal: item.cCurrPesoActitudinal,
+                bCurrEsLaVigente: item.bCurrEsLaVigente,
+                cCurrRsl: item.cCurrRsl,
+                dtCurrRsl: item.dtCurrRsl,
+                cCurrDescripcion: item.cCurrDescripcion,
+            })
+
+            this.cursosService.getCursos(item.iCurrId).subscribe({
+                next: (res: any) => {
+                    this.cursos.table.data = res.data
+                },
+            })
+
+            this.nivelesGradosService.getNivelGrados().subscribe({
+                next: (res: any) => {
+                    this.dropdowns.nivelesGrados = res.data.map((item) => ({
+                        code: item.iNivelGradoId,
+                        name: `${item.cNivelTipoNombre} - ${item.cGradoNombre}`,
+                    }))
+                },
+            })
+
+            // this.dialogs.cursos = {
+            //     ...this.dialogs.cursos,
+            //     title: 'Agregar Curricula',
+            //     visible: true,
+            // }
             break
 
         default:
@@ -152,12 +186,4 @@ export function curriculasSave(this: CurriculasComponent) {
             iCurrId: formCurricula.iCurrId,
         })
     }
-}
-
-export const editar = {
-    labelTooltip: 'Editar',
-    icon: 'pi pi-pencil',
-    accion: 'editar',
-    type: 'item',
-    class: 'p-button-rounded p-button-warning p-button-text',
 }

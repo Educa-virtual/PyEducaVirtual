@@ -81,6 +81,79 @@ export const cursosColumns: TableColumn = {
     ],
 }
 
+export function accionBtnContainerCursos(
+    this: CurriculasComponent,
+    { accion }
+) {
+    this.forms.cursos.reset()
+
+    switch (accion) {
+        case 'agregar':
+            this.dialogs.cursos = {
+                ...this.dialogs.curriculas,
+                title: 'Agregar curso',
+                visible: true,
+            }
+            break
+
+        default:
+            break
+    }
+}
+
+export function cursosAccionBtnTable(
+    this: CurriculasComponent,
+    { accion, item }
+) {
+    console.log(accion)
+
+    switch (accion) {
+        case 'editar':
+            this.forms.cursos.reset()
+
+            this.cursos.container.actions = []
+
+            this.dialogs.cursos = {
+                ...this.dialogs.cursos,
+                title: 'Editar curso',
+                visible: true,
+            }
+
+            this.forms.cursos.patchValue({
+                iCurrId: item.iCurrId,
+                iTipoCursoId: item.iTipoCursoId,
+                cCursoNombre: item.cCursoNombre,
+                nCursoCredTeoria: item.nCursoCredTeoria,
+                nCursoCredPractica: item.nCursoCredPractica,
+                cCursoDescripcion: item.cCursoDescripcion,
+                nCursoTotalCreditos: item.nCursoTotalCreditos,
+                cCursoPerfilDocente: item.cCursoPerfilDocente,
+                iCursoTotalHoras: item.iCursoTotalHoras,
+                iCursoEstado: item.iCursoEstado,
+                cCursoImagen: item.cCursoImagen,
+            })
+
+            break
+
+        case 'assignCursosInNivelesGrados':
+            Object.keys(
+                this.forms.assignCursosInNivelesGrados.controls
+            ).forEach((field) => {
+                const control =
+                    this.forms.assignCursosInNivelesGrados.get(field)
+                control?.markAsTouched() // Marca como tocado (touched)
+                control?.markAsDirty() // Marca como modificado (dirty)
+            })
+
+            if (this.forms.assignCursosInNivelesGrados.invalid) return
+
+            break
+
+        default:
+            break
+    }
+}
+
 export function cursosSave(this: CurriculasComponent) {
     const formCurso = this.forms.curriculas.value
 

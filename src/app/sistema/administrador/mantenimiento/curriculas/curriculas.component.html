@@ -14,12 +14,12 @@
 
 <p-dialog
     #dialog
-    [(visible)]="dialogVisible.curricula"
+    [(visible)]="dialogs.curriculas.visible"
     [modal]="true"
     [maximizable]="true"
     (onShow)="dialog.maximize()"
     appendTo="body"
-    (onHide)="dialogVisible.cursos = false"
+    (onHide)="dialogs.curriculas.expand.cursos = false"
     [style]="{ width: '75rem' }"
 >
     <ng-template pTemplate="header">
@@ -27,257 +27,532 @@
             class="inline-flex align-items-center justify-content-center gap-2"
         >
             <span class="font-bold white-space-nowrap">
-                {{ modal?.title }}
+                {{ dialogs.curriculas.title }}
             </span>
         </div>
     </ng-template>
     <div class="grid h-full mt-4 row-gap-3">
-        @switch (modal?.type) {
-            @case ('curricula') {
-                <form
-                    [class.col-4]="dialogVisible.cursos"
-                    [class.col-11]="!dialogVisible.cursos"
-                    class="grid h-full"
-                    [formGroup]="this.forms.curriculas"
+        <form class="grid h-full col-4" [formGroup]="forms.curriculas">
+            <div class="col-12 grid">
+                <div class="col-10">
+                    <label for="name">Nombre</label>
+                    <input
+                        pInputText
+                        id="name"
+                        formControlName="cCurrDescripcion"
+                    />
+
+                    @if (
+                        forms.curriculas.get('cCurrDescripcion').dirty &&
+                        forms.curriculas.get('cCurrDescripcion').invalid &&
+                        forms.curriculas.get('cCurrDescripcion').touched
+                    ) {
+                        <small class="text-red-500">
+                            Este campo es obligatorio.
+                        </small>
+                    }
+                </div>
+                <div class="col-2">
+                    <label for="pesoActitudinal">Es la vigente</label>
+                    <p-toggleButton
+                        styleClass="w-full"
+                        onLabel="Si"
+                        offLabel="No"
+                        formControlName="bCurrEsLaVigente"
+                    />
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-6">
+                    <label for="modalidad">Modalidad del servicio</label>
+                    <p-dropdown
+                        id="modalidad"
+                        styleClass="w-full"
+                        [options]="dropdowns.modalidades"
+                        optionLabel="name"
+                        optionValue="code"
+                        appendTo="body"
+                        formControlName="iModalServId"
+                        placeholder="Seleccione una modalidad"
+                    />
+                    @if (
+                        forms.curriculas.get('iModalServId').dirty &&
+                        forms.curriculas.get('iModalServId').invalid &&
+                        forms.curriculas.get('iModalServId').touched
+                    ) {
+                        <small class="text-red-500">
+                            Debe seleccionar una opción.
+                        </small>
+                    }
+                </div>
+                <div class="col-6">
+                    <label for="mencion">Mención</label>
+                    <input
+                        pInputText
+                        id="mencion"
+                        formControlName="cCurrMencion"
+                    />
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-4">
+                    <label for="nroHoras">Nro Horas</label>
+                    <input
+                        pInputText
+                        id="nroHoras"
+                        formControlName="iCurrNroHoras"
+                    />
+                </div>
+                <div class="col-4">
+                    <label for="notaMinima">Nota minima</label>
+                    <input
+                        pInputText
+                        id="notaMinima"
+                        formControlName="iCurrNotaMinima"
+                    />
+                </div>
+                <div class="col-4">
+                    <label for="totalCreditos">Total de créditos</label>
+                    <input
+                        pInputText
+                        id="totalCreditos"
+                        formControlName="iCurrTotalCreditos"
+                    />
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <label class="col-12" for="totalCreditos"
+                    >Perfil de egresado</label
                 >
-                    <div class="col-12 grid">
-                        <div class="col-10 flex flex-column gap-2">
-                            <label for="name">Nombre</label>
-                            <input
-                                pInputText
-                                id="name"
-                                formControlName="cCurrDescripcion"
-                            />
+                <p-editor
+                    class="col-12"
+                    id="totalCreditos"
+                    formControlName="cCurrPerfilEgresado"
+                    [style]="{ height: '80px' }"
+                />
+            </div>
 
-                            @if (
-                                forms.curriculas.get('cCurrDescripcion')
-                                    .dirty &&
-                                forms.curriculas.get('cCurrDescripcion')
-                                    .invalid &&
-                                forms.curriculas.get('cCurrDescripcion').touched
-                            ) {
-                                <small class="text-red-500">
-                                    Este campo es obligatorio.
-                                </small>
-                            }
-                        </div>
-                        <div class="col-2 flex flex-column gap-2">
-                            <label for="pesoActitudinal">Es la vigente</label>
-                            <p-toggleButton
-                                styleClass="w-full"
-                                onLabel="On"
-                                offLabel="Off"
-                                formControlName="bCurrEsLaVigente"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-12 grid">
-                        <div class="col-6 flex flex-column gap-2">
-                            <label for="modalidad"
-                                >Modalidad del servicio</label
-                            >
-                            <p-dropdown
-                                id="modalidad"
-                                styleClass="w-full"
-                                [options]="modalidadesDropdownOptions"
-                                optionLabel="name"
-                                optionValue="code"
-                                appendTo="body"
-                                formControlName="iModalServId"
-                                placeholder="Seleccione una modalidad"
-                            />
-                            @if (
-                                forms.curriculas.get('iModalServId').dirty &&
-                                forms.curriculas.get('iModalServId').invalid &&
-                                forms.curriculas.get('iModalServId').touched
-                            ) {
-                                <small class="text-red-500">
-                                    Debe seleccionar una opción.
-                                </small>
-                            }
-                        </div>
-                        <div class="col-6 flex flex-column gap-2">
-                            <label for="mencion">Mención</label>
-                            <input
-                                pInputText
-                                id="mencion"
-                                formControlName="cCurrMencion"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-12 grid">
-                        <div class="col-4 flex flex-column gap-2">
-                            <label for="nroHoras">Nro Horas</label>
-                            <input
-                                pInputText
-                                id="nroHoras"
-                                formControlName="iCurrNroHoras"
-                            />
-                        </div>
-                        <div class="col-4 flex flex-column gap-2">
-                            <label for="notaMinima">Nota minima</label>
-                            <input
-                                pInputText
-                                id="notaMinima"
-                                formControlName="iCurrNotaMinima"
-                            />
-                        </div>
-                        <div class="col-4 flex flex-column gap-2">
-                            <label for="totalCreditos">Total de créditos</label>
-                            <input
-                                pInputText
-                                id="totalCreditos"
-                                formControlName="iCurrTotalCreditos"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-12 grid">
-                        <label class="col-12" for="totalCreditos"
-                            >Perfil de egresado</label
-                        >
-                        <p-editor
-                            class="col-12"
-                            id="totalCreditos"
-                            formControlName="cCurrPerfilEgresado"
-                            [style]="{ height: '80px' }"
-                        />
-                    </div>
+            <div class="col-12 grid">
+                <div class="col-4">
+                    <label for="pesoProcedimiento">Peso de procedimiento</label>
+                    <!-- <input
+                    pInputText
 
-                    <div class="col-12 grid">
-                        <div class="col-4 flex flex-column gap-2">
-                            <label for="pesoProcedimiento"
-                                >Peso de procedimiento</label
-                            >
-                            <p-inputNumber
-                                inputId="pesoProcedimiento"
-                                mode="decimal"
-                                styleClass="w-full"
-                                [minFractionDigits]="0"
-                                [maxFractionDigits]="2"
-                                formControlName="nCurrPesoProcedimiento"
-                            />
-                        </div>
-                        <div class="col-4 flex flex-column gap-2">
-                            <label for="pesoConceptual"
-                                >Peso de conceptual</label
-                            >
-                            <p-inputNumber
-                                inputId="pesoConceptual"
-                                mode="decimal"
-                                styleClass="w-full"
-                                [minFractionDigits]="0"
-                                [maxFractionDigits]="2"
-                                formControlName="cCurrPesoConceptual"
-                            />
-                        </div>
-                        <div class="col-4 flex flex-column gap-2">
-                            <label for="pesoActitudinal"
-                                >Peso de actitudinal</label
-                            >
-                            <p-inputNumber
-                                inputId="pesoActitudinal"
-                                mode="decimal"
-                                styleClass="w-full"
-                                [minFractionDigits]="0"
-                                [maxFractionDigits]="2"
-                                formControlName="cCurrPesoActitudinal"
-                            />
-                        </div>
-                    </div>
+                    /> -->
 
-                    <div class="col-12 grid">
-                        <div class="col-6 flex flex-column gap-2">
-                            <label for="enlaceResolucion"
-                                >URL de la resolución</label
-                            >
-                            <input
-                                pInputText
-                                id="enlaceResolucion"
-                                formControlName="cCurrRsl"
-                            />
-                        </div>
-                        <div class="col-6 flex flex-column gap-2">
-                            <label for="fechaResolucion"
-                                >Fecha de la resolución</label
-                            >
-                            <input
-                                pInputText
-                                id="fechaResolucion"
-                                formControlName="dtCurrRsl"
-                            />
-                        </div>
-                    </div>
-                </form>
-                <!-- <p-button
+                    <p-inputNumber
+                        inputStyleClass="w-full"
+                        inputId="pesoProcedimiento"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
+                        formControlName="nCurrPesoProcedimiento"
+                    />
+                </div>
+                <div class="col-4">
+                    <label for="pesoConceptual">Peso de conceptual</label>
+                    <p-inputNumber
+                        inputId="pesoConceptual"
+                        mode="decimal"
+                        inputStyleClass="w-full"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
+                        formControlName="cCurrPesoConceptual"
+                    />
+                </div>
+                <div class="col-4">
+                    <label for="pesoActitudinal">Peso de actitudinal</label>
+                    <p-inputNumber
+                        inputId="pesoActitudinal"
+                        mode="decimal"
+                        inputStyleClass="w-full"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
+                        formControlName="cCurrPesoActitudinal"
+                    />
+                </div>
+            </div>
+
+            <div class="col-12 grid">
+                <div class="col-6">
+                    <label for="enlaceResolucion">URL de la resolución</label>
+                    <input
+                        pInputText
+                        type="url"
+                        id="enlaceResolucion"
+                        formControlName="cCurrRsl"
+                    />
+                </div>
+                <div class="col-6">
+                    <label for="fechaResolucion">Fecha de la resolución</label>
+                    <input
+                        pInputText
+                        id="fechaResolucion"
+                        formControlName="dtCurrRsl"
+                    />
+                </div>
+            </div>
+        </form>
+        <!-- <p-button
                     styleClass="w-full"
                     icon="pi pi-plus"
                     class="col-12 grid align-content-center justify-content-center gap-3 text-bold text-xl"
                     label="Cursos"
                 >
                 </p-button> -->
-                @if (!dialogVisible.cursos) {
-                    <div class="col-1">
-                        <button
-                            class="border-none text-s bg-blue-500 text-white font-bold px-1 border-round w-full h-full mb-2 cursor-pointer"
-                            (click)="showCursos()"
-                        >
-                            <div class="grid text-xl row-gap-5">
-                                <i class="col-12 text-2xl pi pi-cog"></i>
-                                <div class="col-12 grid m-0 row-gap-2">
-                                    <span
-                                        class="col-12"
-                                        *ngFor="let char of 'CURSOS'.split('')"
-                                        >{{ char }}</span
-                                    >
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-                }
-                @if (dialogVisible.cursos) {
-                    <p-divider type="solid" layout="vertical" />
-                    <div class="col grid align-content-start">
-                        <span class="col-12 font-bold text-2xl"
-                            >Cursos curriculares</span
-                        >
-                        <div class="col-12 grid justify-content-end">
-                            <p-button
-                                icon="pi pi-plus"
-                                label="Añadir curso"
-                            ></p-button>
+        <!-- @if (!dialogs.curriculas.expand.cursos) {
+            <div class="col-1">
+                <button
+                    class="border-none text-s bg-blue-500 text-white font-bold px-1 border-round w-full h-full mb-2 cursor-pointer"
+                    (click)="showCursos()"
+                >
+                    <div class="grid text-xl row-gap-5">
+                        <i class="col-12 text-2xl pi pi-cog"></i>
+                        <div class="col-12 grid m-0 row-gap-2">
+                            <span
+                                class="col-12"
+                                *ngFor="let char of 'CURSOS'.split('')"
+                                >{{ char }}</span
+                            >
                         </div>
-
-                        <app-table-primeng
-                            class="w-full"
-                            [columnas]="cursos.table.columns"
-                            [data]="cursos.table.data"
-                            [actions]="cursos.table.actions"
-                        />
                     </div>
-                }
-            }
+                </button>
+            </div>
+        } -->
+        <!-- @if (dialogs.curriculas.expand.cursos) { -->
+        <p-divider type="solid" layout="vertical" />
 
-            @default {}
-        }
+        <app-container-page
+            title="Cursos"
+            [actions]="cursos.container.actions"
+            (accionBtnItem)="cursos.container.accionBtnItem($event)"
+        >
+            <app-table-primeng
+                class="w-full"
+                [columnas]="cursos.table.columns"
+                [data]="cursos.table.data"
+                [actions]="cursos.table.actions.core"
+                (accionBtnItem)="cursos.table.accionBtnItem($event)"
+            />
+        </app-container-page>
+        <!-- } -->
     </div>
 
     <ng-template pTemplate="footer">
-        <div class="flex justify-content-between">
+        <div class="grid">
+            <div class="col-4 grid justify-content-between">
+                <p-button
+                    label="Cancel"
+                    [text]="true"
+                    severity="secondary"
+                    (onClick)="dialogs.curriculas.visible = false"
+                />
+                <p-button
+                    label="Guardar"
+                    [outlined]="true"
+                    severity="secondary"
+                    (onClick)="this.saveCurriculas()"
+                />
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    #cursoDialog
+    [modal]="true"
+    [(visible)]="dialogs.cursos.visible"
+    [style]="{ width: '75rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+>
+    <ng-template pTemplate="header">
+        <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+        >
+            <span class="font-bold white-space-nowrap">
+                {{ dialogs.cursos.title }}
+            </span>
+        </div>
+    </ng-template>
+
+    <div class="grid h-full my-2">
+        <form [formGroup]="forms.cursos" class="col-12 grid">
+            <div class="col-12 grid">
+                <div class="col-10 flex flex-column gap-2">
+                    <label for="cCursoNombre">Nombre</label>
+                    <input
+                        pInputText
+                        id="cCursoNombre"
+                        formControlName="cCursoNombre"
+                    />
+                </div>
+                <div class="col flex flex-column gap-2">
+                    <label for="fechaResolucion">Estado</label>
+                    <p-toggleButton
+                        styleClass="w-full"
+                        onLabel="Activo"
+                        offLabel="Inactivo"
+                        formControlName="iCursoEstado"
+                    />
+                </div>
+
+                <div class="col-12 grid">
+                    <div class="col-6 flex flex-column gap-2">
+                        <label for="fechaResolucion">Tipo de curso</label>
+                        <input
+                            pInputText
+                            id="fechaResolucion"
+                            formControlName="iTipoCursoId"
+                        />
+                    </div>
+                    <div class="col-6 flex flex-column gap-2">
+                        <label for="fechaResolucion">Total horas</label>
+                        <input
+                            pInputText
+                            id="fechaResolucion"
+                            formControlName="iCursoTotalHoras"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-4 flex flex-column gap-2">
+                    <label for="fechaResolucion">Créditos de teoría</label>
+                    <input
+                        pInputText
+                        id="fechaResolucion"
+                        formControlName="nCursoCredTeoria"
+                    />
+                </div>
+                <div class="col-4 flex flex-column gap-2">
+                    <label for="fechaResolucion">Créditos de práctica</label>
+                    <input
+                        pInputText
+                        id="fechaResolucion"
+                        formControlName="nCursoCredPractica"
+                    />
+                </div>
+                <div class="col-4 flex flex-column gap-2">
+                    <label for="fechaResolucion">Total de créditos</label>
+                    <input
+                        pInputText
+                        id="fechaResolucion"
+                        formControlName="nCursoTotalCreditos"
+                    />
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-12">
+                    <label for="fechaResolucion">Descripción</label>
+                    <p-editor
+                        class="col-12"
+                        id="totalCreditos"
+                        styleClass="h-full"
+                        formControlName="cCursoDescripcion"
+                        [style]="{ height: '80px' }"
+                    />
+                </div>
+
+                <div class="col-12">
+                    <label for="fechaResolucion">Perfil de docente</label>
+                    <p-editor
+                        class="col-12"
+                        id="totalCreditos"
+                        formControlName="cCursoPerfilDocente"
+                        [style]="{ height: '80px' }"
+                    />
+                </div>
+
+                <div class="col-12">
+                    <label for="fechaResolucion">Imagen</label>
+                    <p-fileUpload
+                        [multiple]="false"
+                        accept="image/*"
+                        maxFileSize="1000000"
+                        (onSelect)="
+                            forms.cursos.patchValue({
+                                cCursoImagen: $event.currentFiles?.[0],
+                            })
+                        "
+                        (onClear)="
+                            forms.cursos.patchValue({ cCursoImagen: '' })
+                        "
+                    >
+                        <ng-template
+                            pTemplate="header"
+                            let-files
+                            let-chooseCallback="chooseCallback"
+                            let-clearCallback="clearCallback"
+                            let-uploadCallback="uploadCallback"
+                        >
+                            <div
+                                class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2"
+                            >
+                                <div class="flex gap-2">
+                                    <p-button
+                                        (onClick)="
+                                            choose($event, chooseCallback)
+                                        "
+                                        icon="pi pi-images"
+                                        [rounded]="true"
+                                        [outlined]="true"
+                                    />
+                                    <p-button
+                                        (onClick)="clearCallback()"
+                                        icon="pi pi-times"
+                                        [rounded]="true"
+                                        [outlined]="true"
+                                        severity="danger"
+                                        [disabled]="
+                                            !files || files.length === 0
+                                        "
+                                    />
+                                </div>
+                                <p-progressBar> </p-progressBar>
+                            </div>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="content"
+                            let-files
+                            let-uploadedFiles="uploadedFiles"
+                            let-removeFileCallback="removeFileCallback"
+                            let-removeUploadedFileCallback="removeUploadedFileCallback"
+                        >
+                            <div class="grid justify-content-center">
+                                @for (file of files; track file.id) {
+                                    <p-image
+                                        [src]="file.objectURL"
+                                        alt="Image"
+                                        appendTo="body"
+                                        width="160"
+                                        [preview]="true"
+                                    />
+                                }
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="file"> </ng-template>
+                        <ng-template pTemplate="empty">
+                            <div
+                                class="flex align-items-center justify-content-center flex-column"
+                            >
+                                <i
+                                    class="pi pi-cloud-upload border-2 border-circle p-3 text-3xl text-400 border-400"
+                                ></i>
+                                <p class="mt-2 mb-0">
+                                    Drag and drop files here to upload.
+                                </p>
+                            </div>
+                        </ng-template>
+                    </p-fileUpload>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid justify-content-between">
             <p-button
                 label="Cancel"
                 [text]="true"
                 severity="secondary"
-                (onClick)="
-                    dialogVisible.curricula = false;
-                    dialogVisible.cursos = false
-                "
+                (onClick)="dialogs.cursos.visible = false"
             />
             <p-button
                 label="Guardar"
                 [outlined]="true"
                 severity="secondary"
-                (onClick)="this.saveCurriculas()"
+                (onClick)="this.saveCursos()"
             />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    #nivelesCursosDialog
+    [(visible)]="dialogs.nivelesCursos.visible"
+    [modal]="true"
+    [maximizable]="true"
+    (onShow)="nivelesCursosDialog.maximize()"
+    appendTo="body"
+    [style]="{ width: '75rem' }"
+>
+    <ng-template pTemplate="header">
+        <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+        >
+            <span class="font-bold white-space-nowrap">
+                {{ forms.curriculas.value.cCurrDescripcion }}
+            </span>
+        </div>
+    </ng-template>
+
+    <div class="grid h-full">
+        <div class="col-4 my-4">
+            <app-container-page title="Cursos" [actions]="[]">
+                <app-table-primeng
+                    [columnas]="cursos.table.columns"
+                    [data]="cursos.table.data"
+                    [actions]="cursos.table.actions.nivelesGrados"
+                    (accionBtnItem)="cursos.table.accionBtnItem($event)"
+                />
+            </app-container-page>
+        </div>
+        <p-divider type="solid" layout="vertical" />
+        <div class="col my-4">
+            <app-container-page title="Niveles" [actions]="[]">
+                <form
+                    [formGroup]="forms.assignCursosInNivelesGrados"
+                    class="col-6"
+                >
+                    <label for="modalidad">Niveles de grado</label>
+                    <p-dropdown
+                        id="modalidad"
+                        styleClass="w-full"
+                        [options]="dropdowns.nivelesGrados"
+                        optionLabel="name"
+                        optionValue="code"
+                        appendTo="body"
+                        formControlName="iNivelGradoId"
+                        placeholder="Seleccione un nivel de grado"
+                    />
+                    @if (
+                        forms.assignCursosInNivelesGrados.get('iNivelGradoId')
+                            .dirty &&
+                        forms.assignCursosInNivelesGrados.get('iNivelGradoId')
+                            .invalid &&
+                        forms.assignCursosInNivelesGrados.get('iNivelGradoId')
+                            .touched
+                    ) {
+                        <small class="text-red-500">
+                            Debe seleccionar una opción.
+                        </small>
+                    }
+                </form>
+                <app-table-primeng
+                    [columnas]="cursos.table.columnsWithoutActions"
+                    [data]="[]"
+                />
+            </app-container-page>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-4 grid justify-content-between">
+                <p-button
+                    label="Cancel"
+                    [text]="true"
+                    severity="secondary"
+                    (onClick)="dialogs.cursos.visible = false"
+                />
+                <p-button
+                    label="Guardar"
+                    [outlined]="true"
+                    severity="secondary"
+                    (onClick)="this.saveCursos()"
+                />
+            </div>
         </div>
     </ng-template>
 </p-dialog>

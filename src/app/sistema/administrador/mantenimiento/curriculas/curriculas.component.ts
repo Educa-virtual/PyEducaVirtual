@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { CardModule } from 'primeng/card'
 import { ButtonModule } from 'primeng/button'
@@ -12,11 +12,9 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import {
-    accionBtnContainer,
+    accionBtnContainerCurriculas,
     curriculasAccionBtnTable,
     curriculasColumns,
-    curriculasContainerActions,
-    editar,
     curriculasSave,
 } from './config/table/curriculas'
 import { DialogModule } from 'primeng/dialog'
@@ -28,12 +26,29 @@ import { ToggleButtonModule } from 'primeng/togglebutton'
 import { CurriculasService } from './config/service/curriculas.service'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { DividerModule } from 'primeng/divider'
-import { cursosColumns, cursosSave } from './config/table/cursos'
+import {
+    accionBtnContainerCursos,
+    cursosAccionBtnTable,
+    cursosColumns,
+    cursosSave,
+} from './config/table/cursos'
 import { Observable } from 'rxjs'
 import { CursosService } from './config/service/cursos.service'
 import { ModalidadServicioService } from './config/service/modalidadServicio.service'
 import { FormConfig } from './config/types/forms'
 import { InputNumberModule } from 'primeng/inputnumber'
+import {
+    assignCursosInNivelesGrados,
+    editar,
+    nivelesCursos,
+} from './config/actions/table'
+import { agregar } from './config/actions/container'
+import { NivelGradosService } from './config/service/nivelesGrados.service'
+import { nivelesGradosColumns } from './config/table/nivelesGrados'
+import { ProgressBarModule } from 'primeng/progressbar'
+import { ToastModule } from 'primeng/toast'
+import { FileUploadModule } from 'primeng/fileupload'
+import { ImageModule } from 'primeng/image'
 
 @Component({
     selector: 'app-curriculas',
@@ -42,12 +57,16 @@ import { InputNumberModule } from 'primeng/inputnumber'
         DividerModule,
         CommonModule,
         FormsModule,
+        ImageModule,
+        ProgressBarModule,
+        ToastModule,
         InputNumberModule,
         ReactiveFormsModule,
         CardModule,
         ButtonModule,
         MessagesModule,
         AccordionModule,
+        FileUploadModule,
         ToolbarModule,
         ContainerPageComponent,
         TablePrimengComponent,
@@ -61,35 +80,57 @@ import { InputNumberModule } from 'primeng/inputnumber'
     styleUrl: './curriculas.component.scss',
 })
 export class CurriculasComponent implements OnInit {
+    choose(event, callback) {
+        console.log('click')
+
+        callback()
+    }
+
     curriculas = {
         container: {
-            actions: curriculasContainerActions,
-            accionBtnItem: accionBtnContainer.bind(this),
+            actions: [agregar],
+            accionBtnItem: accionBtnContainerCurriculas.bind(this),
         },
         table: {
             columns: curriculasColumns,
             data: [],
-            actions: [editar],
+            actions: [editar, nivelesCursos],
             accionBtnItem: curriculasAccionBtnTable.bind(this),
         },
         save: (): Observable<object> => curriculasSave.call(this),
     }
 
     cursos = {
+        container: {
+            actions: [{ ...agregar, disabled: true }],
+            accionBtnItem: accionBtnContainerCursos.bind(this),
+        },
         table: {
             columnsGroup: cursosColumns.inTableColumnsGroup,
             columns: cursosColumns.inTableColumns,
-            actions: [editar],
+            columnsWithoutActions: cursosColumns.inTableColumns.filter(
+                (column) => column.type != 'actions'
+            ),
             data: [],
+            actions: {
+                core: [editar],
+                nivelesGrados: [assignCursosInNivelesGrados],
+            },
+            accionBtnItem: cursosAccionBtnTable.bind(this),
         },
         save: (): Observable<object> => cursosSave.call(this),
     }
 
-    dialogVisible = {
-        curricula: false,
-        cursos: false,
-        tipoCurso: false,
+    nivelesGrados = {
+        container: {
+            actions: [],
+        },
+        table: {
+            columns: nivelesGradosColumns,
+            data: [],
+        },
     }
+
     curriculasActions: IActionTable[] = [editar]
     messages: Message[] | undefined
     sidebarVisible: boolean = false
@@ -98,16 +139,43 @@ export class CurriculasComponent implements OnInit {
         curriculas: this.fb.group({}),
         cursos: this.fb.group({}),
         tipoCurso: this.fb.group({}),
+        assignCursosInNivelesGrados: this.fb.group({}),
     }
-    modal
+    dialogs = {
+        curriculas: {
+            title: 'Crear Currículas',
+            visible: false,
+            expand: {
+                cursos: false,
+            },
+        },
+        cursos: {
+            title: 'Crear Curso',
+            visible: false,
+        },
+        tipoCurso: {
+            title: 'Crear Modalidad de Servicio',
+            visible: false,
+        },
+        nivelesCursos: {
+            title: 'Currículas',
+            visible: false,
+        },
+    }
 
-    modalidadesDropdownOptions
+    dropdowns = {
+        tipoCurso: undefined,
+        modalidades: undefined,
+        nivelesGrados: undefined,
+    }
 
     constructor(
         private fb: FormBuilder,
         public curriculasService: CurriculasService,
         public cursosService: CursosService,
-        public modalidadServiciosService: ModalidadServicioService
+        public modalidadServiciosService: ModalidadServicioService,
+        public nivelesGradosService: NivelGradosService,
+        public cdr: ChangeDetectorRef
     ) {
         this.forms.curriculas = this.fb.group({
             iCurrId: [''],
@@ -136,9 +204,13 @@ export class CurriculasComponent implements OnInit {
             nCursoTotalCreditos: [''],
             cCursoPerfilDocente: [''],
             iCursoTotalHoras: [''],
+            iCursoEstado: [''],
+            cCursoImagen: [''],
         })
 
-        console.log(this.forms)
+        this.forms.assignCursosInNivelesGrados = this.fb.group({
+            iNivelGradoId: ['', Validators.required],
+        })
 
         this.forms.curriculas.get('iModalServId').dirty
     }
@@ -146,13 +218,25 @@ export class CurriculasComponent implements OnInit {
     ngOnInit() {
         this.messages = [{ severity: 'info', detail: 'Videos de Seguridad' }]
 
+        this.forms.curriculas.valueChanges.subscribe(({ iCurrId }) => {
+            const disabled = !(iCurrId !== '' && iCurrId !== null)
+
+            this.cursos.container = {
+                ...this.cursos.container,
+                actions: this.cursos.container.actions.map((action) => ({
+                    ...action,
+                    disabled,
+                })),
+            }
+        })
+
         this.obtenerDatosIniciales()
     }
 
     obtenerDatosIniciales() {
         this.modalidadServiciosService.getModalidadServicios().subscribe({
             next: (value: any) => {
-                this.modalidadesDropdownOptions = value.data.map((item) => ({
+                this.dropdowns.modalidades = value.data.map((item) => ({
                     name: item.cModalServNombre,
                     code: item.iModalServId,
                 }))
@@ -173,14 +257,13 @@ export class CurriculasComponent implements OnInit {
                 console.error(err)
             },
             complete: () => {
-                console.log(this.modalidadesDropdownOptions)
+                console.log(this.dropdowns.modalidades)
             },
         })
     }
 
     showCursos() {
-        // this.forms.curriculas.markAllAsTouched()
-        // this.forms.curriculas.updateValueAndValidity()
+        this.cursos.table.data = []
 
         Object.keys(this.forms.curriculas.controls).forEach((field) => {
             const control = this.forms.curriculas.get(field)
@@ -188,9 +271,7 @@ export class CurriculasComponent implements OnInit {
             control?.markAsDirty() // Marca como modificado (dirty)
         })
 
-        if (this.forms.curriculas.invalid) {
-            return
-        }
+        this.dialogs.curriculas.expand.cursos = true
 
         this.cursosService
             .getCursos(this.forms.curriculas.value.iCurrId)
@@ -206,15 +287,13 @@ export class CurriculasComponent implements OnInit {
             })
 
         this.cursos.table.data
-
-        this.dialogVisible.cursos = true
     }
 
     saveCurriculas() {
         this.curriculas.save().subscribe({
             next: (res: any) => {
                 console.log(res)
-                this.dialogVisible.curricula = false
+                this.dialogs.curriculas.visible = false
                 this.obtenerDatosIniciales()
             },
             error: (err) => {
@@ -228,7 +307,10 @@ export class CurriculasComponent implements OnInit {
         this.cursos.save().subscribe({
             next: (res: any) => {
                 console.log(res)
-                this.dialogVisible.curricula = false
+                this.dialogs.cursos.visible = false
+
+                console.log(this.forms.cursos.value)
+
                 this.obtenerDatosIniciales()
             },
             error: (err) => {

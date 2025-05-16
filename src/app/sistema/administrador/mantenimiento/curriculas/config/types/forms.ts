@@ -4,4 +4,5 @@ export interface FormConfig {
     curriculas: FormGroup
     cursos: FormGroup
     tipoCurso: FormGroup
+    assignCursosInNivelesGrados: FormGroup
 }

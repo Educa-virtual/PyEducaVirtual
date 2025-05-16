@@ -88,6 +88,12 @@
                                             | removeHTMLCSS
                                             | truncateText: 80
                                     }}</span>
+                                    <span
+                                        class="text-sm text-primary ml-2"
+                                        *ngIf="list.iEncabPregId"
+                                    >
+                                        (EncabID: {{ list.iEncabPregId }})
+                                    </span>
                                     <p-button
                                         *ngIf="isDisabled"
                                         icon="pi pi-trash"
@@ -226,6 +232,15 @@
                                                             ) {
                                                                 <p-accordionTab
                                                                     iconPos="end"
+                                                                    (click)="
+                                                                        nIndexAcordionTab =
+                                                                            id
+                                                                    "
+                                                                    [ngClass]="{
+                                                                        indexTab:
+                                                                            nIndexAcordionTab ===
+                                                                            id,
+                                                                    }"
                                                                 >
                                                                     <ng-template
                                                                         pTemplate="header"
@@ -240,8 +255,16 @@
                                                                                         | removeHTMLCSS
                                                                                         | truncateText
                                                                                             : 80
-                                                                                }}</span
-                                                                            >
+                                                                                }}
+                                                                                <span
+                                                                                    class="text-sm text-primary ml-2"
+                                                                                >
+                                                                                    (ID:
+                                                                                    {{
+                                                                                        encab.iPreguntaId
+                                                                                    }})
+                                                                                </span>
+                                                                            </span>
                                                                             <p-button
                                                                                 *ngIf="
                                                                                     isDisabled
@@ -256,7 +279,7 @@
                                                                                 (onClick)="
                                                                                     $event.stopPropagation();
                                                                                     confirmarEliminarPregunta(
-                                                                                        encab
+                                                                                        list
                                                                                     )
                                                                                 "
                                                                             ></p-button>

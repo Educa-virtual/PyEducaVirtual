@@ -56,16 +56,30 @@ export class AperturaCursoComponent implements OnInit {
     instructores: any
     selectedImageId: any
 
+    diaSeleccionado: string | null = null //día seleccionado
+    fechaSeleccionada: Date | null = null
+    datosTemporales: {
+        nombre: string
+        horaIni: Date | null
+    }[] = [] // obtener los datos temporales
+    indiceActivo: number | null = null
+
     modoFormulario: 'crear' | 'editar' = 'crear'
     // mostrar días:
-    paymentOptions: any[] = [
-        { name: 'Lunes', value: 1 },
-        { name: 'Martes', value: 2 },
-        { name: 'Miercoles', value: 3 },
-        { name: 'Jueves', value: 4 },
-        { name: 'Viernes', value: 5 },
-        { name: 'Sabado', value: 6 },
-        { name: 'Domingo', value: 7 },
+    // dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    // horariosForm: { [key: string]: FormGroup } = {};
+    mostrarCalendario: string | null = null
+    horariosTemporales: {
+        [key: string]: { horaInit: string; horaFin: string }
+    } = {}
+    dias = [
+        { nombre: 'Lunes', value: 1 },
+        { nombre: 'Martes', value: 2 },
+        { nombre: 'Miércoles', value: 3 },
+        { nombre: 'Jueves', value: 4 },
+        { nombre: 'Viernes', value: 5 },
+        { nombre: 'Sabado', value: 6 },
+        { nombre: 'Domingo', value: 7 },
     ]
 
     constructor(private messageService: MessageService) {}
@@ -89,7 +103,10 @@ export class AperturaCursoComponent implements OnInit {
         iImageAleatorio: [1],
     })
     // formGroup para horarios
-    public formHorarioCurso = this._formBuilder.group({})
+    public formHorarioCurso = this._formBuilder.group({
+        horaInit: ['', [Validators.required]],
+        horaFin: ['', [Validators.required]],
+    })
     responsiveOptions: any[] = [
         {
             breakpoint: '1024px',
@@ -200,6 +217,36 @@ export class AperturaCursoComponent implements OnInit {
     showHorarios() {
         this.showModalHorarios = true
     }
+
+    // datosTemporales: { [key: number]: any } = {}; // Almacena datos por cada botón seleccionado
+    datosFinales: any[] = [] // Guarda todo al final
+    botonSeleccionado: number | null = null
+    horaSeleccionada: string = ''
+    // guardarDatos() {
+    // if (this.botonSeleccionado) {
+    //   this.datosTemporales[this.botonSeleccionado] = {
+    //     hora: this.horaSeleccionada,
+    //     info: `Información del botón ${this.botonSeleccionado}`
+    //   };
+    //   this.botonSeleccionado = null; // Restablecer selección
+    //   this.horaSeleccionada = "";
+    // }
+    //   }
+    // metodo para seleccionar día
+    mostrarHorario(index: number) {
+        this.indiceActivo = index
+        console.log('indice', this.indiceActivo)
+        this.fechaSeleccionada = this.datosTemporales[index]?.horaIni || null
+    }
+    //      mostrarFormulario(dia: string) {
+    //     this.mostrarCalendario = dia;
+    //   }
+    // datos obtenidos del segundo form
+    // guardarDatos() {
+    //     const datosFinales = JSON.stringify(this.datosTemp);
+    //     console.log("Datos guardados:", datosFinales);
+    // }
+
     //
     seleccionarImagen(event: any) {
         const index = event.detail.index // Acceder al índice correcto

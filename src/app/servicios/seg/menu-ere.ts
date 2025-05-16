@@ -81,6 +81,22 @@ export const administradorDremo = [
                 ],
             },
 
+            {
+                label: 'Actualizacion Docente',
+                icon: 'pi pi-id-card',
+                items: [
+                    {
+                        label: 'Capacitaciones',
+                        icon: 'pi pi-book',
+                        routerLink: ['/actualizacion-docente/capacitaciones'],
+                    },
+                    {
+                        label: 'Instructores',
+                        icon: 'pi pi-user',
+                        routerLink: ['/actualizacion-docente/instructores'],
+                    },
+                ],
+            },
             //reportesEre,
             {
                 label: 'Enlaces de ayuda',

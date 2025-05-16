@@ -29,3 +29,36 @@
 .detalle-actividad:hover {
     background: var(--green-100) !important;
 }
+
+// para que la etiqueta de comunicado sobresalga del card
+.tag {
+    position: absolute;
+    top: -15px;
+    left: 0; // Alinear exactamente desde el borde izquierdo
+    background-color: #fa8f45;
+    padding: 5px 10px; /* Aumentar padding lateral para aire */
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    color: white;
+    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+    width: fit-content; /* Para que no ocupe más de lo necesario */
+}
+// colores de fondo para las actividades:
+.background-evaluacion {
+    // color: #6c757d; /* Gris */
+    background-color: #3e67a9;
+    width: auto;
+}
+
+.background-foro {
+    // color: #ffc107; /* Amarillo */
+    background-color: #077d38;
+    width: auto;
+}
+
+.background-tarea {
+    // color: #dc3545; /* Rojo */
+    background-color: #b51f32;
+    width: auto;
+}

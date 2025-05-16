@@ -21,7 +21,10 @@ import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evalu
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { SharedAnimations } from '@/app/shared/animations/shared-animations'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 interface Leyenda {
     total: number
     text: string
@@ -73,6 +76,7 @@ const leyendas = {
         EvaluacionHeaderComponent,
         NoDataComponent,
         RubricaCalificarComponent,
+        CardOrderListComponent,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
@@ -120,6 +124,12 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     tareasCulminado: any
     evaluacionEstudiante: any
 
+    // datos para listar estudiantes
+    perfil: any
+    idDocCursoId: any[] = []
+    private _aulaService = inject(ApiAulaService)
+    public estudianteMatriculadosxGrado = []
+
     showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
@@ -154,8 +164,17 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
 
     public leyendasOrden = ['REVISADO', 'PROCESO', 'FALTA']
 
-    constructor() {}
+    constructor(
+        private store: LocalStoreService,
+        private _activatedRoute: ActivatedRoute
+    ) {
+        this.perfil = this.store.getItem('dremoPerfil')
+        //para obtener el idDocCursoId
+        this.idDocCursoId =
+            this._activatedRoute.snapshot.queryParams['idDocCursoId']
+    }
     ngOnInit() {
+        this.obtenerEstudianteXCurso()
         this.getData()
     }
     ngOnChanges(changes) {
@@ -166,6 +185,28 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                 this.getData()
             }
         }
+    }
+    //Obtener datos del estudiantes y sus logros alcanzados por todos los cursos
+    obtenerEstudianteXCurso() {
+        // @iSedeId INT,
+        // @iSeccionId INT,
+        // @iYAcadId INT,
+        // @iNivelGradoId INT
+        const iSedeId = this.perfil['iSedeId']
+        console.log('Sede', iSedeId)
+        this._aulaService
+            .generarReporteDeLogroFinalDeYear({
+                iSedeId: iSedeId,
+            })
+            .subscribe((data) => {
+                // const registro = data['data']
+                // this.curso = JSON.parse(registro.json_cursos);
+                this.estudianteMatriculadosxGrado = data['data']
+                console.log(
+                    'Estudiantes x Grado ',
+                    this.estudianteMatriculadosxGrado
+                )
+            })
     }
 
     getData() {

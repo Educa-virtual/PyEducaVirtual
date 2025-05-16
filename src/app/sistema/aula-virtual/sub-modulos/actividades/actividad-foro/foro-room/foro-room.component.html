@@ -10,164 +10,216 @@
                     </span>
                 </div>
             </ng-template>
-            <div class="flex flex-column gap-4">
-                <div class="card grid">
+            <app-toolbar-primeng
+                [title]="
+                    'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')
+                "
+            >
+                <button
+                    [ngClass]="{
+                        'border-none': true,
+                        'cursor-pointer': true,
+                    }"
+                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                    pButton
+                >
+                    <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
+                    <i
+                        class="pi pi-ellipsis-h text-white hover:text-blue-300"
+                    ></i>
+                </button>
+            </app-toolbar-primeng>
+
+            <div
+                class="card"
+                [class]="
+                    iPerfilId === ESTUDIANTE ? 'col-12 md:col-8' : 'col-12'
+                "
+            >
+                <div class="grid mb-4">
                     <div
-                        [class]="
-                            iPerfilId === ESTUDIANTE
-                                ? 'col-12 md:col-8'
-                                : 'col-12'
-                        "
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                     >
-                        <article class="card">
-                            <div class="TituloForo">
-                                {{ foro?.cForoTitulo }}
-                            </div>
-                            <hr />
-
-                            <div class="grid mb-4">
-                                <div
-                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                                >
-                                    <div
-                                        class="col-12 md:col-6 gap-2 flex flex-column"
-                                    >
-                                        <span class="font-bold text-xl"
-                                            >Catergoría:</span
-                                        >
-                                        {{ foro?.cForoCatDescripcion }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="grid mb-4">
-                                <div
-                                    class="col-12 md:col-6 flex flex-column gap-2"
-                                >
-                                    <span class="font-bold text-xl flex gap-2">
-                                        <app-icon
-                                            name="matCalendarMonth"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        Inicio de Foro:
-                                    </span>
-                                    <!-- {{ foro.dtForoInicio }} -->
-                                    <p class="flex gap-2 flex-wrap">
-                                        {{
-                                            foro?.dtForoInicio
-                                                | date
-                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
-                                        }}
-
-                                        <span class="flex gap-2">
-                                            <app-icon
-                                                name="matAccessTime"
-                                                class="text-primary"
-                                                size="sm"
-                                            ></app-icon>
-                                            <span class="font-bold"
-                                                >Hora Limite:</span
-                                            >
-                                            {{
-                                                foro?.dtForoInicio
-                                                    | date: 'h:mm a'
-                                            }}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div
-                                    class="col-12 md:col-6 flex flex-column gap-2"
-                                >
-                                    <span class="font-bold text-xl flex gap-2">
-                                        <app-icon
-                                            name="matCalendarMonth"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        Cierre de Foro
-                                    </span>
-                                    <!-- {{ foro.dtForoFin }} -->
-                                    <p class="flex gap-2 flex-wrap">
-                                        {{
-                                            foro?.dtForoFin
-                                                | date
-                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
-                                        }}
-
-                                        <span class="flex gap-2">
-                                            <app-icon
-                                                name="matAccessTime"
-                                                class="text-primary"
-                                                size="sm"
-                                            ></app-icon>
-                                            <span class="font-bold"
-                                                >Hora Limite:</span
-                                            >
-                                            {{
-                                                foro?.dtForoFin | date: 'h:mm a'
-                                            }}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div
-                                class="flex gap-2 flex-wrap align-items-center mb-4"
-                            >
-                                <app-icon
-                                    name="matMessage"
-                                    color="text-primary"
-                                    size="sm"
-                                />
-                                <h3 class="text-lg m-0">Descripción:</h3>
-                                {{ foro?.cForoDescripcion }}
-                            </div>
-
-                            <div
-                                class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
-                            ></div>
-                        </article>
-                    </div>
-                    <div
-                        class="col-12 md:col-4"
-                        [hidden]="iPerfilId !== ESTUDIANTE"
-                    >
-                        <div
-                            class="card"
-                            *ngFor="let respuesta of resptDocente"
-                        >
-                            <h4>Mi Retroalimentación descriptiva:</h4>
-                            <!-- <p-divider></p-divider> -->
-                            <!-- <p-inputGroup>
-                                <p-inputGroupAddon> Nota </p-inputGroupAddon>
-                                <input pInputText />
-                            </p-inputGroup> -->
-                            <p-divider></p-divider>
-                            <p-inputGroup>
-                                <p-inputGroupAddon>
-                                    Comentario Docente:
-                                </p-inputGroupAddon>
-                                <textarea
-                                    pInputText
-                                    rows="1"
-                                    id="comentarioDocente"
-                                    pInputTextarea
-                                    rows="5"
-                                    [disabled]="isDisabled"
-                                    class="p-inputtextarea-lg"
-                                    placeholder="Muestra Comentario Docente"
-                                >
- {{ respuesta?.cForoRptaDocente }} </textarea
-                                >
-                            </p-inputGroup>
+                        <div class="col-12 md:col-6 gap-2 flex flex-column">
+                            <span class="font-bold text-xl">Catergoría:</span>
+                            {{ foro?.cForoCatDescripcion }}
                         </div>
                     </div>
                 </div>
+
+                <div class="grid mb-4">
+                    <div class="col-12 md:col-6 flex flex-column gap-2">
+                        <span class="font-bold text-xl flex gap-2">
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            Inicio de Foro:
+                        </span>
+                        <!-- {{ foro.dtForoInicio }} -->
+                        <p class="flex gap-2 flex-wrap pl-5">
+                            {{
+                                foro?.dtForoInicio
+                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                            }}
+
+                            <span class="flex gap-2">
+                                <app-icon
+                                    name="matAccessTime"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                <span class="font-bold">Hora Limite:</span>
+                                {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-12 md:col-6 flex flex-column gap-2">
+                        <span class="font-bold text-xl flex gap-2">
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            Cierre de Foro
+                        </span>
+                        <!-- {{ foro.dtForoFin }} -->
+                        <p class="flex gap-2 flex-wrap pl-5">
+                            {{
+                                foro?.dtForoFin
+                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                            }}
+
+                            <span class="flex gap-2">
+                                <app-icon
+                                    name="matAccessTime"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                <span class="font-bold">Hora Limite:</span>
+                                {{ foro?.dtForoFin | date: 'h:mm a' }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 flex-wrap align-items-center mb-4">
+                    <app-icon
+                        name="matMessage"
+                        color="text-primary"
+                        size="sm"
+                    />
+                    <h3 class="text-lg m-0">Descripción:</h3>
+                    {{ foro?.cForoDescripcion }}
+                </div>
+            </div>
+            <div class="col-12 md:col-4" [hidden]="iPerfilId !== ESTUDIANTE">
+                <div class="card" *ngFor="let respuesta of resptDocente">
+                    <h4>Mi Retroalimentación descriptiva:</h4>
+                    <!-- <p-divider></p-divider> -->
+                    <!-- <p-inputGroup>
+                        <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                        <input pInputText />
+                    </p-inputGroup> -->
+                    <p-divider></p-divider>
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Comentario Docente:
+                        </p-inputGroupAddon>
+                        <textarea
+                            pInputText
+                            rows="1"
+                            id="comentarioDocente"
+                            pInputTextarea
+                            rows="5"
+                            [disabled]="isDisabled"
+                            class="p-inputtextarea-lg"
+                            placeholder="Muestra Comentario Docente"
+                        >
+                            {{ respuesta?.cForoRptaDocente }} </textarea
+                        >
+                    </p-inputGroup>
+                </div>
+            </div>
+            <div class="flex flex-column my-4 gap-4">
+                <!-- card mostrar o agregar las rubricas de esa tarea -->
+                <article class="card">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
+                        <app-rubricas
+                            [title]="'Rúbricas'"
+                            mode="SELECTION"
+                            [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"
+                        ></app-rubricas>
+                    </div>
+
+                    <!-- <div class="">
+                        <app-rubrica-evaluacion
+                            (clickNameRubrica)="showRubrica($event)"
+                            class="w-full"
+                        >
+                        </app-rubrica-evaluacion>
+                    </div>
+                    <div class="">
+                        <p-dialog
+                            [modal]="true"
+                            [header]="
+                                'Rubrica - ' + dialogRubricaInfo.header
+                            "
+                            [(visible)]="dialogRubricaInfo.visible"
+                            [style]="{ width: '75rem' }"
+                            [breakpoints]="{
+                                '1199px': '75vw',
+                                '575px': '90vw',
+                            }"
+                            [maximizable]="true"
+                        >
+                            <app-rubrica-calificar
+                                [enableCellSelection]="false"
+                                [showSortIcon]="false"
+                                class="w-full"
+                            >
+                            </app-rubrica-calificar>
+                        </p-dialog> 
+                     </div> -->
+                </article>
+                <!-- Mostrar recursos o meteriales para la actividad -->
                 <article class="card">
                     <h2>Recursos:</h2>
-                    <app-recursos-lista [files]="FilesTareas">
-                    </app-recursos-lista>
+
+                    <p-accordion>
+                        <p-accordionTab header="Recursos Adjuntos">
+                            <!-- Verifica si no hay archivos adjuntos -->
+                            <ng-container
+                                *ngIf="
+                                    foro?.cForoUrl.length === 0;
+                                    else resourcesList
+                                "
+                            >
+                                <app-empty-section
+                                    class="w-full"
+                                    [message]="'Sin recursos asignados'"
+                                ></app-empty-section>
+                            </ng-container>
+
+                            <!-- Si hay recursos adjuntos -->
+                            <ng-template #resourcesList>
+                                <app-recursos-lista [files]="FilesTareas">
+                                </app-recursos-lista>
+                                <!-- <app-recursos-lista
+                                [files]="
+                                        evaluacion?.cEvaluacionArchivoAdjunto ??
+                                        []
+                                    "
+                                    
+                                >
+                                </app-recursos-lista> -->
+                            </ng-template>
+                        </p-accordionTab>
+                    </p-accordion>
                 </article>
             </div>
         </p-tabPanel>
@@ -181,16 +233,31 @@
                     </span>
                 </div>
             </ng-template>
+            <app-toolbar-primeng
+                [title]="
+                    'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')
+                "
+            >
+                <button
+                    [ngClass]="{
+                        'border-none': true,
+                        'cursor-pointer': true,
+                    }"
+                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                    pButton
+                >
+                    <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
+                    <i
+                        class="pi pi-ellipsis-h text-white hover:text-blue-300"
+                    ></i>
+                </button>
+            </app-toolbar-primeng>
             <form
                 [formGroup]="foroFormComntAl"
                 class="flex flex-column gap-3 w-full"
             >
                 <div class="flex flex-column gap-4">
                     <div class="card">
-                        <div class="TituloForo">
-                            {{ foro?.cForoTitulo }}
-                        </div>
-                        <hr />
                         <!-- <div class="TituloCurso">Nombre de curso:</div> -->
                         <div class="grid">
                             <div class="col-12 md:col-6 flex flex-column gap-2">
@@ -246,16 +313,8 @@
                             </div>
                         </div>
                     </div>
-                    <p-messages
-                        *ngIf="messages"
-                        [(value)]="messages"
-                        [enableService]="false"
-                        [closable]="false"
-                        class="custom-message"
-                    />
-
-                    <div class="">
-                        <div class="card grid">
+                    <div class="card">
+                        <div class="grid">
                             <!-- listar comentarios -->
                             <div
                                 [class]="

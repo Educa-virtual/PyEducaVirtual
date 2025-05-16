@@ -16,5 +16,13 @@
             [iProgActId]="iProgActId"
         ></app-evaluacion-room>
     }
+    <!-- videoconferencia -->
+    @case (4) {
+        <app-videoconferencia-form-container
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+        >
+        </app-videoconferencia-form-container>
+    }
     @default {}
 }

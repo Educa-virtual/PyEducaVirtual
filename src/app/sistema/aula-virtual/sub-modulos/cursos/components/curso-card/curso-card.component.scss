@@ -53,3 +53,15 @@
     -o-transition: all 0.4s linear 0s;
     transition: all 0.4s linear 0s;
 }
+
+// -----------------------------------------------------
+.tag {
+    // position: absolute;
+    background-color: #a51c2e;
+    color: white;
+    padding: 5px 7px;
+}
+footer {
+    display: flex;
+    justify-content: flex-end;
+}

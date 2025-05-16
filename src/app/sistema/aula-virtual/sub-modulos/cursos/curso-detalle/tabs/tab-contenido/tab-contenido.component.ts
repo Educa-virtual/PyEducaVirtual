@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     EVALUACION,
     FORO,
@@ -13,7 +12,6 @@ import {
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { MenuItem } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import {
     matFactCheck,
@@ -25,7 +23,6 @@ import {
 } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -43,6 +40,8 @@ import { TareaFormContainerComponent } from '../../../../actividades/actividad-t
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -51,15 +50,12 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
         CommonModule,
         FullCalendarModule,
         FormsModule,
-        ActividadRowComponent,
         ActividadListaComponent,
-        VideoconferenciaContainerFormComponent,
-        IconComponent,
         DynamicDialogModule,
         PrimengModule,
-        TareaFormContainerComponent,
         FormEvaluacionComponent,
         NoDataComponent,
+        ToolbarPrimengComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -94,9 +90,13 @@ export class TabContenidoComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _evalService = inject(ApiEvaluacionesService)
 
-    private semanaSeleccionada
+    // para mostrar las actividades de la semana
+    // private semanaSeleccionadaS
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
+
+    semanaSeleccionada: any = null
+    semanaActivado: number | null = null
 
     // lista de acciones base para la semana
     private handleActionsMap: Record<
@@ -119,6 +119,7 @@ export class TabContenidoComponent implements OnInit {
     iPerfilId: number = null
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
+
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()
@@ -128,6 +129,13 @@ export class TabContenidoComponent implements OnInit {
         this.rangeDates = [today, nextWeek]
 
         this.getData()
+        this.obtenerTipoActivadad()
+    }
+
+    // maneja el evento de seleccion de semana
+    mostrarDetalleSemana(semana: any) {
+        this.semanaActivado = semana.iContenidoSemId
+        this.semanaSeleccionada = semana
     }
 
     private getData() {
@@ -139,6 +147,7 @@ export class TabContenidoComponent implements OnInit {
         this._aulaService.obtenerTipoActividades().subscribe({
             next: (tipoActivadeds) => {
                 this.tipoActivadedes = tipoActivadeds
+                console.log('las actividades', this.tipoActivadedes)
                 this.generarAccionesContenido()
             },
         })
@@ -158,7 +167,7 @@ export class TabContenidoComponent implements OnInit {
                     this.loadingContenidoSemanas = false
                     this.contenidoSemanas = data
                     // console.log('contenido semanas')
-                    // console.log(this.contenidoSemanas)
+                    console.log('cotenidos', this.contenidoSemanas)
                 },
                 error: (error) => {
                     console.log(error)
@@ -287,19 +296,48 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleVideoconferenciaAction(action: string, actividad: IActividad) {
-        if (action === 'EDITAR' || action === 'CREAR') {
-            let data = null
-            let header = 'Crear Videoconferencia'
-            if (action === 'EDITAR') {
-                data = actividad
-                header = 'Editar Videoconferencia'
-            }
-            this._dialogService.open(VideoconferenciaContainerFormComponent, {
-                ...MODAL_CONFIG,
-                data: data,
-                header: header,
-            })
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                const ref: DynamicDialogRef = this._dialogService.open(
+                    VideoconferenciaFormContainerComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        data: {
+                            contenidoSemana: this.semanaSeleccionada,
+                            iActTipoId: actividad.iActTipoId,
+                            actividad: actividad,
+                            action:
+                                action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                        },
+                        header:
+                            action === 'EDITAR'
+                                ? 'Editar Videoconferencia'
+                                : 'Crear Videoconferencia',
+                    }
+                )
+                ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.getData()
+                        console.log('Formulario enviado', result)
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
         }
+        // if (action === 'EDITAR' || action === 'CREAR') {
+        //     let data = null
+        //     let header = 'Crear Videoconferencia'
+        //     if (action === 'EDITAR') {
+        //         data = actividad
+        //         header = 'Editar Videoconferencia'
+        //     }
+        //     this._dialogService.open(VideoconferenciaFormContainerComponent, {
+        //         ...MODAL_CONFIG,
+        //         data: data,
+        //         header: header,
+        //     })
+        // }
     }
 
     handleForoAction(action: string, actividad: IActividad) {

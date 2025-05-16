@@ -58,6 +58,13 @@ export const routes: Routes = [
                         './sistema/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
             },
+            {
+                path: 'actualizacion-docente',
+                loadChildren: () =>
+                    import(
+                        './sistema/actualizacion-docente/actualizacion-docente.routes'
+                    ),
+            },
         ],
     },
     {

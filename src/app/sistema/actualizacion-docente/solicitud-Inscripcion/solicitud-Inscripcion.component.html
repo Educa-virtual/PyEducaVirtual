@@ -1,0 +1,24 @@
+<app-toolbar-primeng title="Capacitaciones"></app-toolbar-primeng>
+<div class="grid">
+    <app-tabs-primeng
+        class="col-12"
+        [activeIndex]="activeIndex"
+        [tabs]="tabs"
+        (updateTab)="updateTab($event)"
+    >
+    </app-tabs-primeng>
+</div>
+<div class="col-12">
+    @switch (activeIndex) {
+        @case (0) {}
+        @case (1) {
+            <div class="cursos gap-4 py-2">
+                @for (capacitacion of data; track capacitacion) {
+                    <app-card-capacitaciones
+                        [capacitacion]="capacitacion"
+                    ></app-card-capacitaciones>
+                }
+            </div>
+        }
+    }
+</div>

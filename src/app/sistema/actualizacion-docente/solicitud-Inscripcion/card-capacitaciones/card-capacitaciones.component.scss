@@ -53,3 +53,39 @@
     -o-transition: all 0.4s linear 0s;
     transition: all 0.4s linear 0s;
 }
+
+i {
+    color: #b51f32;
+}
+
+.image {
+    position: absolute;
+    top: -20px;
+    z-index: 10;
+}
+
+.small {
+    position: absolute;
+    top: 265px;
+    z-index: 20;
+}
+
+:host ::ng-deep p-button button {
+    background: #0e4194;
+}
+
+.title {
+    display: -webkit-box;
+    height: 4rem;
+    -webkit-line-clamp: 2; /* Número máximo de líneas */
+    line-clamp: 2;
+    height: 44px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+}

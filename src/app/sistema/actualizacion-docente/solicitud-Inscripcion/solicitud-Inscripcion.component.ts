@@ -1,6 +1,13 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
-import { Component } from '@angular/core'
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    inject,
+    OnInit,
+    ViewChild,
+} from '@angular/core'
 import {
     IColumn,
     IActionTable,
@@ -8,7 +15,9 @@ import {
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component'
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component'
 import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component'
-
+import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { PaginatorModule } from 'primeng/paginator'
 @Component({
     selector: 'app-solicitud-inscripcion',
     standalone: true,
@@ -20,10 +29,11 @@ import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.compone
         TabsPrimengComponent,
         CardCapacitacionesComponent,
         AperturaCursoComponent,
+        PaginatorModule,
     ],
 })
-export class SolicitudInscripcionComponent {
-    activeIndex: number = 0
+export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
+    activeIndex: number = 1
     cursoSeleccionado
     tabs = [
         {
@@ -177,11 +187,387 @@ export class SolicitudInscripcionComponent {
         },
         {
             iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
+                'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
+            iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            cCapTitulo: 'Título 1',
+            cCapDescripcion: 'Descripción 1',
+            iTotalHrs: '5',
+            dFechaInicio: '2025-05-05',
+            dFechaFin: '2025-05-05',
+            iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            iCosto: '1',
+            nCosto: '1.00',
+            iImageAleatorio: '1',
+            cImagenUrl:
+                '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
+            iEstado: '1',
+            cTipoCapNombre: 'Diplomando',
+            cNivelPedNombre: 'Educación Inicial',
+            cTipoPubNombre: 'General',
+            cPersNombre: 'MITWAR KENYO',
+            cPersPaterno: 'HUACAN',
+            cPersMaterno: 'QUISPE',
+        },
+        {
+            iCapacitacionId:
                 'G1NzYXA5kg23LdaMq480mDQPj8nlGJrBV7Kb9yeowpWxvjRZER',
             iTipoCapId: 'zR0lYAQJLx4e3jZ2wW7GrMN6obPomB89bqz5EdavkXpDy1KgVV',
             iNivelPedId: '37A3j9KEx1GNyJV82MqekXwn3APbY4LvRpr0QdaWzlmg5DZBoZ',
             iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            cCapTitulo: 'WebFlow University: Ultimate Web Design Course',
+            cCapTitulo:
+                'WebFlow University: Ultimate Web Design Course WebFlow University: Ultimate Web Design Course WebFlow University: Ultimate Web Design Course WebFlow University: Ultimate Web Design Course',
             cCapDescripcion:
                 'El Ultimate Web Design Course es un curso gratuito ofrecido por la universidad de WebFlow, una plataforma de aprendizaje en línea alojada y desarrollada por el CMS y la herramienta de diseño WebFlow.',
             iTotalHrs: '129',
@@ -202,4 +588,75 @@ export class SolicitudInscripcionComponent {
             cPersMaterno: 'QUISPE',
         },
     ]
+
+    capacitaciones
+    paginator = {
+        first: 0,
+        rows: 5,
+        total: 2,
+        rowsPerPage: [],
+    }
+    onPageChange(event: any): void {
+        this.paginator.first = event.first
+        this.paginator.rows = event.rows
+        const start = event.first
+        const end = event.first + event.rows
+        this.data = this.capacitaciones.slice(start, end)
+    }
+
+    private _aulaService = inject(ApiAulaService)
+    private _ConstantesService = inject(ConstantesService)
+
+    cursos
+
+    @ViewChild('gridContainer') gridContainer!: ElementRef
+
+    ngAfterViewInit(): void {
+        setTimeout(() => this.calculateRows(), 0) // Esperar renderizado
+        window.addEventListener('resize', () => this.calculateRows())
+    }
+
+    ngOnInit() {
+        this.capacitaciones = [...this.data] // cargar desde servicio o mock
+        this.paginator.total = this.capacitaciones.length
+        this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
+
+        this.obtenerCapacitaciones()
+    }
+
+    obtenerCapacitaciones() {
+        const iEstado = 1
+        const iCredId = this._ConstantesService.iCredId
+        const data = {
+            iEstado: iEstado,
+            iCredId: iCredId,
+        }
+        this._aulaService.obtenerCapacitacion(data).subscribe((Data) => {
+            this.cursos = Data['data']
+
+            console.log('this.cursos')
+            console.log(this.cursos)
+
+            // console.log('Datos capacitacion', this.cursos)
+        })
+    }
+
+    calculateRows(): void {
+        const container = this.gridContainer.nativeElement as HTMLElement
+        const containerWidth = container.clientWidth
+        const containerHeight =
+            window.innerHeight - container.getBoundingClientRect().top
+
+        const cardWidth = 250 + 32 // ancho tarjeta + gap (ajusta según tu CSS)
+        const cardHeight = 300 + 32 // alto tarjeta + gap (ajusta también)
+
+        const columns = Math.floor(containerWidth / cardWidth)
+        const rows = Math.floor(containerHeight / cardHeight)
+
+        const itemsPerPage = columns * rows || 1 // al menos 1
+
+        this.paginator.rows = itemsPerPage
+        this.paginator.rowsPerPage = [itemsPerPage]
+        this.onPageChange({ first: 0, rows: itemsPerPage })
+    }
 }

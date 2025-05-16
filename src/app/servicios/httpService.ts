@@ -41,6 +41,14 @@ export class httpService {
         }
     }
 
+    getDataObs(endpoint: string, params?: { [key: string]: any }) {
+        return this.http.post(`${this.apiURL}/${endpoint}`, params, {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+            }),
+        })
+    }
+
     async postData(endpoint: string, data: any) {
         try {
             if (data instanceof FormData) {
@@ -60,6 +68,10 @@ export class httpService {
             this.errorHandler.handleHttpError(error) // Delegar el manejo de errores al ErrorHandler
             return undefined
         }
+    }
+
+    postDataObs(endpoint: string, data: any) {
+        return this.http.post(`${this.apiURL}/${endpoint}`, data)
     }
 
     async putData(endpoint: string, data: any) {

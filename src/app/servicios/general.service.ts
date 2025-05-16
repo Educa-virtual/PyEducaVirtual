@@ -372,4 +372,11 @@ export class GeneralService {
             data
         )
     }
+
+    agregarCurriculas(data: any) {
+        return this.http.post(`${baseUrl}/administrador/addCurriculas`, data)
+    }
+    actualizarCurriculas(data: any) {
+        return this.http.post(`${baseUrl}/administrador/updCurriculas`, data)
+    }
 }

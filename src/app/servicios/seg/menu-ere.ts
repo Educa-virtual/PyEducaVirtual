@@ -66,6 +66,20 @@ export const administradorDremo = [
                     },
                 ],
             },
+            {
+                label: 'Mantenimiento',
+                icon: 'pi pi-sitemap',
+                //routerLink: ['/ere/administrar'],
+                items: [
+                    {
+                        label: 'Curriculas',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: [
+                            './administrador/mantenimiento/curriculas',
+                        ],
+                    },
+                ],
+            },
 
             {
                 label: 'Actualizacion Docente',

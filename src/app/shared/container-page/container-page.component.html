@@ -18,6 +18,7 @@
                     [rounded]="true"
                     pButton
                     pRipple
+                    [disabled]="item?.disabled ?? false"
                     [pTooltip]="item.labelTooltip"
                     tooltipPosition="top"
                     (click)="accionBtn(item.accion, [])"

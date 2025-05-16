@@ -35,6 +35,7 @@ export class InformesEreComponent implements OnInit {
     matriz: Array<object>
     promedio: Array<object>
     niveles: Array<object>
+    agrupado: Array<object>
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
@@ -223,7 +224,7 @@ export class InformesEreComponent implements OnInit {
             this._MessageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe seleccionar los filtros requeridos',
+                detail: 'Debe seleccionar los filtros obligatorios',
             })
             return
         }
@@ -238,13 +239,9 @@ export class InformesEreComponent implements OnInit {
                     this.matriz = data.data[4]
                     this.mostrarEstadisticaNivel()
                     this.generarColumnas(this.resumen)
-                    if (
-                        this.formFiltros.get('cTipoReporte').value ==
-                        'ESTUDIANTES'
-                    ) {
-                        this.columns = this.columns_estudiantes
-                    } else {
-                        this.resultados = this.resultados.map((item: any) => {
+                    if (this.es_especialista) {
+                        this.agrupado = data.data[5]
+                        this.agrupado = this.agrupado.map((item: any) => {
                             let sumatoria = 0
                             this.niveles.forEach((nivel: any) => {
                                 sumatoria += Number(item[nivel.nivel_logro_id])
@@ -380,19 +377,43 @@ export class InformesEreComponent implements OnInit {
             },
             {
                 type: 'text',
-                width: '40%',
+                width: '20%',
                 field: 'agrupado',
-                header: 'Agrupado por',
+                header: 'IE',
                 text_header: 'left',
                 text: 'left',
             },
             {
                 type: 'text',
-                width: '1rem',
-                field: `total`,
-                header: `Total`,
-                text_header: 'center',
-                text: 'center',
+                width: '10%',
+                field: 'ugel',
+                header: 'UGEL',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'distrito',
+                header: 'Distrito',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'total',
+                header: 'Total',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'puntaje',
+                header: 'Puntaje',
+                text_header: 'left',
+                text: 'left',
             },
         ]
         this.niveles.forEach((item: any) => {
@@ -405,7 +426,7 @@ export class InformesEreComponent implements OnInit {
                 text: 'center',
             })
         })
-        this.columns = columnas
+        this.columns_group = columnas
     }
 
     mostrarEstadisticaPregunta() {
@@ -511,7 +532,7 @@ export class InformesEreComponent implements OnInit {
             this._MessageService.add({
                 severity: 'warning',
                 summary: 'Advertencia',
-                detail: 'Debe seleccionar los filtros requeridos',
+                detail: 'Debe seleccionar los filtros obligatorios',
             })
             return
         }
@@ -660,9 +681,41 @@ export class InformesEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '10%',
+            width: '20%',
             field: 'agrupado',
-            header: 'Agrupado por',
+            header: 'IE',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'ugel',
+            header: 'UGEL',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'distrito',
+            header: 'Distrito',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'total',
+            header: 'Total',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'puntaje',
+            header: 'Puntaje',
             text_header: 'left',
             text: 'left',
         },

@@ -119,19 +119,7 @@ export function cursosAccionBtnTable(
                 visible: true,
             }
 
-            this.forms.cursos.patchValue({
-                iCurrId: item.iCurrId,
-                iTipoCursoId: item.iTipoCursoId,
-                cCursoNombre: item.cCursoNombre,
-                nCursoCredTeoria: item.nCursoCredTeoria,
-                nCursoCredPractica: item.nCursoCredPractica,
-                cCursoDescripcion: item.cCursoDescripcion,
-                nCursoTotalCreditos: item.nCursoTotalCreditos,
-                cCursoPerfilDocente: item.cCursoPerfilDocente,
-                iCursoTotalHoras: item.iCursoTotalHoras,
-                iCursoEstado: item.iCursoEstado,
-                cCursoImagen: item.cCursoImagen,
-            })
+            setValues.call(this, item)
 
             break
 
@@ -152,6 +140,22 @@ export function cursosAccionBtnTable(
         default:
             break
     }
+}
+
+function setValues(this: CurriculasComponent, item) {
+    this.forms.cursos.setValue({
+        iCurrId: item.iCurrId,
+        iTipoCursoId: item.iTipoCursoId,
+        cCursoNombre: item.cCursoNombre,
+        nCursoCredTeoria: item.nCursoCredTeoria,
+        nCursoCredPractica: item.nCursoCredPractica,
+        cCursoDescripcion: item.cCursoDescripcion,
+        nCursoTotalCreditos: item.nCursoTotalCreditos,
+        cCursoPerfilDocente: item.cCursoPerfilDocente,
+        iCursoTotalHoras: item.iCursoTotalHoras,
+        iCursoEstado: item.iCursoEstado,
+        cCursoImagen: item.cCursoImagen,
+    })
 }
 
 export function cursosSave(this: CurriculasComponent) {

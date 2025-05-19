@@ -77,7 +77,7 @@ export function curriculasAccionBtnTable(
     this: CurriculasComponent,
     { accion, item }
 ) {
-    this.forms.curriculas.reset()
+    // this.forms.curriculas.reset()
     this.forms.assignCursosInNivelesGrados.reset()
 
     switch (accion) {
@@ -88,22 +88,7 @@ export function curriculasAccionBtnTable(
                 visible: true,
             }
 
-            this.forms.curriculas.patchValue({
-                iCurrId: item.iCurrId,
-                iModalServId: item.iModalServId,
-                iCurrNotaMinima: item.iCurrNotaMinima,
-                iCurrTotalCreditos: item.iCurrTotalCreditos,
-                iCurrNroHoras: item.iCurrNroHoras,
-                cCurrPerfilEgresado: item.cCurrPerfilEgresado,
-                cCurrMencion: item.cCurrMencion,
-                nCurrPesoProcedimiento: item.nCurrPesoProcedimiento,
-                cCurrPesoConceptual: item.cCurrPesoConceptual,
-                cCurrPesoActitudinal: item.cCurrPesoActitudinal,
-                bCurrEsLaVigente: item.bCurrEsLaVigente,
-                cCurrRsl: item.cCurrRsl,
-                dtCurrRsl: item.dtCurrRsl,
-                cCurrDescripcion: item.cCurrDescripcion,
-            })
+            setValues.call(this, item)
 
             this.cursosService.getCursos(item.iCurrId).subscribe({
                 next: (res: any) => {
@@ -115,22 +100,7 @@ export function curriculasAccionBtnTable(
         case 'nivelesCursos':
             this.dialogs.nivelesCursos.visible = true
 
-            this.forms.curriculas.patchValue({
-                iCurrId: item.iCurrId,
-                iModalServId: item.iModalServId,
-                iCurrNotaMinima: item.iCurrNotaMinima,
-                iCurrTotalCreditos: item.iCurrTotalCreditos,
-                iCurrNroHoras: item.iCurrNroHoras,
-                cCurrPerfilEgresado: item.cCurrPerfilEgresado,
-                cCurrMencion: item.cCurrMencion,
-                nCurrPesoProcedimiento: item.nCurrPesoProcedimiento,
-                cCurrPesoConceptual: item.cCurrPesoConceptual,
-                cCurrPesoActitudinal: item.cCurrPesoActitudinal,
-                bCurrEsLaVigente: item.bCurrEsLaVigente,
-                cCurrRsl: item.cCurrRsl,
-                dtCurrRsl: item.dtCurrRsl,
-                cCurrDescripcion: item.cCurrDescripcion,
-            })
+            setValues.call(this, item)
 
             this.cursosService.getCursos(item.iCurrId).subscribe({
                 next: (res: any) => {
@@ -159,14 +129,39 @@ export function curriculasAccionBtnTable(
     }
 }
 
+function setValues(this: CurriculasComponent, item) {
+    console.log('item.cCurrPerfilEgresado')
+    console.log(item.cCurrPerfilEgresado)
+
+    this.forms.curriculas.get('cCurrPerfilEgresado').enabled
+    this.forms.curriculas.get('cCurrPerfilEgresado').enable()
+
+    this.forms.curriculas.patchValue({
+        iCurrId: item.iCurrId,
+        iModalServId: item.iModalServId,
+        iCurrNotaMinima: item.iCurrNotaMinima,
+        iCurrTotalCreditos: item.iCurrTotalCreditos,
+        iCurrNroHoras: item.iCurrNroHoras,
+        cCurrPerfilEgresado: item.cCurrPerfilEgresado,
+        cCurrMencion: item.cCurrMencion,
+        nCurrPesoProcedimiento: item.nCurrPesoProcedimiento,
+        cCurrPesoConceptual: item.cCurrPesoConceptual,
+        cCurrPesoActitudinal: item.cCurrPesoActitudinal,
+        bCurrEsLaVigente: item.bCurrEsLaVigente,
+        cCurrRsl: item.cCurrRsl,
+        dtCurrRsl: new Date(item.dtCurrRsl),
+        cCurrDescripcion: item.cCurrDescripcion,
+    })
+}
+
 export function curriculasSave(this: CurriculasComponent) {
     const formCurricula = this.forms.curriculas.value
 
     const payload: payload = {
         iModalServId: formCurricula.iModalServId,
-        iCurrNotaMinima: formCurricula.iCurrNotaMinima,
-        iCurrTotalCreditos: formCurricula.iCurrTotalCreditos,
-        iCurrNroHoras: formCurricula.iCurrNroHoras,
+        iCurrNotaMinima: Number(formCurricula.iCurrNotaMinima),
+        iCurrTotalCreditos: Number(formCurricula.iCurrTotalCreditos),
+        iCurrNroHoras: Number(formCurricula.iCurrNroHoras),
         cCurrPerfilEgresado: formCurricula.cCurrPerfilEgresado,
         cCurrMencion: formCurricula.cCurrMencion,
         nCurrPesoProcedimiento: Number(formCurricula.nCurrPesoProcedimiento),

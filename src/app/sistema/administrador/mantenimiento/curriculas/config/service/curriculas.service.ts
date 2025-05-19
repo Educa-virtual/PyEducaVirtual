@@ -33,7 +33,7 @@ export class CurriculasService {
     }
 
     updCurriculas(data) {
-        return this.http.post(this.endPoint + '/updCurriculas', {
+        return this.http.put(this.endPoint + '/updCurriculas', {
             json: JSON.stringify(data),
             opcion: 'updCurriculas',
         })

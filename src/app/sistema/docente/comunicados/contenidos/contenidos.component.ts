@@ -241,17 +241,18 @@ export class ContenidosComponent implements OnInit {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
         menubar: false,
-        // selector: 'textarea',
+        selector: 'textarea',
         // setup: (editor) => {
         //     editor.on('blur', (e) =>
         //         this.actualizar(e, 'cSilaboDescripcionCurso')
         //     )
         // },
+
         placeholder: 'Escribe aqui...',
         height: 250,
         plugins: 'lists image table',
         toolbar: 'bold italic underline strikethrough',
-        editable_root: true,
+        // editable_root: true,
     }
 
     comunicados = []

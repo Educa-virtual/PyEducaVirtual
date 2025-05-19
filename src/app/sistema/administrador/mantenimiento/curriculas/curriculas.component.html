@@ -34,7 +34,7 @@
     <div class="grid h-full mt-4 row-gap-3">
         <form class="grid h-full col-4" [formGroup]="forms.curriculas">
             <div class="col-12 grid">
-                <div class="col-10">
+                <div class="col-10 flex flex-column gap-2">
                     <label for="name">Nombre</label>
                     <input
                         pInputText
@@ -52,7 +52,7 @@
                         </small>
                     }
                 </div>
-                <div class="col-2">
+                <div class="col-2 flex flex-column gap-2">
                     <label for="pesoActitudinal">Es la vigente</label>
                     <p-toggleButton
                         styleClass="w-full"
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="col-12 grid">
-                <div class="col-6">
+                <div class="col-6 flex flex-column gap-2">
                     <label for="modalidad">Modalidad del servicio</label>
                     <p-dropdown
                         id="modalidad"
@@ -85,7 +85,7 @@
                         </small>
                     }
                 </div>
-                <div class="col-6">
+                <div class="col-6 flex flex-column gap-2">
                     <label for="mencion">Mención</label>
                     <input
                         pInputText
@@ -95,40 +95,54 @@
                 </div>
             </div>
             <div class="col-12 grid">
-                <div class="col-4">
+                <div class="col-4 flex flex-column gap-2">
                     <label for="nroHoras">Nro Horas</label>
-                    <input
-                        pInputText
-                        id="nroHoras"
+                    <p-inputNumber
+                        inputStyleClass="w-full"
+                        inputId="nroHoras"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
                         formControlName="iCurrNroHoras"
                     />
                 </div>
-                <div class="col-4">
+                <div class="col-4 flex flex-column gap-2">
                     <label for="notaMinima">Nota minima</label>
-                    <input
-                        pInputText
-                        id="notaMinima"
+                    <p-inputNumber
+                        inputStyleClass="w-full"
+                        inputId="notaMinima"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
                         formControlName="iCurrNotaMinima"
                     />
                 </div>
-                <div class="col-4">
+                <div class="col-4 flex flex-column gap-2">
                     <label for="totalCreditos">Total de créditos</label>
-                    <input
-                        pInputText
-                        id="totalCreditos"
+                    <p-inputNumber
+                        inputStyleClass="w-full"
+                        inputId="totalCreditos"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
                         formControlName="iCurrTotalCreditos"
                     />
                 </div>
             </div>
             <div class="col-12 grid">
-                <label class="col-12" for="totalCreditos"
+                <label class="col-12" for="perfilEgresado"
                     >Perfil de egresado</label
                 >
-                <p-editor
-                    class="col-12"
-                    id="totalCreditos"
+                <input
+                    pInputText
+                    id="name"
                     formControlName="cCurrPerfilEgresado"
-                    [style]="{ height: '80px' }"
+                />
+                <editor
+                    name="texto"
+                    style="width: 100%"
+                    [init]="mensajes"
+                    formControlName="cCurrPerfilEgresado"
                 />
             </div>
 
@@ -174,7 +188,7 @@
             </div>
 
             <div class="col-12 grid">
-                <div class="col-6">
+                <div class="col-6 flex flex-column gap-2">
                     <label for="enlaceResolucion">URL de la resolución</label>
                     <input
                         pInputText
@@ -183,13 +197,9 @@
                         formControlName="cCurrRsl"
                     />
                 </div>
-                <div class="col-6">
+                <div class="col-6 flex flex-column gap-2">
                     <label for="fechaResolucion">Fecha de la resolución</label>
-                    <input
-                        pInputText
-                        id="fechaResolucion"
-                        formControlName="dtCurrRsl"
-                    />
+                    <p-calendar formControlName="dtCurrRsl" />
                 </div>
             </div>
         </form>
@@ -296,48 +306,68 @@
                         formControlName="iCursoEstado"
                     />
                 </div>
-
-                <div class="col-12 grid">
-                    <div class="col-6 flex flex-column gap-2">
-                        <label for="fechaResolucion">Tipo de curso</label>
-                        <input
-                            pInputText
-                            id="fechaResolucion"
-                            formControlName="iTipoCursoId"
-                        />
-                    </div>
-                    <div class="col-6 flex flex-column gap-2">
-                        <label for="fechaResolucion">Total horas</label>
-                        <input
-                            pInputText
-                            id="fechaResolucion"
-                            formControlName="iCursoTotalHoras"
-                        />
-                    </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="tipoCurso">Tipo de curso</label>
+                    <p-dropdown
+                        id="tipoCurso"
+                        styleClass="w-full"
+                        [options]="dropdowns.tipoCurso"
+                        optionLabel="name"
+                        optionValue="code"
+                        appendTo="body"
+                        formControlName="iTipoCursoId"
+                        placeholder="Seleccione un nivel de grado"
+                    />
+                </div>
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="totalHoras">Total horas</label>
+                    <p-inputNumber
+                        inputId="totalHoras"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
+                        formControlName="iCursoTotalHoras"
+                    />
                 </div>
             </div>
             <div class="col-12 grid">
                 <div class="col-4 flex flex-column gap-2">
-                    <label for="fechaResolucion">Créditos de teoría</label>
-                    <input
-                        pInputText
-                        id="fechaResolucion"
+                    <label for="creditosTeoria">Créditos de teoría</label>
+                    <p-inputNumber
+                        inputId="creditosTeoria"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
                         formControlName="nCursoCredTeoria"
                     />
                 </div>
                 <div class="col-4 flex flex-column gap-2">
-                    <label for="fechaResolucion">Créditos de práctica</label>
-                    <input
-                        pInputText
-                        id="fechaResolucion"
+                    <label for="creditosPractica">Créditos de práctica</label>
+                    <p-inputNumber
+                        inputId="creditosPractica"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
                         formControlName="nCursoCredPractica"
                     />
                 </div>
                 <div class="col-4 flex flex-column gap-2">
-                    <label for="fechaResolucion">Total de créditos</label>
-                    <input
-                        pInputText
-                        id="fechaResolucion"
+                    <label for="creditosTotales">Total de créditos</label>
+                    <p-inputNumber
+                        inputId="creditosTotales"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        mode="decimal"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="2"
                         formControlName="nCursoTotalCreditos"
                     />
                 </div>

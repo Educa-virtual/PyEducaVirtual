@@ -25,6 +25,15 @@ export class CursosService {
         })
     }
 
+    getTipoCursos() {
+        return this.apiService.getDataObs({
+            esquema: 'acad',
+            tabla: 'tipo_cursos',
+            campos: '*',
+            where: '1=1',
+        })
+    }
+
     insCursos(data) {
         return this.http.post(this.endPoint, {
             json: JSON.stringify(data),

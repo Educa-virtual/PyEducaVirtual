@@ -1,9 +1,9 @@
 export interface payload {
     iCurrId?: string
     iModalServId: string
-    iCurrNotaMinima: string
-    iCurrTotalCreditos: string
-    iCurrNroHoras: string
+    iCurrNotaMinima: number
+    iCurrTotalCreditos: number
+    iCurrNroHoras: number
     cCurrPerfilEgresado: string
     cCurrMencion: string
     nCurrPesoProcedimiento: number

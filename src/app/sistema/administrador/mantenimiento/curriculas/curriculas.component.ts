@@ -49,6 +49,8 @@ import { ProgressBarModule } from 'primeng/progressbar'
 import { ToastModule } from 'primeng/toast'
 import { FileUploadModule } from 'primeng/fileupload'
 import { ImageModule } from 'primeng/image'
+import { CalendarModule } from 'primeng/calendar'
+import { EditorComponent } from '@tinymce/tinymce-angular'
 
 @Component({
     selector: 'app-curriculas',
@@ -66,6 +68,7 @@ import { ImageModule } from 'primeng/image'
         ButtonModule,
         MessagesModule,
         AccordionModule,
+        EditorComponent,
         FileUploadModule,
         ToolbarModule,
         ContainerPageComponent,
@@ -75,6 +78,7 @@ import { ImageModule } from 'primeng/image'
         DropdownModule,
         EditorModule,
         ToggleButtonModule,
+        CalendarModule,
     ],
     templateUrl: './curriculas.component.html',
     styleUrl: './curriculas.component.scss',
@@ -84,6 +88,24 @@ export class CurriculasComponent implements OnInit {
         console.log('click')
 
         callback()
+    }
+
+    mensajes: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+
+        // selector: 'textarea',
+        // setup: (editor) => {
+        //     editor.on('blur', (e) =>
+        //         this.actualizar(e, 'cSilaboDescripcionCurso')
+        //     )
+        // },
+        placeholder: 'Escribe aqui...',
+        height: 250,
+        plugins: 'lists image table',
+        toolbar: 'bold italic underline strikethrough',
+        editable_root: true,
     }
 
     curriculas = {
@@ -245,6 +267,15 @@ export class CurriculasComponent implements OnInit {
                 console.error(err)
             },
             complete: () => {},
+        })
+
+        this.cursosService.getTipoCursos().subscribe({
+            next: (res: any) => {
+                this.dropdowns.tipoCurso = res.data.map((item) => ({
+                    name: item.cTipoCursoNombre,
+                    code: item.iTipoCursoId,
+                }))
+            },
         })
 
         this.curriculasService.getCurriculas().subscribe({

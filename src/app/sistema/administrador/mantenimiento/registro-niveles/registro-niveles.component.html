@@ -1,96 +1,126 @@
 <div class="card flex justify-content-center">
     <p-panel header="REGISTRO DE NIVELES" [toggleable]="false">
-        <div class="grid col-12 p-fluid gap-3">
-            <!-- Nombre del Nivel -->
-            <div class="col-12 md:col-6 lg:col-5">
-                <div class="flex flex-column gap-1">
-                    <label for="input1" class="label-ajustada"
-                        >Nombre del Nivel</label
-                    >
+        <form [formGroup]="form">
+            <div class="grid col-12 md:col-12 lg:col-12">
+                <!-- Nombre del Nivel -->
+                <div class="col-12 md:col-6 lg:col-5">
                     <input
-                        id="input1"
-                        type="text"
-                        pInputText
-                        [(ngModel)]="nombreNivel"
-                        (input)="onNombreNivelChange($event)"
+                        type="hidden"
+                        id="iNivelId"
+                        formControlName="iNivelId"
+                        class="w-full"
                     />
+                    <div class="flex flex-column gap-1">
+                        <label for="input1" class="label-ajustada"
+                            >Nombre del Nivel</label
+                        >
+                        <input
+                            id="input1"
+                            type="text"
+                            pInputText
+                            formControlName="cNivelNombre"
+                            placeholder="Ingresar nombre"
+                        />
+                    </div>
                 </div>
-            </div>
 
-            <!-- Sigla del Nivel -->
-            <div class="col-12 md:col-6 lg:col-3">
-                <div class="flex flex-column gap-1">
-                    <label for="input2" class="label-ajustada"
-                        >Sigla del Nivel</label
-                    >
-                    <input
-                        id="input2"
-                        type="text"
-                        pInputText
-                        [(ngModel)]="siglaNivel"
-                        readonly
-                    />
+                <!-- Sigla del Nivel -->
+                <div class="col-12 md:col-6 lg:col-3">
+                    <div class="flex flex-column gap-1">
+                        <label for="cNivelSigla" class="label-ajustada"
+                            >Sigla del Nivel</label
+                        >
+                        <input
+                            id="cNivelSigla"
+                            type="text"
+                            pInputText
+                            formControlName="cNivelSigla"
+                            readonly
+                        />
+                    </div>
                 </div>
-            </div>
 
-            <!-- Botón Guardar -->
-            <div class="col-12 md:col-3 lg:col-2 flex align-items-end">
-                <p-button
-                    label="Guardar"
-                    icon="pi pi-save"
-                    (click)="guardarNivel()"
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Nombre de los Cursos -->
-            <div class="col-12 md:col-6 lg:col-5">
-                <div class="flex flex-column gap-1">
-                    <label for="nombreCursos" class="label-ajustada"
-                        >Nombre de los Cursos</label
-                    >
-                    <input
-                        pInputText
-                        id="nombreCursos"
-                        [(ngModel)]="nombreCursos"
-                        (input)="onNombreCursoChange($event)"
+                <!-- Botón Guardar -->
+                <div class="col-12 md:col-3 lg:col-2 flex align-items-end">
+                    <p-button
+                        label="Guardar"
+                        icon="pi pi-save"
+                        (click)="guardarNivel()"
                         class="w-full"
                     />
                 </div>
-            </div>
-
-            <!-- Abreviatura del Curso -->
-            <div class="col-12 md:col-6 lg:col-3">
-                <div class="flex flex-column gap-1">
-                    <label for="abreviaturaCursos" class="label-ajustada"
-                        >Abreviatura del Curso</label
-                    >
-                    <input
-                        pInputText
-                        id="abreviaturaCursos"
-                        [(ngModel)]="abrevCurso"
-                        readonly
+                <div class="col-12 md:col-3 lg:col-2 flex align-items-end">
+                    <p-button
+                        label="limpiar"
+                        icon="pi pi-refresh"
+                        (click)="limpiarForm()"
                         class="w-full"
+                        severity="success"
                     />
                 </div>
-            </div>
 
-            <!-- Denominación Tutor -->
-            <div class="col-12 md:col-6 lg:col-3">
-                <div class="flex flex-column gap-1">
-                    <label for="estado" class="label-ajustada"
-                        >Denominación Tutor</label
-                    >
-                    <input
-                        pInputText
-                        id="estado"
-                        [(ngModel)]="estado"
-                        class="w-full"
-                    />
+                <!-- Nombre de los Cursos -->
+                <div class="col-12 md:col-3 lg:col-3">
+                    <div class="flex flex-column gap-1">
+                        <label
+                            for="cNivelAbreviacionCursos"
+                            class="label-ajustada"
+                            >Abreviatura de curso</label
+                        >
+                        <input
+                            pInputText
+                            id="cNivelAbreviacionCursos"
+                            formControlName="cNivelAbreviacionCursos"
+                            class="w-full"
+                        />
+                    </div>
+                </div>
+                <div class="col-12 md:col-3 lg:col-3">
+                    <div class="flex flex-column gap-1">
+                        <label for="cNivelNombreCursos" class="label-ajustada"
+                            >Nombre de curso</label
+                        >
+                        <input
+                            pInputText
+                            id="cNivelNombreCursos"
+                            formControlName="cNivelNombreCursos"
+                            class="w-full"
+                        />
+                    </div>
+                </div>
+
+                <!-- Abreviatura del Curso -->
+                <div class="col-12 md:col-6 lg:col-3">
+                    <div class="flex flex-column gap-1">
+                        <label for="abreviaturaCursos" class="label-ajustada"
+                            >Abreviatura del Curso</label
+                        >
+                        <input
+                            pInputText
+                            id="cNivelAbreviacionCursos"
+                            formControlName="cNivelAbreviacionCursos"
+                            readonly
+                            class="w-full"
+                        />
+                    </div>
+                </div>
+
+                <!-- Denominación Tutor -->
+                <div class="col-12 md:col-6 lg:col-3">
+                    <div class="flex flex-column gap-1">
+                        <label for="estado" class="label-ajustada"
+                            >Denominación Tutor</label
+                        >
+                        <input
+                            pInputText
+                            id="estado"
+                            formControlName="cNivelDenominacionTutor"
+                            class="w-full"
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-
+        </form>
         <!-- Tabla -->
         <div class="mt-4">
             <app-table-primeng
@@ -104,6 +134,7 @@
                 [(selectedRowData)]="selectedItems"
                 [actions]="actions"
                 [hidden]=""
+                (accionBtnItem)="accionBtnItemTable($event)"
             >
             </app-table-primeng>
         </div>

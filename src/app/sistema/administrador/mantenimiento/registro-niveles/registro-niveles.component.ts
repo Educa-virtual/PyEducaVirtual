@@ -1,8 +1,18 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
+
+import { MessageService } from 'primeng/api'
+import { GeneralService } from '@/app/servicios/general.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { PanelModule } from 'primeng/panel'
 import { InputTextModule } from 'primeng/inputtext'
-import { FormsModule } from '@angular/forms'
-import { FormBuilder, FormGroup } from '@angular/forms'
+
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms'
 import {
     IActionTable,
     TablePrimengComponent,
@@ -18,13 +28,14 @@ import { ButtonModule } from 'primeng/button'
         TablePrimengComponent,
         FormsModule,
         ButtonModule,
+        ReactiveFormsModule,
     ],
     templateUrl: './registro-niveles.component.html',
     styleUrl: './registro-niveles.component.scss',
 })
-export class RegistroNivelesComponent {
+export class RegistroNivelesComponent implements OnInit {
     value: string | undefined
-    constructor(private fb: FormBuilder) {}
+
     form: FormGroup
     abreviaturaNivel: string = ''
     nombreCursos: string = ''
@@ -36,28 +47,21 @@ export class RegistroNivelesComponent {
 
     nombreCurso: string = ''
     abrevCurso: string = ''
+    iCredId: number
+
+    constructor(
+        private store: LocalStoreService,
+        private messageService: MessageService,
+        private query: GeneralService,
+        private fb: FormBuilder
+    ) {
+        const perfil = this.store.getItem('dremoPerfil')
+
+        this.iCredId = perfil.iCredId
+    }
 
     selectedItems = []
-    datos = [
-        {
-            item: 1,
-            nombnivel: 'Educacion Inicial',
-            nivelsigla: 'EI',
-            nivnombrecursos: 'Area Curricular',
-            nivabrevcursos: 'AC',
-            nivDenominacionTutor: 'Tuto',
-            acciones: 'Editar',
-        },
-        {
-            item: 2,
-            nombnivel: 'Educacion Basica Regular',
-            nivelsigla: 'EBR',
-            nivnombrecursos: 'Area Curricular',
-            nivabrevcursos: 'AC',
-            nivDenominacionTutor: 'Consejero',
-            acciones: 'Editar',
-        },
-    ]
+    datos: any = []
 
     actions: IActionTable[] = [
         {
@@ -82,7 +86,7 @@ export class RegistroNivelesComponent {
         {
             type: 'text',
             width: '10rem',
-            field: 'nombnivel',
+            field: 'cNivelNombre',
             header: 'Nombre del Nivel',
             text_header: 'center',
             text: 'center',
@@ -90,7 +94,7 @@ export class RegistroNivelesComponent {
         {
             type: 'text',
             width: '5rem',
-            field: 'nivelsigla',
+            field: 'cNivelSigla',
             header: 'Abreviatura Nivel',
             text_header: 'center',
             text: 'center',
@@ -98,7 +102,7 @@ export class RegistroNivelesComponent {
         {
             type: 'text',
             width: '6rem',
-            field: 'nivnombrecursos',
+            field: 'cNivelNombreCursos',
             header: 'Nombre Cursos',
             text_header: 'center',
             text: 'center',
@@ -106,7 +110,7 @@ export class RegistroNivelesComponent {
         {
             type: 'text',
             width: '6rem',
-            field: 'nivabrevcursos',
+            field: 'cNivelAbreviacionCursos',
             header: 'Abreviatura Cursos',
             text_header: 'center',
             text: 'center',
@@ -114,8 +118,16 @@ export class RegistroNivelesComponent {
         {
             type: 'text',
             width: '3rem',
-            field: 'nivDenominacionTutor',
+            field: 'cNivelDenominacionTutor',
             header: 'Denominacion Tutor',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'estado-activo',
+            width: '3rem',
+            field: 'iEstado',
+            header: 'Estado',
             text_header: 'center',
             text: 'center',
         },
@@ -128,6 +140,21 @@ export class RegistroNivelesComponent {
             text: 'center',
         },
     ]
+
+    ngOnInit(): void {
+        this.getNiveles()
+
+        this.form = this.fb.group({
+            iNivelId: [0],
+            cNivelAbreviacionCursos: ['', Validators.required],
+            cNivelDenominacionTutor: ['', Validators.required],
+            cNivelNombre: ['', Validators.required],
+            cNivelNombreCursos: ['', Validators.required],
+            cNivelSigla: [''],
+            iEstado: [0],
+        })
+    }
+
     //Metodo para generar la abreviatura de Nombre del Nivel
     generarSiglaDesdeNombre(nombre: string): string {
         return nombre
@@ -160,6 +187,8 @@ export class RegistroNivelesComponent {
 
     guardarNivel() {
         // Aquí va la lógica para guardar los datos
+
+        console.log(this.form.value, 'form')
         console.log('Nivel guardado:', {
             nombreNivel: this.nombreNivel,
             siglaNivel: this.siglaNivel,
@@ -167,5 +196,61 @@ export class RegistroNivelesComponent {
             abrevCurso: this.abrevCurso,
             estado: this.estado,
         })
+    }
+    limpiarForm() {
+        this.form.reset()
+    }
+
+    getNiveles() {
+        // obtiene los perfiles para la sede
+        this.query
+            .searchCalAcademico({
+                esquema: 'acad',
+                tabla: 'niveles',
+                campos: '*',
+                condicion: '1=1',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.datos = data.data
+                },
+                error: (error) => {
+                    console.error('Error en extraer niveles:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    console.log(this.datos, 'niveles')
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Proceso exitoso',
+                    })
+                },
+            })
+    }
+    accionBtnItemTable({ accion, item }) {
+        // console.log(this.selectedItems, 'selectedItems')
+
+        if (accion === 'editar') {
+            this.form.get('iNivelId')?.setValue(item.iNivelId)
+            this.form
+                .get('cNivelAbreviacionCursos')
+                ?.setValue(item.cNivelAbreviacionCursos)
+            this.form
+                .get('cNivelDenominacionTutor')
+                ?.setValue(item.cNivelDenominacionTutor)
+            this.form.get('cNivelNombre')?.setValue(item.cNivelNombre)
+            this.form
+                .get('cNivelNombreCursos')
+                ?.setValue(item.cNivelNombreCursos)
+            this.form.get('cNivelSigla')?.setValue(item.cNivelSigla)
+            this.form.get('iEstado')?.setValue(item.iEstado)
+
+            // console.log(item, 'btnTable')
+        }
     }
 }

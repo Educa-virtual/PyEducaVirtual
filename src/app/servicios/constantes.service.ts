@@ -52,11 +52,6 @@ const docente = [
                 routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
-                label: 'Mi Perfil',
-                icon: 'pi pi-fw pi-id-card',
-                routerLink: ['/docente/perfil'],
-            },
-            {
                 label: 'Actividades No Lectivas',
                 icon: 'pi pi-fw pi-list-check',
                 routerLink: ['/docente/actividades-no-lectivas'],
@@ -591,4 +586,5 @@ export class ConstantesService {
     cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
     cNivelNombre = perfil ? perfil.cNivelNombre : null
     year = years ? years : null
+    fotografia = user ? user.cPersFotografia : null
 }

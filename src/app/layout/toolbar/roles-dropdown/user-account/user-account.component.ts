@@ -1,12 +1,15 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { PerfilComponent } from '@/app/sistema/docente/perfil/perfil.component'
+import { CambiarConstrasenaComponent } from '@/app/sistema/usuarios/cambiar-constrasena/cambiar-constrasena.component'
+import { environment } from '@/environments/environment'
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 
 @Component({
     selector: 'app-user-account',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, PerfilComponent, CambiarConstrasenaComponent],
     templateUrl: './user-account.component.html',
     styleUrl: './user-account.component.scss',
 })
@@ -15,31 +18,37 @@ export class UserAccountComponent implements OnInit {
 
     @Input() modulos = []
     @Input() roles = []
+    @Input() selectedPerfil
     @Input() selectedModulo: string //perfil seleccionado
 
     name: string
-
+    fotografia: string
+    showModal: boolean = false
+    showModalChangePassword: boolean = false
     constructor(private ConstantesService: ConstantesService) {
         this.name = this.ConstantesService.nombres
-        // this.cPerfilNombre = this.selectedModulo[0]['cPerfilNombre']
+        this.fotografia =
+            environment.backend + '/' + this.ConstantesService.fotografia
     }
 
     items: MenuItem[] | undefined
     ngOnInit() {
-        // console.log(this.selectedModulo, 'selectedModulo')
-        // this.cPerfilNombre = this.selectedModulo[0]['cPerfilNombre']
-
         this.items = [
             {
                 items: [
-                    // {
-                    //     label: 'Mi Perfil',
-                    //     icon: 'pi pi-user',
-                    // },
                     {
-                        label: 'Cambiar contraseña',
-                        icon: 'pi pi-bars',
-                        routerLink: ['/cambiar-contrasena'],
+                        label: 'Mi Datos Personales',
+                        icon: 'pi pi-user',
+                        command: () => {
+                            this.showModal = true
+                        },
+                    },
+                    {
+                        label: 'Cambiar Contraseña',
+                        icon: 'pi pi-lock',
+                        command: () => {
+                            this.showModalChangePassword = true
+                        },
                     },
                     {
                         label: 'Salir sesión',

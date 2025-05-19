@@ -1,8 +1,8 @@
 <div class="relative">
     <div class="curso__image-container img-transition">
         <img
-            [src]="backend + getUrlImg(capacitacion.cImagenUrl)"
-            [alt]="capacitacion.cCapTitulo"
+            [src]="backend + getUrlImg(capacitacion?.cImagenUrl)"
+            [alt]="capacitacion?.cCapTitulo"
             class="image"
         />
     </div>
@@ -20,7 +20,7 @@
                 <br />
                 <div class="grid row-gap-2">
                     <div class="col-12 title text-center font-bold">
-                        {{ capacitacion.cCapTitulo }}
+                        {{ capacitacion?.cCapTitulo }}
                     </div>
                     <div class="mx-4 col-12 grid">
                         <div
@@ -57,7 +57,7 @@
             </div>
         </div>
         <!-- <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-    <p class="">{{ capacitacion.iCantidadPreguntas }} preguntas</p>
+    <p class="">{{ capacitacion?.iCantidadPreguntas }} preguntas</p>
     <button [size]="'small'" [rounded]="true" pButton pRipple ngClass="p-button-primary">
       <i class="pi pi-plus"></i> Acciones
     </button>

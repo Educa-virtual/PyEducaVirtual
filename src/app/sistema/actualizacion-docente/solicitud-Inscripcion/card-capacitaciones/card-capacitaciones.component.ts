@@ -17,10 +17,17 @@ export class CardCapacitacionesComponent {
         item.cImagenUrl = 'cursos/images/no-image.jpg'
     }
     getUrlImg(cImagenUrl: string) {
-        cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : cImagenUrl
-        if (cImagenUrl.length) {
-            return cImagenUrl[0]['url']
-        }
-        return '/cursos/images/no-image.jpg'
+        cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : []
+        return cImagenUrl.length
+            ? cImagenUrl[0]['url']
+            : '/cursos/images/no-image.jpg'
     }
+
+    // getUrlImg(cImagenUrl: string) {
+    //     cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : cImagenUrl
+    //     if (cImagenUrl.length) {
+    //         return cImagenUrl[0]['url']
+    //     }
+    //     return '/cursos/images/no-image.jpg'
+    // }
 }

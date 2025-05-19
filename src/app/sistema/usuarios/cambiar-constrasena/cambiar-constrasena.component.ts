@@ -94,7 +94,7 @@ export class CambiarConstrasenaComponent {
                         this.accionCloseItem.emit()
                         setTimeout(() => {
                             window.location.reload()
-                        }, 3000)
+                        }, 1000)
                     }
                 },
                 complete: () => {},

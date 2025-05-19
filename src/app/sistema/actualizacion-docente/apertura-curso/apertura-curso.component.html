@@ -290,9 +290,11 @@
                                 >
                                     <ng-template let-image pTemplate="item">
                                         <div
+                                            tabindex="0"
                                             class="image-item"
                                             [class.selected]="isSelected(image)"
-                                            (onclick)="selectImage(image)"
+                                            (click)="selectImage(image)"
+                                            (keyup)="onImageClick(null)"
                                         >
                                             <div class="image-container">
                                                 <img

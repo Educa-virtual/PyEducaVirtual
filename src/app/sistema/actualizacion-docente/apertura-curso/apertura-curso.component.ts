@@ -211,8 +211,8 @@ export class AperturaCursoComponent implements OnInit {
     // datosTemporales1: { [key: number]: any } = {}; // Almacena datos por cada botón seleccionado
     datosFinales: any[] = [] // Guarda todo al final
     // botonSeleccionado: number | null = null
-    horaSeleccionadaInicio: string = ''
-    horaSeleccionadaFin: string = ''
+    horaSeleccionadaInicio: Date | null = null
+    horaSeleccionadaFin: Date | null = null
 
     nombredia: string
     // metodo para seleccionar día
@@ -227,29 +227,34 @@ export class AperturaCursoComponent implements OnInit {
         console.log('indice', this.diaSeleccionado)
         // this.fechaSeleccionada = this.datosTemporales[index]?.horaIni || null
     }
+    formatearHora(fecha: Date): string {
+        const horas = fecha.getHours().toString().padStart(2, '0')
+        const minutos = fecha.getMinutes().toString().padStart(2, '0')
+        return `${horas}:${minutos}`
+    }
 
     // guardar temporamente los datos del dia seleccionado
     guardarDatos() {
         if (this.diaSeleccionado) {
-            // Si no hay aún datos para ese día, inicializa como array vacío
-            if (!this.datosTemporales[this.diaSeleccionado]) {
-                this.datosTemporales[this.diaSeleccionado] = []
-            }
+            const horaIni = this.formatearHora(this.horaSeleccionadaInicio)
+            const horaFin = this.formatearHora(this.horaSeleccionadaFin)
 
-            // Agrega nuevo horario al array del día correspondiente
-            this.datosTemporales[this.diaSeleccionado].push({
-                iHoraInicio: this.horaSeleccionadaInicio,
-                iHoraFin: this.horaSeleccionadaFin,
-            })
+            this.datosTemporales[this.diaSeleccionado] = {
+                iDiaId: this.diaSeleccionado.toString(),
+                iHorarioUniforme: '1', // Puedes cambiar el valor según sea necesario
+                iHoraInicio: horaIni,
+                iHoraFin: horaFin,
+            }
 
             console.log('Datos temporales:', this.datosTemporales)
 
-            // Restablece selección
+            // Restablecer selección
             this.diaSeleccionado = null
-            this.horaSeleccionadaInicio = ''
-            this.horaSeleccionadaFin = ''
+            this.horaSeleccionadaInicio = null
+            this.horaSeleccionadaFin = null
         }
     }
+
     loading: boolean = false
     json
     // datos obtenidos del segundo form
@@ -260,14 +265,15 @@ export class AperturaCursoComponent implements OnInit {
         }, 2000)
 
         // Convertimos los datos temporales en un array de objetos con el nombre del día
-        this.datosFinales = Object.entries(this.datosTemporales).map(
-            ([iDiaId, iHorarioUniforme]) => ({
-                iDiaId,
-                iHorarioUniforme,
-            })
-        )
-
+        // this.datosFinales = Object.entries(this.datosTemporales).map(
+        //     ([iDiaId, iHorarioUniforme]) => ({
+        //         iDiaId,
+        //         iHorarioUniforme,
+        //     })
+        // )
+        this.datosFinales = Object.values(this.datosTemporales)
         this.json = JSON.stringify(this.datosFinales)
+        // this.json = JSON.stringify(Object.values(this.datosTemporales), null, 2);
 
         console.log('Datos guardados:', this.json)
     }

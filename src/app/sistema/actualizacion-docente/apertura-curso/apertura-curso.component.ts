@@ -14,6 +14,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import imagenesRecursos from '@/app/shared/imagenes/recursos'
 import { GalleriaModule } from 'primeng/galleria'
 import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service'
+import { environment } from '@/environments/environment'
 
 interface Image {
     id: number
@@ -36,6 +37,8 @@ interface Image {
 })
 export class AperturaCursoComponent implements OnInit {
     portada = imagenesRecursos
+
+    backend = environment.backend
 
     private _formBuilder = inject(FormBuilder)
     private _confirmService = inject(ConfirmationModalService)
@@ -82,18 +85,18 @@ export class AperturaCursoComponent implements OnInit {
         iTipoCapId: ['', [Validators.required]],
         cCapTitulo: ['', [Validators.required]],
         iNivelPedId: ['', [Validators.required]],
-        iTipoPubId: [''],
-        cCapDescripcion: [''],
+        iTipoPubId: ['', [Validators.required]],
+        cCapDescripcion: ['', [Validators.required]],
         iTotalHrs: ['', [Validators.required]],
-        dFechaInicio: [new Date()],
-        dFechaFin: [new Date()],
+        dFechaInicio: [new Date(), [Validators.required]],
+        dFechaFin: [new Date(), [Validators.required]],
         iCosto: [0],
-        nCosto: [0.0],
+        nCosto: [''],
         iInstId: ['', [Validators.required]],
         cHorario: [''],
         iCantidad: [0],
         cImagenUrl: [''],
-        iImageAleatorio: [1],
+        iImageAleatorio: [0],
         jsonHorario: [''],
     })
 
@@ -346,6 +349,7 @@ export class AperturaCursoComponent implements OnInit {
                         iCredId: iCredId,
                         iDocenteId: iDocenteId,
                         iCapacitacionId: id,
+                        jsonHorario: this.json,
                     }
                     this._aulaService.actualizarCapacitacion(data).subscribe({
                         next: (resp: any) => {
@@ -381,22 +385,23 @@ export class AperturaCursoComponent implements OnInit {
             // revisar si tiene datos formNuevaCapacitacion para registrar el curso
             const titulo =
                 this.formNuevaCapacitacion.get('cCapTitulo')?.value || ''
+
+            // para validar los campos que faltas datos del formulario
+            Object.keys(this.formNuevaCapacitacion.controls).forEach(
+                (field) => {
+                    const control = this.formNuevaCapacitacion.get(field)
+                    control?.markAsTouched() // Marca como tocado (touched)
+                    control?.markAsDirty() // Marca como modificado (dirty)
+                }
+            )
+
             // alert en caso si no tiene datos los campos del formulario
-            if (titulo == '') {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Tiene que agregar un Título al curso',
-                })
-            } else {
-                // para validar los campos que faltas datos del formulario
-                Object.keys(this.formNuevaCapacitacion.controls).forEach(
-                    (field) => {
-                        const control = this.formNuevaCapacitacion.get(field)
-                        control?.markAsTouched() // Marca como tocado (touched)
-                        control?.markAsDirty() // Marca como modificado (dirty)
-                    }
-                )
+            if (this.formNuevaCapacitacion.valid) {
+                // this.messageService.add({
+                //     severity: 'error',
+                //     summary: 'Error',
+                //     detail: 'Tiene que agregar un Título al curso',
+                // })
                 // alert antes de guardar el curso creado
                 this._confirmService.openConfiSave({
                     message: 'Recuerde que no podra retroceder',
@@ -455,6 +460,12 @@ export class AperturaCursoComponent implements OnInit {
                             detail: 'Capacitación no Guardado',
                         })
                     },
+                })
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Tiene campos invalidos',
                 })
             }
         }

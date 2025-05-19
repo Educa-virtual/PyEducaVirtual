@@ -251,7 +251,7 @@
                                         "
                                         type="text"
                                         formControlName="nCosto"
-                                        placeholder="S/."
+                                        placeholder="S/.0.0"
                                         class="p-inputtext p-component w-10rem"
                                     />
                                 </div>
@@ -271,13 +271,19 @@
                                     class="flex align-items-center justify-content-center m-2"
                                 >
                                     <p-inputSwitch
-                                        formControlName=""
+                                        formControlName="iImageAleatorio"
                                         class="pr-3"
                                     />
                                 </div>
                             </div>
                         </div>
-                        <div class="card w-full mt-2 justify-content-center">
+                        <div
+                            class="card w-full mt-2 justify-content-center"
+                            *ngIf="
+                                formNuevaCapacitacion.get('iImageAleatorio')
+                                    ?.value
+                            "
+                        >
                             <div class="container">
                                 <!-- <h2>Selecciona una imagen</h2> -->
                                 <!-- (ngSubmit)="onSubmit()" -->
@@ -298,7 +304,7 @@
                                         >
                                             <div class="image-container">
                                                 <img
-                                                    [src]="image.url"
+                                                    [src]="backend + image.url"
                                                     [alt]="image.title"
                                                     class="carousel-image"
                                                 />
@@ -382,7 +388,7 @@
     header="Configuración de Horarios"
     [(visible)]="showModalHorarios"
     [modal]="true"
-    [style]="{ width: '50rem' }"
+    [style]="{ width: '60rem' }"
 >
     <form
         [formGroup]="formNuevaCapacitacion"
@@ -515,3 +521,5 @@
         />
     </div>
 </p-dialog>
+
+<p-toast />

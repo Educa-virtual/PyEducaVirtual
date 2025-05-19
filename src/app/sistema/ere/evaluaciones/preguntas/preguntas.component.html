@@ -322,7 +322,9 @@
                                                                                 placeholder="Seleccione la capacidad"
                                                                                 optionValue="iCapacidadId"
                                                                                 [options]="
-                                                                                    matrizCapacidad
+                                                                                    filtrarCapacidades(
+                                                                                        encab
+                                                                                    )
                                                                                 "
                                                                                 optionLabel="cCapacidadNombre"
                                                                                 [(ngModel)]="
@@ -725,7 +727,9 @@
                                                     styleClass="w-full"
                                                     placeholder="Seleccione la capacidad"
                                                     optionValue="iCapacidadId"
-                                                    [options]="matrizCapacidad"
+                                                    [options]="
+                                                        filtrarCapacidades(item)
+                                                    "
                                                     optionLabel="cCapacidadNombre"
                                                     [(ngModel)]="
                                                         item.iCapacidadId

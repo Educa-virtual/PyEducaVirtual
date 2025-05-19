@@ -464,14 +464,31 @@ export class ApiEvaluacionesRService {
         window.open(url, '_blank')
     }*/
 
+    descargarCartillaRespuestas(params) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/cartilla-respuestas`,
+            {
+                responseType: 'blob',
+            }
+        )
+    }
+
     descargarArchivoPreguntasPorArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas?tipo=${params.tipoArchivo}`
-        window.open(url, '_blank')
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas?tipo=${params.tipoArchivo}`,
+            {
+                responseType: 'blob',
+            }
+        )
     }
 
     descargarMatrizPorEvaluacionArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`
-        window.open(url, '_blank')
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`,
+            {
+                responseType: 'blob',
+            }
+        )
     }
 
     guardarFechaCantidadExamenCursos(data: {

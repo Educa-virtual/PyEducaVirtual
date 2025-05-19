@@ -353,8 +353,8 @@ export class PreguntasComponent implements OnInit {
     /*guardarPreguntaSinEnunciadoSinData() {
         if (!this.isDisabled) {
             return
-        } 
-        //const orden = this.totalPregunta + 1 // pregunta orden 
+        }
+        //const orden = this.totalPregunta + 1 // pregunta orden
         const orden = this.totalPregunta + 1
 
         const params = {
@@ -488,7 +488,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return;
         }
-        
+
         // Solo permitimos una opción seleccionada a la vez
         alternativas.forEach((alternativa) => {
             if (alternativa.iAlternativaId != iAlternativaId) {
@@ -814,6 +814,19 @@ export class PreguntasComponent implements OnInit {
         this.matrizCapacidadFiltrado = this.matrizCapacidad.filter(
             (i) => i.iCompetenciaId === item.iCompetenciaId
         )
+    }
+
+    filtrarCapacidades(item): any[] {
+        return this.matrizCapacidad.filter(
+            (i) => i.iCompetenciaId === item.iCompetenciaId
+        )
+    }
+
+    obtenerIdCompetenciaPorIdCapacidad(iCapacidadId: any): any {
+        const capacidad = this.matrizCapacidad.find(
+            (cap) => cap.iCapacidadId === iCapacidadId
+        )
+        return capacidad ? capacidad.iCompetenciaId : null
     }
 
     guardarEnunciadoEnCache(id: number, contenido: string): void {

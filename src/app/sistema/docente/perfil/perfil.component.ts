@@ -68,9 +68,6 @@ export class PerfilComponent implements OnInit {
                     item.imagen.data
                 )
                 break
-            case 'close-modal':
-                this.accionCloseItem.emit()
-                break
         }
     }
     getPersonasxiPersId() {

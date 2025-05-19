@@ -601,7 +601,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.paginator.rows = event.rows
         const start = event.first
         const end = event.first + event.rows
-        this.data = this.capacitaciones.slice(start, end)
+        this.data = this.capacitaciones?.slice(start, end)
     }
 
     private _aulaService = inject(ApiAulaService)
@@ -617,10 +617,6 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.capacitaciones = [...this.data] // cargar desde servicio o mock
-        this.paginator.total = this.capacitaciones.length
-        this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
-
         this.obtenerCapacitaciones()
     }
 
@@ -631,13 +627,14 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
             iEstado: iEstado,
             iCredId: iCredId,
         }
-        this._aulaService.obtenerCapacitacion(data).subscribe((Data) => {
-            this.data = Data['data']
 
-            console.log('cursos obtenidos', this.data)
-            // console.log(this.cursos)
-
-            // console.log('Datos capacitacion', this.cursos)
+        this._aulaService.obtenerCapacitacion(data).subscribe({
+            next: (res: any) => {
+                this.data = res['data']
+                this.capacitaciones = [...this.data] // cargar desde servicio o mock
+                this.paginator.total = this.capacitaciones.length
+                this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
+            },
         })
     }
 

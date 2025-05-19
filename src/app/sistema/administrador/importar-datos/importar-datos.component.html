@@ -1,0 +1,26 @@
+<div class="card">
+    <h2>Cargar archivo Excel</h2>
+
+    <input type="file" (change)="onFileChange($event)" accept=".xlsx, .xls" />
+
+    <p-table
+        *ngIf="jsonData.length > 0"
+        [value]="jsonData"
+        [paginator]="true"
+        [rows]="5"
+        responsiveLayout="scroll"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th *ngFor="let header of headers">{{ header }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
+                <td *ngFor="let header of headers">{{ rowData[header] }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <pre>{{ jsonData | json }}</pre>
+    Muestra los datos JSON en formato legible
+</div>

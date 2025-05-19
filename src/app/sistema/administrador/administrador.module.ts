@@ -34,6 +34,13 @@ const routes: Routes = [
                 (m) => m.UsuarioComponent
             ),
     },
+    {
+        path: 'importar-datos',
+        loadComponent: () =>
+            import('./importar-datos/importar-datos.component').then(
+                (m) => m.ImportarDatosComponent
+            ),
+    },
 ]
 
 @NgModule({

@@ -156,6 +156,17 @@ const administrador = [
                 icon: 'pi pi-fw pi-database',
                 routerLink: ['/administrador/backup-bd'],
             },
+            {
+                label: 'Importacion e exportacion de Datos',
+                icon: 'pi pi-calendar',
+                items: [
+                    {
+                        label: 'Importar datos',
+                        icon: 'pi pi-lock-open',
+                        routerLink: ['/administrador/importar-datos'],
+                    },
+                ],
+            },
 
             {
                 label: 'Gestión de Usuario',

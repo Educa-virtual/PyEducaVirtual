@@ -1,0 +1,53 @@
+<div class="card">
+    <p-panel header="REGISTRO DE TIPOS DE NIVELES" [toggleable]="false">
+        <div class="grid p-fluid gap-3">
+            <div class="col-12 md:col-4">
+                <label for="tipoNivel" class="label-ajustada">
+                    Seleccione tipo de nivel
+                </label>
+                <p-dropdown
+                    formControlName="selectednivel_tip"
+                    [options]="NivelesTipos"
+                    optionLabel="name"
+                    placeholder="Seleccione tipo nivel"
+                >
+                </p-dropdown>
+            </div>
+
+            <div class="col-12 md:col-2">
+                <label for="input1" class="label-ajustada"
+                    >Edad de Inicio</label
+                >
+
+                <input id="input1" type="number" pInputText />
+            </div>
+
+            <div class="col-12 md:col-2">
+                <label for="input2" class="label-ajustada">Edad Final</label>
+                <input id="input2" type="number" pInputText />
+            </div>
+
+            <div class="col-12 md:col-3">
+                <label for="input3" class="label-ajustada">Estado</label>
+                <input id="input3" type="text" pInputText />
+            </div>
+        </div>
+        <div class="mt-4">
+            <div class="mt-4">
+                <app-table-primeng
+                    [columnas]="columns"
+                    [showCaption]="true"
+                    [data]=""
+                    [showPaginator]="true"
+                    sortMode="single"
+                    sortField="persona_nomape"
+                    [sortOrder]="1"
+                    [actions]="actions"
+                    [hidden]=""
+                >
+                </app-table-primeng>
+            </div>
+        </div>
+    </p-panel>
+</div>
+<!-- [(selectedRowData)]="" -->

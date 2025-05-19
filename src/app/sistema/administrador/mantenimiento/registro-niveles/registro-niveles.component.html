@@ -1,0 +1,111 @@
+<div class="card flex justify-content-center">
+    <p-panel header="REGISTRO DE NIVELES" [toggleable]="false">
+        <div class="grid col-12 p-fluid gap-3">
+            <!-- Nombre del Nivel -->
+            <div class="col-12 md:col-6 lg:col-5">
+                <div class="flex flex-column gap-1">
+                    <label for="input1" class="label-ajustada"
+                        >Nombre del Nivel</label
+                    >
+                    <input
+                        id="input1"
+                        type="text"
+                        pInputText
+                        [(ngModel)]="nombreNivel"
+                        (input)="onNombreNivelChange($event)"
+                    />
+                </div>
+            </div>
+
+            <!-- Sigla del Nivel -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="flex flex-column gap-1">
+                    <label for="input2" class="label-ajustada"
+                        >Sigla del Nivel</label
+                    >
+                    <input
+                        id="input2"
+                        type="text"
+                        pInputText
+                        [(ngModel)]="siglaNivel"
+                        readonly
+                    />
+                </div>
+            </div>
+
+            <!-- Botón Guardar -->
+            <div class="col-12 md:col-3 lg:col-2 flex align-items-end">
+                <p-button
+                    label="Guardar"
+                    icon="pi pi-save"
+                    (click)="guardarNivel()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Nombre de los Cursos -->
+            <div class="col-12 md:col-6 lg:col-5">
+                <div class="flex flex-column gap-1">
+                    <label for="nombreCursos" class="label-ajustada"
+                        >Nombre de los Cursos</label
+                    >
+                    <input
+                        pInputText
+                        id="nombreCursos"
+                        [(ngModel)]="nombreCursos"
+                        (input)="onNombreCursoChange($event)"
+                        class="w-full"
+                    />
+                </div>
+            </div>
+
+            <!-- Abreviatura del Curso -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="flex flex-column gap-1">
+                    <label for="abreviaturaCursos" class="label-ajustada"
+                        >Abreviatura del Curso</label
+                    >
+                    <input
+                        pInputText
+                        id="abreviaturaCursos"
+                        [(ngModel)]="abrevCurso"
+                        readonly
+                        class="w-full"
+                    />
+                </div>
+            </div>
+
+            <!-- Denominación Tutor -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="flex flex-column gap-1">
+                    <label for="estado" class="label-ajustada"
+                        >Denominación Tutor</label
+                    >
+                    <input
+                        pInputText
+                        id="estado"
+                        [(ngModel)]="estado"
+                        class="w-full"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="mt-4">
+            <app-table-primeng
+                [columnas]="columns"
+                [showCaption]="true"
+                [data]="datos"
+                [showPaginator]="true"
+                sortMode="single"
+                sortField="persona_nomape"
+                [sortOrder]="1"
+                [(selectedRowData)]="selectedItems"
+                [actions]="actions"
+                [hidden]=""
+            >
+            </app-table-primeng>
+        </div>
+    </p-panel>
+</div>

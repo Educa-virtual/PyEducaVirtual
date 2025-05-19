@@ -1,0 +1,83 @@
+<div class="card">
+    <p-panel header="REGISTRO DE GRADOS" [toggleable]="false">
+        <form [formGroup]="formGroup">
+            <div class="grid p-fluid gap-3">
+                <!-- Nivel -->
+                <div class="col-12 md:col-3">
+                    <label for="nNiveles" class="label-ajustada"
+                        >Seleccione Nivel</label
+                    >
+                    <p-dropdown
+                        id="nNiveles"
+                        [options]="nNiveles"
+                        formControlName="selectedNivel"
+                        optionLabel="name"
+                        placeholder="Seleccione nivel"
+                    >
+                    </p-dropdown>
+                </div>
+
+                <!-- Grado -->
+                <div class="col-12 md:col-3">
+                    <label for="nGrados" class="label-ajustada"
+                        >Seleccione Grado</label
+                    >
+                    <p-dropdown
+                        id="nGrados"
+                        [options]="nGrados"
+                        formControlName="selectedGrado"
+                        optionLabel="name"
+                        placeholder="Seleccione grado"
+                        [disabled]="nGrados.length === 0"
+                    >
+                    </p-dropdown>
+                </div>
+
+                <!-- Abreviatura -->
+                <div class="col-12 md:col-2">
+                    <label for="input1" class="label-ajustada"
+                        >Abreviatura del Grado</label
+                    >
+                    <input
+                        id="input1"
+                        type="text"
+                        pInputText
+                        formControlName="selectedAbrev"
+                        readonly
+                    />
+                </div>
+
+                <!-- Num Romanos -->
+                <div class="col-12 md:col-2">
+                    <label for="input2" class="label-ajustada"
+                        >Grado en Romanos</label
+                    >
+                    <input
+                        id="input2"
+                        type="text"
+                        pInputText
+                        formControlName="selectedRoman"
+                        readonly
+                    />
+                </div>
+
+                <!-- <div class="mt-1"> -->
+                <div class="col-12 md:col-12">
+                    <app-table-primeng
+                        [columnas]="columns"
+                        [showCaption]="true"
+                        [data]="datos"
+                        [showPaginator]="true"
+                        sortMode="single"
+                        sortField="persona_nomape"
+                        [sortOrder]="1"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                        [hidden]=""
+                    >
+                    </app-table-primeng>
+                </div>
+            </div>
+        </form>
+    </p-panel>
+</div>

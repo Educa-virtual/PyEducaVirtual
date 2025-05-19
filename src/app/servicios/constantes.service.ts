@@ -162,6 +162,26 @@ const administrador = [
                 icon: 'pi pi-fw pi-user',
                 routerLink: ['/administrador/gestion-usuario'],
             },
+
+            {
+                label: 'Mantenimiento',
+                icon: 'pi pi-cog',
+                items: [
+                    {
+                        label: 'Registro Areas Nivel Grado',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/administrador/mantenimiento/nivel'],
+                        // routerLink: ['/mantenimiento/nivel']
+                    },
+
+                    {
+                        label: 'Registro Areas Nivel Ciclo Grado',
+                        icon: 'pi pi-graduation-cap',
+                        routerLink: ['/administrador/mantenimiento/ciclo'],
+                    },
+                ],
+            },
+
             {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',

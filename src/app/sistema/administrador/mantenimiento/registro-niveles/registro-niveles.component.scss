@@ -1,0 +1,14 @@
+.label-ajustada {
+    display: inline-block;
+    width: 100%;
+    background-color: #3e67a9; /* color de fondo */
+    text-align: center;
+    color: white;
+    padding: 0.25rem; /* espacio interno opcional */
+    border-radius: 4px; /* opcional para esquinas redondeadas */
+}
+
+:host ::ng-deep .p-panel .p-panel-header {
+    background-color: #3e67a9;
+    color: white;
+}

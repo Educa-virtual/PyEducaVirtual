@@ -1,0 +1,70 @@
+<!-- <p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">Registro de Areas Nivel Ciclo Grado </h3>
+        </div>   
+ 
+       </ng-template>
+    <p-toast />
+    <div class="flex pt-4 justify-content-end">
+        <p-button 
+            label="Next" 
+            icon="pi pi-arrow-right" 
+            iconPos="right" 
+            />
+    </div>     
+   
+    <p-steps 
+        [model]="items" 
+        [readonly]="false" 
+        [activeIndex]="activeIndex" 
+        (activeIndexChange)="onActiveIndexChange($event)"
+         />
+        
+         <div class="flex pt-4 justify-content-end">
+            <p-button 
+              label="Next" 
+              icon="pi pi-arrow-right" 
+              iconPos="right" 
+              (click)="siguientePaso()" 
+            />
+          </div>
+<router-outlet></router-outlet> -->
+
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                Registro de Áreas Nivel Ciclo Grado
+            </h3>
+        </div>
+    </ng-template>
+
+    <p-toast />
+
+    <!-- Pasos -->
+    <p-steps
+        [model]="items"
+        [readonly]="false"
+        [activeIndex]="activeIndex"
+        (activeIndexChange)="onActiveIndexChange($event)"
+    >
+    </p-steps>
+
+    <!-- Contenido dinámico de cada paso -->
+    <div class="step-content mt-4">
+        <router-outlet></router-outlet>
+    </div>
+
+    <!-- Botones de navegación -->
+    <div class="flex justify-content-end gap-2 mt-4">
+        <p-button
+            label="Next"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (click)="siguientePaso()"
+            [disabled]="activeIndex === items.length - 1"
+        >
+        </p-button>
+    </div>
+</p-panel>

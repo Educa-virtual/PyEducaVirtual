@@ -1,27 +1,43 @@
 <p-panel>
     <ng-template pTemplate="header">
-        <span class="text-2xl text-uppercase"> Resultados ERE </span>
+        <span class="text-2xl text-uppercase">
+            Comparativo de resultados ERE
+        </span>
     </ng-template>
     <form [formGroup]="formFiltros">
         <div class="grid">
             <div class="col-12 lg:col-6">
+                <p-inputGroup title="* Campo obligatorio">
+                    <p-inputGroupAddon>Evaluación 1 *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="evaluaciones"
+                        formControlName="iEvaluacion1"
+                        placeholder="Seleccione una evaluación"
+                        styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 lg:col-6">
+                <p-inputGroup title="* Campo obligatorio">
+                    <p-inputGroupAddon>Evaluación 2 *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="evaluaciones"
+                        formControlName="iEvaluacion2"
+                        placeholder="Seleccione una evaluación"
+                        styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+        <br />
+        <div class="grid">
+            <div class="col-12 lg:col-6">
                 <p-fieldset legend="Filtros obligatorios">
                     <div class="grid p-fluid">
-                        <div class="col-12">
-                            <p-inputGroup title="* Campo obligatorio">
-                                <p-inputGroupAddon
-                                    >Evaluación *</p-inputGroupAddon
-                                >
-                                <p-dropdown
-                                    [options]="evaluaciones"
-                                    formControlName="iEvaluacionId"
-                                    placeholder="Seleccione una evaluación"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                />
-                            </p-inputGroup>
-                        </div>
                         <div class="col-12">
                             <p-inputGroup title="* Campo obligatorio">
                                 <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
@@ -198,74 +214,62 @@
 
     <br />
 
-    <p-tabView>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">Resumen</div>
-            </ng-template>
-            @if (hay_resultados) {
-                <div class="grid">
-                    <div class="col-12 md:col-6">
-                        <div class="flex justify-content-center">
-                            <p-chart
-                                type="doughnut"
-                                [data]="data_doughnut"
-                                [options]="options_doughnut"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6">
-                        <app-table-primeng
-                            [columnas]="columns_promedio"
-                            [showCaption]="false"
-                            [data]="promedio"
-                            [showPaginator]="false"
-                            [showSortIcon]="false"
-                            [(selectedRowData)]="selectedItems"
-                            [actions]="actions"
-                        />
-                    </div>
-                </div>
-            }
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">
-                    <span class="hidden lg:inline" style="text-wrap: none"
-                        >Resultados por&nbsp;</span
-                    >Estudiante
-                </div>
-            </ng-template>
-            <app-table-primeng
-                [columnas]="columns_estudiantes"
+    @if (!hay_resultados) {
+        <app-no-data
+            [showIcon]="'NO-DATA'"
+            mensaje="No se encontraron datos para esta comparación"
+        />
+    } @else {
+        <p-tabView>
+            <p-tabPanel>
+                <ng-template pTemplate="header"> Comparativa </ng-template>
+                <!-- <app-table-primeng
+                [columnas]="columns_niveles"
                 [showCaption]="false"
-                [data]="resultados"
-                (accionBtnItem)="accionBtnItemTable($event)"
-                [showPaginator]="true"
-                [showSortIcon]="false"
-                sortMode="multiple"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            />
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">
-                    <span class="hidden lg:inline">Resultados por&nbsp;</span
-                    >Pregunta
-                </div>
-            </ng-template>
-            <app-table-primeng
-                [columnas]="columns_resumen"
-                [showCaption]="false"
-                [enableCellSelection]="false"
-                [data]="resumen"
+                [data]="niveles"
                 [showPaginator]="false"
                 [showSortIcon]="false"
                 [(selectedRowData)]="selectedItems"
                 [actions]="actions"
-            />
-            @if (hay_resultados) {
+            >
+            </app-table-primeng> -->
+                <p-table [value]="niveles" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2">NIVEL DE LOGRO</th>
+                            <th colspan="2" class="text-center">
+                                EVALUACION 1
+                            </th>
+                            <th colspan="2" class="text-center">
+                                EVALUACION 2
+                            </th>
+                        </tr>
+                        <tr class="text-center">
+                            <th class="text-center">CANTIDAD</th>
+                            <th class="text-center">PORCENTAJE</th>
+                            <th class="text-center">CANTIDAD</th>
+                            <th class="text-center">PORCENTAJE</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-nivel>
+                        <tr>
+                            <td>{{ nivel.nivel }}</td>
+                            <td class="text-center">{{ nivel.valor1 }}</td>
+                            <td class="text-center">{{ nivel.porcentaje1 }}</td>
+                            <td class="text-center">{{ nivel.valor2 }}</td>
+                            <td class="text-center">{{ nivel.porcentaje2 }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <tr>
+                            <td>TOTAL DE ESTUDIANTES</td>
+                            <td class="text-center">{{ total1 }}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center">{{ total2 }}</td>
+                            <td class="text-center"></td>
+                        </tr>
+                    </ng-template>
+                </p-table>
                 <div class="grid">
                     <p-chart
                         type="bar"
@@ -275,48 +279,30 @@
                         height="300px"
                     />
                 </div>
-            }
-        </p-tabPanel>
-        @if (es_especialista) {
+            </p-tabPanel>
             <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex-wrap">
-                        <span class="hidden lg:inline"
-                            >Resultados por&nbsp;</span
-                        >IE
-                    </div>
-                </ng-template>
+                <ng-template pTemplate="header"> Evaluación 1 </ng-template>
                 <app-table-primeng
-                    [columnas]="columns_group"
+                    [columnas]="columns_resultados"
                     [showCaption]="false"
-                    [data]="agrupado"
-                    (accionBtnItem)="accionBtnItemTable($event)"
+                    [data]="resultados1"
                     [showPaginator]="true"
                     [showSortIcon]="false"
                     sortMode="multiple"
-                    [(selectedRowData)]="selectedItems"
-                    [actions]="actions"
                 />
             </p-tabPanel>
-        }
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">
-                    Matriz<span class="hidden lg:inline"
-                        >&nbsp;de evaluación</span
-                    >
-                </div>
-            </ng-template>
-            <app-table-primeng
-                [columnas]="columns_matriz"
-                [showCaption]="false"
-                [data]="matriz"
-                [showPaginator]="false"
-                [showSortIcon]="false"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            />
-        </p-tabPanel>
-    </p-tabView>
+            <p-tabPanel>
+                <ng-template pTemplate="header"> Evaluación 2 </ng-template>
+                <app-table-primeng
+                    [columnas]="columns_resultados"
+                    [showCaption]="false"
+                    [data]="resultados2"
+                    [showPaginator]="true"
+                    [showSortIcon]="false"
+                    sortMode="multiple"
+                />
+            </p-tabPanel>
+        </p-tabView>
+    }
 </p-panel>
 <p-toast></p-toast>

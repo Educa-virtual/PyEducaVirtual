@@ -28,12 +28,14 @@ export class InformesEreComponent implements OnInit {
     options_doughnut: any
     data_bar: any
     options_bar: ChartOptions
+    hide_filters: boolean = false
 
     resultados: Array<object>
     resumen: Array<object>
     matriz: Array<object>
     promedio: Array<object>
     niveles: Array<object>
+    agrupado: Array<object>
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
@@ -53,6 +55,7 @@ export class InformesEreComponent implements OnInit {
     zonas: Array<object>
     tipo_sectores: Array<object>
     ugeles: Array<object>
+    tipos_reportes: Array<object>
 
     private _MessageService = inject(MessageService)
 
@@ -90,12 +93,14 @@ export class InformesEreComponent implements OnInit {
                 iIieeId: [null],
                 iSeccionId: [null],
                 cPersSexo: [null],
+                cTipoReporte: ['ESTUDIANTES', Validators.required],
             })
         } catch (error) {
             console.log(error, 'error de formulario')
         }
 
         this.sexos = this.datosInformes.getSexos()
+        this.tipos_reportes = this.datosInformes.getTiposReportes()
         this.datosInformes
             .obtenerParametros(this.formFiltros.value)
             .subscribe((data: any) => {
@@ -113,26 +118,16 @@ export class InformesEreComponent implements OnInit {
                     data?.tipo_sectores
                 )
                 this.ugeles = this.datosInformes.getUgeles(data?.ugeles)
-
-                this.datosInformes.getNivelesTipos(data?.nivel_tipos)
-                this.datosInformes.getNivelesGrados(data?.nivel_grados)
-                this.datosInformes.getAreas(data?.areas)
-                this.datosInformes.getInstitucionesEducativas(
+                this.nivel_tipos = this.datosInformes.getNivelesTipos(
+                    data?.nivel_tipos
+                )
+                this.ies = this.datosInformes.getInstitucionesEducativas(
                     data?.instituciones_educativas
                 )
+                this.datosInformes.getNivelesGrados(data?.nivel_grados)
+                this.datosInformes.getAreas(data?.areas)
             })
 
-        this.formFiltros
-            .get('iEvaluacionId')
-            .valueChanges.subscribe((value) => {
-                this.formFiltros.get('iNivelTipoId')?.setValue(null)
-                this.nivel_tipos = null
-                this.filterNivelesTipos(value)
-
-                this.formFiltros.get('iIieeId')?.setValue(null)
-                this.ies = null
-                this.filterInstitucionesEducativas()
-            })
         this.formFiltros.get('iNivelTipoId').valueChanges.subscribe((value) => {
             this.formFiltros.get('iNivelGradoId')?.setValue(null)
             this.nivel_grados = null
@@ -168,8 +163,8 @@ export class InformesEreComponent implements OnInit {
         })
     }
 
-    filterNivelesTipos(iEvaluacionId: number) {
-        this.nivel_tipos = this.datosInformes.filterNivelesTipos(iEvaluacionId)
+    filterNivelesTipos() {
+        this.nivel_tipos = this.datosInformes.filterNivelesTipos()
     }
 
     filterNivelesGrados(iNivelTipoId: number) {
@@ -217,9 +212,9 @@ export class InformesEreComponent implements OnInit {
     searchResultados() {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe seleccionar los filtros requeridos',
+                detail: 'Debe seleccionar los filtros obligatorios',
             })
             return
         }
@@ -227,12 +222,32 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
+                    this.hide_filters = true
                     this.resultados = data.data[1]
                     this.niveles = data.data[2]
                     this.resumen = data.data[3]
                     this.matriz = data.data[4]
                     this.mostrarEstadisticaNivel()
                     this.generarColumnas(this.resumen)
+                    if (this.es_especialista) {
+                        this.agrupado = data.data[5]
+                        this.agrupado = this.agrupado.map((item: any) => {
+                            let sumatoria = 0
+                            this.niveles.forEach((nivel: any) => {
+                                sumatoria += Number(item[nivel.nivel_logro_id])
+                            })
+                            this.niveles.forEach((nivel: any) => {
+                                item[nivel.nivel_logro_id] = Number(
+                                    (Number(item[nivel.nivel_logro_id]) /
+                                        sumatoria) *
+                                        100
+                                ).toFixed(2)
+                            })
+                            item.total = sumatoria
+                            return item
+                        })
+                        this.generarColumnasAgrupado()
+                    }
                     this.mostrarEstadisticaPregunta()
                 },
                 error: (error) => {
@@ -337,6 +352,73 @@ export class InformesEreComponent implements OnInit {
         this.columns_resumen = columnas
     }
 
+    generarColumnasAgrupado() {
+        if (this.niveles.length == 0) {
+            return
+        }
+        const columnas = [
+            {
+                type: 'item',
+                width: '5%',
+                field: 'item',
+                header: '#',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '20%',
+                field: 'agrupado',
+                header: 'IE',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'ugel',
+                header: 'UGEL',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'distrito',
+                header: 'Distrito',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'total',
+                header: 'Total',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'puntaje',
+                header: 'Puntaje',
+                text_header: 'left',
+                text: 'left',
+            },
+        ]
+        this.niveles.forEach((item: any) => {
+            columnas.push({
+                type: 'text',
+                width: '1rem',
+                field: `${item.nivel_logro_id}`,
+                header: `% ${item.nivel_logro}`,
+                text_header: 'center',
+                text: 'center',
+            })
+        })
+        this.columns_group = columnas
+    }
+
     mostrarEstadisticaPregunta() {
         if (this.resumen.length == 0) {
             return
@@ -438,9 +520,9 @@ export class InformesEreComponent implements OnInit {
     exportar(tipo: number) {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe seleccionar los filtros requeridos',
+                detail: 'Debe seleccionar los filtros obligatorios',
             })
             return
         }
@@ -501,7 +583,9 @@ export class InformesEreComponent implements OnInit {
 
     actionsLista: IActionTable[]
 
-    columns = [
+    columns = []
+
+    columns_estudiantes = [
         {
             type: 'item',
             width: '5%',
@@ -570,9 +654,68 @@ export class InformesEreComponent implements OnInit {
             type: 'text',
             width: '10%',
             field: 'nivel_logro',
-            header: 'NIVEL',
+            header: 'Nivel de logro',
             text_header: 'center',
             text: 'center',
+        },
+    ]
+
+    columns_group = [
+        {
+            type: 'text',
+            width: '5%',
+            field: 'item',
+            header: '#',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '20%',
+            field: 'agrupado',
+            header: 'IE',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'ugel',
+            header: 'UGEL',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'distrito',
+            header: 'Distrito',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'total',
+            header: 'Total',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'puntaje',
+            header: 'Puntaje',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'nivel_logro',
+            header: 'Nivel',
+            text_header: 'left',
+            text: 'left',
         },
     ]
 

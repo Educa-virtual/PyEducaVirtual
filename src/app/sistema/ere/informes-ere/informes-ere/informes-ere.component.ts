@@ -14,13 +14,19 @@ import {
     ESPECIALISTA_UGEL,
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
     templateUrl: './informes-ere.component.html',
     styleUrls: ['./informes-ere.component.scss'],
-    imports: [PrimengModule, ChartModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        ChartModule,
+        TablePrimengComponent,
+        NoDataComponent,
+    ],
 })
 export class InformesEreComponent implements OnInit {
     formFiltros: FormGroup
@@ -222,33 +228,41 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
-                    this.hide_filters = true
-                    this.resultados = data.data[1]
-                    this.niveles = data.data[2]
-                    this.resumen = data.data[3]
-                    this.matriz = data.data[4]
-                    this.mostrarEstadisticaNivel()
-                    this.generarColumnas(this.resumen)
-                    if (this.es_especialista) {
-                        this.agrupado = data.data[5]
-                        this.agrupado = this.agrupado.map((item: any) => {
-                            let sumatoria = 0
-                            this.niveles.forEach((nivel: any) => {
-                                sumatoria += Number(item[nivel.nivel_logro_id])
+                    if (data.data.length == 0) {
+                        this.sinDatos()
+                    } else {
+                        this.hide_filters = true
+                        this.resultados = data.data[1]
+                        this.niveles = data.data[2]
+                        this.resumen = data.data[3]
+                        this.matriz = data.data[4]
+                        this.mostrarEstadisticaNivel()
+                        this.generarColumnas(this.resumen)
+                        if (this.es_especialista) {
+                            this.agrupado = data.data[5]
+                            this.agrupado = this.agrupado.map((item: any) => {
+                                let sumatoria = 0
+                                this.niveles.forEach((nivel: any) => {
+                                    sumatoria += Number(
+                                        item[nivel.nivel_logro_id] ?? 0
+                                    )
+                                })
+                                this.niveles.forEach((nivel: any) => {
+                                    item[nivel.nivel_logro_id] = Number(
+                                        (Number(
+                                            item[nivel.nivel_logro_id] ?? 0
+                                        ) /
+                                            sumatoria) *
+                                            100
+                                    ).toFixed(2)
+                                })
+                                item.total = sumatoria
+                                return item
                             })
-                            this.niveles.forEach((nivel: any) => {
-                                item[nivel.nivel_logro_id] = Number(
-                                    (Number(item[nivel.nivel_logro_id]) /
-                                        sumatoria) *
-                                        100
-                                ).toFixed(2)
-                            })
-                            item.total = sumatoria
-                            return item
-                        })
-                        this.generarColumnasAgrupado()
+                            this.generarColumnasAgrupado()
+                        }
+                        this.mostrarEstadisticaPregunta()
                     }
-                    this.mostrarEstadisticaPregunta()
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
@@ -262,6 +276,17 @@ export class InformesEreComponent implements OnInit {
                     console.log('Request completed')
                 },
             })
+    }
+
+    sinDatos() {
+        this.hay_resultados = false
+        this.promedio = []
+        this.resultados = []
+        this.niveles = []
+        this.resumen = []
+        this.matriz = []
+        this.agrupado = []
+        this.mostrarEstadisticaNivel()
     }
 
     mostrarEstadisticaNivel() {

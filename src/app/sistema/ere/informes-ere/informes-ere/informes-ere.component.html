@@ -198,12 +198,17 @@
 
     <br />
 
-    <p-tabView>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">Resumen</div>
-            </ng-template>
-            @if (hay_resultados) {
+    @if (!hay_resultados) {
+        <app-no-data
+            [showIcon]="'NO-DATA'"
+            mensaje="No se encontraron resultados"
+        />
+    } @else {
+        <p-tabView>
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex-wrap">Resumen</div>
+                </ng-template>
                 <div class="grid">
                     <div class="col-12 md:col-6">
                         <div class="flex justify-content-center">
@@ -226,70 +231,19 @@
                         />
                     </div>
                 </div>
-            }
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">
-                    <span class="hidden lg:inline" style="text-wrap: none"
-                        >Resultados por&nbsp;</span
-                    >Estudiante
-                </div>
-            </ng-template>
-            <app-table-primeng
-                [columnas]="columns_estudiantes"
-                [showCaption]="false"
-                [data]="resultados"
-                (accionBtnItem)="accionBtnItemTable($event)"
-                [showPaginator]="true"
-                [showSortIcon]="false"
-                sortMode="multiple"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            />
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">
-                    <span class="hidden lg:inline">Resultados por&nbsp;</span
-                    >Pregunta
-                </div>
-            </ng-template>
-            <app-table-primeng
-                [columnas]="columns_resumen"
-                [showCaption]="false"
-                [enableCellSelection]="false"
-                [data]="resumen"
-                [showPaginator]="false"
-                [showSortIcon]="false"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            />
-            @if (hay_resultados) {
-                <div class="grid">
-                    <p-chart
-                        type="bar"
-                        [data]="data_bar"
-                        [options]="options_bar"
-                        class="col"
-                        height="300px"
-                    />
-                </div>
-            }
-        </p-tabPanel>
-        @if (es_especialista) {
+            </p-tabPanel>
             <p-tabPanel>
                 <ng-template pTemplate="header">
                     <div class="flex-wrap">
-                        <span class="hidden lg:inline"
+                        <span class="hidden lg:inline" style="text-wrap: none"
                             >Resultados por&nbsp;</span
-                        >IE
+                        >Estudiante
                     </div>
                 </ng-template>
                 <app-table-primeng
-                    [columnas]="columns_group"
+                    [columnas]="columns_estudiantes"
                     [showCaption]="false"
-                    [data]="agrupado"
+                    [data]="resultados"
                     (accionBtnItem)="accionBtnItemTable($event)"
                     [showPaginator]="true"
                     [showSortIcon]="false"
@@ -298,25 +252,77 @@
                     [actions]="actions"
                 />
             </p-tabPanel>
-        }
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex-wrap">
-                    Matriz<span class="hidden lg:inline"
-                        >&nbsp;de evaluación</span
-                    >
-                </div>
-            </ng-template>
-            <app-table-primeng
-                [columnas]="columns_matriz"
-                [showCaption]="false"
-                [data]="matriz"
-                [showPaginator]="false"
-                [showSortIcon]="false"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            />
-        </p-tabPanel>
-    </p-tabView>
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex-wrap">
+                        <span class="hidden lg:inline"
+                            >Resultados por&nbsp;</span
+                        >Pregunta
+                    </div>
+                </ng-template>
+                <app-table-primeng
+                    [columnas]="columns_resumen"
+                    [showCaption]="false"
+                    [enableCellSelection]="false"
+                    [data]="resumen"
+                    [showPaginator]="false"
+                    [showSortIcon]="false"
+                    [(selectedRowData)]="selectedItems"
+                    [actions]="actions"
+                />
+                @if (hay_resultados) {
+                    <div class="grid">
+                        <p-chart
+                            type="bar"
+                            [data]="data_bar"
+                            [options]="options_bar"
+                            class="col"
+                            height="300px"
+                        />
+                    </div>
+                }
+            </p-tabPanel>
+            @if (es_especialista) {
+                <p-tabPanel>
+                    <ng-template pTemplate="header">
+                        <div class="flex-wrap">
+                            <span class="hidden lg:inline"
+                                >Resultados por&nbsp;</span
+                            >IE
+                        </div>
+                    </ng-template>
+                    <app-table-primeng
+                        [columnas]="columns_group"
+                        [showCaption]="false"
+                        [data]="agrupado"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="true"
+                        [showSortIcon]="false"
+                        sortMode="multiple"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
+                </p-tabPanel>
+            }
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex-wrap">
+                        Matriz<span class="hidden lg:inline"
+                            >&nbsp;de evaluación</span
+                        >
+                    </div>
+                </ng-template>
+                <app-table-primeng
+                    [columnas]="columns_matriz"
+                    [showCaption]="false"
+                    [data]="matriz"
+                    [showPaginator]="false"
+                    [showSortIcon]="false"
+                    [(selectedRowData)]="selectedItems"
+                    [actions]="actions"
+                />
+            </p-tabPanel>
+        </p-tabView>
+    }
 </p-panel>
 <p-toast></p-toast>

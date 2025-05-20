@@ -520,7 +520,7 @@ export class InformesEreComponent implements OnInit {
     exportar(tipo: number) {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe seleccionar los filtros obligatorios',
             })

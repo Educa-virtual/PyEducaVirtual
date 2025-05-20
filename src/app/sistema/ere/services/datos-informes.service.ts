@@ -303,6 +303,22 @@ export class DatosInformesService {
         })
     }
 
+    exportarComparacionPdf(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/generarPdfComparacion`,
+            data,
+            { responseType: 'blob' }
+        )
+    }
+
+    exportarComparacionExcel(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/generarExcelComparacion`,
+            data,
+            { responseType: 'blob' }
+        )
+    }
+
     importarResultados(data: any) {
         return this.http.post(
             `${baseUrl}/ere/reportes/importarResultados`,

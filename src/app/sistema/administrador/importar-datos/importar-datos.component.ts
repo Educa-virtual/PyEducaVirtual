@@ -52,11 +52,8 @@ export class ImportarDatosComponent implements OnInit {
 
     sortedData: any[] = []
     data: any
-    data1: any[] = [
-        { nombre: 'Juan', edad: 30, email: 'juan@example.com' },
-        { nombre: 'Ana', edad: 25, email: 'ana@example.com' },
-        { nombre: 'Pedro', edad: 40, email: 'pedro@example.com' },
-    ]
+    data2: any // Aquí se almacenará el JSON resultante
+    data1: any
 
     reg_modulos: any[] = [
         { id: 1, modulo: 'Ambientes' }, //iiee_ambientes
@@ -93,37 +90,127 @@ export class ImportarDatosComponent implements OnInit {
     }
 
     // Este método se ejecutará cuando el usuario seleccione un archivo
+    // onFileChange(event: any): void {
+    //     const file = event.target.files[0]; // Obtiene el archivo cargado
+    //     if (file) {
+    //         const reader = new FileReader();
+
+    //         reader.onload = (e: any) => {
+    //             const abuf = e.target.result;
+    //             const wb = XLSX.read(abuf, { type: 'array' }); // Lee el archivo Excel
+    //             const ws = wb.Sheets[wb.SheetNames[0]]; // Obtiene la primera hoja
+    //             const json = XLSX.utils.sheet_to_json(ws, { header: 1 }); // Convierte la hoja a JSON (modo matriz)
+
+    //             console.log(json); // Muestra la data completa
+    //             if (json.length > 1) {
+    //                 this.headers = json[0] as string[]; // Extrae los encabezados
+    //                 this.jsonData = json.slice(1).map(row => {
+    //                     const obj: any = {};
+    //                     this.headers.forEach((header, index) => {
+    //                         obj[header] = row[index];
+    //                     });
+    //                     return obj;
+    //                 });
+    //                 console.log(this.headers);
+    //                 console.log(this.jsonData);
+    //             }
+    //         };
+
+    //         reader.readAsArrayBuffer(file); // Aquí va la lectura del archivo
+    //     }
+    // }
+
     onFileChange(event: any): void {
-        const file = event.target.files[0] // Obtiene el archivo cargado
+        const file = event.target.files[0]
         if (file) {
             const reader = new FileReader()
 
             reader.onload = (e: any) => {
                 const abuf = e.target.result
-                const wb = XLSX.read(abuf, { type: 'array' }) // Lee el archivo Excel
-                const ws = wb.Sheets[wb.SheetNames[0]] // Obtiene la primera hoja
-                const json = XLSX.utils.sheet_to_json(ws) // Convierte la hoja a JSON
-                this.jsonData = json // Asigna el JSON al array
-                console.log(this.jsonData) // Muestra el JSON en la consola
-                const headers = json.slice(0)
-                console.log(headers)
+                const wb = XLSX.read(abuf, { type: 'array' })
+                const ws = wb.Sheets[wb.SheetNames[0]]
 
-                // this.importarDocenteExcel(json)
+                // Lee todas las filas como matriz (matriz de arrays)
+                const rows: any[][] = XLSX.utils.sheet_to_json(ws, {
+                    header: 1,
+                })
 
-                if (json.length > 0) {
-                    this.headers = json[0] as string[] // Extrae los encabezados
-                    this.jsonData = json.slice(1).map((row) => {
+                console.log('Todas las filas:', rows)
+
+                const headerRowIndex = 4 // Fila 5 (base 0)
+                if (rows.length > headerRowIndex) {
+                    this.headers = rows[headerRowIndex] // Fila 4 como cabecera
+                    const dataRows = rows.slice(headerRowIndex + 1) // Filas siguientes
+
+                    // Convierte filas en objetos usando la cabecera
+                    this.jsonData = dataRows.map((row) => {
+                        //this.data1 = dataRows.map(row => {
                         const obj: any = {}
                         this.headers.forEach((header, index) => {
                             obj[header] = row[index]
                         })
                         return obj
                     })
+
+                    this.extraerNexus(this.jsonData)
+
+                    // Obtener registros (solo los valores, como arrays)
+                    // this.jsonData = nexus.map(obj => Object.values(obj));
+
+                    console.log('Encabezados:', this.headers)
+                    console.log('Datos JSON:', this.jsonData)
+                } else {
+                    console.warn('No hay suficientes filas en el archivo.')
                 }
             }
 
-            reader.readAsArrayBuffer(file) // Lee el archivo como un array buffer
+            reader.readAsArrayBuffer(file)
         }
+    }
+
+    extraerNexus(lista: any) {
+        const nexus = lista.map((element: any) => {
+            return {
+                'NOMBRE DE LA INSTITUCION EDUCATIVA':
+                    element['NOMBRE DE LA INSTITUCION EDUCATIVA'],
+                JEC: element['JEC'],
+                'TIPO DE TRABAJADOR': element['TIPO DE TRABAJADOR'],
+                'SUB-TIPO DE TRABAJADOR': element['SUB-TIPO DE TRABAJADOR'],
+                CARGO: element['CARGO'],
+                'SITUACION LABORAL': element['SITUACION LABORAL'],
+                'MOTIVO DE VACANTE': element['MOTIVO DE VACANTE'],
+                'DESCRIPCION ESCALA': element['DESCRIPCION ESCALA'],
+                'JORNADA LABORAL': element['JORNADA LABORAL'],
+                ESTADO: element['ESTADO'],
+                'FECHA DE INICIO': element['FECHA DE INICIO'],
+                'FECHA DE TERMINO': element['FECHA DE TERMINO'],
+                'FECHA DE INGRESO NOMB.': element['FECHA DE INGRESO NOMB.'],
+                'DOCUMENTO DE IDENTIDAD': element['DOCUMENTO DE IDENTIDAD'],
+                'FECHA DE NACIMIENTO': element['FECHA DE NACIMIENTO'],
+                SEXO: element['SEXO'],
+                'APELLIDO PATERNO': element['APELLIDO PATERNO'],
+                'APELLIDO MATERNO': element['APELLIDO MATERNO'],
+                NOMBRES: element['NOMBRES'],
+                CELULAR: element['CELULAR'],
+                EMAIL: element['EMAIL'],
+            }
+        })
+        // Obtener cabecera (una sola vez desde el primer objeto)
+        // Obtener cabecera
+        this.headers = nexus.length > 0 ? Object.keys(nexus[0]) : []
+
+        // Obtener solo los valores (array de arrays)
+        const dataRows2 = nexus.map((obj) => Object.values(obj))
+
+        // Convertir nuevamente a objetos usando cabeceras
+        this.jsonData = dataRows2.map((row) => {
+            const obj: any = {}
+            this.headers.forEach((header, index) => {
+                obj[header] = row[index]
+            })
+            return obj
+        })
+        console.log('Nexus:', nexus)
     }
 
     importarDocenteExcel(data: any) {
@@ -158,6 +245,23 @@ export class ImportarDatosComponent implements OnInit {
                 },
             })
     }
+
+    convertirExcelFecha(valor: any): string | null {
+        if (typeof valor === 'number') {
+            const baseDate = new Date(1899, 11, 30) // Excel base date (1900-01-00)
+            const result = new Date(
+                baseDate.getTime() + valor * 24 * 60 * 60 * 1000
+            )
+            // Formato inglés: yyyy-MM-dd
+            return result.toISOString().split('T')[0]
+        } else if (typeof valor === 'string') {
+            // Si ya es string y está en formato fecha, lo puedes devolver o parsear
+            return valor
+        } else {
+            return null
+        }
+    }
+
     selectTabla() {
         const option: number = this.form.value.iTabla
         alert(option)

@@ -88,13 +88,13 @@
                             <div class="col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
-                                        >Sector</p-inputGroupAddon
+                                        >Gestión</p-inputGroupAddon
                                     >
                                     <p-dropdown
                                         [options]="tipo_sectores"
                                         [showClear]="true"
                                         formControlName="iTipoSectorId"
-                                        placeholder="Seleccione un sector"
+                                        placeholder="Seleccione un tipo de gestión"
                                         styleClass="group-element"
                                         [appendTo]="'body'"
                                     ></p-dropdown>
@@ -216,11 +216,24 @@
 
     <p-tabView>
         <p-tabPanel>
+            <ng-template pTemplate="header"> Comparativa </ng-template>
+            <app-table-primeng
+                [columnas]="columns_niveles"
+                [showCaption]="false"
+                [data]="niveles"
+                [showPaginator]="false"
+                [showSortIcon]="false"
+                [(selectedRowData)]="selectedItems"
+                [actions]="actions"
+            >
+            </app-table-primeng>
+        </p-tabPanel>
+        <p-tabPanel>
             <ng-template pTemplate="header"> Evaluación 1 </ng-template>
             <app-table-primeng
-                [columnas]="columns_estudiantes"
+                [columnas]="columns_1"
                 [showCaption]="false"
-                [data]="resultados"
+                [data]="resultados1"
                 (accionBtnItem)="accionBtnItemTable($event)"
                 [showPaginator]="true"
                 [showSortIcon]="false"
@@ -232,22 +245,10 @@
         <p-tabPanel>
             <ng-template pTemplate="header"> Evaluación 2 </ng-template>
             <app-table-primeng
-                [columnas]="columns_resumen"
+                [columnas]="columns_2"
                 [showCaption]="false"
                 [enableCellSelection]="false"
-                [data]="resumen"
-                [showPaginator]="false"
-                [showSortIcon]="false"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            />
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header"> Comparativa </ng-template>
-            <app-table-primeng
-                [columnas]="columns_matriz"
-                [showCaption]="false"
-                [data]="matriz"
+                [data]="resultados2"
                 [showPaginator]="false"
                 [showSortIcon]="false"
                 [(selectedRowData)]="selectedItems"

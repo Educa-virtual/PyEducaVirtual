@@ -118,26 +118,16 @@ export class InformesEreComponent implements OnInit {
                     data?.tipo_sectores
                 )
                 this.ugeles = this.datosInformes.getUgeles(data?.ugeles)
-
-                this.datosInformes.getNivelesTipos(data?.nivel_tipos)
-                this.datosInformes.getNivelesGrados(data?.nivel_grados)
-                this.datosInformes.getAreas(data?.areas)
-                this.datosInformes.getInstitucionesEducativas(
+                this.nivel_tipos = this.datosInformes.getNivelesTipos(
+                    data?.nivel_tipos
+                )
+                this.ies = this.datosInformes.getInstitucionesEducativas(
                     data?.instituciones_educativas
                 )
+                this.datosInformes.getNivelesGrados(data?.nivel_grados)
+                this.datosInformes.getAreas(data?.areas)
             })
 
-        this.formFiltros
-            .get('iEvaluacionId')
-            .valueChanges.subscribe((value) => {
-                this.formFiltros.get('iNivelTipoId')?.setValue(null)
-                this.nivel_tipos = null
-                this.filterNivelesTipos(value)
-
-                this.formFiltros.get('iIieeId')?.setValue(null)
-                this.ies = null
-                this.filterInstitucionesEducativas()
-            })
         this.formFiltros.get('iNivelTipoId').valueChanges.subscribe((value) => {
             this.formFiltros.get('iNivelGradoId')?.setValue(null)
             this.nivel_grados = null
@@ -173,8 +163,8 @@ export class InformesEreComponent implements OnInit {
         })
     }
 
-    filterNivelesTipos(iEvaluacionId: number) {
-        this.nivel_tipos = this.datosInformes.filterNivelesTipos(iEvaluacionId)
+    filterNivelesTipos() {
+        this.nivel_tipos = this.datosInformes.filterNivelesTipos()
     }
 
     filterNivelesGrados(iNivelTipoId: number) {

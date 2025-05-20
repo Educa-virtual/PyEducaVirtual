@@ -30,12 +30,12 @@ export class InformesCompararEreComponent implements OnInit {
     options_bar: ChartOptions
     hide_filters: boolean = false
 
-    resultados: Array<object>
-    resumen: Array<object>
-    matriz: Array<object>
-    promedio: Array<object>
+    resultados1: Array<object>
+    resultados2: Array<object>
+    niveles1: Array<object>
+    niveles2: Array<object>
     niveles: Array<object>
-    agrupado: Array<object>
+    promedio: Array<object>
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
@@ -119,24 +119,17 @@ export class InformesCompararEreComponent implements OnInit {
                     data?.tipo_sectores
                 )
                 this.ugeles = this.datosInformes.getUgeles(data?.ugeles)
-
-                this.datosInformes.getNivelesTipos(data?.nivel_tipos)
-                this.datosInformes.getNivelesGrados(data?.nivel_grados)
-                this.datosInformes.getAreas(data?.areas)
-                this.datosInformes.getInstitucionesEducativas(
+                this.nivel_tipos = this.datosInformes.getNivelesTipos(
+                    data?.nivel_tipos
+                )
+                this.ies = this.datosInformes.getInstitucionesEducativas(
                     data?.instituciones_educativas
                 )
+
+                this.datosInformes.getNivelesGrados(data?.nivel_grados)
+                this.datosInformes.getAreas(data?.areas)
             })
 
-        this.formFiltros.get('iEvaluacion1').valueChanges.subscribe((value) => {
-            this.formFiltros.get('iNivelTipoId')?.setValue(null)
-            this.nivel_tipos = null
-            this.filterNivelesTipos(value)
-
-            this.formFiltros.get('iIieeId')?.setValue(null)
-            this.ies = null
-            this.filterInstitucionesEducativas()
-        })
         this.formFiltros.get('iNivelTipoId').valueChanges.subscribe((value) => {
             this.formFiltros.get('iNivelGradoId')?.setValue(null)
             this.nivel_grados = null
@@ -172,8 +165,8 @@ export class InformesCompararEreComponent implements OnInit {
         })
     }
 
-    filterNivelesTipos(iEvaluacion1: number) {
-        this.nivel_tipos = this.datosInformes.filterNivelesTipos(iEvaluacion1)
+    filterNivelesTipos() {
+        this.nivel_tipos = this.datosInformes.filterNivelesTipos()
     }
 
     filterNivelesGrados(iNivelTipoId: number) {
@@ -228,36 +221,15 @@ export class InformesCompararEreComponent implements OnInit {
             return
         }
         this.datosInformes
-            .obtenerInformeResumen(this.formFiltros.value)
+            .obtenerInformeComparacion(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
                     this.hide_filters = true
-                    this.resultados = data.data[1]
-                    this.niveles = data.data[2]
-                    this.resumen = data.data[3]
-                    this.matriz = data.data[4]
-                    this.mostrarEstadisticaNivel()
-                    this.generarColumnas(this.resumen)
-                    if (this.es_especialista) {
-                        this.agrupado = data.data[5]
-                        this.agrupado = this.agrupado.map((item: any) => {
-                            let sumatoria = 0
-                            this.niveles.forEach((nivel: any) => {
-                                sumatoria += Number(item[nivel.nivel_logro_id])
-                            })
-                            this.niveles.forEach((nivel: any) => {
-                                item[nivel.nivel_logro_id] = Number(
-                                    (Number(item[nivel.nivel_logro_id]) /
-                                        sumatoria) *
-                                        100
-                                ).toFixed(2)
-                            })
-                            item.total = sumatoria
-                            return item
-                        })
-                        this.generarColumnasAgrupado()
-                    }
-                    this.mostrarEstadisticaPregunta()
+                    this.resultados1 = data.data[1]
+                    this.niveles1 = data.data[2]
+                    this.resultados2 = data.data[3]
+                    this.niveles2 = data.data[4]
+                    this.combinarNiveles()
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
@@ -273,8 +245,41 @@ export class InformesCompararEreComponent implements OnInit {
             })
     }
 
+    combinarNiveles() {
+        const niveles = this.niveles1.map((item: any) => item.nivel_logro)
+        const valores1 = this.niveles1.map((item: any) => item.cantidad)
+        const valores2 = this.niveles2.map((item: any) => item.cantidad)
+
+        const total1 = valores1.reduce((acc, cur) => Number(acc) + Number(cur))
+        const total2 = valores2.reduce((acc, cur) => Number(acc) + Number(cur))
+
+        const porcentajes1 = valores1.map((valor) =>
+            ((Number(valor) / Number(total1)) * 100).toFixed(2)
+        )
+        const porcentajes2 = valores2.map((valor) =>
+            ((Number(valor) / Number(total2)) * 100).toFixed(2)
+        )
+
+        const data = []
+        for (let i = 0; i < niveles.length; i++) {
+            data.push({
+                nivel: niveles[i],
+                valor1: valores1[i],
+                porcentaje1: porcentajes1[i] + '%',
+                valor2: valores2[i],
+                porcentaje2: porcentajes2[i] + '%',
+            })
+        }
+        this.niveles = data
+    }
+
     mostrarEstadisticaNivel() {
-        if (!this.resultados || this.resultados.length == 0) {
+        if (
+            !this.resultados1 ||
+            this.resultados1.length == 0 ||
+            !this.resultados2 ||
+            this.resultados2.length == 0
+        ) {
             this.hay_resultados = false
             this.promedio = []
             return
@@ -285,10 +290,10 @@ export class InformesCompararEreComponent implements OnInit {
 
         this.hay_resultados = true
 
-        const niveles_nombres = this.niveles.map(
+        const niveles_nombres = this.niveles1.map(
             (item: any) => item.nivel_logro
         )
-        const niveles_valores = this.niveles.map((item: any) => item.cantidad)
+        const niveles_valores = this.niveles1.map((item: any) => item.cantidad)
         const total = niveles_valores.reduce((a, b) => Number(a) + Number(b), 0)
 
         this.data_doughnut = {
@@ -332,182 +337,6 @@ export class InformesCompararEreComponent implements OnInit {
         }
 
         this.mostrarPromedio(niveles_nombres, niveles_valores)
-    }
-
-    generarColumnas(data: any) {
-        if (data.length == 0) {
-            return
-        }
-        const columnas = [
-            {
-                type: 'text',
-                width: '1rem',
-                field: 'metrica',
-                header: 'Items',
-                text_header: 'left',
-                text: 'left',
-            },
-        ]
-        for (let col = 1, len = Object.keys(data[0]).length; col < len; col++) {
-            columnas.push({
-                type: 'text',
-                width: '1rem',
-                field: `${col}`,
-                header: `${col}`,
-                text_header: 'center',
-                text: 'left',
-            })
-        }
-        this.columns_resumen = columnas
-    }
-
-    generarColumnasAgrupado() {
-        if (this.niveles.length == 0) {
-            return
-        }
-        const columnas = [
-            {
-                type: 'item',
-                width: '5%',
-                field: 'item',
-                header: '#',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '20%',
-                field: 'agrupado',
-                header: 'IE',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'ugel',
-                header: 'UGEL',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'distrito',
-                header: 'Distrito',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'total',
-                header: 'Total',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'puntaje',
-                header: 'Puntaje',
-                text_header: 'left',
-                text: 'left',
-            },
-        ]
-        this.niveles.forEach((item: any) => {
-            columnas.push({
-                type: 'text',
-                width: '1rem',
-                field: `${item.nivel_logro_id}`,
-                header: `% ${item.nivel_logro}`,
-                text_header: 'center',
-                text: 'center',
-            })
-        })
-        this.columns_group = columnas
-    }
-
-    mostrarEstadisticaPregunta() {
-        if (this.resumen.length == 0) {
-            return
-        }
-
-        const documentStyle = getComputedStyle(document.documentElement)
-        const textColor = documentStyle.getPropertyValue('--text-color')
-
-        const preguntas = []
-        const aciertos = []
-        const fila_aciertos = this.resumen.findIndex(
-            (item: any) => item.metrica == '% DE ACIERTOS'
-        )
-        const desaciertos = []
-        const fila_desaciertos = this.resumen.findIndex(
-            (item: any) => item.metrica == '% DE DESACIERTOS'
-        )
-        const blancos = []
-        const fila_blancos = this.resumen.findIndex(
-            (item: any) => item.metrica == '% DE BLANCOS'
-        )
-        for (let i = 1; i < Object.keys(this.resumen[0]).length; i++) {
-            preguntas.push(i)
-            aciertos.push(this.resumen[fila_aciertos][i])
-            desaciertos.push(this.resumen[fila_desaciertos][i])
-            blancos.push(this.resumen[fila_blancos][i])
-        }
-
-        this.data_bar = {
-            labels: preguntas,
-            datasets: [
-                {
-                    label: '% DE ACIERTOS',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--blue-500'),
-                    hoverBackgroundColor:
-                        documentStyle.getPropertyValue('--blue-400'),
-                    data: aciertos,
-                },
-                {
-                    label: '% DE DESACIERTOS',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--red-500'),
-                    hoverBackgrounfColor:
-                        documentStyle.getPropertyValue('--red-400'),
-                    data: desaciertos,
-                },
-                {
-                    label: '% DE BLANCOS',
-                    backgroundColor:
-                        documentStyle.getPropertyValue('--yellow-500'),
-                    hoverBackgroundColor:
-                        documentStyle.getPropertyValue('--yellow-400'),
-                    data: blancos,
-                },
-            ],
-        }
-
-        this.options_bar = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: textColor,
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        stepSize: 1,
-                    },
-                },
-                y: {
-                    max: 100,
-                },
-            },
-        }
     }
 
     mostrarPromedio(niveles, valores) {
@@ -594,7 +423,7 @@ export class InformesCompararEreComponent implements OnInit {
 
     columns = []
 
-    columns_estudiantes = [
+    columns_1 = [
         {
             type: 'item',
             width: '5%',
@@ -669,9 +498,9 @@ export class InformesCompararEreComponent implements OnInit {
         },
     ]
 
-    columns_group = [
+    columns_2 = [
         {
-            type: 'text',
+            type: 'item',
             width: '5%',
             field: 'item',
             header: '#',
@@ -680,17 +509,9 @@ export class InformesCompararEreComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '20%',
-            field: 'agrupado',
-            header: 'IE',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
             width: '10%',
-            field: 'ugel',
-            header: 'UGEL',
+            field: 'cod_ie',
+            header: 'I.E.',
             text_header: 'left',
             text: 'left',
         },
@@ -698,118 +519,24 @@ export class InformesCompararEreComponent implements OnInit {
             type: 'text',
             width: '10%',
             field: 'distrito',
-            header: 'Distrito',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'total',
-            header: 'Total',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'puntaje',
-            header: 'Puntaje',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'nivel_logro',
-            header: 'Nivel',
-            text_header: 'left',
-            text: 'left',
-        },
-    ]
-
-    columns_resumen = [
-        {
-            type: 'text',
-            width: '50%',
-            field: 'metrica',
-            header: 'ITEMS',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'pregunta_1',
-            header: '1',
+            header: 'DISTRITO',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10%',
-            field: 'pregunta_2',
-            header: '2',
+            field: 'seccion',
+            header: 'SECCIÓN',
             text_header: 'center',
             text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'pregunta_3',
-            header: '3',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'pregunta_4',
-            header: '4',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'pregunta_5',
-            header: '5',
-            text_header: 'center',
-            text: 'center',
-        },
-    ]
-
-    columns_matriz = [
-        {
-            type: 'text',
-            width: '5%',
-            field: 'pregunta_nro',
-            header: '#',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '15%',
-            field: 'competencia',
-            header: 'COMPETENCIA',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '15%',
-            field: 'capacidad',
-            header: 'CAPACIDAD',
-            text_header: 'left',
-            text: 'left',
         },
         {
             type: 'text',
             width: '25%',
-            field: 'desempeno',
-            header: 'DESEMPEÑO',
-            text_header: 'left',
+            field: 'estudiante',
+            header: 'ESTUDIANTE',
+            text_header: 'center',
             text: 'left',
         },
         {
@@ -817,7 +544,7 @@ export class InformesCompararEreComponent implements OnInit {
             width: '10%',
             field: 'aciertos',
             header: 'ACIERTOS',
-            text_header: 'left',
+            text_header: 'center',
             text: 'center',
         },
         {
@@ -825,28 +552,28 @@ export class InformesCompararEreComponent implements OnInit {
             width: '10%',
             field: 'desaciertos',
             header: 'DESACIERTOS',
-            text_header: 'left',
+            text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10%',
-            field: 'porcentaje_aciertos',
-            header: '% DE ACIERTOS',
-            text_header: 'left',
+            field: 'blancos',
+            header: 'BLANCOS',
+            text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10%',
-            field: 'porcentaje_desaciertos',
-            header: '% DE DESACIERTOS',
-            text_header: 'left',
+            field: 'nivel_logro',
+            header: 'Nivel de logro',
+            text_header: 'center',
             text: 'center',
         },
     ]
 
-    columns_promedio = [
+    columns_niveles = [
         {
             type: 'text',
             width: '15rem',
@@ -858,7 +585,7 @@ export class InformesCompararEreComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'valor',
+            field: 'valor1',
             header: 'NÚMERO',
             text_header: 'center',
             text: 'center',
@@ -866,7 +593,23 @@ export class InformesCompararEreComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'porcentaje',
+            field: 'porcentaje1',
+            header: 'PORCENTAJE',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'valor2',
+            header: 'NÚMERO',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'porcentaje2',
             header: 'PORCENTAJE',
             text_header: 'center',
             text: 'center',

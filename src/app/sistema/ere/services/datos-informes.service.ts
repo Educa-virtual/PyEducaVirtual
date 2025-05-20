@@ -91,21 +91,14 @@ export class DatosInformesService {
             this.nivel_tipos = items.map((nivel) => ({
                 value: nivel.iNivelTipoId,
                 label: nivel.cNivelTipoNombre,
-                iEvaluacionId: nivel.iEvaluacionId,
             }))
             return this.nivel_tipos
         }
         return this.nivel_tipos
     }
 
-    filterNivelesTipos(iEvaluacionId: any) {
-        if (!iEvaluacionId) return null
-        return this.nivel_tipos.filter((nivel_tipo: any) => {
-            if (nivel_tipo.iEvaluacionId === iEvaluacionId) {
-                return nivel_tipo
-            }
-            return null
-        })
+    filterNivelesTipos() {
+        return this.nivel_tipos
     }
 
     getNivelesGrados(data: any) {
@@ -229,24 +222,8 @@ export class DatosInformesService {
         iUgelId: any
     ) {
         let ies_tmp: Array<object> = this.instituciones_educativas
-        if (!iEvaluacionId || !iNivelTipoId) {
+        if (!iNivelTipoId) {
             return null
-        }
-        if (iEvaluacionId) {
-            ies_tmp = ies_tmp.filter((ie: any) => {
-                if (!ie.evaluaciones) return null
-                const esta_en_evaluacion = ie.evaluaciones.filter(
-                    (evaluacion: any) => {
-                        if (evaluacion.iEvaluacionId == iEvaluacionId) {
-                            return evaluacion
-                        }
-                        return null
-                    }
-                )
-                if (esta_en_evaluacion.length > 0) {
-                    return ie
-                }
-            })
         }
         if (iNivelTipoId) {
             ies_tmp = ies_tmp.filter((ie: any) => {
@@ -303,6 +280,13 @@ export class DatosInformesService {
     obtenerInformeResumen(data: any) {
         return this.http.post(
             `${baseUrl}/ere/reportes/obtenerInformeResumen`,
+            data
+        )
+    }
+
+    obtenerInformeComparacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/obtenerInformeComparacion`,
             data
         )
     }

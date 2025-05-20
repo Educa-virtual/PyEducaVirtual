@@ -1,6 +1,7 @@
 import { TableColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { CurriculasComponent } from '../../curriculas.component'
 import { payload } from '../types/cursos'
+import { Validators } from '@angular/forms'
 
 export const cursosColumns: TableColumn = {
     inTableColumnsGroup: [
@@ -65,7 +66,7 @@ export const cursosColumns: TableColumn = {
         {
             type: 'estado-activo',
             width: '5rem',
-            field: 'iCursoEstado',
+            field: 'iEstado',
             header: 'Estado',
             text_header: 'center',
             text: 'center',
@@ -81,11 +82,10 @@ export const cursosColumns: TableColumn = {
     ],
 }
 
-export function accionBtnContainerCursos(
-    this: CurriculasComponent,
-    { accion }
-) {
+export function accionBtnCursos(this: CurriculasComponent, { accion, item }) {
     this.forms.cursos.reset()
+
+    clearValidators.call(this)
 
     switch (accion) {
         case 'agregar':
@@ -94,20 +94,9 @@ export function accionBtnContainerCursos(
                 title: 'Agregar curso',
                 visible: true,
             }
+            addValidators.call(this)
+
             break
-
-        default:
-            break
-    }
-}
-
-export function cursosAccionBtnTable(
-    this: CurriculasComponent,
-    { accion, item }
-) {
-    console.log(accion)
-
-    switch (accion) {
         case 'editar':
             this.forms.cursos.reset()
 
@@ -118,6 +107,9 @@ export function cursosAccionBtnTable(
                 title: 'Editar curso',
                 visible: true,
             }
+
+            console.log('item')
+            console.log(item)
 
             setValues.call(this, item)
 
@@ -143,7 +135,8 @@ export function cursosAccionBtnTable(
 }
 
 function setValues(this: CurriculasComponent, item) {
-    this.forms.cursos.setValue({
+    this.forms.cursos.patchValue({
+        iCursoId: item.iCursoId,
         iCurrId: item.iCurrId,
         iTipoCursoId: item.iTipoCursoId,
         cCursoNombre: item.cCursoNombre,
@@ -153,34 +146,67 @@ function setValues(this: CurriculasComponent, item) {
         nCursoTotalCreditos: item.nCursoTotalCreditos,
         cCursoPerfilDocente: item.cCursoPerfilDocente,
         iCursoTotalHoras: item.iCursoTotalHoras,
-        iCursoEstado: item.iCursoEstado,
+        iEstado: Number(item.iEstado),
         cCursoImagen: item.cCursoImagen,
     })
 }
 
-export function cursosSave(this: CurriculasComponent) {
-    const formCurso = this.forms.curriculas.value
+export function cursosSave(this: CurriculasComponent, item) {
+    console.log('item')
+    console.log(item)
 
     const payload: payload = {
-        iCurrId: formCurso.iCurrId,
-        iTipoCursoId: formCurso.iTipoCursoId,
-        cCursoNombre: formCurso.cCursoNombre,
-        nCursoCredTeoria: formCurso.nCursoCredTeoria,
-        nCursoCredPractica: formCurso.nCursoCredPractica,
-        cCursoDescription: formCurso.cCursoDescription,
-        nCursoTotalCreditos: formCurso.nCursoTotalCreditos,
-        cCursoPerfilDocente: formCurso.cCursoPerfilDocente,
-        iCursoTotalHoras: formCurso.iCursoTotalHoras,
-        iCursoEstado: formCurso.iCursoEstado,
-        cCursoImagen: formCurso.cCursoImagen,
+        iCurrId: item.iCurrId,
+        iTipoCursoId: item.iTipoCursoId,
+        cCursoNombre: item.cCursoNombre,
+        nCursoCredTeoria: item.nCursoCredTeoria,
+        nCursoCredPractica: item.nCursoCredPractica,
+        cCursoDescripcion: item.cCursoDescripcion,
+        nCursoTotalCreditos: item.nCursoTotalCreditos,
+        cCursoPerfilDocente: item.cCursoPerfilDocente,
+        iCursoTotalHoras: item.iCursoTotalHoras,
+        iEstado: Number(item.iEstado),
+        cCursoImagen: item.cCursoImagen,
     }
 
-    if (!formCurso.iCurrId) {
+    if (!item.iCursoId) {
         return this.cursosService.insCursos(payload)
     } else {
-        return this.cursosService.insCursos({
+        return this.cursosService.updCursos({
             ...payload,
-            iCursoId: formCurso.iCursoId,
+            iCursoId: item.iCursoId,
         })
     }
+}
+
+export function validateFormCursos(this: CurriculasComponent): boolean {
+    let isValid = true
+
+    fieldsValidate.forEach((field) => {
+        const control = this.forms.cursos.get(field as string)
+        control?.markAsTouched()
+        control?.markAsDirty()
+
+        if (control && control.invalid) {
+            isValid = false
+        }
+    })
+
+    return isValid
+}
+
+const fieldsValidate: (keyof payload)[] = ['cCursoNombre']
+
+function addValidators(this: CurriculasComponent) {
+    fieldsValidate.forEach((field) => {
+        this.forms.cursos.get(field).setValidators([Validators.required])
+        this.forms.cursos.get(field).updateValueAndValidity()
+    })
+}
+
+function clearValidators(this: CurriculasComponent) {
+    fieldsValidate.forEach((field) => {
+        this.forms.cursos.get(field).clearValidators()
+        this.forms.cursos.get(field).updateValueAndValidity()
+    })
 }

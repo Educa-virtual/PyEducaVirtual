@@ -5,10 +5,10 @@ export interface payload {
     cCursoNombre: string
     nCursoCredTeoria: string
     nCursoCredPractica: string
-    cCursoDescription: string
+    cCursoDescripcion: string
     nCursoTotalCreditos: string
     cCursoPerfilDocente: string
     iCursoTotalHoras: string
-    iCursoEstado: string
+    iEstado: number
     cCursoImagen: string
 }

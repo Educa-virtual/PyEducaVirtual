@@ -1,6 +1,7 @@
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { CurriculasComponent } from '../../curriculas.component'
 import { payload } from '../types/curricula'
+import { Validators } from '@angular/forms'
 
 export const curriculasColumns: IColumn[] = [
     {
@@ -58,6 +59,9 @@ export function accionBtnContainerCurriculas(
     { accion }
 ) {
     this.forms.curriculas.reset()
+    this.forms.cursos.reset()
+
+    clearValidators.call(this)
 
     switch (accion) {
         case 'agregar':
@@ -66,6 +70,9 @@ export function accionBtnContainerCurriculas(
                 title: 'Agregar Curricula',
                 visible: true,
             }
+
+            addValidators.call(this)
+
             break
 
         default:
@@ -73,14 +80,30 @@ export function accionBtnContainerCurriculas(
     }
 }
 
-export function curriculasAccionBtnTable(
+export function accionBtnCurriculas(
     this: CurriculasComponent,
     { accion, item }
 ) {
-    // this.forms.curriculas.reset()
+    this.forms.curriculas.reset()
+    this.forms.cursos.reset()
+
+    clearValidators.call(this)
     this.forms.assignCursosInNivelesGrados.reset()
 
+    clearValidators.call(this)
+
     switch (accion) {
+        case 'agregar':
+            this.dialogs.curriculas = {
+                ...this.dialogs.curriculas,
+                title: 'Agregar Curricula',
+                visible: true,
+            }
+
+            addValidators.call(this)
+
+            break
+
         case 'editar':
             this.dialogs.curriculas = {
                 ...this.dialogs.curriculas,
@@ -130,12 +153,6 @@ export function curriculasAccionBtnTable(
 }
 
 function setValues(this: CurriculasComponent, item) {
-    console.log('item.cCurrPerfilEgresado')
-    console.log(item.cCurrPerfilEgresado)
-
-    this.forms.curriculas.get('cCurrPerfilEgresado').enabled
-    this.forms.curriculas.get('cCurrPerfilEgresado').enable()
-
     this.forms.curriculas.patchValue({
         iCurrId: item.iCurrId,
         iModalServId: item.iModalServId,
@@ -181,4 +198,36 @@ export function curriculasSave(this: CurriculasComponent) {
             iCurrId: formCurricula.iCurrId,
         })
     }
+}
+
+export function validateFormCurricula(this: CurriculasComponent): boolean {
+    let isValid = true
+
+    fieldsValidate.forEach((field) => {
+        const control = this.forms.curriculas.get(field as string)
+        control?.markAsTouched()
+        control?.markAsDirty()
+
+        if (control && control.invalid) {
+            isValid = false
+        }
+    })
+
+    return isValid
+}
+
+const fieldsValidate: (keyof payload)[] = ['cCurrDescripcion']
+
+function addValidators(this: CurriculasComponent) {
+    fieldsValidate.forEach((field) => {
+        this.forms.curriculas.get(field).setValidators([Validators.required])
+        this.forms.curriculas.get(field).updateValueAndValidity()
+    })
+}
+
+function clearValidators(this: CurriculasComponent) {
+    fieldsValidate.forEach((field) => {
+        this.forms.curriculas.get(field).clearValidators()
+        this.forms.curriculas.get(field).updateValueAndValidity()
+    })
 }

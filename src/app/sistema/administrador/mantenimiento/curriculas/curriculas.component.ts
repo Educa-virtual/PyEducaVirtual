@@ -12,27 +12,26 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import {
-    accionBtnContainerCurriculas,
-    curriculasAccionBtnTable,
+    accionBtnCurriculas,
     curriculasColumns,
     curriculasSave,
+    validateFormCurricula,
 } from './config/table/curriculas'
 import { DialogModule } from 'primeng/dialog'
 import { FormBuilder, Validators } from '@angular/forms'
 import { InputTextModule } from 'primeng/inputtext'
 import { DropdownModule } from 'primeng/dropdown'
-import { EditorModule } from 'primeng/editor'
 import { ToggleButtonModule } from 'primeng/togglebutton'
 import { CurriculasService } from './config/service/curriculas.service'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { DividerModule } from 'primeng/divider'
 import {
-    accionBtnContainerCursos,
-    cursosAccionBtnTable,
+    accionBtnCursos,
     cursosColumns,
     cursosSave,
+    validateFormCursos,
 } from './config/table/cursos'
-import { Observable } from 'rxjs'
+import { concatMap, iif, Observable, of, tap, throwError } from 'rxjs'
 import { CursosService } from './config/service/cursos.service'
 import { ModalidadServicioService } from './config/service/modalidadServicio.service'
 import { FormConfig } from './config/types/forms'
@@ -50,7 +49,7 @@ import { ToastModule } from 'primeng/toast'
 import { FileUploadModule } from 'primeng/fileupload'
 import { ImageModule } from 'primeng/image'
 import { CalendarModule } from 'primeng/calendar'
-import { EditorComponent } from '@tinymce/tinymce-angular'
+import { InputTextareaModule } from 'primeng/inputtextarea'
 
 @Component({
     selector: 'app-curriculas',
@@ -68,7 +67,7 @@ import { EditorComponent } from '@tinymce/tinymce-angular'
         ButtonModule,
         MessagesModule,
         AccordionModule,
-        EditorComponent,
+        InputTextareaModule,
         FileUploadModule,
         ToolbarModule,
         ContainerPageComponent,
@@ -76,7 +75,6 @@ import { EditorComponent } from '@tinymce/tinymce-angular'
         DialogModule,
         InputTextModule,
         DropdownModule,
-        EditorModule,
         ToggleButtonModule,
         CalendarModule,
     ],
@@ -90,34 +88,34 @@ export class CurriculasComponent implements OnInit {
         callback()
     }
 
-    mensajes: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
-        menubar: false,
+    // mensajes: EditorComponent['init'] = {
+    //     base_url: '/tinymce', // Root for resources
+    //     suffix: '.min', // Suffix to use when loading resources
+    //     menubar: false,
 
-        // selector: 'textarea',
-        // setup: (editor) => {
-        //     editor.on('blur', (e) =>
-        //         this.actualizar(e, 'cSilaboDescripcionCurso')
-        //     )
-        // },
-        placeholder: 'Escribe aqui...',
-        height: 250,
-        plugins: 'lists image table',
-        toolbar: 'bold italic underline strikethrough',
-        editable_root: true,
-    }
+    //     // selector: 'textarea',
+    //     // setup: (editor) => {
+    //     //     editor.on('blur', (e) =>
+    //     //         this.actualizar(e, 'cSilaboDescripcionCurso')
+    //     //     )
+    //     // },
+    //     placeholder: 'Escribe aqui...',
+    //     height: 250,
+    //     plugins: 'lists image table',
+    //     toolbar: 'bold italic underline strikethrough',
+    //     editable_root: true,
+    // }
 
     curriculas = {
         container: {
             actions: [agregar],
-            accionBtnItem: accionBtnContainerCurriculas.bind(this),
+            accionBtnItem: accionBtnCurriculas.bind(this),
         },
         table: {
             columns: curriculasColumns,
             data: [],
             actions: [editar, nivelesCursos],
-            accionBtnItem: curriculasAccionBtnTable.bind(this),
+            accionBtnItem: accionBtnCurriculas.bind(this),
         },
         save: (): Observable<object> => curriculasSave.call(this),
     }
@@ -125,7 +123,7 @@ export class CurriculasComponent implements OnInit {
     cursos = {
         container: {
             actions: [{ ...agregar, disabled: true }],
-            accionBtnItem: accionBtnContainerCursos.bind(this),
+            accionBtnItem: accionBtnCursos.bind(this),
         },
         table: {
             columnsGroup: cursosColumns.inTableColumnsGroup,
@@ -138,9 +136,10 @@ export class CurriculasComponent implements OnInit {
                 core: [editar],
                 nivelesGrados: [assignCursosInNivelesGrados],
             },
-            accionBtnItem: cursosAccionBtnTable.bind(this),
+            accionBtnItem: accionBtnCursos.bind(this),
         },
-        save: (): Observable<object> => cursosSave.call(this),
+        save: (): Observable<object> =>
+            cursosSave.call(this, this.forms.cursos.value),
     }
 
     nivelesGrados = {
@@ -201,22 +200,23 @@ export class CurriculasComponent implements OnInit {
     ) {
         this.forms.curriculas = this.fb.group({
             iCurrId: [''],
-            iModalServId: ['', Validators.required],
-            iCurrNotaMinima: ['', Validators.required],
-            iCurrTotalCreditos: ['', Validators.required],
-            iCurrNroHoras: ['', Validators.required],
-            cCurrPerfilEgresado: ['', Validators.required],
-            cCurrMencion: ['', Validators.required],
-            nCurrPesoProcedimiento: ['', Validators.required],
-            cCurrPesoConceptual: ['', Validators.required],
-            cCurrPesoActitudinal: ['', Validators.required],
+            iModalServId: [''],
+            iCurrNotaMinima: [''],
+            iCurrTotalCreditos: [''],
+            iCurrNroHoras: [''],
+            cCurrPerfilEgresado: [''],
+            cCurrMencion: [''],
+            nCurrPesoProcedimiento: [''],
+            cCurrPesoConceptual: [''],
+            cCurrPesoActitudinal: [''],
             bCurrEsLaVigente: [''],
-            cCurrRsl: ['', Validators.required],
-            dtCurrRsl: ['', Validators.required],
-            cCurrDescripcion: ['', Validators.required],
+            cCurrRsl: [''],
+            dtCurrRsl: [''],
+            cCurrDescripcion: [''],
         })
 
         this.forms.cursos = this.fb.group({
+            iCursoId: [''],
             iCurrId: [''],
             iTipoCursoId: [''],
             cCursoNombre: [''],
@@ -226,7 +226,7 @@ export class CurriculasComponent implements OnInit {
             nCursoTotalCreditos: [''],
             cCursoPerfilDocente: [''],
             iCursoTotalHoras: [''],
-            iCursoEstado: [''],
+            iEstado: [''],
             cCursoImagen: [''],
         })
 
@@ -293,123 +293,65 @@ export class CurriculasComponent implements OnInit {
         })
     }
 
-    showCursos() {
-        this.cursos.table.data = []
-
-        Object.keys(this.forms.curriculas.controls).forEach((field) => {
-            const control = this.forms.curriculas.get(field)
-            control?.markAsTouched() // Marca como tocado (touched)
-            control?.markAsDirty() // Marca como modificado (dirty)
-        })
-
-        this.dialogs.curriculas.expand.cursos = true
-
-        this.cursosService
-            .getCursos(this.forms.curriculas.value.iCurrId)
+    saveCurriculas() {
+        of(null)
+            .pipe(
+                concatMap(() =>
+                    iif(
+                        () => validateFormCurricula.call(this),
+                        this.curriculas.save(),
+                        throwError(() => new Error('Formulario inválido'))
+                    )
+                ),
+                tap((res1) => console.log('save', res1)),
+                concatMap((resCurricula) => {
+                    console.log('resCurricula')
+                    console.log(resCurricula)
+                    return this.curriculasService.getCurriculas()
+                })
+            )
             .subscribe({
                 next: (res: any) => {
-                    console.log(res)
-                    this.cursos.table.data = res.data
+                    this.curriculas.table.data = res.data
                 },
                 error: (err) => {
-                    console.log(err)
+                    console.error(err)
                 },
-                complete: () => {},
+                complete: () => {
+                    this.dialogs.curriculas.visible = false
+                },
             })
-
-        this.cursos.table.data
-    }
-
-    saveCurriculas() {
-        this.curriculas.save().subscribe({
-            next: (res: any) => {
-                console.log(res)
-                this.dialogs.curriculas.visible = false
-                this.obtenerDatosIniciales()
-            },
-            error: (err) => {
-                console.error(err)
-            },
-            complete: () => {},
-        })
     }
 
     saveCursos() {
-        this.cursos.save().subscribe({
-            next: (res: any) => {
-                console.log(res)
-                this.dialogs.cursos.visible = false
-
-                console.log(this.forms.cursos.value)
-
-                this.obtenerDatosIniciales()
-            },
-            error: (err) => {
-                console.error(err)
-            },
-            complete: () => {},
-        })
+        of(null)
+            .pipe(
+                concatMap(() =>
+                    iif(
+                        () => validateFormCursos.call(this),
+                        this.cursos.save(),
+                        throwError(() => new Error('Formulario inválido'))
+                    )
+                ),
+                tap((res1) => console.log('save', res1)),
+                concatMap((resCursos) => {
+                    console.log('resCursos')
+                    console.log(resCursos)
+                    return this.cursosService.getCursos(
+                        this.forms.cursos.value.iCursoId
+                    )
+                })
+            )
+            .subscribe({
+                next: (res: any) => {
+                    this.cursos.table.data = res.data
+                },
+                error: (err) => {
+                    console.error(err)
+                },
+                complete: () => {
+                    this.dialogs.cursos.visible = false
+                },
+            })
     }
-
-    // saveInformation() {
-
-    //     of(null)
-    //         .pipe(
-    //             concatMap(() => {
-    //                 // Insertar datos
-    //                 return this.curriculas.save()
-    //             }),
-    //             concatMap((value: any) => {
-    //                 const curricula = value.data[0]
-
-    //                 if (!this.forms.cursos.value.iCursoId) {
-    //                     return this.cursosService.insCursos({
-    //                         iCurrid: curricula.id,
-    //                         iTipoCursoId: this.forms.cursos.value.iTipoCursoId,
-    //                         cCursoNombre: this.forms.cursos.value.cCursoNombre,
-    //                         nCursoCredTeoria:
-    //                             this.forms.cursos.value.nCursoCredTeoria,
-    //                         nCursoCredPractica:
-    //                             this.forms.cursos.value.nCursoCredPractica,
-    //                         cCursoDescripcion:
-    //                             this.forms.cursos.value.cCursoDescripcion,
-    //                         nCursoTotalCreditos:
-    //                             this.forms.cursos.value.nCursoTotalCreditos,
-    //                         cCursoPerfilDocente:
-    //                             this.forms.cursos.value.cCursoPerfilDocente,
-    //                         iCursoTotalHoras:
-    //                             this.forms.cursos.value.iCursoTotalHoras,
-    //                     })
-    //                 } else {
-    //                     return this.cursosService.insCursos({
-    //                         iCurrid: curricula.id,
-    //                         iTipoCursoId: this.forms.cursos.value.iTipoCursoId,
-    //                         cCursoNombre: this.forms.cursos.value.cCursoNombre,
-    //                         nCursoCredTeoria:
-    //                             this.forms.cursos.value.nCursoCredTeoria,
-    //                         nCursoCredPractica:
-    //                             this.forms.cursos.value.nCursoCredPractica,
-    //                         cCursoDescripcion:
-    //                             this.forms.cursos.value.cCursoDescripcion,
-    //                         nCursoTotalCreditos:
-    //                             this.forms.cursos.value.nCursoTotalCreditos,
-    //                         cCursoPerfilDocente:
-    //                             this.forms.cursos.value.cCursoPerfilDocente,
-    //                         iCursoTotalHoras:
-    //                             this.forms.cursos.value.iCursoTotalHoras,
-    //                     })
-    //                 }
-    //             })
-    //         )
-    //         .subscribe({
-    //             next: (res) => console.log('Resultado final:', res),
-    //             error: (err) => {
-    //                 console.error('Error al inscribir el curso:', err);
-    //             },
-    //             complete: () => {
-    //                 this.dialogVisible.curricula = false
-    //                 this.dialogVisible.cursos = false
-    //             },
-    //         })
-    // }
 }

@@ -9,7 +9,7 @@ const baseUrl = environment.backendApi
     providedIn: 'root',
 })
 export class CursosService {
-    endPoint: string = `${baseUrl}/administrador/addCurriculas`
+    endPoint: string = `${baseUrl}/administrador`
 
     constructor(
         private http: HttpClient,
@@ -35,9 +35,16 @@ export class CursosService {
     }
 
     insCursos(data) {
-        return this.http.post(this.endPoint, {
+        return this.http.post(this.endPoint + '/addCurriculas', {
             json: JSON.stringify(data),
             opcion: 'addCursos',
+        })
+    }
+
+    updCursos(data) {
+        return this.http.put(this.endPoint + '/updCurriculas', {
+            json: JSON.stringify(data),
+            opcion: 'updCursos',
         })
     }
 }

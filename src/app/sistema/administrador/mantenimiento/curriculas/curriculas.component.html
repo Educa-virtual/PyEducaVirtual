@@ -19,20 +19,17 @@
     [maximizable]="true"
     (onShow)="dialog.maximize()"
     appendTo="body"
-    (onHide)="dialogs.curriculas.expand.cursos = false"
     [style]="{ width: '75rem' }"
 >
     <ng-template pTemplate="header">
-        <div
-            class="inline-flex align-items-center justify-content-center gap-2"
-        >
+        <div class="inline-flex align-items-center gap-2">
             <span class="font-bold white-space-nowrap">
                 {{ dialogs.curriculas.title }}
             </span>
         </div>
     </ng-template>
-    <div class="grid h-full mt-4 row-gap-3">
-        <form class="grid h-full col-4" [formGroup]="forms.curriculas">
+    <div class="grid mt-4">
+        <form class="col-4 grid" [formGroup]="forms.curriculas">
             <div class="col-12 grid">
                 <div class="col-10 flex flex-column gap-2">
                     <label for="name">Nombre</label>
@@ -70,6 +67,7 @@
                         styleClass="w-full"
                         [options]="dropdowns.modalidades"
                         optionLabel="name"
+                        [showClear]="true"
                         optionValue="code"
                         appendTo="body"
                         formControlName="iModalServId"
@@ -133,27 +131,18 @@
                 <label class="col-12" for="perfilEgresado"
                     >Perfil de egresado</label
                 >
-                <input
-                    pInputText
-                    id="name"
+                <textarea
+                    rows="5"
+                    maxlength="1500"
+                    pInputTextarea
+                    class="col-12"
                     formControlName="cCurrPerfilEgresado"
-                />
-                <editor
-                    name="texto"
-                    style="width: 100%"
-                    [init]="mensajes"
-                    formControlName="cCurrPerfilEgresado"
-                />
+                ></textarea>
             </div>
 
             <div class="col-12 grid">
-                <div class="col-4">
+                <div class="col-4 flex flex-column gap-2">
                     <label for="pesoProcedimiento">Peso de procedimiento</label>
-                    <!-- <input
-                    pInputText
-
-                    /> -->
-
                     <p-inputNumber
                         inputStyleClass="w-full"
                         inputId="pesoProcedimiento"
@@ -163,7 +152,7 @@
                         formControlName="nCurrPesoProcedimiento"
                     />
                 </div>
-                <div class="col-4">
+                <div class="col-4 flex flex-column gap-2">
                     <label for="pesoConceptual">Peso de conceptual</label>
                     <p-inputNumber
                         inputId="pesoConceptual"
@@ -174,7 +163,7 @@
                         formControlName="cCurrPesoConceptual"
                     />
                 </div>
-                <div class="col-4">
+                <div class="col-4 flex flex-column gap-2">
                     <label for="pesoActitudinal">Peso de actitudinal</label>
                     <p-inputNumber
                         inputId="pesoActitudinal"
@@ -199,14 +188,17 @@
                 </div>
                 <div class="col-6 flex flex-column gap-2">
                     <label for="fechaResolucion">Fecha de la resolución</label>
-                    <p-calendar formControlName="dtCurrRsl" />
+                    <p-calendar
+                        styleClass="w-full"
+                        formControlName="dtCurrRsl"
+                    />
                 </div>
             </div>
         </form>
         <!-- <p-button
                     styleClass="w-full"
                     icon="pi pi-plus"
-                    class="col-12 grid align-content-center justify-content-center gap-3 text-bold text-xl"
+                    class="col-12 grid align-content-center gap-3 text-bold text-xl"
                     label="Cursos"
                 >
                 </p-button> -->
@@ -277,9 +269,7 @@
     [maximizable]="true"
 >
     <ng-template pTemplate="header">
-        <div
-            class="inline-flex align-items-center justify-content-center gap-2"
-        >
+        <div class="inline-flex align-items-center gap-2">
             <span class="font-bold white-space-nowrap">
                 {{ dialogs.cursos.title }}
             </span>
@@ -303,7 +293,7 @@
                         styleClass="w-full"
                         onLabel="Activo"
                         offLabel="Inactivo"
-                        formControlName="iCursoEstado"
+                        formControlName="iEstado"
                     />
                 </div>
             </div>
@@ -375,23 +365,22 @@
             <div class="col-12 grid">
                 <div class="col-12">
                     <label for="fechaResolucion">Descripción</label>
-                    <p-editor
+                    <textarea
+                        rows="5"
+                        pInputTextarea
                         class="col-12"
-                        id="totalCreditos"
-                        styleClass="h-full"
                         formControlName="cCursoDescripcion"
-                        [style]="{ height: '80px' }"
-                    />
+                    ></textarea>
                 </div>
 
                 <div class="col-12">
                     <label for="fechaResolucion">Perfil de docente</label>
-                    <p-editor
+                    <textarea
+                        rows="5"
+                        pInputTextarea
                         class="col-12"
-                        id="totalCreditos"
                         formControlName="cCursoPerfilDocente"
-                        [style]="{ height: '80px' }"
-                    />
+                    ></textarea>
                 </div>
 
                 <div class="col-12">
@@ -449,7 +438,7 @@
                             let-removeFileCallback="removeFileCallback"
                             let-removeUploadedFileCallback="removeUploadedFileCallback"
                         >
-                            <div class="grid justify-content-center">
+                            <div class="grid">
                                 @for (file of files; track file.id) {
                                     <p-image
                                         [src]="file.objectURL"
@@ -463,9 +452,7 @@
                         </ng-template>
                         <ng-template pTemplate="file"> </ng-template>
                         <ng-template pTemplate="empty">
-                            <div
-                                class="flex align-items-center justify-content-center flex-column"
-                            >
+                            <div class="flex align-items-center flex-column">
                                 <i
                                     class="pi pi-cloud-upload border-2 border-circle p-3 text-3xl text-400 border-400"
                                 ></i>
@@ -508,9 +495,7 @@
     [style]="{ width: '75rem' }"
 >
     <ng-template pTemplate="header">
-        <div
-            class="inline-flex align-items-center justify-content-center gap-2"
-        >
+        <div class="inline-flex align-items-center gap-2">
             <span class="font-bold white-space-nowrap">
                 {{ forms.curriculas.value.cCurrDescripcion }}
             </span>

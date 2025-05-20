@@ -171,28 +171,35 @@ export class ImportarDatosComponent implements OnInit {
     extraerNexus(lista: any) {
         const nexus = lista.map((element: any) => {
             return {
-                'NOMBRE DE LA INSTITUCION EDUCATIVA':
-                    element['NOMBRE DE LA INSTITUCION EDUCATIVA'],
-                JEC: element['JEC'],
-                'TIPO DE TRABAJADOR': element['TIPO DE TRABAJADOR'],
-                'SUB-TIPO DE TRABAJADOR': element['SUB-TIPO DE TRABAJADOR'],
-                CARGO: element['CARGO'],
-                'SITUACION LABORAL': element['SITUACION LABORAL'],
-                'MOTIVO DE VACANTE': element['MOTIVO DE VACANTE'],
-                'DESCRIPCION ESCALA': element['DESCRIPCION ESCALA'],
-                'JORNADA LABORAL': element['JORNADA LABORAL'],
-                ESTADO: element['ESTADO'],
-                'FECHA DE INICIO': element['FECHA DE INICIO'],
-                'FECHA DE TERMINO': element['FECHA DE TERMINO'],
-                'FECHA DE INGRESO NOMB.': element['FECHA DE INGRESO NOMB.'],
-                'DOCUMENTO DE IDENTIDAD': element['DOCUMENTO DE IDENTIDAD'],
-                'FECHA DE NACIMIENTO': element['FECHA DE NACIMIENTO'],
-                SEXO: element['SEXO'],
-                'APELLIDO PATERNO': element['APELLIDO PATERNO'],
-                'APELLIDO MATERNO': element['APELLIDO MATERNO'],
-                NOMBRES: element['NOMBRES'],
-                CELULAR: element['CELULAR'],
-                EMAIL: element['EMAIL'],
+                IE: element['NOMBRE DE LA INSTITUCION EDUCATIVA'], //personal_ie
+                JEC: element['JEC'], //personal_ie
+                TIPO_TRABAJADOR: element['TIPO DE TRABAJADOR'], //docente
+                SUB_TIPO_TRABAJADOR: element['SUB-TIPO DE TRABAJADOR'], //docente doc.categoria_docente
+                CARGO: element['CARGO'], //personal_ies  acad.personal_cargos
+                SITUACION: element['SITUACION LABORAL'], //docente doc.condicion_docentes
+                MOTIVO: element['MOTIVO DE VACANTE'], ///personal_ies cMotivo
+                ESCALA: element['DESCRIPCION ESCALA'], //personal_ies cEscala
+                JORNADA: element['JORNADA LABORAL'], //personal_ies  iHorasLabora
+                ESTADO: element['ESTADO'], //docente //personal_ies
+                FECHA_INICIO: this.convertirExcelFecha(
+                    element['FECHA DE INICIO']
+                ), //personal_ies
+                FECHA_TERMINO: this.convertirExcelFecha(
+                    element['FECHA DE TERMINO']
+                ), //personal_ies
+                FECHA_NOMBRAMIENTO: this.convertirExcelFecha(
+                    element['FECHA DE INGRESO NOMB.']
+                ), //docente
+                DOCUMENTO_IDENTIDAD: element['DOCUMENTO DE IDENTIDAD'], //persona
+                FECHA_NACIMIENTO: this.convertirExcelFecha(
+                    element['FECHA DE NACIMIENTO']
+                ), //persona
+                SEXO: element['SEXO'], //persona
+                APELLIDO_PATERNO: element['APELLIDO PATERNO'], //persona
+                APELLIDO_MATERNO: element['APELLIDO MATERNO'], //persona
+                NOMBRES: element['NOMBRES'], //persona
+                CELULAR: element['CELULAR'], //persona
+                EMAIL: element['EMAIL'], //persona
             }
         })
         // Obtener cabecera (una sola vez desde el primer objeto)

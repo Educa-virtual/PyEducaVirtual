@@ -658,7 +658,7 @@ export class PreguntasComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Preguntas',
+                            title: 'Multiple',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                             iOrden: key,
                         })
@@ -692,7 +692,7 @@ export class PreguntasComponent implements OnInit {
                                     }
                                 }
                                 item.title =
-                                    'Pregunta #' +
+                                    'Simple #' +
                                     this.totalPregunta +
                                     ': ' +
                                     (item.cPregunta || '')

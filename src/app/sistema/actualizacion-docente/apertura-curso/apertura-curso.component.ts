@@ -15,6 +15,8 @@ import imagenesRecursos from '@/app/shared/imagenes/recursos'
 import { GalleriaModule } from 'primeng/galleria'
 import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service'
 import { environment } from '@/environments/environment'
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
+import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 
 interface Image {
     id: number
@@ -32,8 +34,12 @@ interface Image {
         ToolbarPrimengComponent,
         TablePrimengComponent,
         GalleriaModule,
+        EditorComponent,
     ],
-    providers: [MessageService],
+    providers: [
+        MessageService,
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
 })
 export class AperturaCursoComponent implements OnInit {
     portada = imagenesRecursos
@@ -54,6 +60,7 @@ export class AperturaCursoComponent implements OnInit {
     iCapacitacionId: string = ''
     responsiveOptions1: any[] | undefined
     showModalHorarios: boolean = false
+    showVistaPrevia: boolean = false
     value!: number //para los dias
     selectedValues: string[] = [] // Se guardarán los valores seleccionados
     instructores: any
@@ -65,6 +72,8 @@ export class AperturaCursoComponent implements OnInit {
         iHoraInicio: string
         iHoraFin: string
     }[] = [] // obtener los datos temporales
+    isDisabled: boolean =
+        this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO
 
     modoFormulario: 'crear' | 'editar' = 'crear'
 
@@ -114,6 +123,34 @@ export class AperturaCursoComponent implements OnInit {
             numVisible: 1,
         },
     ]
+    init: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escriba aquí...',
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'image table',
+        height: 400,
+        editable_root: this.isDisabled,
+    }
+    initEnunciado: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escribe aqui...',
+        height: 1000,
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'image table',
+        editable_root: this.isDisabled,
+    }
 
     ngOnInit() {
         // Obtener los select:
@@ -209,6 +246,16 @@ export class AperturaCursoComponent implements OnInit {
     //
     showHorarios() {
         this.showModalHorarios = true
+    }
+    datosprevios: any
+    // mostrar modal de visualizacion de una vista previa del curso creado
+    showVistaPreviaCurso() {
+        this.showVistaPrevia = true
+        this.datosprevios = this.formNuevaCapacitacion.value
+        console.log('datos previos', this.datosprevios)
+    }
+    cerrarModal() {
+        this.showVistaPrevia = false
     }
 
     // datosTemporales1: { [key: number]: any } = {}; // Almacena datos por cada botón seleccionado

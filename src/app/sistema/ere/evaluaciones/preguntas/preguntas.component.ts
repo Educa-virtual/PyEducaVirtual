@@ -109,6 +109,7 @@ export class PreguntasComponent implements OnInit {
     alternativas = []
     showModalBancoPreguntas: boolean = false
     totalPregunta: number = 0
+    iNivelGradoId: number = null
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -284,6 +285,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
+        const orden = this.totalPregunta + 1 // pregunta orden
 
         if (item.iEncabPregId && item.cEncabPregContenido) {
             this.enunciadosCache.set(
@@ -303,15 +305,58 @@ export class PreguntasComponent implements OnInit {
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iEncabPregId: item.iEncabPregId,
                 cEncabPregContenido: item.iEncabPregContenido,
+                iPreguntaOrden: orden ?? null, // pregunta orden
             },
         }
         this.getInformation(params, params.data.opcion)
     }
 
+    //iNivelGradoId: any
+
     guardarPreguntaSinEnunciadoSinData() {
         if (!this.isDisabled) {
             return
         }
+
+        const orden = this.totalPregunta + 1
+
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'GUARDAR-PREGUNTAS',
+                valorBusqueda: this.iEvaluacionId,
+                iPreguntaId: null,
+                iDesempenoId: null,
+                iTipoPregId: null,
+                cPregunta: null,
+                cPreguntaTextoAyuda: null,
+                iPreguntaNivel: null,
+                iPreguntaPeso: null,
+                dtPreguntaTiempo: null,
+                bPreguntaEstado: 1,
+                cPreguntaClave: null,
+                iEspecialistaId:
+                    this._ConstantesService.iEspecialistaId || null,
+                iNivelGradoId: this.iNivelGradoId || null,
+                iEncabPregId: null,
+                iCursosNivelGradId: this.iCursoNivelGradId,
+                iCredId: this._ConstantesService.iCredId,
+                iPreguntaOrden: orden,
+            },
+        }
+        this.getInformation(params, params.data.opcion)
+    }
+
+    /*guardarPreguntaSinEnunciadoSinData() {
+        if (!this.isDisabled) {
+            return
+        } 
+        //const orden = this.totalPregunta + 1 // pregunta orden 
+        const orden = this.totalPregunta + 1
+
         const params = {
             petition: 'post',
             group: 'ere',
@@ -321,15 +366,20 @@ export class PreguntasComponent implements OnInit {
                 opcion: 'GUARDAR-PREGUNTAS',
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
+                iPreguntaOrden: orden,
             },
         }
         this.getInformation(params, params.data.opcion)
-    }
+    }*/
 
     guardarPreguntaConEnunciadoSinData() {
         if (!this.isDisabled) {
             return
         }
+        //const orden = this.totalPregunta + 1 // pregunta orden
+
+        const orden = this.totalPregunta + 1
+
         const params = {
             petition: 'post',
             group: 'ere',
@@ -340,6 +390,7 @@ export class PreguntasComponent implements OnInit {
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iCredId: this._ConstantesService.iCredId,
+                iPreguntaOrden: orden,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -370,6 +421,7 @@ export class PreguntasComponent implements OnInit {
         data.cEncabPregContenido = !encabezado ? '' : contenido
         data.iEvaluacionId = this.iEvaluacionId
         data.iCursosNivelGradId = this.iCursoNivelGradId
+        data.iPreguntaOrden = pregunta.iOrden || this.totalPregunta + 1 // pregunta orden
         if (!data.alternativas) {
             this._MessageService.add({
                 severity: 'error',

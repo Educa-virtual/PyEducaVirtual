@@ -52,11 +52,6 @@ const docente = [
                 routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
-                label: 'Mi Perfil',
-                icon: 'pi pi-fw pi-id-card',
-                routerLink: ['/docente/perfil'],
-            },
-            {
                 label: 'Actividades No Lectivas',
                 icon: 'pi pi-fw pi-list-check',
                 routerLink: ['/docente/actividades-no-lectivas'],
@@ -138,6 +133,11 @@ const estudiante = [
                 label: 'Practicar evaluación ERE',
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
+            },
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/estudiante/buzon-sugerencias'],
             },
         ],
     },
@@ -356,6 +356,13 @@ const administracion = [
                             '/gestion-institucional/estudiante/registro',
                         ],
                     },
+                    {
+                        label: 'Buzon de Sugerencias',
+                        icon: 'pi pi-fw pi-envelope',
+                        routerLink: [
+                            '/gestion-institucional/gestionar-sugerencias',
+                        ],
+                    },
                 ],
             },
             {
@@ -471,6 +478,14 @@ const administracion = [
             //         },
             //     ],
             // },
+
+            //director buzon
+
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/buzon-director'],
+            },
         ],
     },
 ]
@@ -583,4 +598,5 @@ export class ConstantesService {
     cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
     cNivelNombre = perfil ? perfil.cNivelNombre : null
     year = years ? years : null
+    fotografia = user ? user.cPersFotografia : null
 }

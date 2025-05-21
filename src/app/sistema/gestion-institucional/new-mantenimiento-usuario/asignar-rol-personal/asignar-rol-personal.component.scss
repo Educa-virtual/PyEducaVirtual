@@ -1,0 +1,51 @@
+:host ::ng-deep {
+    .p-dropdown {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .p-button-rounded {
+        position: absolute;
+        right: -15px;
+        top: 30px;
+    }
+
+    .p-button-danger {
+        position: relative;
+        right: 0;
+        top: 0;
+    }
+
+    .card {
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow:
+            0 2px 1px -1px rgba(0, 0, 0, 0.2),
+            0 1px 1px 0 rgba(0, 0, 0, 0.14),
+            0 1px 3px 0 rgba(0, 0, 0, 0.12);
+        margin-bottom: 2rem;
+        background-color: #fff;
+    }
+
+    .field {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .p-datatable-sm .p-datatable-thead > tr > th {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.9rem;
+        background-color: #f8f9fa;
+    }
+
+    .p-datatable-sm .p-datatable-tbody > tr > td {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}

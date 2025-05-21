@@ -39,6 +39,7 @@
                 <div class="grid">
                     <div class="col-10" style="margin-left: -0.5rem">
                         <app-search-words
+                            [placeholder]="searchPlaceholder"
                             (searchChange)="buscarPalabras($event)"
                         >
                         </app-search-words>
@@ -331,11 +332,6 @@
                         }
                         @if (col.type === 'checkbox') {
                             <p-tableCheckbox [value]="rowData" />
-                        }
-                        @if (col.type === 'date') {
-                            <div [style.text-align]="col.text">
-                                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
-                            </div>
                         }
                         @if (col.type === 'radio') {
                             <p-tableRadioButton

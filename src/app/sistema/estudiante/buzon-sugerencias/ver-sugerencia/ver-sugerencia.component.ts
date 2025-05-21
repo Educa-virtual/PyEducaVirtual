@@ -16,6 +16,8 @@ export class VerSugerenciaComponent implements OnInit {
     private _selectedItem: any
     archivos: any[] = []
     @Output() cerrarDialogVerSugerenciaEvent = new EventEmitter<boolean>()
+    nombreDirector: string = 'Director: '
+    fechaRespuesta: string = 'Fecha de respuesta'
 
     @Input()
     set selectedItem(value: any) {

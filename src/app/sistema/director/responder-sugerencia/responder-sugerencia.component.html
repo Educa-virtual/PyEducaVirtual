@@ -47,82 +47,59 @@
         <div class="field col-12">
             <label for="cSugerencia">Sugerencia del alumno:</label>
             <div class="p-inputgroup p-fluid estilo-editor">
-                <!-- Pintamos el HTML con innerHTML -->
                 <div
                     id="cSugerencia"
                     [innerHTML]="form.get('cSugerencia')?.value"
                 ></div>
             </div>
         </div>
+        <!--aqui-->
         <div class="field col-12">
             <label for="cSugerencia">Archivos subidos</label>
             @if (archivos?.length > 0) {
                 <div class="estilo-editor">
                     <ul>
                         <li *ngFor="let archivo of archivos">
-                            <a
-                                href="#"
-                                (click)="
-                                    descargarArchivo(
-                                        $event,
-                                        archivo.nombreArchivo
-                                    )
-                                "
-                                >{{ archivo.nombreArchivo }}</a
-                            >
+                            <a href="#">{{ archivo.nombreArchivo }}</a>
                         </li>
                     </ul>
                 </div>
             } @else {
                 <p-message severity="info" text="No se han subido archivos." />
             }
-            <div>
-                <div class="grid p-fluid mt-3">
-                    <div class="field col-12 md:col-8">
-                        <p-inputGroup>
-                            <p-inputGroupAddon>{{
-                                nombreDirector
-                            }}</p-inputGroupAddon>
-                            <input
-                                pInputText
-                                type="text"
-                                [readOnly]="true"
-                                disabled
-                            />
-                        </p-inputGroup>
-                    </div>
-                    <div class="field col-12 md:col-4">
-                        <p-inputGroup>
-                            <p-inputGroupAddon>{{
-                                fechaRespuesta
-                            }}</p-inputGroupAddon>
-                            <input
-                                pInputText
-                                type="text"
-                                [readOnly]="true"
-                                disabled
-                            />
-                        </p-inputGroup>
-                    </div>
-                </div>
-                <div class="card">
-                    <p-editor
-                        [readonly]="true"
-                        [style]="{ height: '320px' }"
-                        [modules]="{ toolbar: false }"
-                    />
-                </div>
-            </div>
+        </div>
+        <!--aqui-->
+
+        <div class="field col-12">
+            <label for="cRespuesta">Respuesta:</label>
+            <p-editor
+                formControlName="cRespuesta"
+                [style]="{ height: '320px' }"
+            ></p-editor>
+            <small
+                class="p-error"
+                *ngIf="
+                    form.get('cRespuesta')?.invalid &&
+                    form.get('cRespuesta')?.touched
+                "
+            >
+                La respuesta es requerida
+            </small>
         </div>
     </div>
-    <!--*ngIf="!disable_form" (onClick)="guardarSugerencia()"-->
+
     <div class="flex justify-content-end">
         <p-button
-            label="Cerrar"
+            label="Cancelar"
             severity="secondary"
-            [disabled]="form.invalid"
+            class="mr-2"
             (click)="cerrarDialog()"
-        />
+        ></p-button>
+        <p-button
+            label="Enviar respuesta"
+            severity="success"
+            [disabled]="form.invalid"
+            (click)="enviarRespuesta()"
+        ></p-button>
     </div>
 </form>
-<p-toast />

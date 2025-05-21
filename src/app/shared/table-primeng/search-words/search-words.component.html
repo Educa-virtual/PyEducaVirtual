@@ -3,7 +3,7 @@
     <input
         type="text"
         pInputText
-        placeholder="Buscar por nombre...."
+        [placeholder]="placeholder"
         [(ngModel)]="searchTerm"
         (input)="filtrarDatos($event)"
     />

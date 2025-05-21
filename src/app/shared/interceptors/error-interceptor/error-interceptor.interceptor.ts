@@ -34,7 +34,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
                 message.message = errorMsg
                 this._messageService.openDialog(message)
-                return throwError(() => errorMsg)
+                return throwError(() => error)
             })
         )
     }

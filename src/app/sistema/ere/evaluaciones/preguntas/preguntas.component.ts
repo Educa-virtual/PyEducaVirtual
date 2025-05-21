@@ -285,8 +285,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
-
-        const orden = this.totalPregunta + 1
+        const orden = this.totalPregunta + 1 // pregunta orden
 
         if (item.iEncabPregId && item.cEncabPregContenido) {
             this.enunciadosCache.set(
@@ -305,12 +304,8 @@ export class PreguntasComponent implements OnInit {
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iEncabPregId: item.iEncabPregId,
-                cEncabPregContenido: item.cEncabPregContenido,
-                iPreguntaOrden: orden,
-                iEspecialistaId:
-                    this._ConstantesService.iEspecialistaId || null,
-                iNivelGradoId: this.iNivelGradoId || null,
-                iCredId: this._ConstantesService.iCredId,
+                cEncabPregContenido: item.iEncabPregContenido,
+                iPreguntaOrden: orden ?? null, // pregunta orden
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -358,8 +353,8 @@ export class PreguntasComponent implements OnInit {
     /*guardarPreguntaSinEnunciadoSinData() {
         if (!this.isDisabled) {
             return
-        } 
-        //const orden = this.totalPregunta + 1 // pregunta orden 
+        }
+        //const orden = this.totalPregunta + 1 // pregunta orden
         const orden = this.totalPregunta + 1
 
         const params = {
@@ -377,9 +372,11 @@ export class PreguntasComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }*/
 
-    // modificado
     guardarPreguntaConEnunciadoSinData() {
-        if (!this.isDisabled) return
+        if (!this.isDisabled) {
+            return
+        }
+        //const orden = this.totalPregunta + 1 // pregunta orden
 
         const orden = this.totalPregunta + 1
 
@@ -392,16 +389,13 @@ export class PreguntasComponent implements OnInit {
                 opcion: 'GUARDAR-ENCABEZADO-PREGUNTAS',
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
-                iEncabPregId: null,
-                iPreguntaOrden: orden,
-                iEspecialistaId:
-                    this._ConstantesService.iEspecialistaId || null,
-                iNivelGradoId: this.iNivelGradoId || null,
                 iCredId: this._ConstantesService.iCredId,
+                iPreguntaOrden: orden,
             },
         }
         this.getInformation(params, params.data.opcion)
     }
+
     guardarPreguntaConData(encabezado, pregunta, contenido) {
         if (!this.isDisabled) {
             return
@@ -494,7 +488,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return;
         }
-        
+
         // Solo permitimos una opción seleccionada a la vez
         alternativas.forEach((alternativa) => {
             if (alternativa.iAlternativaId != iAlternativaId) {
@@ -598,8 +592,13 @@ export class PreguntasComponent implements OnInit {
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradId':
                 this.breadCrumbItems = [
-                    { label: 'ERE' },
-                    { label: 'Evaluaciones', routerLink: '/ere/evaluaciones' },
+                    {
+                        label: 'ERE',
+                    },
+                    {
+                        label: 'Evaluaciones',
+                        routerLink: '/ere/evaluaciones',
+                    },
                     {
                         label: `${item[0].cEvaluacionNombre} - ${item[0].cNivelEvalNombre}`,
                     },
@@ -625,99 +624,112 @@ export class PreguntasComponent implements OnInit {
                 if (!evaluaciones) {
                     return
                 }
-
-                // Ordenar primero las evaluaciones por iPreguntaId
-                evaluaciones.sort((a, b) => a.iPreguntaId - b.iPreguntaId)
-
                 evaluaciones.forEach((evaluacion) => {
                     this.ordenarAlternativaLetra(evaluacion.alternativas)
                 })
 
-                // Procesar y agrupar preguntas
-                //let preguntasAgrupadasMap = new Map();
-                const preguntasAgrupadasMap = new Map<number, any>()
-                // Se agrupa todas las preguntas
-                evaluaciones.forEach((evaluacion) => {
-                    if (evaluacion.iCompetenciaId) {
-                        evaluacion.iCompetenciaId =
-                            evaluacion.iCompetenciaId.toString()
+                for (const key in evaluaciones) {
+                    if (evaluaciones[key]['iCompetenciaId']) {
+                        evaluaciones[key]['iCompetenciaId'] =
+                            evaluaciones[key]['iCompetenciaId'].toString()
                     }
-                    if (evaluacion.iCapacidadId) {
-                        evaluacion.iCapacidadId =
-                            evaluacion.iCapacidadId.toString()
+                    if (evaluaciones[key]['iCapacidadId']) {
+                        evaluaciones[key]['iCapacidadId'] =
+                            evaluaciones[key]['iCapacidadId'].toString()
                     }
 
-                    if (evaluacion.iEncabPregId) {
-                        // Pregunta múltiple
-                        if (
-                            !preguntasAgrupadasMap.has(evaluacion.iEncabPregId)
-                        ) {
-                            preguntasAgrupadasMap.set(evaluacion.iEncabPregId, {
-                                pregunta: [],
-                                title: 'Preguntas',
-                                iEncabPregId: evaluacion.iEncabPregId,
-                                iOrden: evaluacion.iPreguntaId,
-                            })
-                        }
-                        preguntasAgrupadasMap
-                            .get(evaluacion.iEncabPregId)
-                            .pregunta.push(evaluacion)
-                    } else {
-                        // Pregunta simple
-                        preguntasAgrupadasMap.set(evaluacion.iPreguntaId, {
-                            pregunta: [evaluacion],
+                    const itemSinEncabezado = evaluaciones.filter(
+                        (i) =>
+                            !i.iEncabPregId &&
+                            i.iPreguntaId === evaluaciones[key]['iPreguntaId']
+                    )
+                    if (itemSinEncabezado.length) {
+                        this.preguntas.push({
+                            pregunta: itemSinEncabezado,
                             iEncabPregId: null,
-                            iOrden: evaluacion.iPreguntaId,
+                            iOrden: key,
                         })
                     }
-                })
+                    const itemConEncabezado = evaluaciones.filter(
+                        (i) =>
+                            i.iEncabPregId &&
+                            i.iEncabPregId === evaluaciones[key]['iEncabPregId']
+                    )
+                    if (itemConEncabezado.length) {
+                        this.preguntas.push({
+                            pregunta: itemConEncabezado,
+                            title: 'Multiple',
+                            iEncabPregId: evaluaciones[key]['iEncabPregId'],
+                            iOrden: key,
+                        })
+                    }
+                }
 
-                // Convertir el Map a array y ordenar por iOrden
-                this.preguntas = Array.from(
-                    preguntasAgrupadasMap.values()
-                ).sort((a, b) => a.iOrden - b.iOrden)
-
-                // Asignar numeración
-                let contadorPrincipal = 1
+                this.preguntas = this.preguntas.filter(
+                    (value, index, self) =>
+                        value.iEncabPregId === null ||
+                        index ===
+                            self.findIndex(
+                                (t) => t.iEncabPregId === value.iEncabPregId
+                            )
+                )
+                this.totalPregunta = 0
                 this.preguntas.forEach((pregunta) => {
-                    if (pregunta.pregunta.length) {
-                        if (pregunta.iEncabPregId) {
-                            // Es una pregunta múltiple
-                            pregunta.title = `Preguntas #${contadorPrincipal}`
-                            pregunta.pregunta.forEach((subPregunta, index) => {
-                                subPregunta.title = `Pregunta #${contadorPrincipal}.${index + 1}: ${subPregunta.cPregunta || ''}`
+                    {
+                        if (pregunta.pregunta.length) {
+                            pregunta.pregunta.forEach((item) => {
+                                this.totalPregunta = this.totalPregunta + 1
+                                if (item.iEncabPregId != null) {
+                                    const preguntaMultiple =
+                                        this.preguntas.find(
+                                            (o) =>
+                                                o.iEncabPregId ==
+                                                item.iEncabPregId
+                                        )
+                                    if (preguntaMultiple) {
+                                        preguntaMultiple.title +=
+                                            ' #' + this.totalPregunta
+                                    }
+                                }
+                                item.title =
+                                    'Simple #' +
+                                    this.totalPregunta +
+                                    ': ' +
+                                    (item.cPregunta || '')
                             })
-
-                            const primeraPregunta = pregunta.pregunta[0]
-                            pregunta.cEncabPregContenido =
-                                primeraPregunta.cEncabPregContenido
-                            pregunta.iCompetenciaId =
-                                primeraPregunta.iCompetenciaId
-                            pregunta.iCapacidadId = primeraPregunta.iCapacidadId
-                            pregunta.cDesempenoDescripcion =
-                                primeraPregunta.cDesempenoDescripcion
-                            pregunta.cPregunta = primeraPregunta.cPregunta
-                        } else {
-                            // Es una pregunta simple
-                            pregunta.pregunta[0].title = `Pregunta #${contadorPrincipal}: ${pregunta.pregunta[0].cPregunta || ''}`
-                            pregunta.title = pregunta.pregunta[0].title
                         }
-                        contadorPrincipal++
+
+                        if (pregunta.pregunta.length > 1) {
+                            pregunta['iEncabPregId'] =
+                                pregunta.pregunta[0]['iEncabPregId']
+                            pregunta['cEncabPregContenido'] =
+                                pregunta.pregunta[0]['cEncabPregContenido']
+                            pregunta['iCompetenciaId'] =
+                                pregunta.pregunta[0]['iCompetenciaId']
+                            pregunta['iCapacidadId'] =
+                                pregunta.pregunta[0]['iCapacidadId']
+                            pregunta['cDesempenoDescripcion'] =
+                                pregunta.pregunta[0]['cDesempenoDescripcion']
+                            pregunta['cPregunta'] =
+                                pregunta.pregunta[0]['cPregunta']
+                        } else {
+                            pregunta.title = pregunta.pregunta[0]?.title || ''
+                        }
                     }
                 })
 
-                this.totalPregunta = contadorPrincipal - 1
-
-                // Restaurar enunciados desde caché
                 this.preguntas.forEach((pregunta) => {
                     if (
                         pregunta.iEncabPregId &&
                         this.enunciadosCache.has(pregunta.iEncabPregId)
                     ) {
+                        // Restauramos el contenido desde el caché
                         pregunta.cEncabPregContenido = this.enunciadosCache.get(
                             pregunta.iEncabPregId
                         )
-                        if (pregunta.pregunta?.length) {
+
+                        // También lo aplicamos a todas las preguntas dentro del grupo
+                        if (pregunta.pregunta && pregunta.pregunta.length) {
                             pregunta.pregunta.forEach((subPregunta) => {
                                 subPregunta.cEncabPregContenido =
                                     pregunta.cEncabPregContenido
@@ -735,7 +747,6 @@ export class PreguntasComponent implements OnInit {
                 })
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 break
-
             case 'ACTUALIZARxiDesempenoId':
             case 'ACTUALIZARxiEncabPregId':
                 this._MessageService.add({
@@ -745,7 +756,6 @@ export class PreguntasComponent implements OnInit {
                 })
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 break
-
             case 'GUARDAR':
                 this._MessageService.add({
                     severity: 'success',
@@ -753,13 +763,13 @@ export class PreguntasComponent implements OnInit {
                     detail: 'Se guardó correctamente la pregunta',
                 })
                 break
-
             case 'GUARDAR-PREGUNTAS':
             case 'GUARDAR-ENCABEZADO-PREGUNTAS':
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 break
         }
     }
+
     async onUploadChange(evt: any, alternativa) {
         if (!this.isDisabled) {
             return
@@ -806,8 +816,21 @@ export class PreguntasComponent implements OnInit {
         )
     }
 
+    filtrarCapacidades(item): any[] {
+        return this.matrizCapacidad.filter(
+            (i) => i.iCompetenciaId === item.iCompetenciaId
+        )
+    }
+
+    obtenerIdCompetenciaPorIdCapacidad(iCapacidadId: any): any {
+        const capacidad = this.matrizCapacidad.find(
+            (cap) => cap.iCapacidadId === iCapacidadId
+        )
+        return capacidad ? capacidad.iCompetenciaId : null
+    }
+
     guardarEnunciadoEnCache(id: number, contenido: string): void {
-        // Solo almacena en caché si es un ID válido y está relacionado con preguntas
+        // Solo almacenamos en caché si es un ID válido y está relacionado con preguntas
         if (id && this.preguntas.some((p) => p.iEncabPregId === id)) {
             this.enunciadosCache.set(id, contenido)
         }

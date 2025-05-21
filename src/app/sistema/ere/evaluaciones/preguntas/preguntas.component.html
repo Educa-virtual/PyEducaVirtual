@@ -1,3 +1,6 @@
+<!--
+html
+-->
 <p-breadcrumb
     class="max-w-full"
     [model]="breadCrumbItems"
@@ -88,23 +91,6 @@
                                             | removeHTMLCSS
                                             | truncateText: 80
                                     }}</span>
-                                    <span
-                                        class="text-sm text-primary ml-2"
-                                        *ngIf="list.iEncabPregId"
-                                    >
-                                        (EncabID: {{ list.iEncabPregId }})
-                                    </span>
-                                    <span
-                                        class="text-sm text-primary ml-2"
-                                        *ngIf="
-                                            !list.iEncabPregId &&
-                                            list.pregunta &&
-                                            list.pregunta.length > 0
-                                        "
-                                    >
-                                        (ID:
-                                        {{ list.pregunta[0]?.iPreguntaId }})
-                                    </span>
                                     <p-button
                                         *ngIf="isDisabled"
                                         icon="pi pi-trash"
@@ -243,15 +229,6 @@
                                                             ) {
                                                                 <p-accordionTab
                                                                     iconPos="end"
-                                                                    (click)="
-                                                                        nIndexAcordionTab =
-                                                                            id
-                                                                    "
-                                                                    [ngClass]="{
-                                                                        indexTab:
-                                                                            nIndexAcordionTab ===
-                                                                            id,
-                                                                    }"
                                                                 >
                                                                     <ng-template
                                                                         pTemplate="header"
@@ -266,20 +243,8 @@
                                                                                         | removeHTMLCSS
                                                                                         | truncateText
                                                                                             : 80
-                                                                                }}
-
-                                                                                <span
-                                                                                    class="text-sm text-primary ml-2"
-                                                                                    *ngIf="
-                                                                                        !list.iEncabPreguntaId
-                                                                                    "
-                                                                                >
-                                                                                    (ID:
-                                                                                    {{
-                                                                                        encab.iPreguntaId
-                                                                                    }})
-                                                                                </span>
-                                                                            </span>
+                                                                                }}</span
+                                                                            >
                                                                             <p-button
                                                                                 *ngIf="
                                                                                     isDisabled
@@ -294,30 +259,10 @@
                                                                                 (onClick)="
                                                                                     $event.stopPropagation();
                                                                                     confirmarEliminarPregunta(
-                                                                                        list
+                                                                                        encab
                                                                                     )
                                                                                 "
                                                                             ></p-button>
-                                                                            <!-- se descomenta despues del issue 
-                                                                            <p-button
-                                                                                *ngIf="
-                                                                                    isDisabled
-                                                                                "
-                                                                                icon="pi pi-trash"
-                                                                                iconPos="left"
-                                                                                severity="danger"
-                                                                                class="ml-auto mr-2"
-                                                                                [rounded]="
-                                                                                    true
-                                                                                "
-                                                                                (onClick)="
-                                                                                    $event.stopPropagation();
-                                                                                    confirmarEliminarPregunta(
-                                                                                        list
-                                                                                    )
-                                                                                "
-                                                                            ></p-button>
-                                                                            -->
                                                                         </span>
                                                                     </ng-template>
                                                                     <div
@@ -380,7 +325,9 @@
                                                                                 placeholder="Seleccione la capacidad"
                                                                                 optionValue="iCapacidadId"
                                                                                 [options]="
-                                                                                    matrizCapacidad
+                                                                                    filtrarCapacidades(
+                                                                                        encab
+                                                                                    )
                                                                                 "
                                                                                 optionLabel="cCapacidadNombre"
                                                                                 [(ngModel)]="
@@ -783,7 +730,9 @@
                                                     styleClass="w-full"
                                                     placeholder="Seleccione la capacidad"
                                                     optionValue="iCapacidadId"
-                                                    [options]="matrizCapacidad"
+                                                    [options]="
+                                                        filtrarCapacidades(item)
+                                                    "
                                                     optionLabel="cCapacidadNombre"
                                                     [(ngModel)]="
                                                         item.iCapacidadId

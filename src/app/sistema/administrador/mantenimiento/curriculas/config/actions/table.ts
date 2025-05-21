@@ -21,9 +21,17 @@ export const nivelesCursos = {
 }
 
 export const assignCursosInNivelesGrados = {
-    labelTooltip: 'Cursos niveles',
+    labelTooltip: 'Asignar curso a nivel grado',
     icon: 'pi pi-arrow-right',
     accion: 'assignCursosInNivelesGrados',
+    type: 'item',
+    class: 'p-button-rounded p-button-info p-button-text',
+}
+
+export const eliminar = {
+    labelTooltip: 'Eliminar',
+    icon: 'pi pi-trash',
+    accion: 'eliminar',
     type: 'item',
     class: 'p-button-rounded p-button-info p-button-text',
 }

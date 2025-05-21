@@ -135,7 +135,7 @@ export function accionBtnCursos(this: CurriculasComponent, { accion, item }) {
 }
 
 function setValues(this: CurriculasComponent, item) {
-    this.forms.cursos.patchValue({
+    this.forms.cursos.setValue({
         iCursoId: item.iCursoId,
         iCurrId: item.iCurrId,
         iTipoCursoId: item.iTipoCursoId,

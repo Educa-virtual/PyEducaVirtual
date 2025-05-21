@@ -18,7 +18,7 @@ import {
     validateFormCurricula,
 } from './config/table/curriculas'
 import { DialogModule } from 'primeng/dialog'
-import { FormBuilder, Validators } from '@angular/forms'
+import { FormBuilder } from '@angular/forms'
 import { InputTextModule } from 'primeng/inputtext'
 import { DropdownModule } from 'primeng/dropdown'
 import { ToggleButtonModule } from 'primeng/togglebutton'
@@ -39,10 +39,11 @@ import { InputNumberModule } from 'primeng/inputnumber'
 import {
     assignCursosInNivelesGrados,
     editar,
+    eliminar,
     nivelesCursos,
 } from './config/actions/table'
 import { agregar } from './config/actions/container'
-import { NivelGradosService } from './config/service/nivelesGrados.service'
+import { CursosNivelesGradosService } from './config/service/nivelesGrados.service'
 import { nivelesGradosColumns } from './config/table/nivelesGrados'
 import { ProgressBarModule } from 'primeng/progressbar'
 import { ToastModule } from 'primeng/toast'
@@ -50,6 +51,10 @@ import { FileUploadModule } from 'primeng/fileupload'
 import { ImageModule } from 'primeng/image'
 import { CalendarModule } from 'primeng/calendar'
 import { InputTextareaModule } from 'primeng/inputtextarea'
+import {
+    accionBtnCursosNivelesGrados,
+    asyncCursosNivelGrado,
+} from './config/table/cursosNivelesGrados'
 
 @Component({
     selector: 'app-curriculas',
@@ -142,7 +147,17 @@ export class CurriculasComponent implements OnInit {
             cursosSave.call(this, this.forms.cursos.value),
     }
 
+    cursosNivelesGrados = {
+        table: {
+            columns: cursosColumns.inTableColumns,
+            data: [],
+            actions: [eliminar],
+            accionBtnItem: accionBtnCursosNivelesGrados.bind(this),
+        },
+    }
+
     nivelesGrados = {
+        filters: '',
         container: {
             actions: [],
         },
@@ -195,7 +210,7 @@ export class CurriculasComponent implements OnInit {
         public curriculasService: CurriculasService,
         public cursosService: CursosService,
         public modalidadServiciosService: ModalidadServicioService,
-        public nivelesGradosService: NivelGradosService,
+        public nivelesGradosService: CursosNivelesGradosService,
         public cdr: ChangeDetectorRef
     ) {
         this.forms.curriculas = this.fb.group({
@@ -231,7 +246,7 @@ export class CurriculasComponent implements OnInit {
         })
 
         this.forms.assignCursosInNivelesGrados = this.fb.group({
-            iNivelGradoId: ['', Validators.required],
+            iNivelGradoId: [''],
         })
 
         this.forms.curriculas.get('iModalServId').dirty
@@ -291,6 +306,18 @@ export class CurriculasComponent implements OnInit {
                 console.log(this.dropdowns.modalidades)
             },
         })
+
+        this.nivelesGradosService.getNivelGrados().subscribe({
+            next: (res: any) => {
+                this.dropdowns.nivelesGrados = res.data.map((item) => ({
+                    name: item.cGradoNombre,
+                    code: item.iNivelGradoId,
+                }))
+                console.log(res)
+            },
+        })
+
+        asyncCursosNivelGrado.call(this)
     }
 
     saveCurriculas() {

@@ -86,8 +86,6 @@ export function accionBtnCurriculas(
 ) {
     this.forms.curriculas.reset()
     this.forms.cursos.reset()
-
-    clearValidators.call(this)
     this.forms.assignCursosInNivelesGrados.reset()
 
     clearValidators.call(this)
@@ -140,11 +138,6 @@ export function accionBtnCurriculas(
                 },
             })
 
-            // this.dialogs.cursos = {
-            //     ...this.dialogs.cursos,
-            //     title: 'Agregar Curricula',
-            //     visible: true,
-            // }
             break
 
         default:

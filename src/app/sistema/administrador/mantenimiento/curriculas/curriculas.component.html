@@ -518,19 +518,21 @@
             <app-container-page title="Niveles" [actions]="[]">
                 <form
                     [formGroup]="forms.assignCursosInNivelesGrados"
-                    class="col-6"
+                    class="col-6 grid"
                 >
-                    <label for="modalidad">Niveles de grado</label>
-                    <p-dropdown
-                        id="modalidad"
-                        styleClass="w-full"
-                        [options]="dropdowns.nivelesGrados"
-                        optionLabel="name"
-                        optionValue="code"
-                        appendTo="body"
-                        formControlName="iNivelGradoId"
-                        placeholder="Seleccione un nivel de grado"
-                    />
+                    <div class="col-12 flex flex-column gap-2">
+                        <label for="modalidad">Niveles de grado</label>
+                        <p-dropdown
+                            id="modalidad"
+                            styleClass="w-full"
+                            [options]="dropdowns.nivelesGrados"
+                            optionLabel="name"
+                            optionValue="code"
+                            appendTo="body"
+                            formControlName="iNivelGradoId"
+                            placeholder="Seleccione un nivel de grado"
+                        />
+                    </div>
                     @if (
                         forms.assignCursosInNivelesGrados.get('iNivelGradoId')
                             .dirty &&
@@ -545,8 +547,12 @@
                     }
                 </form>
                 <app-table-primeng
-                    [columnas]="cursos.table.columnsWithoutActions"
-                    [data]="[]"
+                    [columnas]="cursosNivelesGrados.table.columns"
+                    [data]="cursosNivelesGrados.table.data"
+                    [actions]="cursosNivelesGrados.table.actions"
+                    (accionBtnItem)="
+                        cursosNivelesGrados.table.accionBtnItem($event)
+                    "
                 />
             </app-container-page>
         </div>

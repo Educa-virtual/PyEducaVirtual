@@ -8,7 +8,7 @@ const baseUrl = environment.backendApi
 @Injectable({
     providedIn: 'root',
 })
-export class NivelGradosService {
+export class CursosNivelesGradosService {
     endPoint: string = `${baseUrl}/administrador`
 
     constructor(
@@ -21,9 +21,16 @@ export class NivelGradosService {
             esquema: 'acad',
             tabla: 'V_NivelesTiposGrados',
             campos: '*',
-            where:
-                'iNivelTipoId IS NULL OR iNivelTipoId = ' +
-                JSON.parse(localStorage.getItem('dremoPerfil')).iNivelTipoId,
+            where: '1=1',
+        })
+    }
+
+    getCursosNivelesGrados(iCurrId, iNivelGradoId) {
+        return this.apiService.getDataObs({
+            esquema: 'acad',
+            tabla: 'V_CursosNivelesGrados',
+            campos: '*',
+            where: `iCurrId=${iCurrId} AND iNivelGradoId=${iNivelGradoId}`,
         })
     }
 }

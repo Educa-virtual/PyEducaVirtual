@@ -135,7 +135,7 @@ export class FichaEconomicoComponent implements OnInit {
         this.formEconomico
             .get('cIngresoEcoActividad')
             .setValue(
-                data?.cIngresoEcoActividad ? +data.cIngresoEcoActividad : null
+                data?.cIngresoEcoActividad ? data.cIngresoEcoActividad : null
             )
         this.formEconomico
             .get('iIngresoEcoEstudiante')

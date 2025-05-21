@@ -1,0 +1,74 @@
+<div class="card">
+    <!-- Breadcrumb -->
+    <p-breadcrumb
+        class="max-w-full mb-4"
+        [model]="breadCrumbItems"
+        [home]="breadCrumbHome"
+    ></p-breadcrumb>
+
+    <!-- Panel de título -->
+    <p-panel>
+        <ng-template pTemplate="header">
+            <div class="flex flex-column gap-2">
+                <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
+            </div>
+        </ng-template>
+
+        <!-- Filtros y opciones de búsqueda -->
+        <div class="grid mb-4">
+            <div class="col-12 md:col-4">
+                <p-dropdown
+                    [options]="[
+                        { label: 'Nivel Primaria', value: 'primaria' },
+                        { label: 'Nivel Secundaria', value: 'secundaria' },
+                    ]"
+                    placeholder="Seleccione nivel"
+                    styleClass="w-full"
+                >
+                </p-dropdown>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-dropdown
+                    [options]="[
+                        { label: 'Todos los grados', value: 'todos' },
+                        { label: '1er Grado', value: '1' },
+                        { label: '2do Grado', value: '2' },
+                    ]"
+                    placeholder="Seleccione grado"
+                    styleClass="w-full"
+                >
+                </p-dropdown>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-dropdown
+                    [options]="[
+                        { label: 'Todas las áreas', value: 'todas' },
+                        { label: 'Matemática', value: 'matematica' },
+                        { label: 'Comunicación', value: 'comunicacion' },
+                    ]"
+                    placeholder="Seleccione área"
+                    styleClass="w-full"
+                >
+                </p-dropdown>
+            </div>
+        </div>
+
+        <!-- Tabla de recursos -->
+        <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="datosRecursos"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            sortMode="single"
+            sortField="nivel"
+            [sortOrder]="-1"
+            [(selectedRowData)]="selectedItem"
+            [actions]="actions"
+            [showAdvancedFilter]="true"
+            [indiceColumnaBuscar]="3"
+            [searchPlaceholder]="'Buscar recurso...'"
+        >
+        </app-table-primeng>
+    </p-panel>
+</div>

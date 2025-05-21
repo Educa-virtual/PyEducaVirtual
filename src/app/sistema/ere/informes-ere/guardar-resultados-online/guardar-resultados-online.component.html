@@ -168,14 +168,16 @@
             <app-table-primeng
                 [columnas]="columnas"
                 [data]="alumnos"
-                (accionBtnItem)="accionesTabla($event)"
+                (accionBtnItem)="getCuestionarioNotas($event)"
                 [actions]="botonesTabla"
                 [showPaginator]="true"
                 [indiceColumnaBuscar]="3"
                 [showCaption]="true"
                 [showSortIcon]="false"
+                [width]="'30px'"
+                [soloUnaLetra]="true"
             >
-                <input type="text" />
+                <!-- <input type="text" /> -->
             </app-table-primeng>
         </div>
         <div class="grid p-fluid mt-3">

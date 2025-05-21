@@ -178,7 +178,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log('jj')
+        console.log('AQUI ngOnInit')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.iSedeId = this.store.getItem('dremoPerfil').iSedeId
         this.perfil = this.store.getItem('dremoPerfil')
@@ -473,14 +473,17 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         })
     }
     // acciones de la tabla
-    accionesTabla({ accion, item }) {
-        switch (accion) {
-            case 'guardar':
-                // datos para guardar de las notas.
-                console.log('datos de estudiantes', item)
-                break
-        }
-    }
+    // accionesTabla({ accion, item }) {
+    //     switch (accion) {
+    //         case 'guardar':
+    //             // this.query.insertarCuestionarioNotas(item).subscribe({
+    //             //     next: (res) => console.log('Respuesta del backend:', res),
+    //             //     error: (err) => console.error('Error:', err),
+    //             // })
+    //             this.getCuestionarioNotas(item)
+    //             break
+    //     }
+    // }
     accionBtn(elemento: any): void {
         const { accion } = elemento
 
@@ -492,5 +495,14 @@ export class GuardarResultadosOnlineComponent implements OnInit {
                 console.log('cerrar modal')
                 break
         }
+    }
+
+    getCuestionarioNotas(event: any) {
+        const item = event.item
+        console.log(item, 'item')
+        this.query.insertarCuestionarioNotas(item).subscribe({
+            next: (res) => console.log('Respuesta del backend:', res),
+            error: (err) => console.error('Error:', err),
+        })
     }
 }

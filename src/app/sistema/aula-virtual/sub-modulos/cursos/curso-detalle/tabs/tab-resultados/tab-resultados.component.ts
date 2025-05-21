@@ -142,6 +142,18 @@ export class TabResultadosComponent implements OnInit {
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
     califcnFinal: any[] = []
+    stateOptions: any[] = [
+        { label: 'Resumen', value: '1' },
+        { label: 'Detalle Completo', value: '2' },
+    ]
+    listarActividades: any[] = [
+        { label: 'Actividad de Aprendizaje', value: '1' },
+        { label: 'Foro', value: '2' },
+        { label: 'Evaluación', value: '3' },
+    ]
+    seleccionarResultado = '1'
+    actividadSeleccionado = '1'
+
     public califcFinal: FormGroup = this._formBuilder.group({
         cDetMatrConclusionDesc1: ['', [Validators.required]],
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],

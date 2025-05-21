@@ -150,7 +150,9 @@ i {
 
 :host ::ng-deep .p-editor-toolbar .ql-link,
 :host ::ng-deep .p-editor-toolbar .ql-image,
-:host ::ng-deep .p-editor-toolbar .ql-code-block {
-    pointer-events: none;
-    opacity: 0.5;
+:host ::ng-deep .p-editor-toolbar .ql-code-block,
+:host ::ng-deep .p-editor-toolbar .ql-clean {
+    // pointer-events: none;
+    // opacity: 0.5;
+    display: none;
 }

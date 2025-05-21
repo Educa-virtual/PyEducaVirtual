@@ -94,6 +94,17 @@
                                     >
                                         (EncabID: {{ list.iEncabPregId }})
                                     </span>
+                                    <span
+                                        class="text-sm text-primary ml-2"
+                                        *ngIf="
+                                            !list.iEncabPregId &&
+                                            list.pregunta &&
+                                            list.pregunta.length > 0
+                                        "
+                                    >
+                                        (ID:
+                                        {{ list.pregunta[0]?.iPreguntaId }})
+                                    </span>
                                     <p-button
                                         *ngIf="isDisabled"
                                         icon="pi pi-trash"
@@ -256,8 +267,12 @@
                                                                                         | truncateText
                                                                                             : 80
                                                                                 }}
+
                                                                                 <span
                                                                                     class="text-sm text-primary ml-2"
+                                                                                    *ngIf="
+                                                                                        !list.iEncabPreguntaId
+                                                                                    "
                                                                                 >
                                                                                     (ID:
                                                                                     {{
@@ -283,6 +298,26 @@
                                                                                     )
                                                                                 "
                                                                             ></p-button>
+                                                                            <!-- se descomenta despues del issue 
+                                                                            <p-button
+                                                                                *ngIf="
+                                                                                    isDisabled
+                                                                                "
+                                                                                icon="pi pi-trash"
+                                                                                iconPos="left"
+                                                                                severity="danger"
+                                                                                class="ml-auto mr-2"
+                                                                                [rounded]="
+                                                                                    true
+                                                                                "
+                                                                                (onClick)="
+                                                                                    $event.stopPropagation();
+                                                                                    confirmarEliminarPregunta(
+                                                                                        list
+                                                                                    )
+                                                                                "
+                                                                            ></p-button>
+                                                                            -->
                                                                         </span>
                                                                     </ng-template>
                                                                     <div

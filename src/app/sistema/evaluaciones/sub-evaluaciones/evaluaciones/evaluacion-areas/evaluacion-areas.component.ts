@@ -395,13 +395,13 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                         detail: detailMessage,
                     })
                 },
-                error: (err) => {
+                error: (err: any) => {
+                    console.log(err.message)
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: err,
+                        detail: err.error.message,
                     })
-                    console.error('Error al insertar cursos:', err)
                 },
             })
     }

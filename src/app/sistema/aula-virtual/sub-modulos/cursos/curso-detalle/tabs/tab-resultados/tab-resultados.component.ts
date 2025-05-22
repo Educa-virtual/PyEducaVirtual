@@ -147,9 +147,13 @@ export class TabResultadosComponent implements OnInit {
         { label: 'Detalle Completo', value: '2' },
     ]
     listarActividades: any[] = [
-        { label: 'Actividad de Aprendizaje', value: '1' },
-        { label: 'Foro', value: '2' },
-        { label: 'Evaluación', value: '3' },
+        {
+            label: 'Actividad de Aprendizaje',
+            value: '1',
+            styleClass: 'btn-success',
+        },
+        { label: 'Foro', value: '2', styleClass: 'btn-success' },
+        { label: 'Evaluación', value: '3', styleClass: 'btn-danger' },
     ]
     seleccionarResultado = '1'
     actividadSeleccionado = '1'
@@ -246,6 +250,7 @@ export class TabResultadosComponent implements OnInit {
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
     }
+
     //Agregar conclusion descritiva final
     mostrarModalConclusionDesc: boolean = false
     descrip: string

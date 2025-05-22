@@ -135,6 +135,38 @@
     text-align: left; /* Asegura que el texto esté alineado a la izquierda */
     width: fit-content; /* Para que no ocupe más de lo necesario */
 }
-:host ::ng-deep .p-selectButton {
+
+:host ::ng-deep .actividad .p-selectbutton .p-button {
+    flex: 1; /* Cada botón tomará el mismo espacio */
+    width: 100%; /* Opcional: Garantiza que el contenedor tome todo el ancho */
+}
+:host ::ng-deep .actividad .p-selectbutton {
+    display: flex;
     width: 100%;
+}
+
+// :host ::ng-deep .p-selectbutton .p-button:nth-child(1) {
+//     background-color: #007bff !important; /* Azul */
+//     color: white !important;
+// }
+
+// :host ::ng-deep .p-selectbutton .p-button:nth-child(2) {
+//     background-color: #28a745 !important; /* Verde */
+//     color: white !important;
+// }
+
+// :host ::ng-deep .p-selectbutton .p-button:nth-child(3) {
+//     background-color: #dc3545 !important; /* Rojo */
+//     color: white !important;
+// }
+:host ::ng-deep .actividad .p-selectbutton .p-button:nth-child(1).p-highlight {
+    background-color: #b51f32 !important; /* Azul */
+}
+
+:host ::ng-deep .actividad .p-selectbutton .p-button:nth-child(2).p-highlight {
+    background-color: #399760 !important; /* Verde */
+}
+
+:host ::ng-deep .actividad .p-selectbutton .p-button:nth-child(3).p-highlight {
+    background-color: #3e67a9 !important; /* Rojo */
 }

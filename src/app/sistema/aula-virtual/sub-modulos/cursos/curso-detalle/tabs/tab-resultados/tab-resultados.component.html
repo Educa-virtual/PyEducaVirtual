@@ -61,14 +61,15 @@
         <div class="card col relative">
             <samp class="tagDet">Detalles por Estudiante</samp>
             <!-- Mostrar botones de las actividades realizadas -->
-            <div class="mt-5 col-12 w-full">
+            <div class="mt-5 col-12">
                 <p-selectButton
                     [options]="listarActividades"
                     [(ngModel)]="actividadSeleccionado"
                     optionLabel="label"
                     optionValue="value"
-                    class="w-100"
-                />
+                    class="actividad"
+                >
+                </p-selectButton>
             </div>
             <div class="grid col-12">
                 <div class="col-6">

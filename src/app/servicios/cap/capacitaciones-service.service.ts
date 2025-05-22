@@ -21,4 +21,11 @@ export class CapacitacionesServiceService {
         //     map((resp) => resp.data)
         // )
     }
+
+    listarInscripcionxcurso(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/inscripciones/inscripciones`,
+            data
+        )
+    }
 }

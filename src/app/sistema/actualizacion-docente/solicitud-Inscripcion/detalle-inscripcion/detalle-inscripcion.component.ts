@@ -1,10 +1,19 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core'
 import {
     TablePrimengComponent,
     IColumn,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-detalle-inscripcion',
@@ -17,7 +26,10 @@ export class DetalleInscripcionComponent implements OnInit {
     @Input() id!: string
     @Output() volver = new EventEmitter<void>()
 
-    cursos: any[]
+    private _capService = inject(CapacitacionesServiceService)
+    private _ConstantesService = inject(ConstantesService)
+
+    alumnos: any[]
 
     ngOnInit(): void {
         this.obtenerSolicitudesXCurso()
@@ -35,7 +47,7 @@ export class DetalleInscripcionComponent implements OnInit {
         {
             type: 'text',
             width: '8rem',
-            field: '',
+            field: 'cNombresCompleto',
             header: 'Apellidos y Nombre',
             text_header: 'left',
             text: 'left',
@@ -51,7 +63,7 @@ export class DetalleInscripcionComponent implements OnInit {
         {
             type: 'text',
             width: '2rem',
-            field: '',
+            field: 'cPersDocumento',
             header: 'DNI/CE',
             text_header: 'center',
             text: 'center',
@@ -59,19 +71,19 @@ export class DetalleInscripcionComponent implements OnInit {
         {
             type: 'text',
             width: '2rem',
-            field: '',
+            field: 'cInscripCel',
             header: 'Celular',
             text_header: 'center',
             text: 'center',
         },
-        {
-            type: 'text',
-            width: '2rem',
-            field: '',
-            header: 'Modalidad',
-            text_header: 'center',
-            text: 'center',
-        },
+        // {
+        //     type: 'text',
+        //     width: '2rem',
+        //     field: '',
+        //     header: 'Modalidad',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
         {
             type: 'actions',
             width: '1rem',
@@ -90,7 +102,7 @@ export class DetalleInscripcionComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-succes p-button-text',
-            isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
+            // isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
         },
         {
             labelTooltip: 'Eliminar',
@@ -98,7 +110,7 @@ export class DetalleInscripcionComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: (row) => row.iEstado === '1',
+            // isVisible: (row) => row.iEstado === '1',
         },
     ]
     // asignar la accion a los botones de la tabla
@@ -120,7 +132,23 @@ export class DetalleInscripcionComponent implements OnInit {
     }
     // obtener las solicitudes del curso
     obtenerSolicitudesXCurso() {
-        console.log('Id de la capacitacion:', this.id)
+        const iCredId = this._ConstantesService.iCredId
+        const data = {
+            iCapacitacionId: this.id,
+            iCredId: iCredId,
+        }
+
+        this._capService.listarInscripcionxcurso(data).subscribe({
+            next: (res: any) => {
+                this.alumnos = res['data']
+                // this.data = res['data']
+                // this.capacitaciones = [...this.data] // cargar desde servicio o mock
+                // this.paginator.total = this.capacitaciones.length
+                // this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
+
+                console.log('datos del Alumnos incritos', this.alumnos)
+            },
+        })
     }
     regresar() {
         this.volver.emit()

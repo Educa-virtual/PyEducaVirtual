@@ -1,10 +1,10 @@
 <div>
     <section>
-        <p-dataView #dv [value]="cursos" [rows]="5" filterBy="">
+        <p-dataView #dv [value]="alumnos" [rows]="5" filterBy="">
             <ng-template let-products pTemplate="listItem">
                 <app-table-primeng
                     [columnas]="columnasTabla"
-                    [data]="cursos"
+                    [data]="alumnos"
                     [showCaption]="false"
                     (accionBtnItem)="accionBnt($event)"
                     [actions]="accionesTabla"

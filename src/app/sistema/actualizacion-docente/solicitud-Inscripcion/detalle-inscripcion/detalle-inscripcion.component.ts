@@ -98,7 +98,7 @@ export class DetalleInscripcionComponent implements OnInit {
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
-            icon: 'pi pi-pencil',
+            icon: 'pi pi-check-circle',
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-succes p-button-text',
@@ -106,8 +106,16 @@ export class DetalleInscripcionComponent implements OnInit {
         },
         {
             labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
+            icon: 'pi pi-times-circle',
             accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+            // isVisible: (row) => row.iEstado === '1',
+        },
+        {
+            labelTooltip: 'Comprobante',
+            icon: 'pi pi-file-pdf',
+            accion: 'mostrarComprobante',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
             // isVisible: (row) => row.iEstado === '1',

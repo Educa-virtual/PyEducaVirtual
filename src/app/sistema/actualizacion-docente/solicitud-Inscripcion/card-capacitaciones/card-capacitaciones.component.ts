@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { environment } from '@/environments/environment'
-import { Component, Input } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 
 @Component({
     selector: 'app-card-capacitaciones',
@@ -12,10 +12,12 @@ import { Component, Input } from '@angular/core'
 export class CardCapacitacionesComponent {
     backend = environment.backend
     @Input() capacitacion
+    @Output() verDetalle = new EventEmitter<string>()
 
     updateUrl(item) {
         item.cImagenUrl = '/images/recursos/miss-lesson-animate.svg'
     }
+
     getUrlImg(cImagenUrl: string) {
         cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : []
         return cImagenUrl.length
@@ -30,4 +32,7 @@ export class CardCapacitacionesComponent {
     //     }
     //     return '/cursos/images/no-image.jpg'
     // }
+    mostrarInscritos() {
+        this.verDetalle.emit(this.capacitacion.iCapacitacionId.toString())
+    }
 }

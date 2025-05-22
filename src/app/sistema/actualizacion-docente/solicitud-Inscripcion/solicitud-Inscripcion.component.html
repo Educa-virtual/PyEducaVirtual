@@ -14,11 +14,12 @@
             <app-apertura-curso></app-apertura-curso>
         }
         @case (1) {
-            <div class="grid" #gridContainer>
+            <div class="grid" *ngIf="!detalleVisible" #gridContainer>
                 <div class="col-12 cursos py-2">
                     @for (capacitacion of data; track capacitacion) {
                         <app-card-capacitaciones
                             [capacitacion]="capacitacion"
+                            (verDetalle)="onVerDetalle($event)"
                         ></app-card-capacitaciones>
                     }
                 </div>
@@ -31,6 +32,12 @@
                         [rowsPerPageOptions]="paginator.rowsPerPage"
                     />
                 </div>
+            </div>
+            <div *ngIf="detalleVisible">
+                <app-detalle-inscripcion
+                    [id]="idSeleccionado"
+                    (volver)="volverALista()"
+                ></app-detalle-inscripcion>
             </div>
         }
     }

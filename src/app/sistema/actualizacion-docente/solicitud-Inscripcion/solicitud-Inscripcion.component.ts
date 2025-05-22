@@ -8,16 +8,17 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core'
-import {
-    IColumn,
-    IActionTable,
-} from '@/app/shared/table-primeng/table-primeng.component'
+// import {
+//     IColumn,
+//     IActionTable,
+// } from '@/app/shared/table-primeng/table-primeng.component'
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component'
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component'
 import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component'
 import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { PaginatorModule } from 'primeng/paginator'
+import { DetalleInscripcionComponent } from './detalle-inscripcion/detalle-inscripcion.component'
 @Component({
     selector: 'app-solicitud-inscripcion',
     standalone: true,
@@ -30,11 +31,18 @@ import { PaginatorModule } from 'primeng/paginator'
         CardCapacitacionesComponent,
         AperturaCursoComponent,
         PaginatorModule,
+        DetalleInscripcionComponent,
     ],
 })
 export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
+    private _aulaService = inject(ApiAulaService)
+    private _ConstantesService = inject(ConstantesService)
+    @ViewChild('gridContainer') gridContainer!: ElementRef
+
     activeIndex: number = 1
     cursoSeleccionado
+    detalleVisible = false
+    idSeleccionado!: string
     tabs = [
         {
             title: 'Apertura de Curso',
@@ -52,87 +60,87 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.activeIndex = tab
     }
 
-    public columnasTabla: IColumn[] = [
-        {
-            type: 'item',
-            width: '1rem',
-            field: 'index',
-            header: 'Nro',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'nombreApellido',
-            header: 'Apellido y Nombre',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '1rem',
-            field: 'docente',
-            header: '¿Es Docente?',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'dni',
-            header: 'DNI/CE',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'telefono',
-            header: 'Celular',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'modalidad',
-            header: 'Modalidad',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'actions',
-            width: '1rem',
-            field: '',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
-        },
-    ]
-    public accionesTabla: IActionTable[] = [
-        {
-            labelTooltip: 'Agregar Conclusión descriptiva',
-            icon: 'pi pi-check',
-            accion: 'agregarConclusion',
-            type: 'item',
-            class: 'p-button-rounded p-button-success p-button-text',
-        },
-        {
-            labelTooltip: 'Agregar Conclusión descriptiva',
-            icon: 'pi pi-times',
-            accion: 'agregarConclusion',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-        {
-            labelTooltip: 'Agregar Conclusión descriptiva',
-            icon: 'pi pi-file-pdf',
-            accion: 'agregarConclusion',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-    ]
+    // public columnasTabla: IColumn[] = [
+    //     {
+    //         type: 'item',
+    //         width: '1rem',
+    //         field: 'index',
+    //         header: 'Nro',
+    //         text_header: 'center',
+    //         text: 'center',
+    //     },
+    //     {
+    //         type: 'text',
+    //         width: '10rem',
+    //         field: 'nombreApellido',
+    //         header: 'Apellido y Nombre',
+    //         text_header: 'left',
+    //         text: 'left',
+    //     },
+    //     {
+    //         type: 'text',
+    //         width: '1rem',
+    //         field: 'docente',
+    //         header: '¿Es Docente?',
+    //         text_header: 'center',
+    //         text: 'center',
+    //     },
+    //     {
+    //         type: 'text',
+    //         width: '10rem',
+    //         field: 'dni',
+    //         header: 'DNI/CE',
+    //         text_header: 'center',
+    //         text: 'center',
+    //     },
+    //     {
+    //         type: 'text',
+    //         width: '10rem',
+    //         field: 'telefono',
+    //         header: 'Celular',
+    //         text_header: 'center',
+    //         text: 'center',
+    //     },
+    //     {
+    //         type: 'text',
+    //         width: '10rem',
+    //         field: 'modalidad',
+    //         header: 'Modalidad',
+    //         text_header: 'center',
+    //         text: 'center',
+    //     },
+    //     {
+    //         type: 'actions',
+    //         width: '1rem',
+    //         field: '',
+    //         header: 'Acciones',
+    //         text_header: 'center',
+    //         text: 'center',
+    //     },
+    // ]
+    // public accionesTabla: IActionTable[] = [
+    //     {
+    //         labelTooltip: 'Agregar Conclusión descriptiva',
+    //         icon: 'pi pi-check',
+    //         accion: 'agregarConclusion',
+    //         type: 'item',
+    //         class: 'p-button-rounded p-button-success p-button-text',
+    //     },
+    //     {
+    //         labelTooltip: 'Agregar Conclusión descriptiva',
+    //         icon: 'pi pi-times',
+    //         accion: 'agregarConclusion',
+    //         type: 'item',
+    //         class: 'p-button-rounded p-button-danger p-button-text',
+    //     },
+    //     {
+    //         labelTooltip: 'Agregar Conclusión descriptiva',
+    //         icon: 'pi pi-file-pdf',
+    //         accion: 'agregarConclusion',
+    //         type: 'item',
+    //         class: 'p-button-rounded p-button-danger p-button-text',
+    //     },
+    // ]
     data: any[] = []
     // data = [
     //     {
@@ -604,13 +612,6 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.data = this.capacitaciones?.slice(start, end)
     }
 
-    private _aulaService = inject(ApiAulaService)
-    private _ConstantesService = inject(ConstantesService)
-
-    cursos
-
-    @ViewChild('gridContainer') gridContainer!: ElementRef
-
     ngAfterViewInit(): void {
         setTimeout(() => this.calculateRows(), 0) // Esperar renderizado
         window.addEventListener('resize', () => this.calculateRows())
@@ -619,7 +620,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.obtenerCapacitaciones()
     }
-
+    // obtener y listar las capacitaciones
     obtenerCapacitaciones() {
         const iEstado = 1
         const iCredId = this._ConstantesService.iCredId
@@ -634,6 +635,8 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
                 this.capacitaciones = [...this.data] // cargar desde servicio o mock
                 this.paginator.total = this.capacitaciones.length
                 this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
+
+                console.log('datos del curso', this.data)
             },
         })
     }
@@ -655,5 +658,15 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.paginator.rows = itemsPerPage
         this.paginator.rowsPerPage = [itemsPerPage]
         this.onPageChange({ first: 0, rows: itemsPerPage })
+    }
+
+    onVerDetalle(id: string) {
+        this.idSeleccionado = id
+        this.detalleVisible = true
+    }
+
+    volverALista() {
+        this.detalleVisible = false
+        this.idSeleccionado = ''
     }
 }

@@ -53,7 +53,7 @@ export class DetalleInscripcionComponent implements OnInit {
             text: 'left',
         },
         {
-            type: 'text',
+            type: 'item-checkbox',
             width: '2rem',
             field: '',
             header: '¿Es Docente?',

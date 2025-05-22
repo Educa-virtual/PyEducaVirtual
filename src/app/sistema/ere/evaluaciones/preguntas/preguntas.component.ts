@@ -430,7 +430,8 @@ export class PreguntasComponent implements OnInit {
             })
             return
         }
-        data.alternativas.forEach((alternativa) => {
+        //Se desactiva la validación de alternativas vacías porque a veces se suben imágenes
+        /*data.alternativas.forEach((alternativa) => {
             {
                 if (
                     alternativa.cAlternativaDescripcion == '' ||
@@ -439,7 +440,7 @@ export class PreguntasComponent implements OnInit {
                     error = true
                 }
             }
-        })
+        })*/
         if (error) {
             this._MessageService.add({
                 severity: 'error',

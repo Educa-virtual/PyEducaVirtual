@@ -138,6 +138,7 @@ export class TabInicioComponent implements OnInit {
                             console.error('Comentario:', error)
                         },
                     })
+                    this.guardarComunicado.reset()
                 },
                 reject: () => {
                     // Mensaje de cancelación (opcional)
@@ -148,9 +149,7 @@ export class TabInicioComponent implements OnInit {
                     })
                 },
             })
-
-            console.log(this.guardarComunicado.value)
-            this.guardarComunicado.reset()
+            // console.log(this.guardarComunicado.value)
         }
     }
 

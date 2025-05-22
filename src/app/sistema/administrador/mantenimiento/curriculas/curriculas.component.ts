@@ -18,7 +18,7 @@ import {
     validateFormCurricula,
 } from './config/table/curriculas'
 import { DialogModule } from 'primeng/dialog'
-import { FormBuilder } from '@angular/forms'
+import { FormBuilder, Validators } from '@angular/forms'
 import { InputTextModule } from 'primeng/inputtext'
 import { DropdownModule } from 'primeng/dropdown'
 import { ToggleButtonModule } from 'primeng/togglebutton'
@@ -55,6 +55,9 @@ import {
     accionBtnCursosNivelesGrados,
     asyncCursosNivelGrado,
 } from './config/table/cursosNivelesGrados'
+import { iCursosNivelesGrados } from './config/types/cursosNivelesGrados'
+import { iCursos } from './config/types/cursos'
+import { iCurriculas } from './config/types/curricula'
 
 @Component({
     selector: 'app-curriculas',
@@ -175,7 +178,7 @@ export class CurriculasComponent implements OnInit {
         curriculas: this.fb.group({}),
         cursos: this.fb.group({}),
         tipoCurso: this.fb.group({}),
-        assignCursosInNivelesGrados: this.fb.group({}),
+        cursosNivelesGrados: this.fb.group({}),
     }
     dialogs = {
         curriculas: {
@@ -197,6 +200,10 @@ export class CurriculasComponent implements OnInit {
             title: 'Currículas',
             visible: false,
         },
+        cursosNivelesCursos: {
+            title: 'Asignar curso a nivel grado',
+            visible: false,
+        },
     }
 
     dropdowns = {
@@ -213,13 +220,13 @@ export class CurriculasComponent implements OnInit {
         public nivelesGradosService: CursosNivelesGradosService,
         public cdr: ChangeDetectorRef
     ) {
-        this.forms.curriculas = this.fb.group({
+        this.forms.curriculas = this.fb.group<iCurriculas['formGroup']>({
             iCurrId: [''],
             iModalServId: [''],
             iCurrNotaMinima: [''],
             iCurrTotalCreditos: [''],
             iCurrNroHoras: [''],
-            cCurrPerfilEgresado: [''],
+            cCurrPerfilEgresado: ['', Validators.required],
             cCurrMencion: [''],
             nCurrPesoProcedimiento: [''],
             cCurrPesoConceptual: [''],
@@ -230,7 +237,7 @@ export class CurriculasComponent implements OnInit {
             cCurrDescripcion: [''],
         })
 
-        this.forms.cursos = this.fb.group({
+        this.forms.cursos = this.fb.group<iCursos['formGroup']>({
             iCursoId: [''],
             iCurrId: [''],
             iTipoCursoId: [''],
@@ -245,8 +252,17 @@ export class CurriculasComponent implements OnInit {
             cCursoImagen: [''],
         })
 
-        this.forms.assignCursosInNivelesGrados = this.fb.group({
+        this.forms.cursosNivelesGrados = this.fb.group<
+            iCursosNivelesGrados['formGroup']
+        >({
             iNivelGradoId: [''],
+            iCursoId: [''],
+            nCursoHorasTeoria: [''],
+            nCursoHorasPractica: [''],
+            cCursoDescripcion: [''],
+            nCursoTotalCreditos: [''],
+            cCursoPerfilDocente: [''],
+            iCursoTotalHoras: [''],
         })
 
         this.forms.curriculas.get('iModalServId').dirty
@@ -351,6 +367,38 @@ export class CurriculasComponent implements OnInit {
     }
 
     saveCursos() {
+        of(null)
+            .pipe(
+                concatMap(() =>
+                    iif(
+                        () => validateFormCursos.call(this),
+                        this.cursos.save(),
+                        throwError(() => new Error('Formulario inválido'))
+                    )
+                ),
+                tap((res1) => console.log('save', res1)),
+                concatMap((resCursos) => {
+                    console.log('resCursos')
+                    console.log(resCursos)
+                    return this.cursosService.getCursos(
+                        this.forms.cursos.value.iCursoId
+                    )
+                })
+            )
+            .subscribe({
+                next: (res: any) => {
+                    this.cursos.table.data = res.data
+                },
+                error: (err) => {
+                    console.error(err)
+                },
+                complete: () => {
+                    this.dialogs.cursos.visible = false
+                },
+            })
+    }
+
+    saveCursosNivelesGrados() {
         of(null)
             .pipe(
                 concatMap(() =>

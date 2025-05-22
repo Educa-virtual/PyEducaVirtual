@@ -1,7 +1,9 @@
 import { TableColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { CurriculasComponent } from '../../curriculas.component'
-import { payload } from '../types/cursos'
+import { iCursos } from '../types/cursos'
 import { Validators } from '@angular/forms'
+import { cursosNivelesGrados } from './cursosNivelesGrados'
+import { FormPatch } from '../types/forms'
 
 export const cursosColumns: TableColumn = {
     inTableColumnsGroup: [
@@ -82,10 +84,14 @@ export const cursosColumns: TableColumn = {
     ],
 }
 
-export function accionBtnCursos(this: CurriculasComponent, { accion, item }) {
+export function accionBtnCursos(
+    this: CurriculasComponent,
+    { accion, item }: { accion; item: any }
+) {
     this.forms.cursos.reset()
 
-    clearValidators.call(this)
+    cursos.clearValidators.call(this)
+    cursosNivelesGrados.clearValidators.call(this)
 
     switch (accion) {
         case 'agregar':
@@ -116,16 +122,43 @@ export function accionBtnCursos(this: CurriculasComponent, { accion, item }) {
             break
 
         case 'assignCursosInNivelesGrados':
-            Object.keys(
-                this.forms.assignCursosInNivelesGrados.controls
-            ).forEach((field) => {
-                const control =
-                    this.forms.assignCursosInNivelesGrados.get(field)
-                control?.markAsTouched() // Marca como tocado (touched)
-                control?.markAsDirty() // Marca como modificado (dirty)
-            })
+            // Object.keys(
+            //     this.forms.assignCursosInNivelesGrados.controls
+            // ).forEach((field) => {
+            //     const control =
+            //         this.forms.assignCursosInNivelesGrados.get(field)
+            //     control?.markAsTouched() // Marca como tocado (touched)
+            //     control?.markAsDirty() // Marca como modificado (dirty)
+            // })
 
-            if (this.forms.assignCursosInNivelesGrados.invalid) return
+            // if (this.forms.assignCursosInNivelesGrados.invalid) return
+
+            console.log('assign')
+
+            this.dialogs.cursosNivelesCursos = {
+                title: 'Asignar cursos a niveles y grados',
+                visible: true,
+            }
+
+            const patch: FormPatch = {
+                cursos: [
+                    'cCursoImagen',
+                    'cCursoNombre',
+                    'cCursoPerfilDocente',
+                    'iCurrId',
+                    'iCursoId',
+                    'iEstado',
+                    'iTipoCursoId',
+                    'nCursoCredPractica',
+                    'nCursoCredTeoria',
+                ],
+            }
+
+            patchValues.call(this, item, patch)
+
+            cursos.disabledFields.call(this)
+
+            cursosNivelesGrados.addValidators.call(this)
 
             break
 
@@ -151,11 +184,27 @@ function setValues(this: CurriculasComponent, item) {
     })
 }
 
+function patchValues(
+    this: CurriculasComponent,
+    item: any,
+    fields: (keyof iCursos['payload'])[]
+) {
+    const valuesToPatch: { [key: string]: any } = {}
+
+    fields.forEach((field) => {
+        if (field in item) {
+            valuesToPatch[field] = item[field]
+        }
+    })
+
+    this.forms.cursos.patchValue(valuesToPatch)
+}
+
 export function cursosSave(this: CurriculasComponent, item) {
     console.log('item')
     console.log(item)
 
-    const payload: payload = {
+    const payload: iCursos['payload'] = {
         iCurrId: item.iCurrId,
         iTipoCursoId: item.iTipoCursoId,
         cCursoNombre: item.cCursoNombre,
@@ -195,7 +244,7 @@ export function validateFormCursos(this: CurriculasComponent): boolean {
     return isValid
 }
 
-const fieldsValidate: (keyof payload)[] = ['cCursoNombre']
+const fieldsValidate: (keyof iCursos['payload'])[] = ['cCursoNombre']
 
 function addValidators(this: CurriculasComponent) {
     fieldsValidate.forEach((field) => {
@@ -209,4 +258,20 @@ function clearValidators(this: CurriculasComponent) {
         this.forms.cursos.get(field).clearValidators()
         this.forms.cursos.get(field).updateValueAndValidity()
     })
+}
+
+function disabledFields(this: CurriculasComponent) {
+    const controls = this.forms.cursos.controls
+
+    Object.keys(controls).forEach((field) => {
+        this.forms.cursos.get(field).disable()
+    })
+}
+
+export const cursos = {
+    fieldsValidate,
+    addValidators,
+    clearValidators,
+    disabledFields,
+    patchValues,
 }

@@ -1,3 +1,11 @@
+export const agregar = {
+    labelTooltip: 'Añadir',
+    text: 'Añadir',
+    icon: 'pi pi-plus',
+    accion: 'agregar',
+    class: 'p-button-primary',
+}
+
 export const editar = {
     labelTooltip: 'Editar',
     icon: 'pi pi-pencil',

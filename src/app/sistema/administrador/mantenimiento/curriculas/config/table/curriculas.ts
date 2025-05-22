@@ -1,6 +1,6 @@
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { CurriculasComponent } from '../../curriculas.component'
-import { payload } from '../types/curricula'
+import { iCurriculas } from '../types/curricula'
 import { Validators } from '@angular/forms'
 
 export const curriculasColumns: IColumn[] = [
@@ -86,7 +86,7 @@ export function accionBtnCurriculas(
 ) {
     this.forms.curriculas.reset()
     this.forms.cursos.reset()
-    this.forms.assignCursosInNivelesGrados.reset()
+    this.forms.cursosNivelesGrados.reset()
 
     clearValidators.call(this)
 
@@ -167,7 +167,7 @@ function setValues(this: CurriculasComponent, item) {
 export function curriculasSave(this: CurriculasComponent) {
     const formCurricula = this.forms.curriculas.value
 
-    const payload: payload = {
+    const payload: iCurriculas['payload'] = {
         iModalServId: formCurricula.iModalServId,
         iCurrNotaMinima: Number(formCurricula.iCurrNotaMinima),
         iCurrTotalCreditos: Number(formCurricula.iCurrTotalCreditos),
@@ -209,7 +209,7 @@ export function validateFormCurricula(this: CurriculasComponent): boolean {
     return isValid
 }
 
-const fieldsValidate: (keyof payload)[] = ['cCurrDescripcion']
+const fieldsValidate: (keyof iCurriculas['payload'])[] = ['cCurrDescripcion']
 
 function addValidators(this: CurriculasComponent) {
     fieldsValidate.forEach((field) => {

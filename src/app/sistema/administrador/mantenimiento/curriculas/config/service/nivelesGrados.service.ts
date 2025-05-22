@@ -33,4 +33,18 @@ export class CursosNivelesGradosService {
             where: `iCurrId=${iCurrId} AND iNivelGradoId=${iNivelGradoId}`,
         })
     }
+
+    insCursosNivelesGrados(data) {
+        return this.http.post(this.endPoint + '/addCurriculas', {
+            json: JSON.stringify(data),
+            opcion: 'addCursosNivelesGrados',
+        })
+    }
+
+    updCursosNivelesGrados(data) {
+        return this.http.put(this.endPoint + '/updCurriculas', {
+            json: JSON.stringify(data),
+            opcion: 'updCursosNivelesGrados',
+        })
+    }
 }

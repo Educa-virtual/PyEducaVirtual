@@ -1,4 +1,4 @@
-export interface payload {
+interface payload {
     iCurrId?: string
     iModalServId: string
     iCurrNotaMinima: number
@@ -13,4 +13,11 @@ export interface payload {
     cCurrRsl: string
     dtCurrRsl: string
     cCurrDescripcion: string
+}
+
+export interface iCurriculas {
+    payload: payload
+    formGroup: {
+        [K in keyof payload]: any[]
+    }
 }

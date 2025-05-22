@@ -224,10 +224,11 @@ export class AreaCardComponent implements OnInit {
                     window.URL.revokeObjectURL(url)
                 },
                 error: (error) => {
+                    console.log('error', error)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Problema al descargar el archivo',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
             })

@@ -137,7 +137,7 @@ export class LoginComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: '¡Atención!',
-                    detail: error,
+                    detail: error.error.message,
                     /*error.pass || error.user
                             ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
                             : 'Verifica tus Credenciales',*/

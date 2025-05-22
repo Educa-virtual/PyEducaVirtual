@@ -85,7 +85,7 @@ export class PreguntasComponent implements OnInit {
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
         height: 400,
         editable_root: this.isDisabled,
@@ -100,7 +100,7 @@ export class PreguntasComponent implements OnInit {
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
         editable_root: this.isDisabled,
     }

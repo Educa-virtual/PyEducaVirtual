@@ -257,7 +257,13 @@ export class ApiAulaService {
             )
             .pipe(map((resp) => resp.data))
     }
-    obtenerReporteFinalDeNotas(params: { iIeCursoId }) {
+    obtenerReporteFinalDeNotas(params: {
+        iIeCursoId
+        iYAcadId
+        iSedeId
+        iSeccionId
+        iNivelGradoId
+    }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
             {

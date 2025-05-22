@@ -7,18 +7,14 @@
         class="tab"
     />
     <div class="mt-5" *ngIf="seleccionarResultado === '1'">
-        <p-dataView #dv [rows]="5" filterBy="completoalumno">
-            <ng-template let-products pTemplate="listItem">
-                <app-table-primeng
-                    [columnas]="columnasTabla"
-                    [data]="reporteNotasFinales"
-                    (accionBtnItem)="accionBnt($event)"
-                    [actions]="accionesTabla"
-                >
-                    <!--  -->
-                </app-table-primeng>
-            </ng-template>
-        </p-dataView>
+        <app-table-primeng
+            [columnas]="columnasTabla"
+            [data]="reporteNotasFinales"
+            (accionBtnItem)="accionBnt($event)"
+            [actions]="accionesTabla"
+        >
+            <!--  -->
+        </app-table-primeng>
     </div>
     <div class="grid col-12 mt-5" *ngIf="seleccionarResultado === '2'">
         <div class="card col-4 relative mr-2">

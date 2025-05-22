@@ -24,4 +24,7 @@ export interface ICurso {
     iEvaluacionIdHashed?: string
     iCursoNivelGradId?: string
     cSeccion?: string
+    iIeCursoId?: string
+    iNivelGradoId?: string
+    iSeccionId?: string
 }

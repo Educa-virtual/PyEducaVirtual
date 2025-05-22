@@ -241,8 +241,6 @@ export class TabInicioComponent implements OnInit {
             this.guardarComunicado.patchValue({
                 numero: this.contadorAnuncios,
             })
-            console.log('Anuncios:', this.contadorAnuncios)
-            console.log(this.data)
         })
     }
 }

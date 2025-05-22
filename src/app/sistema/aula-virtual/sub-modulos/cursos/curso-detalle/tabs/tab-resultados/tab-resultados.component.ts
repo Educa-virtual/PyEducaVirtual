@@ -1,9 +1,5 @@
-import { CommonModule } from '@angular/common'
 import { Component, OnInit, Input, inject } from '@angular/core'
-import {
-    ContainerPageComponent,
-    IActionContainer,
-} from '@/app/shared/container-page/container-page.component'
+import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
     IColumn,
@@ -19,58 +15,22 @@ import {
     matRule,
     matStar,
 } from '@ng-icons/material-icons/baseline'
-import { DataViewModule } from 'primeng/dataview'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
-import { DropdownModule } from 'primeng/dropdown'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { TableModule } from 'primeng/table'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
-import { GeneralService } from '@/app/servicios/general.service'
-import { TabViewModule } from 'primeng/tabview'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Message, MessageService } from 'primeng/api'
 import { Subject, takeUntil } from 'rxjs'
-import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TabsKeys } from '../tab.interface'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
-import { TooltipModule } from 'primeng/tooltip'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
     templateUrl: './tab-resultados.component.html',
     styleUrls: ['./tab-resultados.component.scss'],
-    imports: [
-        TablePrimengComponent,
-        TooltipModule,
-        ButtonModule,
-        RemoveHTMLPipe,
-        TabViewModule,
-        TableModule,
-        CommonInputComponent,
-        IconComponent,
-        DataViewModule,
-        OrderListModule,
-        InputIconModule,
-        PrimengModule,
-        IconFieldModule,
-        ContainerPageComponent,
-        InputTextModule,
-        DropdownModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        CommonModule,
-    ],
+    imports: [TablePrimengComponent, PrimengModule],
     providers: [
         provideIcons({
             matHideSource,
@@ -92,7 +52,6 @@ export class TabResultadosComponent implements OnInit {
     @Input() idDocCursoId
     @Input() curso
 
-    private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     private _confirmService = inject(ConfirmationModalService)
@@ -420,11 +379,13 @@ export class TabResultadosComponent implements OnInit {
     // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []
     obtenerReporteDenotasFinales() {
-        console.log('idCurso:', this.iCursoId)
-        const value = this.iCursoId
         this._aulaService
             .obtenerReporteFinalDeNotas({
-                iIeCursoId: value,
+                iIeCursoId: this.curso.iIeCursoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iSeccionId: this.curso.iSeccionId,
+                iNivelGradoId: this.curso.iNivelGradoId,
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
@@ -611,12 +572,10 @@ export class TabResultadosComponent implements OnInit {
     unidades: any[] = []
     habilitarCalificacion() {
         const idYear = 3 //this._constantesService.iYAcadId
-        console.log('fecha', idYear)
         const params = {
             iYAcadId: idYear,
             iCredId: this._constantesService.iCredId,
         }
-        console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
             this.unidades = this.unidades.map((unidad) => {

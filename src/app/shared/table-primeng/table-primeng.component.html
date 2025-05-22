@@ -408,7 +408,7 @@
                         }
                         @if (col.type === 'estado-activo') {
                             <div [style.text-align]="col.text">
-                                @if (rowData[col.field].toString() === '1') {
+                                @if (rowData[col.field]?.toString() === '1') {
                                     <i
                                         class="pi pi-check-circle"
                                         style="color: green"

@@ -56,8 +56,10 @@ export class ActividadRowComponent implements OnInit {
     iPerfilId: number = null
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
+
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
+        console.log('actividad', this.actividad)
     }
     onAction(action: string, event: Event) {
         //console.log(this.actividad, action, event)
@@ -78,6 +80,19 @@ export class ActividadRowComponent implements OnInit {
                 break
         }
         return styleActividad
+    }
+    // asignar el color de los caracteres del titulo
+    asignarColorActividad(): string {
+        if (this.actividad.iActTipoId === TAREA) {
+            return 'background-tarea'
+        }
+        if (this.actividad.iActTipoId === EVALUACION) {
+            return 'background-evaluacion'
+        }
+        if (this.actividad.iActTipoId === FORO) {
+            return 'background-foro'
+        }
+        return 'background-default'
     }
 
     actividadSelected

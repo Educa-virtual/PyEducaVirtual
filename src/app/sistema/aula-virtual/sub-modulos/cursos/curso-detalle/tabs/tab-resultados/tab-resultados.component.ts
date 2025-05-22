@@ -423,6 +423,7 @@ export class TabResultadosComponent implements OnInit {
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
+
                 // console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
                 //console.log('Mostrar notas finales', this.reporteNotasFinales)

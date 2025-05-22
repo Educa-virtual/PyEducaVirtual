@@ -1,0 +1,114 @@
+<!-- <ul>
+  <li>
+    <input type="checkbox" id="myCheckbox1" />
+    <label for="myCheckbox1"><img src="http://townandcountryremovals.com/wp-content/uploads/2013/10/firefox-logo-200x200.png" alt="" width=""/></label>
+  </li>
+
+  <li>
+    <input type="checkbox" id="myCheckbox2" />
+    <label for="myCheckbox2">
+      
+      <img src="http://tech21info.com/admin/wp-content/uploads/2013/03/chrome-logo-200x200.png" alt="" width="" />
+  
+    </label>
+    
+  </li>
+  
+  <li>
+    <input type="checkbox" id="myCheckbox3" />
+    <label for="myCheckbox3"><img src="http://www.thebusinessofsports.com/wp-content/uploads/2010/10/facebook-icon-200x200.png" alt="" width="" /></label>
+  </li>
+</ul> -->
+
+<!-- <div class="card my-3">
+    <p-carousel
+        [value]="products"
+        [numVisible]="3"
+        [numScroll]="1"
+        [circular]="false"
+        [responsiveOptions]="responsiveOptions"        
+    >
+        <ng-template let-product pTemplate="item">
+            <div class="border-1 surface-border border-round m-2 p-3">
+                <div class="mb-3">
+                    <div class="relative mx-auto">
+                      <input type="checkbox" id="myCheckbox3" />
+                      <label for="myCheckbox3">
+                        <img
+                          src="{{ product.image}}"
+                          [alt]="product.name"
+                          class="w-full border-round"
+                        />
+                      </label>
+                        <p-tag
+                            [value]="product.inventoryStatus"
+                            class="absolute"
+                            [severity]="getSeverity(product.inventoryStatus)" 
+                            [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
+                        />
+                    </div>
+                    
+                </div>
+                <div class="mb-3 font-medium">
+                    {{ product.name }}
+                </div>
+                
+            </div>
+        </ng-template>
+    </p-carousel>
+</div> -->
+<!-- id="myCheckbox3" [checked]="isSelected(product)" 
+                          (change)="toggleSelection(product)" 
+                          [id]="'checkbox-' + product.id"  -->
+<!-- <label for="myCheckbox3"> 
+                          <img 
+                              src="{{ product.image }}" 
+                              [alt]="product.name" 
+                              class="w-full border-round" />
+                        </label> -->
+
+<div class="card">
+    <p-carousel
+        [value]="products"
+        [numVisible]="3"
+        [numScroll]="1"
+        [responsiveOptions]="responsiveOptions"
+    >
+        <ng-template let-product pTemplate="item">
+            <div class="border-1 surface-border border-round m-2 p-3">
+                <div class="mb-3">
+                    <div class="relative mx-auto">
+                        <!-- <input type="checkbox" [id]="'checkbox-' + product.id" /> -->
+                        <input
+                            type="checkbox"
+                            [id]="'checkbox-' + product.id"
+                            [checked]="isSelected(product)"
+                            (change)="toggleSelection(product)"
+                        />
+
+                        <label [for]="'checkbox-' + product.id">
+                            <img
+                                [src]="product.image"
+                                [alt]="product.name"
+                                class="w-full border-round"
+                            />
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3 font-medium">
+                    {{ product.name }}
+                </div>
+            </div>
+        </ng-template>
+    </p-carousel>
+    <div class="text-right mt-3" *ngIf="selectedProducts.length > 0">
+        <button
+            pButton
+            type="button"
+            label="guardar imagenes"
+            icon="pi pi-save"
+            class="p-Button-success"
+            (click)="guardarImagenes()"
+        ></button>
+    </div>
+</div>

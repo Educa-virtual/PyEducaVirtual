@@ -9,90 +9,89 @@
                     </span>
                 </div>
             </ng-template>
-            <div class="flex grid tab-content">
-                <div
-                    class="card"
-                    [class]="iPerfilId !== ESTUDIANTE ? 'col-12' : 'col-6'"
+            <app-toolbar-primeng
+                [title]="
+                    'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')
+                "
+            >
+                <button
+                    [ngClass]="{
+                        'border-none': true,
+                        'cursor-pointer': true,
+                    }"
+                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                    pButton
                 >
-                    <h2>Tarea: {{ data?.cTareaTitulo }}</h2>
-                    <div class="grid">
-                        <!-- Columna 1: Muestra la fecha de inicio y la hora límite -->
-                        <div class="col-6 md:col-6 flex flex-column gap-2">
-                            <!-- Título de la sección con icono y estilo -->
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Fecha inicio</span
+                    <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
+                    <i
+                        class="pi pi-ellipsis-h text-white hover:text-blue-300"
+                    ></i>
+                </button>
+            </app-toolbar-primeng>
+            <div class="card">
+                <div class="grid">
+                    <div class="col-12 md:col-8">
+                        <span class="font-bold text-xl flex gap-2">
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            Fecha de Inicio:
+                        </span>
+                        <p class="pl-5">
+                            {{
+                                data?.dtTareaInicio
+                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                            }}
+                            {{ data?.dtTareaInicio | date: 'h:mm a' }}
+                        </p>
+                        <span class="font-bold text-xl flex gap-2 mt-3">
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            Fecha Fin:
+                        </span>
+                        <p class="pl-5">
+                            {{
+                                data?.dtTareaFin
+                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                            }}
+                            {{ data?.dtTareaFin | date: 'h:mm a' }}
+                        </p>
+                        @if (data?.iEstado === 1) {
+                            <span
+                                class="mt-2 ml-1 font-bold text-3xl text-orange-500"
+                                >BORRADOR</span
                             >
-                            <!-- Contenido de la fecha de inicio -->
-                            <p>
-                                {{ data?.dtTareaInicio | date }}
-
-                                <span class="font-bold">Hora Limite: </span>
-                                {{ data?.dtTareaInicio | date: 'shortTime' }}
-                            </p>
-                        </div>
-                        <!-- Columna 2: Muestra la fecha de entrega y la hora límite -->
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Fecha de Entrega</span
+                        }
+                        @if (data?.iEstado === 2) {
+                            <span
+                                class="mt-2 ml-1 font-bold text-3xl text-green-500"
+                                >PUBLICADO</span
                             >
-                            <!-- Contenido de la fecha de entrega -->
-                            <p>
-                                {{ data?.dtTareaFin | date }}
-                                <span class="font-bold">Hora Limite: </span>
-                                {{ data?.dtTareaFin | date: 'shortTime' }}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="p-fluid">
-                        <div class="p-field">
-                            <p *ngIf="true">Para estudiantes</p>
-                            <h3>
-                                <label for="descripcion" class="p-text-bold"
-                                    >Descripción de la tarea</label
-                                >
-                            </h3>
-                            <!--  en esta seccion se esta usando Directiva de PrimeNG para aplicar estilos y funcionalidades al campo de texto
-                 Desactiva el campo si no existe 'data.cTareaDescripcion' o si 'isDisabled' es verdadero -->
-                            <input
-                                id="descripcion"
-                                type="text"
-                                pInputText
-                                [value]="data?.cTareaDescripcion"
-                                [disabled]="
-                                    !data?.cTareaDescripcion || isDisabled
-                                "
-                                placeholder="Ingrese el título de la tarea"
-                                class="p-inputtext-sm"
-                            />
-                        </div>
+                        }
                     </div>
 
-                    <div>
-                        <!-- Título para la sección de recursos -->
-                        <h2>Recursos:</h2>
-                        <app-recursos-lista [files]="FilesTareas">
-                        </app-recursos-lista>
-                    </div>
-                    instrumentos
-                    <div>
-                        <app-rubricas
-                            [title]="'Rúbricas'"
-                            mode="SELECTION"
-                            [params]="params"
-                            (rubricaSelectedChange)="accionRubrica($event)"
-                        ></app-rubricas>
+                    <div class="col-12 md:col-4">
+                        <h3 class="text-lg m-0">Instrucciones:</h3>
+                        <div
+                            class="bg-blue-100 p-3 border-round min-h-10rem h-10rem text-center"
+                        >
+                            <!-- <p-editor
+                                appEditorOnlyView
+                                class="quill-only-view"
+                                [(ngModel)]="cEvaluacionInstrucciones"
+                            >
+                            
+                            </p-editor> -->
+                            {{ data?.cTareaDescripcion }}
+                        </div>
                     </div>
                 </div>
+
                 <!-- Esta tarjeta se muestra solo si iPerfilId es 8, lo que indica que solo ciertos usuarios pueden ver este contenido -->
                 <div class="card col-6" [hidden]="iPerfilId !== ESTUDIANTE">
                     <!-- Verifica si hay una tarea individual para el estudiante y no es una tarea grupal -->
@@ -373,6 +372,85 @@
                     }
                 </div>
             </div>
+            <!--  -->
+            <div class="flex flex-column my-4 gap-4">
+                <!-- card mostrar o agregar las rubricas de esa tarea -->
+                <article class="card">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
+                        <app-rubricas
+                            [title]="'Rúbricas'"
+                            mode="SELECTION"
+                            [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"
+                        ></app-rubricas>
+                    </div>
+
+                    <!-- <div class="">
+                        <app-rubrica-evaluacion
+                            (clickNameRubrica)="showRubrica($event)"
+                            class="w-full"
+                        >
+                        </app-rubrica-evaluacion>
+                    </div>
+                    <div class="">
+                        <p-dialog
+                            [modal]="true"
+                            [header]="
+                                'Rubrica - ' + dialogRubricaInfo.header
+                            "
+                            [(visible)]="dialogRubricaInfo.visible"
+                            [style]="{ width: '75rem' }"
+                            [breakpoints]="{
+                                '1199px': '75vw',
+                                '575px': '90vw',
+                            }"
+                            [maximizable]="true"
+                        >
+                            <app-rubrica-calificar
+                                [enableCellSelection]="false"
+                                [showSortIcon]="false"
+                                class="w-full"
+                            >
+                            </app-rubrica-calificar>
+                        </p-dialog> 
+                     </div> -->
+                </article>
+
+                <!-- carde de mostrar recursos -->
+                <article class="card">
+                    <h2>Recursos</h2>
+                    <p-accordion>
+                        <p-accordionTab header="Recursos Adjuntos">
+                            <!-- Verifica si no hay archivos adjuntos -->
+                            <ng-container>
+                                <!-- *ngIf="
+                                    evaluacion?.cEvaluacionArchivoAdjunto
+                                        .length === 0;
+                                    else resourcesList
+                                " -->
+                                <app-empty-section
+                                    class="w-full"
+                                    [message]="'Sin recursos asignados'"
+                                ></app-empty-section>
+                            </ng-container>
+
+                            <!-- Si hay recursos adjuntos -->
+                            <ng-template #resourcesList>
+                                <!-- <app-recursos-lista
+                                [files]="
+                                        evaluacion?.cEvaluacionArchivoAdjunto ??
+                                        []
+                                    "
+                                    
+                                >
+                                </app-recursos-lista> -->
+                            </ng-template>
+                        </p-accordionTab>
+                    </p-accordion>
+                </article>
+            </div>
         </p-tabPanel>
 
         @if (iPerfilId !== ESTUDIANTE) {
@@ -386,6 +464,26 @@
                         </span>
                     </div>
                 </ng-template>
+                <app-toolbar-primeng
+                    [title]="
+                        'Tarea: ' +
+                        (data?.cTareaTitulo || 'Título no disponible')
+                    "
+                >
+                    <button
+                        [ngClass]="{
+                            'border-none': true,
+                            'cursor-pointer': true,
+                        }"
+                        class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                        pButton
+                    >
+                        <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
+                        <i
+                            class="pi pi-ellipsis-h text-white hover:text-blue-300"
+                        ></i>
+                    </button>
+                </app-toolbar-primeng>
                 <!--Es un contenedor de nivel de bloque en HTML que se usa comúnmente para agrupar y organizar otros elementos.-->
                 <div class="flex flex-column gap-4 tab-content">
                     <div class="grid">
@@ -481,144 +579,11 @@
                                                     </div>
                                                 </div>
                                                 <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
-                                                <p-table
-                                                    #dv
-                                                    class="col-12 hoverTable"
-                                                    [value]="estudiantes"
-                                                    paginator="false"
-                                                    [globalFilterFields]="[
-                                                        'cPersPaterno',
-                                                        'cPersMaterno',
-                                                        'cPersNombre',
-                                                    ]"
-                                                    styleClass="p-datatable-sm"
-                                                    [scrollable]="true"
-                                                    scrollHeight="300px"
+                                                <app-card-orderlist
+                                                    [data]="estudiantes"
                                                 >
-                                                    <!-- Plantilla de encabezado que incluye el filtro de búsqueda -->
-                                                    <ng-template
-                                                        pTemplate="caption"
-                                                    >
-                                                        <div
-                                                            class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
-                                                        >
-                                                            <p-iconField
-                                                                iconPosition="left"
-                                                            >
-                                                                <p-inputIcon
-                                                                    styleClass="pi pi-search text-md"
-                                                                />
-                                                                <input
-                                                                    pInputText
-                                                                    type="text"
-                                                                    class="py-2"
-                                                                    (input)="
-                                                                        onGlobalFilter(
-                                                                            dv,
-                                                                            $event
-                                                                        )
-                                                                    "
-                                                                    placeholder="Buscar por apellidos y nombres"
-                                                                />
-                                                            </p-iconField>
-                                                        </div>
-                                                    </ng-template>
-
-                                                    <!-- Plantilla de encabezado de la tabla -->
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <tr
-                                                            class="sticky-header th"
-                                                        >
-                                                            <th>#</th>
-                                                            <th>Apellidos</th>
-                                                            <th>Nombres</th>
-                                                            <th>Estado</th>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <!-- Fila de la tabla que se renderiza por cada estudiante en el contexto -->
-                                                    <ng-template
-                                                        pTemplate="body"
-                                                        let-estudiante
-                                                        let-rowIndex="rowIndex"
-                                                    >
-                                                        <tr
-                                                            (click)="
-                                                                getTareaRealizada(
-                                                                    estudiante
-                                                                );
-                                                                nEstudiante =
-                                                                    rowIndex
-                                                            "
-                                                            [class]="
-                                                                nEstudiante ===
-                                                                rowIndex
-                                                                    ? 'bg-green-200'
-                                                                    : ''
-                                                            "
-                                                        >
-                                                            <td>
-                                                                {{
-                                                                    rowIndex + 1
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante.cPersPaterno
-                                                                }}
-
-                                                                {{
-                                                                    estudiante.cPersMaterno
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante?.cPersNombre
-                                                                }}
-                                                            </td>
-
-                                                            <td
-                                                                style="
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                <div
-                                                                    class="w-1rem h-1rem border-circle ml-3"
-                                                                    [ngClass]="
-                                                                        estudiante.cEstado ===
-                                                                        '0'
-                                                                            ? 'bg-red-500'
-                                                                            : estudiante.cEstado ===
-                                                                                '2'
-                                                                              ? 'bg-yellow-500'
-                                                                              : 'bg-green-500'
-                                                                    "
-                                                                ></div>
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-
-                                                    <!-- Fila de la tabla que se renderiza por cada estudiante en el contexto
-                                            Es una directiva de Angular que permite definir una plantilla reutilizable-->
-
-                                                    <ng-template
-                                                        pTemplate="emptymessage"
-                                                        let-columns
-                                                    >
-                                                        <tr>
-                                                            <td
-                                                                [attr.colspan]="
-                                                                    8
-                                                                "
-                                                            >
-                                                                No se
-                                                                encontraron
-                                                                resultados.
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                </p-table>
+                                                    <!-- (datoSeleccionado)="updateSelectedEstudiante($event)" -->
+                                                </app-card-orderlist>
                                             </div>
                                         </p-accordionTab>
                                     } @else {

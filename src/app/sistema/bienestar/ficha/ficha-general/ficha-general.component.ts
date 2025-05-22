@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { FichaGeneral } from '../../interfaces/fichaGeneral'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -31,6 +32,7 @@ export class FichaGeneralComponent implements OnInit {
     tipos_vias: Array<object>
     visibleInput: Array<boolean>
     ficha_registrada: boolean = false
+    idFicha: any
 
     private _MessageService = inject(MessageService)
     private _ConfirmService = inject(ConfirmationModalService)
@@ -38,16 +40,20 @@ export class FichaGeneralComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService
+        private compartirFichaService: CompartirFichaService,
+        private route: ActivatedRoute
     ) {
         this.compartirFichaService.setActiveIndex(0)
     }
 
     ngOnInit() {
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.idFicha = params.get('id')
+        })
+        console.log(this.idFicha)
         this.visibleInput = Array(3).fill(false)
 
         this.formGeneral = this.fb.group({
-            iSesionId: this.compartirFichaService.perfil?.iCredId,
             iPersId: this.compartirFichaService.perfil?.iPersId,
             iFichaDGId: this.compartirFichaService.getiFichaDGId(),
             iTipoViaId: [null, Validators.required],

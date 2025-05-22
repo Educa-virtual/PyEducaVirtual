@@ -32,6 +32,20 @@ const routes: Routes = [
             { path: 'recreacion', component: FichaRecreacionComponent },
         ],
     },
+    {
+        path: 'ficha/:id',
+        component: FichaComponent,
+        children: [
+            { path: 'general', component: FichaGeneralComponent },
+            { path: 'familia', component: FichaFamiliaComponent },
+            { path: 'economico', component: FichaEconomicoComponent },
+            { path: 'vivienda', component: FichaViviendaComponent },
+            { path: 'alimentacion', component: FichaAlimentacionComponent },
+            { path: 'discapacidad', component: FichaDiscapacidadComponent },
+            { path: 'salud', component: FichaSaludComponent },
+            { path: 'recreacion', component: FichaRecreacionComponent },
+        ],
+    },
 ]
 
 @NgModule({

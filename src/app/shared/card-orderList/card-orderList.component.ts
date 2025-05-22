@@ -1,5 +1,12 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    OnChanges,
+    SimpleChanges,
+} from '@angular/core'
 
 @Component({
     selector: 'app-card-orderlist',
@@ -8,16 +15,21 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
     styleUrls: ['./card-orderList.component.scss'],
     imports: [PrimengModule],
 })
-export class CardOrderListComponent implements OnInit {
+export class CardOrderListComponent implements OnChanges {
     @Input() data: any[] = [] // Lista de datos
+    @Input() mostrarImagen: boolean = false // Lista de datos
     @Output() datoSeleccionado = new EventEmitter<any>() // Evento para el padre
-    constructor() {}
 
-    ngOnInit() {
-        console.log('')
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['data']) {
+            this.data = changes['data']?.currentValue
+        }
+        if (changes['mostrarImagen']) {
+            this.mostrarImagen = changes['mostrarImagen']?.currentValue
+        }
     }
-    obtenerDatos(estudiante: any) {
-        this.datoSeleccionado.emit(estudiante) // Emitimos el estudiante seleccionado
+    obtenerDatos(data: any) {
+        this.datoSeleccionado.emit(data) // Emitimos el estudiante seleccionado
     }
     // en esta forma se puede importar el componente
     // <app-card-orderlist

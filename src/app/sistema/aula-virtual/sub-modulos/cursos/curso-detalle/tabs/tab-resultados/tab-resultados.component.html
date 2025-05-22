@@ -4,85 +4,66 @@
         [(ngModel)]="seleccionarResultado"
         optionLabel="label"
         optionValue="value"
+        (onChange)="obtenerTab($event)"
         class="tab"
     />
-    <div class="mt-5" *ngIf="seleccionarResultado === '1'">
-        <app-table-primeng
-            [columnas]="columnasTabla"
-            [data]="reporteNotasFinales"
-            (accionBtnItem)="accionBnt($event)"
-            [actions]="accionesTabla"
-        >
-            <!--  -->
-        </app-table-primeng>
-    </div>
-    <div class="grid col-12 mt-5" *ngIf="seleccionarResultado === '2'">
-        <div class="card col-4 relative mr-2">
-            <!-- Mostrar lista de estudiantes matriculados en ese curso -->
-            <samp class="tagEst">Lista de Estudiantes</samp>
-            <div class="mt-3">
-                <p-orderList
-                    class="listAlumno"
-                    [value]="reporteNotasFinales"
-                    filterBy="completoalumno"
-                    filterPlaceholder="Buscar...."
-                >
-                    <ng-template
-                        let-estudiante
-                        of
-                        comentarios
-                        pTemplate="listItem"
-                        let-i="index"
+
+    <div class="grid">
+        @switch (seleccionarResultado) {
+            @case ('1') {
+                <div class="col-12 mt-5">
+                    <app-table-primeng
+                        [columnas]="columnasTabla"
+                        [data]="reporteNotasFinales"
+                        (accionBtnItem)="accionBnt($event)"
+                        [actions]="accionesTabla"
                     >
-                        <div
-                            class="perfilesList"
-                            tabindex="0"
-                            (click)="obtenerComnt(estudiante)"
-                            (keydown.enter)="obtenerComnt(estudiante)"
+                        <!--  -->
+                    </app-table-primeng>
+                </div>
+            }
+            @case ('2') {
+                <div class="card col-12 md:col-4 relative mr-2 mt-6">
+                    <samp class="tagEst">Lista de Estudiantes</samp>
+                    <div class="mt-3">
+                        <app-card-orderlist
+                            [data]="reporteNotasFinales"
+                            (datoSeleccionado)="obtenerComnt($event)"
                         >
-                            <img
-                                src="assets/demo/images/matemit/perfil.png"
-                                alt=""
-                                class="w-3rem btn"
+                        </app-card-orderlist>
+                    </div>
+                </div>
+                <div class="card col relative mt-6">
+                    <samp class="tagDet">Detalles por Estudiante</samp>
+                    <!-- Mostrar botones de las actividades realizadas -->
+                    <div class="mt-5 col-12">
+                        <p-selectButton
+                            [options]="listarActividades"
+                            [(ngModel)]="actividadSeleccionado"
+                            optionLabel="label"
+                            optionValue="value"
+                            class="actividad"
+                        >
+                        </p-selectButton>
+                    </div>
+                    <div class="grid col-12">
+                        <div class="col-6">
+                            <p-dropdown
+                                optionLabel="name"
+                                styleClass="w-full"
+                                placeholder="Todos los periodos"
                             />
-                            <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
-                            <div class="perfil-name">
-                                {{ estudiante?.completoalumno | uppercase }}
-                            </div>
                         </div>
-                    </ng-template>
-                </p-orderList>
-            </div>
-        </div>
-        <div class="card col relative">
-            <samp class="tagDet">Detalles por Estudiante</samp>
-            <!-- Mostrar botones de las actividades realizadas -->
-            <div class="mt-5 col-12">
-                <p-selectButton
-                    [options]="listarActividades"
-                    [(ngModel)]="actividadSeleccionado"
-                    optionLabel="label"
-                    optionValue="value"
-                    class="actividad"
-                >
-                </p-selectButton>
-            </div>
-            <div class="grid col-12">
-                <div class="col-6">
-                    <p-dropdown
-                        optionLabel="name"
-                        styleClass="w-full"
-                        placeholder="Todos los periodos"
-                    />
+                        <div class="col-6">
+                            <p-dropdown
+                                optionLabel="name"
+                                styleClass="w-full"
+                                placeholder="Todas las semanas"
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <p-dropdown
-                        optionLabel="name"
-                        styleClass="w-full"
-                        placeholder="Todas las semanas"
-                    />
-                </div>
-            </div>
-        </div>
+            }
+        }
     </div>
 </div>

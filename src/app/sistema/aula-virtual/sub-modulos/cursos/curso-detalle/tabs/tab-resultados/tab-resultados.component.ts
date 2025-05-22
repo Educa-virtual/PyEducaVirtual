@@ -25,12 +25,14 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TabsKeys } from '../tab.interface'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { CardOrderListComponent } from '../../../../../../../shared/card-orderList/card-orderList.component'
+import { SelectButtonChangeEvent } from 'primeng/selectbutton'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
     templateUrl: './tab-resultados.component.html',
     styleUrls: ['./tab-resultados.component.scss'],
-    imports: [TablePrimengComponent, PrimengModule],
+    imports: [TablePrimengComponent, PrimengModule, CardOrderListComponent],
     providers: [
         provideIcons({
             matHideSource,
@@ -389,7 +391,12 @@ export class TabResultadosComponent implements OnInit {
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
-
+                this.reporteNotasFinales = Data['data'].map((item: any) => {
+                    return {
+                        ...item,
+                        cNombres: item.completoalumno,
+                    }
+                })
                 // console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
                 //console.log('Mostrar notas finales', this.reporteNotasFinales)
@@ -594,5 +601,14 @@ export class TabResultadosComponent implements OnInit {
             })
             //console.log('Mostrar fechas', this.unidades)
         })
+    }
+
+    iTabSeleccionado: string = '1'
+    obtenerTab(evn: SelectButtonChangeEvent) {
+        if (!evn.value) {
+            this.seleccionarResultado = this.iTabSeleccionado
+        } else {
+            this.iTabSeleccionado = evn.value
+        }
     }
 }

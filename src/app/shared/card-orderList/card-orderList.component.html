@@ -1,25 +1,21 @@
-<div class="pb-2">
-    <label for="" class="font-bold text-base">Seleccione un:</label>
-</div>
-<p-orderList
-    [value]="data"
-    filterBy="Estudiante"
-    filterPlaceholder="Buscar...."
->
+<p-orderList [value]="data" filterBy="cNombres" filterPlaceholder="Buscar....">
     <ng-template let-objeto pTemplate="listItem">
-        <div
-            class="perfilesList"
-            tabindex="0"
-            (click)="obtenerDatos(objeto)"
-            (keydown.enter)="obtenerDatos(objeto)"
-        >
-            <img
-                src="assets/demo/images/matemit/perfil.png"
-                alt=""
-                class="w-3rem btn"
-            />
-            <div class="perfil-name">
-                {{ objeto?.Estudiante | uppercase }}
+        <div>
+            @if (mostrarImagen) {
+                <img [src]="objeto.cImgUrl" alt="" class="w-3rem btn" />
+            }
+            <div
+                class="flex justify-content-between align-items-center"
+                style="gap: 0.5rem"
+            >
+                <div>{{ objeto?.cNombres }}</div>
+                <i
+                    class="pi pi-chevron-circle-right"
+                    style="font-size: 1.5rem; color: var(--green-500)"
+                    tabindex="0"
+                    (click)="obtenerDatos(objeto)"
+                    (keydown.enter)="obtenerDatos(objeto)"
+                ></i>
             </div>
         </div>
     </ng-template>

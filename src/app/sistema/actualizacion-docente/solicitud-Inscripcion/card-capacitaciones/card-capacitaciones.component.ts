@@ -14,13 +14,13 @@ export class CardCapacitacionesComponent {
     @Input() capacitacion
 
     updateUrl(item) {
-        item.cImagenUrl = 'cursos/images/no-image.jpg'
+        item.cImagenUrl = '/images/recursos/miss-lesson-animate.svg'
     }
     getUrlImg(cImagenUrl: string) {
         cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : []
         return cImagenUrl.length
             ? cImagenUrl[0]['url']
-            : '/cursos/images/no-image.jpg'
+            : '/images/recursos/miss-lesson-animate.svg'
     }
 
     // getUrlImg(cImagenUrl: string) {

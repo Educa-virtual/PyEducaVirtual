@@ -93,7 +93,7 @@ export class AreaCardComponent implements OnInit {
                 },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
-            {
+            /*{
                 label: 'Exportar a Word',
                 icon: 'pi pi-angle-right',
                 command: () => {
@@ -104,7 +104,7 @@ export class AreaCardComponent implements OnInit {
                     }
                 },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
-            },
+            },*/
             {
                 label: 'Subir eval. en PDF',
                 icon: 'pi pi-angle-right',
@@ -224,7 +224,6 @@ export class AreaCardComponent implements OnInit {
                     window.URL.revokeObjectURL(url)
                 },
                 error: (error) => {
-                    console.log('error', error)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Problema al descargar el archivo',

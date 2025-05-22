@@ -173,8 +173,8 @@ export class EvaluacionesFormComponent implements OnInit {
             if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: `Rellene los campos que esten vacíos o inválidos: ${camposInvalidos.join(', ')}`,
+                    summary: 'Faltan datos en campos requeridos',
+                    detail: `Ingrese datos en los campos resaltados en rojo`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
@@ -212,8 +212,8 @@ export class EvaluacionesFormComponent implements OnInit {
             if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: `Los siguientes campos están vacíos o inválidos: ${camposInvalidos.join(', ')}`,
+                    summary: 'Faltan datos en campos requeridos',
+                    detail: `Ingrese datos en los campos resaltados en rojo`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()

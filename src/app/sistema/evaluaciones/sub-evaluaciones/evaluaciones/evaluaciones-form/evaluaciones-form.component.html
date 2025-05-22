@@ -1,6 +1,6 @@
 <div class="mt-4">
     <!-- Scroll Panel para el Formulario -->
-    <p-scrollPanel [style]="{ width: '100%', height: '550px' }">
+    <p-scrollPanel [style]="{ width: '100%', height: '530px' }">
         <form [formGroup]="evaluacionFormGroup">
             <p-stepper
                 #stepper
@@ -166,13 +166,35 @@
                                         formControlName="dtEvaluacionFechaInicio"
                                         [iconDisplay]="'input'"
                                         dateFormat="dd/mm/yy"
-                                        styleClass="w-full"
                                         [showIcon]="true"
                                         type="date"
                                         inputId="dtEvaluacionFechaInicio"
                                         appendTo="body"
+                                        [styleClass]="
+                                            evaluacionFormGroup.get(
+                                                'dtEvaluacionFechaInicio'
+                                            )?.invalid &&
+                                            evaluacionFormGroup.get(
+                                                'dtEvaluacionFechaInicio'
+                                            )?.touched
+                                                ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                : 'w-full'
+                                        "
                                     />
                                 </p-inputGroup>
+                                <small
+                                    *ngIf="
+                                        evaluacionFormGroup
+                                            .get('dtEvaluacionFechaInicio')
+                                            ?.hasError('required') &&
+                                        evaluacionFormGroup.get(
+                                            'dtEvaluacionFechaInicio'
+                                        )?.touched
+                                    "
+                                    class="text-red-500"
+                                >
+                                    Este campo es requerido
+                                </small>
                             </div>
                             <!-- Fecha Fin de Evaluación -->
                             <div class="col-12 md:col-6">
@@ -185,13 +207,35 @@
                                         formControlName="dtEvaluacionFechaFin"
                                         [iconDisplay]="'input'"
                                         dateFormat="dd/mm/yy"
-                                        styleClass="w-full"
                                         [showIcon]="true"
                                         type="date"
                                         inputId="dtEvaluacionFechaFin"
                                         appendTo="body"
+                                        [styleClass]="
+                                            evaluacionFormGroup.get(
+                                                'dtEvaluacionFechaFin'
+                                            )?.invalid &&
+                                            evaluacionFormGroup.get(
+                                                'dtEvaluacionFechaFin'
+                                            )?.touched
+                                                ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                : 'w-full'
+                                        "
                                     />
                                 </p-inputGroup>
+                                <small
+                                    *ngIf="
+                                        evaluacionFormGroup
+                                            .get('dtEvaluacionFechaFin')
+                                            ?.hasError('required') &&
+                                        evaluacionFormGroup.get(
+                                            'dtEvaluacionFechaFin'
+                                        )?.touched
+                                    "
+                                    class="text-red-500"
+                                >
+                                    Este campo es requerido
+                                </small>
                             </div>
                         </div>
                     </ng-template>

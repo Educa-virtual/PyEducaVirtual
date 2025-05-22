@@ -206,11 +206,24 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                         cursosSeleccionados.get(
                                             curso.iCursoNivelGradId
                                         ) || false
-                                    curso.dtExamenFechaInicio = this.data.find(
+                                    // Convertir la fecha de string "dd/mm/aaaa" a objeto Date
+                                    const fechaStr = this.data.find(
                                         (i) =>
                                             i.iCursoNivelGradId ==
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaInicio
+                                    if (fechaStr) {
+                                        const [day, month, year] =
+                                            fechaStr.split('/')
+                                        curso.dtExamenFechaInicio = new Date(
+                                            Number(year),
+                                            Number(month) - 1,
+                                            Number(day)
+                                        )
+                                    } else {
+                                        curso.dtExamenFechaInicio = undefined
+                                    }
+
                                     curso.dtExamenFechaFin = this.data.find(
                                         (i) =>
                                             i.iCursoNivelGradId ===
@@ -313,13 +326,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         if (this.accion === 'ver') {
             return
         }
-
-        // Agregar log para depuración
-        console.log(
-            'Guardando:',
-            campoActualizar,
-            curso.iExamenCantidadPreguntas
-        )
 
         if (!this._iEvaluacionId) {
             console.error('No se ha proporcionado un iEvaluacionId válido')

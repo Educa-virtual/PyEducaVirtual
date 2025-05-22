@@ -133,6 +133,7 @@ export class LoginComponent implements OnInit {
             },
             complete: () => {},
             error: (error: any) => {
+                console.log('error', error)
                 this.loading = false
                 this.messageService.add({
                     severity: 'error',

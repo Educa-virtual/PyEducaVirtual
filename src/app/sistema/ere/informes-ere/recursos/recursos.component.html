@@ -1,20 +1,319 @@
-<div class="card">
-    <!-- Breadcrumb -->
-    <p-breadcrumb
-        class="max-w-full mb-4"
-        [model]="breadCrumbItems"
-        [home]="breadCrumbHome"
-    ></p-breadcrumb>
+<!-- Breadcrumb -->
+<p-breadcrumb
+    class="max-w-full mb-4"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+></p-breadcrumb>
 
-    <!-- Panel de título -->
+<!-- Panel de título -->
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
+        </div>
+    </ng-template>
+
+    <!-- Buscador -->
+    <div class="flex align-items-center gap-2" style="flex: 1">
+        <span class="p-input-icon-left" style="width: 100%; max-width: 400px">
+            <i class="pi pi-search"></i>
+            <input
+                type="text"
+                pInputText
+                [(ngModel)]="terminoBusqueda"
+                (input)="filtrarRecursos()"
+                placeholder="Buscar por área..."
+                class="w-full"
+                style="padding-left: 2.5rem"
+            />
+        </span>
+        <p-button
+            *ngIf="terminoBusqueda"
+            icon="pi pi-times"
+            [text]="true"
+            (click)="limpiarBusqueda()"
+            pTooltip="Limpiar búsqueda"
+            styleClass="p-button-rounded p-button-text"
+        >
+        </p-button>
+    </div>
+
+    <div class="divider-section mb-4"></div>
+
+    <!--Tabla-->
     <p-panel>
         <ng-template pTemplate="header">
             <div class="flex flex-column gap-2">
-                <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
+                <h3 class="m-0 text-uppercase text-primary">
+                    {{ segundoGrado }}
+                </h3>
             </div>
         </ng-template>
+        <p-table
+            [value]="datosRecursosFiltrados"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of cols" [style.text-align]="'center'">
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-recurso>
+                <tr>
+                    <td style="text-align: center">{{ recurso.id }}</td>
+                    <td>{{ recurso.area }}</td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="
+                                descargarPDF('Hoja de respuestas', recurso)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="
+                                descargarPDF('Hoja de respuestas', recurso)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Matriz', recurso)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            [label]="estadosRecurso[recurso.estado].label"
+                            [icon]="estadosRecurso[recurso.estado].icon"
+                            [severity]="estadosRecurso[recurso.estado].severity"
+                            size="small"
+                            iconPos="right"
+                            (click)="
+                                ejecutarAccion(
+                                    estadosRecurso[recurso.estado].accion,
+                                    recurso
+                                )
+                            "
+                        >
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cols.length" class="text-center p-4">
+                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">
+                            No se encontraron áreas que coincidan con la
+                            búsqueda
+                        </p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
 
-        <!-- Filtros y opciones de búsqueda -->
+    <div class="table-separator mb-4"></div>
+
+    <!-- Tabla 4º Grado -->
+    <p-panel class="mb-4">
+        <ng-template pTemplate="header">
+            <div class="flex flex-column gap-2">
+                <h3 class="m-0 text-uppercase text-primary">
+                    {{ cuartoGrado }}
+                </h3>
+            </div>
+        </ng-template>
+        <p-table
+            [value]="datosRecursos4toFiltrados"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of cols" [style.text-align]="'center'">
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-recurso>
+                <tr>
+                    <td style="text-align: center">{{ recurso.id }}</td>
+                    <td>{{ recurso.area }}</td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Cuadernillo', recurso)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="
+                                descargarPDF('Hoja de respuestas', recurso)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Matriz', recurso)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            [label]="estadosRecurso[recurso.estado].label"
+                            [icon]="estadosRecurso[recurso.estado].icon"
+                            [severity]="estadosRecurso[recurso.estado].severity"
+                            size="small"
+                            iconPos="right"
+                            (click)="
+                                ejecutarAccion(
+                                    estadosRecurso[recurso.estado].accion,
+                                    recurso
+                                )
+                            "
+                        >
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cols.length" class="text-center p-4">
+                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">
+                            No se encontraron áreas que coincidan con la
+                            búsqueda
+                        </p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+
+    <div class="table-separator mb-4"></div>
+
+    <!-- Tabla 6º Grado -->
+    <p-panel class="mb-4">
+        <ng-template pTemplate="header">
+            <div class="flex flex-column gap-2">
+                <h3 class="m-0 text-uppercase text-primary">
+                    {{ sextoGrado }}
+                </h3>
+            </div>
+        </ng-template>
+        <p-table
+            [value]="datosRecursos6toFiltrados"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of cols" [style.text-align]="'center'">
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-recurso>
+                <tr>
+                    <td style="text-align: center">{{ recurso.id }}</td>
+                    <td>{{ recurso.area }}</td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Cuadernillo', recurso)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="
+                                descargarPDF('Hoja de respuestas', recurso)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="PDF"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Matriz', recurso)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            [label]="estadosRecurso[recurso.estado].label"
+                            [icon]="estadosRecurso[recurso.estado].icon"
+                            [severity]="estadosRecurso[recurso.estado].severity"
+                            size="small"
+                            iconPos="right"
+                            (click)="
+                                ejecutarAccion(
+                                    estadosRecurso[recurso.estado].accion,
+                                    recurso
+                                )
+                            "
+                        >
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cols.length" class="text-center p-4">
+                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">
+                            No se encontraron áreas que coincidan con la
+                            búsqueda
+                        </p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+
+    <!-- Filtros y opciones de búsqueda 
         <div class="grid mb-4">
             <div class="col-12 md:col-4">
                 <p-dropdown
@@ -52,23 +351,15 @@
                 </p-dropdown>
             </div>
         </div>
+        -->
+    <!-- Tabla de recursos 
+    <app-table-primeng [columnas]="columns" [showCaption]="true" [data]="datosRecursos"
+        (accionBtnItem)="accionBtnItemTable($event)" [showPaginator]="true" sortMode="single" sortField="nivel"
+        [sortOrder]="-1" [(selectedRowData)]="selectedItem" [actions]="actions" [showAdvancedFilter]="true"
+        [indiceColumnaBuscar]="3" [searchPlaceholder]="'Buscar recurso...'">
+    </app-table-primeng>
+    -->
+</p-panel>
 
-        <!-- Tabla de recursos -->
-        <app-table-primeng
-            [columnas]="columns"
-            [showCaption]="true"
-            [data]="datosRecursos"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="true"
-            sortMode="single"
-            sortField="nivel"
-            [sortOrder]="-1"
-            [(selectedRowData)]="selectedItem"
-            [actions]="actions"
-            [showAdvancedFilter]="true"
-            [indiceColumnaBuscar]="3"
-            [searchPlaceholder]="'Buscar recurso...'"
-        >
-        </app-table-primeng>
-    </p-panel>
-</div>
+<!-- Toast para mensajes -->
+<p-toast></p-toast>

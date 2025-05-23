@@ -30,6 +30,9 @@ export class DetalleInscripcionComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
 
     alumnos: any[]
+    showModal: boolean = false
+    alumnoSelect: any
+    nombreAlumno: string
 
     ngOnInit(): void {
         this.obtenerSolicitudesXCurso()
@@ -97,17 +100,17 @@ export class DetalleInscripcionComponent implements OnInit {
     // mostrar los botones de la tabla
     public accionesTabla: IActionTable[] = [
         {
-            labelTooltip: 'Editar',
+            labelTooltip: 'Aceptar ',
             icon: 'pi pi-check-circle',
-            accion: 'editar',
+            accion: 'aceptar',
             type: 'item',
             class: 'p-button-rounded p-button-succes p-button-text',
             // isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
         },
         {
-            labelTooltip: 'Eliminar',
+            labelTooltip: 'Denegar',
             icon: 'pi pi-times-circle',
-            accion: 'eliminar',
+            accion: 'denegar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
             // isVisible: (row) => row.iEstado === '1',
@@ -124,7 +127,7 @@ export class DetalleInscripcionComponent implements OnInit {
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {
         switch (accion) {
-            case 'editar':
+            case 'aceptar':
                 console.log(item)
                 // this.modoFormulario = 'editar'
                 // this.iCapacitacionId = item.iCapacitacionId
@@ -133,10 +136,19 @@ export class DetalleInscripcionComponent implements OnInit {
                 // // this.selectedItems = []
                 // // this.selectedItems = [item]
                 break
-            case 'eliminar':
+            case 'denegar':
                 // this.eliminarCapacitacion(item)
                 break
+            case 'mostrarComprobante':
+                this.mostrarVoucher(item)
+                break
         }
+    }
+    mostrarVoucher(voucher: any) {
+        this.alumnoSelect = voucher
+        this.nombreAlumno = voucher.cPersNombre
+        console.log(this.alumnoSelect)
+        this.showModal = true
     }
     // obtener las solicitudes del curso
     obtenerSolicitudesXCurso() {
@@ -145,15 +157,9 @@ export class DetalleInscripcionComponent implements OnInit {
             iCapacitacionId: this.id,
             iCredId: iCredId,
         }
-
         this._capService.listarInscripcionxcurso(data).subscribe({
             next: (res: any) => {
                 this.alumnos = res['data']
-                // this.data = res['data']
-                // this.capacitaciones = [...this.data] // cargar desde servicio o mock
-                // this.paginator.total = this.capacitaciones.length
-                // this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
-
                 console.log('datos del Alumnos incritos', this.alumnos)
             },
         })

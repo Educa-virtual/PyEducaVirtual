@@ -24,3 +24,30 @@
         (click)="regresar()"
     />
 </div>
+
+<p-dialog
+    [header]="'Voucher de : ' + nombreAlumno"
+    [(visible)]="showModal"
+    [modal]="true"
+    [style]="{ width: '60rem' }"
+>
+    <ng-container
+        *ngIf="alumnoSelect"
+        class="flex justify-content-between flex-wrap"
+    >
+        <p><strong>Nombre:</strong> {{ alumnoSelect.cNombresCompleto }}</p>
+        <p><strong>Voucher:</strong> {{ alumnoSelect.cVoucher }}</p>
+
+        <!-- Si es una imagen -->
+        <div class="flex justify-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center">
+                <img
+                    *ngIf="alumnoSelect.cVoucher"
+                    [src]="'/ruta/a/vouchers/' + alumnoSelect.cVoucher"
+                    alt="Voucher"
+                    style="width: 100%; margin-top: 1rem"
+                />
+            </div>
+        </div>
+    </ng-container>
+</p-dialog>

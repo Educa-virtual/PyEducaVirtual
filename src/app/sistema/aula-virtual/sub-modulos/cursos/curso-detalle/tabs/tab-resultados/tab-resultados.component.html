@@ -42,6 +42,7 @@
                             [(ngModel)]="actividadSeleccionado"
                             optionLabel="label"
                             optionValue="value"
+                            [unselectable]="false"
                             class="actividad"
                         >
                         </p-selectButton>
@@ -67,3 +68,75 @@
         }
     </div>
 </div>
+<p-dialog
+    [style]="{ width: '60rem' }"
+    class="p-fluid"
+    [modal]="true"
+    [(visible)]="mostrarModalConclusionDesc"
+    header="Agregar conclusión descriptiva a : {{
+        estudianteSelect?.completoalumno
+    }}"
+>
+    <form [formGroup]="conclusionDescrp" class="flex flex-column gap-3 w-full">
+        <div class="grid pt-2">
+            <!-- Mostrar la califcación comentada segun el requerimiento -->
+            <!--  for="calificacion" [options]="calificacion"-->
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        Nivel de Logro final:
+                    </p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="iEscalaCalifId"
+                        [options]="calificacion"
+                        optionValue="iEscalaCalifId"
+                        optionLabel="cEscalaCalifNombre"
+                        placeholder="Seleccione una Calificación"
+                        [style]="{ width: '100%' }"
+                        [showClear]="true"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+            <!-- Mostrar descripción -->
+            <div class="col-12">
+                <label for="descripcion" class="font-bold mt-1"
+                    >Descripción
+                    <span class="text-red-500 text-xs">(*) Obligatorio</span>
+                </label>
+                <div class="mt-2 pt-2">
+                    <p-editor
+                        id="descripcion"
+                        formControlName="cDetMatConclusionDescPromedio"
+                        placeholder="Escribe una conclusión descriptiva.... "
+                        [style]="{ height: '150px' }"
+                    />
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="reply-container">
+        <div class="button-container">
+            <button
+                pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-secondary mx-3"
+                type="button"
+                size="small"
+                (click)="cerrarModalDeCalif()"
+            ></button>
+            <button
+                pButton
+                pRipple
+                type="button"
+                label="Enviar"
+                icon="pi pi-send"
+                size="small"
+                class="p-button-primary"
+                (click)="guardarConclusionDescriptiva()"
+            ></button>
+            <!-- (click)="calificarComnt()" -->
+        </div>
+    </div>
+</p-dialog>

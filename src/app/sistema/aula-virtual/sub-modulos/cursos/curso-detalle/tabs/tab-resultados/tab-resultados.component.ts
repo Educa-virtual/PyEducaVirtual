@@ -215,23 +215,24 @@ export class TabResultadosComponent implements OnInit {
     //Agregar conclusion descritiva final
     mostrarModalConclusionDesc: boolean = false
     descrip: string
+
     accionBnt({ accion, item }): void {
         switch (accion) {
             case 'agregarConclusion':
                 // this.mostrarModalConclusionDesc = true
-                this.enviarDatosFinales(accion, item)
+                this.enviarDatosFinales(item)
                 break
         }
     }
     //enviar datos al modal
-    enviarDatosFinales(accion, item) {
+    enviarDatosFinales(item) {
         this.mostrarModalConclusionDesc = true
         this.estudianteSelect = item
         // this.descrip = item.cDetMatConclusionDescPromedio
-        // this.conclusionDescrp.controls[
-        //     'cDetMatConclusionDescPromedio'
-        // ].setValue(this.descrip)
-        console.log('Agregar descripcion', accion, item, this.descrip)
+        this.conclusionDescrp.controls[
+            'cDetMatConclusionDescPromedio'
+        ].setValue(this.descrip)
+        console.log('Agregar descripcion', item, this.descrip)
     }
     //cerra el modal de calificacion
     cerrarModalDeCalif() {
@@ -420,7 +421,7 @@ export class TabResultadosComponent implements OnInit {
             iEscalaCalifIdPromedio: idEscala,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
         }
-        // console.log(registro, conclusionDescrp)
+        console.log(registro, conclusionDescrp)
         this._aulaService
             .guardarCalificacionEstudiante(
                 'acad',
@@ -585,6 +586,7 @@ export class TabResultadosComponent implements OnInit {
         }
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
+            console.log(this.unidades)
             this.unidades = this.unidades.map((unidad) => {
                 const ini = new Date(
                     unidad.dtPeriodoEvalAperInicio

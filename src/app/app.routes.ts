@@ -8,7 +8,7 @@ import { RecoverPasswordComponent } from './shared/recover-password/recover-pass
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component'
 import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component'
-import { RecursosComponent } from './sistema/ere/informes-ere/recursos/recursos.component'
+import { RecursosComponent } from './sistema/ere/informes-ere/recursos-ere/recursos.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },

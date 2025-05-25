@@ -1,8 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component, OnInit } from '@angular/core'
 import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { FormGroup } from '@angular/forms'
 
 interface Recurso {
     id: number
@@ -10,7 +10,7 @@ interface Recurso {
     cuadernillo: string
     hojaRespuestas: string
     matriz: string
-    estado: string // Cambio 'resultado' por 'estado'
+    estado: string
 }
 
 interface Column {
@@ -37,7 +37,7 @@ interface EstadoRecurso {
 @Component({
     selector: 'app-recursos',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [PrimengModule],
     templateUrl: './recursos.component.html',
     styleUrl: './recursos.component.scss',
 })
@@ -54,6 +54,44 @@ export class RecursosComponent implements OnInit {
     datosRecursosFiltrados: any[] = []
     datosRecursos4toFiltrados: any[] = []
     datosRecursos6toFiltrados: any[] = []
+
+    // Estado de los diálogos
+    mostrarDialogoEdicion: boolean = false
+    mostrarDialogoConfiguracion: boolean = false
+    recursoEditando: Recurso | null = null
+
+    // Panel propiedades
+    wordDescargado: boolean = false
+    archivoSubido: boolean = false
+    nombreArchivoSubido: string = ''
+    archivoSeleccionado: File | null = null
+
+    // Formulario de edición
+    formularioEdicion = {
+        area: '',
+        estado: '',
+        observaciones: '',
+    }
+
+    // Opciones para dropdowns
+    opcionesAreas: string[] = [
+        'Matemática',
+        'Comunicación',
+        'Ciencia y Tecnología',
+        'Personal Social',
+    ]
+    opcionesEstados = [
+        { label: 'Pendiente', value: 'pendiente' },
+        { label: 'Completo', value: 'completo' },
+        { label: 'En Revisión', value: 'revision' },
+        { label: 'Aprobado', value: 'aprobado' },
+    ]
+
+    // Estados de carga
+    loadingActions: { [key: string]: boolean } = {}
+
+    // Fecha actual para mostrar en el dialog
+    fechaActual: Date = new Date()
 
     // Definición de estados
     estadosRecurso: { [key: string]: EstadoRecurso } = {
@@ -83,6 +121,11 @@ export class RecursosComponent implements OnInit {
     cols!: Column[]
     terminoBusqueda: string = ''
     selectedItem: any
+
+    // Propiedades steeper
+    activeStep: number = 0
+    totalSteps: number = 2
+    cuadernilloFormGroup!: FormGroup
 
     constructor(
         private messageService: MessageService,
@@ -167,7 +210,7 @@ export class RecursosComponent implements OnInit {
             { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
             { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
             { field: 'matriz', header: 'Matriz de Evaluación' },
-            { field: 'estado', header: 'Estado' },
+            { field: 'Resultado', header: 'Resultado' },
         ]
 
         // Inicializar datos filtrados
@@ -216,6 +259,9 @@ export class RecursosComponent implements OnInit {
             case 'ver':
                 this.verResultados(recurso)
                 break
+            case 'revisar':
+                this.revisarRecurso(recurso)
+                break
         }
     }
 
@@ -245,5 +291,285 @@ export class RecursosComponent implements OnInit {
             summary: 'Ver resultados',
             detail: `Viendo resultados de ${recurso.area}`,
         })
+    }
+
+    revisarRecurso(recurso: Recurso) {
+        this.messageService.add({
+            severity: 'info',
+            summary: 'Revisar',
+            detail: `Revisando recurso de ${recurso.area}`,
+        })
+    }
+
+    // Abrir diálogo de edición
+    abrirDialogoEdicion(recurso: Recurso) {
+        this.recursoEditando = { ...recurso }
+        this.formularioEdicion = {
+            area: recurso.area,
+            estado: recurso.estado,
+            observaciones: '',
+        }
+        this.mostrarDialogoEdicion = true
+    }
+
+    // Guardar edición
+    guardarEdicion() {
+        if (!this.recursoEditando) return
+
+        this.loadingActions['save-edit'] = true
+
+        setTimeout(() => {
+            // Buscar el recurso original en todas las listas
+            const recursoOriginal = this.buscarRecursoOriginal(
+                this.recursoEditando!.id
+            )
+
+            if (recursoOriginal) {
+                recursoOriginal.area = this.formularioEdicion.area
+                recursoOriginal.estado = this.formularioEdicion.estado
+            }
+
+            this.loadingActions['save-edit'] = false
+            this.mostrarDialogoEdicion = false
+
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Recurso Actualizado',
+                detail: `${this.formularioEdicion.area} ha sido actualizado correctamente`,
+            })
+
+            // Actualizar filtros
+            this.filtrarRecursos()
+
+            // Limpiar
+            this.recursoEditando = null
+        }, 1500)
+    }
+
+    // Restablecer formulario
+    restablecerFormulario() {
+        if (this.recursoEditando) {
+            this.formularioEdicion = {
+                area: this.recursoEditando.area,
+                estado: this.recursoEditando.estado,
+                observaciones: '',
+            }
+
+            this.messageService.add({
+                severity: 'info',
+                summary: 'Formulario Restablecido',
+                detail: 'Se han restaurado los valores originales',
+            })
+        }
+    }
+
+    // Validar formulario
+    formularioValido(): boolean {
+        return !!(this.formularioEdicion.area && this.formularioEdicion.estado)
+    }
+
+    // Buscar recurso original por ID
+    private buscarRecursoOriginal(id: number): Recurso | undefined {
+        return (
+            this.recursos.find((r) => r.id === id) ||
+            this.recursos4to.find((r) => r.id === id) ||
+            this.recursos6to.find((r) => r.id === id)
+        )
+    }
+
+    // Verificar si una acción está cargando
+    isActionLoading(action: string, id?: number): boolean {
+        const key = id ? `${action}-${id}` : action
+        return this.loadingActions[key] || false
+    }
+
+    // Obtener texto del estado
+    obtenerTextoEstado(estado: string): string {
+        return this.estadosRecurso[estado]?.label || estado
+    }
+
+    // Obtener severity del estado
+    obtenerSeverityEstado(estado: string): string {
+        return this.estadosRecurso[estado]?.severity || 'secondary'
+    }
+
+    // PANEL
+
+    // Descargar archivo WORD
+    descargarWord() {
+        this.loadingActions['download-word'] = true
+
+        // Simular descarga
+        setTimeout(() => {
+            this.loadingActions['download-word'] = false
+            this.wordDescargado = true
+
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Descarga Exitosa',
+                detail: 'El archivo WORD ha sido descargado correctamente',
+            })
+        }, 2000)
+    }
+
+    // Seleccionar archivo PDF
+    onFileSelect(event: any) {
+        const file = event.files[0]
+
+        if (file) {
+            // Validar que sea PDF
+            if (file.type !== 'application/pdf') {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Archivo Inválido',
+                    detail: 'Solo se permiten archivos PDF',
+                })
+                return
+            }
+
+            // Validar tamaño (máximo 10MB)
+            if (file.size > 10000000) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Archivo muy grande',
+                    detail: 'El archivo no debe superar los 10MB',
+                })
+                return
+            }
+
+            this.archivoSeleccionado = file
+            this.nombreArchivoSubido = file.name
+            this.archivoSubido = true
+
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Archivo Seleccionado',
+                detail: `${file.name} ha sido seleccionado correctamente`,
+            })
+        }
+    }
+
+    // Cambiar archivo seleccionado
+    cambiarArchivo() {
+        this.archivoSubido = false
+        this.nombreArchivoSubido = ''
+        this.archivoSeleccionado = null
+
+        this.messageService.add({
+            severity: 'info',
+            summary: 'Archivo Removido',
+            detail: 'Puedes seleccionar un nuevo archivo',
+        })
+    }
+
+    // Siguiente paso
+    siguientePaso() {
+        if (!this.wordDescargado) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Paso Incompleto',
+                detail: 'Primero debes descargar el archivo WORD',
+            })
+            return
+        }
+
+        this.messageService.add({
+            severity: 'info',
+            summary: 'Siguiente Paso',
+            detail: 'Ahora puedes subir tu archivo PDF',
+        })
+    }
+
+    // Finalizar proceso
+    finalizarProceso() {
+        if (!this.archivoSubido || !this.archivoSeleccionado) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Proceso Incompleto',
+                detail: 'Debes subir un archivo PDF para continuar',
+            })
+            return
+        }
+
+        this.loadingActions['finalizar'] = true
+
+        // Simular subida de archivo
+        setTimeout(() => {
+            this.loadingActions['finalizar'] = false
+
+            // Actualizar el recurso
+            if (this.recursoEditando) {
+                this.recursoEditando.estado = 'completo'
+
+                // Buscar y actualizar el recurso original
+                const recursoOriginal = this.buscarRecursoOriginal(
+                    this.recursoEditando.id
+                )
+                if (recursoOriginal) {
+                    recursoOriginal.estado = 'completo'
+                }
+            }
+
+            this.mostrarDialogoEdicion = false
+            this.resetearPanelDosColumnas()
+
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Proceso Completado',
+                detail: 'El cuadernillo ha sido generado exitosamente',
+            })
+
+            // Actualizar filtros
+            this.filtrarRecursos()
+        }, 3000)
+    }
+
+    // Resetear Panel
+    private resetearPanelDosColumnas() {
+        this.wordDescargado = false
+        this.archivoSubido = false
+        this.nombreArchivoSubido = ''
+        this.archivoSeleccionado = null
+        this.recursoEditando = null
+    }
+
+    // Sobrescribir el método cancelarEdicion existente
+    cancelarEdicion() {
+        this.mostrarDialogoEdicion = false
+        this.resetearPanelDosColumnas()
+
+        this.messageService.add({
+            severity: 'info',
+            summary: 'Proceso Cancelado',
+            detail: 'El proceso ha sido cancelado',
+        })
+    }
+
+    // Navegación panel
+    handleNext(): void {
+        if (this.activeStep === 0) {
+            if (!this.wordDescargado) {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Paso requerido',
+                    detail: 'Primero debes descargar el archivo WORD',
+                })
+                return
+            }
+        }
+
+        if (this.activeStep < this.totalSteps - 1) {
+            this.activeStep++
+        }
+    }
+
+    handlePrevious(): void {
+        if (this.activeStep > 0) {
+            this.activeStep--
+        }
+    }
+
+    get isLastStep(): boolean {
+        return this.activeStep === this.totalSteps - 1
     }
 }

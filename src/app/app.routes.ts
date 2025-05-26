@@ -10,6 +10,7 @@ import { NewMantenimientoUsuarioComponent } from './sistema/gestion-instituciona
 import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component'
 import { RecursosComponent } from './sistema/ere/informes-ere/recursos-ere/recursos.component'
 import { SimpleListaAreasComponent } from './sistema/ere/evaluaciones/areas/simple-lista-areas/simple-lista-areas.component'
+import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/areas/especialista-simple-area/especialista-simple-area.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -74,6 +75,10 @@ export const routes: Routes = [
             {
                 path: 'simple-lista-areas',
                 component: SimpleListaAreasComponent,
+            },
+            {
+                path: 'especialista-simple-area',
+                component: EspecialistaSimpleAreaComponent,
             },
         ],
     },

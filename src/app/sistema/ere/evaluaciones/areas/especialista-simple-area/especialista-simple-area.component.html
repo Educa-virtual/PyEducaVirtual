@@ -1,1 +1,152 @@
-<p>especialista-simple-area works!</p>
+<!-- Breadcrumb -->
+<p-breadcrumb
+    class="max-w-full mb-4"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+></p-breadcrumb>
+
+<!-- Panel principal -->
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
+        </div>
+    </ng-template>
+
+    <!-- Buscador -->
+    <div class="flex align-items-center gap-2 mb-4">
+        <span class="p-input-icon-left flex-1" style="max-width: 400px">
+            <i class="pi pi-search"></i>
+            <input
+                type="text"
+                pInputText
+                [(ngModel)]="terminoBusqueda"
+                placeholder="Buscar por área..."
+                class="w-full"
+                style="padding-left: 2.5rem"
+            />
+        </span>
+        <p-button
+            *ngIf="terminoBusqueda"
+            icon="pi pi-times"
+            [text]="true"
+            pTooltip="Limpiar búsqueda"
+            styleClass="p-button-rounded p-button-text"
+        ></p-button>
+    </div>
+
+    <!-- Tabla de especialista -->
+    <p-panel class="mb-4">
+        <ng-template pTemplate="header">
+            <div class="flex flex-column gap-2">
+                <h3 class="m-0 text-uppercase text-primary">
+                    Tabla de especialista
+                </h3>
+            </div>
+        </ng-template>
+        <p-table
+            [value]="datosAreaDetalleFiltrados"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of cols" [style.text-align]="'center'">
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-areaDetalle>
+                <tr>
+                    <td style="text-align: center">{{ areaDetalle.id }}</td>
+                    <td>{{ areaDetalle.area }}</td>
+                    <td style="text-align: center">
+                        <p-button
+                            [label]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .label
+                            "
+                            [icon]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .icon
+                            "
+                            [severity]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .severity
+                            "
+                            (click)="
+                                ejecutarAccion(
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).accion,
+                                    areaDetalle
+                                )
+                            "
+                            (click)="
+                                abrirDialogoGenerarCuadernillo(areaDetalle)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="
+                                descargarPDF('Hoja de respuestas', areaDetalle)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Matriz', areaDetalle)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <button
+                            pButton
+                            icon="pi pi-pencil"
+                            class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
+                            pTooltip="Generar cuadernillo"
+                            tooltipPosition="top"
+                            aria-label="Generar cuadernillo"
+                        ></button>
+
+                        <button
+                            pButton
+                            icon="pi pi-cog"
+                            class="p-button-text p-button-rounded p-button-sm transparent-btn"
+                            aria-label="Configuración"
+                        ></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cols.length" class="text-center p-4">
+                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">
+                            No se encontraron áreas que coincidan con la
+                            búsqueda
+                        </p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+
+    <app-dialog-generar-cuadernillo
+        [(mostrarDialogoEdicion)]="mostrarDialogoEdicion"
+    ></app-dialog-generar-cuadernillo>
+
+    <!-- Toast para mensajes -->
+    <p-toast></p-toast>
+</p-panel>

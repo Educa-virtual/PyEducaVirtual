@@ -1,5 +1,5 @@
 <p-dialog
-    header="Cuestionario de Notas"
+    header="{{ cabecera }}"
     [(visible)]="visible"
     [style]="{ width: '90rem' }"
     [modal]="true"
@@ -8,11 +8,9 @@
     (accionBtnItem)="accionBtn($event)"
 >
     <section>
-        <div class="col-12 flex justify-content-center mt-5">
-            <span class="font-bold text-3xl"
-                >CONSOLIDAD DE RESULTADOS DE AULA - ERE INICIO 2025</span
-            >
-        </div>
+        <!-- <div class="col-12 flex justify-content-center mt-5">
+            <span class="font-bold text-3xl">CONSOLIDADO DE RESULTADOS DE AULA - ERE INICIO 2025</span>
+        </div> -->
         <form [formGroup]="formCurso">
             <div class="grid p-fluid mt-3 col">
                 <div class="grid card col-10 mr-3 relative">
@@ -23,6 +21,18 @@
                         <span class="p-float-label mt-5">
                             <input
                                 pInputText
+                                id="cCursoNombre"
+                                formControlName="cCursoNombre"
+                                aria-describedby="cCursoNombre-help"
+                            />
+                            <label for="cCursoNombre" class="font-bold"
+                                >ÁREA:</label
+                            >
+                        </span>
+                        <!--                         
+                        <span class="p-float-label mt-5">
+                            <input
+                                pInputText
                                 id="cPersDocumento"
                                 formControlName="cIeNombre"
                                 aria-describedby="cPersDocumento-help"
@@ -30,8 +40,8 @@
                             <label for="cIeNombre" class="font-bold"
                                 >I.E.</label
                             >
-                        </span>
-                        <span class="p-float-label mt-5">
+                        </span> -->
+                        <!-- <span class="p-float-label mt-5">
                             <input
                                 pInputText
                                 id="cPersDocumento"
@@ -41,16 +51,16 @@
                             <label for="cCursoNombre" class="font-bold"
                                 >ÁREA:</label
                             >
-                        </span>
+                        </span> -->
                         <div class="grid mt-5">
                             <!-- Mostrar grado -->
                             <div class="col-6">
                                 <span class="p-float-label">
                                     <input
                                         pInputText
-                                        id="cPersDocumento"
+                                        id="cGradoAbreviacion"
                                         formControlName="cGradoAbreviacion"
-                                        aria-describedby="cPersDocumento-help"
+                                        aria-describedby="cGradoAbreviacion-help"
                                     />
                                     <label
                                         for="cGradoAbreviacion"
@@ -91,7 +101,7 @@
                                 >NIVEL:</label
                             >
                         </span>
-                        <span class="p-float-label mt-5">
+                        <!-- <span class="p-float-label mt-5">
                             <input
                                 pInputText
                                 id="cPersDocumento"
@@ -101,7 +111,7 @@
                             <label for="cNombreDistrito" class="font-bold"
                                 >DISTRITO:</label
                             >
-                        </span>
+                        </span> -->
                         <span class="p-float-label mt-5">
                             <input
                                 pInputText

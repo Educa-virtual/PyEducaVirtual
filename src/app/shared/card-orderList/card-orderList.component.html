@@ -8,8 +8,8 @@
             class="list-item-custom"
             [ngClass]="{ selected: objeto === seleccionado }"
             tabindex="0"
-            (click)="seleccionado = objeto"
-            (keydown.enter)="seleccionado = objeto"
+            (click)="seleccionado = objeto; obtenerDatos(objeto)"
+            (keydown.enter)="seleccionado = objeto; obtenerDatos(objeto)"
         >
             <ng-container *ngIf="mostrarImagen">
                 <img [src]="objeto.cImgUrl" alt="" class="w-3rem btn" />

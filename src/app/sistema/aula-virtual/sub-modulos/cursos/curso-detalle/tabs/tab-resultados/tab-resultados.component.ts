@@ -395,7 +395,7 @@ export class TabResultadosComponent implements OnInit {
                 this.reporteNotasFinales = Data['data'].map((item: any) => {
                     return {
                         ...item,
-                        cNombres: item.completoalumno,
+                        cTitulo: item.completoalumno,
                     }
                 })
                 // console.log(this.reporteNotasFinales)

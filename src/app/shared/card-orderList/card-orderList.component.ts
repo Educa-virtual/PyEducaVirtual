@@ -17,8 +17,11 @@ import {
 })
 export class CardOrderListComponent implements OnChanges {
     @Input() data: any[] = [] // Lista de datos
-    @Input() mostrarImagen: boolean = false // Lista de datos
+    @Input() inputSearch: boolean = true
+    @Input() mostrarImagen: boolean = false
     @Output() datoSeleccionado = new EventEmitter<any>() // Evento para el padre
+
+    seleccionado: any = null
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['data']) {
@@ -27,10 +30,17 @@ export class CardOrderListComponent implements OnChanges {
         if (changes['mostrarImagen']) {
             this.mostrarImagen = changes['mostrarImagen']?.currentValue
         }
+        if (changes['inputSearch']) {
+            this.inputSearch = changes['inputSearch']?.currentValue
+        }
     }
     obtenerDatos(data: any) {
         this.datoSeleccionado.emit(data) // Emitimos el estudiante seleccionado
     }
+    // Estructura de datos que se esperaF
+    // data = [
+    //     {cTitulo:'',cImgUrl:'',cDescripcion:''}
+    // ]
     // en esta forma se puede importar el componente
     // <app-card-orderlist
     //     [data]="estudianteMatriculadosxGrado"

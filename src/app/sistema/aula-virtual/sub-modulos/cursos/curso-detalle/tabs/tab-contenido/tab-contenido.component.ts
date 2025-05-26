@@ -1,6 +1,4 @@
-import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
-import { FormsModule } from '@angular/forms'
 import {
     EVALUACION,
     FORO,
@@ -31,31 +29,27 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import { DynamicDialogModule } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
-import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 
 @Component({
     selector: 'app-tab-contenido',
     standalone: true,
     imports: [
-        CommonModule,
-        FullCalendarModule,
-        FormsModule,
         ActividadListaComponent,
-        DynamicDialogModule,
         PrimengModule,
         FormEvaluacionComponent,
         NoDataComponent,
         ToolbarPrimengComponent,
+        CardOrderListComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -168,6 +162,17 @@ export class TabContenidoComponent implements OnInit {
                     this.contenidoSemanas = data
                     // console.log('contenido semanas')
                     console.log('cotenidos', this.contenidoSemanas)
+                    this.contenidoSemanas = this.contenidoSemanas.map(
+                        (item: any) => {
+                            return {
+                                ...item,
+                                cTitulo:
+                                    'SEMANA ' +
+                                    (item.cContenidoSemNumero || ''),
+                                cDescripcion: item.cContenidoSemTitulo || '',
+                            }
+                        }
+                    )
                 },
                 error: (error) => {
                     console.log(error)

@@ -5,47 +5,20 @@
         ></app-toolbar-primeng>
         <div class="flex flex-column">
             @if (contenidoSemanas.length > 0) {
-                @for (
-                    semana of contenidoSemanas;
-                    track semana.iContenidoSemId
-                ) {
-                    <button
-                        pButton
-                        pRipple
-                        (click)="mostrarDetalleSemana(semana)"
-                        [ngClass]="{
-                            activo:
-                                semana.iContenidoSemId ===
-                                semanaSeleccionada?.iContenidoSemId,
-                        }"
-                        class="btnsemanas"
-                    >
-                        <div class="flex flex-column w-full">
-                            <div class="flex">
-                                <p class="text-xs font-bold">
-                                    SEMANA
-                                    {{ semana.cContenidoSemNumero }}
-                                    <!--| (Desde: 01/01/2020 - Hasta:
-                                04/04/2020)-->
-                                </p>
-                            </div>
-                            <div class="flex">
-                                Tema:
-                                {{
-                                    semana.cContenidoSemTitulo.length > 150
-                                        ? (semana.cContenidoSemTitulo
-                                              | slice: 0 : 150) + '...'
-                                        : semana.cContenidoSemTitulo
-                                }}
-                            </div>
-                        </div>
-                    </button>
-                    <p-divider></p-divider>
-                }
+                <app-card-orderlist
+                    [data]="contenidoSemanas"
+                    [inputSearch]="false"
+                    (datoSeleccionado)="mostrarDetalleSemana($event)"
+                >
+                </app-card-orderlist>
+                <p-divider></p-divider>
             }
             @if (!loadingContenidoSemanas && contenidoSemanas.length === 0) {
                 <div class="card">
-                    <app-no-data></app-no-data>
+                    <app-no-data
+                        [showIcon]="'NO-DATA'"
+                        [mensaje]="'No hay lista de semanas'"
+                    ></app-no-data>
                 </div>
             }
         </div>
@@ -102,7 +75,7 @@
                 }
             </app-toolbar-primeng>
         </ng-container>
-        <div class="grid">
+        <div class="grid" *ngIf="semanaSeleccionada">
             <div class="col-5">
                 <p-inputGroup>
                     <p-inputGroupAddon>Tipo de actividad:</p-inputGroupAddon>
@@ -110,7 +83,6 @@
                         [options]="tipoActivadedes"
                         styleClass="w-full"
                         [showClear]="true"
-                        formControlName="iActTipoId"
                         placeholder="Seleccione el tipo"
                         optionValue="iActTipoId"
                         optionLabel="cActTipoNombre"
@@ -152,21 +124,12 @@
             </ng-container>
             <!-- para mostrar cuando no tiene una semana seleccionado -->
             <ng-container *ngIf="!semanaSeleccionada">
-                <div class="card">
-                    <div class="grid mt-4">
-                        <div class="col-12 mt-5" align="center">
-                            <img
-                                src="assets/images/icons/sin-datos.gif"
-                                alt="logo"
-                                width="20%"
-                            />
-
-                            <h4 class="text-primary">
-                                No esta seleccionado una semana
-                            </h4>
-                        </div>
-                    </div>
-                </div>
+                <app-no-data
+                    [showIcon]="'NO-DATA'"
+                    [mensaje]="
+                        'Debe seleccionar una semana de la lista para ver las actividades'
+                    "
+                ></app-no-data>
                 <!-- <p class="text-gray-500">Selecciona una semana para ver los detalles.</p> -->
             </ng-container>
         </div>

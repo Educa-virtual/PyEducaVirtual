@@ -3,3 +3,30 @@
     display: none;
     height: 600px;
 }
+.list-item-custom {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.list-item-custom:hover {
+    background-color: #f0f0f5; /* hover color */
+}
+
+.list-item-custom.selected {
+    background: var(--green-500);
+    color: white;
+    .icon {
+        color: white !important;
+    }
+}
+::ng-deep .p-orderlist .p-orderlist-list .p-orderlist-item {
+    background: white !important;
+    .icon {
+        color: var(--green-500) !important;
+    }
+}

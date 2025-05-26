@@ -10,6 +10,8 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
+
+import { DatosInformesService } from '../../services/datos-informes.service'
 @Component({
     selector: 'app-guardar-resultados-online',
     standalone: true,
@@ -174,7 +176,8 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
     constructor(
         private store: LocalStoreService,
-        private query: GeneralService
+        private query: GeneralService,
+        private datosInformesService: DatosInformesService
     ) {}
 
     ngOnInit() {
@@ -426,6 +429,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             .patchValue(datos.curso.iCursosNivelGradId)
         // this.curso = datos.curso
         // this.form.reset()
+        this.curso = datos.curso
         console.log(datos, 'datos')
 
         this.getEstudiante()
@@ -497,12 +501,140 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         }
     }
 
+    // BACKUP
+    // getCuestionarioNotas(event: any) {
+    //     const item = event.item
+    //     console.log(item, 'item')
+    //     this.subirArchivo(item)
+    //     // this.query.insertarCuestionarioNotas(item).subscribe({
+    //     //     next: (res) => {
+    //     //         this.subirArchivo(
+    //     //             // Aquí mandas los datos de la tabla
+    //     //             this.alumnos
+    //     //         )
+    //     //         console.log('Respuesta del backend:', res)
+    //     //     },
+    //     //     error: (err) => console.error('Error:', err),
+    //     // })
+    // }
     getCuestionarioNotas(event: any) {
         const item = event.item
-        console.log(item, 'item')
-        this.query.insertarCuestionarioNotas(item).subscribe({
-            next: (res) => console.log('Respuesta del backend:', res),
-            error: (err) => console.error('Error:', err),
+        // console.log('Item recibido:', item)
+
+        //this.subirArchivo(item) // Ahora item completo será enviado
+        this.subirArchivo([item])
+    }
+
+    // subirArchivo(item: any) {
+    //     // const iCursosNivelGradId =
+    //     //     this.formCurso.get('iCursosNivelGradId').value
+    //     // const cCursoNombre = this.formCurso.get('cCursoNombre').value
+    //     // const cGradoAbreviacion = this.formCurso.get('cGradoAbreviacion').value
+    //     // this.curso.iCursosNivelGradId = iCursosNivelGradId
+    //     // this.curso.cCursoNombre = cCursoNombre
+    //     // this.curso.cGradoAbreviacion = cGradoAbreviacion
+
+    //     // console.log('Item completo que se enviará:', JSON.stringify(item))
+    //     // console.log('iYAcadId:', this.iYAcadId)
+    //     // console.log('iSedeId:', this.iSedeId)
+    //     // console.log('dremoperfil:', this.store.getItem('dremoPerfil'))
+    //     // console.log('IevaluacionHashed:', this.curso.iEvaluacionIdHashed)
+    //     // console.log('cEvaluacionNombre:', this.curso.cCursoNombre)
+    //     // console.log('Curso nivel Grado', this.curso.iCursosNivelGradId)
+    //     // console.log('CgradoAbreviacion:', this.curso.cGradoAbreviacion)
+
+    //     // Aquí mandas los datos de la tabla
+    //     this.datosInformesService
+    //         .importarOffLine({
+    //             tipo: 'resultados', // puedes mantenerlo, aunque Laravel no lo usa
+    //             json_resultados: JSON.stringify(item), //  aquí lo envías como JSON string
+    //             iYAcadId: this.iYAcadId,
+    //             iSedeId: this.iSedeId,
+    //             iCredId: this.store.getItem('dremoPerfil')?.iCredId,
+    //             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
+    //             cCursoNombre: this.curso.cCursoNombre ?? null,
+    //             cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
+    //             iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
+    //         })
+    //         .subscribe({
+    //             next: (res) => {
+    //                 console.log('Datos subidos:', res)
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error subiendo archivo:', error)
+    //                 this._messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: error.message || 'Error al subir archivo',
+    //                 })
+    //             },
+    //             complete: () => {
+    //                 console.log('Subida completada.')
+    //             },
+    //         })
+    // }
+
+    async subirArchivo(datos_hojas: Array<object>) {
+        const subirArchivo = {
+            // datos_hojas: datos_hojas,
+            iYAcadId: this.iYAcadId,
+            iSedeId: this.iSedeId,
+            iCredId: this.store.getItem('dremoPerfil').iCredId,
+            iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
+
+            cCursoNombre: this.curso.cCursoNombre ?? null,
+            cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
+            tipo: 'resultados',
+            json_resultados: JSON.stringify(datos_hojas), //  aquí lo envías como JSON string
+        }
+        console.log('subirArchivo', subirArchivo)
+        this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+            next: (data: any) => {
+                console.log('Datos Subidas de Importar Resultados:', data)
+            },
+            error: (error) => {
+                console.error('Error subiendo archivo:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
         })
     }
+    // Angular: componente donde se envía el JSON
+    // async subirArchivo(datos_hojas: Array<object>) {
+    //     const payload = {
+    //         iYAcadId: this.iYAcadId,
+    //         iSedeId: this.iSedeId,
+    //         iCredId: this.store.getItem('dremoPerfil').iCredId,
+    //         iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
+    //         cCursoNombre: this.curso.cCursoNombre ?? null,
+    //         cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
+    //         iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
+    //         tipo: 'resultados',
+    //         json_resultados: JSON.stringify(datos_hojas), // este se envía como string
+    //     }
+
+    //     this.datosInformesService.importarResultados(payload).subscribe({
+    //         next: (data: any) => {
+    //             console.log('Respuesta del servidor:', data)
+    //         },
+    //         error: (error) => {
+    //             console.error('Error subiendo archivo:', error)
+    //             this._messageService.add({
+    //                 severity: 'error',
+    //                 summary: 'Error',
+    //                 detail: error.message || 'Error inesperado',
+    //             })
+    //         },
+    //         complete: () => {
+    //             console.log('Petición finalizada')
+    //         },
+    //     })
+    // }
 }

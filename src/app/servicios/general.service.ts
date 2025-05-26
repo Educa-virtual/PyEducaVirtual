@@ -382,4 +382,10 @@ export class GeneralService {
             data
         )
     }
+    insertarCuestionarioNotas(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/Evaluaciones/insertarCuestionarioNotas`,
+            data
+        )
+    }
 }

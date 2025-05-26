@@ -116,7 +116,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() dataKey: string
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
-
+    @Input() width: string = '100%'
     debug(d) {
         console.log('d')
         console.log(d)
@@ -593,5 +593,19 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             'secondary',
         ].includes(col.styles[row[col.field]])
         return severity ? col.styles[row[col.field]] : 'secondary'
+    }
+
+    @Input() soloUnaLetra: boolean = false
+    validarUnaLetra(event: any, rowData: any, field: string) {
+        const valor = event.target.value
+        // Solo se permite una letra (a-zA-Z)
+        const letra = valor.match(/^[a-zA-Z]?$/)
+        if (letra) {
+            rowData[field] = valor
+        } else {
+            // Elimina caracteres no válidos
+            event.target.value = valor.charAt(0).replace(/[^a-zA-Z]/g, '')
+            rowData[field] = event.target.value
+        }
     }
 }

@@ -17,7 +17,7 @@ import { MessageService } from 'primeng/api'
 export class FichaEconomicoComponent implements OnInit {
     formEconomico: FormGroup
     ficha_registrada: boolean
-    trabaja: boolean = false
+    apoderado_trabaja: boolean = false
 
     rangos_sueldo: Array<object>
     dependencias_economicas: Array<object>
@@ -74,6 +74,7 @@ export class FichaEconomicoComponent implements OnInit {
                 iIngresoEcoEstudiante: [null],
                 iIngresoEcoTrabajoHoras: [null],
                 bIngresoEcoTrabaja: [null],
+                bApoderadoTrabaja: [null],
                 cIngresoEcoDependeDe: [null],
                 iRangoSueldoId: [null],
                 iRangoSueldoIdPersona: [null],
@@ -86,10 +87,10 @@ export class FichaEconomicoComponent implements OnInit {
         }
 
         this.formEconomico
-            .get('bIngresoEcoTrabaja')
+            .get('bApoderadoTrabaja')
             .valueChanges.subscribe((value) => {
                 if (value) {
-                    this.trabaja = true
+                    this.apoderado_trabaja = true
                     this.formEconomico
                         .get('iIngresoEcoEstudiante')
                         .setValue(null)
@@ -105,7 +106,7 @@ export class FichaEconomicoComponent implements OnInit {
                     this.formEconomico.get('iDepEcoId').setValue(null)
                     this.formEconomico.get('iJorTrabId').setValue(null)
                 } else {
-                    this.trabaja = false
+                    this.apoderado_trabaja = false
                 }
             })
     }

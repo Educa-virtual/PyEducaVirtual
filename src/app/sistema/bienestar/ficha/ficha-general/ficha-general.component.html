@@ -3,7 +3,7 @@
 <!-- Contenido del Formulario de Datos Generales -->
 <form [formGroup]="formGeneral" class="section">
     <!-- Dirección Actual -->
-    <p-fieldset legend="1. Datos generales">
+    <p-fieldset legend="1. Dirección del estudiante">
         <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup styleClass="vertical-group">
@@ -23,7 +23,7 @@
                         <input
                             pInputText
                             formControlName="cTipoViaNombre"
-                            placeholder="Especifique otra"
+                            placeholder="Especifique otro tipo de vía"
                             type="text"
                             class="group-element"
                         />
@@ -48,7 +48,7 @@
         <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nro.Puerta </p-inputGroupAddon>
+                    <p-inputGroupAddon> Nro. de Puerta </p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
@@ -154,20 +154,20 @@
     <br />
 
     <!-- Relaciones familiares -->
-    <p-fieldset legend="3. Relaciones familiares">
+    <p-fieldset legend="2. Relaciones familiares del estudiante">
         <div class="grid">
             <div class="col-12 md:col-4">
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
                         <p-inputSwitch formControlName="bFamiliarPadreVive" />
-                        <span>¿Vive su padre?</span>
+                        <span>¿El papá del estudiante está vivo?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-4">
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
-                        ¿Vive su madre?
+                        ¿La mamá del estudiante está viva?
                         <p-inputSwitch formControlName="bFamiliarMadreVive" />
                     </p-inputGroupAddon>
                 </p-inputGroup>
@@ -178,14 +178,14 @@
                         <p-inputSwitch
                             formControlName="bFamiliarPadresVivenJuntos"
                         />
-                        <span>¿Sus padres viven juntos?</span>
+                        <span>Los padres del estudiante viven juntos?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-4">
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
-                        ¿Tiene Hijos?
+                        ¿El estudiante tiene hijos/hijas?
                         <p-inputSwitch formControlName="bFichaDGTieneHijos" />
                     </p-inputGroupAddon>
                 </p-inputGroup>
@@ -193,7 +193,9 @@
             @if (visibleInput[0] === true) {
                 <div class="col-12 md:col-4">
                     <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon> ¿Cuántos Hijos? </p-inputGroupAddon>
+                        <p-inputGroupAddon>
+                            ¿Cuántos hijos/hijas?
+                        </p-inputGroupAddon>
                         <p-inputNumber
                             formControlName="iFichaDGNroHijos"
                             min="1"

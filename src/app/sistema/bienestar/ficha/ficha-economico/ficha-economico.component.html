@@ -5,7 +5,7 @@
         <div class="col-12 sm:col-6">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon>
-                    Ingreso mensual familiar
+                    Ingreso mensual de la familia del estudiante
                 </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iIngresoEcoFamiliar"
@@ -49,7 +49,15 @@
         <div class="col-12 sm:col-6">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon>
-                    Tipo de apoyo economómico
+                    <p-inputSwitch formControlName="bIngresoEcoTrabaja" />
+                    <span>¿El estudiante trabaja?</span>
+                </p-inputGroupAddon>
+            </p-inputGroup>
+        </div>
+        <div class="col-12 sm:col-6">
+            <p-inputGroup styleClass="vertical-group">
+                <p-inputGroupAddon>
+                    El estudiante recibe algún apoyo económico?
                 </p-inputGroupAddon>
                 <p-dropdown
                     [options]="tipos_apoyo_economico"
@@ -65,17 +73,18 @@
         <div class="col-12 sm:col-6">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon>
-                    <p-inputSwitch formControlName="bIngresoEcoTrabaja" />
-                    <span>¿Usted trabaja?</span>
+                    <p-inputSwitch formControlName="bApoderadoTrabaja" />
+                    <span>¿El apoderado trabaja?</span>
                 </p-inputGroupAddon>
             </p-inputGroup>
         </div>
-        <p-fieldset legend="Ingresos personales" *ngIf="trabaja">
-            <div class="grid">
+
+        <p-fieldset legend="Ingresos del apoderado" *ngIf="apoderado_trabaja">
+            <div class="grid p-fluid">
                 <div class="col-12 sm:col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
-                            Ingresos mensuales personales
+                            Ingresos mensuales del apoderado
                         </p-inputGroupAddon>
                         <p-inputNumber
                             formControlName="iIngresoEcoEstudiante"
@@ -91,7 +100,7 @@
                 <div class="col-12 sm:col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
-                            Rango de sueldo personal
+                            Rango de sueldo del apoderado
                         </p-inputGroupAddon>
                         <p-dropdown
                             [options]="rangos_sueldo"
@@ -123,7 +132,7 @@
                 <div class="col-12 sm:col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
-                            Fuente de ingresos personales
+                            Fuente de ingresos
                         </p-inputGroupAddon>
                         <input
                             pInputText

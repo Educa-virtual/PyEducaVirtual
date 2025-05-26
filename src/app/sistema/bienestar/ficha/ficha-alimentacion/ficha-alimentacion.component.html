@@ -139,7 +139,7 @@
                                     type="text"
                                     formControlName="cDietaVegetarianaObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -159,7 +159,7 @@
                                     type="text"
                                     formControlName="cDietaVeganaObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -179,7 +179,7 @@
                                     type="text"
                                     formControlName="cAlergiasAlimObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -199,7 +199,7 @@
                                     type="text"
                                     formControlName="cIntoleranciaAlimObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -219,7 +219,7 @@
                                     type="text"
                                     formControlName="cSumplementosAlimObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -232,14 +232,17 @@
                                     formControlName="bDificultadAlim"
                                     (onChange)="handleSwitchChange($event, 5)"
                                 />
-                                <span>Inseguridad alimentaria</span>
+                                <span
+                                    >¿Tiene dificultades para conseguir
+                                    alimentos?</span
+                                >
                             </p-inputGroupAddon>
                             @if (visibleAdicionalInput[5] === true) {
                                 <input
                                     type="text"
                                     formControlName="cDificultadAlimObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique"
                                     class="group-element"
                                 />
                             }
@@ -254,7 +257,7 @@
                                 type="text"
                                 formControlName="cInfoAdicionalAlimObs"
                                 pInputText
-                                placeholder="Observaciones"
+                                placeholder="Especifique"
                                 class="group-element"
                             />
                         </p-inputGroup>

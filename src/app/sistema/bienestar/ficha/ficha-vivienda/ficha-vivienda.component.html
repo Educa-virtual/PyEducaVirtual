@@ -6,7 +6,9 @@
 
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Tipo de Ocupación </p-inputGroupAddon>
+                <p-inputGroupAddon>
+                    Tipo de ocupación de vivienda
+                </p-inputGroupAddon>
                 <p-dropdown
                     [options]="ocupaciones_vivienda"
                     formControlName="iTipoOcupaVivId"
@@ -31,7 +33,7 @@
         </div>
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Estado </p-inputGroupAddon>
+                <p-inputGroupAddon> Estado de vivienda </p-inputGroupAddon>
                 <p-dropdown
                     [options]="estados_vivienda"
                     formControlName="iEstadoVivId"
@@ -68,7 +70,7 @@
         </div>
         <div class="field col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Número de ambientes </p-inputGroupAddon>
+                <p-inputGroupAddon> Número de cuartos </p-inputGroupAddon>
                 <p-inputNumber
                     formControlName="iViviendaCarNroAmbientes"
                     min="1"
@@ -277,7 +279,7 @@
         <div class="field col-12 md:col-6">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon>
-                    Otros elementos en su vivienda
+                    Otros elementos en la vivienda del estudiante
                 </p-inputGroupAddon>
                 <p-multiSelect
                     display="chip"

@@ -6,7 +6,9 @@
 
         <div class="col-12">
             <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Seguros de salud </p-inputGroupAddon>
+                <p-inputGroupAddon>
+                    Seguros de salud con los que cuenta el estudiante
+                </p-inputGroupAddon>
                 <p-multiSelect
                     display="chip"
                     [options]="seguros_salud"
@@ -53,7 +55,7 @@
                                     type="text"
                                     name="cDolenciaObs[{{ dolencia['value'] }}]"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Indique si está diagnosticado o no, severidad y tiempo de dolencia"
                                     class="group-element"
                                 />
                             }

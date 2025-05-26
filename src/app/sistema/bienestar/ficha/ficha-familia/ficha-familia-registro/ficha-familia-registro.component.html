@@ -3,11 +3,11 @@
 
     <br />
 
-    <p-fieldset legend="Relación familiar">
+    <p-fieldset legend="Relación familiar con el estudiante">
         <div class="pt-2 grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Relación * </p-inputGroupAddon>
+                    <p-inputGroupAddon> Relación familiar * </p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_familiares"
                         formControlName="iTipoFamiliarId"
@@ -23,7 +23,7 @@
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
                         <p-inputSwitch formControlName="bFamiliarVivoConEl" />
-                        <span>¿Comparte residencia?</span>
+                        <span>¿Vive en la misma dirección del estudiante?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
@@ -268,7 +268,7 @@
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nro.Puerta </p-inputGroupAddon>
+                    <p-inputGroupAddon> Nro. de Puerta </p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
@@ -391,7 +391,9 @@
             </div>
             <div class="col-12 sm:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Instrucción </p-inputGroupAddon>
+                    <p-inputGroupAddon>
+                        Grado de instrucción
+                    </p-inputGroupAddon>
                     <p-dropdown
                         [options]="grados_instruccion"
                         formControlName="iGradoInstId"
@@ -405,7 +407,9 @@
             </div>
             <div class="col-12 sm:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Tipo I.E. </p-inputGroupAddon>
+                    <p-inputGroupAddon>
+                        I.E. en la que estudió
+                    </p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_ies"
                         formControlName="iTipoIeEstId"

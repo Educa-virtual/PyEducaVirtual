@@ -6,7 +6,7 @@
 
         <div class="col-12 lg:col-6">
             <p-fieldset
-                legend="Indique si tiene alguna limitación o discapacidad"
+                legend="Indique si el estudiante tiene alguna limitación o discapacidad"
             >
                 <div class="grid">
                     <div
@@ -38,7 +38,7 @@
                                     type="text"
                                     formControlName="cDiscFichaObs"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique si está diagnosticado o no, severidad o si necesita apoyo o acomodaciones"
                                     class="group-element"
                                 />
                             }
@@ -48,7 +48,9 @@
             </p-fieldset>
         </div>
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Programas del estado">
+            <p-fieldset
+                legend="¿El estudiante está registrado en algún programa?"
+            >
                 <div class="grid">
                     <div class="col-12">
                         <p-inputGroup styleClass="vertical-group">
@@ -69,7 +71,7 @@
                                     type="text"
                                     formControlName="cCodigoCONADIS"
                                     pInputText
-                                    placeholder="Código de carnet"
+                                    placeholder="Código de carnet *"
                                     class="group-element"
                                     maxlength="50"
                                 />
@@ -95,7 +97,7 @@
                                     type="text"
                                     formControlName="cCodigoOMAPED"
                                     pInputText
-                                    placeholder="Código de carnet"
+                                    placeholder="Código de carnet *"
                                     class="group-element"
                                     maxlength="50"
                                 />
@@ -123,7 +125,7 @@
                                     type="text"
                                     formControlName="cOtroProgramaDiscapacidad"
                                     pInputText
-                                    placeholder="Observaciones"
+                                    placeholder="Especifique otro programa"
                                     class="group-element"
                                 />
                             }

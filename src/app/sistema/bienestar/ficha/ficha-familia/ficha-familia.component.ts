@@ -194,7 +194,7 @@ export class FichaFamiliaComponent implements OnInit {
             type: 'text',
             width: '10%',
             field: 'cTipoIdentSigla',
-            header: 'Tipo',
+            header: 'Tipo de Doc.',
             text_header: 'center',
             text: 'center',
         },

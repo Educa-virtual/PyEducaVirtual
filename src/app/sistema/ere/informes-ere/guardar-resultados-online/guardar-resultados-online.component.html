@@ -17,18 +17,37 @@
                     <div>
                         <span class="btn">Datos I.E.</span>
                     </div>
-                    <div class="col-8">
-                        <span class="p-float-label mt-5">
-                            <input
-                                pInputText
-                                id="cCursoNombre"
-                                formControlName="cCursoNombre"
-                                aria-describedby="cCursoNombre-help"
-                            />
-                            <label for="cCursoNombre" class="font-bold"
-                                >ÁREA:</label
-                            >
-                        </span>
+                    <div class="col-12">
+                        <div class="grid mt-5">
+                            <div class="col-6">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cCursoNombre"
+                                        formControlName="cCursoNombre"
+                                        aria-describedby="cCursoNombre-help"
+                                    />
+                                    <label for="cCursoNombre" class="font-bold"
+                                        >ÁREA:</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon>
+                                        Docente de Aula:
+                                    </p-inputGroupAddon>
+                                    <input
+                                        pInputText
+                                        id="cNombreDocente"
+                                        formControlName="cNombreDocente"
+                                        placeholder="Nombre del Docente"
+                                        readonly
+                                        aria-describedby="cPersDocumento-help"
+                                    />
+                                </p-inputGroup>
+                            </div>
+                        </div>
                         <!--                         
                         <span class="p-float-label mt-5">
                             <input
@@ -54,7 +73,7 @@
                         </span> -->
                         <div class="grid mt-5">
                             <!-- Mostrar grado -->
-                            <div class="col-6">
+                            <div class="col-4">
                                 <span class="p-float-label">
                                     <input
                                         pInputText
@@ -71,65 +90,47 @@
                             </div>
 
                             <!-- Mostrar SECCIÓN -->
-                            <div class="col-6">
+                            <div class="col-4">
                                 <span class="p-float-label">
                                     <p-dropdown
                                         [options]="secciones"
                                         [style]="{ width: '100%' }"
-                                        filterBy="label"
-                                        optionLabel="label"
-                                        optionValue="idSeccion"
-                                        formControlName=""
+                                        filterBy="cSeccionDescripcion"
+                                        optionLabel="cSeccionDescripcion"
+                                        optionValue="iSeccionId"
+                                        formControlName="seccionControl"
+                                        (onChange)="filtrado($event)"
                                         [appendTo]="'body'"
-                                    />
+                                    >
+                                    </p-dropdown>
                                     <label for="label" class="font-bold"
                                         >Seleccione Sección</label
                                     >
                                 </span>
                             </div>
+                            <div class="col-4">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersDocumento"
+                                        formControlName="cNivelTipoNombre"
+                                        aria-describedby="cPersDocumento-help"
+                                    />
+                                    <label
+                                        for="cNivelTipoNombre"
+                                        class="font-bold"
+                                        >NIVEL:</label
+                                    >
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-4">
-                        <span class="p-float-label mt-5">
-                            <input
-                                pInputText
-                                id="cPersDocumento"
-                                formControlName="cNivelTipoNombre"
-                                aria-describedby="cPersDocumento-help"
-                            />
-                            <label for="cNivelTipoNombre" class="font-bold"
-                                >NIVEL:</label
-                            >
-                        </span>
-                        <!-- <span class="p-float-label mt-5">
-                            <input
-                                pInputText
-                                id="cPersDocumento"
-                                formControlName="cNombreDistrito"
-                                aria-describedby="cPersDocumento-help"
-                            />
-                            <label for="cNombreDistrito" class="font-bold"
-                                >DISTRITO:</label
-                            >
-                        </span> -->
-                        <span class="p-float-label mt-5">
-                            <input
-                                pInputText
-                                id="cNombreGestion"
-                                formControlName="cNombreGestion"
-                                aria-describedby="cPersDocumento-help"
-                            />
-                            <label for="cNombreGestion" class="font-bold"
-                                >GESTIÓN:</label
-                            >
-                        </span>
                     </div>
                 </div>
                 <div class="col ml-3">
                     <div class="mt-5">
                         <div class="flex justify-content-center">
                             <span class="text-7xl font-bold text-primary">{{
-                                alumnos?.length
+                                alumnosFiltrados?.length
                             }}</span>
                         </div>
                         <div class="flex justify-content-center">
@@ -140,44 +141,29 @@
                     </div>
                 </div>
             </div>
-            <div class="grid p-fluid mt-3">
+            <!-- <div class="grid p-fluid mt-3">
                 <div class="col-6 mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon>
                             Docente de Aula:
                         </p-inputGroupAddon>
-                        <input
-                            pInputText
-                            id="cNombreDocente"
-                            formControlName="cNombreDocente"
-                            placeholder="Nombre del Docente"
-                            readonly
-                            aria-describedby="cPersDocumento-help"
-                        />
+                        <input pInputText id="cNombreDocente" formControlName="cNombreDocente"
+                            placeholder="Nombre del Docente" readonly aria-describedby="cPersDocumento-help" />
                     </p-inputGroup>
                 </div>
 
                 <div class="col-4 mt-2">
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Ingresar dni...."
-                        formControlName="cDniDocente"
-                    />
+                    <input type="text" pInputText placeholder="Ingresar dni...." formControlName="cDniDocente" />
                 </div>
                 <div class="col-2 mt-2">
-                    <p-button
-                        label="Buscar"
-                        icon="pi pi-search"
-                        severity="success"
-                    />
+                    <p-button label="Buscar" icon="pi pi-search" severity="success" />
                 </div>
-            </div>
+            </div> -->
         </form>
         <div class="col">
             <app-table-primeng
                 [columnas]="columnas"
-                [data]="alumnos"
+                [data]="alumnosFiltrados"
                 (accionBtnItem)="getCuestionarioNotas($event)"
                 [actions]="botonesTabla"
                 [showPaginator]="true"
@@ -193,10 +179,12 @@
 
         <div class="grid p-fluid mt-3">
             <div class="field col-12">
+                <!-- <p-button type="submit" label="Guardar" styleClass="p-button-primary" /> -->
                 <p-button
                     type="submit"
                     label="Guardar"
                     styleClass="p-button-primary"
+                    [disabled]="formCurso.invalid"
                 />
             </div>
         </div>

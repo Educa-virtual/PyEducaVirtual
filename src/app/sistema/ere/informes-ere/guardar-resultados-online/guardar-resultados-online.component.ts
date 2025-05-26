@@ -29,150 +29,22 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     estudiantes: any
     perfil: any
     cabecera: string = ''
+    alumnosFiltrados: any[] = []
 
     // formulario guardar resultados online
     public formCurso: FormGroup = this._formBuilder.group({
-        cIeNombre: ['', [Validators.required]],
         cCursoNombre: ['', [Validators.required]],
         cGradoAbreviacion: ['', [Validators.required]],
         cNivelTipoNombre: ['', [Validators.required]],
         iCursosNivelGradId: ['', [Validators.required]], // GRADO DEL AREA CURRICULAR
         cNombreDistrito: ['', [Validators.required]],
-        cNombreGestion: ['', [Validators.required]],
-        cDniDocente: ['', [Validators.required]],
+        // cNombreGestion: ['', [Validators.required]],
+        //  cDniDocente: ['', [Validators.required]],
         cNombreDocente: ['', [Validators.required]],
         iSeccionId: ['', [Validators.required]], // ID DE LA SECCION
     })
-    secciones = [
-        {
-            label: 'A',
-            idSeccion: 1,
-            icon: 'pi pi-fw pi-home',
-        },
-        {
-            label: 'B',
-            idSeccion: 2,
-            icon: 'pi pi-fw pi-home',
-        },
-        {
-            label: 'UNICA',
-            idSeccion: 3,
-            icon: 'pi pi-fw pi-home',
-        },
-    ]
-    // datos de prueba
-    alumnos = [
-        // {
-        //     label: 'B',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'maria',
-        //     idSeccion: 2,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'UNICA',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 3,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'A',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 1,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'B',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'maria',
-        //     idSeccion: 2,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'UNICA',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 3,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'A',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 1,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'B',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'maria',
-        //     idSeccion: 2,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'UNICA',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 3,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'A',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 1,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'B',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'maria',
-        //     idSeccion: 2,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-        // {
-        //     label: 'UNICA',
-        //     dni: '12345678',
-        //     apellidoPaterno: 'PEREZ',
-        //     apellidoMaterno: 'GARCIA',
-        //     nombres: 'JUAN',
-        //     idSeccion: 3,
-        //     icon: 'pi pi-fw pi-home',
-        //     routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-        // },
-    ]
+    secciones = [] // Secciones obtenidas de la base de datos
+    alumnos = [] // Alumnos obtenidos de la base de datos
     private _messageService = inject(MessageService)
 
     constructor(
@@ -186,6 +58,8 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.iSedeId = this.store.getItem('dremoPerfil').iSedeId
         this.perfil = this.store.getItem('dremoPerfil')
+        console.log('this.store', this.store)
+        this.getSeccion()
     }
     botonesTabla: IActionTable[] = [
         {
@@ -462,14 +336,13 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             },
             complete: () => {
                 console.log('Request completed')
-
                 this.alumnos = this.estudiantes.map((est) => ({
                     label: est.cSeccionNombre,
                     dni: est.cPersDocumento,
                     apellidoPaterno: est.cPersPaterno,
                     apellidoMaterno: est.cPersMaterno,
                     nombres: est.cPersNombre,
-                    idSeccion: +est.iSeccionId, // convertir a number
+                    iSeccionId: +est.iSeccionId, // convertir a number
                     icon: 'pi pi-fw pi-home',
                     routerLink:
                         '/sistema/ere/informes-ere/guardar-resultados-online',
@@ -526,6 +399,31 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.subirArchivo([item])
     }
 
+    getSeccion() {
+        this.query
+            .searchCalAcademico({
+                esquema: 'acad',
+                tabla: 'secciones',
+                campos: '*',
+                condicion: '1=1',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.secciones = data.data
+                },
+                error: (error) => {
+                    console.error('Error fetching Años Académicos:', error)
+                    this._messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    console.log(this.secciones, 'secciones obtenidas') // Verifica que se obtuvieron las secciones
+                },
+            })
+    }
     // subirArchivo(item: any) {
     //     // const iCursosNivelGradId =
     //     //     this.formCurso.get('iCursosNivelGradId').value
@@ -574,23 +472,42 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     //             },
     //         })
     // }
+    filtrado(event: any) {
+        // Aquí puedes manejar el evento de cambio si es necesario
+        const seccionIdSeleccionada = event.value
+
+        console.log('Sección seleccionada:', seccionIdSeleccionada)
+
+        this.alumnosFiltrados = this.alumnos.filter(
+            (alumno) => alumno.iSeccionId === Number(seccionIdSeleccionada)
+        )
+
+        console.log(
+            this.alumnosFiltrados,
+            'alumnosFiltrados antes del filtrado'
+        )
+    }
 
     async subirArchivo(datos_hojas: Array<object>) {
         const subirArchivo = {
             // datos_hojas: datos_hojas,
-            iYAcadId: this.iYAcadId,
             iSedeId: this.iSedeId,
+            iSemAcadId: this.store.getItem('dremoPerfil').iSemAcadId,
+            iYAcadId: this.iYAcadId,
             iCredId: this.store.getItem('dremoPerfil').iCredId,
             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null, //curso_nivel_grado
+            codigo_modular: this.store.getItem('dremoPerfil').cCodigoModular,
+            curso: this.curso.cCursoNombre ?? null,
+            nivel: this.curso.cNivelTipoNombre ?? null, //nivel_tipo_nombre
+            grado: this.curso.cGradoAbreviacion ?? null,
 
-            cCursoNombre: this.curso.cCursoNombre ?? null,
-            cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
-            iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
             tipo: 'resultados',
             json_resultados: JSON.stringify(datos_hojas), //  aquí lo envías como JSON string
         }
         console.log('subirArchivo', subirArchivo)
-        this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+
+        /*this.datosInformesService.importarOffLine(subirArchivo).subscribe({
             next: (data: any) => {
                 console.log('Datos Subidas de Importar Resultados:', data)
             },
@@ -605,7 +522,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             complete: () => {
                 console.log('Request completed')
             },
-        })
+        })*/
     }
     // Angular: componente donde se envía el JSON
     // async subirArchivo(datos_hojas: Array<object>) {

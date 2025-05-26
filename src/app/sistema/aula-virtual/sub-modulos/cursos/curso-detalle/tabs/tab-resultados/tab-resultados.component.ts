@@ -586,6 +586,10 @@ export class TabResultadosComponent implements OnInit {
         }
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
+            // this.unidades.forEach((periodo, index) => {
+            //     periodo.cPeriodoEvalNombre = `TRIMESTRAL ${index + 1}`;
+            // });
+
             console.log(this.unidades)
             this.unidades = this.unidades.map((unidad) => {
                 const ini = new Date(

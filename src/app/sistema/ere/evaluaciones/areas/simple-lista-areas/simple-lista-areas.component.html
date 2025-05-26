@@ -21,7 +21,7 @@
                 type="text"
                 pInputText
                 [(ngModel)]="terminoBusqueda"
-                (input)="filtrarRecursos()"
+                (input)="filtrarAreaDetalle()"
                 placeholder="Buscar por área..."
                 class="w-full"
                 style="padding-left: 2.5rem"
@@ -44,7 +44,7 @@
         </ng-template>
 
         <p-table
-            [value]="datosRecursosFiltrados"
+            [value]="datosAreaDetalleFiltrados"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
         >
@@ -56,17 +56,17 @@
                 </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-recurso>
+            <ng-template pTemplate="body" let-areaDetalle>
                 <tr>
-                    <td style="text-align: center">{{ recurso.id }}</td>
-                    <td>{{ recurso.area }}</td>
+                    <td style="text-align: center">{{ areaDetalle.id }}</td>
+                    <td>{{ areaDetalle.area }}</td>
                     <td style="text-align: center">
                         <p-button
                             label="PDF"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
-                            (click)="descargarPDF('Cuadernillo', recurso)"
+                            (click)="descargarPDF('Cuadernillo', areaDetalle)"
                         ></p-button>
                     </td>
                     <td style="text-align: center">
@@ -76,7 +76,7 @@
                             severity="danger"
                             size="small"
                             (click)="
-                                descargarPDF('Hoja de respuestas', recurso)
+                                descargarPDF('Hoja de respuestas', areaDetalle)
                             "
                         ></p-button>
                     </td>
@@ -86,20 +86,25 @@
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
-                            (click)="descargarPDF('Matriz', recurso)"
+                            (click)="descargarPDF('Matriz', areaDetalle)"
                         ></p-button>
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            [label]="estadosRecurso[recurso.estado].label"
-                            [icon]="estadosRecurso[recurso.estado].icon"
-                            [severity]="estadosRecurso[recurso.estado].severity"
+                            [label]="
+                                estadosAreaDetalle[areaDetalle.estado].label
+                            "
+                            [icon]="estadosAreaDetalle[areaDetalle.estado].icon"
+                            [severity]="
+                                estadosAreaDetalle[areaDetalle.estado].severity
+                            "
                             size="small"
                             iconPos="right"
                             (click)="
                                 ejecutarAccion(
-                                    estadosRecurso[recurso.estado].accion,
-                                    recurso
+                                    estadosAreaDetalle[areaDetalle.estado]
+                                        .accion,
+                                    areaDetalle
                                 )
                             "
                         ></p-button>
@@ -128,7 +133,7 @@
         </ng-template>
 
         <p-table
-            [value]="datosRecursos4toFiltrados"
+            [value]="datosAreaDetalle4toFiltrados"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
         >
@@ -140,17 +145,17 @@
                 </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-recurso>
+            <ng-template pTemplate="body" let-areaDetalle>
                 <tr>
-                    <td style="text-align: center">{{ recurso.id }}</td>
-                    <td>{{ recurso.area }}</td>
+                    <td style="text-align: center">{{ areaDetalle.id }}</td>
+                    <td>{{ areaDetalle.area }}</td>
                     <td style="text-align: center">
                         <p-button
                             label="PDF"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
-                            (click)="descargarPDF('Cuadernillo', recurso)"
+                            (click)="descargarPDF('Cuadernillo', areaDetalle)"
                         ></p-button>
                     </td>
                     <td style="text-align: center">
@@ -160,7 +165,7 @@
                             severity="danger"
                             size="small"
                             (click)="
-                                descargarPDF('Hoja de respuestas', recurso)
+                                descargarPDF('Hoja de respuestas', areaDetalle)
                             "
                         ></p-button>
                     </td>
@@ -170,28 +175,31 @@
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
-                            (click)="descargarPDF('Matriz', recurso)"
+                            (click)="descargarPDF('Matriz', areaDetalle)"
                         ></p-button>
                     </td>
                     <td style="text-align: center">
                         <p-button
                             [label]="
-                                obtenerConfiguracionEstado(recurso.estado).label
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .label
                             "
                             [icon]="
-                                obtenerConfiguracionEstado(recurso.estado).icon
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .icon
                             "
                             [severity]="
-                                obtenerConfiguracionEstado(recurso.estado)
+                                obtenerConfiguracionEstado(areaDetalle.estado)
                                     .severity
                             "
                             size="small"
                             iconPos="right"
                             (click)="
                                 ejecutarAccion(
-                                    obtenerConfiguracionEstado(recurso.estado)
-                                        .accion,
-                                    recurso
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).accion,
+                                    areaDetalle
                                 )
                             "
                         ></p-button>
@@ -220,7 +228,7 @@
         </ng-template>
 
         <p-table
-            [value]="datosRecursos6toFiltrados"
+            [value]="datosAreaDetalle6toFiltrados"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
         >
@@ -232,17 +240,17 @@
                 </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-recurso>
+            <ng-template pTemplate="body" let-areaDetalle>
                 <tr>
-                    <td style="text-align: center">{{ recurso.id }}</td>
-                    <td>{{ recurso.area }}</td>
+                    <td style="text-align: center">{{ areaDetalle.id }}</td>
+                    <td>{{ areaDetalle.area }}</td>
                     <td style="text-align: center">
                         <p-button
                             label="PDF"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
-                            (click)="descargarPDF('Cuadernillo', recurso)"
+                            (click)="descargarPDF('Cuadernillo', areaDetalle)"
                         ></p-button>
                     </td>
                     <td style="text-align: center">
@@ -252,7 +260,7 @@
                             severity="danger"
                             size="small"
                             (click)="
-                                descargarPDF('Hoja de respuestas', recurso)
+                                descargarPDF('Hoja de respuestas', areaDetalle)
                             "
                         ></p-button>
                     </td>
@@ -262,28 +270,31 @@
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
-                            (click)="descargarPDF('Matriz', recurso)"
+                            (click)="descargarPDF('Matriz', areaDetalle)"
                         ></p-button>
                     </td>
                     <td style="text-align: center">
                         <p-button
                             [label]="
-                                obtenerConfiguracionEstado(recurso.estado).label
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .label
                             "
                             [icon]="
-                                obtenerConfiguracionEstado(recurso.estado).icon
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .icon
                             "
                             [severity]="
-                                obtenerConfiguracionEstado(recurso.estado)
+                                obtenerConfiguracionEstado(areaDetalle.estado)
                                     .severity
                             "
                             size="small"
                             iconPos="right"
                             (click)="
                                 ejecutarAccion(
-                                    obtenerConfiguracionEstado(recurso.estado)
-                                        .accion,
-                                    recurso
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).accion,
+                                    areaDetalle
                                 )
                             "
                         ></p-button>
@@ -291,6 +302,114 @@
                 </tr>
             </ng-template>
 
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cols.length" class="text-center p-4">
+                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">
+                            No se encontraron áreas que coincidan con la
+                            búsqueda
+                        </p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+
+    <!-- Tabla de especialista -->
+    <p-panel class="mb-4">
+        <ng-template pTemplate="header">
+            <div class="flex flex-column gap-2">
+                <h3 class="m-0 text-uppercase text-primary">
+                    Tabla de especialista
+                </h3>
+            </div>
+        </ng-template>
+        <p-table
+            [value]="datosAreaDetalleFiltrados"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of cols" [style.text-align]="'center'">
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-areaDetalle>
+                <tr>
+                    <td style="text-align: center">{{ areaDetalle.id }}</td>
+                    <td>{{ areaDetalle.area }}</td>
+                    <td style="text-align: center">
+                        <p-button
+                            [label]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .label
+                            "
+                            [icon]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .icon
+                            "
+                            [severity]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .severity
+                            "
+                            (click)="
+                                ejecutarAccion(
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).accion,
+                                    areaDetalle
+                                )
+                            "
+                            (click)="
+                                abrirDialogoGenerarCuadernillo(areaDetalle)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="
+                                descargarPDF('Hoja de respuestas', areaDetalle)
+                            "
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-file-pdf"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Matriz', areaDetalle)"
+                        >
+                        </p-button>
+                    </td>
+                    <td style="text-align: center">
+                        <button
+                            pButton
+                            icon="pi pi-pencil"
+                            class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
+                            pTooltip="Generar cuadernillo"
+                            tooltipPosition="top"
+                            aria-label="Generar cuadernillo"
+                        ></button>
+
+                        <button
+                            pButton
+                            icon="pi pi-cog"
+                            class="p-button-text p-button-rounded p-button-sm transparent-btn"
+                            aria-label="Configuración"
+                        ></button>
+                    </td>
+                </tr>
+            </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
                     <td [attr.colspan]="cols.length" class="text-center p-4">

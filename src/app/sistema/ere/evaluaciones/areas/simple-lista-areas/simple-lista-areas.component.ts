@@ -3,7 +3,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { DialogGenerarCuadernilloComponent } from '../dialog-generar-cuadernillo/dialog-generar-cuadernillo.component'
 
-interface Recurso {
+interface AreaDetalle {
     id: number
     area: string
     cuadernillo: string
@@ -17,7 +17,7 @@ interface Column {
     header: string
 }
 
-interface EstadoRecurso {
+interface EstadoAreaDetalle {
     label: string
     icon: string
     severity:
@@ -46,15 +46,15 @@ export class SimpleListaAreasComponent implements OnInit {
     breadCrumbItems: MenuItem[] = []
     breadCrumbHome: MenuItem = {}
 
-    // Datos de recursos
-    recursos: Recurso[] = []
-    recursos4to: Recurso[] = []
-    recursos6to: Recurso[] = []
+    // Datos de área detalle
+    areasDetalle: AreaDetalle[] = []
+    areasDetalle4to: AreaDetalle[] = []
+    areasDetalle6to: AreaDetalle[] = []
 
     // Datos filtrados
-    datosRecursosFiltrados: Recurso[] = []
-    datosRecursos4toFiltrados: Recurso[] = []
-    datosRecursos6toFiltrados: Recurso[] = []
+    datosAreaDetalleFiltrados: AreaDetalle[] = []
+    datosAreaDetalle4toFiltrados: AreaDetalle[] = []
+    datosAreaDetalle6toFiltrados: AreaDetalle[] = []
 
     // Configuración de tabla
     cols: Column[] = []
@@ -62,8 +62,8 @@ export class SimpleListaAreasComponent implements OnInit {
 
     mostrarDialogoEdicion: boolean = false
 
-    // Estados de recursos
-    estadosRecurso: { [key: string]: EstadoRecurso } = {
+    // Estados de área detalle
+    estadosAreaDetalle: { [key: string]: EstadoAreaDetalle } = {
         completo: {
             label: 'Completo',
             icon: 'pi pi-eye',
@@ -97,7 +97,7 @@ export class SimpleListaAreasComponent implements OnInit {
 
     private initializeData(): void {
         // Datos para 2do grado
-        this.recursos = [
+        this.areasDetalle = [
             {
                 id: 1,
                 area: 'Matemática',
@@ -117,7 +117,7 @@ export class SimpleListaAreasComponent implements OnInit {
         ]
 
         // Datos para 4to grado
-        this.recursos4to = [
+        this.areasDetalle4to = [
             {
                 id: 1,
                 area: 'Matemática',
@@ -137,7 +137,7 @@ export class SimpleListaAreasComponent implements OnInit {
         ]
 
         // Datos para 6to grado
-        this.recursos6to = [
+        this.areasDetalle6to = [
             {
                 id: 1,
                 area: 'Matemática',
@@ -168,29 +168,32 @@ export class SimpleListaAreasComponent implements OnInit {
         ]
     }
 
-    // Filtrar recursos
-    filtrarRecursos(): void {
+    // Filtrar área detalle
+    filtrarAreaDetalle(): void {
         this.applyFilters()
     }
 
     private applyFilters(): void {
         if (!this.terminoBusqueda || this.terminoBusqueda.trim() === '') {
-            this.datosRecursosFiltrados = [...this.recursos]
-            this.datosRecursos4toFiltrados = [...this.recursos4to]
-            this.datosRecursos6toFiltrados = [...this.recursos6to]
+            this.datosAreaDetalleFiltrados = [...this.areasDetalle]
+            this.datosAreaDetalle4toFiltrados = [...this.areasDetalle4to]
+            this.datosAreaDetalle6toFiltrados = [...this.areasDetalle6to]
         } else {
             const termino = this.terminoBusqueda.toLowerCase().trim()
 
-            this.datosRecursosFiltrados = this.recursos.filter((recurso) =>
-                recurso.area.toLowerCase().includes(termino)
+            this.datosAreaDetalleFiltrados = this.areasDetalle.filter(
+                (areaDetalle) =>
+                    areaDetalle.area.toLowerCase().includes(termino)
             )
 
-            this.datosRecursos4toFiltrados = this.recursos4to.filter(
-                (recurso) => recurso.area.toLowerCase().includes(termino)
+            this.datosAreaDetalle4toFiltrados = this.areasDetalle4to.filter(
+                (areaDetalle) =>
+                    areaDetalle.area.toLowerCase().includes(termino)
             )
 
-            this.datosRecursos6toFiltrados = this.recursos6to.filter(
-                (recurso) => recurso.area.toLowerCase().includes(termino)
+            this.datosAreaDetalle6toFiltrados = this.areasDetalle6to.filter(
+                (areaDetalle) =>
+                    areaDetalle.area.toLowerCase().includes(termino)
             )
         }
     }
@@ -202,50 +205,50 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     // Descargar PDF
-    descargarPDF(tipo: string, recurso: Recurso): void {
+    descargarPDF(tipo: string, areaDetalle: AreaDetalle): void {
         this.messageService.add({
             severity: 'success',
             summary: 'Descarga',
-            detail: `Descargando ${tipo} de ${recurso.area}`,
+            detail: `Descargando ${tipo} de ${areaDetalle.area}`,
         })
     }
 
     // Ejecutar acción según el estado
-    ejecutarAccion(accion: string, recurso: Recurso): void {
+    ejecutarAccion(accion: string, areaDetalle: AreaDetalle): void {
         switch (accion) {
             case 'completar':
-                this.completarEvaluacion(recurso)
+                this.completarEvaluacion(areaDetalle)
                 break
             case 'ver':
-                this.verResultados(recurso)
+                this.verResultados(areaDetalle)
                 break
         }
     }
 
-    completarEvaluacion(recurso: Recurso): void {
+    completarEvaluacion(areaDetalle: AreaDetalle): void {
         // Cambiar estado directamente sin abrir diálogo
-        recurso.estado = 'completo'
+        areaDetalle.estado = 'completo'
 
         /*this.messageService.add({
             severity: 'success',
             summary: 'Estado actualizado',
-            detail: `${recurso.area} marcado como completo`,
+            detail: `${areaDetalle.area} marcado como completo`,
         });
         */
     }
 
-    private verResultados(recurso: Recurso): void {
+    private verResultados(areaDetalle: AreaDetalle): void {
         this.messageService.add({
             severity: 'info',
             summary: 'Ver resultados',
-            detail: `Viendo resultados de ${recurso.area}`,
+            detail: `Viendo resultados de ${areaDetalle.area}`,
         })
     }
 
     // Obtener configuración del estado
-    obtenerConfiguracionEstado(estado: string): EstadoRecurso {
+    obtenerConfiguracionEstado(estado: string): EstadoAreaDetalle {
         return (
-            this.estadosRecurso[estado] || {
+            this.estadosAreaDetalle[estado] || {
                 label: estado,
                 icon: 'pi pi-question',
                 severity: 'secondary',
@@ -254,13 +257,16 @@ export class SimpleListaAreasComponent implements OnInit {
         )
     }
 
-    abrirDialogoEdicion(recurso: Recurso): void {
-        console.log('Abriendo diálogo para:', recurso.area) // Usar el parámetro
+    abrirDialogoEdicion(areaDetalle: AreaDetalle): void {
+        console.log('Abriendo diálogo para:', areaDetalle.area) // Usar el parámetro
         this.mostrarDialogoEdicion = true
     }
 
-    abrirDialogoGenerarCuadernillo(recurso: Recurso): void {
-        console.log('Abriendo diálogo para generar cuadernillo:', recurso.area)
+    abrirDialogoGenerarCuadernillo(areaDetalle: AreaDetalle): void {
+        console.log(
+            'Abriendo diálogo para generar cuadernillo:',
+            areaDetalle.area
+        )
         this.mostrarDialogoEdicion = true
     }
 }

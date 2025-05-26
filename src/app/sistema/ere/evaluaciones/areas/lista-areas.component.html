@@ -45,6 +45,28 @@
                             placeholder="Buscar por área..."
                         />
                     </p-iconField>
+
+                    <!-- botón de redireccion a la nueva interfaz-->
+                    <div>
+                        <button
+                            pButton
+                            icon="pi pi-bars"
+                            class="p-button-text p-button-rounded p-button-sm transparent-btn"
+                            pTooltip="Menú"
+                            tooltipPosition="top"
+                            aria-label="Menú"
+                            routerLink="/simple-lista-areas"
+                        ></button>
+                        <!-- botón de redireccion a la antigua interfaz-->
+                        <button
+                            pButton
+                            icon="pi pi-th-large"
+                            class="p-button-text p-button-rounded p-button-sm transparent-btn"
+                            pTooltip="Menú"
+                            tooltipPosition="top"
+                            aria-label="Menú"
+                        ></button>
+                    </div>
                 </div>
             </ng-template>
 

@@ -6,6 +6,7 @@ import {
     EVALUACION,
     VIDEO_CONFERENCIA,
     IActividad,
+    CUESTIONARIO,
 } from '../interfaces/actividad.interface'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 const _ConstantesService = new ConstantesService()
@@ -137,6 +138,13 @@ export const actividadesConfig: Record<
     //     cActTipoNombre: 'Material',
     //     iActTipoId: MATERIAL,
     // },
+    [CUESTIONARIO]: {
+        'icon-color': 'text-pink-500',
+        'bg-color': 'bg-pink-500 text-white',
+        icon: 'matVideocam',
+        cActTipoNombre: 'Cuestionario',
+        iActTipoId: CUESTIONARIO,
+    },
 }
 
 export const actividadesConfigList: Partial<IActividad>[] = [

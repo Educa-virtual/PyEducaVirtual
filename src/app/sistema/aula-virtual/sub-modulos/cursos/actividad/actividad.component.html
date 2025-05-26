@@ -24,5 +24,14 @@
         >
         </app-videoconferencia-form-container>
     }
+    <!-- cuestionario -->
+    @case (5) {
+        <app-cuestionario-room
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+            [iProgActId]="iProgActId"
+        ></app-cuestionario-room>
+    }
+
     @default {}
 }

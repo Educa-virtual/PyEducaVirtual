@@ -8,6 +8,7 @@ import { EvaluacionRoomComponent } from '../../actividades/actividad-evaluacion/
 import { tipoActividadesKeys } from '../../../interfaces/actividad.interface'
 import { ForoRoomComponent } from '../../actividades/actividad-foro/foro-room/foro-room.component'
 import { VideoconferenciaFormContainerComponent } from '../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
+import { CuestionarioRoomComponent } from '../../actividades/actividad-cuestionario/cuestionario-room/cuestionario-room.component'
 
 @Component({
     selector: 'app-actividad',
@@ -18,6 +19,7 @@ import { VideoconferenciaFormContainerComponent } from '../../actividades/activi
         EvaluacionRoomComponent,
         ForoRoomComponent,
         VideoconferenciaFormContainerComponent,
+        CuestionarioRoomComponent,
     ],
     templateUrl: './actividad.component.html',
     styleUrl: './actividad.component.scss',

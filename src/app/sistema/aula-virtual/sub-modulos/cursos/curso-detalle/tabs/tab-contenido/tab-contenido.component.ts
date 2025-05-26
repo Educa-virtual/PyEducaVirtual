@@ -6,6 +6,7 @@ import {
     MATERIAL,
     TAREA,
     VIDEO_CONFERENCIA,
+    CUESTIONARIO,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { MenuItem } from 'primeng/api'
@@ -39,6 +40,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { CuestionarioRoomComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-room/cuestionario-room.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -102,6 +104,7 @@ export class TabContenidoComponent implements OnInit {
         [EVALUACION]: this.handleEvaluacionAction.bind(this),
         [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
         [MATERIAL]: this.handleMaterialAction.bind(this),
+        [CUESTIONARIO]: this.handleCuestionarioAction.bind(this), // Asumiendo que CUESTIONARIO
     }
 
     constructor(
@@ -234,6 +237,10 @@ export class TabContenidoComponent implements OnInit {
 
         if (actividad.iActTipoId === VIDEO_CONFERENCIA) {
             this.handleVideoconferenciaAction(action, actividad)
+            return
+        }
+        if (actividad.iActTipoId === CUESTIONARIO) {
+            this.handleCuestionarioAction(action, actividad)
             return
         }
 
@@ -433,6 +440,25 @@ export class TabContenidoComponent implements OnInit {
                     relativeTo: this._activatedRoute,
                 }
             )
+        }
+    }
+
+    handleCuestionarioAction(action: string, actividad: IActividad) {
+        if (action === 'EDITAR' || action === 'CREAR') {
+            this._dialogService.open(CuestionarioRoomComponent, {
+                ...MODAL_CONFIG,
+                data: {
+                    contenidoSemana: this.semanaSeleccionada,
+                    iActTipoId: actividad.iActTipoId,
+                    actividad: actividad,
+                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                },
+
+                header:
+                    action === 'EDITAR'
+                        ? 'Editar Cuestionario'
+                        : 'Crear Cuestionario',
+            })
         }
     }
 

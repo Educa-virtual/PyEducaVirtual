@@ -85,6 +85,9 @@
                             (dialogImportarResultados)="
                                 importarResultados($event)
                             "
+                            (dialogGuardarResultadosOnline)="
+                                guardarResultadosOnline($event)
+                            "
                         ></app-area-card>
                     }
                 </div>
@@ -98,5 +101,5 @@
 <app-importar-resultados
     (archivoSubidoEvent)="actualizarEstadoResultadosImportados($event)"
 />
-
+<app-guardar-resultados-online />
 <app-configurar-nivel-logro> </app-configurar-nivel-logro>

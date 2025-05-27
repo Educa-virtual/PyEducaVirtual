@@ -1,7 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { MessageService } from 'primeng/api'
 import { FormGroup } from '@angular/forms'
+import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
+//import { HttpClient } from '@angular/common/http'
 
 @Component({
     selector: 'app-dialog-generar-cuadernillo',
@@ -11,6 +15,13 @@ import { FormGroup } from '@angular/forms'
     styleUrl: './dialog-generar-cuadernillo.component.scss',
 })
 export class DialogGenerarCuadernilloComponent {
+    // Evaluacion servicio inject
+    private evaluacionesService = inject(ApiEvaluacionesRService)
+    private store = new LocalStoreService()
+
+    @Input() iEvaluacionIdHashed: string = ''
+    @Input() curso: ICurso
+
     // Solo comunicación básica con el padre
     @Input() mostrarDialogoEdicion: boolean = false
     @Output() mostrarDialogoEdicionChange = new EventEmitter<boolean>()
@@ -29,6 +40,7 @@ export class DialogGenerarCuadernilloComponent {
 
     constructor(private messageService: MessageService) {}
 
+    /* Descargar word original solo message
     descargarWord() {
         this.loadingActions['download-word'] = true
         setTimeout(() => {
@@ -40,6 +52,49 @@ export class DialogGenerarCuadernilloComponent {
                 detail: 'El archivo WORD ha sido descargado correctamente',
             })
         }, 2000)
+    }
+    */
+    // Método actualizado: Descargar WORD usando el mismo servicio del area-card
+    descargarWord() {
+        if (!this.curso || !this.iEvaluacionIdHashed) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Datos del área no disponibles',
+            })
+            return
+        }
+
+        this.loadingActions['download-word'] = true
+
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId:
+                this.curso.iCursosNivelGradId || this.curso.iCursosNivelGradId,
+            tipoArchivo: 'word',
+        }
+
+        try {
+            this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
+
+            // Simular tiempo de descarga
+            setTimeout(() => {
+                this.loadingActions['download-word'] = false
+                this.wordDescargado = true
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Descarga Exitosa',
+                    detail: `Archivo WORD de ${this.curso.iCursosNivelGradId} descargado correctamente`,
+                })
+            }, 2000)
+        } catch (error) {
+            this.loadingActions['download-word'] = false
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error en descarga',
+                detail: 'No se pudo descargar el archivo WORD',
+            })
+        }
     }
 
     onFileSelect(event: any) {

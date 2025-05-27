@@ -4,14 +4,13 @@ import { MenuItem, MessageService } from 'primeng/api'
 import { DialogGenerarCuadernilloComponent } from '../dialog-generar-cuadernillo/dialog-generar-cuadernillo.component'
 import { ConfigurarNivelLogroComponent } from '../configurar-nivel-logro/configurar-nivel-logro.component'
 
-interface AreaDetalle {
+interface Curso {
     id: number
     area: string
     cuadernillo: string
     hojaRespuestas: string
     matriz: string
     estado: string
-    // campos para especialista
     archivoSubido?: boolean
     fechaSubido?: string
 }
@@ -21,7 +20,7 @@ interface Column {
     header: string
 }
 
-interface EstadoAreaDetalle {
+interface EstadoCurso {
     label: string
     icon: string
     severity:
@@ -38,8 +37,8 @@ interface EstadoAreaDetalle {
 
 interface GradoConfig {
     grado: string
-    areas: AreaDetalle[]
-    areasFiltradas: AreaDetalle[]
+    cursos: Curso[]
+    cursosFiltrados: Curso[]
     esEspecialista?: boolean
 }
 
@@ -59,24 +58,19 @@ export class SimpleListaAreasComponent implements OnInit {
 
     title: string = 'Lista de áreas de PRUEBA DE INICIO 2025 - nivel Inicio'
 
-    // Datos para breadcrumb
     breadCrumbItems: MenuItem[] = []
     breadCrumbHome: MenuItem = {}
 
-    // DATOS UNIFICADOS - Reemplaza areasDetalle, areasDetalle4to, areasDetalle6to
     gradosConfig: GradoConfig[] = []
     terminoBusqueda: string = ''
 
-    // Configuración de tabla
     cols: Column[] = []
     colsEspecialista: Column[] = []
 
-    // Diálogos
     mostrarDialogoEdicion: boolean = false
     visible: boolean = false
 
-    // Estados de área detalle
-    estadosAreaDetalle: { [key: string]: EstadoAreaDetalle } = {
+    estadosCurso: { [key: string]: EstadoCurso } = {
         completo: {
             label: 'Completo',
             icon: 'pi pi-eye',
@@ -109,7 +103,6 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     private initializeColumns(): void {
-        // Columnas para tablas de grados
         this.cols = [
             { field: 'id', header: '#' },
             { field: 'area', header: 'Área' },
@@ -119,7 +112,6 @@ export class SimpleListaAreasComponent implements OnInit {
             { field: 'estado', header: 'Estado' },
         ]
 
-        // Columnas para tabla de especialista
         this.colsEspecialista = [
             { field: 'id', header: '#' },
             { field: 'area', header: 'Área' },
@@ -131,8 +123,7 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     private initializeData(): void {
-        // Datos base
-        const areasBase: AreaDetalle[] = [
+        const cursosBase: Curso[] = [
             {
                 id: 1,
                 area: 'Matemática',
@@ -151,50 +142,46 @@ export class SimpleListaAreasComponent implements OnInit {
             },
         ]
 
-        // Configurar grados
         this.gradosConfig = [
             {
                 grado: '2°',
-                areas: [...areasBase],
-                areasFiltradas: [...areasBase],
+                cursos: [...cursosBase],
+                cursosFiltrados: [...cursosBase],
             },
             {
                 grado: '4°',
-                areas: [...areasBase],
-                areasFiltradas: [...areasBase],
+                cursos: [...cursosBase],
+                cursosFiltrados: [...cursosBase],
             },
             {
                 grado: '6°',
-                areas: [...areasBase],
-                areasFiltradas: [...areasBase],
+                cursos: [...cursosBase],
+                cursosFiltrados: [...cursosBase],
             },
             {
                 grado: '2°',
-                areas: [...areasBase],
-                areasFiltradas: [...areasBase],
+                cursos: [...cursosBase],
+                cursosFiltrados: [...cursosBase],
                 esEspecialista: true,
             },
         ]
     }
 
-    // Filtrado unificado
-    filtrarAreaDetalle(): void {
+    filtrarCurso(): void {
         this.applyFilters()
     }
 
     private applyFilters(): void {
         if (!this.terminoBusqueda || this.terminoBusqueda.trim() === '') {
-            // Sin filtro: copiar todas las áreas
             this.gradosConfig.forEach((grado) => {
-                grado.areasFiltradas = [...grado.areas]
+                grado.cursosFiltrados = [...grado.cursos]
             })
         } else {
-            // Con filtro: aplicar a todos los grados
             const termino = this.terminoBusqueda.toLowerCase().trim()
 
             this.gradosConfig.forEach((grado) => {
-                grado.areasFiltradas = grado.areas.filter((area) =>
-                    area.area.toLowerCase().includes(termino)
+                grado.cursosFiltrados = grado.cursos.filter((curso) =>
+                    curso.area.toLowerCase().includes(termino)
                 )
             })
         }
@@ -205,40 +192,40 @@ export class SimpleListaAreasComponent implements OnInit {
         this.applyFilters()
     }
 
-    descargarPDF(tipo: string, areaDetalle: AreaDetalle): void {
+    descargarPDF(tipo: string, curso: Curso): void {
         this.messageService.add({
             severity: 'success',
             summary: 'Descarga',
-            detail: `Descargando ${tipo} de ${areaDetalle.area}`,
+            detail: `Descargando ${tipo} de ${curso.area}`,
         })
     }
 
-    ejecutarAccion(accion: string, areaDetalle: AreaDetalle): void {
+    ejecutarAccion(accion: string, curso: Curso): void {
         switch (accion) {
             case 'completar':
-                this.completarEvaluacion(areaDetalle)
+                this.completarEvaluacion(curso)
                 break
             case 'ver':
-                this.verResultados(areaDetalle)
+                this.verResultados(curso)
                 break
         }
     }
 
-    completarEvaluacion(areaDetalle: AreaDetalle): void {
-        areaDetalle.estado = 'completo'
+    completarEvaluacion(curso: Curso): void {
+        curso.estado = 'completo'
     }
 
-    private verResultados(areaDetalle: AreaDetalle): void {
+    private verResultados(curso: Curso): void {
         this.messageService.add({
             severity: 'info',
             summary: 'Ver resultados',
-            detail: `Viendo resultados de ${areaDetalle.area}`,
+            detail: `Viendo resultados de ${curso.area}`,
         })
     }
 
-    obtenerConfiguracionEstado(estado: string): EstadoAreaDetalle {
+    obtenerConfiguracionEstado(estado: string): EstadoCurso {
         return (
-            this.estadosAreaDetalle[estado] || {
+            this.estadosCurso[estado] || {
                 label: estado,
                 icon: 'pi pi-question',
                 severity: 'secondary',
@@ -247,16 +234,13 @@ export class SimpleListaAreasComponent implements OnInit {
         )
     }
 
-    abrirDialogoEdicion(areaDetalle: AreaDetalle): void {
-        console.log('Abriendo diálogo para:', areaDetalle.area)
+    abrirDialogoEdicion(curso: Curso): void {
+        console.log('Abriendo diálogo para:', curso.area)
         this.mostrarDialogoEdicion = true
     }
 
-    abrirDialogoGenerarCuadernillo(areaDetalle: AreaDetalle): void {
-        console.log(
-            'Abriendo diálogo para generar cuadernillo:',
-            areaDetalle.area
-        )
+    abrirDialogoGenerarCuadernillo(curso: Curso): void {
+        console.log('Abriendo diálogo para generar cuadernillo:', curso.area)
         this.mostrarDialogoEdicion = true
     }
 }

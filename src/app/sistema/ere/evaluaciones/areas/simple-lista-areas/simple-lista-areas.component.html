@@ -21,7 +21,7 @@
                 type="text"
                 pInputText
                 [(ngModel)]="terminoBusqueda"
-                (input)="filtrarAreaDetalle()"
+                (input)="filtrarCurso()"
                 placeholder="Buscar por área..."
                 class="w-full"
                 style="padding-left: 2.5rem"
@@ -58,7 +58,7 @@
 
         <!-- TABLA UNIFICADA -->
         <p-table
-            [value]="gradoConfig.areasFiltradas"
+            [value]="gradoConfig.cursosFiltrados"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
         >
@@ -79,13 +79,13 @@
             </ng-template>
 
             <!-- BODY DINÁMICO -->
-            <ng-template pTemplate="body" let-areaDetalle>
+            <ng-template pTemplate="body" let-curso>
                 <tr>
                     <!-- ID -->
-                    <td style="text-align: center">{{ areaDetalle.id }}</td>
+                    <td style="text-align: center">{{ curso.id }}</td>
 
                     <!-- Área -->
-                    <td>{{ areaDetalle.area }}</td>
+                    <td>{{ curso.area }}</td>
 
                     <ng-container *ngIf="!gradoConfig.esEspecialista">
                         <td style="text-align: center">
@@ -94,9 +94,7 @@
                                 icon="pi pi-file-pdf"
                                 severity="danger"
                                 size="small"
-                                (click)="
-                                    descargarPDF('Cuadernillo', areaDetalle)
-                                "
+                                (click)="descargarPDF('Cuadernillo', curso)"
                             ></p-button>
                         </td>
                         <td style="text-align: center">
@@ -106,10 +104,7 @@
                                 severity="danger"
                                 size="small"
                                 (click)="
-                                    descargarPDF(
-                                        'Hoja de respuestas',
-                                        areaDetalle
-                                    )
+                                    descargarPDF('Hoja de respuestas', curso)
                                 "
                             ></p-button>
                         </td>
@@ -119,34 +114,30 @@
                                 icon="pi pi-file-pdf"
                                 severity="danger"
                                 size="small"
-                                (click)="descargarPDF('Matriz', areaDetalle)"
+                                (click)="descargarPDF('Matriz', curso)"
                             ></p-button>
                         </td>
                         <td style="text-align: center">
                             <p-button
                                 [label]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).label
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .label
                                 "
                                 [icon]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).icon
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .icon
                                 "
                                 [severity]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).severity
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .severity
                                 "
                                 size="small"
                                 iconPos="right"
                                 (click)="
                                     ejecutarAccion(
-                                        obtenerConfiguracionEstado(
-                                            areaDetalle.estado
-                                        ).accion,
-                                        areaDetalle
+                                        obtenerConfiguracionEstado(curso.estado)
+                                            .accion,
+                                        curso
                                     )
                                 "
                             ></p-button>
@@ -158,91 +149,73 @@
                         <td style="text-align: center">
                             <p-button
                                 [label]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).label
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .label
                                 "
                                 [icon]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).icon
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .icon
                                 "
                                 [severity]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).severity
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .severity
                                 "
                                 (click)="
                                     ejecutarAccion(
-                                        obtenerConfiguracionEstado(
-                                            areaDetalle.estado
-                                        ).accion,
-                                        areaDetalle
+                                        obtenerConfiguracionEstado(curso.estado)
+                                            .accion,
+                                        curso
                                     )
                                 "
-                                (click)="
-                                    abrirDialogoGenerarCuadernillo(areaDetalle)
-                                "
+                                (click)="abrirDialogoGenerarCuadernillo(curso)"
                             ></p-button>
                         </td>
                         <td style="text-align: center">
                             <p-button
                                 [label]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).label
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .label
                                 "
                                 [icon]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).icon
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .icon
                                 "
                                 [severity]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).severity
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .severity
                                 "
                                 (click)="
                                     ejecutarAccion(
-                                        obtenerConfiguracionEstado(
-                                            areaDetalle.estado
-                                        ).accion,
-                                        areaDetalle
+                                        obtenerConfiguracionEstado(curso.estado)
+                                            .accion,
+                                        curso
                                     )
                                 "
-                                (click)="
-                                    abrirDialogoGenerarCuadernillo(areaDetalle)
-                                "
+                                (click)="abrirDialogoGenerarCuadernillo(curso)"
                             ></p-button>
                         </td>
                         <td style="text-align: center">
                             <p-button
                                 [label]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).label
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .label
                                 "
                                 [icon]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).icon
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .icon
                                 "
                                 [severity]="
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).severity
+                                    obtenerConfiguracionEstado(curso.estado)
+                                        .severity
                                 "
                                 (click)="
                                     ejecutarAccion(
-                                        obtenerConfiguracionEstado(
-                                            areaDetalle.estado
-                                        ).accion,
-                                        areaDetalle
+                                        obtenerConfiguracionEstado(curso.estado)
+                                            .accion,
+                                        curso
                                     )
                                 "
-                                (click)="
-                                    abrirDialogoGenerarCuadernillo(areaDetalle)
-                                "
+                                (click)="abrirDialogoGenerarCuadernillo(curso)"
                             ></p-button>
                         </td>
                         <td style="text-align: center">

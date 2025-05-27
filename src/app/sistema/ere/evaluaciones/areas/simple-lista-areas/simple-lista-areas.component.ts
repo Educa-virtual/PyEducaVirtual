@@ -33,6 +33,13 @@ interface EstadoAreaDetalle {
     accion: string
 }
 
+interface GradoConfig {
+    grado: string
+    areas: AreaDetalle[]
+    areasFiltradas: AreaDetalle[]
+    esEspecialista?: boolean
+}
+
 @Component({
     selector: 'app-simple-lista-areas',
     standalone: true,
@@ -51,21 +58,15 @@ export class SimpleListaAreasComponent implements OnInit {
     breadCrumbItems: MenuItem[] = []
     breadCrumbHome: MenuItem = {}
 
-    // Datos de área detalle
-    areasDetalle: AreaDetalle[] = []
-    areasDetalle4to: AreaDetalle[] = []
-    areasDetalle6to: AreaDetalle[] = []
-
-    // Datos filtrados
-    datosAreaDetalleFiltrados: AreaDetalle[] = []
-    datosAreaDetalle4toFiltrados: AreaDetalle[] = []
-    datosAreaDetalle6toFiltrados: AreaDetalle[] = []
+    // DATOS UNIFICADOS - Reemplaza areasDetalle, areasDetalle4to, areasDetalle6to
+    gradosConfig: GradoConfig[] = []
+    terminoBusqueda: string = ''
 
     // Configuración de tabla
     cols: Column[] = []
-    terminoBusqueda: string = ''
+    colsEspecialista: Column[] = []
 
-    //dialog
+    // Diálogos
     mostrarDialogoEdicion: boolean = false
     visible: boolean = false
 
@@ -89,8 +90,8 @@ export class SimpleListaAreasComponent implements OnInit {
 
     ngOnInit(): void {
         this.initializeBreadcrumb()
-        this.initializeData()
         this.initializeColumns()
+        this.initializeData()
         this.applyFilters()
     }
 
@@ -102,69 +103,8 @@ export class SimpleListaAreasComponent implements OnInit {
         this.breadCrumbItems = [{ label: 'Lista Simple de Áreas' }]
     }
 
-    private initializeData(): void {
-        // Datos para 2do grado
-        this.areasDetalle = [
-            {
-                id: 1,
-                area: 'Matemática',
-                cuadernillo: 'PDF',
-                hojaRespuestas: 'PDF',
-                matriz: 'PDF',
-                estado: 'pendiente',
-            },
-            {
-                id: 2,
-                area: 'Comunicación',
-                cuadernillo: 'PDF',
-                hojaRespuestas: 'PDF',
-                matriz: 'PDF',
-                estado: 'completo',
-            },
-        ]
-
-        // Datos para 4to grado
-        this.areasDetalle4to = [
-            {
-                id: 1,
-                area: 'Matemática',
-                cuadernillo: 'PDF',
-                hojaRespuestas: 'PDF',
-                matriz: 'PDF',
-                estado: 'pendiente',
-            },
-            {
-                id: 2,
-                area: 'Comunicación',
-                cuadernillo: 'PDF',
-                hojaRespuestas: 'PDF',
-                matriz: 'PDF',
-                estado: 'completo',
-            },
-        ]
-
-        // Datos para 6to grado
-        this.areasDetalle6to = [
-            {
-                id: 1,
-                area: 'Matemática',
-                cuadernillo: 'PDF',
-                hojaRespuestas: 'PDF',
-                matriz: 'PDF',
-                estado: 'pendiente',
-            },
-            {
-                id: 2,
-                area: 'Comunicación',
-                cuadernillo: 'PDF',
-                hojaRespuestas: 'PDF',
-                matriz: 'PDF',
-                estado: 'completo',
-            },
-        ]
-    }
-
     private initializeColumns(): void {
+        // Columnas para tablas de grados
         this.cols = [
             { field: 'id', header: '#' },
             { field: 'area', header: 'Área' },
@@ -173,45 +113,94 @@ export class SimpleListaAreasComponent implements OnInit {
             { field: 'matriz', header: 'Matriz' },
             { field: 'estado', header: 'Estado' },
         ]
+
+        // Columnas para tabla de especialista
+        this.colsEspecialista = [
+            { field: 'id', header: '#' },
+            { field: 'area', header: 'Área' },
+            { field: 'cuadernillo', header: 'Cuadernillo' },
+            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
+            { field: 'matriz', header: 'Matriz' },
+            { field: 'acciones', header: 'Acciones' },
+        ]
     }
 
-    // Filtrar área detalle
+    private initializeData(): void {
+        // Datos base (los mismos que tenías)
+        const areasBase: AreaDetalle[] = [
+            {
+                id: 1,
+                area: 'Matemática',
+                cuadernillo: 'PDF',
+                hojaRespuestas: 'PDF',
+                matriz: 'PDF',
+                estado: 'pendiente',
+            },
+            {
+                id: 2,
+                area: 'Comunicación',
+                cuadernillo: 'PDF',
+                hojaRespuestas: 'PDF',
+                matriz: 'PDF',
+                estado: 'completo',
+            },
+        ]
+
+        // Configurar grados (reemplaza tus 3 arrays separados)
+        this.gradosConfig = [
+            {
+                grado: '2°',
+                areas: [...areasBase],
+                areasFiltradas: [...areasBase],
+            },
+            {
+                grado: '4°',
+                areas: [...areasBase],
+                areasFiltradas: [...areasBase],
+            },
+            {
+                grado: '6°',
+                areas: [...areasBase],
+                areasFiltradas: [...areasBase],
+            },
+            {
+                grado: 'Especialista',
+                areas: [...areasBase],
+                areasFiltradas: [...areasBase],
+                esEspecialista: true,
+            },
+        ]
+    }
+
+    // FILTRADO UNIFICADO - Reemplaza tu applyFilters triplicado
     filtrarAreaDetalle(): void {
         this.applyFilters()
     }
 
     private applyFilters(): void {
         if (!this.terminoBusqueda || this.terminoBusqueda.trim() === '') {
-            this.datosAreaDetalleFiltrados = [...this.areasDetalle]
-            this.datosAreaDetalle4toFiltrados = [...this.areasDetalle4to]
-            this.datosAreaDetalle6toFiltrados = [...this.areasDetalle6to]
+            // Sin filtro: copiar todas las áreas
+            this.gradosConfig.forEach((grado) => {
+                grado.areasFiltradas = [...grado.areas]
+            })
         } else {
+            // Con filtro: aplicar a todos los grados
             const termino = this.terminoBusqueda.toLowerCase().trim()
 
-            this.datosAreaDetalleFiltrados = this.areasDetalle.filter(
-                (areaDetalle) =>
-                    areaDetalle.area.toLowerCase().includes(termino)
-            )
-
-            this.datosAreaDetalle4toFiltrados = this.areasDetalle4to.filter(
-                (areaDetalle) =>
-                    areaDetalle.area.toLowerCase().includes(termino)
-            )
-
-            this.datosAreaDetalle6toFiltrados = this.areasDetalle6to.filter(
-                (areaDetalle) =>
-                    areaDetalle.area.toLowerCase().includes(termino)
-            )
+            this.gradosConfig.forEach((grado) => {
+                grado.areasFiltradas = grado.areas.filter((area) =>
+                    area.area.toLowerCase().includes(termino)
+                )
+            })
         }
     }
 
-    // Limpiar búsqueda
     limpiarBusqueda(): void {
         this.terminoBusqueda = ''
         this.applyFilters()
     }
 
-    // Descargar PDF
+    // FUNCIONES EXISTENTES - Sin cambios
     descargarPDF(tipo: string, areaDetalle: AreaDetalle): void {
         this.messageService.add({
             severity: 'success',
@@ -220,7 +209,6 @@ export class SimpleListaAreasComponent implements OnInit {
         })
     }
 
-    // Ejecutar acción según el estado
     ejecutarAccion(accion: string, areaDetalle: AreaDetalle): void {
         switch (accion) {
             case 'completar':
@@ -233,15 +221,7 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     completarEvaluacion(areaDetalle: AreaDetalle): void {
-        // Cambiar estado directamente sin abrir diálogo
         areaDetalle.estado = 'completo'
-
-        /*this.messageService.add({
-            severity: 'success',
-            summary: 'Estado actualizado',
-            detail: `${areaDetalle.area} marcado como completo`,
-        });
-        */
     }
 
     private verResultados(areaDetalle: AreaDetalle): void {
@@ -252,7 +232,6 @@ export class SimpleListaAreasComponent implements OnInit {
         })
     }
 
-    // Obtener configuración del estado
     obtenerConfiguracionEstado(estado: string): EstadoAreaDetalle {
         return (
             this.estadosAreaDetalle[estado] || {
@@ -265,7 +244,7 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     abrirDialogoEdicion(areaDetalle: AreaDetalle): void {
-        console.log('Abriendo diálogo para:', areaDetalle.area) // Usar el parámetro
+        console.log('Abriendo diálogo para:', areaDetalle.area)
         this.mostrarDialogoEdicion = true
     }
 

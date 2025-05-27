@@ -13,7 +13,7 @@
         </div>
     </ng-template>
 
-    <!-- Buscador -->
+    <!-- Buscador ÚNICO -->
     <div class="flex align-items-center gap-2 mb-4">
         <span class="p-input-icon-left flex-1" style="max-width: 400px">
             <i class="pi pi-search"></i>
@@ -37,417 +37,251 @@
         ></p-button>
     </div>
 
-    <!-- Tabla 2º Grado -->
-    <p-panel class="mb-4">
-        <ng-template pTemplate="header">
-            <h4 class="m-0 text-primary">2º Grado</h4>
-        </ng-template>
-
-        <p-table
-            [value]="datosAreaDetalleFiltrados"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            styleClass="p-datatable-sm"
-        >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th *ngFor="let col of cols" style="text-align: center">
-                        {{ col.header }}
-                    </th>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="body" let-areaDetalle>
-                <tr>
-                    <td style="text-align: center">{{ areaDetalle.id }}</td>
-                    <td>{{ areaDetalle.area }}</td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Cuadernillo', areaDetalle)"
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="
-                                descargarPDF('Hoja de respuestas', areaDetalle)
-                            "
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Matriz', areaDetalle)"
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            [label]="
-                                estadosAreaDetalle[areaDetalle.estado].label
-                            "
-                            [icon]="estadosAreaDetalle[areaDetalle.estado].icon"
-                            [severity]="
-                                estadosAreaDetalle[areaDetalle.estado].severity
-                            "
-                            size="small"
-                            iconPos="right"
-                            (click)="
-                                ejecutarAccion(
-                                    estadosAreaDetalle[areaDetalle.estado]
-                                        .accion,
-                                    areaDetalle
-                                )
-                            "
-                        ></p-button>
-                    </td>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-4">
-                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
-                        <p class="text-500 m-0">
-                            No se encontraron áreas que coincidan con la
-                            búsqueda
-                        </p>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-panel>
-
-    <!-- Tabla 4º Grado -->
-    <p-panel class="mb-4">
-        <ng-template pTemplate="header">
-            <h4 class="m-0 text-primary">4º Grado</h4>
-        </ng-template>
-
-        <p-table
-            [value]="datosAreaDetalle4toFiltrados"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            styleClass="p-datatable-sm"
-        >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th *ngFor="let col of cols" style="text-align: center">
-                        {{ col.header }}
-                    </th>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="body" let-areaDetalle>
-                <tr>
-                    <td style="text-align: center">{{ areaDetalle.id }}</td>
-                    <td>{{ areaDetalle.area }}</td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Cuadernillo', areaDetalle)"
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="
-                                descargarPDF('Hoja de respuestas', areaDetalle)
-                            "
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Matriz', areaDetalle)"
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            [label]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .label
-                            "
-                            [icon]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .icon
-                            "
-                            [severity]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .severity
-                            "
-                            size="small"
-                            iconPos="right"
-                            (click)="
-                                ejecutarAccion(
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).accion,
-                                    areaDetalle
-                                )
-                            "
-                        ></p-button>
-                    </td>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-4">
-                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
-                        <p class="text-500 m-0">
-                            No se encontraron áreas que coincidan con la
-                            búsqueda
-                        </p>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-panel>
-
-    <!-- Tabla 6º Grado -->
-    <p-panel class="mb-4">
-        <ng-template pTemplate="header">
-            <h4 class="m-0 text-primary">6º Grado</h4>
-        </ng-template>
-
-        <p-table
-            [value]="datosAreaDetalle6toFiltrados"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            styleClass="p-datatable-sm"
-        >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th *ngFor="let col of cols" style="text-align: center">
-                        {{ col.header }}
-                    </th>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="body" let-areaDetalle>
-                <tr>
-                    <td style="text-align: center">{{ areaDetalle.id }}</td>
-                    <td>{{ areaDetalle.area }}</td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Cuadernillo', areaDetalle)"
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="
-                                descargarPDF('Hoja de respuestas', areaDetalle)
-                            "
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Matriz', areaDetalle)"
-                        ></p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            [label]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .label
-                            "
-                            [icon]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .icon
-                            "
-                            [severity]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .severity
-                            "
-                            size="small"
-                            iconPos="right"
-                            (click)="
-                                ejecutarAccion(
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).accion,
-                                    areaDetalle
-                                )
-                            "
-                        ></p-button>
-                    </td>
-                </tr>
-            </ng-template>
-
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-4">
-                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
-                        <p class="text-500 m-0">
-                            No se encontraron áreas que coincidan con la
-                            búsqueda
-                        </p>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-panel>
-
-    <!-- Tabla de especialista -->
-    <p-panel class="mb-4">
+    <!-- TABLAS DINÁMICAS - Una sola definición para todos los grados -->
+    <p-panel *ngFor="let gradoConfig of gradosConfig" class="mb-4">
         <ng-template pTemplate="header">
             <div class="flex flex-column gap-2">
-                <h3 class="m-0 text-uppercase text-primary">
-                    Tabla de especialista
+                <h4
+                    class="m-0 text-primary"
+                    *ngIf="!gradoConfig.esEspecialista"
+                >
+                    {{ gradoConfig.grado }} Grado
+                </h4>
+                <h3
+                    class="m-0 text-uppercase text-primary"
+                    *ngIf="gradoConfig.esEspecialista"
+                >
+                    Tabla de {{ gradoConfig.grado }}
                 </h3>
             </div>
         </ng-template>
+
+        <!-- TABLA UNIFICADA -->
         <p-table
-            [value]="datosAreaDetalleFiltrados"
+            [value]="gradoConfig.areasFiltradas"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
         >
+            <!-- HEADER DINÁMICO -->
             <ng-template pTemplate="header">
                 <tr>
-                    <th *ngFor="let col of cols" [style.text-align]="'center'">
+                    <th
+                        *ngFor="
+                            let col of gradoConfig.esEspecialista
+                                ? colsEspecialista
+                                : cols
+                        "
+                        style="text-align: center"
+                    >
                         {{ col.header }}
                     </th>
                 </tr>
             </ng-template>
+
+            <!-- BODY DINÁMICO -->
             <ng-template pTemplate="body" let-areaDetalle>
                 <tr>
+                    <!-- ID -->
                     <td style="text-align: center">{{ areaDetalle.id }}</td>
-                    <td>{{ areaDetalle.area }}</td>
-                    <td style="text-align: center">
-                        <p-button
-                            [label]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .label
-                            "
-                            [icon]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .icon
-                            "
-                            [severity]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .severity
-                            "
-                            (click)="
-                                ejecutarAccion(
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).accion,
-                                    areaDetalle
-                                )
-                            "
-                            (click)="
-                                abrirDialogoGenerarCuadernillo(areaDetalle)
-                            "
-                        >
-                        </p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            [label]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .label
-                            "
-                            [icon]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .icon
-                            "
-                            [severity]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .severity
-                            "
-                            (click)="
-                                ejecutarAccion(
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).accion,
-                                    areaDetalle
-                                )
-                            "
-                            (click)="
-                                abrirDialogoGenerarCuadernillo(areaDetalle)
-                            "
-                        >
-                        </p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <p-button
-                            [label]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .label
-                            "
-                            [icon]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .icon
-                            "
-                            [severity]="
-                                obtenerConfiguracionEstado(areaDetalle.estado)
-                                    .severity
-                            "
-                            (click)="
-                                ejecutarAccion(
-                                    obtenerConfiguracionEstado(
-                                        areaDetalle.estado
-                                    ).accion,
-                                    areaDetalle
-                                )
-                            "
-                            (click)="
-                                abrirDialogoGenerarCuadernillo(areaDetalle)
-                            "
-                        >
-                        </p-button>
-                    </td>
-                    <td style="text-align: center">
-                        <button
-                            pButton
-                            icon="pi pi-trophy"
-                            class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
-                            pTooltip="Generar cuadernillo"
-                            tooltipPosition="top"
-                            aria-label="Generar cuadernillo"
-                            (click)="visible = true"
-                        ></button>
 
-                        <button
-                            pButton
-                            icon="pi pi-cog"
-                            class="p-button-text p-button-rounded p-button-sm transparent-btn"
-                            aria-label="Configuración"
-                        ></button>
-                    </td>
+                    <!-- Área -->
+                    <td>{{ areaDetalle.area }}</td>
+
+                    <!-- BOTONES SEGÚN TIPO DE TABLA -->
+
+                    <!-- Para tablas de GRADOS (descarga) -->
+                    <ng-container *ngIf="!gradoConfig.esEspecialista">
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-file-pdf"
+                                severity="danger"
+                                size="small"
+                                (click)="
+                                    descargarPDF('Cuadernillo', areaDetalle)
+                                "
+                            ></p-button>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-file-pdf"
+                                severity="danger"
+                                size="small"
+                                (click)="
+                                    descargarPDF(
+                                        'Hoja de respuestas',
+                                        areaDetalle
+                                    )
+                                "
+                            ></p-button>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-file-pdf"
+                                severity="danger"
+                                size="small"
+                                (click)="descargarPDF('Matriz', areaDetalle)"
+                            ></p-button>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                [label]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).label
+                                "
+                                [icon]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).icon
+                                "
+                                [severity]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).severity
+                                "
+                                size="small"
+                                iconPos="right"
+                                (click)="
+                                    ejecutarAccion(
+                                        obtenerConfiguracionEstado(
+                                            areaDetalle.estado
+                                        ).accion,
+                                        areaDetalle
+                                    )
+                                "
+                            ></p-button>
+                        </td>
+                    </ng-container>
+
+                    <!-- Para tabla de ESPECIALISTA (subida) -->
+                    <ng-container *ngIf="gradoConfig.esEspecialista">
+                        <td style="text-align: center">
+                            <p-button
+                                [label]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).label
+                                "
+                                [icon]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).icon
+                                "
+                                [severity]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).severity
+                                "
+                                (click)="
+                                    ejecutarAccion(
+                                        obtenerConfiguracionEstado(
+                                            areaDetalle.estado
+                                        ).accion,
+                                        areaDetalle
+                                    )
+                                "
+                                (click)="
+                                    abrirDialogoGenerarCuadernillo(areaDetalle)
+                                "
+                            ></p-button>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                [label]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).label
+                                "
+                                [icon]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).icon
+                                "
+                                [severity]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).severity
+                                "
+                                (click)="
+                                    ejecutarAccion(
+                                        obtenerConfiguracionEstado(
+                                            areaDetalle.estado
+                                        ).accion,
+                                        areaDetalle
+                                    )
+                                "
+                                (click)="
+                                    abrirDialogoGenerarCuadernillo(areaDetalle)
+                                "
+                            ></p-button>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                [label]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).label
+                                "
+                                [icon]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).icon
+                                "
+                                [severity]="
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).severity
+                                "
+                                (click)="
+                                    ejecutarAccion(
+                                        obtenerConfiguracionEstado(
+                                            areaDetalle.estado
+                                        ).accion,
+                                        areaDetalle
+                                    )
+                                "
+                                (click)="
+                                    abrirDialogoGenerarCuadernillo(areaDetalle)
+                                "
+                            ></p-button>
+                        </td>
+                        <td style="text-align: center">
+                            <button
+                                pButton
+                                icon="pi pi-trophy"
+                                class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
+                                pTooltip="Generar cuadernillo"
+                                tooltipPosition="top"
+                                aria-label="Generar cuadernillo"
+                                (click)="visible = true"
+                            ></button>
+
+                            <button
+                                pButton
+                                icon="pi pi-cog"
+                                class="p-button-text p-button-rounded p-button-sm transparent-btn"
+                                aria-label="Configuración"
+                            ></button>
+                        </td>
+                    </ng-container>
                 </tr>
             </ng-template>
+
+            <!-- MENSAJE VACÍO UNIFICADO -->
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-4">
+                    <td
+                        [attr.colspan]="
+                            (gradoConfig.esEspecialista
+                                ? colsEspecialista
+                                : cols
+                            ).length
+                        "
+                        class="text-center p-4"
+                    >
                         <i class="pi pi-search text-4xl text-400 mb-3"></i>
                         <p class="text-500 m-0">
                             No se encontraron áreas que coincidan con la
@@ -460,11 +294,12 @@
     </p-panel>
 </p-panel>
 
+<!-- Diálogos (sin cambios) -->
 <app-dialog-generar-cuadernillo
     [(mostrarDialogoEdicion)]="mostrarDialogoEdicion"
 ></app-dialog-generar-cuadernillo>
 
-<app-configurar-nivel-logro [(mostrar)]="visible"> </app-configurar-nivel-logro>
+<app-configurar-nivel-logro [(mostrar)]="visible"></app-configurar-nivel-logro>
 
 <!-- Toast para mensajes -->
 <p-toast></p-toast>

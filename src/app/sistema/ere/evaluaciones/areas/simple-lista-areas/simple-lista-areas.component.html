@@ -51,7 +51,7 @@
                     class="m-0 text-uppercase text-primary"
                     *ngIf="gradoConfig.esEspecialista"
                 >
-                    Tabla de {{ gradoConfig.grado }}
+                    {{ gradoConfig.grado }} Grado
                 </h3>
             </div>
         </ng-template>
@@ -87,9 +87,6 @@
                     <!-- Área -->
                     <td>{{ areaDetalle.area }}</td>
 
-                    <!-- BOTONES SEGÚN TIPO DE TABLA -->
-
-                    <!-- Para tablas de GRADOS (descarga) -->
                     <ng-container *ngIf="!gradoConfig.esEspecialista">
                         <td style="text-align: center">
                             <p-button
@@ -156,7 +153,7 @@
                         </td>
                     </ng-container>
 
-                    <!-- Para tabla de ESPECIALISTA (subida) -->
+                    <!-- Para tabla de ESPECIALISTA -->
                     <ng-container *ngIf="gradoConfig.esEspecialista">
                         <td style="text-align: center">
                             <p-button

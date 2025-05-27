@@ -11,6 +11,9 @@ interface AreaDetalle {
     hojaRespuestas: string
     matriz: string
     estado: string
+    // campos para especialista
+    archivoSubido?: boolean
+    fechaSubido?: string
 }
 
 interface Column {
@@ -52,6 +55,8 @@ interface GradoConfig {
     styleUrl: './simple-lista-areas.component.scss',
 })
 export class SimpleListaAreasComponent implements OnInit {
+    //private _ConstantesService = inject(ConstantesService)
+
     title: string = 'Lista de áreas de PRUEBA DE INICIO 2025 - nivel Inicio'
 
     // Datos para breadcrumb
@@ -126,7 +131,7 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     private initializeData(): void {
-        // Datos base (los mismos que tenías)
+        // Datos base
         const areasBase: AreaDetalle[] = [
             {
                 id: 1,
@@ -146,7 +151,7 @@ export class SimpleListaAreasComponent implements OnInit {
             },
         ]
 
-        // Configurar grados (reemplaza tus 3 arrays separados)
+        // Configurar grados
         this.gradosConfig = [
             {
                 grado: '2°',
@@ -164,7 +169,7 @@ export class SimpleListaAreasComponent implements OnInit {
                 areasFiltradas: [...areasBase],
             },
             {
-                grado: 'Especialista',
+                grado: '2°',
                 areas: [...areasBase],
                 areasFiltradas: [...areasBase],
                 esEspecialista: true,
@@ -172,7 +177,7 @@ export class SimpleListaAreasComponent implements OnInit {
         ]
     }
 
-    // FILTRADO UNIFICADO - Reemplaza tu applyFilters triplicado
+    // Filtrado unificado
     filtrarAreaDetalle(): void {
         this.applyFilters()
     }
@@ -200,7 +205,6 @@ export class SimpleListaAreasComponent implements OnInit {
         this.applyFilters()
     }
 
-    // FUNCIONES EXISTENTES - Sin cambios
     descargarPDF(tipo: string, areaDetalle: AreaDetalle): void {
         this.messageService.add({
             severity: 'success',

@@ -36,6 +36,9 @@ export class InformesCompararEreComponent implements OnInit {
     options_bar: ChartOptions
     hide_filters: boolean = false
 
+    evaluacion1: string = 'EVALUACION 1'
+    evaluacion2: string = 'EVALUACION 2'
+
     resultados1: Array<object>
     resultados2: Array<object>
     niveles1: Array<object>
@@ -241,6 +244,8 @@ export class InformesCompararEreComponent implements OnInit {
                         this.niveles2 = data.data[4]
                         this.combinarNiveles()
                         this.mostrarEstadisticaNivel()
+                        this.evaluacion1 = this.filtros['evaluacion'] ?? ''
+                        this.evaluacion2 = this.filtros['evaluacion2'] ?? ''
                     } else {
                         this.sinDatos()
                     }
@@ -270,6 +275,8 @@ export class InformesCompararEreComponent implements OnInit {
         this.total1 = 0
         this.total2 = 0
         this.mostrarEstadisticaNivel()
+        this.evaluacion1 = 'EVALUACION 1'
+        this.evaluacion2 = 'EVALUACION 2'
     }
 
     combinarNiveles() {

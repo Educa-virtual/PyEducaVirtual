@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { DialogGenerarCuadernilloComponent } from '../dialog-generar-cuadernillo/dialog-generar-cuadernillo.component'
+import { ConfigurarNivelLogroComponent } from '../configurar-nivel-logro/configurar-nivel-logro.component'
 
 interface AreaDetalle {
     id: number
@@ -35,7 +36,11 @@ interface EstadoAreaDetalle {
 @Component({
     selector: 'app-simple-lista-areas',
     standalone: true,
-    imports: [PrimengModule, DialogGenerarCuadernilloComponent],
+    imports: [
+        PrimengModule,
+        DialogGenerarCuadernilloComponent,
+        ConfigurarNivelLogroComponent,
+    ],
     templateUrl: './simple-lista-areas.component.html',
     styleUrl: './simple-lista-areas.component.scss',
 })
@@ -60,7 +65,9 @@ export class SimpleListaAreasComponent implements OnInit {
     cols: Column[] = []
     terminoBusqueda: string = ''
 
+    //dialog
     mostrarDialogoEdicion: boolean = false
+    visible: boolean = false
 
     // Estados de área detalle
     estadosAreaDetalle: { [key: string]: EstadoAreaDetalle } = {

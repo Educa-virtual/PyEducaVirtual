@@ -1,7 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { StringCasePipe } from '@/app/shared/pipes/string-case.pipe'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
-import { Component, inject, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { ApiNivelLogrosService } from '../../../services/api-nivel-logros.service'
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms'
 import { MessageService } from 'primeng/api'
@@ -29,6 +36,16 @@ export class ConfigurarNivelLogroComponent implements OnInit {
         private fb: FormBuilder,
         private messageService: MessageService
     ) {}
+
+    // dialog que dispara desde el icon trophy
+    @Input() set mostrar(value: boolean) {
+        this.visible = value
+    }
+    get mostrar(): boolean {
+        return this.visible
+    }
+
+    @Output() mostrarChange = new EventEmitter<boolean>()
 
     ngOnInit() {
         this.nivelLogrosService.obtenerListaNivelLogros().subscribe((data) => {
@@ -109,5 +126,9 @@ export class ConfigurarNivelLogroComponent implements OnInit {
                 })
             },
         })
+    }
+
+    onDialogHide(): void {
+        this.mostrarChange.emit(false)
     }
 }

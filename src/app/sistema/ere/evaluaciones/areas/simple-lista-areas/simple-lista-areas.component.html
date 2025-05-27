@@ -62,7 +62,7 @@
                     <td>{{ areaDetalle.area }}</td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -71,7 +71,7 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -82,7 +82,7 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -151,7 +151,7 @@
                     <td>{{ areaDetalle.area }}</td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -160,7 +160,7 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -171,7 +171,7 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -246,7 +246,7 @@
                     <td>{{ areaDetalle.area }}</td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -255,7 +255,7 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -266,7 +266,7 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="PDF"
+                            label="Descargar"
                             icon="pi pi-file-pdf"
                             severity="danger"
                             size="small"
@@ -371,34 +371,69 @@
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
+                            [label]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .label
+                            "
+                            [icon]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .icon
+                            "
+                            [severity]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .severity
+                            "
                             (click)="
-                                descargarPDF('Hoja de respuestas', areaDetalle)
+                                ejecutarAccion(
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).accion,
+                                    areaDetalle
+                                )
+                            "
+                            (click)="
+                                abrirDialogoGenerarCuadernillo(areaDetalle)
                             "
                         >
                         </p-button>
                     </td>
                     <td style="text-align: center">
                         <p-button
-                            label="Descargar"
-                            icon="pi pi-file-pdf"
-                            severity="danger"
-                            size="small"
-                            (click)="descargarPDF('Matriz', areaDetalle)"
+                            [label]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .label
+                            "
+                            [icon]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .icon
+                            "
+                            [severity]="
+                                obtenerConfiguracionEstado(areaDetalle.estado)
+                                    .severity
+                            "
+                            (click)="
+                                ejecutarAccion(
+                                    obtenerConfiguracionEstado(
+                                        areaDetalle.estado
+                                    ).accion,
+                                    areaDetalle
+                                )
+                            "
+                            (click)="
+                                abrirDialogoGenerarCuadernillo(areaDetalle)
+                            "
                         >
                         </p-button>
                     </td>
                     <td style="text-align: center">
                         <button
                             pButton
-                            icon="pi pi-pencil"
+                            icon="pi pi-trophy"
                             class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
                             pTooltip="Generar cuadernillo"
                             tooltipPosition="top"
                             aria-label="Generar cuadernillo"
+                            (click)="visible = true"
                         ></button>
 
                         <button
@@ -428,6 +463,8 @@
 <app-dialog-generar-cuadernillo
     [(mostrarDialogoEdicion)]="mostrarDialogoEdicion"
 ></app-dialog-generar-cuadernillo>
+
+<app-configurar-nivel-logro [(mostrar)]="visible"> </app-configurar-nivel-logro>
 
 <!-- Toast para mensajes -->
 <p-toast></p-toast>

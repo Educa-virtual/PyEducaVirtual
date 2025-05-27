@@ -40,7 +40,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
-import { CuestionarioRoomComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-room/cuestionario-room.component'
+import { CuestionarioFormComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-form/cuestionario-form.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -444,8 +444,9 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleCuestionarioAction(action: string, actividad: IActividad) {
+        console.log('datos de cuestionario01', this.semanaSeleccionada)
         if (action === 'EDITAR' || action === 'CREAR') {
-            this._dialogService.open(CuestionarioRoomComponent, {
+            this._dialogService.open(CuestionarioFormComponent, {
                 ...MODAL_CONFIG,
                 data: {
                     contenidoSemana: this.semanaSeleccionada,

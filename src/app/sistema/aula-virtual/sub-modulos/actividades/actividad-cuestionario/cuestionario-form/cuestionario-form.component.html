@@ -1,0 +1,86 @@
+<form [formGroup]="formCuestionario" action="">
+    <div class="col-12">
+        <!-- <p-messages
+            [(value)]="semana"
+            [enableService]="false"
+            [closable]="false"
+        /> -->
+        <div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Título </p-inputGroupAddon>
+                <input
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cTareaTitulo"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
+    <div class="col-12">
+        <label for="descripcion" class="mt-1"
+            >Descripción
+            <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+        >
+
+        <div class="mt-2">
+            <p-editor
+                formControlName="cCapDescripcion"
+                [style]="{ height: 'auto' }"
+                placeholder="Escribir una descripción...."
+            />
+        </div>
+    </div>
+    <div class="grid col-12">
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+                <!-- Componente de calendario para seleccionar una fecha y hora -->
+                <p-calendar
+                    formControlName="dtInicio"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtInicio"
+                    appendTo="body"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <!-- Este componente es un grupo de entrada que encapsula un `p-inputGroupAddon` y un `p-calendar` -->
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtFin"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtFin"
+                    appendTo="body"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
+    <div class="col-12 mt-1">
+        <!-- Componente personalizado para la carga de archivos con PrimeNG -->
+        <!-- Propiedad de entrada que define una opción asociada al componente -->
+        <app-types-files-upload-primeng
+            [nameFile]="'tareas'"
+            [nameOption]="'tareas'"
+            [typesFiles]="typesFiles"
+            (actionTypesFileUpload)="accionBtnItem($event)"
+            [filesUrl]="filesUrl"
+        ></app-types-files-upload-primeng>
+    </div>
+    <div class="flex justify-content-end mt-3">
+        <p-button
+            label="Guardar"
+            icon="pi pi-check"
+            [disabled]="formCuestionario.invalid"
+            (click)="GUARDARxProgActxiCuestionarioId()"
+        ></p-button>
+    </div>
+</form>

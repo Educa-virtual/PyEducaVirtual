@@ -383,4 +383,10 @@ export class ApiAulaService {
             data
         )
     }
+    guardarCuestionario(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/programacion-actividades/store`,
+            data
+        )
+    }
 }

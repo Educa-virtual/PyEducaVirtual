@@ -144,7 +144,7 @@ export class TabContenidoComponent implements OnInit {
         this._aulaService.obtenerTipoActividades().subscribe({
             next: (tipoActivadeds) => {
                 this.tipoActivadedes = tipoActivadeds
-                console.log('las actividades', this.tipoActivadedes)
+                // console.log('las actividades', this.tipoActivadedes)
                 this.generarAccionesContenido()
             },
         })
@@ -444,7 +444,6 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleCuestionarioAction(action: string, actividad: IActividad) {
-        console.log('datos de cuestionario01', this.semanaSeleccionada)
         if (action === 'EDITAR' || action === 'CREAR') {
             this._dialogService.open(CuestionarioFormComponent, {
                 ...MODAL_CONFIG,

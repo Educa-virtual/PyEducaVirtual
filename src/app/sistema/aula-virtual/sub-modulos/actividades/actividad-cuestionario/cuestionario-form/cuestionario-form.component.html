@@ -11,7 +11,7 @@
                 <input
                     pInputText
                     class="flex-auto w-full"
-                    formControlName="cTareaTitulo"
+                    formControlName="cTitulo"
                 />
             </p-inputGroup>
         </div>
@@ -24,7 +24,7 @@
 
         <div class="mt-2">
             <p-editor
-                formControlName="cCapDescripcion"
+                formControlName="cDescripcion"
                 [style]="{ height: 'auto' }"
                 placeholder="Escribir una descripción...."
             />
@@ -75,7 +75,26 @@
             [filesUrl]="filesUrl"
         ></app-types-files-upload-primeng>
     </div>
-    <div class="flex justify-content-end mt-3">
+    <div
+        class="sticky-buttons flex justify-content-end gap-2 pt-3"
+        style="
+            position: sticky;
+            bottom: 0;
+            background-color: #fff;
+            padding: 1rem;
+            border-top: 1px solid #ddd;
+        "
+    >
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+            (click)="cancelar()"
+        ></button>
         <p-button
             label="Guardar"
             icon="pi pi-check"

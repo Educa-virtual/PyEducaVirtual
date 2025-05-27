@@ -1,8 +1,10 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
 import { DatePipe } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
+import { Message } from 'primeng/api'
+import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 
 @Component({
     selector: 'app-cuestionario-form',
@@ -12,11 +14,14 @@ import { FormBuilder, Validators } from '@angular/forms'
     imports: [PrimengModule, TypesFilesUploadPrimengComponent],
 })
 export class CuestionarioFormComponent implements OnInit {
+    @Input() contenidoSemana
+
     private _formBuilder = inject(FormBuilder)
 
     // Crea una instancia de la clase DatePipe para formatear fechas en español
     pipe = new DatePipe('es-ES')
     date = this.ajustarAHorarioDeMediaHora(new Date())
+    semana: Message[] = []
 
     typesFiles = {
         file: true,
@@ -25,7 +30,26 @@ export class CuestionarioFormComponent implements OnInit {
         repository: false,
         image: false,
     }
-    constructor() {}
+    constructor(private dialogConfig: DynamicDialogConfig) {
+        this.contenidoSemana = this.dialogConfig.data.contenidoSemana
+        // const data = this.dialogConfig.data
+        // if (data.action == 'editar') {
+        //     this.opcion = 'ACTUALIZAR'
+        //     // this.obtenerForoxiForoId(data.actividad.ixActivadadId)
+        // } else {
+        //     this.opcion = 'GUARDAR'
+        // }
+
+        this.semana = [
+            {
+                severity: 'info',
+                detail:
+                    this.contenidoSemana?.cContenidoSemNumero +
+                    ' SEMANA - ' +
+                    this.contenidoSemana?.cContenidoSemTitulo,
+            },
+        ]
+    }
 
     public formCuestionario = this._formBuilder.group({
         cTareaTitulo: ['', [Validators.required]],

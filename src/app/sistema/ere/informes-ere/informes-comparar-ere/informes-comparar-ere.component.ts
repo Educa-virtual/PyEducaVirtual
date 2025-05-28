@@ -15,6 +15,7 @@ import {
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
+import * as XLSX from 'xlsx'
 
 @Component({
     selector: 'app-informes-comparar-ere',
@@ -413,29 +414,46 @@ export class InformesCompararEreComponent implements OnInit {
                     },
                 })
         } else {
-            this.datosInformes
-                .exportarComparacionExcel(this.formFiltros.value)
-                .subscribe({
-                    next: (response) => {
-                        const blob = new Blob([response], {
-                            type: 'application/vnd.ms-excel',
-                        })
-                        const url = window.URL.createObjectURL(blob)
-                        const link = document.createElement('a')
-                        link.href = url
-                        link.download = 'Comparacion-ERE.xlsx'
-                        link.target = '_blank'
-                        link.click()
-                        window.URL.revokeObjectURL(url)
-                    },
-                    error: (error) => {
-                        this._MessageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: error,
-                        })
-                    },
-                })
+            console.log('Exportando en excel')
+
+            const data = this.formFiltros.value
+
+            console.log(data)
+
+            const worksheet = XLSX.utils.json_to_sheet(data)
+            const workbook = XLSX.utils.book_new()
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Dates')
+
+            XLSX.utils.sheet_add_aoa(worksheet, [['Name', 'Birthday']], {
+                origin: 'A1',
+            })
+
+            XLSX.writeFile(workbook, 'datos.xlsx', { compression: true })
+
+            // this.datosInformes
+            //     .exportarComparacionExcel(this.formFiltros.value)
+            //     .subscribe({
+            //         next: (response) => {
+            //             const blob = new Blob([response], {
+            //                 type: 'application/vnd.ms-excel',
+            //             })
+            //             const url = window.URL.createObjectURL(blob)
+            //             const link = document.createElement('a')
+            //             link.href = url
+            //             link.download = 'Comparacion-ERE.xlsx'
+            //             link.target = '_blank'
+            //             link.click()
+            //             window.URL.revokeObjectURL(url)
+            //         },
+            //         error: (error) => {
+            //             this._MessageService.add({
+            //                 severity: 'error',
+            //                 summary: 'Error',
+            //                 detail: error,
+            //             })
+            //         },
+            //     })
         }
     }
 

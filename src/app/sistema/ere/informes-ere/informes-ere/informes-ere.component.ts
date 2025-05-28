@@ -15,7 +15,7 @@ import {
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
-
+import { SheetToMatrix } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/utils/sheetToMatrix'
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
@@ -215,6 +215,7 @@ export class InformesEreComponent implements OnInit {
         },
     ]
 
+    fullData
     searchResultados() {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
@@ -232,6 +233,7 @@ export class InformesEreComponent implements OnInit {
                         this.sinDatos()
                     } else {
                         this.hide_filters = true
+                        this.fullData = data.data
                         this.resultados = data.data[1]
                         this.niveles = data.data[2]
                         this.resumen = data.data[3]
@@ -575,27 +577,129 @@ export class InformesEreComponent implements OnInit {
                 },
             })
         } else {
-            this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
-                next: (response) => {
-                    const blob = new Blob([response], {
-                        type: 'application/vnd.ms-excel',
-                    })
-                    const url = window.URL.createObjectURL(blob)
-                    const link = document.createElement('a')
-                    link.href = url
-                    link.download = 'Resultados-ERE.xlsx'
-                    link.target = '_blank'
-                    link.click()
-                    window.URL.revokeObjectURL(url)
+            console.log('Exportando en excel')
+
+            // const data = this.formFiltros.value
+
+            console.log('Data')
+            console.log(this.fullData)
+
+            const worksheets = [
+                {
+                    sheetName: 'Parametros',
+                    data: this.fullData[0],
+                    columns: [
+                        { key: 'autor', header: 'Autor' },
+                        { key: 'curso', header: 'Curso' },
+                        { key: 'evaluacion', header: 'Evaluación' },
+                        { key: 'grado', header: 'Grado' },
+                        { key: 'nivel', header: 'Nivel' },
+                        { key: 'tipo_reporte', header: 'Tipo de reporte' },
+                        { key: 'year_oficial', header: 'Nombre del año' },
+                    ],
                 },
-                error: (error) => {
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
+                {
+                    sheetName: 'Detalle',
+                    data: this.fullData[1],
+                    columns: [
+                        { key: 'index', header: 'ITEM' },
+                        { key: 'cod_ie', header: 'I.E.' },
+                        { key: 'distrito', header: 'Distrito' },
+                        { key: 'seccion', header: 'Sección' },
+                        { key: 'estudiante', header: 'Estudiante' },
+                        { key: 'aciertos', header: 'Aciertos' },
+                        { key: 'desaciertos', header: 'Desaciertos' },
+                        { key: 'blancos', header: 'Blancos' },
+                        { key: 'docente', header: 'DOCENTE' },
+                        { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                    ],
                 },
-            })
+                {
+                    sheetName: 'Preguntas',
+                    data: this.fullData[3],
+                    columns: [
+                        { key: 'metrica', header: 'PREGUNTA' },
+                        { key: '1', header: '1' },
+                        { key: '2', header: '2' },
+                        { key: '3', header: '3' },
+                        { key: '4', header: '4' },
+                        { key: '5', header: '5' },
+                        { key: '6', header: '6' },
+                        { key: '7', header: '7' },
+                        { key: '8', header: '8' },
+                        { key: '9', header: '9' },
+                        { key: '10', header: '10' },
+                        { key: '11', header: '11' },
+                        { key: '12', header: '12' },
+                        { key: '13', header: '13' },
+                        { key: '14', header: '14' },
+                        { key: '15', header: '15' },
+                        { key: '16', header: '16' },
+                        { key: '17', header: '17' },
+                        { key: '18', header: '18' },
+                        { key: '19', header: '19' },
+                        { key: '20', header: '20' },
+                    ],
+                },
+                {
+                    sheetName: 'Matriz',
+                    data: this.fullData[4],
+                    columns: [
+                        { key: 'competencia', header: 'COMPETENCIA' },
+                        { key: 'capacidad', header: 'CAPACIDAD' },
+                        { key: 'desempeno', header: 'DESEMPEÑO' },
+                        { key: 'pregunta_nro', header: 'PREGUNTAS' },
+                        { key: 'aciertos', header: 'ACIERTOS' },
+                        { key: 'desaciertos', header: 'DESACIERTOS' },
+                        { key: 'porcentaje_aciertos', header: '% ACIERTOS' },
+                        {
+                            key: 'porcentaje_desaciertos',
+                            header: '% DESACIERTOS',
+                        },
+                    ],
+                },
+                {
+                    sheetName: 'Agrupado',
+                    data: this.fullData[5],
+                    columns: [
+                        { key: 'index', header: 'ITEM' },
+                        { key: 'cod_ie', header: 'IE' },
+                        { key: 'ugel', header: 'UGEL' },
+                        { key: 'distrito', header: 'DISTRITO' },
+                        { key: 'total', header: 'TOTAL' },
+                        { key: '1', header: 'PRE-INICIO' },
+                        { key: '2', header: 'INICIO' },
+                        { key: '3', header: 'PROCESO' },
+                        { key: '4', header: 'SATISFACTORIO' },
+
+                        // { key: ['1','2','3','4'], header: 'TOTAL', operation: 'sum' },
+                    ],
+                },
+            ]
+
+            SheetToMatrix.exportToExcel(worksheets)
+
+            // this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
+            //     next: (response) => {
+            //         const blob = new Blob([response], {
+            //             type: 'application/vnd.ms-excel',
+            //         })
+            //         const url = window.URL.createObjectURL(blob)
+            //         const link = document.createElement('a')
+            //         link.href = url
+            //         link.download = 'Resultados-ERE.xlsx'
+            //         link.target = '_blank'
+            //         link.click()
+            //         window.URL.revokeObjectURL(url)
+            //     },
+            //     error: (error) => {
+            //         this._MessageService.add({
+            //             severity: 'error',
+            //             summary: 'Error',
+            //             detail: error,
+            //         })
+            //     },
+            // })
         }
     }
 

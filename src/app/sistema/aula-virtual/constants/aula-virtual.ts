@@ -141,9 +141,31 @@ export const actividadesConfig: Record<
     [CUESTIONARIO]: {
         'icon-color': 'text-pink-500',
         'bg-color': 'bg-pink-500 text-white',
-        icon: 'matVideocam',
+        icon: 'matDescription',
         cActTipoNombre: 'Cuestionario',
         iActTipoId: CUESTIONARIO,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+                isVisible: () => iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+                isVisible: () => iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-eye',
+                accion: 'VER',
+                class: '',
+                label: 'Ver',
+            },
+        ],
     },
 }
 

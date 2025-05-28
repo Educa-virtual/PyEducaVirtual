@@ -40,7 +40,19 @@ export class GeneralService {
         }
         return this.url
     }
+    getGralPrefixx(data) {
+        const url = `${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`
 
+        switch (data.petition) {
+            case 'get':
+                return this.http.get(url, { params: data.params })
+            case 'post':
+                return this.http.post(url, data.data, { params: data.params })
+            default:
+                // return throwError(() => new Error('Tipo de petición no válido'));
+                return this.url
+        }
+    }
     getGralReporte(data) {
         switch (data.petition) {
             case 'get':

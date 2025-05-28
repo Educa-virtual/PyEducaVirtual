@@ -444,21 +444,59 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleCuestionarioAction(action: string, actividad: IActividad) {
-        if (action === 'EDITAR' || action === 'CREAR') {
-            this._dialogService.open(CuestionarioFormComponent, {
-                ...MODAL_CONFIG,
-                data: {
-                    contenidoSemana: this.semanaSeleccionada,
-                    iActTipoId: actividad.iActTipoId,
-                    actividad: actividad,
-                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
-                },
-
-                header:
-                    action === 'EDITAR'
-                        ? 'Editar Cuestionario'
-                        : 'Crear Cuestionario',
-            })
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                const ref: DynamicDialogRef = this._dialogService.open(
+                    CuestionarioFormComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        data: {
+                            contenidoSemana: this.semanaSeleccionada,
+                            iActTipoId: actividad.iActTipoId,
+                            actividad: actividad,
+                            action:
+                                action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                        },
+                        header:
+                            action === 'EDITAR'
+                                ? 'Editar Cuestionario'
+                                : 'Crear Cuestionario',
+                    }
+                )
+                ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.getData()
+                        console.log('Formulario enviado', result)
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
+                break
+            case 'ELIMINAR':
+                console.log(actividad)
+                this._confirmService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la tarea ' +
+                        actividad['cTareaTitulo'] +
+                        ' ?',
+                    accept: () => {
+                        this.deleteTareaxiTareaid(actividad)
+                    },
+                })
+                break
+            case 'VER':
+                this.router.navigate([
+                    'aula-virtual/areas-curriculares/' +
+                        'actividad' +
+                        '/' +
+                        actividad.iProgActId +
+                        '/' +
+                        actividad.ixActivadadId +
+                        '/' +
+                        actividad.iActTipoId,
+                ])
+                break
         }
     }
 

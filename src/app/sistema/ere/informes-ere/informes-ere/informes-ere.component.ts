@@ -15,7 +15,7 @@ import {
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
-
+import { SheetToMatrix } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/utils/sheetToMatrix'
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
@@ -307,6 +307,7 @@ export class InformesEreComponent implements OnInit {
         },
     ]
 
+    fullData
     searchResultados() {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
@@ -324,6 +325,7 @@ export class InformesEreComponent implements OnInit {
                         this.sinDatos()
                     } else {
                         this.hide_filters = true
+                        this.fullData = data.data
                         this.filtros = data.data[0][0]
                         this.resultados = data.data[1]
                         this.niveles = data.data[2]
@@ -693,28 +695,149 @@ export class InformesEreComponent implements OnInit {
                 },
             })
         } else {
-            this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
-                next: (response) => {
-                    const blob = new Blob([response], {
-                        type: 'application/vnd.ms-excel',
-                    })
-                    const url = window.URL.createObjectURL(blob)
-                    const link = document.createElement('a')
-                    link.href = url
-                    link.download = 'Resultados-ERE.xlsx'
-                    link.target = '_blank'
-                    link.click()
-                    window.URL.revokeObjectURL(url)
-                },
-                error: (error) => {
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
-                },
+            this.exportarExcelLocal()
+            // this.exportarExcelAPI()
+        }
+    }
+
+    exportarExcelLocal() {
+        // Formatear parametros
+        const parametros = []
+        const params = this.fullData[0][0]
+        for (const index in params) {
+            let index_formateado = index
+            if (['autor', 'year_oficial'].includes(index)) continue
+            switch (index) {
+                case 'cod_ie':
+                    index_formateado = 'institucion educativa'
+                    break
+                case 'curso':
+                    index_formateado = 'area'
+                    break
+                case 'tipo_reporte':
+                    index_formateado = 'tipo de reporte'
+                    break
+            }
+            parametros.push({
+                titulo: index_formateado.toUpperCase(),
+                valor: params[index],
             })
         }
+
+        // formatear columnas de preguntas
+        const preguntas = this.fullData[3]
+        const preguntas_count = Object.keys(preguntas[0]).length - 1
+        const columnas_preguntas = [{ key: 'metrica', header: 'PREGUNTA' }]
+        for (let i = 1; i <= preguntas_count; i++) {
+            columnas_preguntas.push({
+                key: `${i}`,
+                header: `${i}`,
+            })
+        }
+
+        // formatear columnas de agrupado
+        const columnas_agrupado = [
+            { key: 'index', header: 'ITEM' },
+            { key: 'agrupado', header: 'AGRUPADO' },
+            { key: 'ugel', header: 'UGEL' },
+            { key: 'distrito', header: 'DISTRITO' },
+            { key: 'total', header: 'TOTAL' },
+        ]
+        this.niveles.forEach((item: any) => {
+            columnas_agrupado.push({
+                key: `${item.nivel_logro_id}`,
+                header: `% ${item.nivel_logro}`,
+            })
+        })
+
+        // Formatear hojas y columnas
+        const worksheets = [
+            {
+                sheetName: 'Parametros',
+                data: parametros,
+                columns: [
+                    { key: 'titulo', header: 'Parámetro' },
+                    { key: 'valor', header: 'Valor' },
+                ],
+            },
+            {
+                sheetName: 'Resumen',
+                data: this.fullData[2],
+                columns: [
+                    { key: 'nivel_logro', header: 'Nivel de logro' },
+                    { key: 'cantidad', header: 'Cantidad' },
+                ],
+            },
+            {
+                sheetName: 'Detalle',
+                data: this.fullData[1],
+                columns: [
+                    { key: 'index', header: 'ITEM' },
+                    { key: 'cod_ie', header: 'I.E.' },
+                    { key: 'distrito', header: 'Distrito' },
+                    { key: 'seccion', header: 'Sección' },
+                    { key: 'estudiante', header: 'Estudiante' },
+                    { key: 'aciertos', header: 'Aciertos' },
+                    { key: 'desaciertos', header: 'Desaciertos' },
+                    { key: 'blancos', header: 'Blancos' },
+                    { key: 'docente', header: 'DOCENTE' },
+                    { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                ],
+            },
+            {
+                sheetName: 'Preguntas',
+                data: this.fullData[3],
+                columns: columnas_preguntas,
+            },
+            {
+                sheetName: 'Matriz',
+                data: this.fullData[4],
+                columns: [
+                    { key: 'competencia', header: 'COMPETENCIA' },
+                    { key: 'capacidad', header: 'CAPACIDAD' },
+                    { key: 'desempeno', header: 'DESEMPEÑO' },
+                    { key: 'pregunta_nro', header: 'PREGUNTAS' },
+                    { key: 'aciertos', header: 'ACIERTOS' },
+                    { key: 'desaciertos', header: 'DESACIERTOS' },
+                    { key: 'porcentaje_aciertos', header: '% ACIERTOS' },
+                    {
+                        key: 'porcentaje_desaciertos',
+                        header: '% DESACIERTOS',
+                    },
+                ],
+            },
+            {
+                sheetName: 'Agrupado',
+                data: this.fullData[5],
+                columns: columnas_agrupado,
+            },
+        ]
+
+        SheetToMatrix.exportToExcel(worksheets)
+    }
+
+    exportarExcelAPI() {
+        this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], {
+                    type: 'application/vnd.ms-excel',
+                })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = 'Resultados-ERE.xlsx'
+                link.target = '_blank'
+                link.click()
+                window.URL.revokeObjectURL(url)
+            },
+            error: (error) => {
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
     }
 
     accionBtnItemTable({ accion, item }) {

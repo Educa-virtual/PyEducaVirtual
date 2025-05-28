@@ -42,6 +42,9 @@ export class InformesEreComponent implements OnInit {
     promedio: Array<object>
     niveles: Array<object>
     agrupado: Array<object>
+    filtros: []
+
+    tipo_reporte: string = 'IE'
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
@@ -162,10 +165,13 @@ export class InformesEreComponent implements OnInit {
             this.ies = null
             this.filterInstitucionesEducativas()
         })
-        this.formFiltros.get('iUgelId').valueChanges.subscribe(() => {
+        this.formFiltros.get('iUgelId').valueChanges.subscribe((value) => {
+            this.formFiltros.get('iDsttId')?.setValue(null)
             this.formFiltros.get('iIieeId')?.setValue(null)
             this.ies = null
+            this.distritos = null
             this.filterInstitucionesEducativas()
+            this.filterDistritos(value)
         })
     }
 
@@ -179,6 +185,10 @@ export class InformesEreComponent implements OnInit {
 
     filterAreas(iNivelTipoId: number) {
         this.areas = this.datosInformes.filterAreas(iNivelTipoId)
+    }
+
+    filterDistritos(iUgelId: number) {
+        this.distritos = this.datosInformes.filterDistritos(iUgelId)
     }
 
     filterInstitucionesEducativas() {
@@ -197,6 +207,88 @@ export class InformesEreComponent implements OnInit {
             iUgelId
         )
     }
+
+    piePlugin = [
+        {
+            afterDraw: (chart) => {
+                if (chart.data.datasets[0].data.length == 0) return
+                const {
+                    ctx,
+                    chartArea: { width, height },
+                } = chart
+
+                const cx = chart._metasets[0].data[0].x
+                const cy = chart._metasets[0].data[0].y
+
+                const sum = chart.data.datasets[0].data.reduce(
+                    (a, b) => a + b,
+                    0
+                )
+                chart.data.datasets.forEach((dataset, i) => {
+                    chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+                        const valor = chart.data.datasets[0].data[index]
+                        const isHidden = chart.legend.legendItems[index].hidden
+                        if (valor == 0 || isHidden) return
+                        const { x: a, y: b } = datapoint.tooltipPosition()
+
+                        const x = 2 * a - cx
+                        const y = 2 * b - cy
+
+                        // draw line
+                        const halfwidth = width / 2
+                        const halfheight = height / 2
+                        const xLine = x >= halfwidth ? x + 5 : x - 5
+                        const yLine = y >= halfheight ? y + 5 : y - 5
+                        const extraLine = x >= halfwidth ? 10 : -10
+
+                        ctx.beginPath()
+                        ctx.moveTo(x, y)
+                        ctx.lineTo(xLine + extraLine, yLine)
+                        // ctx.strokeStyle = dataset.backgroundColor[index];
+                        ctx.strokeStyle = 'black'
+                        ctx.stroke()
+
+                        ctx.font = '12px Arial'
+                        const textXPosition = x >= halfwidth ? 'left' : 'right'
+                        const plusFivePx = x >= halfwidth ? 5 : -5
+                        ctx.textAlign = textXPosition
+                        ctx.textBaseline = 'middle'
+                        ctx.fillStyle = dataset.backgroundColor[index]
+                        //ctx.fillStyle = "black";
+
+                        ctx.fillText(
+                            (
+                                (chart.data.datasets[0].data[index] * 100) /
+                                sum
+                            ).toFixed(2) + '%',
+                            xLine + extraLine + plusFivePx,
+                            yLine
+                        )
+                    })
+                })
+            },
+        },
+    ]
+
+    barPlugin = [
+        {
+            afterDraw: (chart) => {
+                const { ctx } = chart
+                chart.data.datasets.forEach((dataset, i) => {
+                    if (dataset.data.length == 0) return
+                    const isHidden = chart.legend.legendItems[i]?.hidden
+                    if (isHidden) return
+                    chart.getDatasetMeta(i).data.forEach((bar, index) => {
+                        const data = dataset.data[index]
+                        if (Number(data) == 0 || isHidden) return
+                        ctx.font = '0.75em Arial'
+                        ctx.fillStyle = dataset.backgroundColor[index]
+                        ctx.fillText(data + '%', bar.x - 15, bar.y - 5)
+                    })
+                })
+            },
+        },
+    ]
 
     btn_exportar: Array<MenuItem> = [
         {
@@ -232,35 +324,18 @@ export class InformesEreComponent implements OnInit {
                         this.sinDatos()
                     } else {
                         this.hide_filters = true
+                        this.filtros = data.data[0][0]
                         this.resultados = data.data[1]
                         this.niveles = data.data[2]
                         this.resumen = data.data[3]
                         this.matriz = data.data[4]
                         this.mostrarEstadisticaNivel()
                         this.generarColumnas(this.resumen)
-                        if (this.es_especialista) {
-                            this.agrupado = data.data[5]
-                            this.agrupado = this.agrupado.map((item: any) => {
-                                let sumatoria = 0
-                                this.niveles.forEach((nivel: any) => {
-                                    sumatoria += Number(
-                                        item[nivel.nivel_logro_id] ?? 0
-                                    )
-                                })
-                                this.niveles.forEach((nivel: any) => {
-                                    item[nivel.nivel_logro_id] = Number(
-                                        (Number(
-                                            item[nivel.nivel_logro_id] ?? 0
-                                        ) /
-                                            sumatoria) *
-                                            100
-                                    ).toFixed(2)
-                                })
-                                item.total = sumatoria
-                                return item
-                            })
-                            this.generarColumnasAgrupado()
-                        }
+
+                        this.agrupado = data.data[5]
+                        this.calcularPorcentajesAgrupado(this.agrupado)
+                        this.generarColumnasAgrupado()
+
                         this.mostrarEstadisticaPregunta()
                     }
                 },
@@ -276,6 +351,23 @@ export class InformesEreComponent implements OnInit {
                     console.log('Request completed')
                 },
             })
+    }
+
+    calcularPorcentajesAgrupado(agrupado: any) {
+        if (!agrupado) return
+        this.agrupado = this.agrupado.map((item: any) => {
+            let sumatoria = 0
+            this.niveles.forEach((nivel: any) => {
+                sumatoria += Number(item[nivel.nivel_logro_id] ?? 0)
+            })
+            this.niveles.forEach((nivel: any) => {
+                item[nivel.nivel_logro_id] = Number(
+                    (Number(item[nivel.nivel_logro_id] ?? 0) / sumatoria) * 100
+                ).toFixed(2)
+            })
+            item.total = sumatoria
+            return item
+        })
     }
 
     sinDatos() {
@@ -304,7 +396,9 @@ export class InformesEreComponent implements OnInit {
         const niveles_nombres = this.niveles.map(
             (item: any) => item.nivel_logro
         )
-        const niveles_valores = this.niveles.map((item: any) => item.cantidad)
+        const niveles_valores = this.niveles.map((item: any) =>
+            Number(item.cantidad)
+        )
         const total = niveles_valores.reduce((a, b) => Number(a) + Number(b), 0)
 
         this.data_doughnut = {
@@ -329,7 +423,7 @@ export class InformesEreComponent implements OnInit {
         }
 
         this.options_doughnut = {
-            cutout: '60%',
+            radius: '50%',
             plugins: {
                 title: {
                     display: true,
@@ -381,56 +475,80 @@ export class InformesEreComponent implements OnInit {
         if (this.niveles.length == 0) {
             return
         }
-        const columnas = [
-            {
-                type: 'item',
-                width: '5%',
-                field: 'item',
-                header: '#',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '20%',
-                field: 'agrupado',
-                header: 'IE',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'ugel',
-                header: 'UGEL',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'distrito',
-                header: 'Distrito',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'total',
-                header: 'Total',
-                text_header: 'left',
-                text: 'left',
-            },
-            {
-                type: 'text',
-                width: '10%',
-                field: 'puntaje',
-                header: 'Puntaje',
-                text_header: 'left',
-                text: 'left',
-            },
-        ]
+        let columnas = []
+        if (this.filtros['cod_ie'] !== undefined) {
+            this.tipo_reporte = 'SECCION'
+            columnas = [
+                {
+                    type: 'item',
+                    width: '5%',
+                    field: 'item',
+                    header: '#',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '20%',
+                    field: 'agrupado',
+                    header: 'SECCION',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'total',
+                    header: 'Total',
+                    text_header: 'left',
+                    text: 'left',
+                },
+            ]
+        } else {
+            this.tipo_reporte = 'IE'
+            columnas = [
+                {
+                    type: 'item',
+                    width: '5%',
+                    field: 'item',
+                    header: '#',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '20%',
+                    field: 'agrupado',
+                    header: 'IE',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'ugel',
+                    header: 'UGEL',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'distrito',
+                    header: 'Distrito',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'total',
+                    header: 'Total',
+                    text_header: 'left',
+                    text: 'left',
+                },
+            ]
+        }
         this.niveles.forEach((item: any) => {
             columnas.push({
                 type: 'text',
@@ -723,14 +841,6 @@ export class InformesEreComponent implements OnInit {
             width: '10%',
             field: 'total',
             header: 'Total',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'puntaje',
-            header: 'Puntaje',
             text_header: 'left',
             text: 'left',
         },

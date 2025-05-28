@@ -14,17 +14,69 @@
                     <div class="card">
                         <div class="filtros-row">
                             <div class="filtro-item">
-                                <label for="instituciones">Opciones:</label>
+                                <label for="opciones">Opciones:</label>
                                 <p-dropdown
                                     [options]="opciones"
                                     formControlName="opcionSeleccionada"
                                     placeholder="Seleccione opción"
                                     styleClass="dropdown-field"
+                                    (onChange)="reiniciarFiltros()"
+                                >
+                                </p-dropdown>
+                            </div>
+                            <div class="filtro-item">
+                                <label for="instituciones">Perfil:</label>
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataPerfiles"
+                                    placeholder="Seleccione opción"
+                                    styleClass="dropdown-field"
+                                    formControlName="perfilSeleccionado"
+                                    [filter]="true"
+                                    (onChange)="reiniciarFiltros()"
                                 >
                                 </p-dropdown>
                             </div>
                             @if (
-                                formAgregarPerfil.get('opcionSeleccionada')
+                                +formAgregarPerfil.get('opcionSeleccionada')
+                                    ?.value === 1 &&
+                                +formAgregarPerfil.get('perfilSeleccionado')
+                                    ?.value > 0 &&
+                                +formAgregarPerfil.get('perfilSeleccionado')
+                                    ?.value !== 2
+                            ) {
+                                <div class="filtro-item">
+                                    <label for="ugeles"
+                                        >Módulo administrativo:</label
+                                    >
+                                    <p-dropdown
+                                        appendTo="body"
+                                        [options]="dataModulosAdministrativos"
+                                        formControlName="iModuloSeleccionado"
+                                        placeholder="Seleccione opción"
+                                        styleClass="dropdown-field"
+                                    >
+                                    </p-dropdown>
+                                </div>
+                            }
+                            @if (
+                                +formAgregarPerfil.get('opcionSeleccionada')
+                                    ?.value === 2
+                            ) {
+                                <div class="filtro-item">
+                                    <label for="ugeles">UGEL:</label>
+                                    <p-dropdown
+                                        appendTo="body"
+                                        [options]="dataUgeles"
+                                        formControlName="iUgelSeleccionada"
+                                        placeholder="Seleccione opción"
+                                        styleClass="dropdown-field"
+                                    >
+                                    </p-dropdown>
+                                </div>
+                            }
+                            @if (
+                                +formAgregarPerfil.get('opcionSeleccionada')
                                     ?.value === 3
                             ) {
                                 <div class="filtro-item">
@@ -32,8 +84,10 @@
                                         >Institución educativa:</label
                                     >
                                     <p-dropdown
-                                        [options]="institucionesEducativas"
-                                        (onChange)="obtenerSedesIe(0)"
+                                        appendTo="body"
+                                        [options]="dataInstitucionesEducativas"
+                                        formControlName="ieSeleccionada"
+                                        (onChange)="obtenerSedesIe()"
                                         placeholder="Seleccione opción"
                                         [filter]="true"
                                         styleClass="dropdown-field"
@@ -41,34 +95,43 @@
                                     </p-dropdown>
                                 </div>
                             }
+
                             @if (
-                                formAgregarPerfil.get('ieSeleccionada')?.value >
-                                0
+                                +formAgregarPerfil.get('ieSeleccionada')
+                                    ?.value > 0
                             ) {
                                 <div class="filtro-item">
-                                    <label for="instituciones">Sede:</label>
+                                    <label for="sedes">Sede:</label>
                                     <p-dropdown
-                                        [options]="ieSedes"
-                                        (onChange)="
-                                            obtenerPerfilesPorTipo('ie')
-                                        "
+                                        appendTo="body"
+                                        [options]="dataIeSedes"
+                                        formControlName="ieSedeSeleccionada"
                                         placeholder="Seleccione opción"
                                         styleClass="dropdown-field"
                                     >
                                     </p-dropdown>
                                 </div>
                             }
-                            @if (perfiles.length > 0) {
+                            @if (
+                                +formAgregarPerfil.get('iUgelSeleccionada')
+                                    ?.value > 0 ||
+                                +formAgregarPerfil.get('perfilSeleccionado')
+                                    ?.value === 2
+                            ) {
                                 <div class="filtro-item">
-                                    <label for="instituciones">Perfil:</label>
+                                    <label for="cursos">Curso:</label>
                                     <p-dropdown
-                                        [options]="perfiles"
+                                        appendTo="body"
+                                        [options]="dataCursos"
+                                        formControlName="iCursoSeleccionado"
                                         placeholder="Seleccione opción"
                                         styleClass="dropdown-field"
+                                        [filter]="true"
                                     >
                                     </p-dropdown>
                                 </div>
                             }
+
                             <div class="agregar-btn-container">
                                 <button
                                     [disabled]="formAgregarPerfil.invalid"
@@ -76,6 +139,7 @@
                                     pRipple
                                     label="+ Agregar"
                                     class="p-button-success"
+                                    (click)="agregarPerfil()"
                                 ></button>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 export interface Usuario {
     iCredId: number
+    iPersId: number
     cCredUsuario: string
     cPersDocumento: string
     cApellidosNombres: string

@@ -11,7 +11,6 @@ import { DetalleAsistenciaComponent } from './asistencia/detalle-asistencia/deta
 import { PersonalComponent } from './personal/personal.component'
 import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendizaje.component'
 import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-silabo/gestionar-silabo.component'
-import { PerfilComponent } from './perfil/perfil.component'
 import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/actividades-no-lectivas.component'
 import { MaterialEducativoComponent } from './material-educativo/material-educativo.component'
 import { CalendarioComponent } from './calendario/calendario.component'
@@ -47,10 +46,6 @@ import { ComunicadosComponent } from './comunicados/comunicados.component'
             {
                 path: 'gestionar-programacion-curricular/:idDocCursoId/:cCursoNombre/:iAvanceSilabo',
                 component: GestionarSilaboComponent,
-            },
-            {
-                path: 'perfil',
-                component: PerfilComponent,
             },
             {
                 path: 'actividades-no-lectivas',

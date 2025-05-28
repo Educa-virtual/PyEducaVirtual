@@ -34,6 +34,9 @@ type TColumnType =
     | string
 
 export interface IColumn {
+    rowspan?: number
+    colspan?: number
+    col?: number
     type: TColumnType
 
     width: string
@@ -60,11 +63,11 @@ export interface IColumn {
         value: string
     }[]
     text: string
+    styles?: object | undefined
     customFalsy?: {
         trueText: string
         falseText: string
     }
-    styles?: object | undefined
 }
 
 export interface IActionTable {
@@ -94,7 +97,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
     getClass(rowData: any, classes: string): { [key: string]: boolean } {
-        const fieldValue = rowData[classes]
+        const fieldValue = rowData?.[classes]
         if (classes) {
             return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
         } else {
@@ -114,6 +117,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
 
+    //placeholder search
+    @Input() searchPlaceholder: string = 'Buscar por nombre....'
     debug(d) {
         console.log('d')
         console.log(d)
@@ -178,6 +183,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     // }
 
     public isIIcon = isIIcon
+
+    @Input() typeHeaderColumn: 'simple' | 'group' = 'simple'
+    @Input() columnsGroup: IColumn[][]
 
     private _columnas: IColumn[] = [
         {
@@ -310,7 +318,18 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.columnasSeleccionadas = this.columnas
+        this.columnsGroupSeleccionadas = this.columnsGroup
         //this.selectedCells = {}
+    }
+
+    getStyleColumnGroup(col: any, colIndex: number) {
+        if (col.colspan && col.colspan > 1) {
+            return (colIndex + 1) % 2 !== 0
+                ? { 'background-color': '#c9c8d9' }
+                : { 'background-color': '#dddde8' }
+        }
+
+        return { 'background-color': '#e6e6ee' }
     }
 
     ngOnChanges(changes: any) {
@@ -320,6 +339,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         if (changes.columnas?.currentValue) {
             this.columnas = changes.columnas.currentValue
             this.columnasSeleccionadas = this.columnas
+        }
+
+        if (changes.columnsGroup?.currentValue) {
+            this.columnsGroupSeleccionadas = changes.columnsGroup.currentValue
         }
 
         if (changes.selectedRowData?.currentValue) {
@@ -339,8 +362,119 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         this.accionBtnItem.emit(data)
     }
 
+    columnsGroupSeleccionadas
     onColumnSelected(columns) {
-        this.columnasSeleccionadas = columns
+        console.log('columns', columns)
+
+        if (this.columnsGroup) {
+            // 1. Detectar columnas eliminadas por `field`
+            const removedCols = this.columnas
+                .filter(
+                    (original) =>
+                        !columns.find((col) => col.field === original.field)
+                )
+                .map((col) => col.col)
+
+            // 2. Llamar a función con columnas originales y columnas eliminadas
+            const { inTableColumns, inTableColumnsGroup } =
+                this.removeColumnAndUpdateGroups({
+                    targetCols: removedCols,
+                    inTableColumns: [...this.columnas], // copia de las originales
+                    inTableColumnsGroup: this.columnsGroup,
+                })
+
+            this.columnsGroupSeleccionadas = inTableColumnsGroup
+            this.columnasSeleccionadas = inTableColumns
+
+            this.reAddRemovedCells(removedCols, this.columnsGroup)
+        } else {
+            this.columnasSeleccionadas = columns
+        }
+
+        console.log(this.columnsGroupSeleccionadas)
+    }
+
+    reAddRemovedCells(removedCols, inTableColumnsGroup) {
+        // Aseguramos que las celdas eliminadas sean agregadas de nuevo en la posición correcta
+        const reAddedCells = removedCols.filter((col) => {
+            // Verificamos si la columna está de nuevo en el rango de las columnas visibles
+            return !this.columnsGroup.some((group) =>
+                group.some((cell) => cell.col === col)
+            )
+        })
+
+        // Reagregamos las celdas eliminadas
+        reAddedCells.forEach((col) => {
+            inTableColumnsGroup.forEach((row) => {
+                row.forEach((cell) => {
+                    if (cell.col === col) {
+                        // Reagregamos la celda eliminada, ajustando su colspan si es necesario
+                        const updatedCell = {
+                            ...cell,
+                            colspan: 1, // O el valor apropiado de `colspan`
+                            col: col,
+                        }
+                        row.push(updatedCell)
+                    }
+                })
+            })
+        })
+    }
+
+    removeColumnAndUpdateGroups({
+        targetCols,
+        inTableColumns,
+        inTableColumnsGroup,
+    }) {
+        targetCols.sort((a, b) => b - a)
+
+        // Actualizamos las columnas visibles (para la tabla)
+        const updatedColumns = inTableColumns
+            .filter((col) => !targetCols.includes(col.col))
+            .map((col) => ({
+                ...col,
+                col: col.col - targetCols.filter((t) => t < col.col).length,
+            }))
+
+        // Actualizamos las columnas agrupadas (para encabezados)
+        const updatedGroups = inTableColumnsGroup.map((row) => {
+            return row
+                .map((cell) => {
+                    const start = cell.col
+                    const span = cell.colspan ?? 1
+                    // const end = start + span - 1;
+
+                    // columnas cubiertas por la celda
+                    const range = Array.from(
+                        { length: span },
+                        (_, i) => start + i
+                    )
+                    const remainingCols = range.filter(
+                        (col) => !targetCols.includes(col)
+                    )
+
+                    if (remainingCols.length === 0) {
+                        // Toda la celda debe eliminarse
+                        return null
+                    }
+
+                    const newCol =
+                        remainingCols[0] -
+                        targetCols.filter((t) => t < remainingCols[0]).length
+
+                    return {
+                        ...cell,
+                        col: newCol,
+                        colspan: remainingCols.length,
+                    }
+                })
+                .filter(Boolean) // Eliminamos las celdas nulas
+        })
+
+        return {
+            inTableColumns: updatedColumns,
+            inTableColumnsGroup: updatedGroups,
+        }
     }
 
     onSelectionChange(event) {

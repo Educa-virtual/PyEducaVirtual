@@ -52,11 +52,6 @@ const docente = [
                 routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
-                label: 'Mi Perfil',
-                icon: 'pi pi-fw pi-id-card',
-                routerLink: ['/docente/perfil'],
-            },
-            {
                 label: 'Actividades No Lectivas',
                 icon: 'pi pi-fw pi-list-check',
                 routerLink: ['/docente/actividades-no-lectivas'],
@@ -122,6 +117,16 @@ const estudiante = [
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion/areas'],
             },
+            {
+                label: 'Practicar evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion-practica'],
+            },
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/estudiante/buzon-sugerencias'],
+            },
         ],
     },
 ]
@@ -140,6 +145,11 @@ const administrador = [
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
+            },
+            {
+                label: 'Registro de fechas especiales',
+                icon: 'pi pi-calendar',
+                routerLink: ['/gestion-institucional/fechas'],
             },
             {
                 label: 'Backup de BD',
@@ -232,13 +242,13 @@ const administracion = [
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    {
-                        label: 'Registro de año escolar',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/calendarioAcademico',
-                        ],
-                    },
+                    // {
+                    //     label: 'Registro de año escolar',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: [
+                    //         '/gestion-institucional/calendarioAcademico',
+                    //     ],
+                    // },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',
@@ -269,17 +279,6 @@ const administracion = [
                         label: 'Apertura de año escolar',
                         icon: 'pi pi-lock-open',
                         routerLink: ['/gestion-institucional/apertura'],
-                    },
-                    {
-                        label: 'Registro de fechas especiales',
-                        icon: 'pi pi-calendar',
-                        routerLink: ['/gestion-institucional/fechas'],
-                    },
-
-                    {
-                        label: 'Cierre de año escolar',
-                        icon: 'pi pi-lock',
-                        routerLink: ['/configuracion/configuracion'],
                     },
                 ],
             },
@@ -343,6 +342,13 @@ const administracion = [
                         badge: 'NEW',
                         routerLink: [
                             '/gestion-institucional/estudiante/registro',
+                        ],
+                    },
+                    {
+                        label: 'Buzon de Sugerencias',
+                        icon: 'pi pi-fw pi-envelope',
+                        routerLink: [
+                            '/gestion-institucional/gestionar-sugerencias',
                         ],
                     },
                 ],
@@ -460,6 +466,14 @@ const administracion = [
             //         },
             //     ],
             // },
+
+            //director buzon
+
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/buzon-director'],
+            },
         ],
     },
 ]
@@ -572,4 +586,5 @@ export class ConstantesService {
     cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
     cNivelNombre = perfil ? perfil.cNivelNombre : null
     year = years ? years : null
+    fotografia = user ? user.cPersFotografia : null
 }

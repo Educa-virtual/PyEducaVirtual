@@ -907,7 +907,8 @@
                                                                 'Respuesta correcta'
                                                             "
                                                             [inputId]="
-                                                                alternativa.iAlternativaId
+                                                                alternativa.iAlternativaId ||
+                                                                'alt_' + ida
                                                             "
                                                             [value]="
                                                                 alternativa
@@ -917,15 +918,32 @@
                                                             "
                                                             [binary]="true"
                                                             [disabled]="
-                                                                !isDisabled
+                                                                !isDisabled ||
+                                                                (hayAlternativaSeleccionada(
+                                                                    item.alternativas
+                                                                ) &&
+                                                                    !alternativa.bAlternativaCorrecta)
                                                             "
                                                             (onChange)="
                                                                 cambiarEstadoCheckbox(
-                                                                    alternativa.iAlternativaId,
+                                                                    alternativa.iAlternativaId !==
+                                                                        null
+                                                                        ? alternativa.iAlternativaId
+                                                                        : ida,
                                                                     item.alternativas
                                                                 )
                                                             "
                                                         />
+                                                        <!--<p-checkbox
+                                                            [class]="!isDisabled ? 'ml-2' : ''"
+                                                            [label]="'Respuesta correcta'"
+                                                            [inputId]="alternativa.iAlternativaId"
+                                                            [value]="alternativa"
+                                                            [(ngModel)]="alternativa.bAlternativaCorrecta"
+                                                            [binary]="true"
+                                                            [disabled]="!isDisabled || (hayAlternativaSeleccionada(item.alternativas) && !alternativa.bAlternativaCorrecta)"
+                                                            (onChange)="cambiarEstadoCheckbox(alternativa.iAlternativaId, item.alternativas)"
+                                                        />-->
                                                     </p-inputGroup>
                                                     @if (
                                                         alternativa.bAlternativaCorrecta

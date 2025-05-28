@@ -109,6 +109,7 @@ export class PreguntasComponent implements OnInit {
     alternativas = []
     showModalBancoPreguntas: boolean = false
     totalPregunta: number = 0
+    iNivelGradoId: number = null
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -284,6 +285,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
+        const orden = this.totalPregunta + 1 // pregunta orden
 
         if (item.iEncabPregId && item.cEncabPregContenido) {
             this.enunciadosCache.set(
@@ -303,15 +305,58 @@ export class PreguntasComponent implements OnInit {
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iEncabPregId: item.iEncabPregId,
                 cEncabPregContenido: item.iEncabPregContenido,
+                iPreguntaOrden: orden ?? null, // pregunta orden
             },
         }
         this.getInformation(params, params.data.opcion)
     }
 
+    //iNivelGradoId: any
+
     guardarPreguntaSinEnunciadoSinData() {
         if (!this.isDisabled) {
             return
         }
+
+        const orden = this.totalPregunta + 1
+
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'GUARDAR-PREGUNTAS',
+                valorBusqueda: this.iEvaluacionId,
+                iPreguntaId: null,
+                iDesempenoId: null,
+                iTipoPregId: null,
+                cPregunta: null,
+                cPreguntaTextoAyuda: null,
+                iPreguntaNivel: null,
+                iPreguntaPeso: null,
+                dtPreguntaTiempo: null,
+                bPreguntaEstado: 1,
+                cPreguntaClave: null,
+                iEspecialistaId:
+                    this._ConstantesService.iEspecialistaId || null,
+                iNivelGradoId: this.iNivelGradoId || null,
+                iEncabPregId: null,
+                iCursosNivelGradId: this.iCursoNivelGradId,
+                iCredId: this._ConstantesService.iCredId,
+                iPreguntaOrden: orden,
+            },
+        }
+        this.getInformation(params, params.data.opcion)
+    }
+
+    /*guardarPreguntaSinEnunciadoSinData() {
+        if (!this.isDisabled) {
+            return
+        } 
+        //const orden = this.totalPregunta + 1 // pregunta orden 
+        const orden = this.totalPregunta + 1
+
         const params = {
             petition: 'post',
             group: 'ere',
@@ -321,15 +366,20 @@ export class PreguntasComponent implements OnInit {
                 opcion: 'GUARDAR-PREGUNTAS',
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
+                iPreguntaOrden: orden,
             },
         }
         this.getInformation(params, params.data.opcion)
-    }
+    }*/
 
     guardarPreguntaConEnunciadoSinData() {
         if (!this.isDisabled) {
             return
         }
+        //const orden = this.totalPregunta + 1 // pregunta orden
+
+        const orden = this.totalPregunta + 1
+
         const params = {
             petition: 'post',
             group: 'ere',
@@ -340,6 +390,7 @@ export class PreguntasComponent implements OnInit {
                 valorBusqueda: this.iEvaluacionId,
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iCredId: this._ConstantesService.iCredId,
+                iPreguntaOrden: orden,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -370,6 +421,7 @@ export class PreguntasComponent implements OnInit {
         data.cEncabPregContenido = !encabezado ? '' : contenido
         data.iEvaluacionId = this.iEvaluacionId
         data.iCursosNivelGradId = this.iCursoNivelGradId
+        data.iPreguntaOrden = pregunta.iOrden || this.totalPregunta + 1 // pregunta orden
         if (!data.alternativas) {
             this._MessageService.add({
                 severity: 'error',
@@ -427,18 +479,53 @@ export class PreguntasComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
 
+    hayAlternativaSeleccionada(alternativas): boolean {
+        if (!alternativas) return false
+        return alternativas.some((alt) => alt.bAlternativaCorrecta)
+    }
+
+    /*cambiarEstadoCheckbox(iAlternativaId, alternativas) {
+        if (!this.isDisabled) {
+            return;
+        }
+        
+        // Solo permitimos una opción seleccionada a la vez
+        alternativas.forEach((alternativa) => {
+            if (alternativa.iAlternativaId != iAlternativaId) {
+                alternativa.bAlternativaCorrecta = false;
+                alternativa.cAlternativaExplicacion = null;
+            } else {
+                // Aseguramos que el seleccionado permanezca marcado
+                alternativa.bAlternativaCorrecta = true;
+            }
+        });
+    }*/
+
     cambiarEstadoCheckbox(iAlternativaId, alternativas) {
         if (!this.isDisabled) {
             return
         }
-        alternativas.forEach((alternativa) => {
-            {
-                if (alternativa.iAlternativaId != iAlternativaId) {
+
+        const index = alternativas.findIndex(
+            (alt) =>
+                (alt.iAlternativaId !== null &&
+                    alt.iAlternativaId == iAlternativaId) ||
+                (alt.iAlternativaId === null &&
+                    alt === alternativas[iAlternativaId])
+        )
+
+        if (index === -1) return
+
+        if (!alternativas[index].bAlternativaCorrecta) {
+            alternativas[index].cAlternativaExplicacion = null
+        } else {
+            alternativas.forEach((alternativa, i) => {
+                if (i !== index) {
                     alternativa.bAlternativaCorrecta = false
                     alternativa.cAlternativaExplicacion = null
                 }
-            }
-        })
+            })
+        }
     }
 
     agregarAlternativa(preguntas) {
@@ -448,6 +535,7 @@ export class PreguntasComponent implements OnInit {
         if (!preguntas['alternativas']) {
             preguntas['alternativas'] = []
         }
+
         preguntas.alternativas.push({
             bAlternativaCorrecta: false,
             cAlternativaDescripcion: null,
@@ -456,6 +544,11 @@ export class PreguntasComponent implements OnInit {
             iAlternativaId: null,
         })
         this.ordenarAlternativaLetra(preguntas.alternativas)
+    }
+    private lastTempId = -1
+    private getTempId(): number {
+        this.lastTempId--
+        return this.lastTempId
     }
 
     eliminarAlternativa(index: number, alternativas) {
@@ -488,8 +581,8 @@ export class PreguntasComponent implements OnInit {
             return
         }
         alternativas.forEach((alternativa, i) => {
-            const letra = abecedario[i] // Obtiene la letra según el índice
-            alternativa.cAlternativaLetra = letra ? letra.code : '' // Asigna la nueva letra
+            const letra = abecedario[i]
+            alternativa.cAlternativaLetra = letra ? letra.code : ''
         })
     }
 

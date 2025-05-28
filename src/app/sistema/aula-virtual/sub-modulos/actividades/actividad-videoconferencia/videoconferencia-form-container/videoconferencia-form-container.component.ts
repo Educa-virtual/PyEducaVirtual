@@ -76,6 +76,7 @@ export class VideoconferenciaFormContainerComponent implements OnInit {
     }
     // Guardar el formulario
     guardar() {
+        console.log('Guardar', this.formConferencia)
         if (this.formConferencia.valid) {
             console.log('Formulario válido', this.formConferencia.value)
             this.ref.close(this.formConferencia.value)

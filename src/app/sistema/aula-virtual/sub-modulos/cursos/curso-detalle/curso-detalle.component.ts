@@ -85,7 +85,7 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             this._activatedRoute.snapshot.queryParams['iSeccionId']
         const iNivelGradoId =
             this._activatedRoute.snapshot.queryParams['iNivelGradoId']
-
+        const cantidad = this._activatedRoute.snapshot.queryParams['cantidad']
         this.curso = {
             cCursoNombre,
             iCursoId,
@@ -100,6 +100,7 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             iIeCursoId,
             iSeccionId,
             iNivelGradoId,
+            cantidad,
         }
     }
     updateTab(tab): void {

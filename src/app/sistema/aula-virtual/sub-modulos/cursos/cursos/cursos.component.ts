@@ -1,4 +1,3 @@
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import { DataView } from 'primeng/dataview'
 import { CursoCardComponent } from '../components/curso-card/curso-card.component'
@@ -17,7 +16,6 @@ export type Layout = 'list' | 'grid'
     selector: 'app-cursos',
     standalone: true,
     imports: [
-        ContainerPageComponent,
         CursoCardComponent,
         AreasEstudiosComponent,
         PrimengModule,
@@ -74,14 +72,13 @@ export class CursosComponent implements OnDestroy, OnInit {
     }
 
     obtenerPerfil() {
-        const year = this.store.getItem('dremoYear')
         const perfil = this.store.getItem('dremoPerfil')
         switch (Number(perfil.iPerfilId)) {
             case DOCENTE:
                 this.getCursosDocente()
                 break
             case ESTUDIANTE:
-                this.getCursosEstudiante(year)
+                this.getCursosEstudiante()
                 break
         }
     }
@@ -96,7 +93,7 @@ export class CursosComponent implements OnDestroy, OnInit {
             data: {
                 opcion: 2,
                 iDocenteId: this._constantesService.iDocenteId,
-                iYearId: this._constantesService.iYAcadId,
+                iYAcadId: this._constantesService.iYAcadId,
                 iSedeId: this._constantesService.iSedeId,
                 iIieeId: this._constantesService.iIieeId,
             },
@@ -105,7 +102,7 @@ export class CursosComponent implements OnDestroy, OnInit {
         this.obtenerCursos(params)
     }
 
-    getCursosEstudiante(year) {
+    getCursosEstudiante() {
         const params = {
             petition: 'post',
             group: 'acad',
@@ -113,7 +110,9 @@ export class CursosComponent implements OnDestroy, OnInit {
             ruta: 'obtenerCursosXEstudianteAnioSemestre',
             data: {
                 iEstudianteId: this._constantesService.iEstudianteId,
-                iYearId: year,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iIieeId: this._constantesService.iIieeId,
             },
             params: { skipSuccessMessage: true },
         }

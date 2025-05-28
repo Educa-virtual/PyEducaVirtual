@@ -177,6 +177,26 @@ export class InformesCompararEreComponent implements OnInit {
         })
     }
 
+    barPlugin = [
+        {
+            afterDraw: (chart) => {
+                const { ctx } = chart
+                chart.data.datasets.forEach((dataset, i) => {
+                    if (dataset.data.length == 0) return
+                    const isHidden = chart.legend.legendItems[i]?.hidden
+                    if (isHidden) return
+                    chart.getDatasetMeta(i).data.forEach((bar, index) => {
+                        const data = dataset.data[index]
+                        if (Number(data) == 0 || isHidden) return
+                        ctx.font = '0.75em Arial'
+                        ctx.fillStyle = dataset.backgroundColor[index]
+                        ctx.fillText(data + '%', bar.x - 15, bar.y - 5)
+                    })
+                })
+            },
+        },
+    ]
+
     filterNivelesTipos() {
         this.nivel_tipos = this.datosInformes.filterNivelesTipos()
     }

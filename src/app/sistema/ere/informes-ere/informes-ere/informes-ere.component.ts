@@ -16,6 +16,7 @@ import {
 } from '@/app/servicios/seg/perfiles'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 import { SheetToMatrix } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/utils/sheetToMatrix'
+
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
@@ -30,6 +31,7 @@ import { SheetToMatrix } from '@/app/sistema/gestion-institucional/sincronizar-a
 })
 export class InformesEreComponent implements OnInit {
     formFiltros: FormGroup
+    formFiltrosObtenido: FormGroup
     data_doughnut: any
     options_doughnut: any
     data_bar: any
@@ -43,12 +45,14 @@ export class InformesEreComponent implements OnInit {
     niveles: Array<object>
     agrupado: Array<object>
     filtros: []
+    fullData: Array<object>
 
     tipo_reporte: string = 'IE'
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
     hay_resultados: boolean = false
+    puede_exportar: boolean = false
 
     es_especialista: boolean = false
 
@@ -172,6 +176,11 @@ export class InformesEreComponent implements OnInit {
             this.distritos = null
             this.filterInstitucionesEducativas()
             this.filterDistritos(value)
+        })
+        this.formFiltros.valueChanges.subscribe((value) => {
+            this.puede_exportar =
+                JSON.stringify(value) ===
+                JSON.stringify(this.formFiltrosObtenido)
         })
     }
 
@@ -307,7 +316,6 @@ export class InformesEreComponent implements OnInit {
         },
     ]
 
-    fullData
     searchResultados() {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
@@ -324,7 +332,8 @@ export class InformesEreComponent implements OnInit {
                     if (data.data.length == 0) {
                         this.sinDatos()
                     } else {
-                        this.hide_filters = true
+                        this.formFiltrosObtenido = this.formFiltros.value
+                        this.puede_exportar = true
                         this.fullData = data.data
                         this.filtros = data.data[0][0]
                         this.resultados = data.data[1]
@@ -343,6 +352,7 @@ export class InformesEreComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
+                    this.sinDatos()
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -373,7 +383,9 @@ export class InformesEreComponent implements OnInit {
     }
 
     sinDatos() {
+        this.formFiltrosObtenido = null
         this.hay_resultados = false
+        this.puede_exportar = false
         this.promedio = []
         this.resultados = []
         this.niveles = []
@@ -706,16 +718,14 @@ export class InformesEreComponent implements OnInit {
         const params = this.fullData[0][0]
         for (const index in params) {
             let index_formateado = index
-            if (['autor', 'year_oficial'].includes(index)) continue
+            if (['autor', 'year_oficial', 'tipo_reporte'].includes(index))
+                continue
             switch (index) {
                 case 'cod_ie':
                     index_formateado = 'institucion educativa'
                     break
                 case 'curso':
                     index_formateado = 'area'
-                    break
-                case 'tipo_reporte':
-                    index_formateado = 'tipo de reporte'
                     break
             }
             parametros.push({
@@ -736,13 +746,22 @@ export class InformesEreComponent implements OnInit {
         }
 
         // formatear columnas de agrupado
-        const columnas_agrupado = [
-            { key: 'index', header: 'ITEM' },
-            { key: 'agrupado', header: 'AGRUPADO' },
-            { key: 'ugel', header: 'UGEL' },
-            { key: 'distrito', header: 'DISTRITO' },
-            { key: 'total', header: 'TOTAL' },
-        ]
+        let columnas_agrupado = []
+        if (this.tipo_reporte === 'IE') {
+            columnas_agrupado = [
+                { key: 'index', header: 'ITEM' },
+                { key: 'agrupado', header: 'IE' },
+                { key: 'ugel', header: 'UGEL' },
+                { key: 'distrito', header: 'DISTRITO' },
+                { key: 'total', header: 'TOTAL' },
+            ]
+        } else {
+            columnas_agrupado = [
+                { key: 'index', header: 'ITEM' },
+                { key: 'agrupado', header: 'SECCION' },
+                { key: 'total', header: 'TOTAL' },
+            ]
+        }
         this.niveles.forEach((item: any) => {
             columnas_agrupado.push({
                 key: `${item.nivel_logro_id}`,
@@ -756,30 +775,30 @@ export class InformesEreComponent implements OnInit {
                 sheetName: 'Parametros',
                 data: parametros,
                 columns: [
-                    { key: 'titulo', header: 'Parámetro' },
-                    { key: 'valor', header: 'Valor' },
+                    { key: 'titulo', header: 'PARÁMETRO' },
+                    { key: 'valor', header: 'VALOR' },
                 ],
             },
             {
                 sheetName: 'Resumen',
                 data: this.fullData[2],
                 columns: [
-                    { key: 'nivel_logro', header: 'Nivel de logro' },
-                    { key: 'cantidad', header: 'Cantidad' },
+                    { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                    { key: 'cantidad', header: 'CANTIDAD' },
                 ],
             },
             {
-                sheetName: 'Detalle',
+                sheetName: 'Estudiantes',
                 data: this.fullData[1],
                 columns: [
                     { key: 'index', header: 'ITEM' },
                     { key: 'cod_ie', header: 'I.E.' },
-                    { key: 'distrito', header: 'Distrito' },
-                    { key: 'seccion', header: 'Sección' },
-                    { key: 'estudiante', header: 'Estudiante' },
-                    { key: 'aciertos', header: 'Aciertos' },
-                    { key: 'desaciertos', header: 'Desaciertos' },
-                    { key: 'blancos', header: 'Blancos' },
+                    { key: 'distrito', header: 'DISTRITO' },
+                    { key: 'seccion', header: 'SECCIÓN' },
+                    { key: 'estudiante', header: 'ESTUDIANTE' },
+                    { key: 'aciertos', header: 'ACIERTOS' },
+                    { key: 'desaciertos', header: 'DESACIERTOS' },
+                    { key: 'blancos', header: 'BLANCOS' },
                     { key: 'docente', header: 'DOCENTE' },
                     { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
                 ],
@@ -796,7 +815,7 @@ export class InformesEreComponent implements OnInit {
                     { key: 'competencia', header: 'COMPETENCIA' },
                     { key: 'capacidad', header: 'CAPACIDAD' },
                     { key: 'desempeno', header: 'DESEMPEÑO' },
-                    { key: 'pregunta_nro', header: 'PREGUNTAS' },
+                    { key: 'pregunta_nro', header: 'PREGUNTA N°' },
                     { key: 'aciertos', header: 'ACIERTOS' },
                     { key: 'desaciertos', header: 'DESACIERTOS' },
                     { key: 'porcentaje_aciertos', header: '% ACIERTOS' },

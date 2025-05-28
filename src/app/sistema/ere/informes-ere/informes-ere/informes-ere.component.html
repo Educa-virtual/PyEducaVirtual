@@ -27,7 +27,6 @@
                                 <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                                 <p-dropdown
                                     [options]="nivel_tipos"
-                                    [showClear]="true"
                                     formControlName="iNivelTipoId"
                                     placeholder="Seleccione un nivel"
                                     styleClass="group-element"
@@ -40,7 +39,6 @@
                                 <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                                 <p-dropdown
                                     [options]="nivel_grados"
-                                    [showClear]="true"
                                     formControlName="iNivelGradoId"
                                     placeholder="Seleccione un grado"
                                     styleClass="group-element"
@@ -182,7 +180,7 @@
                     (onClick)="searchResultados()"
                 />
             </div>
-            <div class="flex">
+            <div class="flex" *ngIf="puede_exportar">
                 <p-toast />
                 <p-menu #menu [model]="btn_exportar" [popup]="true" />
                 <p-button

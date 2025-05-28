@@ -43,7 +43,6 @@
                                 <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                                 <p-dropdown
                                     [options]="nivel_tipos"
-                                    [showClear]="true"
                                     formControlName="iNivelTipoId"
                                     placeholder="Seleccione un nivel"
                                     styleClass="group-element"
@@ -56,7 +55,6 @@
                                 <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                                 <p-dropdown
                                     [options]="nivel_grados"
-                                    [showClear]="true"
                                     formControlName="iNivelGradoId"
                                     placeholder="Seleccione un grado"
                                     styleClass="group-element"
@@ -198,7 +196,7 @@
                     (onClick)="searchResultados()"
                 />
             </div>
-            <div class="flex">
+            <div class="flex" *ngIf="puede_exportar">
                 <p-toast />
                 <p-menu #menu [model]="btn_exportar" [popup]="true" />
                 <p-button
@@ -223,16 +221,6 @@
         <p-tabView>
             <p-tabPanel>
                 <ng-template pTemplate="header"> Comparativa </ng-template>
-                <!-- <app-table-primeng
-                [columnas]="columns_niveles"
-                [showCaption]="false"
-                [data]="niveles"
-                [showPaginator]="false"
-                [showSortIcon]="false"
-                [(selectedRowData)]="selectedItems"
-                [actions]="actions"
-            >
-            </app-table-primeng> -->
                 <p-table [value]="niveles" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header">
                         <tr>

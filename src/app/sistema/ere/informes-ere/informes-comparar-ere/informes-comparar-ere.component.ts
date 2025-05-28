@@ -15,6 +15,7 @@ import {
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
+import { SheetToMatrix } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/utils/sheetToMatrix'
 
 @Component({
     selector: 'app-informes-comparar-ere',
@@ -30,6 +31,7 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 })
 export class InformesCompararEreComponent implements OnInit {
     formFiltros: FormGroup
+    formFiltrosObtenido: FormGroup
     data_doughnut: any
     options_doughnut: any
     data_bar: any
@@ -48,10 +50,12 @@ export class InformesCompararEreComponent implements OnInit {
     filtros: Array<object>
     total1: number = 0
     total2: number = 0
+    fullData: Array<object>
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
     hay_resultados: boolean = false
+    puede_exportar: boolean = false
 
     es_especialista: boolean = false
 
@@ -175,6 +179,11 @@ export class InformesCompararEreComponent implements OnInit {
             this.ies = null
             this.filterInstitucionesEducativas()
         })
+        this.formFiltros.valueChanges.subscribe((value) => {
+            this.puede_exportar =
+                JSON.stringify(value) ===
+                JSON.stringify(this.formFiltrosObtenido)
+        })
     }
 
     barPlugin = [
@@ -252,11 +261,24 @@ export class InformesCompararEreComponent implements OnInit {
             })
             return
         }
+        if (
+            this.formFiltros.value.iEvaluacion1 ===
+            this.formFiltros.value.iEvaluacion2
+        ) {
+            this._MessageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'La evaluación 1 y 2 deben ser diferentes',
+            })
+            return
+        }
         this.datosInformes
             .obtenerInformeComparacion(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
                     if (data.data.length > 0) {
+                        this.formFiltrosObtenido = this.formFiltros.value
+                        this.puede_exportar = true
                         this.filtros = data.data[0][0]
                         this.resultados1 = data.data[1]
                         this.niveles1 = data.data[2]
@@ -272,6 +294,7 @@ export class InformesCompararEreComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
+                    this.sinDatos()
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -285,6 +308,8 @@ export class InformesCompararEreComponent implements OnInit {
     }
 
     sinDatos() {
+        this.formFiltrosObtenido = null
+        this.puede_exportar = false
         this.hay_resultados = false
         this.promedio = []
         this.resultados1 = []
@@ -440,30 +465,121 @@ export class InformesCompararEreComponent implements OnInit {
                     },
                 })
         } else {
-            this.datosInformes
-                .exportarComparacionExcel(this.formFiltros.value)
-                .subscribe({
-                    next: (response) => {
-                        const blob = new Blob([response], {
-                            type: 'application/vnd.ms-excel',
-                        })
-                        const url = window.URL.createObjectURL(blob)
-                        const link = document.createElement('a')
-                        link.href = url
-                        link.download = 'Comparacion-ERE.xlsx'
-                        link.target = '_blank'
-                        link.click()
-                        window.URL.revokeObjectURL(url)
-                    },
-                    error: (error) => {
-                        this._MessageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: error,
-                        })
-                    },
-                })
+            this.exportarExcelLocal()
+            // this.exportarExcelAPI()
         }
+    }
+
+    exportarExcelLocal() {
+        // Formatear parametros
+        const parametros = []
+        const params = this.filtros
+        for (const index in params) {
+            let index_formateado = index
+            if (['autor', 'year_oficial', 'tipo_reporte'].includes(index))
+                continue
+            switch (index) {
+                case 'evaluacion':
+                    index_formateado = 'evaluación 1'
+                    break
+                case 'evaluacion2':
+                    index_formateado = 'evaluación 2'
+                    break
+                case 'cod_ie':
+                    index_formateado = 'institucion educativa'
+                    break
+                case 'curso':
+                    index_formateado = 'area'
+                    break
+            }
+            parametros.push({
+                titulo: index_formateado.toUpperCase(),
+                valor: params[index],
+            })
+        }
+
+        // Formatear hojas y columnas
+        const worksheets = [
+            {
+                sheetName: 'Parametros',
+                data: parametros,
+                columns: [
+                    { key: 'titulo', header: 'PARÁMETRO' },
+                    { key: 'valor', header: 'VALOR' },
+                ],
+            },
+            {
+                sheetName: 'Comparacion',
+                data: this.niveles,
+                columns: [
+                    { key: 'nivel', header: 'NIVEL DE LOGRO' },
+                    { key: 'valor1', header: 'CANTIDAD 1' },
+                    { key: 'porcentaje1_num', header: 'PORCENTAJE 1' },
+                    { key: 'valor2', header: 'CANTIDAD 2' },
+                    { key: 'porcentaje2_num', header: 'PORCENTAJE 2' },
+                ],
+            },
+            {
+                sheetName: 'Evaluacion 1',
+                data: this.resultados1,
+                columns: [
+                    { key: 'index', header: 'ITEM' },
+                    { key: 'cod_ie', header: 'I.E.' },
+                    { key: 'distrito', header: 'DISTRITO' },
+                    { key: 'seccion', header: 'SECCIÓN' },
+                    { key: 'estudiante', header: 'ESTUDIANTE' },
+                    { key: 'aciertos', header: 'ACIERTOS' },
+                    { key: 'desaciertos', header: 'DESACIERTOS' },
+                    { key: 'blancos', header: 'BLANCOS' },
+                    { key: 'docente', header: 'DOCENTE' },
+                    { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                ],
+            },
+            {
+                sheetName: 'Evaluacion 2',
+                data: this.resultados2,
+                columns: [
+                    { key: 'index', header: 'ITEM' },
+                    { key: 'cod_ie', header: 'I.E.' },
+                    { key: 'distrito', header: 'DISTRITO' },
+                    { key: 'seccion', header: 'SECCIÓN' },
+                    { key: 'estudiante', header: 'ESTUDIANTE' },
+                    { key: 'aciertos', header: 'ACIERTOS' },
+                    { key: 'desaciertos', header: 'DESACIERTOS' },
+                    { key: 'blancos', header: 'BLANCOS' },
+                    { key: 'docente', header: 'DOCENTE' },
+                    { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                ],
+            },
+        ]
+
+        SheetToMatrix.exportToExcel(worksheets)
+    }
+
+    exportarExcelAPI() {
+        this.datosInformes
+            .exportarComparacionExcel(this.formFiltros.value)
+            .subscribe({
+                next: (response) => {
+                    const blob = new Blob([response], {
+                        type: 'application/vnd.ms-excel',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.download = 'Comparacion-ERE.xlsx'
+                    link.target = '_blank'
+                    link.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+            })
     }
 
     accionBtnItemTable({ accion, item }) {

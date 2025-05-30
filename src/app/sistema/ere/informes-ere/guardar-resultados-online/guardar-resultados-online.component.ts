@@ -141,7 +141,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta1',
+            field: 'Respuesta01',
             header: '1',
             type: 'cell-editor',
             width: '2rem',
@@ -149,7 +149,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta2',
+            field: 'Respuesta02',
             header: '2',
             type: 'cell-editor',
             width: '2rem',
@@ -157,7 +157,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta3',
+            field: 'Respuesta03',
             header: '3',
             type: 'cell-editor',
             width: '2rem',
@@ -165,7 +165,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta4',
+            field: 'Respuesta04',
             header: '4',
             type: 'cell-editor',
             width: '2rem',
@@ -173,7 +173,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta5',
+            field: 'Respuesta05',
             header: '5',
             type: 'cell-editor',
             width: '2rem',
@@ -181,7 +181,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta6',
+            field: 'Respuesta06',
             header: '6',
             type: 'cell-editor',
             width: '2rem',
@@ -189,7 +189,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta7',
+            field: 'Respuesta07',
             header: '7',
             type: 'cell-editor',
             width: '2rem',
@@ -197,7 +197,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta8',
+            field: 'Respuesta08',
             header: '8',
             type: 'cell-editor',
             width: '2rem',
@@ -205,7 +205,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta9',
+            field: 'Respuesta09',
             header: '9',
             type: 'cell-editor',
             width: '2rem',
@@ -514,10 +514,10 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     async subirArchivo(datos_hojas: Array<object>) {
         const subirArchivo = {
             // datos_hojas: datos_hojas,
-            iSedeId: this.iSedeId,
-            iSemAcadId: this.iSemAcadId,
-            iYAcadId: this.iYAcadId,
-            iCredId: this.store.getItem('dremoPerfil').iCredId,
+            iSedeId: Number(this.iSedeId),
+            iSemAcadId: Number(this.iSemAcadId),
+            iYAcadId: Number(this.iYAcadId),
+            iCredId: Number(this.store.getItem('dremoPerfil').iCredId),
             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
             iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null, //curso_nivel_grado
             codigo_modular: this.perfil.cIieeCodigoModular,
@@ -530,22 +530,22 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         }
         console.log('subirArchivo', subirArchivo)
 
-        // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
-        //     next: (data: any) => {
-        //         console.log('Datos Subidas de Importar Resultados:', data)
-        //     },
-        //     error: (error) => {
-        //         console.error('Error subiendo archivo:', error)
-        //         this._messageService.add({
-        //             severity: 'error',
-        //             summary: 'Error',
-        //             detail: error,
-        //         })
-        //     },
-        //     complete: () => {
-        //         console.log('Request completed')
-        //     },
-        // })
+        this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+            next: (data: any) => {
+                console.log('Datos Subidas de Importar Resultados:', data)
+            },
+            error: (error) => {
+                console.error('Error subiendo archivo:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
     }
     // Angular: componente donde se envía el JSON
     // async subirArchivo(datos_hojas: Array<object>) {

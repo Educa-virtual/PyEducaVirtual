@@ -30,6 +30,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     perfil: any
     cabecera: string = ''
     alumnosFiltrados: any[] = []
+    iSemAcadId: number // ID del semestre académico
 
     // formulario guardar resultados online
     public formCurso: FormGroup = this._formBuilder.group({
@@ -37,10 +38,10 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         cGradoAbreviacion: ['', [Validators.required]],
         cNivelTipoNombre: ['', [Validators.required]],
         iCursosNivelGradId: ['', [Validators.required]], // GRADO DEL AREA CURRICULAR
-        cNombreDistrito: ['', [Validators.required]],
+        //cNombreDistrito: ['', [Validators.required]],
         // cNombreGestion: ['', [Validators.required]],
         //  cDniDocente: ['', [Validators.required]],
-        cNombreDocente: ['', [Validators.required]],
+        cNombreDocente: [''],
         iSeccionId: ['', [Validators.required]], // ID DE LA SECCION
     })
     secciones = [] // Secciones obtenidas de la base de datos
@@ -58,7 +59,18 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.iSedeId = this.store.getItem('dremoPerfil').iSedeId
         this.perfil = this.store.getItem('dremoPerfil')
-        console.log('this.store', this.store)
+        const semestres = JSON.parse(this.perfil.semestres_acad)
+        const semestreSeleccionado = semestres.find(
+            (s) => Number(s.iYAcadId) === Number(this.iYAcadId)
+        )
+
+        this.iSemAcadId = semestreSeleccionado
+            ? Number(semestreSeleccionado.iSemAcadId)
+            : null
+        this.cabecera = localStorage.getItem('cEvaluacionNombre')
+
+        console.log(this.iSemAcadId, 'this.iSemAcadId')
+
         this.getSeccion()
     }
     botonesTabla: IActionTable[] = [
@@ -88,7 +100,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text: 'center',
         },
         {
-            field: 'dni',
+            field: 'documento',
             header: 'DNI',
             type: 'text',
             width: '2rem',
@@ -96,7 +108,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'apellidoPaterno',
+            field: 'paterno',
             header: 'APELLIDO PATERNO',
             type: 'text',
             width: '4rem',
@@ -104,7 +116,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'apellidoMaterno',
+            field: 'materno',
             header: 'APELLIDO MATERNO',
             type: 'text',
             width: '4rem',
@@ -119,8 +131,17 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text: 'center',
             text_header: 'center',
         },
+
         {
-            field: 'Num1',
+            field: 'sexo',
+            header: 'Sexo',
+            type: 'text',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
+        },
+        {
+            field: 'Respuesta1',
             header: '1',
             type: 'cell-editor',
             width: '2rem',
@@ -128,7 +149,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num2',
+            field: 'Respuesta2',
             header: '2',
             type: 'cell-editor',
             width: '2rem',
@@ -136,7 +157,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num3',
+            field: 'Respuesta3',
             header: '3',
             type: 'cell-editor',
             width: '2rem',
@@ -144,7 +165,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num4',
+            field: 'Respuesta4',
             header: '4',
             type: 'cell-editor',
             width: '2rem',
@@ -152,7 +173,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num5',
+            field: 'Respuesta5',
             header: '5',
             type: 'cell-editor',
             width: '2rem',
@@ -160,7 +181,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num6',
+            field: 'Respuesta6',
             header: '6',
             type: 'cell-editor',
             width: '2rem',
@@ -168,7 +189,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num7',
+            field: 'Respuesta7',
             header: '7',
             type: 'cell-editor',
             width: '2rem',
@@ -176,7 +197,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num8',
+            field: 'Respuesta8',
             header: '8',
             type: 'cell-editor',
             width: '2rem',
@@ -184,7 +205,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num9',
+            field: 'Respuesta9',
             header: '9',
             type: 'cell-editor',
             width: '2rem',
@@ -192,7 +213,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num10',
+            field: 'Respuesta10',
             header: '10',
             type: 'cell-editor',
             width: '2rem',
@@ -200,7 +221,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num11',
+            field: 'Respuesta11',
             header: '11',
             type: 'cell-editor',
             width: '2rem',
@@ -208,7 +229,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num12',
+            field: 'Respuesta12',
             header: '12',
             type: 'cell-editor',
             width: '2rem',
@@ -216,7 +237,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num13',
+            field: 'Respuesta13',
             header: '13',
             type: 'cell-editor',
             width: '2rem',
@@ -224,7 +245,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num14',
+            field: 'Respuesta14',
             header: '14',
             type: 'cell-editor',
             width: '2rem',
@@ -232,7 +253,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num15',
+            field: 'Respuesta15',
             header: '15',
             type: 'cell-editor',
             width: '2rem',
@@ -240,7 +261,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num16',
+            field: 'Respuesta16',
             header: '16',
             type: 'cell-editor',
             width: '2rem',
@@ -248,7 +269,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num17',
+            field: 'Respuesta17',
             header: '17',
             type: 'cell-editor',
             width: '2rem',
@@ -256,7 +277,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num18',
+            field: 'Respuesta18',
             header: '18',
             type: 'cell-editor',
             width: '2rem',
@@ -264,7 +285,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Num19',
+            field: 'Respuesta19',
             header: '19',
             type: 'cell-editor',
             width: '2rem',
@@ -272,7 +293,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Nun20',
+            field: 'Respuesta20',
             header: '20',
             type: 'cell-editor',
             width: '2rem',
@@ -306,7 +327,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         // this.form.reset()
         this.curso = datos.curso
         console.log(datos, 'datos')
-        this.cabecera = 'CONSOLIDADO DE RESULTADOS DE AULA - ERE INICIO 2025'
+
         this.getEstudiante()
     }
 
@@ -337,10 +358,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             complete: () => {
                 console.log('Request completed')
                 this.alumnos = this.estudiantes.map((est) => ({
-                    label: est.cSeccionNombre,
-                    dni: est.cPersDocumento,
-                    apellidoPaterno: est.cPersPaterno,
-                    apellidoMaterno: est.cPersMaterno,
+                    seccion: est.cSeccionNombre,
+                    tipo_documento: est.cPersTipoDocumento,
+                    documento: est.cPersDocumento,
+                    paterno: est.cPersPaterno,
+                    materno: est.cPersMaterno,
+                    sexo: est.cPersSexo,
                     nombres: est.cPersNombre,
                     iSeccionId: +est.iSeccionId, // convertir a number
                     icon: 'pi pi-fw pi-home',
@@ -492,12 +515,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         const subirArchivo = {
             // datos_hojas: datos_hojas,
             iSedeId: this.iSedeId,
-            iSemAcadId: this.store.getItem('dremoPerfil').iSemAcadId,
+            iSemAcadId: this.iSemAcadId,
             iYAcadId: this.iYAcadId,
             iCredId: this.store.getItem('dremoPerfil').iCredId,
             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
             iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null, //curso_nivel_grado
-            codigo_modular: this.store.getItem('dremoPerfil').cCodigoModular,
+            codigo_modular: this.perfil.cIieeCodigoModular,
             curso: this.curso.cCursoNombre ?? null,
             nivel: this.curso.cNivelTipoNombre ?? null, //nivel_tipo_nombre
             grado: this.curso.cGradoAbreviacion ?? null,
@@ -507,22 +530,22 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         }
         console.log('subirArchivo', subirArchivo)
 
-        /*this.datosInformesService.importarOffLine(subirArchivo).subscribe({
-            next: (data: any) => {
-                console.log('Datos Subidas de Importar Resultados:', data)
-            },
-            error: (error) => {
-                console.error('Error subiendo archivo:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
-        })*/
+        // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+        //     next: (data: any) => {
+        //         console.log('Datos Subidas de Importar Resultados:', data)
+        //     },
+        //     error: (error) => {
+        //         console.error('Error subiendo archivo:', error)
+        //         this._messageService.add({
+        //             severity: 'error',
+        //             summary: 'Error',
+        //             detail: error,
+        //         })
+        //     },
+        //     complete: () => {
+        //         console.log('Request completed')
+        //     },
+        // })
     }
     // Angular: componente donde se envía el JSON
     // async subirArchivo(datos_hojas: Array<object>) {

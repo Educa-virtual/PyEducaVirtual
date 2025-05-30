@@ -31,6 +31,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     cabecera: string = ''
     alumnosFiltrados: any[] = []
     iSemAcadId: number // ID del semestre académico
+    mensaje: string = '' // Mensaje para mostrar en la tabla
 
     // formulario guardar resultados online
     public formCurso: FormGroup = this._formBuilder.group({
@@ -533,6 +534,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.datosInformesService.importarOffLine(subirArchivo).subscribe({
             next: (data: any) => {
                 console.log('Datos Subidas de Importar Resultados:', data)
+                this.mensaje = data.data[0].resultado_importado
             },
             error: (error) => {
                 console.error('Error subiendo archivo:', error)
@@ -543,6 +545,11 @@ export class GuardarResultadosOnlineComponent implements OnInit {
                 })
             },
             complete: () => {
+                this._messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: this.mensaje,
+                })
                 console.log('Request completed')
             },
         })

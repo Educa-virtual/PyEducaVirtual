@@ -339,4 +339,8 @@ export class DatosInformesService {
             data
         )
     }
+
+    importarOffLine(data: any) {
+        return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data)
+    }
 }

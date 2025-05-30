@@ -315,6 +315,7 @@ export class TabContenidoComponent implements OnInit {
                     VideoconferenciaFormContainerComponent,
                     {
                         ...MODAL_CONFIG,
+                        width: '40%',
                         data: {
                             contenidoSemana: this.semanaSeleccionada,
                             iActTipoId: actividad.iActTipoId,
@@ -325,7 +326,7 @@ export class TabContenidoComponent implements OnInit {
                         header:
                             action === 'EDITAR'
                                 ? 'Editar Videoconferencia'
-                                : 'Crear Videoconferencia',
+                                : 'Crear Videoconferenciad',
                     }
                 )
                 ref.onClose.subscribe((result) => {

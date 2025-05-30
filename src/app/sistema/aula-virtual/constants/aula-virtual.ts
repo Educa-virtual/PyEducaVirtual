@@ -130,6 +130,22 @@ export const actividadesConfig: Record<
         icon: 'matVideocam',
         cActTipoNombre: 'Video Conferencia',
         iActTipoId: VIDEO_CONFERENCIA,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
+            },
+        ],
     },
     // [MATERIAL]: {
     //     'icon-color': 'text-indigo-500',

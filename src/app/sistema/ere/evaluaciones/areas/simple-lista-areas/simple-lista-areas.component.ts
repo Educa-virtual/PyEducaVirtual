@@ -1,3 +1,4 @@
+import { StringCasePipe } from '@/app/shared/pipes/string-case.pipe'
 import { Component, inject, Input, OnChanges } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
@@ -55,11 +56,13 @@ interface GradoConfig {
         DialogGenerarCuadernilloComponent,
         ConfigurarNivelLogroComponent,
         RouterModule,
+        StringCasePipe,
     ],
     templateUrl: './simple-lista-areas.component.html',
     styleUrl: './simple-lista-areas.component.scss',
 })
 export class SimpleListaAreasComponent implements OnChanges {
+    @Input() curso: ICurso
     @Input() area: IArea
     // propiedades privadas servicios
     private evaluacionesService = inject(ApiEvaluacionesRService)
@@ -70,7 +73,6 @@ export class SimpleListaAreasComponent implements OnChanges {
 
     //  Propiedades datos de la api
     evaluacion: any = null
-    curso: ICurso[] = []
     iEvaluacionIdHashed: string = '123'
     title: string = 'Lista de áreas de PRUEBA DE INICIO 2025 - nivel Inicio'
     gradosConfig: GradoConfig[] = []
@@ -79,7 +81,7 @@ export class SimpleListaAreasComponent implements OnChanges {
     breadCrumbHome: MenuItem = {}
     cols: Column[] = []
     colsEspecialista: Column[] = []
-    //ICurso
+    acciones: MenuItem[] = []
     cursos: ICurso[] = []
     //dialogs
     mostrarDialogoEdicion: boolean = false
@@ -103,6 +105,20 @@ export class SimpleListaAreasComponent implements OnChanges {
 
     initializeColumns: any
     ngOnInit(): void {
+        this.acciones = [
+            {
+                /*label: 'Descargar eval. en PDF',
+                icon: 'pi pi-angle-right',
+                command: () => {
+                    if (this.curso.bTieneArchivo) {
+                        this.descargarArchivoPreguntasPorArea('pdf')
+                    } else {
+                        alert('No se ha subido un archivo para esta área.')
+                    }
+                },
+                */
+            },
+        ]
         //this.initializeBreadcrumb()
         this.initializeColumns()
         this.initializeData()
@@ -237,8 +253,8 @@ export class SimpleListaAreasComponent implements OnChanges {
         console.log('ejecutarAccion' + curso)
     }
 
-    completarEvaluacion(curso: Curso): void {
-        curso.estado = 'completo'
+    completarEvaluacion(): void {
+        console.log('hola')
     }
 
     private verResultados(curso: Curso): void {

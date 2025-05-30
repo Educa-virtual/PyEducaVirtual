@@ -141,7 +141,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta01',
+            field: 'respuesta01',
             header: '1',
             type: 'cell-editor',
             width: '2rem',
@@ -149,7 +149,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta02',
+            field: 'respuesta02',
             header: '2',
             type: 'cell-editor',
             width: '2rem',
@@ -157,7 +157,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta03',
+            field: 'respuesta03',
             header: '3',
             type: 'cell-editor',
             width: '2rem',
@@ -165,7 +165,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta04',
+            field: 'respuesta04',
             header: '4',
             type: 'cell-editor',
             width: '2rem',
@@ -173,7 +173,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta05',
+            field: 'respuesta05',
             header: '5',
             type: 'cell-editor',
             width: '2rem',
@@ -181,7 +181,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta06',
+            field: 'respuesta06',
             header: '6',
             type: 'cell-editor',
             width: '2rem',
@@ -189,7 +189,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta07',
+            field: 'respuesta07',
             header: '7',
             type: 'cell-editor',
             width: '2rem',
@@ -197,7 +197,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta08',
+            field: 'respuesta08',
             header: '8',
             type: 'cell-editor',
             width: '2rem',
@@ -205,7 +205,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta09',
+            field: 'respuesta09',
             header: '9',
             type: 'cell-editor',
             width: '2rem',
@@ -213,7 +213,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta10',
+            field: 'respuesta10',
             header: '10',
             type: 'cell-editor',
             width: '2rem',
@@ -221,7 +221,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta11',
+            field: 'respuesta11',
             header: '11',
             type: 'cell-editor',
             width: '2rem',
@@ -229,7 +229,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta12',
+            field: 'respuesta12',
             header: '12',
             type: 'cell-editor',
             width: '2rem',
@@ -237,7 +237,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta13',
+            field: 'respuesta13',
             header: '13',
             type: 'cell-editor',
             width: '2rem',
@@ -245,7 +245,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta14',
+            field: 'respuesta14',
             header: '14',
             type: 'cell-editor',
             width: '2rem',
@@ -253,7 +253,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta15',
+            field: 'respuesta15',
             header: '15',
             type: 'cell-editor',
             width: '2rem',
@@ -261,7 +261,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta16',
+            field: 'respuesta16',
             header: '16',
             type: 'cell-editor',
             width: '2rem',
@@ -269,7 +269,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta17',
+            field: 'respuesta17',
             header: '17',
             type: 'cell-editor',
             width: '2rem',
@@ -277,7 +277,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta18',
+            field: 'respuesta18',
             header: '18',
             type: 'cell-editor',
             width: '2rem',
@@ -285,7 +285,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta19',
+            field: 'respuesta19',
             header: '19',
             type: 'cell-editor',
             width: '2rem',
@@ -293,7 +293,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             text_header: 'center',
         },
         {
-            field: 'Respuesta20',
+            field: 'respuesta20',
             header: '20',
             type: 'cell-editor',
             width: '2rem',

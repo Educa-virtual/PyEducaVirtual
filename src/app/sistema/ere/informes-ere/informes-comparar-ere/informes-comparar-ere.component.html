@@ -6,7 +6,7 @@
     </ng-template>
     <form [formGroup]="formFiltros">
         <div class="grid">
-            <div class="col-12">
+            <div class="col-12 md:col-6">
                 <p-inputGroup title="* Campo obligatorio">
                     <p-inputGroupAddon>Evaluación 1 *</p-inputGroupAddon>
                     <p-dropdown
@@ -19,7 +19,7 @@
                     />
                 </p-inputGroup>
             </div>
-            <div class="col-12">
+            <div class="col-12 md:col-6">
                 <p-inputGroup title="* Campo obligatorio">
                     <p-inputGroupAddon>Evaluación 2 *</p-inputGroupAddon>
                     <p-dropdown
@@ -35,10 +35,10 @@
         </div>
         <br />
         <div class="grid">
-            <div class="col-12 lg:col-6">
+            <div class="col-12">
                 <p-fieldset legend="Filtros obligatorios">
                     <div class="grid p-fluid">
-                        <div class="col-12">
+                        <div class="col-12 md:col-4">
                             <p-inputGroup title="* Campo obligatorio">
                                 <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                                 <p-dropdown
@@ -50,7 +50,7 @@
                                 ></p-dropdown>
                             </p-inputGroup>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 md:col-4">
                             <p-inputGroup title="* Campo obligatorio">
                                 <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                                 <p-dropdown
@@ -63,7 +63,7 @@
                                 ></p-dropdown>
                             </p-inputGroup>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 md:col-4">
                             <p-inputGroup title="* Campo obligatorio">
                                 <p-inputGroupAddon>Área *</p-inputGroupAddon>
                                 <p-dropdown
@@ -79,11 +79,11 @@
                     </div>
                 </p-fieldset>
             </div>
-            <div class="col-12 lg:col-6">
-                <p-fieldset legend="Filtros adicionales">
+            <div class="col-12">
+                <p-fieldset legend="Filtros adicionales" [toggleable]="true">
                     <div class="grid p-fluid">
                         @if (es_especialista) {
-                            <div class="col-12 md:col-6">
+                            <div class="col-12 md:col-4">
                                 <p-inputGroup>
                                     <p-inputGroupAddon
                                         >Gestión</p-inputGroupAddon
@@ -98,7 +98,7 @@
                                     ></p-dropdown>
                                 </p-inputGroup>
                             </div>
-                            <div class="col-12 md:col-6">
+                            <div class="col-12 md:col-4">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>Zona</p-inputGroupAddon>
                                     <p-dropdown
@@ -111,7 +111,7 @@
                                     ></p-dropdown>
                                 </p-inputGroup>
                             </div>
-                            <div class="col-12 md:col-6">
+                            <div class="col-12 md:col-4">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>UGEL</p-inputGroupAddon>
                                     <p-dropdown
@@ -140,7 +140,7 @@
                                     ></p-dropdown>
                                 </p-inputGroup>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>I. E.</p-inputGroupAddon>
                                     <p-dropdown

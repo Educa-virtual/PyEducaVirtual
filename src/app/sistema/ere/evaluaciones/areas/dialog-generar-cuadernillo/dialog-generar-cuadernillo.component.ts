@@ -18,13 +18,15 @@ export class DialogGenerarCuadernilloComponent {
     // Evaluacion servicio inject
     private evaluacionesService = inject(ApiEvaluacionesRService)
     private store = new LocalStoreService()
-
     @Input() iEvaluacionIdHashed: string = ''
     @Input() curso: ICurso
 
     // Solo comunicación básica con el padre
     @Input() mostrarDialogoEdicion: boolean = false
     @Output() mostrarDialogoEdicionChange = new EventEmitter<boolean>()
+
+    // Subir archivo
+    @Output() archivoSubidoEvent = new EventEmitter<{ curso: ICurso }>()
 
     // Propiedades del stepper y archivos
     activeStep: number = 0
@@ -40,7 +42,7 @@ export class DialogGenerarCuadernilloComponent {
 
     constructor(private messageService: MessageService) {}
 
-    /* Descargar word original solo message
+    // Descargar word original solo message
     descargarWord() {
         this.loadingActions['download-word'] = true
         setTimeout(() => {
@@ -53,8 +55,8 @@ export class DialogGenerarCuadernilloComponent {
             })
         }, 2000)
     }
-    */
-    // Método actualizado: Descargar WORD usando el mismo servicio del area-card
+
+    /* Descomentar metodo actualizado de descargarWord
     descargarWord() {
         if (!this.curso || !this.iEvaluacionIdHashed) {
             this.messageService.add({
@@ -96,6 +98,7 @@ export class DialogGenerarCuadernilloComponent {
             })
         }
     }
+    */
 
     onFileSelect(event: any) {
         const file = event.files[0]
@@ -158,7 +161,6 @@ export class DialogGenerarCuadernilloComponent {
                 detail: 'El cuadernillo ha sido generado exitosamente',
             })
 
-            // Aquí implementarás tu servicio después
             this.cancelarEdicion()
         }, 3000)
     }
@@ -210,7 +212,6 @@ export class DialogGenerarCuadernilloComponent {
 
     onDialogHide() {
         this.mostrarDialogoEdicionChange.emit(false)
-        // Resetear el estado del diálogo
         this.resetearPanelDosColumnas()
     }
 }

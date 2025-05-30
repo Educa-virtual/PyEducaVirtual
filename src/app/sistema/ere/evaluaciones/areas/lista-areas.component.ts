@@ -25,8 +25,8 @@ import { SubirArchivoPreguntasComponent } from './subir-archivo-preguntas/subir-
 import { AreaCardComponent } from './area-card/area-card.component'
 import { ConfigurarNivelLogroComponent } from './configurar-nivel-logro/configurar-nivel-logro.component'
 import { ImportarResultadosComponent } from '../../informes-ere/importar-resultados/importar-resultados.component'
-
 import { GuardarResultadosOnlineComponent } from '../../informes-ere/guardar-resultados-online/guardar-resultados-online.component'
+import { SimpleListaAreasComponent } from './simple-lista-areas/simple-lista-areas.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -43,6 +43,7 @@ export type Layout = 'list' | 'grid'
         ConfigurarNivelLogroComponent,
         ImportarResultadosComponent,
         GuardarResultadosOnlineComponent,
+        SimpleListaAreasComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -68,6 +69,7 @@ export class ListaAreasComponent implements OnInit {
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
 
+    //modoCard: boolean = false
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
     sortOrder: number = 0

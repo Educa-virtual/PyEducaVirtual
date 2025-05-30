@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, Input, OnChanges } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { DialogGenerarCuadernilloComponent } from '../dialog-generar-cuadernillo/dialog-generar-cuadernillo.component'
 import { ConfigurarNivelLogroComponent } from '../configurar-nivel-logro/configurar-nivel-logro.component'
-
+import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { Router, RouterModule } from '@angular/router'
+import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
+import { ActivatedRoute } from '@angular/router'
+import { IArea } from '@/app/sistema/evaluaciones/sub-evaluaciones/areas/interfaces/area.interface'
 interface Curso {
     id: number
     area: string
@@ -49,27 +54,36 @@ interface GradoConfig {
         PrimengModule,
         DialogGenerarCuadernilloComponent,
         ConfigurarNivelLogroComponent,
+        RouterModule,
     ],
     templateUrl: './simple-lista-areas.component.html',
     styleUrl: './simple-lista-areas.component.scss',
 })
-export class SimpleListaAreasComponent implements OnInit {
-    //private _ConstantesService = inject(ConstantesService)
+export class SimpleListaAreasComponent implements OnChanges {
+    @Input() area: IArea
+    // propiedades privadas servicios
+    private evaluacionesService = inject(ApiEvaluacionesRService)
+    private route: Router = inject(Router)
+    private _constantesService = inject(ConstantesService)
+    private _route = inject(ActivatedRoute)
+    private _MessageService = inject(MessageService)
 
+    //  Propiedades datos de la api
+    evaluacion: any = null
+    curso: ICurso[] = []
+    iEvaluacionIdHashed: string = '123'
     title: string = 'Lista de áreas de PRUEBA DE INICIO 2025 - nivel Inicio'
-
-    breadCrumbItems: MenuItem[] = []
-    breadCrumbHome: MenuItem = {}
-
     gradosConfig: GradoConfig[] = []
     terminoBusqueda: string = ''
-
+    breadCrumbItems: MenuItem[] = []
+    breadCrumbHome: MenuItem = {}
     cols: Column[] = []
     colsEspecialista: Column[] = []
-
+    //ICurso
+    cursos: ICurso[] = []
+    //dialogs
     mostrarDialogoEdicion: boolean = false
     visible: boolean = false
-
     estadosCurso: { [key: string]: EstadoCurso } = {
         completo: {
             label: 'Completo',
@@ -87,11 +101,18 @@ export class SimpleListaAreasComponent implements OnInit {
 
     constructor(private messageService: MessageService) {}
 
+    initializeColumns: any
     ngOnInit(): void {
-        this.initializeBreadcrumb()
+        //this.initializeBreadcrumb()
         this.initializeColumns()
         this.initializeData()
-        this.applyFilters()
+        //this.applyFilters()
+    }
+
+    ngOnChanges(changes) {
+        if (changes.area.currentValue) {
+            this.area = changes.area.currentValue
+        }
     }
 
     private initializeBreadcrumb(): void {
@@ -102,6 +123,7 @@ export class SimpleListaAreasComponent implements OnInit {
         this.breadCrumbItems = [{ label: 'Lista Simple de Áreas' }]
     }
 
+    /*
     private initializeColumns(): void {
         this.cols = [
             { field: 'id', header: '#' },
@@ -121,6 +143,7 @@ export class SimpleListaAreasComponent implements OnInit {
             { field: 'acciones', header: 'Acciones' },
         ]
     }
+        */
 
     private initializeData(): void {
         const cursosBase: Curso[] = [
@@ -172,7 +195,7 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     private applyFilters(): void {
-        if (!this.terminoBusqueda || this.terminoBusqueda.trim() === '') {
+        /*if (!this.terminoBusqueda || this.terminoBusqueda.trim() === '') {
             this.gradosConfig.forEach((grado) => {
                 grado.cursosFiltrados = [...grado.cursos]
             })
@@ -185,6 +208,7 @@ export class SimpleListaAreasComponent implements OnInit {
                 )
             })
         }
+        */
     }
 
     limpiarBusqueda(): void {
@@ -201,7 +225,7 @@ export class SimpleListaAreasComponent implements OnInit {
     }
 
     ejecutarAccion(accion: string, curso: Curso): void {
-        switch (accion) {
+        /*switch (accion) {
             case 'completar':
                 this.completarEvaluacion(curso)
                 break
@@ -209,6 +233,8 @@ export class SimpleListaAreasComponent implements OnInit {
                 this.verResultados(curso)
                 break
         }
+        */
+        console.log('ejecutarAccion' + curso)
     }
 
     completarEvaluacion(curso: Curso): void {
@@ -243,4 +269,13 @@ export class SimpleListaAreasComponent implements OnInit {
         console.log('Abriendo diálogo para generar cuadernillo:', curso.area)
         this.mostrarDialogoEdicion = true
     }
+
+    /*generarWord() {
+        const params = {
+            iEvaluacionId: this._iEvaluacionId,
+            areaId: this._area.id,
+        }
+        this._apiEvaluacionesR.generarWordByEvaluacionId(params)
+    }
+    */
 }

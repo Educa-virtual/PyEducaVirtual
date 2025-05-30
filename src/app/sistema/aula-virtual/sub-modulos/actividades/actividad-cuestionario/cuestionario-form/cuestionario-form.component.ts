@@ -91,7 +91,7 @@ export class CuestionarioFormComponent implements OnInit {
         this.ref.close(resp)
     }
     // metodo para guardar el cuestionario
-    GUARDARxProgActxiCuestionarioId() {
+    guardarCuestionario() {
         const formValue = this.formCuestionario.value
         this.filesUrl = (this.filesUrl?.length ?? 0) > 0 ? this.filesUrl : null
         const data = {
@@ -149,8 +149,9 @@ export class CuestionarioFormComponent implements OnInit {
         })
         console.log('datos del formulario', data)
     }
+    cuestionario: any
     obtenerCuestionarioPorId(iCuestionarioId) {
-        console.log('obtenerCuestionarioPorId', iCuestionarioId)
+        // console.log('obtenerCuestionarioPorId', iCuestionarioId)
         const data = {
             petition: 'get',
             group: 'aula-virtual',
@@ -159,56 +160,83 @@ export class CuestionarioFormComponent implements OnInit {
             params: {
                 iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
             },
-            // params: { skipSuccessMessage: true },
         }
-        this.getInformation(data, data.ruta)
-    }
-
-    // getInformation(params, condition) {
-    //     this.GeneralService.getGralPrefixx(params).subscribe({
-    //         next: (response) => {
-    //             this.accionBtnItem({ accion: condition, item: response.data })
-    //         },
-    //         complete: () => {},
-    //         error: (error) => {
-    //             console.log(error)
-    //         },
-    //     })
-    // }
-    cuestionario: any
-    getInformation(data, condition) {
-        console.log('getInformation', data, condition)
         this.GeneralService.getGralPrefixx(data).subscribe({
-            next: (response) => {
-                this.cuestionario = response.data.length
-                    ? response.data[0]
-                    : this.closeModal(response.validated)
+            next: (resp) => {
+                this.cuestionario = resp.data.length
+                    ? resp.data[0]
+                    : this.closeModal(resp.validated)
+                if (resp?.data?.length) {
+                    this.cuestionario = resp.data[0]
 
-                //  const cuestionario = Array.isArray(response?.data) ? response.data[0] : null;
-                // this.cuestionario = cuestionario;
-                // console.log('Respuesta del cuestionario:', cuestionario);
-                const cuestionario = this.cuestionario
-                if (cuestionario) {
+                    // Validar y asignar valores al formulario
                     this.formCuestionario.patchValue({
-                        cTitulo: cuestionario.cTitulo,
-                        cDescripcion: cuestionario.cDescripcion?.replace(
-                            /<[^>]*>?/gm,
-                            ''
-                        ), // opcional: limpiar etiquetas HTML
-
-                        // otros campos si es necesario
+                        cTitulo: this.cuestionario.cTitulo ?? '',
+                        cDescripcion: this.cuestionario.cDescripcion ?? '',
+                        dtInicio: this.cuestionario.dtInicio
+                            ? new Date(this.cuestionario.dtInicio)
+                            : this.date,
+                        dtFin: this.cuestionario.dtFin
+                            ? new Date(this.cuestionario.dtFin)
+                            : this.date,
                     })
+
+                    this.opcion = 'ACTUALIZAR'
+                } else {
+                    console.warn(
+                        'No se encontraron datos para el cuestionario.'
+                    )
+                    this.closeModal(resp?.validated)
                 }
-                // this.accionBtnItem({
-                //     accion: condition,
-                //     item: response?.data ?? null
-                // });
+
+                console.log('Respuesta del cuestionario:', this.cuestionario)
             },
-            error: (error) => {
-                console.error('Error al obtener información:', error)
+            error: (err) => {
+                console.error('Error obteniendo cuestionario:', err)
             },
         })
     }
+    // método para actualizar el cuestionario
+    actualizarCuestionario() {
+        //    this.pipe.transform(formValue.dtFin, 'yyyy-MM-ddTHH:mm:ss'),
+        const update = {
+            ...this.formCuestionario.value,
+            dtInicio: this.pipe.transform(
+                this.formCuestionario.value.dtInicio,
+                'yyyy-MM-ddTHH:mm:ss'
+            ),
+            dtFin: this.pipe.transform(
+                this.formCuestionario.value.dtFin,
+                'yyyy-MM-ddTHH:mm:ss'
+            ),
+            iDocenteId: this._constantesService.iDocenteId,
+            cSubtitulo: '', // Subtítulo del cuestionario, si es necesario
+            iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+            iProgActId: this.cuestionario.iProgActId, // Asignar el ID del programa de actividad
+        }
+        // console.log('Actualizar cuestionario', update);
+        const data = {
+            petition: 'put',
+            group: 'aula-virtual',
+            prefix: 'cuestionarios',
+            ruta: this.cuestionario.iCuestionarioId.toString(),
+            data: update,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // console.log('Datos a enviar para actualizar:', data);
+        this.GeneralService.getGralPrefixx(data).subscribe({
+            next: (response) => {
+                console.log('Cuestionario actualizado:', response)
+                this.opcion = 'GUARDAR' // Resetear estado después de actualizar
+            },
+            error: (error) => {
+                console.error('Error al actualizar cuestionario:', error)
+            },
+        })
+    }
+
     // metodo para ajustar la fecha a la hora más cercana de media hora
     ajustarAHorarioDeMediaHora(fecha) {
         const minutos = fecha.getMinutes() // Obtener los minutos actuales

@@ -478,11 +478,11 @@ export class TabContenidoComponent implements OnInit {
                 console.log(actividad)
                 this._confirmService.openConfirm({
                     header:
-                        '¿Esta seguro de eliminar la tarea ' +
-                        actividad['cTareaTitulo'] +
+                        '¿Esta seguro de eliminar el Cuestionario:  ' +
+                        actividad['cProgActTituloLeccion'] +
                         ' ?',
                     accept: () => {
-                        this.deleteTareaxiTareaid(actividad)
+                        this.deleteCuestionarioxId(actividad)
                     },
                 })
                 break
@@ -694,6 +694,25 @@ export class TabContenidoComponent implements OnInit {
             params: { skipSuccessMessage: true },
         }
         this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerContenidoSemanas()
+                }
+            },
+        })
+    }
+    deleteCuestionarioxId(actividad) {
+        const params = {
+            petition: 'delete',
+            group: 'aula-virtual',
+            prefix: 'cuestionarios',
+            ruta: (actividad.iCuestionarioId = actividad.ixActivadadId),
+            params: {
+                iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+            },
+        }
+
+        this._generalService.getGralPrefixx(params).subscribe({
             next: (resp) => {
                 if (resp.validated) {
                     this.obtenerContenidoSemanas()

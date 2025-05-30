@@ -48,6 +48,10 @@ export class GeneralService {
                 return this.http.get(url, { params: data.params })
             case 'post':
                 return this.http.post(url, data.data, { params: data.params })
+            case 'put':
+                return this.http.put(url, data.data, { params: data.params })
+            case 'delete':
+                return this.http.delete(url, { params: data.params })
             default:
                 // return throwError(() => new Error('Tipo de petición no válido'));
                 return this.url

@@ -56,6 +56,9 @@ export class AreaCardComponent implements OnInit {
     @Output() dialogImportarResultados = new EventEmitter<{
         curso: ICurso
     }>()
+    @Output() dialogGuardarResultadosOnline = new EventEmitter<{
+        curso: ICurso
+    }>()
 
     constructor(
         private store: LocalStoreService,
@@ -138,6 +141,18 @@ export class AreaCardComponent implements OnInit {
                 icon: 'pi pi-upload',
                 command: () => {
                     this.dialogImportarResultados.emit({
+                        curso: this.curso,
+                    })
+                },
+                disabled:
+                    this.iPerfilId !== DIRECTOR_IE &&
+                    this.iPerfilId !== ESPECIALISTA_DREMO,
+            },
+            {
+                label: 'Subir resultados en linea',
+                icon: 'pi pi-upload',
+                command: () => {
+                    this.dialogGuardarResultadosOnline.emit({
                         curso: this.curso,
                     })
                 },

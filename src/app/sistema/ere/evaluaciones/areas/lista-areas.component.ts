@@ -26,6 +26,8 @@ import { AreaCardComponent } from './area-card/area-card.component'
 import { ConfigurarNivelLogroComponent } from './configurar-nivel-logro/configurar-nivel-logro.component'
 import { ImportarResultadosComponent } from '../../informes-ere/importar-resultados/importar-resultados.component'
 
+import { GuardarResultadosOnlineComponent } from '../../informes-ere/guardar-resultados-online/guardar-resultados-online.component'
+
 export type Layout = 'list' | 'grid'
 
 @Component({
@@ -40,6 +42,7 @@ export type Layout = 'list' | 'grid'
         AreaCardComponent,
         ConfigurarNivelLogroComponent,
         ImportarResultadosComponent,
+        GuardarResultadosOnlineComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -54,6 +57,10 @@ export class ListaAreasComponent implements OnInit {
 
     @ViewChild(ImportarResultadosComponent)
     dialogImportarResultados!: ImportarResultadosComponent
+
+    // modal de guardar resultados online
+    @ViewChild(GuardarResultadosOnlineComponent)
+    dialogGuardarResultadosOnline!: GuardarResultadosOnlineComponent
 
     @ViewChild(ConfigurarNivelLogroComponent)
     dialogConfigurarNivelLogro!: ConfigurarNivelLogroComponent
@@ -105,6 +112,10 @@ export class ListaAreasComponent implements OnInit {
     importarResultados(datos: { curso: ICurso }) {
         this.dialogImportarResultados.mostrarDialog(datos)
     }
+    // Modal para guardar resultados online
+    guardarResultadosOnline(datos: { curso: ICurso }) {
+        this.dialogGuardarResultadosOnline.mostrarDialog(datos)
+    }
 
     actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
         this.gestionarPreguntasCard.forEach((card) => {
@@ -119,7 +130,10 @@ export class ListaAreasComponent implements OnInit {
     actualizarEstadoResultadosImportados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }
-
+    // modal guardar resultados online
+    actualizarEstadoResultadosGuardados(datos: { curso: ICurso }) {
+        console.log(datos, 'datos')
+    }
     ngOnInit() {
         this.mensajeInfo = [
             {

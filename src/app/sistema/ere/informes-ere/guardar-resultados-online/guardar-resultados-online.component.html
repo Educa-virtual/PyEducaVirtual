@@ -1,0 +1,193 @@
+<p-dialog
+    header="Cuestionario de Notas"
+    [(visible)]="visible"
+    [style]="{ width: '90rem' }"
+    [modal]="true"
+    [maximizable]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (accionBtnItem)="accionBtn($event)"
+>
+    <section>
+        <div class="col-12 flex justify-content-center mt-5">
+            <span class="font-bold text-3xl"
+                >CONSOLIDAD DE RESULTADOS DE AULA - ERE INICIO 2025</span
+            >
+        </div>
+        <form [formGroup]="formCurso">
+            <div class="grid p-fluid mt-3 col">
+                <div class="grid card col-10 mr-3 relative">
+                    <div>
+                        <span class="btn">Datos I.E.</span>
+                    </div>
+                    <div class="col-8">
+                        <span class="p-float-label mt-5">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cIeNombre"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cIeNombre" class="font-bold"
+                                >I.E.</label
+                            >
+                        </span>
+                        <span class="p-float-label mt-5">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cCursoNombre"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cCursoNombre" class="font-bold"
+                                >ÁREA:</label
+                            >
+                        </span>
+                        <div class="grid mt-5">
+                            <!-- Mostrar grado -->
+                            <div class="col-6">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersDocumento"
+                                        formControlName="cGradoAbreviacion"
+                                        aria-describedby="cPersDocumento-help"
+                                    />
+                                    <label
+                                        for="cGradoAbreviacion"
+                                        class="font-bold"
+                                        >GRADO:</label
+                                    >
+                                </span>
+                            </div>
+
+                            <!-- Mostrar SECCIÓN -->
+                            <div class="col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="secciones"
+                                        [style]="{ width: '100%' }"
+                                        filterBy="label"
+                                        optionLabel="label"
+                                        optionValue="idSeccion"
+                                        formControlName=""
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="label" class="font-bold"
+                                        >Seleccione Sección</label
+                                    >
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <span class="p-float-label mt-5">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cNivelTipoNombre"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cNivelTipoNombre" class="font-bold"
+                                >NIVEL:</label
+                            >
+                        </span>
+                        <span class="p-float-label mt-5">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cNombreDistrito"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cNombreDistrito" class="font-bold"
+                                >DISTRITO:</label
+                            >
+                        </span>
+                        <span class="p-float-label mt-5">
+                            <input
+                                pInputText
+                                id="cNombreGestion"
+                                formControlName="cNombreGestion"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cNombreGestion" class="font-bold"
+                                >GESTIÓN:</label
+                            >
+                        </span>
+                    </div>
+                </div>
+                <div class="col ml-3">
+                    <div class="mt-5">
+                        <div class="flex justify-content-center">
+                            <span class="text-7xl font-bold text-primary">{{
+                                alumnos?.length
+                            }}</span>
+                        </div>
+                        <div class="flex justify-content-center">
+                            <span class="text-base text-gray-600 mt-2"
+                                >Estudiantes Registrados</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid p-fluid mt-3">
+                <div class="col-6 mt-2">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Docente de Aula:
+                        </p-inputGroupAddon>
+                        <input
+                            pInputText
+                            id="cNombreDocente"
+                            formControlName="cNombreDocente"
+                            placeholder="Nombre del Docente"
+                            readonly
+                            aria-describedby="cPersDocumento-help"
+                        />
+                    </p-inputGroup>
+                </div>
+
+                <div class="col-4 mt-2">
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Ingresar dni...."
+                        formControlName="cDniDocente"
+                    />
+                </div>
+                <div class="col-2 mt-2">
+                    <p-button
+                        label="Buscar"
+                        icon="pi pi-search"
+                        severity="success"
+                    />
+                </div>
+            </div>
+        </form>
+        <div class="col">
+            <app-table-primeng
+                [columnas]="columnas"
+                [data]="alumnos"
+                (accionBtnItem)="accionesTabla($event)"
+                [actions]="botonesTabla"
+                [showPaginator]="true"
+                [indiceColumnaBuscar]="3"
+                [showCaption]="true"
+                [showSortIcon]="false"
+            >
+                <input type="text" />
+            </app-table-primeng>
+        </div>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12">
+                <p-button
+                    type="submit"
+                    label="Guardar"
+                    styleClass="p-button-primary"
+                />
+            </div>
+        </div>
+    </section>
+</p-dialog>
+
+<p-toast></p-toast>

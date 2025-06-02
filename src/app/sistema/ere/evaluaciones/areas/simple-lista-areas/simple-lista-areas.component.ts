@@ -130,6 +130,26 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
             { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
             { field: 'matriz', header: 'Matriz de Evaluación' },
+            { field: 'resultados', header: 'Resultados' },
+        ]
+
+        this.colsEspecialista = [
+            { field: 'id', header: '#' },
+            { field: 'area', header: 'Área' },
+            { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
+            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
+            { field: 'matriz', header: 'Matriz de Evaluación' },
+            { field: 'acciones', header: 'Acciones' },
+        ]
+    }
+
+    /*private initializeColumns(): void {
+        this.colsDirector = [
+            { field: 'id', header: '#' },
+            { field: 'area', header: 'Área' },
+            { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
+            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
+            { field: 'matriz', header: 'Matriz de Evaluación' },
             { field: 'acciones', header: 'Acciones' },
         ]
 
@@ -143,6 +163,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             { field: 'acciones', header: 'Acciones' },
         ]
     }
+        */
 
     descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
         if (!this.cursoSeleccionado) {

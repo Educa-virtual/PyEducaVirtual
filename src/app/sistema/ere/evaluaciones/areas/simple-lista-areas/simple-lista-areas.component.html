@@ -1,12 +1,3 @@
-<!-- simple-lista-areas.component.html - VERSIÓN CORREGIDA -->
-
-<!-- Breadcrumb 
-<p-breadcrumb
-    class="max-w-full mb-4"
-    [model]="breadCrumbItems"
-    [home]="breadCrumbHome"
-></p-breadcrumb> -->
-
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-column gap-2">
@@ -23,6 +14,7 @@
             <strong>Perfil ID:</strong> {{ iPerfilId }}
         </p>
     </div>
+
     <div *ngIf="esDirector" class="mb-4">
         <h4 class="text-primary mb-3">Vista Director - Solo descarga</h4>
         <p-table
@@ -116,24 +108,14 @@
                     </td>
 
                     <td style="text-align: center">
-                        <div class="flex gap-1 justify-content-center">
-                            <p-button
-                                icon="pi pi-cog"
-                                severity="secondary"
-                                size="small"
-                                [text]="true"
-                                pTooltip="Gestionar preguntas"
-                                (click)="gestionarPreguntas(curso)"
-                            ></p-button>
-                            <p-button
-                                icon="pi pi-chart-bar"
-                                severity="secondary"
-                                size="small"
-                                [text]="true"
-                                pTooltip="Ver resultados"
-                                (click)="verResultados(curso)"
-                            ></p-button>
-                        </div>
+                        <p-button
+                            label="Ver Resultados"
+                            icon="pi pi-chart-bar"
+                            severity="info"
+                            size="small"
+                            pTooltip="Ver resultados de evaluación"
+                            (click)="verResultados(curso)"
+                        ></p-button>
                     </td>
                 </tr>
             </ng-template>
@@ -206,7 +188,6 @@
                         </div>
                     </td>
 
-                    <!-- Cuadernillo de Evaluación -->
                     <td style="text-align: center">
                         <p-button
                             label="Pendiente"
@@ -228,7 +209,6 @@
                         ></p-button>
                     </td>
 
-                    <!-- Hoja de respuestas -->
                     <td style="text-align: center">
                         <p-button
                             label="Descargar"
@@ -240,7 +220,6 @@
                         ></p-button>
                     </td>
 
-                    <!-- Matriz de Evaluación -->
                     <td style="text-align: center">
                         <p-button
                             label="Descargar"
@@ -252,19 +231,6 @@
                         ></p-button>
                     </td>
 
-                    <!-- Resultados -->
-                    <td style="text-align: center">
-                        <p-button
-                            label="Pendiente"
-                            icon="pi pi-upload"
-                            severity="warning"
-                            size="small"
-                            pTooltip="Subir resultados"
-                            (click)="onDialogImportarResultados(curso)"
-                        ></p-button>
-                    </td>
-
-                    <!-- Acciones -->
                     <td style="text-align: center">
                         <div class="flex gap-1 justify-content-center">
                             <p-button
@@ -330,5 +296,4 @@
 >
 </app-dialog-generar-cuadernillo>
 
-<!-- Toast para mensajes -->
 <p-toast></p-toast>

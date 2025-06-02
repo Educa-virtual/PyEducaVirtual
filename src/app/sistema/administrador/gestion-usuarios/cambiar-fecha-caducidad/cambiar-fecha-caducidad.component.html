@@ -10,32 +10,42 @@
 >
     <div class="asignar-rol-container">
         <form [formGroup]="formCambiarFecha">
-            <label for="fechaActual">Fecha actual</label>
-            <p-calendar
-                formControlName="fechaActual"
-                dateFormat="dd/mm/yy"
-                [showTime]="true"
-                [hourFormat]="'24'"
-                variant="filled"
-                appendTo="body"
-                [showOnFocus]="false"
-            />
-            <label for="fechaActual">Nueva fecha</label>
-            <p-calendar
-                formControlName="nuevaFecha"
-                dateFormat="dd/mm/yy"
-                [showTime]="true"
-                [hourFormat]="'24'"
-                variant="filled"
-                appendTo="body"
-            />
-            <button
-                pButton
-                pRipple
-                label="Actualizar"
-                class="p-button-success"
-                (click)="actualizarFecha()"
-            ></button>
+            <div class="filtros-row">
+                <div class="filtro-item">
+                    <label for="fechaActual">Fecha actual:</label>
+                    <p-calendar
+                        formControlName="fechaActual"
+                        dateFormat="dd/mm/yy"
+                        [showTime]="true"
+                        [hourFormat]="'24'"
+                        variant="filled"
+                        appendTo="body"
+                        [showOnFocus]="false"
+                        styleClass="dropdown-field"
+                    />
+                </div>
+                <div class="filtro-item">
+                    <label for="nuevaFecha">Nueva fecha:</label>
+                    <p-calendar
+                        formControlName="nuevaFecha"
+                        dateFormat="dd/mm/yy"
+                        [showTime]="true"
+                        [hourFormat]="'24'"
+                        variant="filled"
+                        appendTo="body"
+                        styleClass="dropdown-field"
+                    />
+                </div>
+                <div class="agregar-btn-container">
+                    <button
+                        pButton
+                        pRipple
+                        label="Actualizar"
+                        class="p-button-success"
+                        (click)="actualizarFecha()"
+                    ></button>
+                </div>
+            </div>
         </form>
     </div>
 </p-dialog>

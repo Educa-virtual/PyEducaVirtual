@@ -95,11 +95,42 @@
             size="small"
             (click)="cancelar()"
         ></button>
-        <p-button
+        <button
+            pButton
+            [label]="
+                action === 'ACTUALIZAR'
+                    ? 'Editar Cuestionario'
+                    : 'Crear Cuestionario'
+            "
+            icon="pi pi-check"
+            size="small"
+            [class]="
+                action === 'ACTUALIZAR'
+                    ? 'p-button-warning'
+                    : 'p-button-primary'
+            "
+            (click)="
+                action === 'ACTUALIZAR'
+                    ? actualizarCuestionario()
+                    : guardarCuestionario()
+            "
+        ></button>
+
+        <!-- <button
+            pButton
+            [label]="action === 'ACTUALIZAR' ? 'Editar Cuestionario' : 'Crear Cuestionario'"
+            icon="pi pi-check"
+            size="small"
+            [class]="
+                action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'
+            "
+            (click)="guardarCuestionario()"
+        ></button> -->
+        <!-- <p-button
             label="Guardar"
             icon="pi pi-check"
             [disabled]="formCuestionario.invalid"
             (click)="GUARDARxProgActxiCuestionarioId()"
-        ></p-button>
+        ></p-button> -->
     </div>
 </form>

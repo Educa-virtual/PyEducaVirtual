@@ -389,4 +389,25 @@ export class ApiAulaService {
             data
         )
     }
+
+    guardarReunionVirtual(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/programacion-actividades/store`,
+            data
+        )
+    }
+
+    actualizarReunionVirtual(data, ruta) {
+        return this._http.put(
+            `${this.baseUrlApi}/aula-virtual/reunion-virtuales/${ruta}`,
+            data
+        )
+    }
+
+    EliminarReunionVirtual(data) {
+        return this._http.delete(
+            `${this.baseUrlApi}/aula-virtual/reunion-virtuales`,
+            data
+        )
+    }
 }

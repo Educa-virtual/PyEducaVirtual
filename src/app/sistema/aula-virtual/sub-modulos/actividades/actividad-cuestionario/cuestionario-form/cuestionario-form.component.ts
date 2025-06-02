@@ -1,6 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
+import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { DatePipe } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
@@ -21,6 +23,7 @@ export class CuestionarioFormComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _constantesService = inject(ConstantesService)
     private _aulaService = inject(ApiAulaService)
+    private GeneralService = inject(GeneralService)
 
     // Crea una instancia de la clase DatePipe para formatear fechas en español
     pipe = new DatePipe('es-ES')
@@ -35,15 +38,19 @@ export class CuestionarioFormComponent implements OnInit {
         repository: false,
         image: false,
     }
+    // Propiedad para almacenar la actividad actual (opcional).
+    actividad: IActividad | undefined
+    action: string
+    opcion: string = 'GUARDAR'
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
-        // const data = this.dialogConfig.data
-        // if (data.action == 'editar') {
-        //     this.opcion = 'ACTUALIZAR'
-        //     // this.obtenerForoxiForoId(data.actividad.ixActivadadId)
-        // } else {
-        //     this.opcion = 'GUARDAR'
-        // }
+        this.action = this.dialogConfig.data.action
+        this.actividad = this.dialogConfig.data.actividad
+        if (this.actividad?.ixActivadadId && this.action === 'ACTUALIZAR') {
+            this.obtenerCuestionarioPorId(this.actividad.ixActivadadId)
+        } else {
+            this.opcion = 'GUARDAR'
+        }
 
         this.semana = [
             {
@@ -78,9 +85,15 @@ export class CuestionarioFormComponent implements OnInit {
         // this.tarea = null
         this.ref.close(null)
     }
+    // funcion que cierra el  modal
+    closeModal(resp: boolean) {
+        // this.tarea = null
+        this.ref.close(resp)
+    }
     // metodo para guardar el cuestionario
-    GUARDARxProgActxiCuestionarioId() {
+    guardarCuestionario() {
         const formValue = this.formCuestionario.value
+        this.filesUrl = (this.filesUrl?.length ?? 0) > 0 ? this.filesUrl : null
         const data = {
             ...formValue,
             dtInicio: this.pipe.transform(
@@ -97,11 +110,14 @@ export class CuestionarioFormComponent implements OnInit {
             iEstado: 1, // Estado activo
             iSesionId: 1,
             iHorarioId: '',
-            iCredId: this.contenidoSemana.iCredId, // Asignar el ID del crédito
+            iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
             valorBusqueda: '', // Valor de búsqueda, si es necesario
             iSilaboActAprendId: '', // ID del silabo de actividad de aprendizaje, si es necesario
             iInstrumentoId: '', // ID del instrumento, si es necesario
-            dtProgActPublicacion: '', // Fecha de publicación del programa de actividad
+            dtProgActPublicacion: this.pipe.transform(
+                formValue.dtInicio,
+                'dd/MM/yyyy HH:mm:ss'
+            ), // Fecha de publicación del programa de actividad
             nProgActConceptual: '', // Descripción conceptual del programa de actividad
             nProgActProcedimiental: '', // Descripción procedimental del programa de actividad
             nProgActActitudinal: '', // Descripción actitudinal del programa de actividad
@@ -112,15 +128,15 @@ export class CuestionarioFormComponent implements OnInit {
             bProgActEsRestringido: '',
             dtProgActInicio: this.pipe.transform(
                 formValue.dtInicio,
-                'yyyy-MM-ddTHH:mm:ss'
+                'dd/MM/yyyy HH:mm:ss'
             ),
             dtProgActFin: this.pipe.transform(
                 formValue.dtFin,
-                'yyyy-MM-ddTHH:mm:ss'
+                'dd/MM/yyyy HH:mm:ss'
             ),
             cProgActTituloLeccion: formValue.cTitulo, // Título de la lección del programa de actividad
-            dtActualizado: new Date(), // Fecha de actualización del programa de actividad
-            dtCreado: new Date(), // Fecha de creación del programa de actividad
+            dtActualizado: '', // Fecha de actualización del programa de actividad
+            dtCreado: '', // Fecha de creación del programa de actividad
         }
         this._aulaService.guardarCuestionario(data).subscribe({
             next: (response) => {
@@ -133,63 +149,95 @@ export class CuestionarioFormComponent implements OnInit {
         })
         console.log('datos del formulario', data)
     }
-    //  $request->opcion,
-    //         $request->valorBusqueda ?? '-',
+    cuestionario: any
+    obtenerCuestionarioPorId(iCuestionarioId) {
+        // console.log('obtenerCuestionarioPorId', iCuestionarioId)
+        const data = {
+            petition: 'get',
+            group: 'aula-virtual',
+            prefix: 'cuestionarios',
+            ruta: iCuestionarioId.toString(),
+            params: {
+                iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+            },
+        }
+        this.GeneralService.getGralPrefixx(data).subscribe({
+            next: (resp) => {
+                this.cuestionario = resp.data.length
+                    ? resp.data[0]
+                    : this.closeModal(resp.validated)
+                if (resp?.data?.length) {
+                    this.cuestionario = resp.data[0]
 
-    //         $request->iProgActId                     ?? NULL,
-    //         $request->iSilaboActAprendId             ?? NULL,
-    //         $request->iContenidoSemId                ?? NULL,
-    //         $request->iInstrumentoId                 ?? NULL,
-    //         $request->iActTipoId                     ?? NULL,
-    //         $request->dtProgActPublicacion  ?? NULL,
-    //         $request->nProgActConceptual    ?? NULL,
-    //         $request->nProgActProcedimiental    ?? NULL,
-    //         $request->nProgActActitudinal       ?? NULL,
-    //         $request->bProgActEsEvaluado        ?? NULL,
-    //         $request->cProgActTituloLeccion     ?? NULL,
-    //         $request->cProgActDescripcion       ?? NULL,
-    //         $request->bProgActEsObligatorio     ?? NULL,
-    //         $request->bProgActEsRestringido     ?? NULL,
-    //         $request->dtProgActInicio           ?? NULL,
-    //         $request->dtProgActFin              ?? NULL,
-    //         $request->nProgActNota              ?? NULL,
-    //         $request->cProgActComentarioDocente ?? NULL,
-    //         $request->iEstado                   ?? NULL,
-    //         $request->iSesionId                 ?? NULL,
-    //         $request->dtCreado                  ?? NULL,
-    //         $request->dtActualizado             ?? NULL,
-    //         $request->iHorarioId
+                    // Validar y asignar valores al formulario
+                    this.formCuestionario.patchValue({
+                        cTitulo: this.cuestionario.cTitulo ?? '',
+                        cDescripcion: this.cuestionario.cDescripcion ?? '',
+                        dtInicio: this.cuestionario.dtInicio
+                            ? new Date(this.cuestionario.dtInicio)
+                            : this.date,
+                        dtFin: this.cuestionario.dtFin
+                            ? new Date(this.cuestionario.dtFin)
+                            : this.date,
+                    })
 
-    // "opcion":"GUARDARxProgActxiCuestionarioId",
-    // "valorBusqueda":"",
-    // "iProgActId":"",
-    // "iSilaboActAprendId":"",
-    // "iContenidoSemId":"53",
-    // "iInstrumentoId":"",
-    // "iActTipoId":"6",
-    // "dtProgActPublicacion":"27/05/2025 09:30:00",
-    // "nProgActConceptual":"",
-    // "nProgActProcedimiental":"",
-    // "nProgActActitudinal":"",
-    // "bProgActEsEvaluado":"",
-    // "cProgActTituloLeccion":"PRUEBA",
-    // "cProgActDescripcion":"PRUEBA",
-    // "bProgActEsObligatorio":"",
-    // "bProgActEsRestringido":"",
-    // "dtProgActInicio":"27/05/2025 09:30:00",
-    // "dtProgActFin":"29/05/2025 09:30:00",
-    // "nProgActNota":"",
-    // "cProgActComentarioDocente":"",
-    // "iEstado":"1",
-    // "iSesionId":"1",
-    // "iHorarioId":"",
-    // "iDocenteId":"1",
-    // "cTitulo":"Título 1",
-    // "cSubtitulo":"SubTítulo 1",
-    // "cDescripcion":"cDescripcion",
-    // "dtInicio":"2025-05-26T14:30:00",
-    // "dtFin":"2025-05-28T14:30:00",
-    // "iCredId":"1"
+                    this.opcion = 'ACTUALIZAR'
+                } else {
+                    console.warn(
+                        'No se encontraron datos para el cuestionario.'
+                    )
+                    this.closeModal(resp?.validated)
+                }
+
+                console.log('Respuesta del cuestionario:', this.cuestionario)
+            },
+            error: (err) => {
+                console.error('Error obteniendo cuestionario:', err)
+            },
+        })
+    }
+    // método para actualizar el cuestionario
+    actualizarCuestionario() {
+        //    this.pipe.transform(formValue.dtFin, 'yyyy-MM-ddTHH:mm:ss'),
+        const update = {
+            ...this.formCuestionario.value,
+            dtInicio: this.pipe.transform(
+                this.formCuestionario.value.dtInicio,
+                'yyyy-MM-ddTHH:mm:ss'
+            ),
+            dtFin: this.pipe.transform(
+                this.formCuestionario.value.dtFin,
+                'yyyy-MM-ddTHH:mm:ss'
+            ),
+            iDocenteId: this._constantesService.iDocenteId,
+            cSubtitulo: '', // Subtítulo del cuestionario, si es necesario
+            iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+            iProgActId: this.cuestionario.iProgActId, // Asignar el ID del programa de actividad
+        }
+        // console.log('Actualizar cuestionario', update);
+        const data = {
+            petition: 'put',
+            group: 'aula-virtual',
+            prefix: 'cuestionarios',
+            ruta: this.cuestionario.iCuestionarioId.toString(),
+            data: update,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // console.log('Datos a enviar para actualizar:', data);
+        this.GeneralService.getGralPrefixx(data).subscribe({
+            next: (response) => {
+                console.log('Cuestionario actualizado:', response)
+                this.opcion = 'GUARDAR' // Resetear estado después de actualizar
+            },
+            error: (error) => {
+                console.error('Error al actualizar cuestionario:', error)
+            },
+        })
+    }
+
+    // metodo para ajustar la fecha a la hora más cercana de media hora
     ajustarAHorarioDeMediaHora(fecha) {
         const minutos = fecha.getMinutes() // Obtener los minutos actuales
         const minutosAjustados = minutos <= 30 ? 30 : 0 // Decidir si ajustar a 30 o 0 (hora siguiente)

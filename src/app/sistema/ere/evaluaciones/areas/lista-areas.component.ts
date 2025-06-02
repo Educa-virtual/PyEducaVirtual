@@ -69,7 +69,7 @@ export class ListaAreasComponent implements OnInit {
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
 
-    //modoCard: boolean = false
+    modoCard: boolean = true
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
     sortOrder: number = 0
@@ -205,5 +205,10 @@ export class ListaAreasComponent implements OnInit {
                     console.error('Error obteniendo datos', error)
                 },
             })
+    }
+
+    cambiarVista(): void {
+        this.modoCard = !this.modoCard
+        console.log('Vista cambiada a:', this.modoCard ? 'Cards' : 'Tabla')
     }
 }

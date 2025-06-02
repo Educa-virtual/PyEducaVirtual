@@ -1,11 +1,12 @@
-<!-- Breadcrumb -->
+<!-- simple-lista-areas.component.html - VERSIÓN CORREGIDA -->
+
+<!-- Breadcrumb 
 <p-breadcrumb
     class="max-w-full mb-4"
     [model]="breadCrumbItems"
     [home]="breadCrumbHome"
-></p-breadcrumb>
+></p-breadcrumb> -->
 
-<!-- Panel principal -->
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-column gap-2">
@@ -13,64 +14,26 @@
         </div>
     </ng-template>
 
-    <!-- Buscador ÚNICO -->
-    <div class="flex align-items-center gap-2 mb-4">
-        <span class="p-input-icon-left flex-1" style="max-width: 400px">
-            <i class="pi pi-search"></i>
-            <input
-                type="text"
-                pInputText
-                [(ngModel)]="terminoBusqueda"
-                (input)="filtrarCurso()"
-                placeholder="Buscar por área..."
-                class="w-full"
-                style="padding-left: 2.5rem"
-            />
-        </span>
-        <p-button
-            *ngIf="terminoBusqueda"
-            icon="pi pi-times"
-            [text]="true"
-            (click)="limpiarBusqueda()"
-            pTooltip="Limpiar búsqueda"
-            styleClass="p-button-rounded p-button-text"
-        ></p-button>
+    <div class="bg-yellow-50 border-yellow-200 border-1 p-3 mb-4 border-round">
+        <h5 class="text-yellow-800 m-0 mb-2">🔍 Debug Info:</h5>
+        <p class="m-0 text-sm">
+            <strong>Cursos recibidos:</strong> {{ cursos.length }} |
+            <strong>Es Director:</strong> {{ esDirector }} |
+            <strong>Es Especialista:</strong> {{ esEspecialista }} |
+            <strong>Perfil ID:</strong> {{ iPerfilId }}
+        </p>
     </div>
-
-    <!-- TABLAS DINÁMICAS - Una sola definición para todos los grados -->
-    <p-panel *ngFor="let gradoConfig of gradosConfig" class="mb-4">
-        <ng-template pTemplate="header">
-            <div class="flex flex-column gap-2">
-                <h4
-                    class="m-0 text-primary"
-                    *ngIf="!gradoConfig.esEspecialista"
-                >
-                    {{ gradoConfig.grado }} Grado
-                </h4>
-                <h3
-                    class="m-0 text-uppercase text-primary"
-                    *ngIf="gradoConfig.esEspecialista"
-                >
-                    {{ gradoConfig.grado }} Grado
-                </h3>
-            </div>
-        </ng-template>
-
-        <!-- TABLA UNIFICADA -->
+    <div *ngIf="esDirector" class="mb-4">
+        <h4 class="text-primary mb-3">Vista Director - Solo descarga</h4>
         <p-table
-            [value]="gradoConfig.cursosFiltrados"
+            [value]="cursos"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
         >
-            <!-- HEADER DINÁMICO -->
             <ng-template pTemplate="header">
                 <tr>
                     <th
-                        *ngFor="
-                            let col of gradoConfig.esEspecialista
-                                ? colsEspecialista
-                                : cols
-                        "
+                        *ngFor="let col of colsDirector"
                         style="text-align: center"
                     >
                         {{ col.header }}
@@ -78,198 +41,294 @@
                 </tr>
             </ng-template>
 
-            <!-- BODY DINÁMICO -->
-            <ng-template pTemplate="body" let-curso>
+            <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
                 <tr>
-                    <!-- ID -->
-                    <td style="text-align: center">{{ curso.id }}</td>
+                    <td style="text-align: center">{{ rowIndex + 1 }}</td>
 
-                    <!-- Área -->
-                    <td>{{ curso.area }}</td>
+                    <td>
+                        <div class="flex align-items-center gap-2">
+                            <img
+                                [src]="backend + '/' + curso.cCursoImagen"
+                                [alt]="curso.cCursoNombre"
+                                class="w-3rem h-3rem border-circle"
+                                (error)="updateUrl(curso)"
+                            />
+                            <div>
+                                <div class="font-semibold">
+                                    <small class="text-primary font-bold">
+                                        {{
+                                            curso.cGradoAbreviacion
+                                                ?.toString()
+                                                .substring(0, 1)
+                                        }}° Grado -
+                                        {{
+                                            curso.cNivelTipoNombre
+                                                ?.toString()
+                                                .replace('Educación ', '')
+                                        }}
+                                    </small>
+                                    <br />
+                                    {{ curso.cCursoNombre | stringCase }}
+                                </div>
+                                <div class="text-sm text-500">
+                                    {{ curso.iCantidadPreguntas }} preguntas
+                                </div>
+                            </div>
+                        </div>
+                    </td>
 
-                    <ng-container *ngIf="!gradoConfig.esEspecialista">
-                        <td style="text-align: center">
-                            <p-button
-                                label="Descargar"
-                                icon="pi pi-file-pdf"
-                                severity="danger"
-                                size="small"
-                                (click)="descargarPDF('Cuadernillo', curso)"
-                            ></p-button>
-                        </td>
-                        <td style="text-align: center">
-                            <p-button
-                                label="Descargar"
-                                icon="pi pi-file-pdf"
-                                severity="danger"
-                                size="small"
-                                (click)="
-                                    descargarPDF('Hoja de respuestas', curso)
-                                "
-                            ></p-button>
-                        </td>
-                        <td style="text-align: center">
-                            <p-button
-                                label="Descargar"
-                                icon="pi pi-file-pdf"
-                                severity="danger"
-                                size="small"
-                                (click)="descargarPDF('Matriz', curso)"
-                            ></p-button>
-                        </td>
-                        <td style="text-align: center">
-                            <p-button
-                                [label]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .label
-                                "
-                                [icon]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .icon
-                                "
-                                [severity]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .severity
-                                "
-                                size="small"
-                                iconPos="right"
-                                (click)="
-                                    ejecutarAccion(
-                                        obtenerConfiguracionEstado(curso.estado)
-                                            .accion,
-                                        curso
-                                    )
-                                "
-                            ></p-button>
-                        </td>
-                    </ng-container>
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-download"
+                            severity="danger"
+                            size="small"
+                            [disabled]="!curso.bTieneArchivo"
+                            (click)="descargarPDF('Cuadernillo', curso)"
+                            pTooltip="{{
+                                curso.bTieneArchivo
+                                    ? 'Descargar cuadernillo'
+                                    : 'No disponible'
+                            }}"
+                        ></p-button>
+                    </td>
 
-                    <!-- Para tabla de ESPECIALISTA -->
-                    <ng-container *ngIf="gradoConfig.esEspecialista">
-                        <td style="text-align: center">
-                            <p-button
-                                [label]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .label
-                                "
-                                [icon]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .icon
-                                "
-                                [severity]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .severity
-                                "
-                                (click)="
-                                    ejecutarAccion(
-                                        obtenerConfiguracionEstado(curso.estado)
-                                            .accion,
-                                        curso
-                                    )
-                                "
-                                (click)="abrirDialogoGenerarCuadernillo(curso)"
-                            ></p-button>
-                        </td>
-                        <td style="text-align: center">
-                            <p-button
-                                [label]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .label
-                                "
-                                [icon]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .icon
-                                "
-                                [severity]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .severity
-                                "
-                                (click)="
-                                    ejecutarAccion(
-                                        obtenerConfiguracionEstado(curso.estado)
-                                            .accion,
-                                        curso
-                                    )
-                                "
-                                (click)="abrirDialogoGenerarCuadernillo(curso)"
-                            ></p-button>
-                        </td>
-                        <td style="text-align: center">
-                            <p-button
-                                [label]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .label
-                                "
-                                [icon]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .icon
-                                "
-                                [severity]="
-                                    obtenerConfiguracionEstado(curso.estado)
-                                        .severity
-                                "
-                                (click)="
-                                    ejecutarAccion(
-                                        obtenerConfiguracionEstado(curso.estado)
-                                            .accion,
-                                        curso
-                                    )
-                                "
-                                (click)="abrirDialogoGenerarCuadernillo(curso)"
-                            ></p-button>
-                        </td>
-                        <td style="text-align: center">
-                            <button
-                                pButton
-                                icon="pi pi-trophy"
-                                class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
-                                pTooltip="Generar cuadernillo"
-                                tooltipPosition="top"
-                                aria-label="Generar cuadernillo"
-                                (click)="visible = true"
-                            ></button>
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-download"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Hoja de respuestas', curso)"
+                            pTooltip="Descargar hoja de respuestas"
+                        ></p-button>
+                    </td>
 
-                            <button
-                                pButton
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-download"
+                            severity="danger"
+                            size="small"
+                            (click)="descargarPDF('Matriz', curso)"
+                            pTooltip="Descargar matriz"
+                        ></p-button>
+                    </td>
+
+                    <td style="text-align: center">
+                        <div class="flex gap-1 justify-content-center">
+                            <p-button
                                 icon="pi pi-cog"
-                                class="p-button-text p-button-rounded p-button-sm transparent-btn"
-                                aria-label="Configuración"
-                            ></button>
-                        </td>
-                    </ng-container>
+                                severity="secondary"
+                                size="small"
+                                [text]="true"
+                                pTooltip="Gestionar preguntas"
+                                (click)="gestionarPreguntas(curso)"
+                            ></p-button>
+                            <p-button
+                                icon="pi pi-chart-bar"
+                                severity="secondary"
+                                size="small"
+                                [text]="true"
+                                pTooltip="Ver resultados"
+                                (click)="verResultados(curso)"
+                            ></p-button>
+                        </div>
+                    </td>
                 </tr>
             </ng-template>
 
-            <!-- MENSAJE VACÍO UNIFICADO -->
             <ng-template pTemplate="emptymessage">
                 <tr>
                     <td
-                        [attr.colspan]="
-                            (gradoConfig.esEspecialista
-                                ? colsEspecialista
-                                : cols
-                            ).length
-                        "
+                        [attr.colspan]="colsDirector.length"
                         class="text-center p-4"
                     >
-                        <i class="pi pi-search text-4xl text-400 mb-3"></i>
-                        <p class="text-500 m-0">
-                            No se encontraron áreas que coincidan con la
-                            búsqueda
-                        </p>
+                        <i class="pi pi-info-circle text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">No hay áreas disponibles</p>
                     </td>
                 </tr>
             </ng-template>
         </p-table>
-    </p-panel>
+    </div>
+
+    <div *ngIf="esEspecialista" class="mb-4">
+        <h4 class="text-primary mb-3">Vista Especialista - Gestión completa</h4>
+        <p-table
+            [value]="cursos"
+            [tableStyle]="{ 'min-width': '60rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th
+                        *ngFor="let col of colsEspecialista"
+                        style="text-align: center"
+                    >
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
+                <tr>
+                    <td style="text-align: center">{{ rowIndex + 1 }}</td>
+
+                    <td>
+                        <div class="flex align-items-center gap-2">
+                            <img
+                                [src]="backend + '/' + curso.cCursoImagen"
+                                [alt]="curso.cCursoNombre"
+                                class="w-3rem h-3rem border-circle"
+                                (error)="updateUrl(curso)"
+                            />
+                            <div>
+                                <div class="font-semibold">
+                                    <small class="text-primary font-bold">
+                                        {{
+                                            curso.cGradoAbreviacion
+                                                ?.toString()
+                                                .substring(0, 1)
+                                        }}° Grado -
+                                        {{
+                                            curso.cNivelTipoNombre
+                                                ?.toString()
+                                                .replace('Educación ', '')
+                                        }}
+                                    </small>
+                                    <br />
+                                    {{ curso.cCursoNombre | stringCase }}
+                                </div>
+                                <div class="text-sm text-500">
+                                    {{ curso.iCantidadPreguntas }} preguntas
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Cuadernillo de Evaluación -->
+                    <td style="text-align: center">
+                        <p-button
+                            label="Pendiente"
+                            icon="pi pi-upload"
+                            severity="warning"
+                            size="small"
+                            *ngIf="!curso.bTieneArchivo"
+                            pTooltip="Subir cuadernillo"
+                            (click)="onDialogSubirArchivo(curso)"
+                        ></p-button>
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-download"
+                            severity="success"
+                            size="small"
+                            *ngIf="curso.bTieneArchivo"
+                            pTooltip="Descargar cuadernillo"
+                            (click)="descargarPDF('Cuadernillo', curso)"
+                        ></p-button>
+                    </td>
+
+                    <!-- Hoja de respuestas -->
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-download"
+                            severity="danger"
+                            size="small"
+                            pTooltip="Descargar hoja de respuestas"
+                            (click)="descargarPDF('Hoja de respuestas', curso)"
+                        ></p-button>
+                    </td>
+
+                    <!-- Matriz de Evaluación -->
+                    <td style="text-align: center">
+                        <p-button
+                            label="Descargar"
+                            icon="pi pi-download"
+                            severity="danger"
+                            size="small"
+                            pTooltip="Descargar matriz"
+                            (click)="descargarPDF('Matriz', curso)"
+                        ></p-button>
+                    </td>
+
+                    <!-- Resultados -->
+                    <td style="text-align: center">
+                        <p-button
+                            label="Pendiente"
+                            icon="pi pi-upload"
+                            severity="warning"
+                            size="small"
+                            pTooltip="Subir resultados"
+                            (click)="onDialogImportarResultados(curso)"
+                        ></p-button>
+                    </td>
+
+                    <!-- Acciones -->
+                    <td style="text-align: center">
+                        <div class="flex gap-1 justify-content-center">
+                            <p-button
+                                icon="pi pi-cog"
+                                severity="secondary"
+                                size="small"
+                                [text]="true"
+                                pTooltip="Gestionar preguntas"
+                                (click)="gestionarPreguntas(curso)"
+                            ></p-button>
+                            <p-button
+                                icon="pi pi-trophy"
+                                severity="warning"
+                                size="small"
+                                [text]="true"
+                                pTooltip="Configurar nivel de logro"
+                                (click)="onDialogConfigurarNivelLogro(curso)"
+                            ></p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td
+                        [attr.colspan]="colsEspecialista.length"
+                        class="text-center p-4"
+                    >
+                        <i class="pi pi-info-circle text-4xl text-400 mb-3"></i>
+                        <p class="text-500 m-0">No hay áreas disponibles</p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div *ngIf="cursos.length === 0" class="text-center p-6">
+        <i class="pi pi-info-circle text-6xl text-400 mb-4"></i>
+        <h4 class="text-500">No hay áreas disponibles</h4>
+        <p class="text-500 m-0">
+            No se encontraron áreas para mostrar en este momento.
+        </p>
+    </div>
+
+    <div
+        *ngIf="!esDirector && !esEspecialista"
+        class="text-center p-6 bg-red-50 border-round"
+    >
+        <i class="pi pi-exclamation-triangle text-6xl text-red-500 mb-4"></i>
+        <h4 class="text-red-700">Perfil no autorizado</h4>
+        <p class="text-red-600 m-0">
+            Su perfil (ID: {{ iPerfilId }}) no tiene permisos para acceder a
+            esta funcionalidad.
+        </p>
+    </div>
 </p-panel>
 
-<!-- Diálogos (sin cambios) -->
+<app-configurar-nivel-logro [(mostrar)]="visible"> </app-configurar-nivel-logro>
+
 <app-dialog-generar-cuadernillo
     [(mostrarDialogoEdicion)]="mostrarDialogoEdicion"
-></app-dialog-generar-cuadernillo>
-
-<app-configurar-nivel-logro [(mostrar)]="visible"></app-configurar-nivel-logro>
+>
+</app-dialog-generar-cuadernillo>
 
 <!-- Toast para mensajes -->
 <p-toast></p-toast>

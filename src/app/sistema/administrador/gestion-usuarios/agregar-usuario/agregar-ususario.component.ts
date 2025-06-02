@@ -95,6 +95,7 @@ export class AgregarUsuarioComponent implements OnInit {
                         summary: 'Problema al obtener datos',
                         detail: 'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
                     })
+                    this.dataResultadoBusquedaUsuario = null
                     console.error('Error obteniendo datos:', error)
                 },
             })

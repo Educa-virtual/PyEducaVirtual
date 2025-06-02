@@ -110,10 +110,21 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             })
     }
 
+    iniciarFormulario() {
+        this.formAgregarPerfil = this.fb.group({
+            opcionSeleccionada: ['', [Validators.required]],
+            ieSeleccionada: [''],
+            iModuloSeleccionado: [''],
+            iUgelSeleccionada: [''],
+            ieSedeSeleccionada: [''],
+            iCursoSeleccionado: [''],
+            perfilSeleccionado: ['', [Validators.required]],
+        })
+    }
+
     obtenerPerfilesPorTipo(tipo: string) {
         this.usuariosService.obtenerPerfilesPorTipo(tipo).subscribe({
             next: (respuesta: any) => {
-                //this.dataPerfilesUsuario = respuesta.data
                 this.dataPerfiles = respuesta.data.map((perfil) => ({
                     value: perfil.iPerfilId,
                     label: perfil.cPerfilNombre,
@@ -185,34 +196,10 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                     })
                 },
             })
-        /*this.query
-            .searchCalAcademico({
-                esquema: 'acad',
-                tabla: 'sedes',
-                campos: 'iSedeId, iIieeId, cSedeNombre, iEstado',
-                condicion: 'iIieeId= ' + id,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    this.lista_sedes = data.data
-                },
-                error: (error) => {
-                    console.error('Error lista de Sedes:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje de error de Sedes',
-                        detail: error,
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })*/
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['visible'] && changes['visible'].currentValue === true) {
-            //this.inicializarDatos()
             this.obtenerPerfilesUsuario()
         }
     }
@@ -285,15 +272,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             { label: 'UGEL', value: 2 },
             { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
         ]
-        this.formAgregarPerfil = this.fb.group({
-            opcionSeleccionada: ['', [Validators.required]],
-            ieSeleccionada: [''],
-            iModuloSeleccionado: [''],
-            iUgelSeleccionada: [''],
-            ieSedeSeleccionada: [''],
-            iCursoSeleccionado: [''],
-            perfilSeleccionado: ['', [Validators.required]],
-        })
+        this.iniciarFormulario()
     }
 
     preguntarEliminarPerfil(perfil: PerfilAsignado) {
@@ -334,6 +313,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
 
     cerrarDialog() {
         this.dataPerfilesUsuario = []
+        this.iniciarFormulario()
         this.visibleChange.emit(false)
     }
 

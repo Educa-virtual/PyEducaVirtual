@@ -254,4 +254,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     updateUrl(curso: ICurso): void {
         curso.cCursoImagen = 'cursos/images/no-image.jpg'
     }
+
+    // Modal para guardar resultados online
+    guardarResultadosOnline(datos: { curso: ICurso }) {
+        this.dialogGuardarResultadosOnline.emit(datos)
+    }
 }

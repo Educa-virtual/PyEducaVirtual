@@ -110,7 +110,7 @@
                         severity="info"
                         size="small"
                         pTooltip="Ver resultados de evaluación"
-                        (click)="verResultados(curso)"
+                        (click)="onDialogResultadosOnline(curso)"
                     ></p-button>
                 </td>
             </tr>
@@ -263,7 +263,7 @@
                 <td style="text-align: center">
                     <div class="flex gap-1 justify-content-center">
                         <p-button
-                            icon="pi pi-cog"
+                            icon="pi pi-list"
                             severity="secondary"
                             size="small"
                             [text]="true"

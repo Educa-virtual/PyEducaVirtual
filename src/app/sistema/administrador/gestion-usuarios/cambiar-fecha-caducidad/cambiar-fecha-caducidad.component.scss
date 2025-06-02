@@ -36,16 +36,32 @@
     .dropdown-field {
         width: 100% !important;
         font-size: 0.9rem;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
 
-        &:hover {
-            border-color: #bfc8d0;
+        .p-inputtext {
+            border: 1px solid #ced4da !important;
+            border-radius: 4px !important;
+            background-color: #ffffff !important;
+            color: #495057 !important;
+            padding: 0.5rem 0.75rem !important;
+
+            &:hover {
+                border-color: #bfc8d0 !important;
+            }
+
+            &:focus {
+                border-color: #80bdff !important;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+                outline: none !important;
+            }
+
+            &:disabled {
+                background-color: #e9ecef !important;
+                opacity: 1 !important;
+            }
         }
 
-        &:focus {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        .p-calendar {
+            width: 100% !important;
         }
     }
 

@@ -83,30 +83,17 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     ngOnInit(): void {
         this.initializeBreadcrumb()
         this.initializeColumns()
-        console.log(' SimpleListaAreas inicializado')
-        console.log(' Perfil ID:', this.iPerfilId)
-        console.log(' Es Director:', this.esDirector)
-        console.log(' Es Especialista:', this.esEspecialista)
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['iEvaluacionIdHashed']?.currentValue) {
             this.iEvaluacionIdHashed =
                 changes['iEvaluacionIdHashed'].currentValue
-            console.log(
-                'iEvaluacionIdHashed actualizado:',
-                this.iEvaluacionIdHashed
-            )
         }
         if (changes['cursosFromParent']?.currentValue) {
             this.cursosFromParent = changes['cursosFromParent'].currentValue
             this.cursos = [...this.cursosFromParent]
-            console.log(
-                'Cursos recibidos del padre:',
-                this.cursos.length,
-                'cursos'
-            )
-            console.log('Primer curso:', this.cursos[0])
+            console.log('Cursos recibidos del padre:', this.cursos)
         }
     }
 
@@ -125,7 +112,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
     private initializeColumns(): void {
         this.colsDirector = [
-            { field: 'id', header: '#' },
+            { field: 'id', header: 'Nº' },
             { field: 'area', header: 'Área' },
             { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
             { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
@@ -134,7 +121,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         ]
 
         this.colsEspecialista = [
-            { field: 'id', header: '#' },
+            { field: 'id', header: 'Nº' },
             { field: 'area', header: 'Área' },
             { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
             { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
@@ -142,28 +129,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             { field: 'acciones', header: 'Acciones' },
         ]
     }
-
-    /*private initializeColumns(): void {
-        this.colsDirector = [
-            { field: 'id', header: '#' },
-            { field: 'area', header: 'Área' },
-            { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
-            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
-            { field: 'matriz', header: 'Matriz de Evaluación' },
-            { field: 'acciones', header: 'Acciones' },
-        ]
-
-        this.colsEspecialista = [
-            { field: 'id', header: '#' },
-            { field: 'area', header: 'Área' },
-            { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
-            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
-            { field: 'matriz', header: 'Matriz de Evaluación' },
-            { field: 'resultados', header: 'Resultados' },
-            { field: 'acciones', header: 'Acciones' },
-        ]
-    }
-        */
 
     descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
         if (!this.cursoSeleccionado) {
@@ -173,12 +138,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
         const params = {
             iEvaluacionId: this.iEvaluacionIdHashed,
-            iCursosNivelGradId:
-                this.cursoSeleccionado.iCursosNivelGradId ||
-                this.cursoSeleccionado.iCursoNivelGradId,
+            iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
             tipoArchivo: tipoArchivo,
         }
-        console.log('Descargando archivo:', params)
         this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
     }
 
@@ -191,18 +153,14 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         const user = this.store.getItem('dremoUser')
         const params = {
             iEvaluacionId: this.iEvaluacionIdHashed,
-            iCursosNivelGradId:
-                this.cursoSeleccionado.iCursosNivelGradId ||
-                this.cursoSeleccionado.iCursoNivelGradId,
+            iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
             iDocenteId: user.iDocenteId,
         }
-        console.log('Descargando matriz:', params)
         this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
     }
 
     descargarPDF(tipo: string, curso: ICurso): void {
         this.cursoSeleccionado = curso
-        console.log('Descargando PDF:', tipo, 'para curso:', curso.cCursoNombre)
 
         switch (tipo) {
             case 'Cuadernillo':
@@ -227,39 +185,31 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
     onDialogSubirArchivo(curso: ICurso): void {
         this.cursoSeleccionado = curso
-        console.log('Subir archivo para curso:', curso.cCursoNombre)
         this.dialogSubirArchivoEvent.emit({ curso })
     }
 
     onDialogConfigurarNivelLogro(curso: ICurso): void {
         this.cursoSeleccionado = curso
-        console.log('Configurar nivel logro para curso:', curso.cCursoNombre)
         this.dialogConfigurarNivelLogroEvent.emit({ curso })
     }
 
     onDialogImportarResultados(curso: ICurso): void {
         this.cursoSeleccionado = curso
-        console.log('Importar resultados para curso:', curso.cCursoNombre)
         this.dialogImportarResultados.emit({ curso })
     }
 
     onDialogResultadosOnline(curso: ICurso): void {
         this.cursoSeleccionado = curso
-        console.log('Resultados online para curso:', curso.cCursoNombre)
         this.dialogGuardarResultadosOnline.emit({ curso })
     }
 
     gestionarPreguntas(curso: ICurso): void {
-        console.log(' Gestionar preguntas para curso:', curso.cCursoNombre)
-        const cursosNivelGradId =
-            curso.iCursosNivelGradId || curso.iCursoNivelGradId
         this.router.navigate([
-            `ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${cursosNivelGradId}/preguntas`,
+            `ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/preguntas`,
         ])
     }
 
     recibirDatosParaConfigurarNivelLogro(datos: { curso: ICurso }): void {
-        console.log('Reenviando datos de nivel logro al padre:', datos)
         this.dialogConfigurarNivelLogroEvent.emit(datos)
         this.visible = false
     }
@@ -268,7 +218,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         console.log('Ver resultados de:', curso.cCursoNombre)
     }
 
-    // Getters para verificar roles
     get esDirector(): boolean {
         return this.iPerfilId === DIRECTOR_IE
     }
@@ -277,18 +226,32 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         return this.iPerfilId === ESPECIALISTA_DREMO
     }
 
-    get puedeSubirArchivos(): boolean {
-        return this.esEspecialista
-    }
+    eliminarArchivoCuadernillo(curso: ICurso): void {
+        this.cursoSeleccionado = curso
 
-    get puedeSubirResultados(): boolean {
-        return this.esDirector || this.esEspecialista
-    }
+        if (
+            confirm(
+                `¿Está seguro de eliminar el archivo de cuadernillo para ${curso.cCursoNombre}?\n\nEsto le permitirá subir un nuevo archivo.`
+            )
+        ) {
+            console.log(
+                'Eliminando archivo de cuadernillo para:',
+                curso.cCursoNombre
+            )
 
-    // Url Imagen
-    updateUrl(curso: ICurso): void {
-        if (curso.cCursoImagen) {
-            curso.cCursoImagen = 'cursos/images/no-image.jpg'
+            curso.bTieneArchivo = false
+
+            console.log(
+                'Archivo eliminado. Ahora puede subir un nuevo archivo.'
+            )
         }
+    }
+
+    obtenerNombreArchivo(curso: ICurso): string {
+        return `${curso.cCursoNombre?.toLowerCase().replace(/\s+/g, '_')}_eval.pdf`
+    }
+
+    updateUrl(curso: ICurso): void {
+        curso.cCursoImagen = 'cursos/images/no-image.jpg'
     }
 }

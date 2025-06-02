@@ -28,6 +28,10 @@ import { CuestionarioRoomComponent } from '../../actividades/actividad-cuestiona
 export class ActividadComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iProgActId: string
+    @Input() iIeCursoId: string
+    @Input() iSeccionId: string
+    @Input() iNivelGradoId: string
+
     public iActTopId: tipoActividadesKeys
 
     private _router = inject(Router)

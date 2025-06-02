@@ -1,7 +1,12 @@
 @switch (iActTopId) {
     <!-- tarea -->
     @case (1) {
-        <app-tarea-room [iTareaId]="ixActivadadId"></app-tarea-room>
+        <app-tarea-room
+            [iTareaId]="ixActivadadId"
+            [iIeCursoId]="iIeCursoId"
+            [iSeccionId]="iSeccionId"
+            [iNivelGradoId]="iNivelGradoId"
+        ></app-tarea-room>
     }
     <!-- Foro -->
     @case (2) {

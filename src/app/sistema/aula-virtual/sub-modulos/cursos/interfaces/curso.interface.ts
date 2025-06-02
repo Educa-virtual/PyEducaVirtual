@@ -23,4 +23,8 @@ export interface ICurso {
     iExamenCantidadPreguntas?: string
     iEvaluacionIdHashed?: string
     iCursoNivelGradId?: string
+    cSeccion?: string
+    iIeCursoId?: string
+    iNivelGradoId?: string
+    iSeccionId?: string
 }

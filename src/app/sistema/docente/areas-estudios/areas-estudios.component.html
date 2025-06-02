@@ -1,7 +1,4 @@
 <div class="grid">
-    <div class="col-12">
-        <p-messages [(value)]="messages" [enableService]="false" />
-    </div>
     <p-table
         #dv
         class="col-12 hoverTable"
@@ -181,6 +178,10 @@
                                     iCursoId: item.iCursoId,
                                     idDocCursoId: item.idDocCursoId,
                                     iNivelCicloId: item.iNivelCicloId,
+                                    iIeCursoId: item.iIeCursoId,
+                                    iSeccionId: item.iSeccionId,
+                                    iNivelGradoId: item.iNivelGradoId,
+                                    cantidad: item.cantidad,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"
@@ -226,6 +227,10 @@
                                     iCursoId: item.iCursoId,
                                     idDocCursoId: item.idDocCursoId,
                                     iNivelCicloId: item.iNivelCicloId,
+                                    iIeCursoId: item.iIeCursoId,
+                                    iSeccionId: item.iSeccionId,
+                                    iNivelGradoId: item.iNivelGradoId,
+                                    cantidad: item.cantidad,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"
@@ -237,10 +242,9 @@
             </tr>
         </ng-template>
     </p-table>
-    @if (iPerfilId === DOCENTE) {
+    @if (iPerfilId === DOCENTE && data.length) {
         <div class="col-12 flex flex-column md:flex-row my-5 mx-5">
             <p class="font-bold ml-2 mt-1">Leyenda:</p>
-
             <p-tag
                 severity="warning"
                 value="Avance de la Programación curricular"

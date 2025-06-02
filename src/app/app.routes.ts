@@ -58,6 +58,13 @@ export const routes: Routes = [
                     ),
             },
             {
+                path: 'actualizacion-docente',
+                loadChildren: () =>
+                    import(
+                        './sistema/actualizacion-docente/actualizacion-docente.routes'
+                    ),
+            },
+            {
                 path: 'new-mantenimiento-usuario',
                 component: NewMantenimientoUsuarioComponent,
             },

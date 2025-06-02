@@ -435,6 +435,9 @@ export class TabContenidoComponent implements OnInit {
                     actividad.iProgActId,
                     actividad.ixActivadadId,
                     actividad.iActTipoId,
+                    this.curso.iIeCursoId,
+                    this.curso.iSeccionId,
+                    this.curso.iNivelGradoId,
                 ],
                 {
                     queryParams: {
@@ -501,7 +504,13 @@ export class TabContenidoComponent implements OnInit {
                         '/' +
                         actividad.ixActivadadId +
                         '/' +
-                        actividad.iActTipoId,
+                        actividad.iActTipoId +
+                        '/' +
+                        this.curso.iIeCursoId +
+                        '/' +
+                        this.curso.iSeccionId +
+                        '/' +
+                        this.curso.iNivelGradoId,
                 ])
                 break
         }
@@ -594,6 +603,9 @@ export class TabContenidoComponent implements OnInit {
                         actividad.iProgActId,
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
+                        this.curso.iIeCursoId,
+                        this.curso.iSeccionId,
+                        this.curso.iNivelGradoId,
                     ],
                     {
                         queryParams: {

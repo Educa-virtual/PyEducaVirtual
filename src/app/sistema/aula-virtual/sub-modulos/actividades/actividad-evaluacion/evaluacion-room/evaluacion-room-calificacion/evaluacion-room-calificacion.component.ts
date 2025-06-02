@@ -133,6 +133,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
+        console.log(value)
         this._state.update((state) => {
             console.log('selectedEstudiante')
             console.log(value)
@@ -202,6 +203,13 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                 // const registro = data['data']
                 // this.curso = JSON.parse(registro.json_cursos);
                 this.estudianteMatriculadosxGrado = data['data']
+                this.estudianteMatriculadosxGrado =
+                    this.estudianteMatriculadosxGrado.map((item: any) => {
+                        return {
+                            ...item,
+                            cTitulo: item.Estudiante,
+                        }
+                    })
                 console.log(
                     'Estudiantes x Grado ',
                     this.estudianteMatriculadosxGrado

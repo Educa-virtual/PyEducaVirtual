@@ -301,7 +301,13 @@ export class TabContenidoComponent implements OnInit {
                         '/' +
                         actividad.ixActivadadId +
                         '/' +
-                        actividad.iActTipoId,
+                        actividad.iActTipoId +
+                        '/' +
+                        this.curso.iIeCursoId +
+                        '/' +
+                        this.curso.iSeccionId +
+                        '/' +
+                        this.curso.iNivelGradoId,
                 ])
                 break
         }

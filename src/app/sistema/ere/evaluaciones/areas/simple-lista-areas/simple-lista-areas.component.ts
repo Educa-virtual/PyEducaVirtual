@@ -58,6 +58,8 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         curso: ICurso
     }>()
 
+    @Output() solicitudActualizacion = new EventEmitter<void>()
+
     private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
     private _ConstantesService = inject(ConstantesService)
@@ -313,5 +315,16 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 (c) => c.iCursosNivelGradId === curso.iCursosNivelGradId
             ) + 1
         )
+    }
+
+    onArchivoSubidoExitoso(Curso: ICurso): void {
+        // Actualizar localmente
+        Curso.bTieneArchivo = true
+
+        // Solicitar actualización al padre
+        this.solicitudActualizacion.emit()
+
+        // Reagrupar cursos
+        this.agruparCursosPorGrado()
     }
 }

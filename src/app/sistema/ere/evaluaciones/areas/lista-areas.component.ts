@@ -119,7 +119,7 @@ export class ListaAreasComponent implements OnInit {
         this.dialogGuardarResultadosOnline.mostrarDialog(datos)
     }
 
-    actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
+    /*actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
         this.gestionarPreguntasCard.forEach((card) => {
             if (
                 card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
@@ -128,7 +128,26 @@ export class ListaAreasComponent implements OnInit {
             }
         })
     }
+    */
 
+    actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
+        const cursoIndex = this.cursos.findIndex(
+            (c) => c.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+        )
+
+        if (cursoIndex !== -1) {
+            this.cursos[cursoIndex].bTieneArchivo = true
+            this.cursos = [...this.cursos]
+        }
+
+        this.gestionarPreguntasCard?.forEach((card) => {
+            if (
+                card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+            ) {
+                card.curso.bTieneArchivo = true
+            }
+        })
+    }
     actualizarEstadoResultadosImportados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }

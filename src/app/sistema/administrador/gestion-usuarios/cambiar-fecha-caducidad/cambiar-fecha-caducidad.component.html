@@ -1,1 +1,41 @@
-<p>cambiar-fecha-caducidad works!</p>
+<p-dialog
+    [(visible)]="visible"
+    [focusOnShow]="false"
+    [style]="{ width: '800px' }"
+    [header]="'Cambiar fecha de caducidad de ' + usuario?.cApellidosNombres"
+    [modal]="true"
+    styleClass="p-fluid roles-dialog"
+    [draggable]="false"
+    (onHide)="cerrarDialog()"
+>
+    <div class="asignar-rol-container">
+        <form [formGroup]="formCambiarFecha">
+            <label for="fechaActual">Fecha actual</label>
+            <p-calendar
+                formControlName="fechaActual"
+                dateFormat="dd/mm/yy"
+                [showTime]="true"
+                [hourFormat]="'24'"
+                variant="filled"
+                appendTo="body"
+                [showOnFocus]="false"
+            />
+            <label for="fechaActual">Nueva fecha</label>
+            <p-calendar
+                formControlName="nuevaFecha"
+                dateFormat="dd/mm/yy"
+                [showTime]="true"
+                [hourFormat]="'24'"
+                variant="filled"
+                appendTo="body"
+            />
+            <button
+                pButton
+                pRipple
+                label="Actualizar"
+                class="p-button-success"
+                (click)="actualizarFecha()"
+            ></button>
+        </form>
+    </div>
+</p-dialog>

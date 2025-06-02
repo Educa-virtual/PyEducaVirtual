@@ -174,7 +174,7 @@
                             class="p-button-text p-button-help"
                             pTooltip="Cambiar fecha de caducidad"
                             tooltipPosition="top"
-                            (click)="editarPerfilesUsuario(user)"
+                            (click)="cambiarFechaCaducidad(user)"
                         ></button>
                     </td>
                 </tr>
@@ -194,6 +194,13 @@
         [usuario]="usuarioSeleccionado"
     >
     </app-editar-perfil>
+
+    <app-cambiar-fecha-caducidad
+        [visible]="modalCambiarFechaCaducidadVisible"
+        (visibleChange)="modalCambiarFechaCaducidadVisible = $event"
+        [usuario]="usuarioSeleccionado"
+    >
+    </app-cambiar-fecha-caducidad>
 
     <app-agregar-usuario
         [visible]="modalAgregarUsuariolVisible"

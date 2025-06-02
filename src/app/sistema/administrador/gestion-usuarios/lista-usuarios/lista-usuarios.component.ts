@@ -8,11 +8,17 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { EditarPerfilComponent } from '../editar-perfil/editar-perfil.component'
 import { Usuario } from '../interfaces/usuario.interface'
 import { AgregarUsuarioComponent } from '../agregar-usuario/agregar-ususario.component'
+import { CambiarFechaCaducidadComponent } from '../cambiar-fecha-caducidad/cambiar-fecha-caducidad.component'
 
 @Component({
     selector: 'app-lista-usuarios',
     standalone: true,
-    imports: [PrimengModule, EditarPerfilComponent, AgregarUsuarioComponent],
+    imports: [
+        PrimengModule,
+        EditarPerfilComponent,
+        AgregarUsuarioComponent,
+        CambiarFechaCaducidadComponent,
+    ],
     templateUrl: './lista-usuarios.component.html',
     styleUrl: './lista-usuarios.component.scss',
 })
@@ -32,9 +38,10 @@ export class ListaUsuariosComponent {
 
     modalAsignarRolVisible: boolean = false
     modalAgregarUsuariolVisible: boolean = false
+    modalCambiarFechaCaducidadVisible: boolean = false
     modalPersonalVisible: boolean = false
     criterioBusqueda: string = ''
-    selectedPersonal: Usuario | null = null
+    //selectedPersonal: Usuario | null = null
     opcionesBusqueda: any[] = []
     opcionBusquedaSeleccionada: any
     filtrosInstituciones: any[] = []
@@ -160,6 +167,11 @@ export class ListaUsuariosComponent {
     editarPerfilesUsuario(usuario: Usuario) {
         this.usuarioSeleccionado = usuario
         this.modalAsignarRolVisible = true
+    }
+
+    cambiarFechaCaducidad(usuario: Usuario) {
+        this.usuarioSeleccionado = usuario
+        this.modalCambiarFechaCaducidadVisible = true
     }
     /*
     abrirDialogoAsignarRol(usuario: Usuario) {

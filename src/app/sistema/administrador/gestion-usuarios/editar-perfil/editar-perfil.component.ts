@@ -212,7 +212,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['visible'] && changes['visible'].currentValue === true) {
-            this.inicializarDatos()
+            //this.inicializarDatos()
             this.obtenerPerfilesUsuario()
         }
     }

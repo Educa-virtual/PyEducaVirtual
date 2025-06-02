@@ -91,4 +91,11 @@ export class UsuariosService {
             `${this.urlBackendApi}/seg/personas?iTipoIdentId=${tipoDocumento}&cPersDocumento=${nroDocumento}`
         )
     }
+
+    actualizarFechaVigencia(iCredId: number, dtCredCaduca: Date) {
+        return this.http.patch(
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/fecha-vigencia`,
+            { dtCredCaduca: dtCredCaduca }
+        )
+    }
 }

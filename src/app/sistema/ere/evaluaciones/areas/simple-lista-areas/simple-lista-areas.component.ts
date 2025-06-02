@@ -80,10 +80,27 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
     cursoSeleccionado: ICurso | null = null
 
+    cursosAgrupados: { [key: string]: ICurso[] } = {}
+    gradosFiltrados: string[] = []
+    gradosOrdenados: string[]
+
     ngOnInit(): void {
         this.initializeBreadcrumb()
         this.initializeColumns()
     }
+
+    /*ngOnChanges(changes: SimpleChanges): void {
+        if (changes['iEvaluacionIdHashed']?.currentValue) {
+            this.iEvaluacionIdHashed =
+                changes['iEvaluacionIdHashed'].currentValue
+        }
+        if (changes['cursosFromParent']?.currentValue) {
+            this.cursosFromParent = changes['cursosFromParent'].currentValue
+            this.cursos = [...this.cursosFromParent]
+            console.log('Cursos recibidos del padre:', this.cursos)
+        }
+    }
+        */
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['iEvaluacionIdHashed']?.currentValue) {
@@ -93,7 +110,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         if (changes['cursosFromParent']?.currentValue) {
             this.cursosFromParent = changes['cursosFromParent'].currentValue
             this.cursos = [...this.cursosFromParent]
+            this.agruparCursosPorGrado()
             console.log('Cursos recibidos del padre:', this.cursos)
+            console.log('Cursos agrupados:', this.cursosAgrupados)
         }
     }
 
@@ -258,5 +277,41 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     // Modal para guardar resultados online
     guardarResultadosOnline(datos: { curso: ICurso }) {
         this.dialogGuardarResultadosOnline.emit(datos)
+    }
+
+    private agruparCursosPorGrado(): void {
+        this.cursosAgrupados = {}
+
+        this.cursos.forEach((curso) => {
+            const grado =
+                curso.cGradoAbreviacion?.toString().substring(0, 1) || '0'
+            const nivel =
+                curso.cNivelTipoNombre?.toString().replace('Educación ', '') ||
+                'Sin nivel'
+            const claveGrado = `${grado}° Grado - ${nivel}`
+
+            if (!this.cursosAgrupados[claveGrado]) {
+                this.cursosAgrupados[claveGrado] = []
+            }
+
+            this.cursosAgrupados[claveGrado].push(curso)
+        })
+
+        // Ordenar las claves de grados
+        this.gradosOrdenados = Object.keys(this.cursosAgrupados).sort(
+            (a, b) => {
+                const gradoA = parseInt(a.charAt(0))
+                const gradoB = parseInt(b.charAt(0))
+                return gradoA - gradoB
+            }
+        )
+    }
+
+    obtenerIndiceGlobal(curso: ICurso): number {
+        return (
+            this.cursos.findIndex(
+                (c) => c.iCursosNivelGradId === curso.iCursosNivelGradId
+            ) + 1
+        )
     }
 }

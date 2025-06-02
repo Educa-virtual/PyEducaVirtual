@@ -1,302 +1,312 @@
-<!-- <ng-template pTemplate="header">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
-        </div>
-    </ng-template>
-
-    <div class="bg-yellow-50 border-yellow-200 border-1 p-3 mb-4 border-round">
-        <h5 class="text-yellow-800 m-0 mb-2"> Debug Info:</h5>
-        <p class="m-0 text-sm">
-            <strong>Cursos recibidos:</strong> {{ cursos.length }} |
-            <strong>Es Director:</strong> {{ esDirector }} |
-            <strong>Es Especialista:</strong> {{ esEspecialista }} |
-            <strong>Perfil ID:</strong> {{ iPerfilId }}
-        </p>
-    </div> -->
-
+<!-- Director -->
 <div *ngIf="esDirector" class="mb-4">
-    <!-- <h4 class="text-primary mb-3">Vista Director - Solo descarga</h4> -->
-    <p-table
-        [value]="cursos"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        styleClass="p-datatable-sm"
-    >
-        <ng-template pTemplate="header">
-            <tr>
-                <th *ngFor="let col of colsDirector" style="text-align: center">
-                    {{ col.header }}
-                </th>
-            </tr>
-        </ng-template>
+    <div *ngFor="let grado of gradosOrdenados" class="mb-4">
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-graduation-cap text-primary"></i>
+                    <span class="font-semibold text-primary">{{ grado }}</span>
+                    <!--<p-badge [value]="cursosAgrupados[grado].length" severity="info" class="ml-2">
+                    </p-badge>-->
+                </div>
+            </ng-template>
 
-        <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
-            <tr>
-                <td style="text-align: center">{{ rowIndex + 1 }}</td>
+            <p-table
+                [value]="cursosAgrupados[grado]"
+                [tableStyle]="{ 'min-width': '50rem' }"
+                styleClass="p-datatable-sm"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th
+                            *ngFor="let col of colsDirector"
+                            style="text-align: center"
+                        >
+                            {{ col.header }}
+                        </th>
+                    </tr>
+                </ng-template>
 
-                <td>
-                    <div class="flex align-items-center gap-2">
-                        <img
-                            [src]="backend + '/' + curso.cCursoImagen"
-                            [alt]="curso.cCursoNombre"
-                            class="w-3rem h-3rem border-circle"
-                            (error)="updateUrl(curso)"
-                        />
-                        <div>
-                            <div class="font-semibold">
-                                <small class="text-primary font-bold">
-                                    {{
-                                        curso.cGradoAbreviacion
-                                            ?.toString()
-                                            .substring(0, 1)
-                                    }}° Grado -
-                                    {{
-                                        curso.cNivelTipoNombre
-                                            ?.toString()
-                                            .replace('Educación ', '')
-                                    }}
-                                </small>
-                                <br />
-                                {{ curso.cCursoNombre | stringCase }}
+                <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="text-align: center">
+                            {{ obtenerIndiceGlobal(curso) }}
+                        </td>
+
+                        <td>
+                            <div class="flex align-items-center gap-2">
+                                <img
+                                    [src]="backend + '/' + curso.cCursoImagen"
+                                    [alt]="curso.cCursoNombre"
+                                    class="w-3rem h-3rem border-circle"
+                                    (error)="updateUrl(curso)"
+                                />
+                                <div>
+                                    <div class="font-semibold">
+                                        {{ curso.cCursoNombre | stringCase }}
+                                    </div>
+                                    <div class="text-sm text-500">
+                                        {{ curso.iCantidadPreguntas }} preguntas
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-sm text-500">
-                                {{ curso.iCantidadPreguntas }} preguntas
-                            </div>
-                        </div>
-                    </div>
-                </td>
+                        </td>
 
-                <td style="text-align: center">
-                    <p-button
-                        label="Descargar"
-                        icon="pi pi-download"
-                        severity="danger"
-                        size="small"
-                        [disabled]="!curso.bTieneArchivo"
-                        (click)="descargarPDF('Cuadernillo', curso)"
-                        pTooltip="{{
-                            curso.bTieneArchivo
-                                ? 'Descargar cuadernillo'
-                                : 'No disponible'
-                        }}"
-                    ></p-button>
-                </td>
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                [disabled]="!curso.bTieneArchivo"
+                                (click)="descargarPDF('Cuadernillo', curso)"
+                                pTooltip="{{
+                                    curso.bTieneArchivo
+                                        ? 'Descargar cuadernillo'
+                                        : 'No disponible'
+                                }}"
+                            ></p-button>
+                        </td>
 
-                <td style="text-align: center">
-                    <p-button
-                        label="Descargar"
-                        icon="pi pi-download"
-                        severity="danger"
-                        size="small"
-                        (click)="descargarPDF('Hoja de respuestas', curso)"
-                        pTooltip="Descargar hoja de respuestas"
-                    ></p-button>
-                </td>
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                (click)="
+                                    descargarPDF('Hoja de respuestas', curso)
+                                "
+                                pTooltip="Descargar hoja de respuestas"
+                            ></p-button>
+                        </td>
 
-                <td style="text-align: center">
-                    <p-button
-                        label="Descargar"
-                        icon="pi pi-download"
-                        severity="danger"
-                        size="small"
-                        (click)="descargarPDF('Matriz', curso)"
-                        pTooltip="Descargar matriz"
-                    ></p-button>
-                </td>
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                (click)="descargarPDF('Matriz', curso)"
+                                pTooltip="Descargar matriz"
+                            ></p-button>
+                        </td>
 
-                <td style="text-align: center">
-                    <p-button
-                        label="Ver Resultados"
-                        icon="pi pi-chart-bar"
-                        severity="info"
-                        size="small"
-                        pTooltip="Ver resultados de evaluación"
-                        (click)="onDialogResultadosOnline(curso)"
-                    ></p-button>
-                </td>
-            </tr>
-        </ng-template>
+                        <td style="text-align: center">
+                            <p-button
+                                label="Ver Resultados"
+                                icon="pi pi-chart-bar"
+                                severity="info"
+                                size="small"
+                                pTooltip="Ver resultados de evaluación"
+                                (click)="onDialogResultadosOnline(curso)"
+                            ></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
 
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td
-                    [attr.colspan]="colsDirector.length"
-                    class="text-center p-4"
-                >
-                    <i class="pi pi-info-circle text-4xl text-400 mb-3"></i>
-                    <p class="text-500 m-0">No hay áreas disponibles</p>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td
+                            [attr.colspan]="colsDirector.length"
+                            class="text-center p-4"
+                        >
+                            <i
+                                class="pi pi-info-circle text-4xl text-400 mb-3"
+                            ></i>
+                            <p class="text-500 m-0">
+                                No hay áreas disponibles para este grado
+                            </p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+    </div>
 </div>
 
+<!-- Especialista -->
 <div *ngIf="esEspecialista" class="mb-4">
-    <!--<h4 class="text-primary mb-3">Vista Especialista - Gestión completa</h4>-->
-    <p-table
-        [value]="cursos"
-        [tableStyle]="{ 'min-width': '60rem' }"
-        styleClass="p-datatable-sm"
-    >
-        <ng-template pTemplate="header">
-            <tr>
-                <th
-                    *ngFor="let col of colsEspecialista"
-                    style="text-align: center"
-                >
-                    {{ col.header }}
-                </th>
-            </tr>
-        </ng-template>
+    <div *ngFor="let grado of gradosOrdenados" class="mb-4">
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-graduation-cap text-primary"></i>
+                    <span class="font-semibold text-primary">{{ grado }}</span>
+                    <!--<p-badge [value]="cursosAgrupados[grado].length" severity="info" class="ml-2">
+                    </p-badge> -->
+                </div>
+            </ng-template>
 
-        <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
-            <tr>
-                <td style="text-align: center">{{ rowIndex + 1 }}</td>
-
-                <td>
-                    <div class="flex align-items-center gap-2">
-                        <img
-                            [src]="backend + '/' + curso.cCursoImagen"
-                            [alt]="curso.cCursoNombre"
-                            class="w-3rem h-3rem border-circle"
-                            (error)="updateUrl(curso)"
-                        />
-                        <div>
-                            <div class="font-semibold">
-                                <small class="text-primary font-bold">
-                                    {{
-                                        curso.cGradoAbreviacion
-                                            ?.toString()
-                                            .substring(0, 1)
-                                    }}° Grado -
-                                    {{
-                                        curso.cNivelTipoNombre
-                                            ?.toString()
-                                            .replace('Educación ', '')
-                                    }}
-                                </small>
-                                <br />
-                                {{ curso.cCursoNombre | stringCase }}
-                            </div>
-                            <div class="text-sm text-500">
-                                {{ curso.iCantidadPreguntas }} preguntas
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <!-- Reemplaza la celda del cuadernillo en la tabla del especialista-->
-
-                <td style="text-align: center">
-                    <!-- Si NO tiene archivo: Mostrar botón "Pendiente" -->
-                    <p-button
-                        label="Pendiente"
-                        icon="pi pi-upload"
-                        severity="warning"
-                        size="small"
-                        *ngIf="!curso.bTieneArchivo"
-                        pTooltip="Subir cuadernillo"
-                        (click)="onDialogSubirArchivo(curso)"
-                    >
-                    </p-button>
-
-                    <!-- nombre de archivo pdf -->
-                    <div
-                        *ngIf="curso.bTieneArchivo"
-                        class="flex gap-2 justify-content-center align-items-center"
-                    >
-                        <!-- Nombre del archivo enlace -->
-                        <span
-                            class="text-primary cursor-pointer underline text-sm font-medium hover:text-primary-700"
-                            pTooltip="Hacer clic para descargar"
-                            (click)="descargarPDF('Cuadernillo', curso)"
-                            (keydown.enter)="descargarPDF('Cuadernillo', curso)"
-                            (keydown.space)="descargarPDF('Cuadernillo', curso)"
-                            tabindex="0"
-                            role="button"
-                            [attr.aria-label]="
-                                'Descargar archivo: ' +
-                                obtenerNombreArchivo(curso)
-                            "
+            <p-table
+                [value]="cursosAgrupados[grado]"
+                [tableStyle]="{ 'min-width': '60rem' }"
+                styleClass="p-datatable-sm"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th
+                            *ngFor="let col of colsEspecialista"
+                            style="text-align: center"
                         >
-                            <i class="pi pi-file-pdf text-red-500 mr-1"></i>
-                            {{ obtenerNombreArchivo(curso) }}
-                        </span>
+                            {{ col.header }}
+                        </th>
+                    </tr>
+                </ng-template>
 
-                        <!-- Icon trash para eliminar  -->
-                        <i
-                            class="pi pi-trash text-red-500 cursor-pointer hover:text-red-700 text-sm"
-                            pTooltip="Eliminar archivo"
-                            (click)="eliminarArchivoCuadernillo(curso)"
-                            (keydown.enter)="eliminarArchivoCuadernillo(curso)"
-                            (keydown.space)="eliminarArchivoCuadernillo(curso)"
-                            tabindex="0"
-                            role="button"
-                            [attr.aria-label]="
-                                'Eliminar archivo de ' + curso.cCursoNombre
-                            "
+                <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="text-align: center">
+                            {{ obtenerIndiceGlobal(curso) }}
+                        </td>
+
+                        <td>
+                            <div class="flex align-items-center gap-2">
+                                <img
+                                    [src]="backend + '/' + curso.cCursoImagen"
+                                    [alt]="curso.cCursoNombre"
+                                    class="w-3rem h-3rem border-circle"
+                                    (error)="updateUrl(curso)"
+                                />
+                                <div>
+                                    <div class="font-semibold">
+                                        {{ curso.cCursoNombre | stringCase }}
+                                    </div>
+                                    <div class="text-sm text-500">
+                                        {{ curso.iCantidadPreguntas }} preguntas
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td style="text-align: center">
+                            <p-button
+                                label="Pendiente"
+                                icon="pi pi-upload"
+                                severity="warning"
+                                size="small"
+                                *ngIf="!curso.bTieneArchivo"
+                                pTooltip="Subir cuadernillo"
+                                (click)="onDialogSubirArchivo(curso)"
+                            ></p-button>
+
+                            <div
+                                *ngIf="curso.bTieneArchivo"
+                                class="flex gap-2 justify-content-center align-items-center"
+                            >
+                                <span
+                                    class="text-primary cursor-pointer underline text-sm font-medium hover:text-primary-700"
+                                    pTooltip="Hacer clic para descargar"
+                                    (click)="descargarPDF('Cuadernillo', curso)"
+                                    (keydown.enter)="
+                                        descargarPDF('Cuadernillo', curso)
+                                    "
+                                    (keydown.space)="
+                                        descargarPDF('Cuadernillo', curso)
+                                    "
+                                    tabindex="0"
+                                    role="button"
+                                    [attr.aria-label]="
+                                        'Descargar archivo: ' +
+                                        obtenerNombreArchivo(curso)
+                                    "
+                                >
+                                    <i
+                                        class="pi pi-file-pdf text-red-500 mr-1"
+                                    ></i>
+                                    {{ obtenerNombreArchivo(curso) }}
+                                </span>
+
+                                <i
+                                    class="pi pi-trash text-red-500 cursor-pointer hover:text-red-700 text-sm"
+                                    pTooltip="Eliminar archivo"
+                                    (click)="eliminarArchivoCuadernillo(curso)"
+                                    (keydown.enter)="
+                                        eliminarArchivoCuadernillo(curso)
+                                    "
+                                    (keydown.space)="
+                                        eliminarArchivoCuadernillo(curso)
+                                    "
+                                    tabindex="0"
+                                    role="button"
+                                    [attr.aria-label]="
+                                        'Eliminar archivo de ' +
+                                        curso.cCursoNombre
+                                    "
+                                ></i>
+                            </div>
+                        </td>
+
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                pTooltip="Descargar hoja de respuestas"
+                                (click)="
+                                    descargarPDF('Hoja de respuestas', curso)
+                                "
+                            ></p-button>
+                        </td>
+
+                        <td style="text-align: center">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                pTooltip="Descargar matriz"
+                                (click)="descargarPDF('Matriz', curso)"
+                            ></p-button>
+                        </td>
+
+                        <td style="text-align: center">
+                            <div class="flex gap-1 justify-content-center">
+                                <p-button
+                                    icon="pi pi-list"
+                                    severity="secondary"
+                                    size="small"
+                                    [text]="true"
+                                    pTooltip="Gestionar preguntas"
+                                    (click)="gestionarPreguntas(curso)"
+                                ></p-button>
+                                <p-button
+                                    icon="pi pi-trophy"
+                                    severity="warning"
+                                    size="small"
+                                    [text]="true"
+                                    pTooltip="Configurar nivel de logro"
+                                    (click)="
+                                        onDialogConfigurarNivelLogro(curso)
+                                    "
+                                ></p-button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td
+                            [attr.colspan]="colsEspecialista.length"
+                            class="text-center p-4"
                         >
-                        </i>
-                    </div>
-                </td>
-
-                <td style="text-align: center">
-                    <p-button
-                        label="Descargar"
-                        icon="pi pi-download"
-                        severity="danger"
-                        size="small"
-                        pTooltip="Descargar hoja de respuestas"
-                        (click)="descargarPDF('Hoja de respuestas', curso)"
-                    ></p-button>
-                </td>
-
-                <td style="text-align: center">
-                    <p-button
-                        label="Descargar"
-                        icon="pi pi-download"
-                        severity="danger"
-                        size="small"
-                        pTooltip="Descargar matriz"
-                        (click)="descargarPDF('Matriz', curso)"
-                    ></p-button>
-                </td>
-
-                <td style="text-align: center">
-                    <div class="flex gap-1 justify-content-center">
-                        <p-button
-                            icon="pi pi-list"
-                            severity="secondary"
-                            size="small"
-                            [text]="true"
-                            pTooltip="Gestionar preguntas"
-                            (click)="gestionarPreguntas(curso)"
-                        ></p-button>
-                        <p-button
-                            icon="pi pi-trophy"
-                            severity="warning"
-                            size="small"
-                            [text]="true"
-                            pTooltip="Configurar nivel de logro"
-                            (click)="onDialogConfigurarNivelLogro(curso)"
-                        ></p-button>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td
-                    [attr.colspan]="colsEspecialista.length"
-                    class="text-center p-4"
-                >
-                    <i class="pi pi-info-circle text-4xl text-400 mb-3"></i>
-                    <p class="text-500 m-0">No hay áreas disponibles</p>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+                            <i
+                                class="pi pi-info-circle text-4xl text-400 mb-3"
+                            ></i>
+                            <p class="text-500 m-0">
+                                No hay áreas disponibles para este grado
+                            </p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+    </div>
 </div>
 
+<!-- Mensaje cuando no hay cursos -->
 <div *ngIf="cursos.length === 0" class="text-center p-6">
     <i class="pi pi-info-circle text-6xl text-400 mb-4"></i>
     <h4 class="text-500">No hay áreas disponibles</h4>
@@ -305,6 +315,7 @@
     </p>
 </div>
 
+<!-- Mensaje para perfiles no autorizados -->
 <div
     *ngIf="!esDirector && !esEspecialista"
     class="text-center p-6 bg-red-50 border-round"
@@ -317,11 +328,9 @@
     </p>
 </div>
 
-<app-configurar-nivel-logro [(mostrar)]="visible"> </app-configurar-nivel-logro>
-
+<!-- Componentes dialogs -->
+<app-configurar-nivel-logro [(mostrar)]="visible"></app-configurar-nivel-logro>
 <app-dialog-generar-cuadernillo
     [(mostrarDialogoEdicion)]="mostrarDialogoEdicion"
->
-</app-dialog-generar-cuadernillo>
-
+></app-dialog-generar-cuadernillo>
 <p-toast></p-toast>

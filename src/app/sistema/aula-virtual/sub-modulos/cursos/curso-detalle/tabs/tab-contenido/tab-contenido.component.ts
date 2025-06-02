@@ -337,7 +337,20 @@ export class TabContenidoComponent implements OnInit {
                         console.log('Formulario cancelado')
                     }
                 })
+                break
+            case 'ELIMINAR':
+                this._confirmService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la videoconferencia ' +
+                        actividad['cRVirtualTema'] +
+                        ' ?',
+                    accept: () => {
+                        this.deleteReunionVirtualxiRVirtualId(actividad)
+                    },
+                })
+                break
         }
+
         // if (action === 'EDITAR' || action === 'CREAR') {
         //     let data = null
         //     let header = 'Crear Videoconferencia'
@@ -734,6 +747,29 @@ export class TabContenidoComponent implements OnInit {
             },
         }
         this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerContenidoSemanas()
+                }
+            },
+        })
+    }
+
+    deleteReunionVirtualxiRVirtualId(actividad) {
+        actividad.opcion = 'ELIMINARxiTareaid'
+        actividad.iTareaId = actividad.ixActivadadId
+        const data = {
+            petition: 'delete',
+            group: 'aula-virtual',
+            prefix: 'reunion-virtuales',
+            data: actividad,
+            ruta: actividad.ixActivadadId.toString(),
+            params: {
+                skipSuccessMessage: true,
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        this._generalService.getGralPrefixx(data).subscribe({
             next: (resp) => {
                 if (resp.validated) {
                     this.obtenerContenidoSemanas()

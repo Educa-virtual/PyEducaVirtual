@@ -166,7 +166,6 @@ export class VideoconferenciaFormContainerComponent
 
         if (!this.formConferencia.invalid) {
             console.log('Formulario válido', this.formConferencia.value)
-            this.ref.close(this.formConferencia.value)
 
             const data = {
                 opcion: 'GUARDARxProgActxiRVirtualId',
@@ -207,17 +206,19 @@ export class VideoconferenciaFormContainerComponent
                             this.actividad.ixActivadadId
                         )
                         .subscribe({
-                            next: (response) => {
+                            next: (response: any) => {
                                 console.log('response')
                                 console.log(response)
+                                this.closeModal(response.validated)
                             },
                         })
                     break
                 case 'GUARDAR':
                     this.apiAulaService.guardarReunionVirtual(data).subscribe({
-                        next: (response) => {
+                        next: (response: any) => {
                             console.log('response')
                             console.log(response)
+                            this.closeModal(response.validated)
                         },
                     })
                     break

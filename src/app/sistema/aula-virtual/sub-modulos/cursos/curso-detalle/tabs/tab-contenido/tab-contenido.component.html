@@ -8,6 +8,7 @@
                 <app-card-orderlist
                     [data]="contenidoSemanas"
                     [inputSearch]="false"
+                    [seleccionado]="semanaSeleccionada"
                     (datoSeleccionado)="mostrarDetalleSemana($event)"
                 >
                 </app-card-orderlist>

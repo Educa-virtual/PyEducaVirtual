@@ -145,6 +145,12 @@ export const actividadesConfig: Record<
                 label: 'Eliminar',
                 isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
             },
+            {
+                icon: 'pi pi-external-link',
+                accion: 'INGRESAR',
+                class: '',
+                label: 'Ingresar',
+            },
         ],
     },
     // [MATERIAL]: {

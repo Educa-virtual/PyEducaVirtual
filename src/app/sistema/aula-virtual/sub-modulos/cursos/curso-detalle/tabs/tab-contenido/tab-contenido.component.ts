@@ -137,7 +137,7 @@ export class TabContenidoComponent implements OnInit {
 
     private getData() {
         this.obtenerTipoActivadad()
-        this.obtenerContenidoSemanas()
+        this.obtenerContenidoSemanas(null)
     }
 
     obtenerTipoActivadad() {
@@ -150,32 +150,61 @@ export class TabContenidoComponent implements OnInit {
         })
     }
     loadingContenidoSemanas: boolean = true
-    private obtenerContenidoSemanas() {
+    private obtenerContenidoSemanas(semana) {
+        console.log(semana)
         this.loadingContenidoSemanas = true
 
         this._aulaService
             .contenidoSemanasProgramacionActividades({
                 iSilaboId: this._iSilaboId,
                 perfil: this.iPerfilId === DOCENTE ? 'DOCENTE' : 'ESTUDIANTE',
+                iContenidoSemId: semana ? semana.iContenidoSemId : null,
             })
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
                     this.loadingContenidoSemanas = false
-                    this.contenidoSemanas = data
-                    // console.log('contenido semanas')
-                    console.log('cotenidos', this.contenidoSemanas)
-                    this.contenidoSemanas = this.contenidoSemanas.map(
-                        (item: any) => {
-                            return {
-                                ...item,
-                                cTitulo:
-                                    'SEMANA ' +
-                                    (item.cContenidoSemNumero || ''),
-                                cDescripcion: item.cContenidoSemTitulo || '',
+                    if (semana) {
+                        this.semanaSeleccionada = data.length ? data[0] : []
+                        this.semanaActivado = semana.iContenidoSemId
+
+                        this.contenidoSemanas = this.contenidoSemanas.map(
+                            (item: any) =>
+                                item.iContenidoSemId === semana.iContenidoSemId
+                                    ? {
+                                          ...item,
+                                          ...this.semanaSeleccionada,
+                                      }
+                                    : item
+                        )
+
+                        this.contenidoSemanas = this.contenidoSemanas.map(
+                            (item: any) => {
+                                return {
+                                    ...item,
+                                    cTitulo:
+                                        'SEMANA ' +
+                                        (item.cContenidoSemNumero || ''),
+                                    cDescripcion:
+                                        item.cContenidoSemTitulo || '',
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        this.contenidoSemanas = data
+                        this.contenidoSemanas = this.contenidoSemanas.map(
+                            (item: any) => {
+                                return {
+                                    ...item,
+                                    cTitulo:
+                                        'SEMANA ' +
+                                        (item.cContenidoSemNumero || ''),
+                                    cDescripcion:
+                                        item.cContenidoSemTitulo || '',
+                                }
+                            }
+                        )
+                    }
                 },
                 error: (error) => {
                     console.log(error)
@@ -273,7 +302,8 @@ export class TabContenidoComponent implements OnInit {
                 )
                 ref.onClose.subscribe((result) => {
                     if (result) {
-                        this.getData()
+                        // this.getData()
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                         console.log('Formulario enviado', result)
                     } else {
                         console.log('Formulario cancelado')
@@ -337,8 +367,7 @@ export class TabContenidoComponent implements OnInit {
                 )
                 ref.onClose.subscribe((result) => {
                     if (result) {
-                        this.getData()
-                        console.log('Formulario enviado', result)
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                     } else {
                         console.log('Formulario cancelado')
                     }
@@ -354,6 +383,9 @@ export class TabContenidoComponent implements OnInit {
                         this.deleteReunionVirtualxiRVirtualId(actividad)
                     },
                 })
+                break
+            case 'INGRESAR':
+                window.open(actividad['cRVirtualUrlJoin'], '_blank')
                 break
         }
 
@@ -393,7 +425,9 @@ export class TabContenidoComponent implements OnInit {
                             ...result,
                         }
                         this._aulaService.actualizarForo(data).subscribe(() => {
-                            this.getData()
+                            this.obtenerContenidoSemanas(
+                                this.semanaSeleccionada
+                            )
                         })
                     } else {
                         console.log('Formulario cancelado')
@@ -422,7 +456,9 @@ export class TabContenidoComponent implements OnInit {
                         }
                         console.log('Formulario enviado', data)
                         this._aulaService.guardarForo(data).subscribe(() => {
-                            this.getData()
+                            this.obtenerContenidoSemanas(
+                                this.semanaSeleccionada
+                            )
                         })
                     } else {
                         console.log('Formulario cancelado')
@@ -489,7 +525,7 @@ export class TabContenidoComponent implements OnInit {
                 )
                 ref.onClose.subscribe((result) => {
                     if (result) {
-                        this.getData()
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                         console.log('Formulario enviado', result)
                     } else {
                         console.log('Formulario cancelado')
@@ -497,7 +533,6 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'ELIMINAR':
-                console.log(actividad)
                 this._confirmService.openConfirm({
                     header:
                         '¿Esta seguro de eliminar el Cuestionario:  ' +
@@ -548,7 +583,7 @@ export class TabContenidoComponent implements OnInit {
             .anularPublicacionEvaluacion({ iEvaluacionId })
             .subscribe({
                 next: () => {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 },
             })
     }
@@ -607,8 +642,6 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
-                console.log('actividades')
-                console.log(this.actividadSelected)
                 this.router.navigate(
                     [
                         '../',
@@ -697,7 +730,7 @@ export class TabContenidoComponent implements OnInit {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: () => {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 },
             })
     }
@@ -708,7 +741,7 @@ export class TabContenidoComponent implements OnInit {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: () => {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 },
             })
     }
@@ -727,7 +760,7 @@ export class TabContenidoComponent implements OnInit {
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
                 if (resp.validated) {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 }
             },
         })
@@ -746,7 +779,7 @@ export class TabContenidoComponent implements OnInit {
         this._generalService.getGralPrefixx(params).subscribe({
             next: (resp) => {
                 if (resp.validated) {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 }
             },
         })
@@ -767,7 +800,7 @@ export class TabContenidoComponent implements OnInit {
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
                 if (resp.validated) {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 }
             },
         })
@@ -790,7 +823,7 @@ export class TabContenidoComponent implements OnInit {
         this._generalService.getGralPrefixx(data).subscribe({
             next: (resp) => {
                 if (resp.validated) {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 }
             },
         })

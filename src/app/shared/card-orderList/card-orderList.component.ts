@@ -21,7 +21,7 @@ export class CardOrderListComponent implements OnChanges {
     @Input() mostrarImagen: boolean = false
     @Output() datoSeleccionado = new EventEmitter<any>() // Evento para el padre
 
-    seleccionado: any = null
+    @Input() seleccionado: any = null
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['data']) {
@@ -33,8 +33,13 @@ export class CardOrderListComponent implements OnChanges {
         if (changes['inputSearch']) {
             this.inputSearch = changes['inputSearch']?.currentValue
         }
+        if (changes['seleccionado']) {
+            this.seleccionado = changes['seleccionado']?.currentValue
+            this.obtenerDatos(this.seleccionado) // Emitimos el seleccionado al iniciar
+        }
     }
     obtenerDatos(data: any) {
+        if (!data) return // Si no hay datos, no hacemos nada
         this.datoSeleccionado.emit(data) // Emitimos el estudiante seleccionado
     }
     // Estructura de datos que se esperaF

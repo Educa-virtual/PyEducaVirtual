@@ -93,7 +93,7 @@ export class CuestionarioFormComponent implements OnInit {
     // metodo para guardar el cuestionario
     guardarCuestionario() {
         const formValue = this.formCuestionario.value
-        this.filesUrl = (this.filesUrl?.length ?? 0) > 0 ? this.filesUrl : null
+
         const data = {
             ...formValue,
             dtInicio: this.pipe.transform(
@@ -101,7 +101,9 @@ export class CuestionarioFormComponent implements OnInit {
                 'yyyy-MM-ddTHH:mm:ss'
             ),
             dtFin: this.pipe.transform(formValue.dtFin, 'yyyy-MM-ddTHH:mm:ss'),
-            cArchivoAdjunto: this.filesUrl,
+            cArchivoAdjunto: this.filesUrl.length
+                ? JSON.stringify(this.filesUrl)
+                : null,
             iDocenteId: this._constantesService.iDocenteId,
             iProgActId: '',
             opcion: 'GUARDARxProgActxiCuestionarioId',
@@ -229,7 +231,7 @@ export class CuestionarioFormComponent implements OnInit {
         this.GeneralService.getGralPrefixx(data).subscribe({
             next: (response) => {
                 console.log('Cuestionario actualizado:', response)
-                this.opcion = 'GUARDAR' // Resetear estado después de actualizar
+                this.ref.close(true)
             },
             error: (error) => {
                 console.error('Error al actualizar cuestionario:', error)

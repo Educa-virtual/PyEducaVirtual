@@ -10,16 +10,21 @@ export interface ICurso {
     iSilaboId?: string
     nombrecompleto?: string
     cNivelTipoNombre?: string
-    cSeccion?: string
+    cSeccionNombre?: string
+    cantidad?: string
     cCursoImagen?: string
     idDocCursoId?: string
     iNivelCicloId?: any
     iCantidadPreguntas?: number
     iCursosNivelGradId?: string
     bTieneArchivo?: boolean
-    //iCursoNivelGradId?: string
     dtExamenFechaInicio?: string
     dtExamenFechaFin?: string
     iExamenCantidadPreguntas?: string
     iEvaluacionIdHashed?: string
+    iCursoNivelGradId?: string
+    cSeccion?: string
+    iIeCursoId?: string
+    iNivelGradoId?: string
+    iSeccionId?: string
 }

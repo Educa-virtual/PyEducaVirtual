@@ -1,9 +1,5 @@
-import { CommonModule } from '@angular/common'
 import { Component, OnInit, Input, inject } from '@angular/core'
-import {
-    ContainerPageComponent,
-    IActionContainer,
-} from '@/app/shared/container-page/container-page.component'
+import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
     IColumn,
@@ -19,58 +15,25 @@ import {
     matRule,
     matStar,
 } from '@ng-icons/material-icons/baseline'
-import { DataViewModule } from 'primeng/dataview'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
-import { DropdownModule } from 'primeng/dropdown'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { TableModule } from 'primeng/table'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
-import { GeneralService } from '@/app/servicios/general.service'
-import { TabViewModule } from 'primeng/tabview'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Message, MessageService } from 'primeng/api'
 import { Subject, takeUntil } from 'rxjs'
-import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TabsKeys } from '../tab.interface'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
-import { TooltipModule } from 'primeng/tooltip'
+import { CardOrderListComponent } from '../../../../../../../shared/card-orderList/card-orderList.component'
+import { SelectButtonChangeEvent } from 'primeng/selectbutton'
+import { DetalleMatriculasService } from '@/app/servicios/acad/detalle-matriculas.service'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
     templateUrl: './tab-resultados.component.html',
     styleUrls: ['./tab-resultados.component.scss'],
-    imports: [
-        TablePrimengComponent,
-        TooltipModule,
-        ButtonModule,
-        RemoveHTMLPipe,
-        TabViewModule,
-        TableModule,
-        CommonInputComponent,
-        IconComponent,
-        DataViewModule,
-        OrderListModule,
-        InputIconModule,
-        PrimengModule,
-        IconFieldModule,
-        ContainerPageComponent,
-        InputTextModule,
-        DropdownModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        CommonModule,
-    ],
+    imports: [TablePrimengComponent, PrimengModule, CardOrderListComponent],
     providers: [
         provideIcons({
             matHideSource,
@@ -92,12 +55,14 @@ export class TabResultadosComponent implements OnInit {
     @Input() idDocCursoId
     @Input() curso
 
-    private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     private _confirmService = inject(ConfirmationModalService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    private _DetalleMatriculasService = inject(DetalleMatriculasService)
+    private _MessageService = inject(MessageService)
+
     @Input() actions: IActionContainer[] = [
         {
             labelTooltip: 'Descargar Pdf',
@@ -142,6 +107,22 @@ export class TabResultadosComponent implements OnInit {
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
     califcnFinal: any[] = []
+    stateOptions: any[] = [
+        { label: 'Resumen', value: '1' },
+        { label: 'Detalle Completo', value: '2' },
+    ]
+    listarActividades: any[] = [
+        {
+            label: 'Actividad de Aprendizaje',
+            value: '1',
+            styleClass: 'btn-success',
+        },
+        { label: 'Foro', value: '2', styleClass: 'btn-success' },
+        { label: 'Evaluación', value: '3', styleClass: 'btn-danger' },
+    ]
+    seleccionarResultado = '1'
+    actividadSeleccionado = '1'
+
     public califcFinal: FormGroup = this._formBuilder.group({
         cDetMatrConclusionDesc1: ['', [Validators.required]],
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
@@ -150,7 +131,7 @@ export class TabResultadosComponent implements OnInit {
         iEscalaCalifId: ['', [Validators.required]],
         cDetMatConclusionDescPromedio: ['', [Validators.required]],
     })
-    constructor(private messageService: MessageService) {}
+
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
         {
@@ -196,7 +177,7 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'iEscalaCalifIdPromedio',
+            field: 'iEscalaCalifIdPromedioFinal',
             header: 'Promedio Final',
             text_header: 'center',
             text: 'center',
@@ -234,26 +215,30 @@ export class TabResultadosComponent implements OnInit {
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
     }
+
     //Agregar conclusion descritiva final
     mostrarModalConclusionDesc: boolean = false
     descrip: string
+
     accionBnt({ accion, item }): void {
         switch (accion) {
             case 'agregarConclusion':
                 // this.mostrarModalConclusionDesc = true
-                this.enviarDatosFinales(accion, item)
+                this.enviarDatosFinales(item)
                 break
         }
     }
     //enviar datos al modal
-    enviarDatosFinales(accion, item) {
+    enviarDatosFinales(item) {
         this.mostrarModalConclusionDesc = true
         this.estudianteSelect = item
         // this.descrip = item.cDetMatConclusionDescPromedio
-        // this.conclusionDescrp.controls[
-        //     'cDetMatConclusionDescPromedio'
-        // ].setValue(this.descrip)
-        console.log('Agregar descripcion', accion, item, this.descrip)
+        this.conclusionDescrp.controls['iEscalaCalifId'].setValue(
+            item.iEscalaCalifIdPromedio
+        )
+        this.conclusionDescrp.controls[
+            'cDetMatConclusionDescPromedio'
+        ].setValue(item.cDetMatConclusionDescPromedio)
     }
     //cerra el modal de calificacion
     cerrarModalDeCalif() {
@@ -403,14 +388,22 @@ export class TabResultadosComponent implements OnInit {
     // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []
     obtenerReporteDenotasFinales() {
-        console.log('idCurso:', this.iCursoId)
-        const value = this.iCursoId
         this._aulaService
             .obtenerReporteFinalDeNotas({
-                iIeCursoId: value,
+                iIeCursoId: this.curso.iIeCursoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iSeccionId: this.curso.iSeccionId,
+                iNivelGradoId: this.curso.iNivelGradoId,
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
+                this.reporteNotasFinales = Data['data'].map((item: any) => {
+                    return {
+                        ...item,
+                        cTitulo: item.completoalumno,
+                    }
+                })
                 // console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
                 //console.log('Mostrar notas finales', this.reporteNotasFinales)
@@ -424,41 +417,61 @@ export class TabResultadosComponent implements OnInit {
             conclusionDescrp.cDetMatConclusionDescPromedio
         )
         const idEscala = conclusionDescrp.iEscalaCalifId
-        const where = [
-            {
-                COLUMN_NAME: 'iDetMatrId',
-                VALUE: this.estudianteSelect.iDetMatrId,
-            },
-        ]
-        const registro: any = {
+
+        const params: any = {
             iEscalaCalifIdPromedio: idEscala,
+            iEstudianteId: this.estudianteSelect.iEstudianteId,
+            iMatrId: this.estudianteSelect.iMatrId,
+            iIeCursoId: this.curso.iIeCursoId,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
+            iSeccionId: this.curso.iSeccionId,
+            idDocCursoId: this.idDocCursoId,
+            iCredId: this._constantesService.iCredId,
         }
-        // console.log(registro, conclusionDescrp)
-        this._aulaService
-            .guardarCalificacionEstudiante(
-                'acad',
-                'detalle_matriculas',
-                where,
-                registro
+        this._DetalleMatriculasService
+            .guardarConclusionDescriptiva(
+                this.estudianteSelect.iDetMatrId,
+                params
             )
             .subscribe({
                 next: (response) => {
                     this.obtenerReporteDenotasFinales()
                     this.mostrarModalConclusionDesc = false
-                    console.log('actualizar:', response)
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Calificación guardada correctamente.',
-                    })
+                    this.conclusionDescrp.reset()
+                    if (response.validated) {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: 'Calificación guardada correctamente.',
+                        })
+                    }
                 },
                 error: (error) => {
-                    console.log('Error en la actualización:', error)
+                    const errores = error?.error?.errors
+
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this._MessageService.add({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this._MessageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
                 },
             })
-        this.conclusionDescrp.reset()
-        console.log('conclusion;', where, registro)
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
@@ -470,7 +483,7 @@ export class TabResultadosComponent implements OnInit {
             this.califcFinal.value.iEscalaCalifIdPeriodo1
         )
         if (this.estudianteSeleccionado == undefined) {
-            this.messageService.add({
+            this._MessageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Seleccione un estudiante:',
@@ -531,7 +544,7 @@ export class TabResultadosComponent implements OnInit {
                 conclusionFinalDocente == '' ||
                 this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
             ) {
-                this.messageService.add({
+                this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
@@ -555,7 +568,7 @@ export class TabResultadosComponent implements OnInit {
                                     //actualiza la tabla de reporte de notas:
                                     this.obtenerReporteDenotasFinales()
                                     console.log('actualizar:', response)
-                                    this.messageService.add({
+                                    this._MessageService.add({
                                         severity: 'success',
                                         summary: 'Éxito',
                                         detail: 'Calificación guardada correctamente.',
@@ -571,7 +584,7 @@ export class TabResultadosComponent implements OnInit {
                     },
                     reject: () => {
                         // Mensaje de cancelación (opcional)
-                        this.messageService.add({
+                        this._MessageService.add({
                             severity: 'error',
                             summary: 'Cancelado',
                             detail: 'Acción cancelada',
@@ -593,14 +606,17 @@ export class TabResultadosComponent implements OnInit {
     unidades: any[] = []
     habilitarCalificacion() {
         const idYear = 3 //this._constantesService.iYAcadId
-        console.log('fecha', idYear)
         const params = {
             iYAcadId: idYear,
             iCredId: this._constantesService.iCredId,
         }
-        console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
+            // this.unidades.forEach((periodo, index) => {
+            //     periodo.cPeriodoEvalNombre = `TRIMESTRAL ${index + 1}`;
+            // });
+
+            console.log(this.unidades)
             this.unidades = this.unidades.map((unidad) => {
                 const ini = new Date(
                     unidad.dtPeriodoEvalAperInicio
@@ -617,5 +633,14 @@ export class TabResultadosComponent implements OnInit {
             })
             //console.log('Mostrar fechas', this.unidades)
         })
+    }
+
+    iTabSeleccionado: string = '1'
+    obtenerTab(evn: SelectButtonChangeEvent) {
+        if (!evn.value) {
+            this.seleccionarResultado = this.iTabSeleccionado
+        } else {
+            this.iTabSeleccionado = evn.value
+        }
     }
 }

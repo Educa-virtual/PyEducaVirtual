@@ -46,7 +46,7 @@
                 >
                     Ciclo
                 </p-inputGroupAddon>
-                <input pInputText disabled value="I" />
+                <input pInputText disabled [value]="cCicloRomanos" />
             </p-inputGroup>
         </div>
         <div class="col-6">
@@ -72,7 +72,7 @@
                 >
                     Sección
                 </p-inputGroupAddon>
-                <input pInputText disabled [value]="cSeccion" />
+                <input pInputText disabled [value]="cSeccionNombre" />
             </p-inputGroup>
         </div>
         <div class="col-12 mt-1">
@@ -120,6 +120,8 @@
                             <p-calendar
                                 [(ngModel)]="inputDia"
                                 appendTo="body"
+                                [minDate]="minimo"
+                                [maxDate]="maximo"
                             ></p-calendar>
                         </p-inputGroup>
                     </div>
@@ -161,6 +163,8 @@
                             selectionMode="range"
                             [readonlyInput]="true"
                             [(ngModel)]="iDateRango"
+                            [minDate]="minimo"
+                            [maxDate]="maximo"
                         ></p-calendar>
                     </p-inputGroup>
                 }

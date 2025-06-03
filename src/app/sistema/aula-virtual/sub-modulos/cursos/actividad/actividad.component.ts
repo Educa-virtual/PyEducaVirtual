@@ -7,6 +7,8 @@ import { TareaRoomComponent } from '../../actividades/actividad-tarea/tarea-room
 import { EvaluacionRoomComponent } from '../../actividades/actividad-evaluacion/evaluacion-room/evaluacion-room.component'
 import { tipoActividadesKeys } from '../../../interfaces/actividad.interface'
 import { ForoRoomComponent } from '../../actividades/actividad-foro/foro-room/foro-room.component'
+import { VideoconferenciaFormContainerComponent } from '../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
+import { CuestionarioRoomComponent } from '../../actividades/actividad-cuestionario/cuestionario-room/cuestionario-room.component'
 
 @Component({
     selector: 'app-actividad',
@@ -16,6 +18,8 @@ import { ForoRoomComponent } from '../../actividades/actividad-foro/foro-room/fo
         TareaRoomComponent,
         EvaluacionRoomComponent,
         ForoRoomComponent,
+        VideoconferenciaFormContainerComponent,
+        CuestionarioRoomComponent,
     ],
     templateUrl: './actividad.component.html',
     styleUrl: './actividad.component.scss',
@@ -24,6 +28,10 @@ import { ForoRoomComponent } from '../../actividades/actividad-foro/foro-room/fo
 export class ActividadComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iProgActId: string
+    @Input() iIeCursoId: string
+    @Input() iSeccionId: string
+    @Input() iNivelGradoId: string
+
     public iActTopId: tipoActividadesKeys
 
     private _router = inject(Router)

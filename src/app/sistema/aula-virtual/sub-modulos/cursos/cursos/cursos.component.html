@@ -1,4 +1,5 @@
-<app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
+<app-toolbar-primeng title="Mis Áreas Curriculares"></app-toolbar-primeng>
+<div class="card">
     <p-dataView
         #dv
         [value]="cursos"
@@ -46,6 +47,7 @@
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="cursos gap-4 py-2">
+                <!-- inicio de lista de cursos en cards -->
                 @for (curso of cursos; track curso) {
                     <app-curso-card
                         #dv
@@ -53,13 +55,15 @@
                         [curso]="curso"
                     ></app-curso-card>
                 }
+                <!-- fin de lista de cursos en cards -->
             </div>
         </ng-template>
     </p-dataView>
+    <!-- tabla de areas curriculares -->
     @if (layout === 'list') {
         <app-areas-estudios
             [searchText]="searchText"
             [data]="cursos"
         ></app-areas-estudios>
     }
-</app-container-page>
+</div>

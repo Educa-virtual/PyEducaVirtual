@@ -4,10 +4,11 @@
         <p-panel class="custom-header-panel">
             <ng-template pTemplate="header" class="p-0">
                 <h4 class="p-2 m-0 font-bold text-white w-full text-center">
-                    Lista Comunicados
+                    Comunicados Creados
                 </h4>
             </ng-template>
             <p-scrollPanel
+                *ngIf="comunicados.length > 0; else resultadoGrupo"
                 [style]="{ width: '100%', height: '600px' }"
                 styleClass="custombar1"
             >
@@ -27,7 +28,7 @@
                                 <p-inputGroupAddon
                                     class="font-bold bg-header-style"
                                 >
-                                    Comunicado Nº {{ i + 1 }}:
+                                    Com. Nº {{ i + 1 }}:
                                 </p-inputGroupAddon>
                                 <input
                                     type="text"
@@ -67,185 +68,46 @@
                             styleClass="mb-3 custom-comunicado-card"
                         >
                             <div class="grid">
-                                <!-- Columna Izquierda -->
-                                <div class="col-12 md:col-6">
-                                    <!-- Fila: Estado -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Estado:
-                                        </div>
-                                        <span>{{
-                                            comunicado.estado ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Publicado -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Publicado:
-                                        </div>
-                                        <span>{{
-                                            comunicado.publicado || 'Sin fecha'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Caduca -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Caduca:
-                                        </div>
-                                        <span>{{
-                                            comunicado.caduca || 'Sin fecha'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Curso -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Curso:
-                                        </div>
-                                        <span>{{
-                                            comunicado.cursoName ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Sección -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Sección:
-                                        </div>
-                                        <span>{{
-                                            comunicado.seccionName ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Grado -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Grado:
-                                        </div>
-                                        <span>{{
-                                            comunicado.gradoName ||
-                                                'No especificado'
-                                        }}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Columna Derecha -->
-                                <div class="col-12 md:col-6">
-                                    <!-- Fila: Tipo -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Tipo:
-                                        </div>
-                                        <span>{{
-                                            comunicado.tipo || 'No definido'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Prioridad -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Prioridad:
-                                        </div>
-                                        <span>{{
-                                            comunicado.prioridad ||
-                                                'Sin prioridad'
-                                        }}</span>
-                                    </div>
-
-                                    <!-- Fila: Grupo -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Grupo:
-                                        </div>
-                                        <span>
-                                            <ng-container
-                                                *ngIf="
-                                                    comunicado.grupo?.length >
-                                                        0;
-                                                    else sinGrupo
-                                                "
-                                            >
-                                                <span
-                                                    *ngFor="
-                                                        let g of comunicado.grupo;
-                                                        let last = last
-                                                    "
-                                                    >{{ g.cGrupoNombre
-                                                    }}{{
-                                                        last ? '' : ', '
-                                                    }}</span
-                                                >
-                                            </ng-container>
-                                            <ng-template #sinGrupo>
-                                                No asignado
-                                            </ng-template>
-                                        </span>
-                                    </div>
-
-                                    <!-- Fila: Destinatario (si aplica) -->
-                                    <div class="flex align-items-center mb-2">
-                                        <div
-                                            class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
-                                            style="min-width: 80px"
-                                        >
-                                            Destinatario:
-                                        </div>
-                                        <span>{{
-                                            comunicado.destinatario ||
-                                                'Sin destinatario'
-                                        }}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Texto o descripción -->
-                                <div class="col-12 mt-3">
-                                    <p
-                                        class="m-0"
-                                        style="white-space: pre-line"
+                                <!-- Itera sobre los campos mostrables -->
+                                <div
+                                    *ngFor="
+                                        let campo of getCamposMostrables(
+                                            comunicado
+                                        )
+                                    "
+                                    [ngClass]="{
+                                        'w-100': campo.rowBreak,
+                                        'flex align-items-center mb-2': true,
+                                    }"
+                                    style="padding: 0 5px"
+                                >
+                                    <div
+                                        class="font-bold mr-1 bg-header-style px-2 py-1 border-round"
+                                        style="min-width: 80px"
                                     >
-                                        {{
+                                        {{ campo.label }}:
+                                    </div>
+                                    <span>{{ campo.value }}</span>
+                                </div>
+
+                                <!-- Sección para el contenido o descripción -->
+                                <div class="col-12 mt-3">
+                                    <div
+                                        class="m-0"
+                                        [innerHTML]="
                                             comunicado.texto ||
-                                                'Sin contenido adicional.'
-                                        }}
-                                    </p>
+                                            'Sin contenido adicional.'
+                                        "
+                                    ></div>
                                 </div>
                             </div>
                         </p-card>
                     </p-accordionTab>
                 </p-accordion>
             </p-scrollPanel>
+            <ng-template #resultadoGrupo>
+                <p class="font-bold text-center">Sin Resultados</p>
+            </ng-template>
         </p-panel>
     </div>
 
@@ -279,17 +141,18 @@
                         required
                     />
                 </div>
-                <div class="grid">
-                    <div class="flex flex-column col-12 md:col-6">
-                        <label for="estado" class="mb-1">Estado</label>
+                <div class="row-with-wrap">
+                    <div class="dropdown-container">
+                        <label for="tipo" class="mb-1">Tipo</label>
                         <p-dropdown
-                            id="estado"
-                            name="estado"
-                            [options]="estados"
-                            [(ngModel)]="selectedEstado"
-                            placeholder="Seleccione Estado"
+                            id="tipo"
+                            name="tipo"
+                            [options]="tipos"
+                            [(ngModel)]="selectedComunicado.tipo"
+                            placeholder="Seleccione Tipo"
                             optionLabel="label"
                             optionValue="value"
+                            (onChange)="onTipoChange($event)"
                         ></p-dropdown>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
@@ -307,18 +170,6 @@
                 </div>
                 <div class="grid">
                     <div class="flex flex-column col-12 md:col-6">
-                        <label for="tipo" class="mb-1">Tipo</label>
-                        <p-dropdown
-                            id="tipo"
-                            name="tipo"
-                            [options]="tipos"
-                            [(ngModel)]="selectedComunicado.tipo"
-                            placeholder="Seleccione Tipo"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                    <div class="flex flex-column col-12 md:col-6">
                         <label for="grupo" class="mb-1">Grupo</label>
                         <p-multiSelect
                             id="grupo"
@@ -329,63 +180,179 @@
                             optionLabel="label"
                             optionValue="value"
                             [filter]="true"
+                            [disabled]="
+                                advancedOptions ||
+                                !!destinatarioId ||
+                                !!selectedComunicado.curso ||
+                                !!selectedComunicado.seccion ||
+                                !!selectedComunicado.grado
+                            "
                         ></p-multiSelect>
                     </div>
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="advancedSwitch" class="mb-1"
+                            >Opciones Avanzadas</label
+                        >
+                        <p-inputSwitch
+                            id="advancedSwitch"
+                            name="advancedSwitch"
+                            [(ngModel)]="advancedOptions"
+                            (onChange)="onAdvancedOptionsChange()"
+                        ></p-inputSwitch>
+                    </div>
                 </div>
-                <div class="flex flex-column">
-                    <label for="destinatario" class="mb-1"
-                        >Destinatario Unico</label
+                <div *ngIf="advancedOptions">
+                    <div class="flex flex-column">
+                        <!-- Ocultar solo el campo "Destinatario Único" cuando iPerfilId es 2 o 3 -->
+                        <div *ngIf="!(+iPerfilId === 2 || +iPerfilId === 3)">
+                            <label for="destinatario" class="mb-1"
+                                >Destinatario Único</label
+                            >
+                            <div class="p-inputgroup">
+                                <input
+                                    pInputText
+                                    id="destinatario"
+                                    name="destinatario"
+                                    placeholder="Buscar por nombre o DNI"
+                                    [value]="destinatarioNombre"
+                                    [readonly]="true"
+                                    [disabled]="
+                                        !advancedOptions ||
+                                        !!selectedComunicado.curso ||
+                                        !!selectedComunicado.seccion ||
+                                        !!selectedComunicado.grado
+                                    "
+                                    (click)="abrirDialogBuscarDestinatario()"
+                                    [ngClass]="{
+                                        'input-seleccionado':
+                                            destinatarioNombre,
+                                    }"
+                                />
+
+                                <!-- Botón para limpiar el destinatario -->
+                                <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    *ngIf="destinatarioNombre"
+                                    (click)="clearDestinatario()"
+                                    pTooltip="Quitar destinatario"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
+                        </div>
+                        <!-- Campo para seleccionar Institución Educativa para especialistas -->
+                        <div *ngIf="+iPerfilId === 2 || +iPerfilId === 3">
+                            <label for="institucion" class="mb-1"
+                                >Institución Educativa</label
+                            >
+                            <div class="p-inputgroup">
+                                <input
+                                    pInputText
+                                    id="institucion"
+                                    name="institucion"
+                                    placeholder="Seleccionar Institución Educativa"
+                                    [value]="institucionNombre"
+                                    readonly
+                                    (click)="abrirDialogInstitucion()"
+                                    [ngClass]="{
+                                        'input-seleccionado': institucionNombre,
+                                    }"
+                                />
+                                <!-- Se podría agregar un botón para limpiar la selección -->
+                                <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    *ngIf="institucionNombre"
+                                    (click)="clearInstitucion()"
+                                    pTooltip="Quitar institución"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
+                        </div>
+                        <!-- Campo para seleccionar Docente en la Institución elegida (solo para especialistas) -->
+                        <div *ngIf="+iPerfilId === 2 || +iPerfilId === 3">
+                            <label for="docente" class="mb-1">Docente</label>
+                            <div class="p-inputgroup">
+                                <input
+                                    pInputText
+                                    id="docente"
+                                    name="docente"
+                                    placeholder="Seleccionar Docente"
+                                    [value]="docenteNombre"
+                                    readonly
+                                    (click)="abrirDialogDocente()"
+                                    [ngClass]="{
+                                        'input-seleccionado': docenteNombre,
+                                    }"
+                                />
+                                <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    *ngIf="docenteNombre"
+                                    (click)="clearDocente()"
+                                    pTooltip="Quitar docente"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="row-with-wrap"
+                        *ngIf="!(+iPerfilId === 2 || +iPerfilId === 3)"
                     >
-                    <input
-                        pInputText
-                        id="destinatario"
-                        name="destinatario"
-                        placeholder="Buscar por nombre o DNI"
-                        [value]="destinatarioNombre"
-                        readonly
-                        (click)="abrirDialogBuscarDestinatario()"
-                        [ngClass]="{ 'input-seleccionado': destinatarioNombre }"
-                        (click)="abrirDialogBuscarDestinatario()"
-                    />
-                </div>
-                <div class="row-with-wrap">
-                    <div class="dropdown-container">
-                        <label for="curso" class="mb-1">Curso</label>
-                        <p-dropdown
-                            id="curso"
-                            name="curso"
-                            [options]="cursos"
-                            [(ngModel)]="selectedComunicado.curso"
-                            placeholder="Curso"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                    <div class="dropdown-container">
-                        <label for="seccion" class="mb-1">Sección</label>
-                        <p-dropdown
-                            id="seccion"
-                            name="seccion"
-                            [options]="secciones"
-                            [(ngModel)]="selectedComunicado.seccion"
-                            placeholder="Sección"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
-                    </div>
-                    <div class="dropdown-container">
-                        <label for="grado" class="mb-1">Grado</label>
-                        <p-dropdown
-                            id="grado"
-                            name="grado"
-                            [options]="grados"
-                            [(ngModel)]="selectedComunicado.grado"
-                            placeholder="Grado"
-                            optionLabel="label"
-                            optionValue="value"
-                        ></p-dropdown>
+                        <div class="dropdown-container">
+                            <label for="curso" class="mb-1"
+                                >Area Curricular</label
+                            >
+                            <p-dropdown
+                                id="curso"
+                                name="curso"
+                                [options]="cursos"
+                                [(ngModel)]="selectedComunicado.curso"
+                                optionLabel="label"
+                                optionValue="value"
+                                [disabled]="
+                                    !advancedOptions || !!destinatarioId
+                                "
+                            ></p-dropdown>
+                        </div>
+                        <div class="dropdown-container">
+                            <label for="seccion" class="mb-1">Sección</label>
+                            <p-dropdown
+                                id="seccion"
+                                name="seccion"
+                                [options]="secciones"
+                                [(ngModel)]="selectedComunicado.seccion"
+                                optionLabel="label"
+                                optionValue="value"
+                                [disabled]="
+                                    !advancedOptions || !!destinatarioId
+                                "
+                            ></p-dropdown>
+                        </div>
+                        <div class="dropdown-container">
+                            <label for="grado" class="mb-1">Grado</label>
+                            <p-dropdown
+                                id="grado"
+                                name="grado"
+                                [options]="grados"
+                                [(ngModel)]="selectedComunicado.grado"
+                                optionLabel="label"
+                                optionValue="value"
+                                [disabled]="
+                                    !advancedOptions || !!destinatarioId
+                                "
+                            ></p-dropdown>
+                        </div>
                     </div>
                 </div>
+
                 <div class="grid">
                     <div class="flex flex-column col-12 md:col-6">
                         <label for="publicado" class="mb-1">Inicio</label>
@@ -419,7 +386,13 @@
                 </div>
                 <div class="flex flex-column">
                     <label for="texto" class="mb-1">Contenido</label>
-                    <textarea
+                    <editor
+                        name="texto"
+                        [(ngModel)]="selectedComunicado.texto"
+                        [init]="mensajes"
+                    >
+                    </editor>
+                    <!-- <textarea
                         pInputTextarea
                         id="texto"
                         name="texto"
@@ -427,7 +400,7 @@
                         placeholder="Escriba el comunicado..."
                         [(ngModel)]="selectedComunicado.texto"
                         required
-                    ></textarea>
+                    ></textarea> -->
                 </div>
                 <div class="form-buttons">
                     <button
@@ -490,9 +463,45 @@
         [data]="destinatarios"
         (accionBtnItem)="seleccionarDestinatario($event)"
         [actions]="accionModal"
+        [indiceColumnaBuscar]="2"
     ></app-table-primeng>
+</p-dialog>
+
+<!-- Dialog para seleccionar Institución Educativa -->
+<p-dialog
+    header="Buscar Institución Educativa"
+    [(visible)]="visibleInstitucionDialog"
+    [modal]="true"
+    [style]="{ width: '70rem', height: '700px' }"
+>
+    <div class="grid mt-3">
+        <app-table-primeng
+            [columnas]="columnaInstituciones"
+            [data]="instituciones"
+            (accionBtnItem)="seleccionarInstitucion($event)"
+            [actions]="accionInstitucion"
+            [indiceColumnaBuscar]="2"
+        ></app-table-primeng>
+    </div>
+</p-dialog>
+
+<!-- Dialog para seleccionar Docente en la Institución elegida -->
+<p-dialog
+    header="Buscar Docente"
+    [(visible)]="visibleDocenteDialog"
+    [modal]="true"
+    [style]="{ width: '70rem', height: '700px' }"
+>
+    <div class="grid mt-3">
+        <app-table-primeng
+            [columnas]="columnaDocentes"
+            [data]="docentes"
+            (accionBtnItem)="seleccionarDocente($event)"
+            [actions]="accionDocente"
+            [indiceColumnaBuscar]="2"
+        ></app-table-primeng>
+    </div>
 </p-dialog>
 
 <p-confirmDialog></p-confirmDialog>
 <p-toast position="top-right"></p-toast>
-<p-confirmDialog></p-confirmDialog>

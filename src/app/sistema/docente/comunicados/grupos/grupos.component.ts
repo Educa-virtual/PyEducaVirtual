@@ -4,17 +4,24 @@ import { FormsModule } from '@angular/forms'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
-import { MessageService } from 'primeng/api'
+import { ConfirmationService, MessageService } from 'primeng/api'
 @Component({
     selector: 'app-grupos',
     standalone: true,
     imports: [PrimengModule, FormsModule, TablePrimengComponent],
     templateUrl: './grupos.component.html',
     styleUrl: './grupos.component.scss',
+    providers: [ConfirmationService],
 })
 export class GruposComponent implements OnInit {
+    iPersId: number
+    iGrupoId: number
+    iSedeId: string
+    iIieeId: string
+    iYAcadId: string
     private GeneralService = inject(GeneralService)
     constructor(
+        private confirmationService: ConfirmationService,
         private ConstantesService: ConstantesService,
         private messageService: MessageService
     ) {
@@ -23,18 +30,13 @@ export class GruposComponent implements OnInit {
         this.iYAcadId = this.ConstantesService.iYAcadId
         this.iPersId = this.ConstantesService.iPersId
     }
-    miembrosAgregados = []
-    iPersId: number
-    iGrupoId: number
-    iSedeId: string = ''
-    iIieeId: string = ''
-    iYAcadId: string = ''
-    cGrupoNombre: string
-    cGrupoDescripcion: string
-    visible = false
-    grupo: string
     data = []
     miembros = []
+    miembrosAgregados = []
+    cGrupoNombre: string
+    cGrupoDescripcion: string
+    grupo: string
+    visible = false
     estadoEditar: boolean = true
     estadoGuardar: boolean = false
     columna = [
@@ -70,22 +72,6 @@ export class GruposComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-        {
-            type: 'text',
-            width: '1rem',
-            field: 'contacto',
-            header: 'Numero Telf. del Contacto',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '1rem',
-            field: 'domicilio',
-            header: 'Direccion Domiciliaria',
-            text_header: 'center',
-            text: 'center',
-        },
     ]
     columnaModal = [
         {
@@ -117,22 +103,6 @@ export class GruposComponent implements OnInit {
             width: '1rem',
             field: 'completos',
             header: 'Apellidos y Nombres',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '1rem',
-            field: 'contacto',
-            header: 'Numero Telf. del Contacto',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '1rem',
-            field: 'domicilio',
-            header: 'Direccion Domiciliaria',
             text_header: 'center',
             text: 'center',
         },
@@ -204,9 +174,18 @@ export class GruposComponent implements OnInit {
         this.estadoEditar = false
         this.estadoGuardar = true
     }
-    // eliminarGrupo(id: string){
-    //     console.log(id)
-    // }
+
+    mostrarIntegrantes(event, grupo: any) {
+        const json = JSON.parse(grupo) //convertimos el string en json
+        let personas = ''
+        json.map((item) => {
+            personas += item.documento + ':' + item.completos + ' '
+        })
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            message: personas,
+        })
+    }
 
     mostrarModal() {
         this.visible = !this.visible
@@ -259,6 +238,10 @@ export class GruposComponent implements OnInit {
                 },
             }
             this.getInformation(params, 'guardarMiembros')
+            // limpiamos los campos
+            this.cGrupoNombre = ''
+            this.cGrupoDescripcion = ''
+            this.miembros = []
         } else {
             this.messageService.add({
                 severity: 'warn',

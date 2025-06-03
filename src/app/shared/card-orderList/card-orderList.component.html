@@ -1,0 +1,34 @@
+<p-orderList
+    [value]="data"
+    [filterBy]="inputSearch ? 'cNombres' : null"
+    [filterPlaceholder]="inputSearch ? 'Buscar...' : null"
+>
+    <ng-template let-objeto pTemplate="listItem">
+        <div
+            class="list-item-custom"
+            [ngClass]="{ selected: objeto === seleccionado }"
+            tabindex="0"
+            (click)="seleccionado = objeto; obtenerDatos(objeto)"
+            (keydown.enter)="seleccionado = objeto; obtenerDatos(objeto)"
+        >
+            <ng-container *ngIf="mostrarImagen">
+                <img [src]="objeto.cImgUrl" alt="" class="w-3rem btn" />
+            </ng-container>
+
+            <div class="flex flex-column flex-grow-1">
+                <div class="font-bold">{{ objeto?.cTitulo }}</div>
+                <div *ngIf="objeto.cDescripcion">
+                    {{ (objeto.cDescripcion | slice: 0 : 150) + '...' }}
+                </div>
+            </div>
+
+            <i
+                class="icon pi pi-chevron-circle-right"
+                style="font-size: 1.5rem; cursor: pointer"
+                tabindex="0"
+                (click)="obtenerDatos(objeto)"
+                (keydown.enter)="obtenerDatos(objeto)"
+            ></i>
+        </div>
+    </ng-template>
+</p-orderList>

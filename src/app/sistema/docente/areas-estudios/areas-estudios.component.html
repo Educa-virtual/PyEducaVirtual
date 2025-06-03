@@ -1,34 +1,4 @@
 <div class="grid">
-    <!-- <p-toolbar class="col-12">
-        <div class="p-toolbar-group-start">
-            <h4 class="text-primary font-bold">
-                Mis Áreas Curriculares
-            </h4>
-        </div>
-        <div class="p-toolbar-group-end">
-            <span class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                    pInputText
-                    placeholder="Buscar área curricular"
-                    style="width: 350px"
-                    (input)="onGlobalFilter(dv, $event)"
-                />
-            </span>
-            <p-button
-                icon="pi pi-sync"
-                pTooltip="Refrescar áreas curriculares"
-                tooltipPosition="top"
-                [rounded]="true"
-                [text]="true"
-                severity="danger"
-                (onClick)="getCursos()"
-            />
-        </div>
-    </p-toolbar> -->
-    <div class="col-12">
-        <p-messages [(value)]="messages" [enableService]="false" />
-    </div>
     <p-table
         #dv
         class="col-12 hoverTable"
@@ -104,7 +74,7 @@
                             {{ item.cCursoNombre }}
                         </td>
                         <td style="text-align: center">
-                            {{ item.iEstudiantes }}
+                            {{ item.cantidad }}
                         </td>
                         <td style="text-align: center">
                             {{ item.cNivelTipoNombre }}
@@ -112,7 +82,9 @@
                         <td style="text-align: center">
                             {{ item.cGradoAbreviacion }}
                         </td>
-                        <td style="text-align: center">{{ item.cSeccion }}</td>
+                        <td style="text-align: center">
+                            {{ item.cSeccionNombre }}
+                        </td>
                         <td style="text-align: center">
                             <div
                                 class="align-items-center align-content-center"
@@ -122,21 +94,21 @@
                                     pRipple
                                     class="p-1 mx-1 p-button-warning"
                                 >
-                                    {{ item.iAvanceSilabo + '%' }}
+                                    {{ 0 + '%' }}
                                 </button>
                                 <button
                                     pButton
                                     pRipple
                                     class="p-1 mx-1 p-button-success"
                                 >
-                                    {{ item.iAvanceAsistencia + '%' }}
+                                    {{ 0 + '%' }}
                                 </button>
                                 <button
                                     pButton
                                     pRipple
                                     class="p-1 mx-1 p-button-danger"
                                 >
-                                    {{ item.iAvanceNotas + '%' }}
+                                    {{ 0 + '%' }}
                                 </button>
                             </div>
                         </td>
@@ -157,27 +129,39 @@
                                 >
                                     <i class="pi pi-chevron-down"></i>
                                 </button>
-                                <!-- <button
-                                    pTooltip="Descargar Lista de Estudiantes"
-                                    tooltipPosition="top"
-                                    [rounded]="true"
-                                    pButton
-                                    pRipple
-                                    class="p-1 mx-1 p-button-rounded p-button-success p-button-text"
-                                >
-                                    <i class="pi pi-file-excel"></i>
-                                </button> -->
                                 <button
+                                    *ngIf="item.iSilaboId; else completar"
                                     pTooltip="Descargar Programación Curricular"
                                     tooltipPosition="top"
                                     [rounded]="true"
                                     pButton
                                     pRipple
                                     class="p-1 mx-1 p-button-rounded p-button-danger p-button-text"
-                                    (click)="this.getSilaboPdf(item.iSilaboId)"
+                                    (click)="
+                                        this.getSilaboPdf(
+                                            item.cCursoNombre,
+                                            item.cGradoAbreviacion,
+                                            item.cSeccionNombre,
+                                            item.iSilaboId
+                                        )
+                                    "
                                 >
                                     <i class="pi pi-file-pdf"></i>
                                 </button>
+                                <!-- En caso de no contar con un silabus -->
+                                <ng-template #completar>
+                                    <button
+                                        pTooltip=""
+                                        tooltipPosition="top"
+                                        [rounded]="true"
+                                        pButton
+                                        pRipple
+                                        class="p-1 mx-1 p-button-rounded p-button-warning p-button-text"
+                                        (click)="importarSilabos(item)"
+                                    >
+                                        <i class="pi pi-info-circle"></i>
+                                    </button>
+                                </ng-template>
                             </div>
                         </td>
                         <td style="text-align: center">
@@ -188,12 +172,16 @@
                                     cCursoNombre: item.cCursoNombre,
                                     cNivelTipoNombre: item.cNivelTipoNombre,
                                     cGradoAbreviacion: item.cGradoAbreviacion,
-                                    cSeccion: item.cSeccion,
+                                    cSeccionNombre: item.cSeccionNombre,
                                     cCicloRomanos: item.cCicloRomanos,
                                     cNivelNombreCursos: item.cNivelNombreCursos,
                                     iCursoId: item.iCursoId,
                                     idDocCursoId: item.idDocCursoId,
                                     iNivelCicloId: item.iNivelCicloId,
+                                    iIeCursoId: item.iIeCursoId,
+                                    iSeccionId: item.iSeccionId,
+                                    iNivelGradoId: item.iNivelGradoId,
+                                    cantidad: item.cantidad,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"
@@ -239,6 +227,10 @@
                                     iCursoId: item.iCursoId,
                                     idDocCursoId: item.idDocCursoId,
                                     iNivelCicloId: item.iNivelCicloId,
+                                    iIeCursoId: item.iIeCursoId,
+                                    iSeccionId: item.iSeccionId,
+                                    iNivelGradoId: item.iNivelGradoId,
+                                    cantidad: item.cantidad,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"
@@ -250,10 +242,9 @@
             </tr>
         </ng-template>
     </p-table>
-    @if (iPerfilId === DOCENTE) {
+    @if (iPerfilId === DOCENTE && data.length) {
         <div class="col-12 flex flex-column md:flex-row my-5 mx-5">
             <p class="font-bold ml-2 mt-1">Leyenda:</p>
-
             <p-tag
                 severity="warning"
                 value="Avance de la Programación curricular"
@@ -274,3 +265,36 @@
 </div>
 
 <p-menu [style]="{ minWidth: '25rem' }" #menu [model]="items" [popup]="true" />
+
+<p-dialog [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }">
+    <ng-template pTemplate="header">
+        <span class="font-bold text-xl text-white"
+            >Importar Silabos - {{ descripcion | lowercase }}</span
+        >
+    </ng-template>
+    <div class="grid mt-3">
+        <div class="col-12 md:col-6">
+            <p-dropdown
+                appendTo="body"
+                [options]="opcionCurso"
+                [(ngModel)]="seleccionarCurso"
+                optionValue="idDocCursoId"
+                optionLabel="curso"
+                placeholder="Seleccionar silabos del Área Curricular"
+            />
+        </div>
+        <div class="col-12 md:col-6">
+            <button
+                [disabled]="seleccionarCurso === ''"
+                [rounded]="true"
+                pButton
+                pRipple
+                (click)="guardarImportacion()"
+            >
+                Guardar Importación
+            </button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-toast />

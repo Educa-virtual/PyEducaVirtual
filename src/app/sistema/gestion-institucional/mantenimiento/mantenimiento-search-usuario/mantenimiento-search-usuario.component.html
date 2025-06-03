@@ -88,7 +88,7 @@
 </ng-container>
 <ng-template #sinSeleccion>
     <app-container-page
-        title="Accesos de usuario IE"
+        [title]="titulo_cabecera"
         [actions]="[]"
         (accionBtnItem)="accionBtnItemTable($event)"
     >

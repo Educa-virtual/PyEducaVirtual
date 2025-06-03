@@ -9,32 +9,60 @@
             (error)="updateUrl(curso)"
         />
     </div>
-    <div class="p-3 mb-auto">
-        <h3 class="text-xl">
-            {{ curso.cCursoNombre }} {{ curso.cGradoAbreviacion }}
-            {{ curso.seccion }}
-        </h3>
-        <p class="">
-            {{ curso.descripcion }}
-        </p>
+    <div class="">
+        <div class="pt-3 flex mb-auto mr-2">
+            <span class="tag border-round-right text-xl font-bold">{{
+                curso.cCursoNombre
+            }}</span>
+        </div>
+        <div class="p-3 mb-auto">
+            <div class="mb-2">
+                <i class="pi pi-calendar mr-2" style="color: #a51c2e"></i>
+                <span>Lunes, Miercoles, Viernes</span>
+            </div>
+            <div class="mb-2">
+                <i class="pi pi-bookmark mr-2" style="color: #a51c2e"></i>
+                <span>{{ curso.cGradoAbreviacion }} Grado</span>
+            </div>
+            <div class="mb-2">
+                <i class="pi pi-tag mr-2" style="color: #a51c2e"></i>
+                <span>Sección {{ curso.cSeccionNombre }}</span>
+            </div>
+            <div class="mb-2">
+                <i class="pi pi-users mr-2" style="color: #a51c2e"></i>
+                <span>{{ curso.cantidad }} alumnos</span>
+            </div>
+            <!-- <h3 class="text-xl">
+                {{ curso.cCursoNombre }} 
+                
+            </h3>
+            <p class="">
+                {{ curso.descripcion }}
+            </p> -->
+        </div>
     </div>
-    <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-        <span>{{ curso.iEstudiantes }} Estudiantes</span>
+    <footer class="p-3 pt-0">
+        <!-- flex align-items-center justify-content-between -->
         <p-button
+            label="Ingresar"
+            icon="pi pi-window-maximize"
+            iconPos="right"
             [routerLink]="['./', curso.iSilaboId]"
             [queryParams]="{
                 cCursoNombre: curso.cCursoNombre,
                 cNivelTipoNombre: curso.cNivelTipoNombre,
                 cGradoAbreviacion: curso.cGradoAbreviacion,
-                cSeccion: curso.cSeccion,
+                cSeccionNombre: curso.cSeccionNombre,
                 cCicloRomanos: curso.cCicloRomanos,
                 cNivelNombreCursos: curso.cNivelNombreCursos,
                 iCursoId: curso.iCursoId,
                 idDocCursoId: curso.idDocCursoId,
                 iNivelCicloId: curso.iNivelCicloId,
+                iIeCursoId: curso.iIeCursoId,
+                iSeccionId: curso.iSeccionId,
+                iNivelGradoId: curso.iNivelGradoId,
+                cantidad: curso.cantidad,
             }"
-            label="Ver más"
-            styleClass="p-button-link"
-        ></p-button>
+        />
     </footer>
 </article>

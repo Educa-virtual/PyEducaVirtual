@@ -26,12 +26,10 @@
                 typeCollectionForm.value['Origen de la plantilla:1'].id === 2
             ) {
                 <p-button
-                    #importBtn
                     class="download-template"
                     styleClass="w-full"
                     label="Descargar plantilla"
                     icon="pi pi-download"
-                    [loading]="importLoad"
                     (onClick)="downloadTemplate()"
                     [disabled]="isDisabled.downloadTemplate"
                 />
@@ -54,8 +52,10 @@
         </div>
         <app-tab-view>
             <app-tab-panel title="Información del archivo">
-                @if (collection.columns) {
+                @if (columnsGroup) {
                     <app-table-primeng
+                        typeHeaderColumn="group"
+                        [columnsGroup]="columnsGroup"
                         [columnas]="columns"
                         [data]="data"
                         [showCaption]="true"
@@ -81,7 +81,7 @@
             </app-tab-panel>
             @if (responseDataImport) {
                 <app-tab-panel title="Resultado de la importación">
-                    @if (columns) {
+                    @if (data) {
                         <app-table-primeng
                             [columnas]="collection.columnsResultImport"
                             [data]="responseDataImport"

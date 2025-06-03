@@ -40,7 +40,6 @@ export class MantenimientoAddPerfilComponent implements OnChanges, OnInit {
     @Input() iSedeId: number = 0 // id de isntitucion educativa
 
     form_perfil: FormGroup
-    form_usuario: FormGroup
 
     //variables
     perfil_usuario: any
@@ -88,7 +87,7 @@ export class MantenimientoAddPerfilComponent implements OnChanges, OnInit {
 
     btnItem(accion: string, mensaje: string) {
         this._confirmService.openConfiSave({
-            header: 'Advertencia de procesamiento 1',
+            header: 'Advertencia de procesamiento',
             message: mensaje,
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -105,7 +104,7 @@ export class MantenimientoAddPerfilComponent implements OnChanges, OnInit {
                 if (accion === 'eliminar_perfil') {
                     // elimina perfil seleccionado del usuario
                     this.eliminar_perfiles(
-                        this.selectedItemsPerfil['iPerfilId']
+                        this.selectedItemsPerfil['iCredEntPerfId']
                     )
                 }
             },

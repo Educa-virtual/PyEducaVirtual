@@ -98,23 +98,20 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: any) => {
+                next: () => {
                     if (this.accion == 'nuevo') {
-                        // this._MessageService.add({
-                        //     severity: 'success',
-                        //     summary: 'Cursos registrados',
-                        //     detail: 'Los cursos se han registrado correctamente.',
-                        // })
-                        console.log(this.accion)
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Área asignada',
+                            detail: 'Se ha asignado el área a la evaluación.',
+                        })
                     } else if (this.accion == 'editar') {
-                        // this._MessageService.add({
-                        //     severity: 'success',
-                        //     summary: 'Cursos editados',
-                        //     detail: 'Los cursos se han editado correctamente.',
-                        // })
-                        console.log(this.accion)
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Área editada',
+                            detail: 'Se ha editado el área de la evaluación.',
+                        })
                     }
-                    console.log('Respuesta de la API:', resp)
                 },
                 error: (err) => {
                     console.error('Error al insertar cursos:', err)
@@ -148,8 +145,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     // Notifica el éxito
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Curso eliminado',
-                        detail: 'El curso se eliminó correctamente.',
+                        summary: 'Área retirada',
+                        detail: 'Se ha retirado el área de la evaluación.',
                     })
                     console.log('Cursos eliminados:', resp)
                 },
@@ -204,29 +201,35 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                             Object.keys(nivel.grados).forEach((grado) => {
                                 nivel.grados[grado].forEach((curso: any) => {
                                     // Si el curso está en el mapa, actualizamos su estado
+
                                     curso.isSelected =
                                         cursosSeleccionados.get(
                                             curso.iCursoNivelGradId
                                         ) || false
                                     curso.dtExamenFechaInicio = this.data.find(
                                         (i) =>
-                                            i.iCursosNivelGradId ===
+                                            i.iCursoNivelGradId ==
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaInicio
                                     curso.dtExamenFechaFin = this.data.find(
                                         (i) =>
-                                            i.iCursosNivelGradId ===
+                                            i.iCursoNivelGradId ===
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaFin
                                     curso.iExamenCantidadPreguntas =
                                         this.data.find(
                                             (i) =>
-                                                i.iCursosNivelGradId ===
+                                                i.iCursoNivelGradId ===
                                                 curso.iCursoNivelGradId
                                         )?.iExamenCantidadPreguntas
                                 })
                             })
                         })
+
+                        console.log(
+                            'imprimiendo actualizacion de lista',
+                            this.lista
+                        )
 
                         resolve(cursosSeleccionados)
                     },
@@ -257,6 +260,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }).subscribe({
             next: (data: any) => {
                 // Combinamos los datos
+
+                console.log('probando data ', data)
 
                 this.lista = [
                     ...this.extraerAsignatura(data.primaria.data),
@@ -303,10 +308,19 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             grados: groupedData[nivel],
         }))
     }
-    guardarFechaCantidadExamenCursos(curso) {
+
+    guardarFechaCantidadExamenCursos(curso, campoActualizar: string) {
         if (this.accion === 'ver') {
             return
         }
+
+        // Agregar log para depuración
+        console.log(
+            'Guardando:',
+            campoActualizar,
+            curso.iExamenCantidadPreguntas
+        )
+
         if (!this._iEvaluacionId) {
             console.error('No se ha proporcionado un iEvaluacionId válido')
             this._MessageService.add({
@@ -316,7 +330,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
             return
         }
-        // Validar si los cursos contienen el campo `iCursoNivelGradId`
 
         if (!curso.iCursoNivelGradId) {
             console.error(
@@ -330,6 +343,21 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             return
         }
 
+        // Para asegurar que los valores numéricos son tratados como números
+        if (campoActualizar === 'preguntas' && curso.iExamenCantidadPreguntas) {
+            curso.iExamenCantidadPreguntas = parseInt(
+                curso.iExamenCantidadPreguntas.toString(),
+                10
+            )
+        }
+
+        if (campoActualizar === 'duracion' && curso.iExamenDuracionMinutos) {
+            curso.iExamenDuracionMinutos = parseInt(
+                curso.iExamenDuracionMinutos.toString(),
+                10
+            )
+        }
+
         // Llamar a la API para insertar los cursos
         this._apiEre
             .guardarFechaCantidadExamenCursos({
@@ -337,27 +365,47 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 iCursoNivelGradId: curso.iCursoNivelGradId,
                 dtExamenFechaInicio: curso.dtExamenFechaInicio,
                 iExamenCantidadPreguntas: curso.iExamenCantidadPreguntas,
+                iExamenDuracionMinutos: curso.iExamenDuracionMinutos,
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: any) => {
-                    // this._MessageService.add({
-                    //     severity: 'success',
-                    //     summary: 'Guardado',
-                    //     detail: 'Se guardó exitosamente',
-                    // })
-                    console.log('Respuesta de la API:', resp)
+                next: () => {
+                    let detailMessage: string
+                    switch (campoActualizar) {
+                        case 'preguntas':
+                            detailMessage =
+                                'Se ha actualizado la cantidad de preguntas.'
+                            break
+                        case 'duracion':
+                            detailMessage =
+                                'Se ha actualizado la duración de la evaluación.'
+                            break
+                        case 'fecha':
+                            detailMessage =
+                                'Se ha actualizado la fecha de inicio.'
+                            break
+                        default:
+                            detailMessage =
+                                'Se han actualizado los datos de la evaluación.'
+                            break
+                    }
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Datos actualizados',
+                        detail: detailMessage,
+                    })
                 },
                 error: (err) => {
-                    // this._MessageService.add({
-                    //     severity: 'error',
-                    //     summary: 'Error',
-                    //     detail: err,
-                    // })
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: err,
+                    })
                     console.error('Error al insertar cursos:', err)
                 },
             })
     }
+
     // Habilitar el calendar y input, si esta seleccionado áres y grado
     habiltarButton(grados: any, curso: any): boolean {
         let gradoKey
@@ -374,7 +422,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         return false
     }
+
     ngOnDestroy() {
         this.unsubscribe$.next(true)
+        this.unsubscribe$.complete() // Añadido para limpiar correctamente las suscripciones
     }
 }

@@ -40,12 +40,12 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
     @Input() lista_accesos // lista de usuarios
     @Input() search_perfiles: any = [] //lista de perfiles
     @Input() iSedeId: number = 0 // id de isntitucion educativa
+    @Input() titulo_cabecera: string = ''
 
     form_search: FormGroup // variable para buscar usuarios
     selectedItems = []
 
     perfil: number
-    titulo_cabecera: string
 
     private _confirmService = inject(ConfirmationModalService)
     constructor(
@@ -81,17 +81,17 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
         switch (option) {
             case 'Director':
                 this.getAccesosSedes(0, this.iSedeId)
-                this.titulo_cabecera = 'Accesos de usuario IE'
+                // this.titulo_cabecera = 'Accesos de usuario IE'
                 break
 
             case 'Especialista_UGEL':
                 this.getAccesosSedes(3, 0)
-                this.titulo_cabecera = 'Accesos de Especialista UGEL'
+                // this.titulo_cabecera = 'Accesos de Especialista UGEL'
                 break
 
             case 'Especialista_DREMO':
                 this.getAccesosSedes(2, 0)
-                this.titulo_cabecera = 'Accesos de Especialista DREMO'
+                //  this.titulo_cabecera = 'Accesos de Especialista DREMO'
                 break
         }
     }
@@ -118,7 +118,6 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
                             persona.cPersNombre
                         ).trim(),
                     }))
-                    console.log(this.lista_accesos, ' lista de cargos')
                 },
                 error: (error) => {
                     console.error('Error fetching Años Académicos:', error)
@@ -168,7 +167,7 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
         console.log(accion, 'accion_btn', mensaje)
 
         this._confirmService.openConfiSave({
-            header: 'Advertencia de procesamiento 1',
+            header: 'Advertencia de procesamiento ',
             message: mensaje,
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

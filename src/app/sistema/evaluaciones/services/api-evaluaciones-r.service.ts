@@ -22,34 +22,13 @@ export class ApiEvaluacionesRService {
                 }
             )
             .pipe(
-                tap((response) =>
-                    console.log('Respuesta de la API:', response)
-                ), // Verifica lo que devuelve la API
+                tap(),
                 catchError((error) => {
                     console.error('Error en la solicitud:', error)
-                    return throwError(error)
+                    return throwError(() => error)
                 })
             )
     }
-
-    /*obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
-        return this.http
-            .get(
-                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`
-            )
-            .pipe(map((resp) => resp['data']))
-    }*/
-
-    /*obtenerAreasPorEvaluacionyEspecialista(
-        iPersId,
-        iEvaluacionId
-    ): Observable<any> {
-        return this.http
-            .get(
-                `${this.urlBackendApi}/ere/evaluaciones/obtenerAreasPorEvaluacionyEspecialista?iPersId=${iPersId}&iEvaluacionId=${iEvaluacionId}`
-            )
-            .pipe(map((resp) => resp['data']))
-    }*/
 
     obtenerTipoPreguntas() {
         return this.http
@@ -479,6 +458,7 @@ export class ApiEvaluacionesRService {
         iCursoNivelGradId: number | string
         dtExamenFechaInicio
         iExamenCantidadPreguntas: number
+        iExamenDuracionMinutos: number
     }): Observable<any> {
         return this.http.post(
             `${this.urlBackendApi}/ere/Evaluaciones/guardarFechaCantidadExamenCursos`,

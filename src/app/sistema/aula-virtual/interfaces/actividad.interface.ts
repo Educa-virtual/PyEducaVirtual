@@ -6,6 +6,7 @@ export const FORO = 2
 export const EVALUACION = 3
 export const VIDEO_CONFERENCIA = 4
 export const MATERIAL = 5
+export const CUESTIONARIO = 6
 
 export const TIPO_ACTIVIDADES = {
     [TAREA]: 'TAREA',
@@ -13,6 +14,7 @@ export const TIPO_ACTIVIDADES = {
     [EVALUACION]: 'EVALUACION',
     [VIDEO_CONFERENCIA]: 'VIDEO_CONFERENCIA',
     [MATERIAL]: 'MATERIAL',
+    [CUESTIONARIO]: 'CUESTIONARIO',
 }
 
 export interface IActionContenido extends Omit<MenuItem, 'icon'> {

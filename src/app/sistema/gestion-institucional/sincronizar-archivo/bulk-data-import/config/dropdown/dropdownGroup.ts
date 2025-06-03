@@ -1,6 +1,7 @@
 import {
     estudianteTemplateSiagieColumns,
-    padresFamiliasTemplateColumns,
+    headerTemplateSiagie,
+    padresFamiliasTemplateColumns2,
     resultEstudianteTemplateSiagieColumns,
 } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/config/table/bulk-table-columns-siagie'
 import {
@@ -14,7 +15,7 @@ export const dropdownGroupConfig = [
     {
         id: 1,
         label: 'Origen de la plantilla:',
-        placeholder: 'Seleccione una origen',
+        placeholder: 'Seleccione un origen',
         options: [
             {
                 value: {
@@ -41,6 +42,19 @@ export const dropdownGroupConfig = [
                 value: {
                     id: 1,
                     cellData: 'B13',
+                    structures: [
+                        {
+                            header: 'B11:AB12',
+                            data: 'B13',
+                            columns: estudianteTemplateSiagieColumns,
+                            inTableColumn: true,
+                        },
+                        {
+                            header: 'F7:R7',
+                            data: 'F8:R8',
+                            columns: headerTemplateSiagie,
+                        },
+                    ],
                     columns: estudianteTemplateSiagieColumns,
                     columnsResultImport: resultEstudianteTemplateSiagieColumns,
                     importEndPoint:
@@ -61,14 +75,36 @@ export const dropdownGroupConfig = [
                     response: (response: any) => {
                         return response.data
                     },
+
+                    // requests: ([estudiante,apoderado, ]) => {
+
+                    // }
                 },
             },
             {
                 label: 'Padres de familia',
                 value: {
                     id: 2,
-                    cellData: 'B13',
-                    columns: padresFamiliasTemplateColumns,
+                    structures: [
+                        {
+                            header: 'B11:AZ12',
+                            data: 'B13',
+                            columns: padresFamiliasTemplateColumns2,
+                            inTableColumn: true,
+                        },
+                        // {
+                        //     header: 'AS11:AZ12',
+                        //     data: 'AS13',
+                        //     columns: apoderadoPadresFamiliasTemplateColumns,
+                        //     inTableColumn: true,
+                        // },
+                        {
+                            header: 'M7:V7',
+                            data: 'M8:V8',
+                            columns: headerTemplateSiagie,
+                        },
+                    ],
+                    cellData: 'B15',
                     columnsResultImport: resultEstudianteTemplateSiagieColumns,
                     importEndPoint:
                         'acad/estudiante/importarEstudiantesPadresExcel',
@@ -89,6 +125,50 @@ export const dropdownGroupConfig = [
                     },
                 },
             },
+            // {
+            //     label: 'Resultados de evaluación',
+            //     value: {
+            //         id: 3,
+            //         sheetName: 'Consolidado',
+            //         structures: [
+            //             {
+            //                 header: 'A1:AQ1',
+            //                 data: 'A2',
+            //                 columns: resultadosEvaluacionTemplateColumns,
+            //                 inTableColumn: true,
+            //             },
+            //             {
+            //                 header: 'F7:R7',
+            //                 data: 'F8:R8',
+            //                 columns: headerTemplateSiagie,
+            //             },
+            //         ],
+            //         columns: estudianteTemplateSiagieColumns,
+            //         columnsResultImport: resultEstudianteTemplateSiagieColumns,
+            //         importEndPoint:
+            //             'acad/estudiante/importarEstudiantesMatriculasExcel',
+            //         params: {
+            //             tipo: 'matriculas',
+            //             iSedeId: JSON.parse(
+            //                 localStorage.getItem('dremoPerfil') || '{}'
+            //             ).iSedeId,
+            //             iYAcadId: JSON.parse(
+            //                 localStorage.getItem('dremoiYAcadId') || 'null'
+            //             ),
+            //             iCredId: JSON.parse(
+            //                 localStorage.getItem('dremoPerfil') || '{}'
+            //             ).iCredId,
+            //         },
+            //         typeSend: 'file',
+            //         response: (response: any) => {
+            //             return response.data
+            //         },
+
+            //         // requests: ([estudiante,apoderado, ]) => {
+
+            //         // }
+            //     },
+            // },
         ],
         dependency: 1,
         optionValue: 1,
@@ -103,8 +183,14 @@ export const dropdownGroupConfig = [
                 label: 'Docentes',
                 value: {
                     id: 1,
-                    cellData: 'A2',
-                    columns: docentePlatformTemplateColumns,
+                    structures: [
+                        {
+                            header: 'A1:G2',
+                            data: 'A3',
+                            columns: docentePlatformTemplateColumns,
+                            inTableColumn: true,
+                        },
+                    ],
                     columnsResultImport: resultDocentePlatformTemplateColumns,
                     importEndPoint:
                         'acad/gestionInstitucional/importarDocente_IE',
@@ -121,29 +207,30 @@ export const dropdownGroupConfig = [
                     response: (response: any) => {
                         return response.procesados.map((data) => ({
                             ...data.item,
-                            nombreCompleto: `${data.item.cPersPaterno} ${data.item.cPersMaterno} ${data.item.cPersNombre}`,
+                            nombreCompleto: [
+                                data.item.cPersPaterno,
+                                data.item.cPersMaterno,
+                                data.item.cPersNombre,
+                            ]
+                                .filter(Boolean)
+                                .join(' '),
                             ...data.data[0],
                         }))
                     },
                 },
             },
-            // {
-            //     label: 'Estudiantes',
-            //     value: {
-            //         id: 2,
-            //         cellData: 'A3',
-            //         columns: estudiantePlatformTemplateColumns,
-            //         template: 'plantilla-estudiantes',
-            //         importEndPoint: '',
-            //         typeSend: 'json',
-            //     },
-            // },
             {
                 label: 'Ambientes',
                 value: {
                     id: 3,
-                    cellData: 'A3',
-                    columns: ambientesPlatformTemplateColumns,
+                    structures: [
+                        {
+                            header: 'A1:O2',
+                            data: 'A3',
+                            columns: ambientesPlatformTemplateColumns,
+                            inTableColumn: true,
+                        },
+                    ],
                     columnsResultImport: resultAmbientesPlatformTemplateColumns,
                     template: 'plantilla-ambientes',
                     importEndPoint:
@@ -160,9 +247,18 @@ export const dropdownGroupConfig = [
                             localStorage.getItem('dremoPerfil') || 'null'
                         ).iNivelTipoId,
                     },
+                    // payload: (data) => {
+                    //     return data.map(row => {
+
+                    //         return {
+
+                    //         }
+                    //     })
+                    // },
                     response: (response) => {
                         return response.procesados.map((data) => ({
-                            result: data.data[0].Resultado,
+                            ...data.data[0],
+                            ...data.item,
                         }))
                     },
                 },

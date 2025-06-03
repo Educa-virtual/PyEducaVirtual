@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
+import { CurriculasComponent } from './mantenimiento/curriculas/curriculas.component'
 
 const routes: Routes = [
     {
@@ -26,6 +27,22 @@ const routes: Routes = [
             import('./backu/componentes.module').then(
                 (module) => module.BackupBdComponent
             ),*/
+    },
+    {
+        path: 'gestion-usuario',
+        loadComponent: () =>
+            import('./usuario/usuario.component').then(
+                (m) => m.UsuarioComponent
+            ),
+    },
+    {
+        path: 'mantenimiento',
+        children: [
+            {
+                path: 'curriculas',
+                component: CurriculasComponent,
+            },
+        ],
     },
 ]
 

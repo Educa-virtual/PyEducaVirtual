@@ -5,6 +5,8 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { TabViewModule } from 'primeng/tabview'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { MessageService } from 'primeng/api'
+import { EditorComponent } from '@tinymce/tinymce-angular'
 interface Comunicado {
     id: number
     titulo: string
@@ -20,14 +22,27 @@ interface Comunicado {
     curso?: number
     seccion?: number
     grado?: number
+    institucion: string
+    docente: string
+    institucionId: number
+    cursoName?: string
+    seccionName?: string
+    gradoName?: string
 }
 
 @Component({
     selector: 'app-contenidos',
     standalone: true,
-    imports: [PrimengModule, FormsModule, TabViewModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        FormsModule,
+        TabViewModule,
+        EditorComponent,
+        TablePrimengComponent,
+    ],
     templateUrl: './contenidos.component.html',
     styleUrls: ['./contenidos.component.scss'],
+    providers: [MessageService],
 })
 export class ContenidosComponent implements OnInit {
     private GeneralService = inject(GeneralService)
@@ -42,8 +57,10 @@ export class ContenidosComponent implements OnInit {
     year: any
     selectedEstado: number
     iIieeId: any
+    iPerfilId: any
     data = []
     miembros = []
+    advancedOptions: boolean = false // Controla el switch
 
     destinatarioNombre: string = ''
     destinatarioId: number | null = null
@@ -52,6 +69,95 @@ export class ContenidosComponent implements OnInit {
         { grupo: 'Estudiantes', codigo: 1 },
         { grupo: 'Docentes', codigo: 2 },
     ]
+
+    // Propiedades para el dialog de Instituciones y Docentes
+    instituciones: any[] = []
+    docentes: any[] = []
+
+    columnaInstituciones = [
+        {
+            type: 'actions',
+            width: '2rem',
+            field: 'iIieeId',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cIieeNombre',
+            header: 'Institución Educativa',
+            text_header: 'left',
+            text: 'left',
+        },
+    ]
+
+    accionInstitucion = [
+        {
+            labelTooltip: 'Seleccionar',
+            icon: 'pi pi-user-plus',
+            accion: 'seleccionarInstitucion',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+        },
+    ]
+
+    columnaDocentes = [
+        {
+            type: 'actions',
+            width: '2rem',
+            field: 'iDocenteId',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cDocenteNombres',
+            header: 'Nombres',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cDocentePaterno',
+            header: 'Apellido Paterno',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: 'auto',
+            field: 'cDocenteMaterno',
+            header: 'Apellido Materno',
+            text_header: 'left',
+            text: 'left',
+        },
+    ]
+
+    accionDocente = [
+        {
+            labelTooltip: 'Seleccionar',
+            icon: 'pi pi-check',
+            accion: 'seleccionarDocente',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+        },
+    ]
+
+    // Variables de control para la visibilidad de los dialogs
+    visibleInstitucionDialog: boolean = false
+    visibleDocenteDialog: boolean = false
+
+    // Variables para almacenar las selecciones
+    institucionNombre: string = ''
+    institucionId: number | null = null
+    docenteNombre: string = ''
+    docenteId: number | null = null
+
     tipoPersona: any
     destinatarios: any[] = []
 
@@ -116,7 +222,10 @@ export class ContenidosComponent implements OnInit {
         },
     ]
 
-    constructor(private ConstantesService: ConstantesService) {
+    constructor(
+        private messageService: MessageService,
+        private ConstantesService: ConstantesService
+    ) {
         this.grado = JSON.parse(this.ConstantesService.grados)
         this.iPersId = this.ConstantesService.iPersId
         this.iYAcadId = this.ConstantesService.iYAcadId
@@ -125,6 +234,24 @@ export class ContenidosComponent implements OnInit {
         this.iEstudianteId = this.ConstantesService.iEstudianteId
         this.iEspecialistaId = this.ConstantesService.iEspecialistaId
         this.iIieeId = this.ConstantesService.iIieeId
+        this.iPerfilId = this.ConstantesService.iPerfilId
+    }
+
+    mensajes: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        // selector: 'textarea',
+        // setup: (editor) => {
+        //     editor.on('blur', (e) =>
+        //         this.actualizar(e, 'cSilaboDescripcionCurso')
+        //     )
+        // },
+        placeholder: 'Escribe aqui...',
+        height: 250,
+        plugins: 'lists image table',
+        toolbar: 'bold italic underline strikethrough',
+        editable_root: true,
     }
 
     comunicados = []
@@ -142,6 +269,7 @@ export class ContenidosComponent implements OnInit {
     ]
 
     ngOnInit() {
+        this.selectedComunicado = this.initComunicado()
         this.cargaDatos()
         this.cargarComunicadosUsuario()
     }
@@ -155,6 +283,8 @@ export class ContenidosComponent implements OnInit {
                 year: this.iYAcadId,
                 iPersId: this.iPersId,
                 iIieeId: this.iIieeId,
+                iPerfilId: this.iPerfilId,
+                iSedeId: this.Isede,
             },
         }
         this.getInformation(params, 'obtenerDatos')
@@ -165,36 +295,86 @@ export class ContenidosComponent implements OnInit {
         titulo: '',
         texto: '',
         estado: '',
-        tipo: '',
+        tipo: null,
         publicado: '',
-        prioridad: '',
+        prioridad: null,
         caduca: '',
         grupo: [], // array vacío
-
         curso: null,
         seccion: null,
         grado: null,
-
         collapsed: true,
+        institucion: '',
+        institucionId: 0,
+        docente: '',
     }
 
     // Inicializa un comunicado vacío (para crear uno nuevo)
     initComunicado(): Comunicado {
+        const hoy = new Date()
+        const manana = new Date(hoy)
+        manana.setDate(hoy.getDate() + 1)
+
         return {
             id: 0,
             titulo: '',
             texto: '',
             estado: '',
-            tipo: '',
-            publicado: '',
-            prioridad: '',
-            caduca: '',
+            tipo: null,
+            publicado: this.formatDate(hoy),
+            prioridad: null,
+            caduca: this.formatDate(manana),
             grupo: [],
             curso: null,
             seccion: null,
             grado: null,
             collapsed: true,
+            institucion: '',
+            docente: '',
+            institucionId: 0,
         }
+    }
+    /**
+     * Retorna un arreglo de objetos { label, value } con los campos a mostrar,
+     * filtrando aquellos que sean null o cadenas vacías.
+     */
+    getCamposMostrables(
+        comunicado: Comunicado
+    ): { label: string; value: string; rowBreak?: boolean }[] {
+        const campos = [
+            { label: 'Prioridad', value: comunicado.prioridad },
+            { label: 'Tipo', value: comunicado.tipo },
+            { label: 'Inicio', value: comunicado.publicado },
+            { label: 'Fin', value: comunicado.caduca },
+
+            {
+                label: 'Institución',
+                value: comunicado.institucion,
+                rowBreak: true,
+            },
+            {
+                label: 'Destinatario',
+                value: comunicado.destinatario,
+                rowBreak: true,
+            },
+            { label: 'Docente', value: comunicado.docente },
+
+            { label: 'Área Curricular', value: comunicado.cursoName },
+            { label: 'Sección', value: comunicado.seccionName },
+            { label: 'Grado', value: comunicado.gradoName },
+
+            {
+                label: 'Grupo',
+                value:
+                    comunicado.grupo && comunicado.grupo.length > 0
+                        ? comunicado.grupo.map((g) => g.cGrupoNombre).join(', ')
+                        : '',
+            },
+        ]
+        // Se filtran aquellos campos cuyo valor sea null, undefined o una cadena vacía
+        return campos.filter(
+            (campo) => campo.value != null && campo.value.trim() !== ''
+        )
     }
 
     abrirDialogBuscarDestinatario() {
@@ -215,7 +395,6 @@ export class ContenidosComponent implements OnInit {
                 iPersId: this.iPersId,
             },
         }
-        console.table(params)
         this.getInformation(params, 'obtenerMiembros')
     }
 
@@ -243,22 +422,148 @@ export class ContenidosComponent implements OnInit {
             curso: com.curso,
             seccion: com.seccion,
             grado: com.grado,
+            cursoName: com.cursoName || '',
+            seccionName: com.seccionName || '',
+            gradoName: com.gradoName || '',
         }
         this.selectedEstado = com.estado === 'Activo' ? 1 : 0
+
         this.destinatarioNombre = com.destinatario || ''
+        this.institucionNombre = com.institucion || ''
+        this.institucionId = com.institucionId || null
+        this.docenteNombre = com.destinatario || ''
+
+        // Si se cuenta con alguno de estos datos o se tiene curso/sección/grado, activar las opciones avanzadas
+        if (
+            com.destinatario ||
+            com.institucion ||
+            com.docente ||
+            com.curso ||
+            com.seccion ||
+            com.grado
+        ) {
+            this.advancedOptions = true
+        } else {
+            this.advancedOptions = false
+        }
+    }
+
+    // genera los mensajes emergentes
+    mensajesEmergentes(severidad: string, titulo: string, mensaje: string) {
+        this.messageService.add({
+            severity: severidad,
+            summary: titulo,
+            detail: mensaje,
+        })
     }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
+        // 1) Validar Título, Prioridad, Tipo
+        if (!this.selectedComunicado.titulo?.trim()) {
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe ingresar un Título'
+            )
+            return
+        }
+        if (!this.selectedComunicado.prioridad) {
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar Prioridad'
+            )
+            return
+        }
+        if (!this.selectedComunicado.tipo) {
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar Tipo'
+            )
+            return
+        }
+        // Validar que se ingresen ambas fechas
+        if (
+            !this.selectedComunicado.publicado ||
+            !this.selectedComunicado.caduca
+        ) {
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe ingresar la fecha de Inicio y Fin.'
+            )
+            return
+        }
+        // Validar Fechas inicio no puede ser menor a final y viceversa
+        const hoy = new Date() // hoy
+        hoy.setHours(0, 0, 0, 0) // quitar hora
+        const inicio = this.parseFecha(this.selectedComunicado.publicado)
+        const fin = this.parseFecha(this.selectedComunicado.caduca)
+
+        if (inicio && inicio < hoy) {
+            this.mensajesEmergentes(
+                'warn',
+                'Fechas inválidas',
+                'La fecha de Inicio no puede ser anterior a hoy.'
+            )
+            return
+        }
+        if (inicio && fin && fin < inicio) {
+            this.mensajesEmergentes(
+                'warn',
+                'Fechas inválidas',
+                'La fecha de Fin no puede ser menor a la fecha de Inicio.'
+            )
+            return
+        }
+        if (this.advancedOptions && !this.destinatarioId) {
+            const { curso, seccion, grado } = this.selectedComunicado
+            const algunoSeleccionado = curso || seccion || grado
+            if (algunoSeleccionado && !(curso && seccion && grado)) {
+                this.mensajesEmergentes(
+                    'warn',
+                    'Advertencia',
+                    'Si selecciona Curso, Sección o Grado, debe ingresar los tres campos.'
+                )
+                return
+            }
+        }
+        // Validar que para perfiles de especialista se haya seleccionado Institución y Docente
+        if (
+            (+this.iPerfilId === 2 || +this.iPerfilId === 3) &&
+            (!this.institucionNombre?.trim() || !this.docenteNombre?.trim())
+        ) {
+            this.mensajesEmergentes(
+                'warn',
+                'Advertencia',
+                'Debe seleccionar una Institución y un Docente'
+            )
+            return
+        }
+        // Validar que se haya ingresado contenido
+        // if (
+        //     !this.selectedComunicado.texto ||
+        //     !this.selectedComunicado.texto.trim()
+        // ) {
+        //     this.messageService.add({
+        //         severity: 'warn',
+        //         summary: 'Advertencia',
+        //         detail: 'El contenido del comunicado no puede estar vacío.',
+        //     })
+        //     return
+        // }
+        this.aplicarLogicaEnvio()
         // objeto con el cual evaluamos si se actualiza o se ingresa un nuevo registro
         let dataObj: any = {
             iPersId: this.iPersId,
             iTipoComId: this.selectedComunicado.tipo, // Tipo de comunicado
             iPrioridadId: this.selectedComunicado.prioridad, // Prioridad
             cComunicadoTitulo: this.selectedComunicado.titulo, // Título
-            cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
+            cComunicadoDescripcion: this.selectedComunicado.texto, // contenido del comunicado
             dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
             dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
-            iEstado: this.selectedEstado, // Estado (1 o 0)
+            iEstado: 1,
             iSemAcadId: this.iSemAcadId,
             iYAcadId: this.iYAcadId,
             listaGrupos: this.selectedComunicado.grupo,
@@ -266,8 +571,8 @@ export class ContenidosComponent implements OnInit {
             curso: this.selectedComunicado.curso,
             seccion: this.selectedComunicado.seccion,
             grado: this.selectedComunicado.grado,
-
             iDestinatarioId: this.destinatarioId,
+            InstitucionId: this.institucionId,
             iTipoPersona: this.tipoPersona,
         }
 
@@ -310,6 +615,7 @@ export class ContenidosComponent implements OnInit {
         const month = (date.getMonth() + 1).toString().padStart(2, '0') // Los meses van de 0 a 11
         const year = date.getFullYear()
         return `${day}/${month}/${year}`
+        // return `${year}/${month}/${day}`;
     }
 
     getInformation(params, accion) {
@@ -326,33 +632,54 @@ export class ContenidosComponent implements OnInit {
 
         switch (accion) {
             case 'obtenerDatos':
-                this.prioridades = item.tipo_prioridad.map((p: any) => ({
-                    label: p.cPrioridadNombre,
-                    value: p.iPrioridadId,
-                }))
-
-                this.tipos = item.tipo_comunicado.map((t: any) => ({
-                    label: t.cTipoComNombre,
-                    value: t.iTipoComId,
-                }))
+                this.prioridades = [
+                    { label: 'Seleccione Prioridad', value: null },
+                    ...item.tipo_prioridad.map((p: any) => ({
+                        label: p.cPrioridadNombre,
+                        value: p.iPrioridadId,
+                    })),
+                ]
+                this.tipos = [
+                    { label: 'Seleccione Tipo', value: null },
+                    ...item.tipo_comunicado.map((t: any) => ({
+                        label: t.cTipoComNombre,
+                        value: t.iTipoComId,
+                    })),
+                ]
                 this.grupos = item.grupos.map((g: any) => ({
                     label: g.cGrupoNombre,
                     value: g.iGrupoId,
                 }))
                 //  curso, seccion y grado
-                this.cursos = item.cursos.map((c: any) => ({
-                    label: c.cCursoNombre,
-                    value: c.iCursoId,
-                }))
-                this.secciones = item.secciones.map((s: any) => ({
-                    label: s.cSeccionNombre,
-                    value: s.iSeccionId,
-                }))
-                this.grados = item.grados.map((g: any) => ({
-                    label: g.cGradoNombre,
-                    value: g.iGradoId,
-                }))
+                this.cursos = [
+                    { label: 'Area Curricular', value: null },
+                    ...item.cursos.map((c: any) => ({
+                        label: c.cCursoNombre,
+                        value: c.iCursoId,
+                    })),
+                ]
+                this.secciones = [
+                    { label: 'Seccion', value: null },
+                    ...item.secciones.map((s: any) => ({
+                        label: s.cSeccionNombre,
+                        value: s.iSeccionId,
+                    })),
+                ]
+                this.grados = [
+                    { label: 'Grado', value: null },
+                    ...item.grados.map((g: any) => ({
+                        label: g.cGradoNombre,
+                        value: g.iGradoId,
+                    })),
+                ]
                 this.iSemAcadId = item.semestre_acad_id
+
+                // Si el perfil es docente, filtrar para dejar solo la opción ACADEMICO (id=2)
+                if (Number(this.iPerfilId) === 7) {
+                    this.tipos = this.tipos.filter(
+                        (t) => t.value === null || Number(t.value) === 2
+                    )
+                }
                 break
             case 'obtenerComunicadosPersona':
                 // item es el array devuelto por el SP
@@ -408,10 +735,22 @@ export class ContenidosComponent implements OnInit {
                         seccion: c.iSeccionId,
                         grado: c.iGradoId,
                         // nombre del destinatario
-                        cursoName: foundCurso ? foundCurso.label : null,
-                        seccionName: foundSeccion ? foundSeccion.label : null,
-                        gradoName: foundGrado ? foundGrado.label : null,
+                        cursoName:
+                            c.iCursoId !== null && foundCurso
+                                ? foundCurso.label
+                                : null,
+                        seccionName:
+                            c.iSeccionId !== null && foundSeccion
+                                ? foundSeccion.label
+                                : null,
+                        gradoName:
+                            c.iGradoId !== null && foundGrado
+                                ? foundGrado.label
+                                : null,
                         destinatario: c.NombreUsuario || '',
+                        institucionId: c.iIieeId || null,
+                        institucion: c.cIieeNombre || '',
+                        // docente: c.NombreUsuario || '',
                         collapsed: true,
                     }
                 })
@@ -424,6 +763,12 @@ export class ContenidosComponent implements OnInit {
                 // Tras la eliminación refrescamos la lista
                 this.cargarComunicadosUsuario()
                 // aqui toast de éxito
+                break
+            case 'obtenerInstituciones':
+                this.instituciones = item
+                break
+            case 'obtenerDocentes':
+                this.docentes = item
                 break
         }
     }
@@ -451,8 +796,181 @@ export class ContenidosComponent implements OnInit {
         this.destinatarioNombre = ''
         this.destinatarioId = null
         this.tipoPersona = null
+        this.advancedOptions = false
+        this.clearInstitucion()
+        this.clearDocente()
         setTimeout(() => {
             this.destinatarioNombre = ''
         })
+    }
+    aplicarLogicaEnvio() {
+        if (!this.advancedOptions) {
+            // advanced OFF => se envía por grupos
+            // Revisar si hay grupos
+            if (
+                !this.selectedComunicado.grupo ||
+                this.selectedComunicado.grupo.length === 0
+            ) {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: 'Debe seleccionar al menos un Grupo (o activar Opciones Avanzadas).',
+                })
+                throw new Error('validación')
+            }
+            // forzar null
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+            this.destinatarioId = null
+            return
+        }
+
+        // advanced ON
+        // Caso 1: Destinatario
+        if (
+            this.destinatarioId ||
+            (this.selectedComunicado.curso &&
+                this.selectedComunicado.seccion &&
+                this.selectedComunicado.grado)
+        ) {
+            if (this.destinatarioId) {
+                // se envía a un usuario => forzar null en grupo y c/s/g
+                this.selectedComunicado.grupo = []
+                this.selectedComunicado.curso = null
+                this.selectedComunicado.seccion = null
+                this.selectedComunicado.grado = null
+            } else {
+                // Caso 2: c/s/g
+                if (
+                    this.selectedComunicado.curso ||
+                    this.selectedComunicado.seccion ||
+                    this.selectedComunicado.grado
+                ) {
+                    // se envía a un (curso,seccion,grado) => forzar null en grupo y destinatario
+                    this.selectedComunicado.grupo = []
+                    this.destinatarioId = null
+                } else {
+                    // Caso 3: si no hay destinatario NI c/s/g => error
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Advertencia',
+                        detail: 'Debe seleccionar un Destinatario único o Curso/Sección/Grado.',
+                    })
+                    throw new Error('validación')
+                }
+            }
+        }
+    }
+    parseFecha(fechaStr: string): Date | null {
+        if (!fechaStr) return null
+        const [dd, mm, yyyy] = fechaStr.split('/')
+        if (!dd || !mm || !yyyy) return null
+        return new Date(+yyyy, +mm - 1, +dd)
+    }
+    clearDestinatario() {
+        this.destinatarioNombre = ''
+        this.destinatarioId = null
+    }
+    onAdvancedOptionsChange() {
+        if (this.advancedOptions) {
+            // Cuando se activa avanzado, el grupo se deshabilita, por lo que se resetea
+            this.selectedComunicado.grupo = []
+        } else {
+            // Cuando se desactiva avanzado, se deshabilitan los campos de curso, sección y grado
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+        }
+    }
+    onTipoChange(event: any) {
+        // Supongamos que el valor "2" representa "Académico"
+        if (Number(event.value) !== 2) {
+            this.advancedOptions = false
+            // Limpia los campos avanzados si fuera necesario:
+            this.selectedComunicado.grupo = []
+            this.selectedComunicado.curso = null
+            this.selectedComunicado.seccion = null
+            this.selectedComunicado.grado = null
+        }
+    }
+    // Abre el modal para seleccionar Institución Educativa
+    abrirDialogInstitucion() {
+        this.visibleInstitucionDialog = true
+        // Llama al SP para cargar las instituciones (cargarInstitucionesEspecialista)
+        this.cargarInstitucionesEspecialista()
+    }
+
+    // Método para cargar las instituciones (llama al SP Sp_SEL_institucionesEspecialista)
+    cargarInstitucionesEspecialista() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'obtener_institucionesEspecialista',
+            data: {
+                iPersId: this.iPersId, // Se utiliza el iPersId del especialista
+            },
+        }
+        this.getInformation(params, 'obtenerInstituciones')
+    }
+
+    // Método para limpiar la selección de institución
+    clearInstitucion() {
+        this.institucionNombre = ''
+        this.institucionId = null
+        // Además, si se había seleccionado docente, limpiarlo también
+        this.clearDocente()
+    }
+
+    // Abre el modal para seleccionar Docente en la institución seleccionada
+    abrirDialogDocente() {
+        if (!this.institucionId) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe seleccionar una Institución Educativa primero',
+            })
+            return
+        }
+        // Configura y abre el modal para docentes
+        this.visibleDocenteDialog = true
+        // Llama al método para cargar docentes filtrados por la institución seleccionada
+        this.cargarDocentesPorInstitucion()
+    }
+
+    // Método para limpiar la selección de docente
+    clearDocente() {
+        this.docenteNombre = ''
+        this.destinatarioId = null
+    }
+    // Método para procesar la selección de un docente
+    seleccionarDocente(event: any) {
+        const docente = event.item
+        this.docenteNombre =
+            docente.cDocenteNombres +
+            ' ' +
+            docente.cDocentePaterno +
+            ' ' +
+            docente.cDocenteMaterno
+        this.destinatarioId = docente.iPersId
+        this.visibleDocenteDialog = false
+    }
+    // Método para cargar docentes según la institución seleccionada (a implementar)
+    cargarDocentesPorInstitucion() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'obtener_docentes_por_institucion', // Debes crear o definir este endpoint en el backend
+            data: { iIieeId: this.institucionId },
+        }
+        this.getInformation(params, 'obtenerDocentes')
+    }
+    seleccionarInstitucion(event: any) {
+        const institucion = event.item
+        this.institucionNombre = institucion.cIieeNombre
+        this.institucionId = institucion.iIieeId
+        this.visibleInstitucionDialog = false
     }
 }

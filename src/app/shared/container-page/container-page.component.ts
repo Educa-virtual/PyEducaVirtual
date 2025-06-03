@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+} from '@angular/core'
 import { PrimengModule } from 'src/app/primeng.module'
 import { IconComponent } from '../icon/icon.component'
 import { IIcon } from '../icon/icon.interface'
@@ -10,6 +16,7 @@ export interface IActionContainer {
     icon: string | IIcon
     accion: string
     class: string
+    disabled?: boolean
 }
 
 @Component({
@@ -19,7 +26,7 @@ export interface IActionContainer {
     templateUrl: './container-page.component.html',
     styleUrl: './container-page.component.scss',
 })
-export class ContainerPageComponent {
+export class ContainerPageComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
     @Input() title: string = 'Titulo'
     @Input() subtitle?: string
@@ -53,5 +60,11 @@ export class ContainerPageComponent {
             item,
         }
         this.accionBtnItem.emit(data)
+    }
+
+    ngOnChanges(changes): void {
+        if (changes.actions?.currentValue) {
+            this.actions = changes.actions.currentValue
+        }
     }
 }

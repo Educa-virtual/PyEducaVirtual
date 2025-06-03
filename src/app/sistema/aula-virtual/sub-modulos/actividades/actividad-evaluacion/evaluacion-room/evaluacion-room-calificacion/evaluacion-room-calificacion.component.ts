@@ -21,7 +21,10 @@ import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evalu
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { SharedAnimations } from '@/app/shared/animations/shared-animations'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 interface Leyenda {
     total: number
     text: string
@@ -73,6 +76,7 @@ const leyendas = {
         EvaluacionHeaderComponent,
         NoDataComponent,
         RubricaCalificarComponent,
+        CardOrderListComponent,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
@@ -120,9 +124,16 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     tareasCulminado: any
     evaluacionEstudiante: any
 
+    // datos para listar estudiantes
+    perfil: any
+    idDocCursoId: any[] = []
+    private _aulaService = inject(ApiAulaService)
+    public estudianteMatriculadosxGrado = []
+
     showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
+        console.log(value)
         this._state.update((state) => {
             console.log('selectedEstudiante')
             console.log(value)
@@ -139,6 +150,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                 selectedEstudiante: value,
             }
         })
+        this.seleccionarEvaluacion()
     }
 
     get selectedEstudianteValue() {
@@ -154,18 +166,27 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
 
     public leyendasOrden = ['REVISADO', 'PROCESO', 'FALTA']
 
-    constructor() {}
+    constructor(
+        private store: LocalStoreService,
+        private _activatedRoute: ActivatedRoute
+    ) {
+        this.perfil = this.store.getItem('dremoPerfil')
+        //para obtener el idDocCursoId
+        this.idDocCursoId =
+            this._activatedRoute.snapshot.queryParams['idDocCursoId']
+    }
     ngOnInit() {
         this.getData()
     }
     ngOnChanges(changes) {
-        if (changes.iEstado?.currentValue) {
-            this.iEstado = changes.iEstado?.currentValue
+        console.log('changes', changes)
+        // if (changes.iEstado?.currentValue) {
+        //     this.iEstado = changes.iEstado?.currentValue
 
-            if (this.iEstado === 2) {
-                this.getData()
-            }
-        }
+        //     if (this.iEstado === 2) {
+        //         this.getData()
+        //     }
+        // }
     }
 
     getData() {
@@ -179,6 +200,19 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (estudiantes) => {
+                    this.estudianteMatriculadosxGrado = estudiantes.map(
+                        (item: any) => {
+                            return {
+                                ...item,
+                                cTitulo:
+                                    (item.cEstNombres || '') +
+                                    ' ' +
+                                    (item.cEstPaterno || '') +
+                                    ' ' +
+                                    (item.cEstMaterno || ''),
+                            }
+                        }
+                    )
                     this._state.update((current) => ({
                         ...current,
                         estudiantes,

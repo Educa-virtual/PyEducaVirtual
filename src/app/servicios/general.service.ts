@@ -40,7 +40,23 @@ export class GeneralService {
         }
         return this.url
     }
+    getGralPrefixx(data) {
+        const url = `${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`
 
+        switch (data.petition) {
+            case 'get':
+                return this.http.get(url, { params: data.params })
+            case 'post':
+                return this.http.post(url, data.data, { params: data.params })
+            case 'put':
+                return this.http.put(url, data.data, { params: data.params })
+            case 'delete':
+                return this.http.delete(url, { params: data.params })
+            default:
+                // return throwError(() => new Error('Tipo de petición no válido'));
+                return this.url
+        }
+    }
     getGralReporte(data) {
         switch (data.petition) {
             case 'get':
@@ -361,5 +377,22 @@ export class GeneralService {
             `${baseUrl}/acad/gestionInstitucional/generarCredencialesIE`,
             data
         )
+    }
+    validarPersona(data: any) {
+        return this.http.post(`${baseUrl}/grl/validarPersona`, data)
+    }
+
+    generarConfiguracionMasivaInicio(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/generarConfiguracionMasivaInicio`,
+            data
+        )
+    }
+
+    agregarCurriculas(data: any) {
+        return this.http.post(`${baseUrl}/administrador/addCurriculas`, data)
+    }
+    actualizarCurriculas(data: any) {
+        return this.http.post(`${baseUrl}/administrador/updCurriculas`, data)
     }
 }

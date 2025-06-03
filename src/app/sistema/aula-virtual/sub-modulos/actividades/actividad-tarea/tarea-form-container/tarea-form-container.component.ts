@@ -84,7 +84,6 @@ una tarea o actividad a un servicio backend, con la finalidad de guardarla o act
 
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
-                console.log(resp.validated)
                 this.closeModal(resp.validated)
             },
         })

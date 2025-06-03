@@ -60,7 +60,6 @@ export class ActividadRowComponent implements OnInit {
 
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
-        console.log('actividad', this.actividad)
     }
     onAction(action: string, event: Event) {
         //console.log(this.actividad, action, event)

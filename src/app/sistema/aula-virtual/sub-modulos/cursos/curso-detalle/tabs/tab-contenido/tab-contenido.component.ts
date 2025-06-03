@@ -77,6 +77,7 @@ export class TabContenidoComponent implements OnInit {
     public actividadSelected: IActividad | undefined
     public accionSeleccionada: string | undefined
     public contenidoSemanas = []
+    public contenidosList = []
     // public actividades = actividadesConfigList
 
     // injeccion de dependencias
@@ -132,7 +133,10 @@ export class TabContenidoComponent implements OnInit {
     // maneja el evento de seleccion de semana
     mostrarDetalleSemana(semana: any) {
         this.semanaActivado = semana.iContenidoSemId
-        this.semanaSeleccionada = semana
+        const semanaSeleccionada = this.contenidoSemanas.find(
+            (item: any) => item.iContenidoSemId === semana.iContenidoSemId
+        )
+        this.semanaSeleccionada = semanaSeleccionada
     }
 
     private getData() {
@@ -151,7 +155,6 @@ export class TabContenidoComponent implements OnInit {
     }
     loadingContenidoSemanas: boolean = true
     private obtenerContenidoSemanas(semana) {
-        console.log(semana)
         this.loadingContenidoSemanas = true
 
         this._aulaService
@@ -192,15 +195,15 @@ export class TabContenidoComponent implements OnInit {
                         )
                     } else {
                         this.contenidoSemanas = data
-                        this.contenidoSemanas = this.contenidoSemanas.map(
+                        this.contenidosList = this.contenidoSemanas.map(
                             (item: any) => {
                                 return {
-                                    ...item,
                                     cTitulo:
                                         'SEMANA ' +
                                         (item.cContenidoSemNumero || ''),
                                     cDescripcion:
                                         item.cContenidoSemTitulo || '',
+                                    iContenidoSemId: item.iContenidoSemId,
                                 }
                             }
                         )
@@ -304,14 +307,12 @@ export class TabContenidoComponent implements OnInit {
                     if (result) {
                         // this.getData()
                         this.obtenerContenidoSemanas(this.semanaSeleccionada)
-                        console.log('Formulario enviado', result)
                     } else {
                         console.log('Formulario cancelado')
                     }
                 })
                 break
             case 'ELIMINAR':
-                console.log(actividad)
                 this._confirmService.openConfirm({
                     header:
                         '¿Esta seguro de eliminar la tarea ' +
@@ -406,7 +407,6 @@ export class TabContenidoComponent implements OnInit {
 
     handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
-            console.log('Editar', actividad)
             this._dialogService
                 .open(ForoFormContainerComponent, {
                     ...MODAL_CONFIG,
@@ -419,7 +419,6 @@ export class TabContenidoComponent implements OnInit {
                     header: 'Editar Foro',
                 })
                 .onClose.subscribe((result) => {
-                    console.log(result)
                     if (result) {
                         const data = {
                             ...result,
@@ -447,14 +446,12 @@ export class TabContenidoComponent implements OnInit {
                     },
                 })
                 .onClose.subscribe((result) => {
-                    console.log(result)
                     if (result) {
                         const data = {
                             ...result,
                             iContenidoSemId:
                                 this.semanaSeleccionada.iContenidoSemId,
                         }
-                        console.log('Formulario enviado', data)
                         this._aulaService.guardarForo(data).subscribe(() => {
                             this.obtenerContenidoSemanas(
                                 this.semanaSeleccionada
@@ -526,7 +523,6 @@ export class TabContenidoComponent implements OnInit {
                 ref.onClose.subscribe((result) => {
                     if (result) {
                         this.obtenerContenidoSemanas(this.semanaSeleccionada)
-                        console.log('Formulario enviado', result)
                     } else {
                         console.log('Formulario cancelado')
                     }

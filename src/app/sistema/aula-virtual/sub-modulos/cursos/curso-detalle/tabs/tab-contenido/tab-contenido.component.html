@@ -6,9 +6,8 @@
         <div class="flex flex-column">
             @if (contenidoSemanas.length > 0) {
                 <app-card-orderlist
-                    [data]="contenidoSemanas"
+                    [data]="contenidosList"
                     [inputSearch]="false"
-                    [seleccionado]="semanaSeleccionada"
                     (datoSeleccionado)="mostrarDetalleSemana($event)"
                 >
                 </app-card-orderlist>

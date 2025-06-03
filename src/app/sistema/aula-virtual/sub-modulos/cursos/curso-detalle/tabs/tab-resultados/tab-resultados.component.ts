@@ -27,6 +27,7 @@ import { TabsKeys } from '../tab.interface'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { CardOrderListComponent } from '../../../../../../../shared/card-orderList/card-orderList.component'
 import { SelectButtonChangeEvent } from 'primeng/selectbutton'
+import { DetalleMatriculasService } from '@/app/servicios/acad/detalle-matriculas.service'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -59,6 +60,9 @@ export class TabResultadosComponent implements OnInit {
     private _confirmService = inject(ConfirmationModalService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    private _DetalleMatriculasService = inject(DetalleMatriculasService)
+    private _MessageService = inject(MessageService)
+
     @Input() actions: IActionContainer[] = [
         {
             labelTooltip: 'Descargar Pdf',
@@ -127,7 +131,7 @@ export class TabResultadosComponent implements OnInit {
         iEscalaCalifId: ['', [Validators.required]],
         cDetMatConclusionDescPromedio: ['', [Validators.required]],
     })
-    constructor(private messageService: MessageService) {}
+
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
         {
@@ -411,41 +415,61 @@ export class TabResultadosComponent implements OnInit {
             conclusionDescrp.cDetMatConclusionDescPromedio
         )
         const idEscala = conclusionDescrp.iEscalaCalifId
-        const where = [
-            {
-                COLUMN_NAME: 'iDetMatrId',
-                VALUE: this.estudianteSelect.iDetMatrId,
-            },
-        ]
-        const registro: any = {
+
+        const params: any = {
             iEscalaCalifIdPromedio: idEscala,
+            iEstudianteId: this.estudianteSelect.iEstudianteId,
+            iMatrId: this.estudianteSelect.iMatrId,
+            iIeCursoId: this.curso.iIeCursoId,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
+            iSeccionId: this.curso.iSeccionId,
+            idDocCursoId: this.idDocCursoId,
+            iCredId: this._constantesService.iCredId,
         }
-        console.log(registro, conclusionDescrp)
-        this._aulaService
-            .guardarCalificacionEstudiante(
-                'acad',
-                'detalle_matriculas',
-                where,
-                registro
+        this._DetalleMatriculasService
+            .guardarConclusionDescriptiva(
+                this.estudianteSelect.iDetMatrId,
+                params
             )
             .subscribe({
                 next: (response) => {
                     this.obtenerReporteDenotasFinales()
                     this.mostrarModalConclusionDesc = false
-                    console.log('actualizar:', response)
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Calificación guardada correctamente.',
-                    })
+                    if (response.validated) {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: 'Calificación guardada correctamente.',
+                        })
+                    }
                 },
                 error: (error) => {
-                    console.log('Error en la actualización:', error)
+                    const errores = error?.error?.errors
+
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this._MessageService.add({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this._MessageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
                 },
             })
         this.conclusionDescrp.reset()
-        console.log('conclusion;', where, registro)
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
@@ -457,7 +481,7 @@ export class TabResultadosComponent implements OnInit {
             this.califcFinal.value.iEscalaCalifIdPeriodo1
         )
         if (this.estudianteSeleccionado == undefined) {
-            this.messageService.add({
+            this._MessageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Seleccione un estudiante:',
@@ -518,7 +542,7 @@ export class TabResultadosComponent implements OnInit {
                 conclusionFinalDocente == '' ||
                 this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
             ) {
-                this.messageService.add({
+                this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
@@ -542,7 +566,7 @@ export class TabResultadosComponent implements OnInit {
                                     //actualiza la tabla de reporte de notas:
                                     this.obtenerReporteDenotasFinales()
                                     console.log('actualizar:', response)
-                                    this.messageService.add({
+                                    this._MessageService.add({
                                         severity: 'success',
                                         summary: 'Éxito',
                                         detail: 'Calificación guardada correctamente.',
@@ -558,7 +582,7 @@ export class TabResultadosComponent implements OnInit {
                     },
                     reject: () => {
                         // Mensaje de cancelación (opcional)
-                        this.messageService.add({
+                        this._MessageService.add({
                             severity: 'error',
                             summary: 'Cancelado',
                             detail: 'Acción cancelada',

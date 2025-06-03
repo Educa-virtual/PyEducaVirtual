@@ -41,6 +41,7 @@ import { VideoconferenciaFormContainerComponent } from '../../../../actividades/
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 import { CuestionarioFormComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-form/cuestionario-form.component'
+import { DropdownChangeEvent } from 'primeng/dropdown'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -91,7 +92,10 @@ export class TabContenidoComponent implements OnInit {
     // private semanaSeleccionadaS
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
-
+    // this.search_perfiles.unshift({
+    //     iPerfilId: '0',
+    //     cPerfilNombre: 'Todos los perfiles',
+    // }) // console.log('Request completed')
     semanaSeleccionada: any = null
     semanaActivado: number | null = null
 
@@ -131,23 +135,29 @@ export class TabContenidoComponent implements OnInit {
     }
 
     // maneja el evento de seleccion de semana
+    semanaSeleccionadaFiltrada: any = null
     mostrarDetalleSemana(semana: any) {
         this.semanaActivado = semana.iContenidoSemId
         const semanaSeleccionada = this.contenidoSemanas.find(
             (item: any) => item.iContenidoSemId === semana.iContenidoSemId
         )
         this.semanaSeleccionada = semanaSeleccionada
+        this.semanaSeleccionadaFiltrada = semanaSeleccionada
     }
 
     private getData() {
         this.obtenerTipoActivadad()
         this.obtenerContenidoSemanas(null)
     }
-
+    iActTipoId: number | string = 0
     obtenerTipoActivadad() {
         this._aulaService.obtenerTipoActividades().subscribe({
             next: (tipoActivadeds) => {
                 this.tipoActivadedes = tipoActivadeds
+                this.tipoActivadedes.unshift({
+                    iActTipoId: 0,
+                    cActTipoNombre: 'Todas las actividades',
+                })
                 // console.log('las actividades', this.tipoActivadedes)
                 this.generarAccionesContenido()
             },
@@ -834,5 +844,33 @@ export class TabContenidoComponent implements OnInit {
                 this.getData()
                 break
         }
+    }
+
+    filtrarSemanaSeleccionada(event: DropdownChangeEvent) {
+        const iActTipoId = Number(event.value)
+        this.semanaSeleccionada = { ...this.semanaSeleccionadaFiltrada } // Hacer copia (opcional según cómo esté estructurado)
+
+        if (!iActTipoId || !this.semanaSeleccionada) return
+
+        // Filtrar fechas que contienen actividades del tipo seleccionado
+        const fechasFiltradas = this.semanaSeleccionada.fechas
+            .map((fecha: any) => {
+                const actividadesFiltradas = fecha.actividades.filter(
+                    (actividad: any) =>
+                        Number(actividad.iActTipoId) === iActTipoId
+                )
+
+                if (actividadesFiltradas.length > 0) {
+                    return {
+                        ...fecha,
+                        actividades: actividadesFiltradas,
+                    }
+                }
+
+                return null
+            })
+            .filter((fecha: any) => fecha !== null)
+
+        this.semanaSeleccionada.fechas = fechasFiltradas
     }
 }

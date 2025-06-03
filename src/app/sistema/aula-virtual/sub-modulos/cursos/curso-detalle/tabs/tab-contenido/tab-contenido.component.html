@@ -69,27 +69,28 @@
                             ngClass="p-button-primary"
                         >
                             <i class="pi pi-plus"></i>
-                            &nbsp;Actividad
+                            &nbsp;Crear Actividad
                         </button>
                     </div>
                 }
             </app-toolbar-primeng>
         </ng-container>
         <div class="grid" *ngIf="semanaSeleccionada">
-            <div class="col-5">
+            <div class="col md:col-6">
                 <p-inputGroup>
-                    <p-inputGroupAddon>Tipo de actividad:</p-inputGroupAddon>
+                    <p-inputGroupAddon>Tipo:</p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipoActivadedes"
                         styleClass="w-full"
-                        [showClear]="true"
                         placeholder="Seleccione el tipo"
                         optionValue="iActTipoId"
                         optionLabel="cActTipoNombre"
+                        [(ngModel)]="iActTipoId"
+                        (onChange)="filtrarSemanaSeleccionada($event)"
                     ></p-dropdown>
                 </p-inputGroup>
             </div>
-            <div class="col-7">
+            <div class="col md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon
                         ><i class="pi pi-search"></i
@@ -106,10 +107,12 @@
 
         <div class="col">
             <ng-container *ngIf="semanaSeleccionada">
-                <h3 class="text-primary">
+                <div class="text-primary text-lg font-bold pb-2">
                     Detalle de Semana
                     {{ semanaSeleccionada.cContenidoSemNumero }}
-                </h3>
+                    <p-divider></p-divider>
+                </div>
+
                 <!-- <p class="mb-2"><strong>Tema:</strong> {{ semanaSeleccionada.cContenidoSemTitulo }}</p> -->
 
                 @for (fecha of semanaSeleccionada.fechas; track $index) {

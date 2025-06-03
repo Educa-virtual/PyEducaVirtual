@@ -9,6 +9,10 @@ import { FichaGeneral } from '../interfaces/fichaGeneral'
 import { FichaFamiliar } from '../interfaces/fichaFamiliar'
 import { FichaVivienda } from '../interfaces/fichaVivienda'
 import { FichaEconomico } from '../interfaces/FichaEconomico'
+import { FichaAlimentacion } from '../interfaces/FichaAlimentacion'
+import { FichaRecreacion } from '../interfaces/fichaRecreacion'
+import { FichaSalud } from '../interfaces/FichaSalud'
+import { FichaDiscapacidad } from '../interfaces/FichaDiscapacidad'
 
 const baseUrl = environment.backendApi
 
@@ -80,6 +84,10 @@ export class DatosFichaBienestarService implements OnDestroy {
     formFamiliar: FichaFamiliar
     formVivienda: FichaVivienda
     formEconomico: FichaEconomico
+    formAlimentacion: FichaAlimentacion
+    formRecreacion: FichaRecreacion
+    formSalud: FichaSalud
+    formDiscapacidad: FichaDiscapacidad
 
     searchFichas(data: any) {
         return this.http.post(`${baseUrl}/bienestar/searchFichas`, data)
@@ -170,8 +178,8 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/grl/validarPersona`, data)
     }
 
-    searchFichaVivienda(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichaVivienda`, data)
+    verFichaVivienda(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaVivienda`, data)
     }
 
     guardarFichaVivienda(data: any) {

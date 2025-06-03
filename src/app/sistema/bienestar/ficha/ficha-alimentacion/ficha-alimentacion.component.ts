@@ -1,9 +1,10 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-ficha-alimentacion',
@@ -18,6 +19,9 @@ export class FichaAlimentacionComponent implements OnInit {
     programas_alimentarios: Array<object>
     visibleInput: Array<boolean>
     visibleAdicionalInput: Array<boolean>
+    ficha_registrada: boolean = false
+
+    private _messageService = inject(MessageService)
 
     constructor(
         private fb: FormBuilder,
@@ -111,11 +115,85 @@ export class FichaAlimentacionComponent implements OnInit {
         }
     }
 
-    guardarDatos() {
-        console.log(this.formAlimentacion.value)
+    guardar() {
+        if (this.formAlimentacion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.datosFichaBienestarService
+            .guardarFichaVivienda(this.formAlimentacion.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formVivienda =
+                        this.formAlimentacion.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro Exitoso',
+                        detail: 'Se registró la ficha de vivienda',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error guardando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
-    actualizarDatos() {
-        console.log(this.formAlimentacion.value)
+    actualizar() {
+        if (this.formAlimentacion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.datosFichaBienestarService
+            .actualizarFichaVivienda(this.formAlimentacion.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formAlimentacion =
+                        this.formAlimentacion.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización Exitosa',
+                        detail: 'Se actualizó la ficha de vivienda',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    salir() {
+        this.router.navigate(['/'])
     }
 }

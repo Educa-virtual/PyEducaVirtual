@@ -21,6 +21,7 @@ export class FichaSaludComponent implements OnInit {
     visibleSeguroInput: Array<boolean>
     visibleDolenciasInput: Array<boolean>
     seguros_salud: Array<object>
+    ficha_registrada: boolean = false
 
     constructor(
         private fb: FormBuilder,
@@ -116,11 +117,15 @@ export class FichaSaludComponent implements OnInit {
         }
     }
 
-    guardarDatos() {
+    guardar() {
         console.log(this.formSalud.value, 'guardando datos')
     }
 
-    actualizarDatos() {
+    actualizar() {
         console.log(this.formSalud.value, 'actualizando datos')
+    }
+
+    salir() {
+        this.router.navigate(['/'])
     }
 }

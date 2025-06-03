@@ -14,6 +14,7 @@ import { Router } from '@angular/router'
 export class FichaRecreacionComponent implements OnInit {
     formRecreacion: FormGroup | undefined
     visibleInput: Array<boolean>
+    ficha_registrada: boolean = false
 
     constructor(
         private fb: FormBuilder,
@@ -187,14 +188,18 @@ export class FichaRecreacionComponent implements OnInit {
         }
     }
 
-    guardarDatos() {
+    guardar() {
         console.log('Guardando formulario...')
         // Aquí va la lógica de guardado, por ejemplo, una llamada a servicio
     }
 
-    actualizarDatos() {
+    actualizar() {
         console.log('Actualizando formulario...')
         // Aquí va la lógica de actualización, por ejemplo, una llamada a servicio
+    }
+
+    salir() {
+        this.router.navigate(['/'])
     }
 
     imprimirFormulario() {

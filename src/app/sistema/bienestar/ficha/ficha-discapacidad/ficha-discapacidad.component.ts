@@ -16,7 +16,7 @@ export class FichaDiscapacidadComponent implements OnInit {
     formDiscapacidad: FormGroup
     visibleProgramaInput: Array<boolean>
     visibleLimitacionesInput: Array<boolean>
-
+    ficha_registrada: boolean = false
     discapacidades: Array<object>
 
     constructor(
@@ -89,11 +89,15 @@ export class FichaDiscapacidadComponent implements OnInit {
         }
     }
 
-    guardarDatos() {
+    guardar() {
         console.log(this.formDiscapacidad.value)
     }
 
-    actualizarDatos() {
+    actualizar() {
         console.log(this.formDiscapacidad.value)
+    }
+
+    salir() {
+        this.router.navigate(['/'])
     }
 }

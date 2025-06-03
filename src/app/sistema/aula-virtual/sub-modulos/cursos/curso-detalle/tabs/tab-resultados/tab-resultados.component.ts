@@ -177,7 +177,7 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'iEscalaCalifIdPromedio',
+            field: 'iEscalaCalifIdPromedioFinal',
             header: 'Promedio Final',
             text_header: 'center',
             text: 'center',
@@ -233,10 +233,12 @@ export class TabResultadosComponent implements OnInit {
         this.mostrarModalConclusionDesc = true
         this.estudianteSelect = item
         // this.descrip = item.cDetMatConclusionDescPromedio
+        this.conclusionDescrp.controls['iEscalaCalifId'].setValue(
+            item.iEscalaCalifIdPromedio
+        )
         this.conclusionDescrp.controls[
             'cDetMatConclusionDescPromedio'
-        ].setValue(this.descrip)
-        console.log('Agregar descripcion', item, this.descrip)
+        ].setValue(item.cDetMatConclusionDescPromedio)
     }
     //cerra el modal de calificacion
     cerrarModalDeCalif() {
@@ -435,6 +437,7 @@ export class TabResultadosComponent implements OnInit {
                 next: (response) => {
                     this.obtenerReporteDenotasFinales()
                     this.mostrarModalConclusionDesc = false
+                    this.conclusionDescrp.reset()
                     if (response.validated) {
                         this._MessageService.add({
                             severity: 'success',
@@ -469,7 +472,6 @@ export class TabResultadosComponent implements OnInit {
                     }
                 },
             })
-        this.conclusionDescrp.reset()
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {

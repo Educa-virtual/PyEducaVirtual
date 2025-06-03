@@ -105,12 +105,15 @@
                     <span class="text-red-500 text-xs">(*) Obligatorio</span>
                 </label>
                 <div class="mt-2 pt-2">
-                    <p-editor
+                    <!-- <p-editor id="descripcion" formControlName="cDetMatConclusionDescPromedio"
+                        placeholder="Escribe una conclusión descriptiva.... " [style]="{ height: '150px' }" /> -->
+                    <textarea
                         id="descripcion"
                         formControlName="cDetMatConclusionDescPromedio"
-                        placeholder="Escribe una conclusión descriptiva.... "
+                        placeholder="Escribe una descripción.... "
                         [style]="{ height: '150px' }"
-                    />
+                        class="w-full p-inputtext p-component"
+                    ></textarea>
                 </div>
             </div>
         </div>

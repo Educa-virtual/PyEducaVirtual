@@ -61,7 +61,7 @@
                                 >BORRADOR</span
                             >
                         }
-                        @if (cuestionario?.iEstado === 1) {
+                        @if (cuestionario?.iEstado === '1') {
                             <span
                                 class="mt-2 ml-1 font-bold text-3xl text-green-500"
                                 >PUBLICADO</span
@@ -71,7 +71,9 @@
 
                     <div class="col-12 md:col-4">
                         <h3 class="text-lg m-0">Instrucciones:</h3>
-                        <div class="bg-blue-100 p-3 border-round text-center">
+                        <div
+                            class="bg-blue-100 p-3 border-round text-center text-justify"
+                        >
                             <!-- <p-editor
                                 appEditorOnlyView
                                 class="quill-only-view"
@@ -84,6 +86,20 @@
                     </div>
                 </div>
             </div>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header" class="header-fixed">
+                <div class="flex align-items-center flex-column gap-2">
+                    <app-icon name="matListAlt"></app-icon>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Preguntas
+                    </span>
+                </div>
+            </ng-template>
+            <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo">
+            </app-toolbar-primeng>
+            <!-- Componente cuestionario-preguntas -->
+            <app-cuestionario-preguntas></app-cuestionario-preguntas>
         </p-tabPanel>
         <p-tabPanel>
             <ng-template pTemplate="header" class="header-fixed">

@@ -10,6 +10,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
+import { CuestionarioPreguntasComponent } from '../cuestionario-preguntas/cuestionario-preguntas.component'
 @Component({
     selector: 'app-cuestionario-room',
     standalone: true,
@@ -20,6 +21,7 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
         IconComponent,
         ToolbarPrimengComponent,
         RemoveHTMLPipe,
+        CuestionarioPreguntasComponent,
     ],
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
@@ -39,10 +41,6 @@ export class CuestionarioRoomComponent implements OnInit {
     constructor(private location: Location) {}
 
     ngOnInit() {
-        console.log('datos de cuestionario', this.contenidoSemana)
-        //  this.items = [{ icon: 'pi pi-home', route: '/' },
-        //     { label: 'Mis Áreas Curriculares' , route: '/aula-virtual/areas-curriculares' },
-        //     { label: 'Cuestionario' }];
         this.items = [
             {
                 label: 'Mis Áreas Curriculares',

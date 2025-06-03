@@ -8,25 +8,30 @@
             />
         </div>
         <!-- Mostrar el título -->
-        <div class="col-6 flex flex-column gap-2">
-            <app-common-input [controlKey]="'cForoTitulo'" label="Título" />
+        <div class="col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Título</p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese el título del foro"
+                    formControlName="cForoTitulo"
+                />
+            </p-inputGroup>
         </div>
         <!-- Mostrar las Categorias en un Select -->
-        <div class="col-4 flex flex-column gap-2">
-            <label for="categoria">Categoría</label>
-            <p-dropdown
-                [options]="categorias"
-                formControlName="iForoCatId"
-                styleClass="w-full"
-                optionValue="iForoCatId"
-                optionLabel="cForoCatDescripcion"
-                placeholder="Seleccione una categoría"
-            />
-        </div>
-        <!-- Mostrar el estado -->
-        <div class="col-2 flex flex-column gap-2">
-            <label for="">Estado</label>
-            <p-inputSwitch class="align-self-start" formControlName="iEstado" />
+        <div class="col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Categoría</p-inputGroupAddon>
+                <p-dropdown
+                    [options]="categorias"
+                    formControlName="iForoCatId"
+                    styleClass="w-full"
+                    optionValue="iForoCatId"
+                    optionLabel="cForoCatDescripcion"
+                    placeholder="Seleccione una categoría"
+                />
+            </p-inputGroup>
         </div>
         <!-- Mostrar descripción -->
         <div class="col-12">
@@ -43,105 +48,6 @@
                 />
             </div>
         </div>
-        <div class="col-12 mt-1">
-            <div class="card">
-                <label for="" class="mt-1">Adjuntar</label>
-                <div class="d-flex align-items-center text-center mt-1">
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('file')"
-                    >
-                        <i
-                            class="pi pi-upload my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Archivo"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('url')"
-                    >
-                        <i
-                            class="pi pi-link my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Enlace"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('youtube')"
-                    >
-                        <i
-                            class="pi pi-youtube my-2"
-                            style="color: #c4302b; font-size: 3rem"
-                            pTooltip="Subir Enlace Youtube"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        @if (FilesTareas.length) {
-            <div class="col-12">
-                <label for="" class="mt-2">Adjuntar Material</label>
-
-                @for (item of FilesTareas; track item; let idx = $index) {
-                    <p-inputGroup class="mt-1">
-                        <p-inputGroupAddon>
-                            @switch (item.type) {
-                                @case (1) {
-                                    <i
-                                        class="pi pi-upload"
-                                        style="color: #333437"
-                                    ></i>
-                                }
-                                @case (2) {
-                                    <i
-                                        class="pi pi-link"
-                                        style="color: #ef0b0b"
-                                    ></i>
-                                }
-                                @case (3) {
-                                    <i
-                                        class="pi pi-youtube"
-                                        style="color: #c4302b"
-                                    ></i>
-                                }
-                            }
-                        </p-inputGroupAddon>
-                        <input
-                            type="text"
-                            pInputText
-                            [placeholder]="item.name"
-                            disabled
-                        />
-                        <button
-                            type="button"
-                            pButton
-                            icon="pi pi-trash"
-                            (click)="FilesTareas.splice(idx, 1)"
-                            class="p-button-danger"
-                        >
-                            &nbsp;
-                        </button>
-                    </p-inputGroup>
-                }
-            </div>
-        }
-
         <!-- Asignar Los tiempos -->
         <div class="col-12 md:col-6 gap-3">
             <p-inputGroup>
@@ -173,6 +79,15 @@
                 />
             </p-inputGroup>
         </div>
+        <div class="col-12 mt-1">
+            <app-types-files-upload-primeng
+                [nameFile]="'foros'"
+                [nameOption]="'foros'"
+                [typesFiles]="typesFiles"
+                (actionTypesFileUpload)="accionBtnItem($event)"
+                [filesUrl]="filesUrl"
+            ></app-types-files-upload-primeng>
+        </div>
     </div>
 </form>
 <!-- button de cancelar y guardar -->
@@ -197,84 +112,3 @@
         (click)="submit()"
     ></button>
 </div>
-<!-- Modal para adjuntar archivos -->
-<app-modal-primeng
-    [title]="titleFileTareas"
-    [showModal]="showModal"
-    [width]="'35rem'"
-    (accionBtnItem)="accionBtnItem($event)"
->
-    <div class="grid">
-        @if (typeUpload === 'file') {
-            <div class="col-12 text-center mt-3">
-                <app-file-upload-primeng
-                    [nameFile]="'tareas'"
-                    [nameOption]="'tareas'"
-                    (actionFileUpload)="accionBtnItem($event)"
-                ></app-file-upload-primeng>
-            </div>
-        }
-        @if (typeUpload === 'url') {
-            <div class="col-12 mt-3">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-link"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Pegar la URL"
-                        [(ngModel)]="nameEnlace"
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-check"
-                        (click)="
-                            accionBtnItem({
-                                accion: 'subir-url',
-                                item: this.nameEnlace,
-                            })
-                        "
-                        class="p-button-succes"
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
-        @if (typeUpload === 'youtube') {
-            <div class="col-12 mt-3">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-youtube" style="color: #c4302b"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscaer en Youtube o pegar la URL"
-                        [(ngModel)]="nameEnlace"
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-check"
-                        (click)="
-                            accionBtnItem({
-                                accion: 'subir-youtube',
-                                item: this.nameEnlace,
-                            })
-                        "
-                        class="p-button-danger"
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
-
-        @if (typeUpload === 'recursos') {
-            <div class="col-12"></div>
-        }
-    </div>
-</app-modal-primeng>

@@ -181,7 +181,7 @@ export class ForoRoomComponent implements OnInit {
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
-        this.getEstudiantesMatricula()
+        //this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }
     accionRubrica(elemento): void {

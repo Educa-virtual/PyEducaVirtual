@@ -402,13 +402,17 @@
                                                                             !respuestas.expanded
                                                                         "
                                                                     >
-                                                                        {{
-                                                                            respuestas?.cForoRptaRespuesta
-                                                                                | removeHTML
-                                                                                | slice
-                                                                                    : 0
-                                                                                    : 150
-                                                                        }}...
+                                                                        @if (
+                                                                            respuestas.cForoRptaRespuesta
+                                                                        ) {
+                                                                            {{
+                                                                                respuestas?.cForoRptaRespuesta
+                                                                                    | removeHTML
+                                                                                    | slice
+                                                                                        : 0
+                                                                                        : 150
+                                                                            }}...
+                                                                        }
                                                                     </span>
                                                                     <span
                                                                         *ngIf="

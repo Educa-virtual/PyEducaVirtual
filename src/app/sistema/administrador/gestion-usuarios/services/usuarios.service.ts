@@ -12,7 +12,7 @@ export class UsuariosService {
     constructor() {}
 
     obtenerListaUsuarios(params: any) {
-        return this.http.get(`${this.urlBackendApi}/seg/usuarios/perfiles`, {
+        return this.http.get(`${this.urlBackendApi}/seg/usuarios`, {
             params,
         })
     }
@@ -64,9 +64,9 @@ export class UsuariosService {
         return this.http.get(`${this.urlBackendApi}/ere/Ugeles/obtenerUgeles`)
     }
 
-    registrarPerfil(data: any) {
+    registrarPerfil(iCredId: number, data: any) {
         return this.http.post(
-            `${this.urlBackendApi}/acad/calendarioAcademico/addCalAcademico`,
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/perfiles`,
             data
         )
     }

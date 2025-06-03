@@ -364,76 +364,62 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
         switch (this.formAgregarPerfil.get('opcionSeleccionada')?.value) {
             case 1: //DREMO
                 param = {
-                    json: JSON.stringify({
-                        iEntId: this.ENTIDAD,
-                        iPerfilId:
-                            this.formAgregarPerfil.get('perfilSeleccionado')
-                                ?.value,
-                        iPersId: this.usuario.iPersId,
-                        iCursosNivelGradId:
-                            this.formAgregarPerfil.get('iCursoSeleccionado')
-                                ?.value,
-                        cTipo:
-                            +this.formAgregarPerfil.get('perfilSeleccionado')
-                                ?.value == 2
-                                ? 'EspecialistaDre'
-                                : 'PerfilModuloDre',
-                    }),
-                    _opcion: 'addPerfilDremo',
+                    iEntId: this.ENTIDAD,
+                    iPerfilId:
+                        this.formAgregarPerfil.get('perfilSeleccionado')?.value,
+                    iCursosNivelGradId:
+                        this.formAgregarPerfil.get('iCursoSeleccionado')?.value,
+                    cTipo:
+                        +this.formAgregarPerfil.get('perfilSeleccionado')
+                            ?.value == 2
+                            ? 'EspecialistaDre'
+                            : 'PerfilModuloDre',
+                    opcion: 'addPerfilDremo',
                 }
                 break
             case 2: //UGEL
                 param = {
-                    json: JSON.stringify({
-                        iUgelId:
-                            this.formAgregarPerfil.get('iUgelSeleccionada')
-                                ?.value,
-                        iEntId: this.ENTIDAD,
-                        iPerfilId:
-                            this.formAgregarPerfil.get('perfilSeleccionado')
-                                ?.value,
-                        iPersId: this.usuario.iPersId,
-                        iCursosNivelGradId:
-                            this.formAgregarPerfil.get('iCursoSeleccionado')
-                                ?.value,
-                    }),
-                    _opcion: 'addPerfilUgel',
+                    iUgelId:
+                        this.formAgregarPerfil.get('iUgelSeleccionada')?.value,
+                    iEntId: this.ENTIDAD,
+                    iPerfilId:
+                        this.formAgregarPerfil.get('perfilSeleccionado')?.value,
+                    iCursosNivelGradId:
+                        this.formAgregarPerfil.get('iCursoSeleccionado')?.value,
+                    opcion: 'addPerfilUgel',
                 }
                 break
             case 3: //IIEE
                 param = {
-                    json: JSON.stringify({
-                        iSedeId:
-                            this.formAgregarPerfil.get('ieSedeSeleccionada')
-                                ?.value, //this.form_perfil.value.iSedeId,
-                        iPersId: this.usuario.iPersId,
-                        iEntId: this.ENTIDAD,
-                        iPerfilId:
-                            this.formAgregarPerfil.get('perfilSeleccionado')
-                                ?.value, //this.form_perfil.value.iPerfilId,
-                    }),
-                    _opcion: 'addPerfilSede',
+                    iSedeId:
+                        this.formAgregarPerfil.get('ieSedeSeleccionada')?.value,
+                    iEntId: this.ENTIDAD,
+                    iPerfilId:
+                        this.formAgregarPerfil.get('perfilSeleccionado')?.value,
+                    opcion: 'addPerfilSede',
                 }
                 break
         }
 
-        this.usuariosService.registrarPerfil(param).subscribe({
-            next: (data: any) => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: data.message,
-                })
-                this.obtenerPerfilesUsuario()
-            },
-            error: (error) => {
-                console.error('Error al agregar perfil:', error)
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Mensaje',
-                    detail: error.error.message,
-                })
-            },
-        })
+        this.usuariosService
+            .registrarPerfil(this.usuario.iCredId, param)
+            .subscribe({
+                next: (data: any) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: data.message,
+                    })
+                    this.obtenerPerfilesUsuario()
+                },
+                error: (error) => {
+                    console.error('Error al agregar perfil:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 }

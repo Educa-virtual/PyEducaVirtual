@@ -1,14 +1,22 @@
 <p-dialog
     [(visible)]="visible"
     [focusOnShow]="false"
-    [style]="{ width: '800px' }"
+    [style]="{ width: '750px' }"
     [header]="'Cambiar fecha de caducidad de ' + usuario?.cApellidosNombres"
     [modal]="true"
     styleClass="p-fluid roles-dialog"
     [draggable]="false"
     (onHide)="cerrarDialog()"
 >
-    <div class="asignar-rol-container">
+    <div
+        class="asignar-rol-container"
+        style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        "
+    >
         <form [formGroup]="formCambiarFecha">
             <div class="filtros-row">
                 <div class="filtro-item">

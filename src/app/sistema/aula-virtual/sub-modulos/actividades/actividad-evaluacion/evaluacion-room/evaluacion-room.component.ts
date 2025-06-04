@@ -41,6 +41,7 @@ import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primen
 import { MenuItem } from 'primeng/api'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { EvaluacionAgregarPreguntasComponent } from './evaluacion-agregar-preguntas/evaluacion-agregar-preguntas.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -61,6 +62,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         ActividadListaComponent,
         RubricaCalificarComponent,
         ToolbarPrimengComponent,
+        EvaluacionAgregarPreguntasComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',

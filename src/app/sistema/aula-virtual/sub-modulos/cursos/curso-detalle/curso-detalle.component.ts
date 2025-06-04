@@ -79,7 +79,13 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
         const iCursoId = this._activatedRoute.snapshot.queryParams['iCursoId']
         const iNivelCicloId =
             this._activatedRoute.snapshot.queryParams['iNivelCicloId']
-
+        const iIeCursoId =
+            this._activatedRoute.snapshot.queryParams['iIeCursoId']
+        const iSeccionId =
+            this._activatedRoute.snapshot.queryParams['iSeccionId']
+        const iNivelGradoId =
+            this._activatedRoute.snapshot.queryParams['iNivelGradoId']
+        const cantidad = this._activatedRoute.snapshot.queryParams['cantidad']
         this.curso = {
             cCursoNombre,
             iCursoId,
@@ -91,10 +97,13 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             cCicloRomanos,
             idDocCursoId,
             iNivelCicloId,
+            iIeCursoId,
+            iSeccionId,
+            iNivelGradoId,
+            cantidad,
         }
     }
     updateTab(tab): void {
-        console.log(tab)
         this.selectTab = tab
     }
 

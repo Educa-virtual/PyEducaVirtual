@@ -1,4 +1,5 @@
 import {
+    CUESTIONARIO,
     EVALUACION,
     FORO,
     IActividad,
@@ -59,7 +60,6 @@ export class ActividadRowComponent implements OnInit {
 
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
-        console.log('actividad', this.actividad)
     }
     onAction(action: string, event: Event) {
         //console.log(this.actividad, action, event)
@@ -92,6 +92,9 @@ export class ActividadRowComponent implements OnInit {
         if (this.actividad.iActTipoId === FORO) {
             return 'background-foro'
         }
+        if (this.actividad.iActTipoId === CUESTIONARIO) {
+            return 'background-cuestionario'
+        }
         return 'background-default'
     }
 
@@ -119,6 +122,11 @@ export class ActividadRowComponent implements OnInit {
 
         if (actividad.iActTipoId === FORO) {
             this.handleForoAction(action, actividad)
+            return
+        }
+
+        if (actividad.iActTipoId === CUESTIONARIO) {
+            this.handleCuestionarioAction(action, actividad)
             return
         }
     }
@@ -166,6 +174,25 @@ export class ActividadRowComponent implements OnInit {
             {
                 queryParams: {
                     iEvaluacionId: this.actividadSelected['iForo'],
+                    // iCursoId: this.iCursoId,
+                    // idDocCursoId: this.idDocCursoId,
+                },
+                relativeTo: this._activatedRoute,
+            }
+        )
+    }
+    handleCuestionarioAction(action: string, actividad: IActividad) {
+        this.router.navigate(
+            [
+                '../',
+                'actividad',
+                actividad.iProgActId,
+                actividad.ixActivadadId,
+                actividad.iActTipoId,
+            ],
+            {
+                queryParams: {
+                    iCuestionarioId: this.actividadSelected['iCuestionarioId'],
                     // iCursoId: this.iCursoId,
                     // idDocCursoId: this.idDocCursoId,
                 },

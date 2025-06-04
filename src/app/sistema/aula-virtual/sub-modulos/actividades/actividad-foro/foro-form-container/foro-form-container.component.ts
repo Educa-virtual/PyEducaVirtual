@@ -1,47 +1,36 @@
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, Input } from '@angular/core'
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormBuilder, Validators } from '@angular/forms'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
-import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
-import { DropdownModule } from 'primeng/dropdown'
-import { ButtonModule } from 'primeng/button'
-import { EditorModule } from 'primeng/editor'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { CalendarModule } from 'primeng/calendar'
-import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picker.directive'
-import { SelectButtonModule } from 'primeng/selectbutton'
 import { PrimengModule } from '@/app/primeng.module'
 import { Message } from 'primeng/api'
 import { DatePipe } from '@angular/common'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
-import { DialogModule } from 'primeng/dialog'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
+import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
     imports: [
-        CommonModule,
         ModalPrimengComponent,
         PrimengModule,
-        DialogModule,
-        CommonInputComponent,
         FileUploadPrimengComponent,
-        ReactiveFormsModule,
-        DisponibilidadFormComponent,
-        DropdownModule,
-        ButtonModule,
-        EditorModule,
-        CalendarModule,
-        BaseDatePickerDirective,
-        SelectButtonModule,
+        TypesFilesUploadPrimengComponent,
     ],
     templateUrl: './foro-form-container.component.html',
     styleUrl: './foro-form-container.component.scss',
 })
 export class ForoFormContainerComponent implements OnInit {
+    typesFiles = {
+        file: true,
+        url: true,
+        youtube: true,
+        repository: false,
+        image: true,
+    }
+    filesUrl = []
     // _aulaService obtener datos
     pipe = new DatePipe('es-ES')
     date = new Date()

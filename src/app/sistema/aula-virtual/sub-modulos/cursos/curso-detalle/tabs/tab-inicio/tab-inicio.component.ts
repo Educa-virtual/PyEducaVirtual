@@ -3,17 +3,14 @@ import { ICurso } from '../../../interfaces/curso.interface'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-//Message,
 import { MessageService } from 'primeng/api'
-import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
-    imports: [PrimengModule, CardOrderListComponent],
+    imports: [PrimengModule],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })
@@ -26,7 +23,6 @@ export class TabInicioComponent implements OnInit {
 
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
-    private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)
     private _confirmService = inject(ConfirmationModalService)
 
@@ -39,7 +35,7 @@ export class TabInicioComponent implements OnInit {
     contadorAnuncios: number = 0
     remainingText: number = 500
     tituloremainingText: number = 100
-
+    cNombres: string = ''
     //form para obtener la variable
     public guardarComunicado: FormGroup = this._formBuilder.group({
         numero: new FormControl(''),
@@ -66,6 +62,7 @@ export class TabInicioComponent implements OnInit {
             ?.valueChanges.subscribe((value: string) => {
                 this.tituloremainingText = 100 - (value?.length || 0)
             })
+        this.cNombres = this._constantesService.nombres
     }
 
     // asignar el color de los caracteres restantes
@@ -106,7 +103,7 @@ export class TabInicioComponent implements OnInit {
     // guardar anunciado:
     guardarComunicadoSubmit() {
         const iCursosNivelGradId = 1
-        const iCredId = 1
+        const iCredId = this._constantesService.iCredId
         const data = {
             iCursosNivelGradId: iCursosNivelGradId,
             idDocCursoId: this.idDocCursoId,
@@ -125,7 +122,6 @@ export class TabInicioComponent implements OnInit {
                 message: 'Recuerde que podran verlo todos los estudiantes',
                 header: `¿Esta seguro de guardar?`,
                 accept: () => {
-                    console.log('data', data)
                     this._aulaService.guardarAnuncio(data).subscribe({
                         next: (resp: any) => {
                             // para refrescar la pagina
@@ -138,6 +134,7 @@ export class TabInicioComponent implements OnInit {
                             console.error('Comentario:', error)
                         },
                     })
+                    this.guardarComunicado.reset()
                 },
                 reject: () => {
                     // Mensaje de cancelación (opcional)
@@ -148,9 +145,7 @@ export class TabInicioComponent implements OnInit {
                     })
                 },
             })
-
-            console.log(this.guardarComunicado.value)
-            this.guardarComunicado.reset()
+            // console.log(this.guardarComunicado.value)
         }
     }
 
@@ -163,7 +158,7 @@ export class TabInicioComponent implements OnInit {
             message: 'Recuerde que al eliminarlo no podra recuperarlo',
             header: `¿Esta seguro de Eliminar: ${nombreTitulo} ?`,
             accept: () => {
-                const iCredId = 1
+                const iCredId = this._constantesService.iCredId
                 const params = {
                     iAnuncioId: iAnuncioId,
                     iCredId: iCredId,
@@ -197,32 +192,40 @@ export class TabInicioComponent implements OnInit {
     }
 
     // metodo para fijar el anuncio
-    fijarAnuncio(id: string): void {
-        const iCredId = 1
+    fijarAnuncio(id: string, iFijado: number): void {
+        const iCredId = this._constantesService.iCredId
         const params = {
             iAnuncioId: id,
             iCredId: iCredId,
         }
         this._aulaService.fijarAnuncio(params).subscribe({
-            next: (response) => {
-                this.obtenerAnuncios()
-                console.log('Elemento fijado correctamente:', response)
+            next: (response: any) => {
+                if (response.validated) {
+                    this.obtenerAnuncios()
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Exito',
+                        detail:
+                            Number(iFijado) === 1
+                                ? 'El anuncio se ha desfijado correctamente.'
+                                : 'El anuncio se ha fijado correctamente.',
+                    })
+                }
             },
             error: (err) => {
-                console.error('Error al fijar:', err)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo fijar el anuncio: ' + err,
+                })
             },
-        })
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Exito',
-            detail: 'Se ha fijado el anuncio correctamente',
         })
     }
 
     // obtener anunciados de curso:
     obtenerAnuncios() {
         const iCursosNivelGradId = 1
-        const iCredId = 1
+        const iCredId = this._constantesService.iCredId
 
         const paramst = {
             iCursosNivelGradId: iCursosNivelGradId,
@@ -241,8 +244,6 @@ export class TabInicioComponent implements OnInit {
             this.guardarComunicado.patchValue({
                 numero: this.contadorAnuncios,
             })
-            console.log('Anuncios:', this.contadorAnuncios)
-            console.log(this.data)
         })
     }
 }

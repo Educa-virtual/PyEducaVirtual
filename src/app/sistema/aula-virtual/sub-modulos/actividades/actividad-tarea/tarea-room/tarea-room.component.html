@@ -14,19 +14,6 @@
                     'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')
                 "
             >
-                <button
-                    [ngClass]="{
-                        'border-none': true,
-                        'cursor-pointer': true,
-                    }"
-                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                    pButton
-                >
-                    <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
-                    <i
-                        class="pi pi-ellipsis-h text-white hover:text-blue-300"
-                    ></i>
-                </button>
             </app-toolbar-primeng>
             <div class="card">
                 <div class="grid">
@@ -77,9 +64,7 @@
 
                     <div class="col-12 md:col-4">
                         <h3 class="text-lg m-0">Instrucciones:</h3>
-                        <div
-                            class="bg-blue-100 p-3 border-round min-h-10rem h-10rem text-center"
-                        >
+                        <div class="bg-blue-100 p-3 border-round text-center">
                             <!-- <p-editor
                                 appEditorOnlyView
                                 class="quill-only-view"
@@ -379,12 +364,8 @@
                     <div
                         class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                     >
-                        <app-rubricas
-                            [title]="'Rúbricas'"
-                            mode="SELECTION"
-                            [params]="params"
-                            (rubricaSelectedChange)="accionRubrica($event)"
-                        ></app-rubricas>
+                        <!-- <app-rubricas [title]="'Rúbricas'" mode="SELECTION" [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"></app-rubricas> -->
                     </div>
 
                     <!-- <div class="">
@@ -424,28 +405,25 @@
                     <p-accordion>
                         <p-accordionTab header="Recursos Adjuntos">
                             <!-- Verifica si no hay archivos adjuntos -->
-                            <ng-container>
-                                <!-- *ngIf="
-                                    evaluacion?.cEvaluacionArchivoAdjunto
+
+                            <app-empty-section
+                                *ngIf="
+                                    getListFiles(data?.cTareaArchivoAdjunto)
                                         .length === 0;
                                     else resourcesList
-                                " -->
-                                <app-empty-section
-                                    class="w-full"
-                                    [message]="'Sin recursos asignados'"
-                                ></app-empty-section>
-                            </ng-container>
+                                "
+                                class="w-full"
+                                [message]="'Sin recursos asignados'"
+                            ></app-empty-section>
 
                             <!-- Si hay recursos adjuntos -->
                             <ng-template #resourcesList>
-                                <!-- <app-recursos-lista
-                                [files]="
-                                        evaluacion?.cEvaluacionArchivoAdjunto ??
-                                        []
+                                <app-recursos-lista
+                                    [files]="
+                                        getListFiles(data?.cTareaArchivoAdjunto)
                                     "
-                                    
                                 >
-                                </app-recursos-lista> -->
+                                </app-recursos-lista>
                             </ng-template>
                         </p-accordionTab>
                     </p-accordion>
@@ -455,7 +433,6 @@
 
         @if (iPerfilId !== ESTUDIANTE) {
             <p-tabPanel>
-                <!-- Este es un contenedor de plantilla para un encabezado fijo con la clase 'header-fixed'. -->
                 <ng-template pTemplate="header" class="header-fixed">
                     <div class="flex align-items-center flex-column gap-2">
                         <app-icon name="matPeople"></app-icon>
@@ -470,19 +447,6 @@
                         (data?.cTareaTitulo || 'Título no disponible')
                     "
                 >
-                    <button
-                        [ngClass]="{
-                            'border-none': true,
-                            'cursor-pointer': true,
-                        }"
-                        class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                        pButton
-                    >
-                        <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
-                        <i
-                            class="pi pi-ellipsis-h text-white hover:text-blue-300"
-                        ></i>
-                    </button>
                 </app-toolbar-primeng>
                 <!--Es un contenedor de nivel de bloque en HTML que se usa comúnmente para agrupar y organizar otros elementos.-->
                 <div class="flex flex-column gap-4 tab-content">
@@ -580,7 +544,13 @@
                                                 </div>
                                                 <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
                                                 <app-card-orderlist
+                                                    class="col-12"
                                                     [data]="estudiantes"
+                                                    (datoSeleccionado)="
+                                                        obtenerEstudianteSeleccionado(
+                                                            $event
+                                                        )
+                                                    "
                                                 >
                                                     <!-- (datoSeleccionado)="updateSelectedEstudiante($event)" -->
                                                 </app-card-orderlist>
@@ -967,7 +937,12 @@
                                             [legend]="cTareaTitulo"
                                             [toggleable]="true"
                                         >
-                                            <div class="grid">
+                                            <div
+                                                class="grid"
+                                                *ngIf="
+                                                    cTareaEstudianteUrlEstudiante
+                                                "
+                                            >
                                                 @if (
                                                     cTareaEstudianteUrlEstudiante.length
                                                 ) {
@@ -1362,4 +1337,4 @@
     [iEstudianteId]="iEstudianteIdGrupo"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-transferir-grupo>
-<p-confirmDialog />
+<p-confirmDialog></p-confirmDialog>

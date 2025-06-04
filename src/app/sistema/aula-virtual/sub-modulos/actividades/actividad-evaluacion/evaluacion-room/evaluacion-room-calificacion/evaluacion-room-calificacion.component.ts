@@ -133,6 +133,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
+        console.log(value)
         this._state.update((state) => {
             console.log('selectedEstudiante')
             console.log(value)
@@ -149,6 +150,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                 selectedEstudiante: value,
             }
         })
+        this.seleccionarEvaluacion()
     }
 
     get selectedEstudianteValue() {
@@ -174,39 +176,17 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
             this._activatedRoute.snapshot.queryParams['idDocCursoId']
     }
     ngOnInit() {
-        this.obtenerEstudianteXCurso()
         this.getData()
     }
     ngOnChanges(changes) {
-        if (changes.iEstado?.currentValue) {
-            this.iEstado = changes.iEstado?.currentValue
+        console.log('changes', changes)
+        // if (changes.iEstado?.currentValue) {
+        //     this.iEstado = changes.iEstado?.currentValue
 
-            if (this.iEstado === 2) {
-                this.getData()
-            }
-        }
-    }
-    //Obtener datos del estudiantes y sus logros alcanzados por todos los cursos
-    obtenerEstudianteXCurso() {
-        // @iSedeId INT,
-        // @iSeccionId INT,
-        // @iYAcadId INT,
-        // @iNivelGradoId INT
-        const iSedeId = this.perfil['iSedeId']
-        console.log('Sede', iSedeId)
-        this._aulaService
-            .generarReporteDeLogroFinalDeYear({
-                iSedeId: iSedeId,
-            })
-            .subscribe((data) => {
-                // const registro = data['data']
-                // this.curso = JSON.parse(registro.json_cursos);
-                this.estudianteMatriculadosxGrado = data['data']
-                console.log(
-                    'Estudiantes x Grado ',
-                    this.estudianteMatriculadosxGrado
-                )
-            })
+        //     if (this.iEstado === 2) {
+        //         this.getData()
+        //     }
+        // }
     }
 
     getData() {
@@ -220,6 +200,19 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (estudiantes) => {
+                    this.estudianteMatriculadosxGrado = estudiantes.map(
+                        (item: any) => {
+                            return {
+                                ...item,
+                                cTitulo:
+                                    (item.cEstNombres || '') +
+                                    ' ' +
+                                    (item.cEstPaterno || '') +
+                                    ' ' +
+                                    (item.cEstMaterno || ''),
+                            }
+                        }
+                    )
                     this._state.update((current) => ({
                         ...current,
                         estudiantes,

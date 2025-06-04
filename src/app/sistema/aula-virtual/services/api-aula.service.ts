@@ -257,7 +257,13 @@ export class ApiAulaService {
             )
             .pipe(map((resp) => resp.data))
     }
-    obtenerReporteFinalDeNotas(params: { iIeCursoId }) {
+    obtenerReporteFinalDeNotas(params: {
+        iIeCursoId
+        iYAcadId
+        iSedeId
+        iSeccionId
+        iNivelGradoId
+    }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
             {
@@ -374,6 +380,33 @@ export class ApiAulaService {
     obtenerCapacitacion(data) {
         return this._http.post(
             `${this.baseUrlApi}/cap/capacitaciones/listarCapacitaciones`,
+            data
+        )
+    }
+    guardarCuestionario(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/programacion-actividades/store`,
+            data
+        )
+    }
+
+    guardarReunionVirtual(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/programacion-actividades/store`,
+            data
+        )
+    }
+
+    actualizarReunionVirtual(data, ruta) {
+        return this._http.put(
+            `${this.baseUrlApi}/aula-virtual/reunion-virtuales/${ruta}`,
+            data
+        )
+    }
+
+    EliminarReunionVirtual(data) {
+        return this._http.delete(
+            `${this.baseUrlApi}/aula-virtual/reunion-virtuales`,
             data
         )
     }

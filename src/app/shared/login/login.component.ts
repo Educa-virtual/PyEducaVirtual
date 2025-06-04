@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { RecoverPasswordComponent } from '../recover-password/recover-password.component'
+import { SinRolAsignadoComponent } from '../../sistema/sin-rol-asignado/sin-rol-asignado.component'
 
 interface Data {
     accessToken: string
@@ -27,7 +28,7 @@ interface Data {
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [PrimengModule, RecoverPasswordComponent],
+    imports: [PrimengModule, RecoverPasswordComponent, SinRolAsignadoComponent],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
     providers: [MessageService],
@@ -37,6 +38,7 @@ export class LoginComponent implements OnInit {
     loading: boolean
     loadingText: string
     formLogin!: FormGroup
+    modalSinRolAsignado: boolean
 
     constructor(
         private tokenStorage: TokenStorageService,
@@ -57,10 +59,15 @@ export class LoginComponent implements OnInit {
         this.showPassword = false
         const isLoggedIn = !!this.tokenStorage.getToken()
         if (isLoggedIn) {
-            this.router.navigate(['./'])
+            this.router.navigate(['./inicio'])
         }
     }
 
+    modalSinRolVisible: boolean = false
+
+    cerrarModalSinRol() {
+        this.modalSinRolVisible = false
+    }
     onSubmit() {
         this.loading = true
         this.loadingText = 'Verificando...'
@@ -80,10 +87,18 @@ export class LoginComponent implements OnInit {
                 this.tokenStorage.setItem('dremoToken', response.accessToken)
                 this.tokenStorage.setItem('dremoUser', response.user)
 
+                if (
+                    !response.user.perfiles ||
+                    response.user.perfiles.length === 0
+                ) {
+                    // Si no tiene perfiles, redirigir a sin-rol-asignado
+                    this.router.navigate(['/sin-rol-asignado'])
+                    return
+                }
+
                 this.store.setItem('dremoModalPerfil', true)
 
                 const user = this.store.getItem('dremoUser')
-
                 const years = user ? user.years : null
                 const year = years.length ? years[0] : null
                 this.store.setItem('dremoYear', year?.iYearId)
@@ -108,7 +123,7 @@ export class LoginComponent implements OnInit {
                 this.tokenStorage.saveUser(item)
 
                 if (item.bCredVerificado == 1) {
-                    this.router.navigate(['./'])
+                    this.router.navigate(['./inicio'])
                     setTimeout(() => {
                         location.reload()
                     }, 500)
@@ -126,7 +141,7 @@ export class LoginComponent implements OnInit {
                     detail:
                         error.pass || error.user
                             ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
-                            : error,
+                            : 'Verifica tus Credenciales',
                 })
             },
         })

@@ -1,4 +1,4 @@
-<div class="flex flex-column align-items-center border-1 border-round-3xl p-4">
+<div class="pt-4 flex flex-column align-items-center border-1 border-round-3xl">
     <div
         class="bg-white-alpha-80 flex justify-content-center gap-8 py-2 px-2 border-round-2xl bg-black-alpha-10 w-max"
     >
@@ -15,7 +15,7 @@
         }
     </div>
 
-    <div class="tab-content p-4 border border-gray-300 rounded-md">
+    <div class="w-full tab-content p-4 border border-gray-300 rounded-md">
         <ng-template
             #contentContainer
             [ngTemplateOutlet]="tabs[activeIndex]?.content"

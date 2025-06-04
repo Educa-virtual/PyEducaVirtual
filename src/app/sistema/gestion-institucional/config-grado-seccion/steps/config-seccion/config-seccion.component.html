@@ -9,7 +9,7 @@
 </app-container-page>
 
 <!--Bloque para estructura-->
-<p-splitter
+<!-- <p-splitter
     [panelSizes]="[30, 70]"
     [style]="{ height: '400px' }"
     styleClass="mb-5"
@@ -22,8 +22,8 @@
                 <div class="align-items-left">
                     <p><strong>ESTRUCTURA DE GRADOS/EDADES</strong></p>
                 </div>
-                <!-- <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
-                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" /> -->
+                <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
+                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" />
                 <div class="scrollable-panel">
                     <app-tree-view-primeng
                         [treeDataRaw]="rawData"
@@ -32,38 +32,40 @@
                 </div>
             </div>
         </div>
-    </ng-template>
+    </ng-template> -->
 
-    <!--Bloque para buscador-->
-    <ng-template pTemplate>
-        <div class="col flex align-items-top justify-content-center">
-            <div [style]="{ width: '100%' }" class="field col-12 md:col-12">
-                <div class="card">
-                    <app-table-primeng
-                        [columnas]="columns"
-                        [showCaption]="true"
-                        [data]="seccionesAsignadas"
-                        [scrollable]="true"
-                        scrollHeight="200px"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="true"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actions"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
-                    <ng-container slot="caption-content"> </ng-container>
-                </div>
-            </div>
+<!--Bloque para buscador-->
+<!-- <ng-template pTemplate> -->
+<div class="col flex align-items-top justify-content-center">
+    <div [style]="{ width: '100%' }" class="field col-12 md:col-12">
+        <div class="card">
+            <app-table-primeng
+                [columnas]="columns"
+                [showCaption]="true"
+                [data]="seccionesAsignadas"
+                [scrollable]="true"
+                scrollHeight="200px"
+                (accionBtnItem)="accionBtnItemTable($event)"
+                [showPaginator]="true"
+                [(selectedRowData)]="selectedItems"
+                [actions]="actions"
+            >
+                <!-- <ng-container slot="caption-content"> </ng-container> -->
+            </app-table-primeng>
+            <ng-container slot="caption-content"> </ng-container>
         </div>
-    </ng-template>
-</p-splitter>
+    </div>
+</div>
+<!-- </ng-template>
+</p-splitter> -->
 
 <p-dialog
     header="{{ caption }}"
     [(visible)]="visible"
     [style]="{ width: '80rem' }"
     [modal]="true"
+    [resizable]="true"
+    [maximizable]="true"
 >
     <form [formGroup]="form">
         <div class="grid p-fluid mt-3">
@@ -276,7 +278,14 @@
 
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
-                    <p-multiSelect
+                    @for (dia of dias; track dia.iDiaId) {
+                        <p-tag
+                            severity="info"
+                            [value]="dia.cDiaNombre"
+                            [rounded]="true"
+                        ></p-tag>
+                    }
+                    <!-- <p-multiSelect
                         [options]="dias"
                         formControlName="iDiasLaborables"
                         optionLabel="cDiaNombre"
@@ -285,8 +294,9 @@
                         display="chip"
                         (onChange)="onChange($event, 'dia')"
                         [showClear]="true"
+                        [maxSelectedLabels]="7"
                     >
-                    </p-multiSelect>
+                    </p-multiSelect> -->
                 </span>
             </div>
 
@@ -366,9 +376,10 @@
             [disabled]="form.invalid"
             (onClick)="accionBtnItem('guardar')"
             styleClass="p-button-primary"
-        /><p-toast />
+        />
     </form>
 </p-dialog>
 <div class="flex justify-content-end">
     <p-button (onClick)="confirm()" label="Siguiente" />
 </div>
+<p-toast />

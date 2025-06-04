@@ -1,77 +1,96 @@
+<p-toast />
+
 <div class="flex flex-column gap-4">
-    <section>
-        <h1>Importación masiva</h1>
+    <form [formGroup]="typeCollectionForm" class="flex flex-column gap-4">
+        <section class="flex gap-8">
+            @for (config of dropdownConfigs; track config.id) {
+                @if (shouldShowDropdown(config)) {
+                    <div class="flex flex-column gap-3">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>{{
+                                config.label
+                            }}</p-inputGroupAddon>
+                            <p-dropdown
+                                [formControlName]="config.label + config.id"
+                                [options]="config.options"
+                                [placeholder]="config.placeholder"
+                                styleClass="w-16rem"
+                            >
+                            </p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                }
+            }
 
-        <div class="flex justify-content-between align-items-center">
-            <div class="flex flex-column gap-3 w-2">
-                <span>Tipo de colección:</span>
-                <form [formGroup]="typeCollectionForm">
-                    <p-dropdown
-                        styleClass="w-full"
-                        formControlName="typeCollection"
-                        [options]="typeCollections"
-                        optionLabel="label"
-                        placeholder="Seleccione una colección"
-                    />
-                </form>
-            </div>
-
-            <i class="pi pi-arrow-right"></i>
-
-            <div class="flex flex-column gap-3">
-                <span>Estructura de importación:</span>
+            @if (
+                typeCollectionForm.value['Origen de la plantilla:1'].id === 2
+            ) {
                 <p-button
-                    icon="pi pi-download"
+                    class="download-template"
+                    styleClass="w-full"
                     label="Descargar plantilla"
-                    (onClick)="
-                        bulkDataImport.downloadCollectionTemplate(
-                            typeCollectionForm.value.typeCollection
-                        )
-                    "
+                    icon="pi pi-download"
+                    (onClick)="downloadTemplate()"
+                    [disabled]="isDisabled.downloadTemplate"
                 />
-            </div>
+            }
+        </section>
+    </form>
 
-            <i class="pi pi-arrow-right"></i>
-
-            <div class="flex flex-column gap-3">
-                <span>Archivo de origen:</span>
-                <app-btn-file-upload
-                    accept=".xlsx"
-                    formControlName="file"
-                    (fileChange)="loadCollectionTemplate($event)"
-                />
-            </div>
-
-            <i class="pi pi-arrow-right"></i>
-
-            <div class="flex flex-column gap-3">
-                <p-button
-                    label="Iniciar importación"
-                    icon="pi pi-file-import"
-                    [loading]="importLoad"
-                    (onClick)="chargeImportData()"
-                />
-            </div>
+    @if (isSelectedTypeCollection(typeCollectionForm.value)) {
+        <div class="card flex flex-wrap flex-column gap-2">
+            <section class="flex justify-content-between">
+                <div class="flex flex-column gap-3">
+                    <span>Archivo de origen:</span>
+                    <app-btn-file-upload
+                        accept=".xlsx"
+                        (fileChange)="uploadFile($event)"
+                        [(ngModel)]="file"
+                    />
+                </div>
+            </section>
         </div>
-    </section>
+        <app-tab-view>
+            <app-tab-panel title="Información del archivo">
+                @if (columnsGroup) {
+                    <app-table-primeng
+                        typeHeaderColumn="group"
+                        [columnsGroup]="columnsGroup"
+                        [columnas]="columns"
+                        [data]="data"
+                        [showCaption]="true"
+                        [showSortIcon]="false"
+                    ></app-table-primeng>
 
-    <app-tab-view>
-        <app-tab-panel title="Por procesar">
-            <app-table-primeng
-                [columnas]="columns"
-                [data]="data"
-                [showCaption]="false"
-                [showSortIcon]="false"
-            ></app-table-primeng>
-        </app-tab-panel>
-        <app-tab-panel title="Registrados">
-            <p>Bienvenido a la pestaña de registrados.</p>
-        </app-tab-panel>
-        <app-tab-panel title="No registrados">
-            <p>Bienvenido a la pestaña de no registrados.</p>
-        </app-tab-panel>
-        <app-tab-panel title="Revisar errores">
-            <p>Bienvenido a la pestaña de revisar errores.</p>
-        </app-tab-panel>
-    </app-tab-view>
+                    <div class="card flex flex-wrap flex-column gap-2">
+                        <section class="flex justify-content-between">
+                            <div class="flex flex-column gap-3">
+                                <span>Iniciar importación:</span>
+                                <p-button
+                                    #importBtn
+                                    class="import"
+                                    label="Importar datos"
+                                    icon="pi pi-database"
+                                    [loading]="importLoad"
+                                    (onClick)="validaImportData()"
+                                />
+                            </div>
+                        </section>
+                    </div>
+                }
+            </app-tab-panel>
+            @if (responseDataImport) {
+                <app-tab-panel title="Resultado de la importación">
+                    @if (data) {
+                        <app-table-primeng
+                            [columnas]="collection.columnsResultImport"
+                            [data]="responseDataImport"
+                            [showCaption]="true"
+                            [showSortIcon]="false"
+                        ></app-table-primeng>
+                    }
+                </app-tab-panel>
+            }
+        </app-tab-view>
+    }
 </div>

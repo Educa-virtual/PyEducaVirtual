@@ -233,7 +233,7 @@ export class ConfigComponent implements OnInit {
         }
     }
     getServicioAtencion() {
-        alert(this.configuracion[0].iNivelTipoId)
+        //alert(this.configuracion[0].iNivelTipoId)
         if (Number(this.configuracion[0].iNivelTipoId) > 0) {
             const where = 'iNivelTipoId =' + this.configuracion[0].iNivelTipoId
 

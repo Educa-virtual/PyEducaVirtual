@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { PrimengModule } from '@/app/primeng.module'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { MessageService, ConfirmationService } from 'primeng/api'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 

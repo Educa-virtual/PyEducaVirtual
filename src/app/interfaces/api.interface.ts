@@ -57,5 +57,5 @@ export interface IDeleteTableService {
     tabla: string
     campoId: string | number
     valorId: string | number
-    tablaHija: string
+    tablaHija?: string
 }

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core'
-import { environment } from '@/environments/environment.template'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { environment } from '@/environments/environment'
 import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
@@ -8,7 +8,6 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
-    private urlBackendAspNet = environment.backendAspNet
     private urlBackendApi = environment.backendApi
     private urlBackend = environment.backend
     private http = inject(HttpClient)
@@ -23,34 +22,13 @@ export class ApiEvaluacionesRService {
                 }
             )
             .pipe(
-                tap((response) =>
-                    console.log('Respuesta de la API:', response)
-                ), // Verifica lo que devuelve la API
+                tap(),
                 catchError((error) => {
                     console.error('Error en la solicitud:', error)
-                    return throwError(error)
+                    return throwError(() => error)
                 })
             )
     }
-
-    /*obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
-        return this.http
-            .get(
-                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`
-            )
-            .pipe(map((resp) => resp['data']))
-    }*/
-
-    /*obtenerAreasPorEvaluacionyEspecialista(
-        iPersId,
-        iEvaluacionId
-    ): Observable<any> {
-        return this.http
-            .get(
-                `${this.urlBackendApi}/ere/evaluaciones/obtenerAreasPorEvaluacionyEspecialista?iPersId=${iPersId}&iEvaluacionId=${iEvaluacionId}`
-            )
-            .pipe(map((resp) => resp['data']))
-    }*/
 
     obtenerTipoPreguntas() {
         return this.http
@@ -460,13 +438,13 @@ export class ApiEvaluacionesRService {
         window.open(fullUrl, '_blank')
     }
 
-    exportarPreguntasPorArea(params) {
+    /*exportarPreguntasPorArea(params) {
         const url = `${this.urlBackendAspNet}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
         window.open(url, '_blank')
-    }
+    }*/
 
-    descargarPreguntasPorArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
+    descargarArchivoPreguntasPorArea(params) {
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas?tipo=${params.tipoArchivo}`
         window.open(url, '_blank')
     }
 
@@ -480,6 +458,7 @@ export class ApiEvaluacionesRService {
         iCursoNivelGradId: number | string
         dtExamenFechaInicio
         iExamenCantidadPreguntas: number
+        iExamenDuracionMinutos: number
     }): Observable<any> {
         return this.http.post(
             `${this.urlBackendApi}/ere/Evaluaciones/guardarFechaCantidadExamenCursos`,
@@ -492,4 +471,48 @@ export class ApiEvaluacionesRService {
             .get(`${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`)
             .pipe(map((resp) => resp['data']))
     }
+
+    subirArchivoEvaluacionArea(iEvaluacionId, iCursosNivelGradId, dataArchivo) {
+        return this.http.post(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/archivo-preguntas`,
+            dataArchivo,
+            {
+                headers: new HttpHeaders({
+                    Accept: 'application/json',
+                }),
+            }
+        )
+    }
+
+    // Banco-Preguntas
+
+    obtenerAnios(): Observable<any> {
+        return this.http
+            .get(`${this.urlBackendApi}/ere/evaluaciones/anios`)
+            .pipe(map((resp) => resp['data']))
+    }
+
+    /*capacidadesFiltro(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/Evaluaciones/obtenerMatrizCapacidades`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
+    competenciaFiltro(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/Evaluaciones/obtenerMatrizCompetencias`
+            )
+            .pipe(map((resp) => resp['data']))
+    }*/
+
+    /*procesoFiltro(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/nivelEvaluacion/obtenerNivelEvaluacion`
+            )
+            .pipe(map((resp) => resp['data']))
+    }*/
 }

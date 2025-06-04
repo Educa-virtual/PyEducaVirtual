@@ -48,20 +48,20 @@
         [responsive]="true"
         [sourceStyle]="{ height: '300px' }"
         [targetStyle]="{ height: '300px' }"
-        filterBy="cIieeNombre"
+        filterBy="cIieeNombre,cIieeCodigoModular"
         sourceFilterPlaceholder="Buscar por nombre de I.E"
         targetFilterPlaceholder="Buscar por nombre de I.E"
         [disabled]="accion === 'ver'"
         [showSourceControls]="false"
         [showTargetControls]="false"
     >
-        <!-- controles de los costados [showSourceControls]="false" 
+        <!-- controles de los costados [showSourceControls]="false"
         [showTargetControls]="false" -->
         <ng-template let-product pTemplate="item">
             <div class="flex flex-wrap p-2 align-items-center gap-3">
                 <div class="flex-1 flex flex-column gap-2">
                     <span class="font-bold">
-                        {{ product.cIieeNombre }}
+                        {{ product.cIieeNombre }} ({{ product.cUgelNombre }})
                     </span>
                     <div class="flex align-products-center gap-2">
                         <i class="pi pi-tag text-sm"></i>

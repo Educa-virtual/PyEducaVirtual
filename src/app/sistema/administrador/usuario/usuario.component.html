@@ -1,0 +1,98 @@
+<app-container-page
+    [title]="'Gestión de Usuarios'"
+    [actions]="[]"
+    (accionBtnItem)="([])"
+>
+    <div class="grid mt-2">
+        <div class="col-12 md:col-7">
+            <form [formGroup]="form_user">
+                <div class="grid p-fluid mt-2">
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="searchOpcionPersona"
+                                filterBy="label"
+                                optionLabel="label"
+                                optionValue="value"
+                                formControlName="tipoBusqueda"
+                                [appendTo]="'body'"
+                            />
+                            <label for="tipoBusqueda">Tipo Busqueda</label>
+                        </span>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cPersDocumento"
+                                formControlName="cPersDocumento"
+                                aria-describedby="cPersDocumento-help"
+                            />
+                            <label for="cPersDocumento">Descripción</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <button
+                            pButton
+                            [label]="'Buscar'"
+                            icon="pi pi-search"
+                            size="small"
+                            class="p-button-success"
+                            (click)="accionBtn(1, 'buscar')"
+                        ></button>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <button
+                            pButton
+                            [label]="'Nuevo'"
+                            icon="pi pi-user"
+                            size="small"
+                            class="p-button-primary"
+                            (click)="accionBtn(1, 'nuevo')"
+                        ></button>
+                        <!-- (click)="guardarActualizarRubrica()" -->
+                    </div>
+                </div>
+                <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+        <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+            </form>
+
+            <div class="card">
+                <app-table-primeng
+                    [columnas]="columa_personas"
+                    [showCaption]="false"
+                    [data]="personas"
+                    (accionBtnItem)="accionBtnItemTable($event)"
+                    [showPaginator]="true"
+                    [(selectedRowData)]="selectedItemsPerfil"
+                    [actions]="actionsPerfil"
+                >
+                    <!-- <ng-container slot="caption-content"> </ng-container> -->
+                </app-table-primeng>
+            </div>
+        </div>
+        <div class="col-12 md:col-5">
+            <app-usuario-perfil [usuario]="usuario" />
+        </div>
+    </div>
+</app-container-page>
+
+<p-dialog
+    header="Crear usuario: "
+    [resizable]="true"
+    [(visible)]="modal_visible"
+    [style]="{ width: '76rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    [modal]="true"
+>
+    <app-form-usuario
+        [data]="tipo_documentos"
+        (respuesta)="cerrarModal($event)"
+    >
+    </app-form-usuario>
+</p-dialog>
+
+<p-toast />

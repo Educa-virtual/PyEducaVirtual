@@ -78,10 +78,12 @@ export class AppTopBarComponent implements OnInit {
         this.selectedModulo = modulo ? modulo.iModuloId : null
 
         if (user.iDocenteId) {
-            this.notificacionDocente(user.iDocenteId)
+            // this.notificacionDocente(user.iDocenteId)
+            console.log(1)
         }
         if (user.iEstudianteId) {
-            this.notificacionEstudiante(user.iEstudianteId)
+            // this.notificacionEstudiante(user.iEstudianteId)
+            console.log(1)
         }
     }
 
@@ -125,7 +127,6 @@ export class AppTopBarComponent implements OnInit {
                 this.changeYear(item)
                 break
             case 'logout':
-                console.log(accion)
                 this.logout()
                 break
             case 'modulo':
@@ -153,6 +154,7 @@ export class AppTopBarComponent implements OnInit {
                     return a.diferencias - b.diferencias
                 })
                 this.totalNotificaciones = data.length
+
                 this.items = [
                     {
                         label: 'Notificaciones',

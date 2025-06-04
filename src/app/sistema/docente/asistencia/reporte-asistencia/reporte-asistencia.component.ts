@@ -38,8 +38,20 @@ export class ReporteAsistenciaComponent implements OnChanges {
     @Input() cNivelNombreCursos: string = ''
     @Input() nombrecompleto: string = ''
     @Input() cCicloRomanos: string = ''
-
+    @Input() cSeccionNombre: string = ''
+    @Input() cPersNombreLargo: string = ''
+    @Input() iSedeId: string
+    @Input() iIieeId: string
+    @Input() cIieeNombre: string
+    @Input() year: string
+    @Input() idDocCursoId: string
+    minimo: Date
+    maximo: Date
+    fechas: string
     ngOnChanges(changes) {
+        this.minimo = new Date(this.year + '/01/01')
+        this.maximo = new Date(this.year + '/12/31')
+
         if (changes.showModal?.currentValue) {
             this.showModal = changes.showModal.currentValue
         }
@@ -102,18 +114,19 @@ export class ReporteAsistenciaComponent implements OnChanges {
                 data = {
                     id: this.inputDia,
                     opcion: 'reporte_personalizado',
-                    cSeccion: this.cSeccion,
+                    cSeccionNombre: this.cSeccionNombre,
                     cGradoAbreviacion: this.cGradoAbreviacion,
                     cNivelTipoNombre: this.cNivelTipoNombre,
                     cNivelNombreCursos: this.cNivelNombreCursos,
-                    nombrecompleto: this.nombrecompleto,
-                    cCicloRomanos: this.cCicloRomanos,
                     iCursoId: this.iCursoId,
                     iDocenteId: this.iDocenteId,
                     iSeccionId: this.iSeccionId,
                     iGradoId: this.iGradoId,
                     iNivelGradoId: this.iNivelGradoId,
                     iYAcadId: this.iYAcadId,
+                    iIieeId: this.iIieeId,
+                    iSedeId: this.iSedeId,
+                    idDocCursoId: this.idDocCursoId,
                 }
                 this.rutas = 'reporte_diario'
                 break
@@ -121,11 +134,10 @@ export class ReporteAsistenciaComponent implements OnChanges {
                 data = {
                     id: this.iMesId,
                     opcion: 'REPORTE_MENSUAL',
-                    cSeccion: this.cSeccion,
+                    cSeccionNombre: this.cSeccionNombre,
                     cGradoAbreviacion: this.cGradoAbreviacion,
                     cNivelTipoNombre: this.cNivelTipoNombre,
                     cNivelNombreCursos: this.cNivelNombreCursos,
-                    nombrecompleto: this.nombrecompleto,
                     cCicloRomanos: this.cCicloRomanos,
                     iCursoId: this.iCursoId,
                     iDocenteId: this.iDocenteId,
@@ -133,6 +145,9 @@ export class ReporteAsistenciaComponent implements OnChanges {
                     iGradoId: this.iGradoId,
                     iNivelGradoId: this.iNivelGradoId,
                     iYAcadId: this.iYAcadId,
+                    iIieeId: this.iIieeId,
+                    iSedeId: this.iSedeId,
+                    idDocCursoId: this.idDocCursoId,
                 }
                 this.rutas = 'reporte_mensual'
                 break
@@ -140,7 +155,7 @@ export class ReporteAsistenciaComponent implements OnChanges {
                 data = {
                     id: this.iDateRango,
                     opcion: 'reporte_personalizado',
-                    cSeccion: this.cSeccion,
+                    cSeccionNombre: this.cSeccionNombre,
                     cGradoAbreviacion: this.cGradoAbreviacion,
                     cNivelTipoNombre: this.cNivelTipoNombre,
                     cNivelNombreCursos: this.cNivelNombreCursos,
@@ -152,6 +167,9 @@ export class ReporteAsistenciaComponent implements OnChanges {
                     iGradoId: this.iGradoId,
                     iNivelGradoId: this.iNivelGradoId,
                     iYAcadId: this.iYAcadId,
+                    iIieeId: this.iIieeId,
+                    iSedeId: this.iSedeId,
+                    idDocCursoId: this.idDocCursoId,
                 }
                 this.rutas = 'reporte_personalizado'
                 break
@@ -183,7 +201,35 @@ export class ReporteAsistenciaComponent implements OnChanges {
     iDateRango
     rutas = ''
     getReportePdf(data) {
-        // const iYearId = this._LocalStoreService.getItem('dremoYear')
+        if (this.rutas == 'reporte_diario') {
+            this.fechas =
+                data['id'].getFullYear() +
+                '-' +
+                (data['id'].getMonth() + 1) +
+                '-' +
+                data['id'].getDate()
+        }
+        if (this.rutas == 'reporte_personalizado') {
+            const inicio =
+                data['id'][0].getFullYear() +
+                '-' +
+                (data['id'][0].getMonth() + 1) +
+                '-' +
+                data['id'][0].getDate()
+            const fin =
+                data['id'][1].getFullYear() +
+                '-' +
+                (data['id'][1].getMonth() + 1) +
+                '-' +
+                data['id'][1].getDate()
+            this.fechas = inicio + '_' + fin
+        }
+        if (this.rutas == 'reporte_mensual') {
+            this.fechas = data['id']
+            const fecha = new Date(this.year + '-' + this.fechas) // Por ejemplo: 2025-04-11
+            const nombreMes = fecha.toLocaleString('es-ES', { month: 'long' })
+            this.fechas = nombreMes
+        }
 
         const params = {
             petition: 'post',
@@ -199,7 +245,15 @@ export class ReporteAsistenciaComponent implements OnChanges {
                 const url = window.URL.createObjectURL(blob)
                 const a = document.createElement('a')
                 a.href = url
-                a.download = 'archivo.pdf'
+                a.download =
+                    'asistencia_' +
+                    this.cCursoNombre.toLocaleLowerCase() +
+                    '_' +
+                    this.cGradoAbreviacion.toLocaleLowerCase() +
+                    this.cSeccionNombre.toLocaleLowerCase() +
+                    '_' +
+                    this.fechas +
+                    '.pdf'
                 a.click()
                 window.URL.revokeObjectURL(url)
             },

@@ -18,7 +18,7 @@ import {
     administradorDremo,
     especialistaDremo,
     especialistaUgel,
-} from './seg/menu-ere/menuEre'
+} from './seg/menu-ere'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')
@@ -26,10 +26,11 @@ const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
 const iYAcadId = store.getItem('dremoiYAcadId')
+const years = store.getItem('dremoYear')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
-    routerLink: [''],
+    routerLink: ['/inicio'],
 }
 const docente = [
     {
@@ -49,11 +50,6 @@ const docente = [
                 label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Mi Perfil',
-                icon: 'pi pi-fw pi-id-card',
-                routerLink: ['/docente/perfil'],
             },
             {
                 label: 'Actividades No Lectivas',
@@ -123,50 +119,19 @@ const estudiante = [
         items: [
             inicio,
             {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                label: 'Evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion/areas'],
             },
             {
-                label: 'Calendario',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/03'],
+                label: 'Practicar evaluación ERE',
+                icon: 'pi pi-pen-to-square',
+                routerLink: ['/ere/evaluacion-practica'],
             },
             {
-                label: 'Solicitudes y Tramites',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/02'],
-            },
-            {
-                label: 'Buzon de Sugerencias',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/01'],
-            },
-            {
-                label: 'Enlaces de ayuda',
-                icon: 'pi pi-fw pi-share-alt',
-                routerLink: ['ayuda'],
-            },
-
-            {
-                label: 'Dremo ERE',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'Evaluacion',
-                        icon: 'pi pi-fw pi-share-alt',
-                        routerLink: [
-                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                        ],
-                    },
-                    // {
-                    //     label: 'Examen',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [
-                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-                    //     ],
-                    // },
-                ],
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/estudiante/buzon-sugerencias'],
             },
             {
                 label: 'Bienestar Social',
@@ -184,6 +149,7 @@ const estudiante = [
 ]
 
 const administrador = [
+    //MODULO DE SEGURIDAD
     {
         items: [
             inicio,
@@ -196,6 +162,22 @@ const administrador = [
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
+            },
+            {
+                label: 'Registro de fechas especiales',
+                icon: 'pi pi-calendar',
+                routerLink: ['/gestion-institucional/fechas'],
+            },
+            {
+                label: 'Backup de BD',
+                icon: 'pi pi-fw pi-database',
+                routerLink: ['/administrador/backup-bd'],
+            },
+
+            {
+                label: 'Gestión de Usuario',
+                icon: 'pi pi-fw pi-user',
+                routerLink: ['/administrador/gestion-usuario'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -235,7 +217,7 @@ const jefe_programa = [
                     {
                         label: 'Registro de año escolar',
                         icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/gestion-institucional/apertura'],
                     },
                     {
                         label: 'Personal',
@@ -269,16 +251,21 @@ const administracion = [
         label: 'Administración',
         items: [
             {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
+            {
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    {
-                        label: 'Registro de año escolar',
-                        icon: 'pi pi-wrench',
-                        routerLink: [
-                            '/gestion-institucional/calendarioAcademico',
-                        ],
-                    },
+                    // {
+                    //     label: 'Registro de año escolar',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: [
+                    //         '/gestion-institucional/calendarioAcademico',
+                    //     ],
+                    // },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',
@@ -291,6 +278,13 @@ const administracion = [
                             '/gestion-institucional/sincronizar-archivo',
                         ],
                     },
+                    {
+                        label: 'Mantenimiento de usuarios',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/mantenimiento-usuario',
+                        ],
+                    },
                 ],
             },
 
@@ -301,18 +295,7 @@ const administracion = [
                     {
                         label: 'Apertura de año escolar',
                         icon: 'pi pi-lock-open',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Registro de fechas especiales',
-                        icon: 'pi pi-calendar',
-                        routerLink: ['/gestion-institucional/fechas'],
-                    },
-
-                    {
-                        label: 'Cierre de año escolar',
-                        icon: 'pi pi-lock',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/gestion-institucional/apertura'],
                     },
                 ],
             },
@@ -340,11 +323,11 @@ const administracion = [
                                     '/gestion-institucional/IesPersonal',
                                 ],
                             },
-                            {
-                                label: 'Cargos',
-                                icon: 'pi pi-wrench',
-                                routerLink: ['/configuracion/configuracion'],
-                            },
+                            // {
+                            //     label: 'Cargos',
+                            //     icon: 'pi pi-wrench',
+                            //     routerLink: ['/gestion-institucional/apertura'],
+                            // },
                         ],
                         //ConfigGradoSeccion
                     },
@@ -376,6 +359,13 @@ const administracion = [
                         badge: 'NEW',
                         routerLink: [
                             '/gestion-institucional/estudiante/registro',
+                        ],
+                    },
+                    {
+                        label: 'Buzon de Sugerencias',
+                        icon: 'pi pi-fw pi-envelope',
+                        routerLink: [
+                            '/gestion-institucional/gestionar-sugerencias',
                         ],
                     },
                 ],
@@ -449,53 +439,53 @@ const administracion = [
                 ],
             },
 
-            {
-                label: 'Generación de Reportes y estadísticas',
-                icon: 'pi pi-chart-bar',
-                items: [
-                    {
-                        label: 'Reportes',
-                        icon: 'pi pi-book',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Estadisticas',
-                        icon: 'pi pi-chart-scatter',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Indicadores',
-                        icon: 'pi pi-chart-line',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Plantillas',
-                        icon: 'pi pi-download',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                ],
-                //ConfigGradoSeccion
-            },
+            // {
+            //     label: 'Generación de Reportes y estadísticas',
+            //     icon: 'pi pi-chart-bar',
+            //     items: [
+            //         {
+            //             label: 'Reportes',
+            //             icon: 'pi pi-book',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //         {
+            //             label: 'Estadisticas',
+            //             icon: 'pi pi-chart-scatter',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //         {
+            //             label: 'Indicadores',
+            //             icon: 'pi pi-chart-line',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //         {
+            //             label: 'Plantillas',
+            //             icon: 'pi pi-download',
+            //             routerLink: ['/gestion-institucional/apertura'],
+            //         },
+            //     ],
+            //     //ConfigGradoSeccion
+            // },
 
             {
-                label: 'Evaluación - ERE',
-                icon: 'pi pi-address-book',
+                label: 'ERE',
+                icon: 'pi pi-pen-to-square',
                 items: [
                     // {
                     //     label: 'Configuración de ERE',
                     //     icon: 'pi pi-wrench',
-                    //     routerLink: ['/configuracion/configuracion'],
+                    //     routerLink: ['/gestion-institucional/apertura'],
                     // },
                     {
-                        label: 'Resultados de ERE',
+                        label: 'Resultados',
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
-                    // {
-                    //     label: 'Evaluaciones',
-                    //     icon: 'pi pi-fw pi-calendar',
-                    //     routerLink: ['/ere/evaluaciones'],
-                    // },
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-list-check',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
                 ],
                 //ConfigGradoSeccion
             },
@@ -505,21 +495,29 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            // {
+            //     label: 'Generar Reportes y Estadisticas',
+            //     icon: 'pi pi-chart-scatter',
+            //     items: [
+            //         {
+            //             label: 'Reportes Academicos',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/reporte'],
+            //         },
+            //         {
+            //             label: 'Reportes Orden de Mérito',
+            //             icon: 'pi pi-fw pi-circle',
+            //             routerLink: ['/gestion-institucional/estadistica'],
+            //         },
+            //     ],
+            // },
+
+            //director buzon
+
             {
-                label: 'Generar Reportes y Estadisticas',
-                icon: 'pi pi-chart-scatter',
-                items: [
-                    {
-                        label: 'Reportes Academicos',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/reporte'],
-                    },
-                    {
-                        label: 'Reportes Orden de Mérito',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/estadistica'],
-                    },
-                ],
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/buzon-director'],
             },
         ],
     },
@@ -633,7 +631,12 @@ export class ConstantesService {
     iIieeId = perfil ? perfil.iIieeId : null
     iSedeId = perfil ? perfil.iSedeId : null
     grados = perfil ? perfil.grados : null
+    iSemAcadId = perfil ? perfil.semestres_acad : null
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
     nivelTipo = perfil ? perfil.iNivelTipoId : null
+    cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
+    cNivelNombre = perfil ? perfil.cNivelNombre : null
+    year = years ? years : null
+    fotografia = user ? user.cPersFotografia : null
 }

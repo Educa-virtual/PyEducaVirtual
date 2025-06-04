@@ -14,7 +14,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { StepConfirmationService } from '@/app/servicios/confirm.service'
 //import { TreeModule } from 'primeng/tree'
 import { MultiSelectModule } from 'primeng/multiselect'
-import { TreeViewPrimengComponent } from '@/app/shared/tree-view-primeng/tree-view-primeng.component'
+//import { TreeViewPrimengComponent } from '@/app/shared/tree-view-primeng/tree-view-primeng.component'
 import {
     ContainerPageComponent,
     IActionContainer,
@@ -36,7 +36,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         ReactiveFormsModule,
         //  TreeModule,
         MultiSelectModule,
-        TreeViewPrimengComponent,
+        // TreeViewPrimengComponent,
     ],
     templateUrl: './config-seccion.component.html',
     styleUrl: './config-seccion.component.scss',
@@ -160,6 +160,80 @@ export class ConfigSeccionComponent implements OnInit {
             alert('Desea retornar')
             this.router.navigate(['/gestion-institucional/configGradoSeccion'])
         }
+
+        if (accion === 'editar') {
+            console.log(item, 'item modificar')
+            this.visible = true
+            this.caption = 'Actualizar grados y secciones'
+            // +++++++++++++++++++++++actualizar
+            const found1 = this.grados.find(
+                (item1) => item1.iNivelGradoId === item.iNivelGradoId
+            )
+            this.form.get('cCicloNombre')?.setValue(found1.cCicloNombre)
+            this.form.get('cNivelNombre')?.setValue(found1.cNivelNombre)
+            this.form.get('cNivelTipoNombre')?.setValue(found1.cNivelTipoNombre)
+            const found2 = this.ambientes.find(
+                (item2) => item2.iIieeAmbienteId === item.iIieeAmbienteId
+            )
+
+            this.form.get('iAmbienteAforo')?.setValue(found2.iAmbienteAforo)
+            this.form
+                .get('cAmbienteDescripcion')
+                ?.setValue(found2.cAmbienteDescripcion)
+            this.form.get('iUsoAmbId')?.setValue(found2.iUsoAmbId)
+
+            const found3 = this.turnos.find(
+                (item3) => item3.iTurnoId === item.iTurnoId
+            )
+            this.form.get('iModalServId')?.setValue(found3.iModalServId)
+            this.form.get('cModalServId')?.setValue(found3.iModalServId)
+
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            this.form.patchValue({
+                iDetConfId: item.iDetConfId,
+                iConfigId: item.iConfigId,
+                iTurnoId: item.iTurnoId,
+                iModalServId: item.iModalServId,
+                iIieeAmbienteId: item.iIieeAmbienteId,
+                iPersIeIdTutor: item.iPersIeIdTutor,
+                cDetConfNombreSeccion: item.cDetConfNombreSeccion,
+                iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
+                cDetConfObs: item.cDetConfObs,
+                iSeccionId: item.iSeccionId,
+                iNivelGradoId: item.iNivelGradoId,
+
+                cPrograma: 'No APLICA',
+                iServEdId: this.configuracion[0].iServEdId,
+                cCicloNombre: item.cCicloNombre,
+                cFase: 'FASE REGULAR',
+
+                iYAcadId: this.configuracion[0].iYAcadId,
+                cYAcadNombre: this.configuracion[0].cYAcadNombre,
+            })
+        }
+        if (accion === 'eliminar') {
+            const id = Number(item.iIieeAmbienteId)
+            console.log(item, 'item')
+            alert(id)
+            this._confirmService.openConfiSave({
+                header: 'Advertencia de autoguardado',
+                message:
+                    'No podrá eliminar si existen grados asignados al ambiente. ¿Estás seguro de que deseas eliminar ambiente?,',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.deleteAmbiente(id)
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
     }
 
     accionBtnItem(accion) {
@@ -202,6 +276,10 @@ export class ConfigSeccionComponent implements OnInit {
             } else {
                 console.log('Formulario no válido', this.form.invalid)
             }
+        }
+        if (accion === 'actualizar') {
+            console.log(this.form.value.iDetConfId)
+            console.log(this.form.status)
         }
     }
 
@@ -246,7 +324,7 @@ export class ConfigSeccionComponent implements OnInit {
         }
 
         if (cbo === 'turno') {
-            console.log(this.turnos[selected], 'data de turnos')
+            //   console.log(this.turnos[selected], 'data de turnos')
 
             const found = this.turnos.find((item) => item.iTurnoId === selected)
             this.form.get('iModalServId')?.setValue(found.iModalServId)
@@ -412,7 +490,7 @@ export class ConfigSeccionComponent implements OnInit {
                 next: (data: any) => {
                     // this.seccionesAsignadas = data.data
                     //    this.iServId = this.serv_atencion[0].iServEdId
-                    this.lista = this.extraerSecciones(data.data)
+                    // this.lista = this.extraerSecciones(data.data)
                     this.seccionesAsignadas = data.data.map((ambiente: any) => {
                         return {
                             ...ambiente, // Mantén todos los campos originales
@@ -434,43 +512,42 @@ export class ConfigSeccionComponent implements OnInit {
                 complete: () => {
                     // console.log('Request completed')
                     //    setTimeout(() => {
-
                     //    // this.updateData();
                     // }, 2000);
-                    console.log(this.lista, 'desde getSeccionesAsignadas')
+                    // console.log(this.lista, 'desde getSeccionesAsignadas')
                 },
             })
     }
-    extraerSecciones(seccionesPosGrado) {
-        // Agrupar las secciones por grado
-        const agruparSeccionesPorGrado = (
-            datos: any[]
-        ): Record<string, string[]> => {
-            return datos.reduce(
-                (acumulador, item) => {
-                    const grado = item.cGradoNombre // Nombre del grado
-                    const seccion = item.cSeccionNombre // Nombre de la sección
+    // extraerSecciones(seccionesPosGrado) {
+    //     // Agrupar las secciones por grado
+    //     const agruparSeccionesPorGrado = (
+    //         datos: any[]
+    //     ): Record<string, string[]> => {
+    //         return datos.reduce(
+    //             (acumulador, item) => {
+    //                 const grado = item.cGradoNombre // Nombre del grado
+    //                 const seccion = item.cSeccionNombre // Nombre de la sección
 
-                    // Si el grado no existe en el acumulador, inicializarlo como un array vacío
-                    if (!acumulador[grado]) {
-                        acumulador[grado] = []
-                    }
+    //                 // Si el grado no existe en el acumulador, inicializarlo como un array vacío
+    //                 if (!acumulador[grado]) {
+    //                     acumulador[grado] = []
+    //                 }
 
-                    // Agregar la sección al grado (evitando duplicados)
-                    if (!acumulador[grado].includes(seccion)) {
-                        acumulador[grado].push(seccion)
-                    }
+    //                 // Agregar la sección al grado (evitando duplicados)
+    //                 if (!acumulador[grado].includes(seccion)) {
+    //                     acumulador[grado].push(seccion)
+    //                 }
 
-                    return acumulador
-                },
-                {} as Record<string, string[]>
-            )
-        }
+    //                 return acumulador
+    //             },
+    //             {} as Record<string, string[]>
+    //         )
+    //     }
 
-        // Usar la función para agrupar las secciones
-        const resultado = agruparSeccionesPorGrado(seccionesPosGrado)
-        return resultado
-    }
+    //     // Usar la función para agrupar las secciones
+    //     const resultado = agruparSeccionesPorGrado(seccionesPosGrado)
+    //     return resultado
+    // }
 
     getTutor() {
         this.query
@@ -616,6 +693,46 @@ export class ConfigSeccionComponent implements OnInit {
             },
         })
     }
+
+    deleteAmbiente(id: number) {
+        const params = {
+            esquema: 'acad',
+            tabla: 'iiee_ambientes',
+            campo: 'iIieeAmbienteId',
+            valorId: id,
+        }
+        this.query.deleteAcademico(params).subscribe({
+            next: (data: any) => {
+                const registro = data.data[0]
+
+                if (registro.result > 0) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Eliminado',
+                        detail: 'Registro eliminado correctamente',
+                    })
+                } else {
+                    this.messageService.add({
+                        severity: 'Info',
+                        summary: 'Mensaje del sistema',
+                        detail: registro.mensaje,
+                    })
+                }
+            },
+            error: (error) => {
+                // console.error('Error fetching ambiente:', error)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Mensaje de error',
+                    detail: 'NO se pudo eliminar registro' + error,
+                })
+            },
+            complete: () => {
+                console.log('Request completed')
+                this.getAmbientes()
+            },
+        })
+    }
     // updateData() {
     //     // Actualiza las variables con nuevos datos
     //     this.rawData = this.grados;  // Aquí pones los datos nuevos para treeDataRaw
@@ -718,13 +835,13 @@ export class ConfigSeccionComponent implements OnInit {
     selectedItems = []
 
     actions: IActionTable[] = [
-        // {
-        //     labelTooltip: 'Editar',
-        //     icon: 'pi pi-pencil',
-        //     accion: 'editar',
-        //     type: 'item',
-        //     class: 'p-button-rounded p-button-warning p-button-text',
-        // },
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
         {
             labelTooltip: 'Eliminar',
             icon: 'pi pi-trash',
@@ -783,7 +900,7 @@ export class ConfigSeccionComponent implements OnInit {
             type: 'text',
             width: '5rem',
             field: 'cSeccionNombre',
-            header: 'Aula',
+            header: 'Sección',
             text_header: 'center',
             text: 'center',
         },

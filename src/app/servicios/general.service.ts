@@ -196,6 +196,22 @@ export class GeneralService {
         )
     }
 
+    updateCalAcademico(data: any) {
+        // coleccion de procedimiento para calendario academico y usuarios
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/updateCalAcademico`,
+            data
+        )
+    }
+
+    deleteCalAcademico(data: any) {
+        // coleccion de procedimiento para calendario academico y usuarios
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/deleteCalAcademico`,
+            data
+        )
+    }
+
     deleteAcademico(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/deleteCalendario`,
@@ -316,6 +332,43 @@ export class GeneralService {
     obtenerInformacionEstudianteDNI(data: any) {
         return this.http.post(
             `${baseUrl}/acad/gestionInstitucional/obtenerInformacionEstudianteDNI`,
+            data
+        )
+    }
+    obtenerCredencialesSede(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/obtenerCredencialesSede`,
+            data
+        )
+    }
+    importarDocente_IE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/importarDocente_IE`,
+            data
+        )
+    }
+
+    importarAmbiente_IE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/importarAmbiente_IE`,
+            data
+        )
+    }
+
+    //Genera credenciales para personal de IE y asignacion de credenciales a IE
+    generarCredencialesIE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/generarCredencialesIE`,
+            data
+        )
+    }
+    validarPersona(data: any) {
+        return this.http.post(`${baseUrl}/grl/validarPersona`, data)
+    }
+
+    generarConfiguracionMasivaInicio(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/generarConfiguracionMasivaInicio`,
             data
         )
     }

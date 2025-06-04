@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs'
 import { map, takeUntil } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 
 const baseUrl = environment.backendApi
 

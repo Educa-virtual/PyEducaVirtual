@@ -4,6 +4,7 @@
     header="Bienvenido: "
     [modal]="true"
     class="p-fluid"
+    [closable]="false"
     (onHide)="closeModal()"
 >
     <ng-template pTemplate="ng-content">
@@ -16,7 +17,7 @@
             <div class="col-12 card">
                 <div class="grid m-2">
                     @for (item of perfiles; track item) {
-                        <div class="col-12 md:col-4">
+                        <div class="col-12 lg:col-4 md:col-6">
                             <div
                                 class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
                             >

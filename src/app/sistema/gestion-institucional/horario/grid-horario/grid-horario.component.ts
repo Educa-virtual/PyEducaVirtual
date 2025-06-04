@@ -18,6 +18,7 @@ import {
 export class GridHorarioComponent implements OnChanges {
     @Output() filtrarCurso = new EventEmitter()
     @Output() filtrarActividad = new EventEmitter()
+    @Output() filtrarBloque = new EventEmitter()
 
     @Input() bloque_horario
     @Input() horarios
@@ -33,8 +34,8 @@ export class GridHorarioComponent implements OnChanges {
         'Miércoles',
         'Jueves',
         'Viernes',
-        'Sábado',
-        'Domingo',
+        // 'Sábado',
+        // 'Domingo',
     ]
     horario: {
         [hora: string]: {
@@ -254,5 +255,23 @@ export class GridHorarioComponent implements OnChanges {
         const rangoFinFecha = this.convertirHoraAFecha(rangoFin)
 
         return inicioFecha >= rangoInicioFecha && finFecha <= rangoFinFecha
+    }
+
+    addBloqueAsignatura(bloque: string, dia: string) {
+        // Separar hora de inicio y hora de fin
+        const [horaInicio, horaFin] = bloque.split('-')
+
+        //conve
+        const hora_inicio = this.convertirHoraAFecha(horaInicio)
+        const hora_fin = this.convertirHoraAFecha(horaFin)
+
+        const bloque_dia = {
+            hora_inicio: hora_inicio,
+            hora_fin: hora_fin,
+            dia: dia,
+        }
+
+        this.filtrarBloque.emit(bloque_dia)
+        console.log(bloque, 'bloque', dia, 'dia')
     }
 }

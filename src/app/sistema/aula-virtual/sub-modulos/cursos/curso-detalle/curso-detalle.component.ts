@@ -7,19 +7,19 @@ import { TabViewModule } from 'primeng/tabview'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { PanelModule } from 'primeng/panel'
 import { isValidTabKey, TabsKeys } from './tabs/tab.interface'
-import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
+// import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
 import { MenuModule } from 'primeng/menu'
-import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
+// import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
 import { ICurso } from '../interfaces/curso.interface'
 import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.interface'
 import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
 import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
-import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
+// import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
 import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
-import { AsistenciaComponent } from '../../../../docente/asistencia/asistencia.component'
+// import { AsistenciaComponent } from '../../../../docente/asistencia/asistencia.component'
 import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
@@ -32,14 +32,14 @@ import { PrimengModule } from '@/app/primeng.module'
         TabViewModule,
         CursoDetalleNavigationComponent,
         PanelModule,
-        TabEvaluacionesComponent,
-        ProfesorAvatarComponent,
+        // TabEvaluacionesComponent,
+        // ProfesorAvatarComponent,
         MenuModule,
         TabContenidoComponent,
-        TabEstudiantesComponent,
+        // TabEstudiantesComponent,
         TabResultadosComponent,
         TabInicioComponent,
-        AsistenciaComponent,
+        // AsistenciaComponent,
         PrimengModule,
     ],
     templateUrl: './curso-detalle.component.html',
@@ -107,7 +107,8 @@ export class CursoDetalleComponent implements OnInit {
             this._activatedRoute.snapshot.queryParams['cNivelTipoNombre']
         const cGradoAbreviacion =
             this._activatedRoute.snapshot.queryParams['cGradoAbreviacion']
-        const cSeccion = this._activatedRoute.snapshot.queryParams['cSeccion']
+        const cSeccionNombre =
+            this._activatedRoute.snapshot.queryParams['cSeccionNombre']
         const cCicloRomanos =
             this._activatedRoute.snapshot.queryParams['cCicloRomanos']
         const idDocCursoId =
@@ -123,7 +124,7 @@ export class CursoDetalleComponent implements OnInit {
             cNivelNombreCursos,
             cNivelTipoNombre,
             cGradoAbreviacion,
-            cSeccion,
+            cSeccionNombre,
             cCicloRomanos,
             idDocCursoId,
             iNivelCicloId,

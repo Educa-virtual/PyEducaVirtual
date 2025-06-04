@@ -1,0 +1,80 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
+<app-container-page
+    [title]="
+        evaluacion === null
+            ? 'Lista de áreas'
+            : 'Lista de áreas de ' +
+              evaluacion.cEvaluacionNombre +
+              ' - nivel ' +
+              evaluacion.cNivelEvalNombre
+    "
+    [actions]="[]"
+>
+    @if (mostrarMensajeVacio) {
+        <p-messages
+            [(value)]="mensajeInfo"
+            [enableService]="false"
+            [closable]="false"
+        />
+    } @else {
+        <p-dataView
+            #dv
+            [value]="cursos"
+            [paginator]="false"
+            [rows]="10"
+            filterBy="cCursoNombre"
+            [sortField]="sortField"
+            [sortOrder]="sortOrder"
+            [layout]="layout"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex flex-column md:flex-row md:justify-content-between gap-2"
+                >
+                    <p-iconField iconPosition="left">
+                        <p-inputIcon styleClass="pi pi-search" />
+                        <input
+                            pInputText
+                            type="text"
+                            (input)="onFilter(dv, $event)"
+                            placeholder="Buscar por área..."
+                        />
+                    </p-iconField>
+                </div>
+            </ng-template>
+
+            <ng-template let-products pTemplate="gridItem">
+                <div class="cursos gap-4 py-2">
+                    @for (curso of cursos; track curso) {
+                        <app-area-card
+                            [curso]="curso"
+                            [iEvaluacionIdHashed]="iEvaluacionIdHashed"
+                            (dialogSubirArchivoEvent)="
+                                recibirDatosParaSubirArchivo($event)
+                            "
+                            (dialogConfigurarNivelLogroEvent)="
+                                recibirDatosParaConfigurarNivelLogro($event)
+                            "
+                            (dialogImportarResultados)="
+                                importarResultados($event)
+                            "
+                        ></app-area-card>
+                    }
+                </div>
+            </ng-template>
+        </p-dataView>
+    }
+</app-container-page>
+<app-subir-archivo-preguntas
+    (archivoSubidoEvent)="actualizarEstadoArchivoSubido($event)"
+></app-subir-archivo-preguntas>
+<app-importar-resultados
+    (archivoSubidoEvent)="actualizarEstadoResultadosImportados($event)"
+/>
+
+<app-configurar-nivel-logro> </app-configurar-nivel-logro>

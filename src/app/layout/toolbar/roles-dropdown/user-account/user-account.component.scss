@@ -26,3 +26,8 @@
     border: 0 none;
     font-size: 10px !important;
 }
+.display-none {
+    @media (max-width: 500px) {
+        display: none;
+    }
+}

@@ -8,7 +8,7 @@
                 [(activeStep)]="activeStep"
             >
                 <!-- Primer panel: Información Evaluación -->
-                <p-stepperPanel header="Información Evaluación">
+                <p-stepperPanel header="Información de la evaluación">
                     <ng-template
                         pTemplate="content"
                         let-nextCallback="nextCallback"
@@ -19,7 +19,7 @@
                             <div class="field flex flex-column col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>
-                                        Tipo de Evaluación
+                                        Tipo de evaluación
                                     </p-inputGroupAddon>
                                     <!-- Componente de calendario para seleccionar una fecha y hora -->
                                     <p-dropdown
@@ -58,7 +58,7 @@
                             <div class="field flex flex-column col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>
-                                        Nivel de Evaluación</p-inputGroupAddon
+                                        Nivel de evaluación</p-inputGroupAddon
                                     >
                                     <!-- Componente de calendario para seleccionar una fecha y hora -->
                                     <p-dropdown
@@ -124,11 +124,34 @@
                         </div>
                         <!-- URLs -->
                         <div class="formgrid grid flex">
-                            <div class="field col-12">
-                                <app-common-input
-                                    controlKey="cEvaluacionUrlDrive"
-                                    label="Url Drive"
-                                ></app-common-input>
+                            <div class="field col">
+                                <label for="descripcion" class="mt-1"
+                                    >Enlace a carpeta compartida
+                                    <span class="text-red-500 text-xs"
+                                        >(*) Obligatorio</span
+                                    ></label
+                                >
+                                <div class="mt-2">
+                                    <input
+                                        pInputText
+                                        class="w-full"
+                                        formControlName="cEvaluacionUrlDrive"
+                                        placeholder="Ruta que empiece con http:// o https://"
+                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                                    />
+                                </div>
+                                <!-- Mostrar error si la URL es inválida -->
+                                <div
+                                    *ngIf="
+                                        evaluacionFormGroup.controls
+                                            .cEvaluacionUrlDrive.invalid &&
+                                        evaluacionFormGroup.controls
+                                            .cEvaluacionUrlDrive.touched
+                                    "
+                                    class="text-red-500 text-sm"
+                                >
+                                    La URL debe comenzar con http:// o https://
+                                </div>
                             </div>
                         </div>
                         <div class="formgrid grid flex">
@@ -136,12 +159,13 @@
                             <div class="col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>
-                                        Fecha de Inicio
+                                        Fecha de inicio
                                     </p-inputGroupAddon>
                                     <!-- Componente de calendario para seleccionar una fecha y hora -->
                                     <p-calendar
                                         formControlName="dtEvaluacionFechaInicio"
                                         [iconDisplay]="'input'"
+                                        dateFormat="dd/mm/yy"
                                         styleClass="w-full"
                                         [showIcon]="true"
                                         type="date"
@@ -154,7 +178,7 @@
                             <div class="col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>
-                                        Fecha Fin
+                                        Fecha fin
                                     </p-inputGroupAddon>
                                     <!-- Componente de calendario para seleccionar una fecha y hora -->
                                     <p-calendar
@@ -163,8 +187,8 @@
                                         dateFormat="dd/mm/yy"
                                         styleClass="w-full"
                                         [showIcon]="true"
-                                        placeholder=""
-                                        inputId="dtFin"
+                                        type="date"
+                                        inputId="dtEvaluacionFechaFin"
                                         appendTo="body"
                                     />
                                 </p-inputGroup>

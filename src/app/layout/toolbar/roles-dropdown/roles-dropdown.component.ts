@@ -45,9 +45,10 @@ export class RolesDropdownComponent implements OnChanges, OnInit {
     }
     ngOnInit() {
         const modalPerfil = this.store.getItem('dremoModalPerfil')
-        if (!modalPerfil) return
+        if (!modalPerfil || this.selectedPerfil?.iPerfilId !== 0) {
+            return
+        }
         this.showModal = true
-        console.log(modalPerfil)
     }
     accionBtnItem(elemento): void {
         const { accion } = elemento
@@ -58,5 +59,14 @@ export class RolesDropdownComponent implements OnChanges, OnInit {
             default:
                 break
         }
+    }
+    isAdminOrEspecialistaDremo(): boolean {
+        if (!this.selectedPerfil) return false
+
+        const perfilNombre = this.selectedPerfil.cPerfilNombre?.toLowerCase()
+        return (
+            perfilNombre === 'administrador dremo' ||
+            perfilNombre === 'especialista dremo'
+        )
     }
 }

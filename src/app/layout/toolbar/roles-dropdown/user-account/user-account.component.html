@@ -1,7 +1,7 @@
 <div class="flex align-items-center gap-2">
     <div class="flex flex-column text-xs">
-        <span class="block p-0 font-semibold">{{ name }}</span>
-        <span class="block p-0 font-semibold">{{
+        <span class="p-0 font-semibold display-none">{{ name }}</span>
+        <span class="p-0 font-semibold display-none">{{
             selectedModulo['cPerfilNombre']
         }}</span>
 
@@ -10,9 +10,13 @@
             (onChange)="changePerfil()"></p-dropdown> -->
     </div>
     <p-avatar
-        image="./assets/images/icons/IconUserAccount.png"
+        [image]="fotografia"
         size="large"
         shape="circle"
+        class="display-none"
+        (onImageError)="
+            fotografia = './assets/images/icons/IconUserAccount.png'
+        "
     />
 
     <button class="p-link button-menu" (click)="menu.toggle($event)">
@@ -20,4 +24,15 @@
     </button>
 </div>
 
-<p-menu #menu [model]="items" [popup]="true" />
+<p-menu #menu [model]="items" [popup]="true" styleClass="w-15rem" />
+@if (selectedPerfil?.iPerfilId !== 0) {
+    <app-perfil
+        [showModal]="showModal"
+        (accionCloseItem)="showModal = false"
+    ></app-perfil>
+
+    <app-cambiar-constrasena
+        [showModal]="showModalChangePassword"
+        (accionCloseItem)="showModalChangePassword = false"
+    ></app-cambiar-constrasena>
+}

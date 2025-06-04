@@ -32,6 +32,12 @@ export class ApiEvaluacionesRService {
             )
     }
 
+    obtenerCantidadMaximaPreguntas(iEvaluacionId, iCursosNivelGradId) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/cantidad-maxima-preguntas`
+        )
+    }
+
     /*obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
         return this.http
             .get(

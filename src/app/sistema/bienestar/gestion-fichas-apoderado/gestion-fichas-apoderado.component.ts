@@ -14,6 +14,10 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+
+import { FichaService } from '@/app/servicios/fichaService'
+import { RouterModule } from '@angular/router'
+
 interface Estudiante {
     id: number
     apellidos: string
@@ -35,6 +39,7 @@ interface Estudiante {
         InputTextModule,
         InputGroupModule,
         PrimengModule,
+        RouterModule,
     ],
     templateUrl: './gestion-fichas-apoderado.component.html',
     styleUrl: './gestion-fichas-apoderado.component.scss',
@@ -45,6 +50,7 @@ export class GestionFichasApoderadoComponent implements OnInit {
     //captar el valor iSedeId:
     iIieeId: number
     iPersApodrId: number
+    iStdId: number
     //iYAcadId: number;
     public datos: any[] = []
     public iYAcadId: number = 0 // Variable para almacenar el año
@@ -131,13 +137,13 @@ export class GestionFichasApoderadoComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
         },
-        {
-            labelTooltip: 'Deshacer',
-            icon: 'pi pi-undo',
-            accion: 'deshacer',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Deshacer',
+        //     icon: 'pi pi-undo',
+        //     accion: 'deshacer',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        // },
     ]
 
     constructor(
@@ -145,7 +151,8 @@ export class GestionFichasApoderadoComponent implements OnInit {
         private router: Router,
         private estudiantesService: EstudiantesService,
         private constantesService: ConstantesService,
-        private store: LocalStoreService
+        private store: LocalStoreService,
+        private fichaService: FichaService
     ) {
         this.searchForm = this.fb.group({
             nombre: [''],
@@ -159,7 +166,10 @@ export class GestionFichasApoderadoComponent implements OnInit {
             console.log(perfil, 'perfil dremo', this.store)
             this.iPersApodrId = perfil.iPersId
             console.log('Id_Apoderado:', this.iPersApodrId)
+            this.iPersApodrId = perfil.iPersId
+            console.log('Id_Apoderado:', this.iPersApodrId)
             this.iIieeId = perfil.iIieeId
+            console.log('Id_Institucion Educativa:', this.iIieeId)
             console.log('Id_Institucion Educativa:', this.iIieeId)
         }
     }
@@ -171,11 +181,17 @@ export class GestionFichasApoderadoComponent implements OnInit {
             this.iIieeId,
             this.iYAcadId
         )
+        this.obtenerEstudiantesPorAnio(
+            this.iPersApodrId,
+            this.iIieeId,
+            this.iYAcadId
+        )
     }
 
     private getYear(): number {
         const storedYear = localStorage.getItem('dremoYear')
         const year = storedYear ? JSON.parse(storedYear) : 'No hay año'
+        console.log('Año obtenido:', year) // Mostrar en consola
         console.log('Año obtenido:', year) // Mostrar en consola
         return year
     }
@@ -202,8 +218,14 @@ export class GestionFichasApoderadoComponent implements OnInit {
                             grado: estudiante.cGradoNombre,
                             seccion: estudiante.cSeccionNombre,
                             dni: estudiante.cPersDocumento,
-                            fecha: estudiante.dtFichaDG,
-                            //fecha: estudiante.dtFichaDG ? new Date(estudiante.dtFichaDG).getFullYear() : '', // Obtener el año de la fecha
+                            //    fecha: estudiante.dtFichaDG,
+                            fecha: new Date(
+                                estudiante.dtFichaDG
+                            ).toLocaleDateString('es-PE', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                            }),
                         })
                     )
                     console.log(
@@ -229,6 +251,11 @@ export class GestionFichasApoderadoComponent implements OnInit {
 
         if (!apellidosYNombres && !dni) {
             // Si no hay búsqueda, se muestran todos los estudiantes nuevamente
+            this.obtenerEstudiantesPorAnio(
+                this.iPersApodrId,
+                this.iIieeId,
+                this.iYAcadId
+            )
             this.obtenerEstudiantesPorAnio(
                 this.iPersApodrId,
                 this.iIieeId,
@@ -266,14 +293,30 @@ export class GestionFichasApoderadoComponent implements OnInit {
         })
     }
 
+    descargarFicha(id: number, anio: number): void {
+        this.fichaService.downloadFicha(id, anio).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob)
+                window.open(url, '_blank')
+            },
+            error: (err) => {
+                console.error('Error al descargar el PDF:', err)
+                alert('No se pudo generar el PDF')
+            },
+        })
+    }
+
     accionBnt(event: { accion: string }): void {
         switch (event.accion) {
             case 'imprimir':
                 console.log('Imprimir seleccionado')
+                this.descargarFicha(474, 2025)
                 break
             case 'editar':
-                console.log('Editar seleccionado')
+                // console.log('Editar seleccionado')
+                this.router.navigate(['/ficha/general'])
                 break
+
             case 'eliminar':
                 console.log('Eliminar seleccionado')
                 break

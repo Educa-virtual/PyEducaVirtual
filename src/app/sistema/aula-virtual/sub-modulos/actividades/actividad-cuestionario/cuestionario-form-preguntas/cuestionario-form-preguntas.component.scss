@@ -22,6 +22,7 @@
     position: relative;
     overflow: hidden;
 }
+
 .btn-file-image input[type='file'] {
     position: absolute;
     top: 0;
@@ -83,6 +84,50 @@
 .editor {
     border: 1px solid #ccc;
     padding: 10px;
-    min-height: 50px;
-    border-radius: 2px;
+    min-height: auto;
+    border-radius: 3px;
+}
+// remplasa el placeholder
+.editor:empty::before {
+    content: 'Escribe aquí...';
+    color: #999;
+}
+:host ::ng-deep .p-inputtext {
+    // border: none !important;
+    box-shadow: none !important;
+    // outline: none !important;
+    // background-color: transparent !important;
+}
+:host ::ng-deep .dropdownLineal .p-dropdown {
+    border: none !important;
+    // box-shadow: none !important;
+}
+// ------------para el hoer
+.input-hover-underline {
+    position: relative;
+    border: none; /* quitar bordes si lo deseas */
+    outline: none;
+    padding: 6px 4px;
+    background-color: transparent;
+    border-bottom: 1px solid #ccc; /* línea base opcional */
+    transition: border-color 0.3s ease;
+}
+
+.input-hover-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #28a745; /* verde */
+    transition:
+        width 0.3s ease,
+        left 0.3s ease;
+}
+
+.input-hover-underline:hover::after,
+.input-hover-underline:focus::after {
+    width: 100%;
+    left: 0;
 }

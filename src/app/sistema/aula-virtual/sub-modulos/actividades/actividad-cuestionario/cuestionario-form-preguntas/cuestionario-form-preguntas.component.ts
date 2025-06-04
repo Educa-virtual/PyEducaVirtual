@@ -35,12 +35,43 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
 
     isFocused = false
     codigoTipoPregunta: string = ''
+    opcionSeleccionada: number = 0 // Para manejar la opción seleccionada
 
     activeCommands = {
         bold: false,
         italic: false,
         underline: false,
     }
+    scaleLineI = [
+        { id: 1, label: 'Muy fácil' },
+        { id: 0, label: 'Fácil' },
+    ]
+    scaleLineF = [
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+        { id: 9 },
+        { id: 10 },
+    ]
+    calif = [
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+        { id: 9 },
+        { id: 10 },
+    ]
+    icons = [
+        { idIcn: 1, icon: 'pi pi-thumbs-up' },
+        { idIcn: 2, icon: 'pi pi-sun' },
+        { idIcn: 3, icon: 'pi pi-star' },
+    ]
 
     formPreguntas = new FormGroup({
         iTipoPregId: new FormControl(),
@@ -127,5 +158,29 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         this.activeCommands.bold = document.queryCommandState('bold')
         this.activeCommands.italic = document.queryCommandState('italic')
         this.activeCommands.underline = document.queryCommandState('underline')
+    }
+
+    opciones: {
+        texto: string
+        imagen?: File | null
+    }[] = [{ texto: '' }]
+    agregarOpcion() {
+        this.opciones.push({ texto: '' })
+    }
+    eliminarOpcion(index: number) {
+        this.opciones.splice(index, 1)
+
+        // Asegurar que la opción seleccionada siga siendo válida
+        if (this.opcionSeleccionada === index) {
+            this.opcionSeleccionada = -1
+        } else if (this.opcionSeleccionada > index) {
+            this.opcionSeleccionada--
+        }
+    }
+    onImagenSeleccionada(event: Event, index: number) {
+        const file = (event.target as HTMLInputElement).files?.[0]
+        if (file) {
+            this.opciones[index].imagen = file
+        }
     }
 }

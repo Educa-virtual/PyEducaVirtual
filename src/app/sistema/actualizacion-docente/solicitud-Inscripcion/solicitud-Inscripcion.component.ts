@@ -15,6 +15,7 @@ import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { PaginatorModule } from 'primeng/paginator'
 import { DetalleInscripcionComponent } from './detalle-inscripcion/detalle-inscripcion.component'
+import { DropdownChangeEvent } from 'primeng/dropdown'
 @Component({
     selector: 'app-solicitud-inscripcion',
     standalone: true,
@@ -57,7 +58,11 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     }
 
     data: any[] = []
-
+    capacitacionFiltrado: any[] = []
+    tipoCapacitacion: any[] = [] // Datos de tipo de capacitación
+    tipoCapacitacionSearch: any[] = [] // Datos de tipo de capacitación para búsqueda
+    iTipoCapId: any = 0
+    dropdownStyle: boolean = false
     capacitaciones
     paginator = {
         first: 0,
@@ -80,6 +85,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.obtenerCapacitaciones()
+        this.obtenerTipoCapacitacion()
     }
     // obtener y listar las capacitaciones
     obtenerCapacitaciones() {
@@ -96,7 +102,21 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
                 this.capacitaciones = [...this.data] // cargar desde servicio o mock
                 this.paginator.total = this.capacitaciones.length
                 this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
+                this.capacitacionFiltrado = [...this.data] // Hacer una copia para filtrar
             },
+        })
+    }
+
+    // metodo para obtener tipo capacitación:
+    obtenerTipoCapacitacion() {
+        const userId = 1
+        this._aulaService.obtenerTipoCapacitacion(userId).subscribe((Data) => {
+            this.tipoCapacitacion = Data['data']
+            this.tipoCapacitacionSearch = [...this.tipoCapacitacion]
+            this.tipoCapacitacionSearch.unshift({
+                iTipoCapId: 0,
+                cTipoCapNombre: 'Todos los tipos',
+            })
         })
     }
 
@@ -127,5 +147,37 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     volverALista() {
         this.detalleVisible = false
         this.idSeleccionado = ''
+    }
+
+    filtrarCapacitaciones(event: DropdownChangeEvent) {
+        const iTipoCapId = event.value
+        this.data = [...this.capacitacionFiltrado]
+        if (!iTipoCapId || !this.data) return
+        if (iTipoCapId === '0') {
+            this.data = [...this.capacitacionFiltrado] // Mostrar todas las capacitaciones
+        } else {
+            this.data = this.capacitacionFiltrado.filter(
+                (capacitacion: any) => capacitacion.iTipoCapId === iTipoCapId
+            )
+        }
+        // const fechasFiltradas = this.data.fechas
+        //     .map((fecha: any) => {
+        //         const actividadesFiltradas = fecha.actividades.filter(
+        //             (actividad: any) =>
+        //                 Number(actividad.iActTipoId) === iActTipoId
+        //         )
+
+        //         if (actividadesFiltradas.length > 0) {
+        //             return {
+        //                 ...fecha,
+        //                 actividades: actividadesFiltradas,
+        //             }
+        //         }
+
+        //         return null
+        //     })
+        //     .filter((fecha: any) => fecha !== null)
+
+        // this.data.fechas = fechasFiltradas
     }
 }

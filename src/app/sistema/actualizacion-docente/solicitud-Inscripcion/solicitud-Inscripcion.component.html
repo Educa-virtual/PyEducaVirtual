@@ -11,11 +11,33 @@
 <div class="col-12">
     @switch (activeIndex) {
         @case (0) {
-            <app-apertura-curso></app-apertura-curso>
+            <app-apertura-curso
+                [tipoCapacitacion]="tipoCapacitacion"
+            ></app-apertura-curso>
         }
         @case (1) {
             <div class="grid" *ngIf="!detalleVisible" #gridContainer>
-                <div class="col-12 mb-5 cursos">
+                <div class="col-12">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            <i class="pi pi-search"></i>
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [ngClass]="{
+                                dropdownStyle: tipoCapacitacionSearch,
+                            }"
+                            [options]="tipoCapacitacionSearch"
+                            styleClass="w-full"
+                            placeholder="Buscar por tipo"
+                            optionValue="iTipoCapId"
+                            optionLabel="cTipoCapNombre"
+                            [(ngModel)]="iTipoCapId"
+                            (onChange)="filtrarCapacitaciones($event)"
+                        >
+                        </p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 mb-5 cursos" *ngIf="data && data.length > 0">
                     @for (capacitacion of data; track capacitacion) {
                         <app-card-capacitaciones
                             [capacitacion]="capacitacion"
@@ -23,7 +45,7 @@
                         ></app-card-capacitaciones>
                     }
                 </div>
-                <div class="col-12 mt-5" *ngIf="data.length > 0">
+                <div class="col-12 mt-5" *ngIf="data && data.length > 0">
                     <p-paginator
                         (onPageChange)="onPageChange($event)"
                         [first]="paginator.first"

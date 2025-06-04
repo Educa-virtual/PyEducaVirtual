@@ -14,11 +14,12 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 
 @Component({
     selector: 'app-detalle-inscripcion',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [PrimengModule, TablePrimengComponent, ContainerPageComponent],
     templateUrl: './detalle-inscripcion.component.html',
     styleUrl: './detalle-inscripcion.component.scss',
 })
@@ -124,6 +125,24 @@ export class DetalleInscripcionComponent implements OnInit {
             // isVisible: (row) => row.iEstado === '1',
         },
     ]
+
+    actionsContainer = [
+        {
+            labelTooltip: 'Agregar',
+            text: 'Agregar',
+            icon: 'pi pi-plus',
+            accion: 'agregar',
+            class: 'p-button-primary',
+        },
+        {
+            labelTooltip: 'Regresar',
+            text: 'Regresar',
+            icon: 'pi pi-undo',
+            accion: 'regresar',
+            class: 'p-button-secondary',
+        },
+    ]
+
     // asignar la accion a los botones de la tabla
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -141,6 +160,9 @@ export class DetalleInscripcionComponent implements OnInit {
                 break
             case 'mostrarComprobante':
                 this.mostrarVoucher(item)
+                break
+            case 'regresar':
+                this.regresar()
                 break
         }
     }

@@ -1,4 +1,6 @@
-<div class="relative">
+<!-- <article
+    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
+>
     <div class="curso__image-container img-transition">
         <img
             [src]="backend + getUrlImg(capacitacion?.cImagenUrl)"
@@ -6,62 +8,84 @@
             class="image"
         />
     </div>
-    <small
-        class="small left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold"
-        >{{ 'Educación Secundaria' }}</small
-    >
-    <article
-        class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
-    >
-        <div class="h-12rem"></div>
-        <div class="p-3 mb-auto">
-            <div class="text-xl">
-                <small class="text-primary font-bold"></small>
-                <br />
-                <div class="grid row-gap-2">
-                    <div class="col-12 title text-center font-bold">
-                        {{ capacitacion?.cCapTitulo }}
-                    </div>
-                    <div class="mx-4 col-12 grid">
-                        <div
-                            class="col-12 grid column-gap-1 align-items-center"
-                        >
-                            <i class="pi pi-file-check"></i>
-                            <span>{{ '30 Solicitudes Aprobadas' }}</span>
-                        </div>
-                        <div
-                            class="col-12 grid column-gap-1 align-items-center"
-                        >
-                            <i class="pi pi-info-circle"></i>
-                            <span>{{ '06 Solicitudes Pendientes' }}</span>
-                        </div>
-                        <div
-                            class="col-12 grid column-gap-1 align-items-center"
-                        >
-                            <i class="pi pi-thumbs-up"></i>
-                            <span>{{ '24 Vacantes Disponibles' }}</span>
-                        </div>
-                    </div>
 
-                    <div class="col-12 grid justify-content-end">
-                        <div>
-                            <p-button
-                                sty
-                                label="Ingresar"
-                                icon="pi pi-arrow-right"
-                                iconPos="right"
-                                (click)="mostrarInscritos()"
-                            />
-                        </div>
+    <div
+        class="mt-2 left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max"
+    >
+        Educación Secundaria
+    </div>
+
+    <div class="p-3 mb-auto">
+        <div class="text-xl">
+            <div class="grid row-gap-2">
+                <div class="col-12 title text-center font-bold">
+                    {{ capacitacion?.cCapTitulo }}
+                </div>
+                <div class="mx-4 col-12 grid">
+                    <div class="col-12 grid column-gap-1 align-items-center">
+                        <i class="pi pi-file-check"></i>
+                        <span>30 Solicitudes Aprobadas</span>
                     </div>
+                    <div class="col-12 grid column-gap-1 align-items-center">
+                        <i class="pi pi-info-circle"></i>
+                        <span>06 Solicitudes Pendientes</span>
+                    </div>
+                    <div class="col-12 grid column-gap-1 align-items-center">
+                        <i class="pi pi-thumbs-up"></i>
+                        <span>24 Vacantes Disponibles</span>
+                    </div>
+                </div>
+
+                <div class="col-12 grid justify-content-end">
+                    <p-button
+                        label="Ingresar"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                        (click)="mostrarInscritos()"
+                    ></p-button>
                 </div>
             </div>
         </div>
-        <!-- <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-    <p class="">{{ capacitacion?.iCantidadPreguntas }} preguntas</p>
-    <button [size]="'small'" [rounded]="true" pButton pRipple ngClass="p-button-primary">
-      <i class="pi pi-plus"></i> Acciones
-    </button>
-  </footer> -->
-    </article>
+    </div>
+</article> -->
+
+<div class="clash-card">
+    <div class="clash-card__image clash-card__image--barbarian img-transition">
+        <img
+            [src]="backend + getUrlImg(capacitacion?.cImagenUrl)"
+            [alt]="capacitacion?.cCapTitulo"
+        />
+    </div>
+    <div
+        class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max"
+    >
+        Educación Secundaria
+    </div>
+    <div class="title mt-2 font-bold text-center">
+        {{ capacitacion?.cCapTitulo }}
+    </div>
+
+    <div class="mx-4 col-12 grid">
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-file-check mr-2"></i>
+            <span>30 Solicitudes Aprobadas</span>
+        </div>
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-info-circle mr-2"></i>
+            <span>06 Solicitudes Pendientes</span>
+        </div>
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-thumbs-up mr-2"></i>
+            <span>24 Vacantes Disponibles</span>
+        </div>
+    </div>
+
+    <div class="flex mx-3 my-3 justify-content-end">
+        <p-button
+            label="Ingresar"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (click)="mostrarInscritos()"
+        ></p-button>
+    </div>
 </div>

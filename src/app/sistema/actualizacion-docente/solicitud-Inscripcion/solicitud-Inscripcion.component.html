@@ -15,7 +15,7 @@
         }
         @case (1) {
             <div class="grid" *ngIf="!detalleVisible" #gridContainer>
-                <div class="col-12 cursos py-2">
+                <div class="col-12 mb-5 cursos">
                     @for (capacitacion of data; track capacitacion) {
                         <app-card-capacitaciones
                             [capacitacion]="capacitacion"
@@ -23,7 +23,7 @@
                         ></app-card-capacitaciones>
                     }
                 </div>
-                <div class="col-12">
+                <div class="col-12 mt-5" *ngIf="data.length > 0">
                     <p-paginator
                         (onPageChange)="onPageChange($event)"
                         [first]="paginator.first"

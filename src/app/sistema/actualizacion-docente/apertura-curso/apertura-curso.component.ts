@@ -34,7 +34,6 @@ interface Image {
         ToolbarPrimengComponent,
         TablePrimengComponent,
         GalleriaModule,
-        EditorComponent,
     ],
     providers: [
         MessageService,

@@ -24,14 +24,6 @@ export class CardCapacitacionesComponent {
             ? cImagenUrl[0]['url']
             : '/images/recursos/miss-lesson-animate.svg'
     }
-
-    // getUrlImg(cImagenUrl: string) {
-    //     cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : cImagenUrl
-    //     if (cImagenUrl.length) {
-    //         return cImagenUrl[0]['url']
-    //     }
-    //     return '/cursos/images/no-image.jpg'
-    // }
     mostrarInscritos() {
         this.verDetalle.emit(this.capacitacion.iCapacitacionId.toString())
     }

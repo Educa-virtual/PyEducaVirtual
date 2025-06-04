@@ -58,7 +58,29 @@
     [header]="'Agregar preguntas'"
     [modal]="true"
     [(visible)]="showModalBancoPreguntas"
-    [style]="{ width: '85rem' }"
+    [style]="{ width: '50rem' }"
 >
+    <div class="form-container">
+        <div class="grid mt-3">
+            <div class="col-6">
+                <textarea
+                    pInputTextarea
+                    placeholder="Pregunta"
+                    class="w-full"
+                    formControlName="text"
+                >
+                </textarea>
+            </div>
+            <div class="col-6">
+                <p-dropdown
+                    optionLabel="name"
+                    styleClass="w-full"
+                    placeholder="Select a City"
+                />
+                <!-- [options]="" 
+                [(ngModel)]=""  -->
+            </div>
+        </div>
+    </div>
 </p-dialog>
 <p-toast></p-toast>

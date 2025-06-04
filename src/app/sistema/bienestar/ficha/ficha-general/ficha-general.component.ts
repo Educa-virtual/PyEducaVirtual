@@ -124,7 +124,7 @@ export class FichaGeneralComponent implements OnInit {
 
     async searchFichaGeneral(): Promise<void> {
         const data = await this.datosFichaBienestarService.searchFichaGeneral({
-            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
         })
         if (data) {
             this.setFormGeneral(data)

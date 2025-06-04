@@ -114,7 +114,7 @@ export class FichaEconomicoComponent implements OnInit {
     async searchFichaEconomico(): Promise<void> {
         const data = await this.datosFichaBienestarService.searchFichaEconomico(
             {
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+                iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
             }
         )
         if (data) {

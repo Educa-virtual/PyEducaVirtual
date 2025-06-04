@@ -146,10 +146,10 @@ export class FichaViviendaComponent implements OnInit {
         }
     }
 
-    verFichaVivienda() {
+    async verFichaVivienda() {
         this.datosFichaBienestarService
             .verFichaVivienda({
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+                iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
             })
             .subscribe((data: any) => {
                 if (data.data.length) {

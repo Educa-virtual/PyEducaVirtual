@@ -63,9 +63,9 @@ export class FichaFamiliaComponent implements OnInit {
         this.dialogTitle = 'Registrar familiar'
     }
 
-    searchFamiliares() {
+    async searchFamiliares() {
         this.DatosFichaBienestarService.searchFamiliares({
-            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
         }).subscribe({
             next: (data: any) => {
                 this.familiares = data.data

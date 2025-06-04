@@ -182,75 +182,73 @@
                 <div
                     class="grid p-fluid mt-3 border-round border-2 surface-border p-3"
                 >
-                    @if (es_especialista) {
-                        <div class="col-12 md:col-4">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Gestión</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="tipo_sectores"
-                                    [showClear]="true"
-                                    formControlName="iTipoSectorId"
-                                    placeholder="Seleccione un tipo de gestión"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12 md:col-4">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Zona</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="zonas"
-                                    [showClear]="true"
-                                    formControlName="iZonaId"
-                                    placeholder="Seleccione un tipo de zona"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12 md:col-4">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>UGEL</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="ugeles"
-                                    [showClear]="true"
-                                    formControlName="iUgelId"
-                                    placeholder="Seleccione una UGEL"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Distrito</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="distritos"
-                                    [showClear]="true"
-                                    formControlName="iDsttId"
-                                    placeholder="Seleccione un distrito"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>I. E.</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="ies"
-                                    [showClear]="true"
-                                    formControlName="iIieeId"
-                                    placeholder="Seleccione una Institución Educativa"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                    }
+                    <div class="col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Gestión</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="tipo_sectores"
+                                [showClear]="true"
+                                formControlName="iTipoSectorId"
+                                placeholder="Seleccione un tipo de gestión"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="zonas"
+                                [showClear]="true"
+                                formControlName="iZonaId"
+                                placeholder="Seleccione un tipo de zona"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="ugeles"
+                                [showClear]="true"
+                                formControlName="iUgelId"
+                                placeholder="Seleccione una UGEL"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="distritos"
+                                [showClear]="true"
+                                formControlName="iDsttId"
+                                placeholder="Seleccione un distrito"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                                filter="true"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="ies"
+                                [showClear]="true"
+                                formControlName="iIieeId"
+                                placeholder="Seleccione una Institución Educativa"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                                filter="true"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
                     <div class="col-12 md:col-4">
                         <p-inputGroup title="* Campo obligatorio">
                             <p-inputGroupAddon>Grado *</p-inputGroupAddon>

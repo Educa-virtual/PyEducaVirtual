@@ -417,14 +417,9 @@ const administracion = [
                 icon: 'pi pi-fw pi-check-square',
                 items: [
                     {
-                        label: 'Consulta Asistenta Social',
+                        label: 'Consultar Fichas',
                         icon: 'pi pi-fw pi-user-edit',
                         routerLink: ['/bienestar/gestion-fichas'],
-                    },
-                    {
-                        label: 'Consulta Apoderado',
-                        icon: 'pi pi-fw pi-users',
-                        routerLink: ['/bienestar/gestion-fichas-apoderado'],
                     },
                     {
                         label: 'Ficha Socioeconomica',
@@ -435,6 +430,14 @@ const administracion = [
                         label: 'Gestionar encuestas',
                         icon: 'pi pi-fw pi-list-check',
                         routerLink: ['/bienestar/gestionar-encuestas'],
+                    },
+                    {
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
+                    },
+                    {
+                        label: 'Reportes e informes',
+                        icon: 'pi pi-fw pi-chart-bar',
                     },
                 ],
             },

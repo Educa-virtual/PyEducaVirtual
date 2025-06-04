@@ -1,6 +1,9 @@
 // ficha.service.ts
+import { environment } from '@/environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
+
+const baseUrl = environment.backendApi
 
 @Injectable({
     providedIn: 'root',
@@ -8,9 +11,8 @@ import { Injectable } from '@angular/core'
 export class FichaService {
     constructor(private http: HttpClient) {}
     downloadFicha(id: number, anio: number) {
-        const url = `http://localhost:8000/ficha-pdf/${id}/${anio}`
-        // const url = `/api/ficha-pdf/${id}/${anio}`;
-
-        return this.http.get(url, { responseType: 'blob' })
+        return this.http.get(`${baseUrl}/bienestar/ficha-pdf/${id}/${anio}`, {
+            responseType: 'blob',
+        })
     }
 }

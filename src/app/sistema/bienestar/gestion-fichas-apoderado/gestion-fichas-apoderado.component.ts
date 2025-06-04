@@ -205,41 +205,43 @@ export class GestionFichasApoderadoComponent implements OnInit {
     ): void {
         console.log(iPerApodr, iIieeId, anio, 'Datos Obtenidos para filtro:')
         //llamado de Servicio estudiante.service.ts
-        this.datosFichaBienestar.searchFichas(null).subscribe({
-            next: (data: any) => {
-                console.log('Datos recibidos del backend:', data)
-                // Transformar los datos en la estructura esperada por la tabla
-                this.estudiantes = data.map(
-                    (estudiante: any, index: number) => ({
-                        index: index + 1,
-                        id: estudiante.iPersId, // Asigna el ID real del estudiante
-                        apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
-                        nombres: estudiante.cEstNombres,
-                        grado: estudiante.cGradoNombre,
-                        seccion: estudiante.cSeccionNombre,
-                        dni: estudiante.cPersDocumento,
-                        //    fecha: estudiante.dtFichaDG,
-                        fecha: new Date(
-                            estudiante.dtFichaDG
-                        ).toLocaleDateString('es-PE', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                        }),
-                    })
-                )
-                console.log(
-                    'Datos transformados para la tabla:',
-                    this.estudiantes
-                )
-            },
-            error: (error) => {
-                console.error('Error al obtener estudiantes:', error)
-            },
-            complete: () => {
-                console.log('Consulta de estudiantes completada')
-            },
-        })
+        this.datosFichaBienestar
+            .getEstudiantesPorAnio(iPerApodr, iIieeId, anio)
+            .subscribe({
+                next: (data: any) => {
+                    console.log('Datos recibidos del backend:', data)
+                    // Transformar los datos en la estructura esperada por la tabla
+                    this.estudiantes = data.map(
+                        (estudiante: any, index: number) => ({
+                            index: index + 1,
+                            id: estudiante.iPersId, // Asigna el ID real del estudiante
+                            apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
+                            nombres: estudiante.cEstNombres,
+                            grado: estudiante.cGradoNombre,
+                            seccion: estudiante.cSeccionNombre,
+                            dni: estudiante.cPersDocumento,
+                            //    fecha: estudiante.dtFichaDG,
+                            fecha: new Date(
+                                estudiante.dtFichaDG
+                            ).toLocaleDateString('es-PE', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                            }),
+                        })
+                    )
+                    console.log(
+                        'Datos transformados para la tabla:',
+                        this.estudiantes
+                    )
+                },
+                error: (error) => {
+                    console.error('Error al obtener estudiantes:', error)
+                },
+                complete: () => {
+                    console.log('Consulta de estudiantes completada')
+                },
+            })
     }
 
     //---Filtrado de estudiantes--------------
@@ -295,9 +297,18 @@ export class GestionFichasApoderadoComponent implements OnInit {
 
     descargarFicha(id: number, anio: number): void {
         this.fichaService.downloadFicha(id, anio).subscribe({
-            next: (blob) => {
+            next: (response) => {
+                // const url = window.URL.createObjectURL(blob)
+                // window.open(url, '_blank')
+                const blob = new Blob([response], {
+                    type: 'application/pdf',
+                })
                 const url = window.URL.createObjectURL(blob)
-                window.open(url, '_blank')
+                const link = document.createElement('a')
+                link.href = url
+                link.target = '_blank'
+                link.click()
+                // window.URL.revokeObjectURL(url)
             },
             error: (err) => {
                 console.error('Error al descargar el PDF:', err)

@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 import { map, takeUntil } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { FichaGeneral } from '../interfaces/fichaGeneral'
 import { FichaFamiliar } from '../interfaces/fichaFamiliar'
 import { FichaVivienda } from '../interfaces/fichaVivienda'
@@ -689,5 +689,17 @@ export class DatosFichaBienestarService implements OnDestroy {
     ngOnDestroy() {
         this.onDestroy$.next(true)
         this.onDestroy$.complete()
+    }
+
+    getEstudiantesPorAnio(iPerApodr: number, iIieeId: number, anio: number) {
+        return this.http.get(
+            `${baseUrl}/estudiantes/${iPerApodr}/${iIieeId}/${anio}`
+        )
+    }
+
+    downloadFicha(id: number, anio: number) {
+        return this.http.get(`${baseUrl}/bienestar/ficha-pdf/${id}/${anio}`, {
+            responseType: 'blob',
+        })
     }
 }

@@ -104,9 +104,10 @@ export class GestionFichasComponent implements OnInit {
         this.router.navigate(['/bienestar/ficha/general'])
     }
 
-    accionBnt(event: { accion: string }): void {
-        switch (event.accion) {
+    accionBnt({ accion, item }) {
+        switch (accion) {
             case 'imprimir':
+                this.descargarFicha(item.iPersId, 2025)
                 console.log('Imprimir seleccionado')
                 break
             case 'editar':
@@ -119,8 +120,30 @@ export class GestionFichasComponent implements OnInit {
                 console.log('Deshacer seleccionado')
                 break
             default:
-                console.warn('Acción no reconocida:', event.accion)
+                console.warn('Acción no reconocida:', accion)
         }
+    }
+
+    descargarFicha(id: number, anio: number): void {
+        this.datosFichaBienestarService.downloadFicha(id, anio).subscribe({
+            next: (response) => {
+                // const url = window.URL.createObjectURL(blob)
+                // window.open(url, '_blank')
+                const blob = new Blob([response], {
+                    type: 'application/pdf',
+                })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.target = '_blank'
+                link.click()
+                // window.URL.revokeObjectURL(url)
+            },
+            error: (err) => {
+                console.error('Error al descargar el PDF:', err)
+                alert('No se pudo generar el PDF')
+            },
+        })
     }
 
     public columnasTabla: IColumn[] = [
@@ -189,20 +212,6 @@ export class GestionFichasComponent implements OnInit {
             accion: 'imprimir',
             type: 'item',
             class: 'p-button-rounded p-button-secondary p-button-text',
-        },
-        {
-            labelTooltip: 'Editar',
-            icon: 'pi pi-file-edit',
-            accion: 'editar',
-            type: 'item',
-            class: 'p-button-rounded p-button-success p-button-text',
-        },
-        {
-            labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
-            accion: 'eliminar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
         },
         {
             labelTooltip: 'Ver',

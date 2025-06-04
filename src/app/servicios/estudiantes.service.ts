@@ -576,7 +576,7 @@ const first = [
 @Injectable({
     providedIn: 'root',
 })
-export class ConstantesService {
+export class EstudiantesService {
     iPersId = user ? user.iPersId : null
     iCredId = user ? user.iCredId : null
     iDocenteId = user ? user?.iDocenteId : null

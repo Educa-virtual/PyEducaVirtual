@@ -17,6 +17,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 import { FichaService } from '@/app/servicios/fichaService'
 import { RouterModule } from '@angular/router'
+import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service'
 
 interface Estudiante {
     id: number
@@ -151,6 +152,7 @@ export class GestionFichasApoderadoComponent implements OnInit {
         private router: Router,
         private estudiantesService: EstudiantesService,
         private constantesService: ConstantesService,
+        private datosFichaBienestar: DatosFichaBienestarService,
         private store: LocalStoreService,
         private fichaService: FichaService
     ) {
@@ -203,43 +205,41 @@ export class GestionFichasApoderadoComponent implements OnInit {
     ): void {
         console.log(iPerApodr, iIieeId, anio, 'Datos Obtenidos para filtro:')
         //llamado de Servicio estudiante.service.ts
-        this.estudiantesService
-            .getEstudiantesPorAnio(iPerApodr, iIieeId, anio)
-            .subscribe({
-                next: (data) => {
-                    console.log('Datos recibidos del backend:', data)
-                    // Transformar los datos en la estructura esperada por la tabla
-                    this.estudiantes = data.map(
-                        (estudiante: any, index: number) => ({
-                            index: index + 1,
-                            id: estudiante.iPersId, // Asigna el ID real del estudiante
-                            apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
-                            nombres: estudiante.cEstNombres,
-                            grado: estudiante.cGradoNombre,
-                            seccion: estudiante.cSeccionNombre,
-                            dni: estudiante.cPersDocumento,
-                            //    fecha: estudiante.dtFichaDG,
-                            fecha: new Date(
-                                estudiante.dtFichaDG
-                            ).toLocaleDateString('es-PE', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                year: 'numeric',
-                            }),
-                        })
-                    )
-                    console.log(
-                        'Datos transformados para la tabla:',
-                        this.estudiantes
-                    )
-                },
-                error: (error) => {
-                    console.error('Error al obtener estudiantes:', error)
-                },
-                complete: () => {
-                    console.log('Consulta de estudiantes completada')
-                },
-            })
+        this.datosFichaBienestar.searchFichas(null).subscribe({
+            next: (data: any) => {
+                console.log('Datos recibidos del backend:', data)
+                // Transformar los datos en la estructura esperada por la tabla
+                this.estudiantes = data.map(
+                    (estudiante: any, index: number) => ({
+                        index: index + 1,
+                        id: estudiante.iPersId, // Asigna el ID real del estudiante
+                        apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
+                        nombres: estudiante.cEstNombres,
+                        grado: estudiante.cGradoNombre,
+                        seccion: estudiante.cSeccionNombre,
+                        dni: estudiante.cPersDocumento,
+                        //    fecha: estudiante.dtFichaDG,
+                        fecha: new Date(
+                            estudiante.dtFichaDG
+                        ).toLocaleDateString('es-PE', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        }),
+                    })
+                )
+                console.log(
+                    'Datos transformados para la tabla:',
+                    this.estudiantes
+                )
+            },
+            error: (error) => {
+                console.error('Error al obtener estudiantes:', error)
+            },
+            complete: () => {
+                console.log('Consulta de estudiantes completada')
+            },
+        })
     }
 
     //---Filtrado de estudiantes--------------

@@ -441,6 +441,11 @@ const administracion = [
                         icon: 'pi pi-fw pi-file-edit',
                         routerLink: ['/bienestar/ficha'],
                     },
+                    {
+                        label: 'Gestionar encuestas',
+                        icon: 'pi pi-fw pi-list-check',
+                        routerLink: ['/bienestar/gestionar-encuestas'],
+                    },
                 ],
             },
 

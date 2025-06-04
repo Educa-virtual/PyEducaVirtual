@@ -11,6 +11,7 @@ import { FichaGeneralComponent } from './ficha/ficha-general/ficha-general.compo
 import { GestionFichasComponent } from './gestion-fichas/gestion-fichas.component'
 import { GestionFichasApoderadoComponent } from './gestion-fichas-apoderado/gestion-fichas-apoderado.component'
 import { FichaRecreacionComponent } from './ficha/ficha-recreacion/ficha-recreacion.component'
+import { GestionarEncuestasComponent } from './gestionar-encuestas/gestionar-encuestas.component'
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
     {
@@ -46,6 +47,7 @@ const routes: Routes = [
             { path: 'recreacion', component: FichaRecreacionComponent },
         ],
     },
+    { path: 'gestionar-encuestas', component: GestionarEncuestasComponent },
 ]
 
 @NgModule({

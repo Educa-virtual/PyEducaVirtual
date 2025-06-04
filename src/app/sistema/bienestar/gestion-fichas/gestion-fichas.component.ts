@@ -59,6 +59,7 @@ export class GestionFichasComponent implements OnInit {
     ) {
         this.searchForm = this.fb.group({
             iCredSesionId: this.constantesService.iCredId,
+            iSedeId: this.constantesService.iSedeId,
             nombre: [''],
             apellidos: [''],
             dni: [''],

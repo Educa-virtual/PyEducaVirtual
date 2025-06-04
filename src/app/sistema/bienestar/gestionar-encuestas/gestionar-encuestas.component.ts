@@ -1,6 +1,4 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { ConstantesService } from '@/app/servicios/constantes.service'
-import { EstudiantesService } from '@/app/servicios/estudiantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import {
     IActionTable,
@@ -9,7 +7,6 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { Router } from '@angular/router'
 import { ButtonModule } from 'primeng/button'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext'
@@ -41,9 +38,6 @@ export class GestionarEncuestasComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private router: Router,
-        private estudiantesService: EstudiantesService,
-        private constantesService: ConstantesService,
         private store: LocalStoreService
     ) {}
 
@@ -68,46 +62,6 @@ export class GestionarEncuestasComponent implements OnInit {
 
     dialogVisible(event: any) {
         return (this.dialog_visible = event.value)
-    }
-
-    obtenerEstudiantesPorAnio(
-        iPerApodr: number,
-        iIieeId: number,
-        anio: number
-    ): void {
-        console.log(iPerApodr, iIieeId, anio, 'Datos Obtenidos para filtro:')
-        //llamado de Servicio estudiante.service.ts
-        this.estudiantesService
-            .getEstudiantesPorAnio(iPerApodr, iIieeId, anio)
-            .subscribe({
-                next: (data) => {
-                    console.log('Datos recibidos del backend:', data)
-                    // Transformar los datos en la estructura esperada por la tabla
-                    this.encuestas = data.map(
-                        (estudiante: any, index: number) => ({
-                            index: index + 1,
-                            id: estudiante.iPersId, // Asigna el ID real del estudiante
-                            apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
-                            nombres: estudiante.cEstNombres,
-                            grado: estudiante.cGradoNombre,
-                            seccion: estudiante.cSeccionNombre,
-                            dni: estudiante.cPersDocumento,
-                            fecha: estudiante.dtFichaDG,
-                            //fecha: estudiante.dtFichaDG ? new Date(estudiante.dtFichaDG).getFullYear() : '', // Obtener el año de la fecha
-                        })
-                    )
-                    console.log(
-                        'Datos transformados para la tabla:',
-                        this.encuestas
-                    )
-                },
-                error: (error) => {
-                    console.error('Error al obtener estudiantes:', error)
-                },
-                complete: () => {
-                    console.log('Consulta de estudiantes completada')
-                },
-            })
     }
 
     //---Filtrado de estudiantes--------------

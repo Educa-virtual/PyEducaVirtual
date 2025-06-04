@@ -12,6 +12,7 @@ import { GestionFichasComponent } from './gestion-fichas/gestion-fichas.componen
 import { GestionFichasApoderadoComponent } from './gestion-fichas-apoderado/gestion-fichas-apoderado.component'
 import { FichaRecreacionComponent } from './ficha/ficha-recreacion/ficha-recreacion.component'
 import { GestionarEncuestasComponent } from './gestionar-encuestas/gestionar-encuestas.component'
+import { RecordatorioFechasComponent } from './recordatorio-fechas/recordatorio-fechas.component'
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
     {
@@ -48,6 +49,7 @@ const routes: Routes = [
         ],
     },
     { path: 'gestionar-encuestas', component: GestionarEncuestasComponent },
+    { path: 'recordario-fechas', component: RecordatorioFechasComponent },
 ]
 
 @NgModule({

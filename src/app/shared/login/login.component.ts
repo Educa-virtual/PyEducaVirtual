@@ -75,25 +75,22 @@ export class LoginComponent implements OnInit {
             next: (response: Data) => {
                 this.loading = false
 
-                // Paolo: fix temporal nueva estructura de datos
-                response = response.data
-
-                if (!response.user)
+                /*if (!response.user)
                     return this.messageService.add({
                         severity: 'error',
                         summary: 'Acceso Denegado!',
                         detail: 'No hay registros con las credenciales ingresadas',
-                    })
+                    })*/
 
-                const item = response.user
+                const user = response.data.user
 
-                this.tokenStorage.setItem('dremoToken', response.accessToken)
-                this.tokenStorage.setItem('dremoUser', response.user)
+                this.tokenStorage.setItem(
+                    'dremoToken',
+                    response.data.accessToken
+                )
+                this.tokenStorage.setItem('dremoUser', user)
 
-                if (
-                    !response.user.perfiles ||
-                    response.user.perfiles.length === 0
-                ) {
+                if (!user.perfiles || user.perfiles.length === 0) {
                     // Si no tiene perfiles, redirigir a sin-rol-asignado
                     this.router.navigate(['/sin-rol-asignado'])
                     return
@@ -101,7 +98,7 @@ export class LoginComponent implements OnInit {
 
                 this.store.setItem('dremoModalPerfil', true)
 
-                const user = this.store.getItem('dremoUser')
+                //const user = this.store.getItem('dremoUser')
                 const years = user ? user.years : null
                 const year = years.length ? years[0] : null
                 this.store.setItem('dremoYear', year?.iYearId)
@@ -118,14 +115,14 @@ export class LoginComponent implements OnInit {
 
                 this.tokenStorage.setItem(
                     'dremoPerfilVerificado',
-                    item.bCredVerificado == 1 ? true : false
+                    user.bCredVerificado == 1 ? true : false
                 )
 
                 this.tokenStorage.saveToken(response.accessToken)
                 this.tokenStorage.saveRefreshToken(response.refreshToken)
-                this.tokenStorage.saveUser(item)
+                this.tokenStorage.saveUser(user)
 
-                if (item.bCredVerificado == 1) {
+                if (user.bCredVerificado == 1) {
                     this.router.navigate(['./inicio'])
                     setTimeout(() => {
                         location.reload()
@@ -135,16 +132,16 @@ export class LoginComponent implements OnInit {
                 }
             },
             complete: () => {},
-            error: (error) => {
-                // console.log(error)
+            error: (error: any) => {
+                console.log('error', error)
                 this.loading = false
                 this.messageService.add({
                     severity: 'error',
                     summary: '¡Atención!',
-                    detail:
-                        error.pass || error.user
+                    detail: error.error.message,
+                    /*error.pass || error.user
                             ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
-                            : 'Verifica tus Credenciales',
+                            : 'Verifica tus Credenciales',*/
                 })
             },
         })

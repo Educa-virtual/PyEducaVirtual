@@ -1,51 +1,34 @@
-<article
-    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
->
-    <div class="curso__image-container img-transition">
+<div class="clash-card">
+    <div class="clash-card__image clash-card__image--barbarian img-transition">
         <img
-            [src]="backend + '/' + curso.cCursoImagen"
-            [alt]="curso.cCursoNombre"
-            class="w-full h-full"
-            (error)="updateUrl(curso)"
+            [src]="backend + getUrlImg(curso?.cCursoImagen)"
+            [alt]="curso?.cCursoNombre"
         />
     </div>
-    <div class="">
-        <div class="pt-3 flex mb-auto mr-2">
-            <span class="tag border-round-right text-xl font-bold">{{
-                curso.cCursoNombre
-            }}</span>
+    <div
+        class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max"
+    >
+        <span>{{
+            curso?.cCursoNombre.length > 30
+                ? (curso?.cCursoNombre | slice: 0 : 30) + '...'
+                : curso?.cCursoNombre
+        }}</span>
+    </div>
+    <div class="mx-4 mt-3 col-12 grid">
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-bookmark mr-2"></i>
+            <span>{{ curso.cGradoAbreviacion }} Grado</span>
         </div>
-        <div class="p-3 mb-auto">
-            <div class="mb-2">
-                <i class="pi pi-calendar mr-2" style="color: #a51c2e"></i>
-                <span>Lunes, Miercoles, Viernes</span>
-            </div>
-            <div class="mb-2">
-                <i class="pi pi-bookmark mr-2" style="color: #a51c2e"></i>
-                <span>{{ curso.cGradoAbreviacion }} Grado</span>
-            </div>
-            <div class="mb-2">
-                <i class="pi pi-tag mr-2" style="color: #a51c2e"></i>
-                <span>Sección {{ curso.cSeccionNombre }}</span>
-            </div>
-            <div class="mb-2">
-                <i class="pi pi-users mr-2" style="color: #a51c2e"></i>
-                <span>{{ curso.cantidad }} alumnos</span>
-            </div>
-            <!-- <h3 class="text-xl">
-                {{ curso.cCursoNombre }} 
-                
-            </h3>
-            <p class="">
-                {{ curso.descripcion }}
-            </p> -->
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-info-circle mr-2"></i>
+            <span>{{ curso.cantidad }} alumnos</span>
         </div>
     </div>
-    <footer class="p-3 pt-0">
-        <!-- flex align-items-center justify-content-between -->
+
+    <div class="flex mx-3 mt-2 pb-4 justify-content-end">
         <p-button
             label="Ingresar"
-            icon="pi pi-window-maximize"
+            icon="pi pi-arrow-right"
             iconPos="right"
             [routerLink]="['./', curso.iSilaboId]"
             [queryParams]="{
@@ -63,6 +46,6 @@
                 iNivelGradoId: curso.iNivelGradoId,
                 cantidad: curso.cantidad,
             }"
-        />
-    </footer>
-</article>
+        ></p-button>
+    </div>
+</div>

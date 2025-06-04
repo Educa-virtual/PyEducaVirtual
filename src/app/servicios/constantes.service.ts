@@ -121,12 +121,12 @@ const estudiante = [
                 label: 'Practicar evaluación ERE',
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
-            },
+            } /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
             {
                 label: 'Buzón de sugerencias',
                 icon: 'pi pi-fw pi-envelope',
                 routerLink: ['/estudiante/buzon-sugerencias'],
-            },
+            },*/,
         ],
     },
 ]
@@ -158,9 +158,9 @@ const administrador = [
             },
 
             {
-                label: 'Gestión de Usuario',
+                label: 'Gestión de usuarios',
                 icon: 'pi pi-fw pi-user',
-                routerLink: ['/administrador/gestion-usuario'],
+                routerLink: ['/administrador/gestion-usuarios'],
             },
             {
                 label: 'Enlaces de ayuda',

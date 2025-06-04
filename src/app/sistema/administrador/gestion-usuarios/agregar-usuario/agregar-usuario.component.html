@@ -1,0 +1,87 @@
+<p-dialog
+    [(visible)]="visible"
+    [style]="{ width: '1000px' }"
+    header="Agregar usuario"
+    [modal]="true"
+    styleClass="p-fluid personal-dialog"
+    [draggable]="false"
+    (onHide)="closeDialog()"
+>
+    <div class="personal-container">
+        <form [formGroup]="formUsuario">
+            <div class="form-row">
+                <p-dropdown
+                    appendTo="body"
+                    [options]="dataTiposDocumento"
+                    placeholder="Seleccione tipo"
+                    formControlName="iTipoIdentId"
+                    styleClass="dropdown-field"
+                    (onChange)="reiniciarFormulario()"
+                >
+                </p-dropdown>
+
+                <div class="p-inputgroup">
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cPersDocumento"
+                        placeholder="Número"
+                    />
+                </div>
+
+                <p-button
+                    label="Buscar"
+                    icon="pi pi-search"
+                    severity="warning"
+                    (onClick)="buscarPersonaPorDocumento()"
+                />
+            </div>
+
+            <div class="form-row">
+                <div class="p-inputgroup">
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cPersPaterno"
+                        placeholder="Apellido paterno"
+                    />
+                </div>
+
+                <div class="p-inputgroup">
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cPersMaterno"
+                        placeholder="Apellido materno"
+                    />
+                </div>
+
+                <div class="p-inputgroup">
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cPersNombre"
+                        placeholder="Nombres"
+                    />
+                </div>
+
+                <p-dropdown
+                    formControlName="cPersSexo"
+                    [options]="dataSexos"
+                    placeholder="Seleccione sexo"
+                ></p-dropdown>
+            </div>
+
+            <div class="form-actions">
+                <input type="hidden" formControlName="iPersId" />
+                <p-button
+                    (onClick)="registrarUsuario()"
+                    label="Registrar y continuar"
+                    icon="pi pi-check-circle"
+                    [disabled]="formUsuario.invalid"
+                    severity="success"
+                />
+            </div>
+        </form>
+    </div>
+</p-dialog>

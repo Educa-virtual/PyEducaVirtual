@@ -75,6 +75,9 @@ export class LoginComponent implements OnInit {
             next: (response: Data) => {
                 this.loading = false
 
+                // Paolo: fix temporal nueva estructura de datos
+                response = response.data
+
                 if (!response.user)
                     return this.messageService.add({
                         severity: 'error',

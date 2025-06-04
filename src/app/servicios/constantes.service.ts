@@ -546,6 +546,13 @@ const apoderado = [
                 icon: 'pi pi-user-edit',
                 routerLink: ['apoderado/registro-apoderado'],
             },
+
+            {
+                label: 'Consulta Apoderado',
+                icon: 'pi pi-fw pi-users',
+                routerLink: ['/bienestar/gestion-fichas-apoderado'],
+            },
+
             {
                 label: 'Notificaciones y anuncios',
                 icon: 'pi pi-megaphone',

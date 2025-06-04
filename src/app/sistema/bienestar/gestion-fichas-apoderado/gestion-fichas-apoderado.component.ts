@@ -14,6 +14,10 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+
+import { FichaService } from '@/app/servicios/fichaService'
+import { RouterModule } from '@angular/router'
+
 interface Estudiante {
     id: number
     apellidos: string
@@ -35,6 +39,7 @@ interface Estudiante {
         InputTextModule,
         InputGroupModule,
         PrimengModule,
+        RouterModule,
     ],
     templateUrl: './gestion-fichas-apoderado.component.html',
     styleUrl: './gestion-fichas-apoderado.component.scss',
@@ -44,6 +49,8 @@ export class GestionFichasApoderadoComponent implements OnInit {
     searchForm: FormGroup
     //captar el valor iSedeId:
     iIieeId: number
+    iPersApodrId: number
+    iStdId: number
     //iYAcadId: number;
     public datos: any[] = []
     public iYAcadId: number = 0 // Variable para almacenar el año
@@ -130,14 +137,13 @@ export class GestionFichasApoderadoComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
         },
-
-        {
-            labelTooltip: 'Deshacer',
-            icon: 'pi pi-undo',
-            accion: 'deshacer',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Deshacer',
+        //     icon: 'pi pi-undo',
+        //     accion: 'deshacer',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        // },
     ]
 
     constructor(
@@ -145,7 +151,8 @@ export class GestionFichasApoderadoComponent implements OnInit {
         private router: Router,
         private estudiantesService: EstudiantesService,
         private constantesService: ConstantesService,
-        private store: LocalStoreService
+        private store: LocalStoreService,
+        private fichaService: FichaService
     ) {
         this.searchForm = this.fb.group({
             nombre: [''],
@@ -157,53 +164,73 @@ export class GestionFichasApoderadoComponent implements OnInit {
             //aqui se llama el objeto que trae los datos del perfil
             const perfil = this.store.getItem('dremoPerfil')
             console.log(perfil, 'perfil dremo', this.store)
+            this.iPersApodrId = perfil.iPersId
+            console.log('Id_Apoderado:', this.iPersApodrId)
             this.iIieeId = perfil.iIieeId
+            console.log('Id_Institucion Educativa:', this.iIieeId)
         }
     }
 
     ngOnInit(): void {
         this.iYAcadId = this.getYear() // Asignar el valor al cargar el componente
-        this.obtenerEstudiantesPorAnio(this.iIieeId, this.iYAcadId)
+        this.obtenerEstudiantesPorAnio(
+            this.iPersApodrId,
+            this.iIieeId,
+            this.iYAcadId
+        )
     }
 
     private getYear(): number {
         const storedYear = localStorage.getItem('dremoYear')
         const year = storedYear ? JSON.parse(storedYear) : 'No hay año'
-        //console.log('Año obtenido:', year); // Mostrar en consola
+        console.log('Año obtenido:', year) // Mostrar en consola
         return year
     }
-
-    obtenerEstudiantesPorAnio(iIieeId: number, anio: number): void {
-        this.estudiantesService.getEstudiantesPorAnio(iIieeId, anio).subscribe({
-            next: (data) => {
-                console.log('Datos recibidos del backend:', data)
-
-                // Transformar los datos en la estructura esperada por la tabla
-                this.estudiantes = data.map(
-                    (estudiante: any, index: number) => ({
-                        index: index + 1,
-                        id: estudiante.iPersId, // Asigna el ID real del estudiante
-                        apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
-                        nombres: estudiante.cEstNombres,
-                        grado: estudiante.cGradoAbreviacion,
-                        seccion: estudiante.cSeccionNombre,
-                        dni: estudiante.cPersDocumento,
-                        fecha: estudiante.anioFichaDG, // Usa el campo correcto para la fecha
-                    })
-                )
-
-                console.log(
-                    'Datos transformados para la tabla:',
-                    this.estudiantes
-                )
-            },
-            error: (error) => {
-                console.error('Error al obtener estudiantes:', error)
-            },
-            complete: () => {
-                console.log('Consulta de estudiantes completada')
-            },
-        })
+    //Consumo del servicio: estudiantes.servcices.ts
+    obtenerEstudiantesPorAnio(
+        iPerApodr: number,
+        iIieeId: number,
+        anio: number
+    ): void {
+        console.log(iPerApodr, iIieeId, anio, 'Datos Obtenidos para filtro:')
+        //llamado de Servicio estudiante.service.ts
+        this.estudiantesService
+            .getEstudiantesPorAnio(iPerApodr, iIieeId, anio)
+            .subscribe({
+                next: (data) => {
+                    console.log('Datos recibidos del backend:', data)
+                    // Transformar los datos en la estructura esperada por la tabla
+                    this.estudiantes = data.map(
+                        (estudiante: any, index: number) => ({
+                            index: index + 1,
+                            id: estudiante.iPersId, // Asigna el ID real del estudiante
+                            apellidos: `${estudiante.cEstPaterno} ${estudiante.cEstMaterno}`, // Combina apellidos
+                            nombres: estudiante.cEstNombres,
+                            grado: estudiante.cGradoNombre,
+                            seccion: estudiante.cSeccionNombre,
+                            dni: estudiante.cPersDocumento,
+                            //    fecha: estudiante.dtFichaDG,
+                            fecha: new Date(
+                                estudiante.dtFichaDG
+                            ).toLocaleDateString('es-PE', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                            }),
+                        })
+                    )
+                    console.log(
+                        'Datos transformados para la tabla:',
+                        this.estudiantes
+                    )
+                },
+                error: (error) => {
+                    console.error('Error al obtener estudiantes:', error)
+                },
+                complete: () => {
+                    console.log('Consulta de estudiantes completada')
+                },
+            })
     }
 
     //---Filtrado de estudiantes--------------
@@ -215,7 +242,11 @@ export class GestionFichasApoderadoComponent implements OnInit {
 
         if (!apellidosYNombres && !dni) {
             // Si no hay búsqueda, se muestran todos los estudiantes nuevamente
-            this.obtenerEstudiantesPorAnio(this.iIieeId, this.iYAcadId)
+            this.obtenerEstudiantesPorAnio(
+                this.iPersApodrId,
+                this.iIieeId,
+                this.iYAcadId
+            )
             return
         }
 
@@ -248,14 +279,30 @@ export class GestionFichasApoderadoComponent implements OnInit {
         })
     }
 
+    descargarFicha(id: number, anio: number): void {
+        this.fichaService.downloadFicha(id, anio).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob)
+                window.open(url, '_blank')
+            },
+            error: (err) => {
+                console.error('Error al descargar el PDF:', err)
+                alert('No se pudo generar el PDF')
+            },
+        })
+    }
+
     accionBnt(event: { accion: string }): void {
         switch (event.accion) {
             case 'imprimir':
                 console.log('Imprimir seleccionado')
+                this.descargarFicha(474, 2025)
                 break
             case 'editar':
-                console.log('Editar seleccionado')
+                // console.log('Editar seleccionado')
+                this.router.navigate(['/ficha/general'])
                 break
+
             case 'eliminar':
                 console.log('Eliminar seleccionado')
                 break

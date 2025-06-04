@@ -1,5 +1,5 @@
 export interface FichaGeneral {
-    iiFichaDGId: number
+    iFichaDGId: number
     iPersId: number
     iTipoViaId: number
     cFichaDGDireccionNombreVia: string

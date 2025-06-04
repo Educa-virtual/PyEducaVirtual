@@ -1,5 +1,6 @@
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { Injectable, OnDestroy } from '@angular/core'
+import { BehaviorSubject, Observable } from 'rxjs'
 
 @Injectable({
     providedIn: 'root',
@@ -15,6 +16,7 @@ export class CompartirFichaService implements OnDestroy {
     private iPersId: string | null = null
     private iFichaDGId: string | null = null
     private iFamiliarId: string | null = null
+    private activeIndex = new BehaviorSubject<number | null>(null)
 
     clearData() {
         this.iPersId = null
@@ -65,6 +67,14 @@ export class CompartirFichaService implements OnDestroy {
                     : localStorage.getItem('iFamiliarId')
         }
         return this.iFamiliarId
+    }
+
+    setActiveIndex(index: number) {
+        this.activeIndex.next(index)
+    }
+
+    getActiveIndex(): Observable<any> {
+        return this.activeIndex.asObservable()
     }
 
     ngOnDestroy(): void {

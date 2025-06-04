@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { FichaGeneral } from '../../interfaces/fichaGeneral'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -31,6 +32,7 @@ export class FichaGeneralComponent implements OnInit {
     tipos_vias: Array<object>
     visibleInput: Array<boolean>
     ficha_registrada: boolean = false
+    idFicha: any
 
     private _MessageService = inject(MessageService)
     private _ConfirmService = inject(ConfirmationModalService)
@@ -38,15 +40,20 @@ export class FichaGeneralComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService
-    ) {}
+        private compartirFichaService: CompartirFichaService,
+        private route: ActivatedRoute
+    ) {
+        this.compartirFichaService.setActiveIndex(0)
+    }
 
     ngOnInit() {
-        console.log('iniciando')
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.idFicha = params.get('id')
+        })
+        console.log(this.idFicha)
         this.visibleInput = Array(3).fill(false)
 
         this.formGeneral = this.fb.group({
-            iSesionId: this.compartirFichaService.perfil?.iCredId,
             iPersId: this.compartirFichaService.perfil?.iPersId,
             iFichaDGId: this.compartirFichaService.getiFichaDGId(),
             iTipoViaId: [null, Validators.required],
@@ -92,9 +99,7 @@ export class FichaGeneralComponent implements OnInit {
                 )
             })
 
-        if (this.compartirFichaService.getiPersId()) {
-            this.searchFichaGeneral()
-        }
+        this.searchFichaGeneral()
     }
 
     handleDropdownChange(event: any, index: number) {
@@ -117,23 +122,24 @@ export class FichaGeneralComponent implements OnInit {
         }
     }
 
-    searchFichaGeneral() {
-        this.datosFichaBienestarService
-            .searchFichaGeneral({
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
-                iPersId: this.compartirFichaService.getiPersId(),
-                iYAcadId: this.compartirFichaService.iYAcadId,
-            })
-            .subscribe((data: any) => {
-                if (data) {
-                    this.setFormGeneral(data)
-                }
-            })
+    async searchFichaGeneral(): Promise<void> {
+        const data = await this.datosFichaBienestarService.searchFichaGeneral({
+            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+        })
+        if (data) {
+            this.setFormGeneral(data)
+        }
     }
 
     setFormGeneral(data: FichaGeneral) {
         this.ficha_registrada = true
         this.formGeneral.patchValue(data)
+        this.compartirFichaService.setiFichaDGId(
+            data.iFichaDGId ? data.iFichaDGId + '' : null
+        )
+        this.formGeneral
+            .get('iFichaDGId')
+            .setValue(data.iFichaDGId ? +data.iFichaDGId : null)
         this.formGeneral
             .get('iTipoViaId')
             .setValue(data.iTipoViaId ? +data.iTipoViaId : null)
@@ -168,7 +174,6 @@ export class FichaGeneralComponent implements OnInit {
             .guardarFichaGeneral(this.formGeneral.value)
             .subscribe({
                 next: (data: any) => {
-                    console.log(data.data[0].iFichaDGId, 'ficha')
                     this.compartirFichaService.setiFichaDGId(
                         data.data[0].iFichaDGId
                     )

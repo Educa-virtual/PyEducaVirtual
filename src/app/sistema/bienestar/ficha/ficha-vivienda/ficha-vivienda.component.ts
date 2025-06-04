@@ -41,6 +41,7 @@ export class FichaViviendaComponent implements OnInit {
         if (this.compartirFichaService.getiFichaDGId() === null) {
             this.router.navigate(['/bienestar/ficha/general'])
         }
+        this.compartirFichaService.setActiveIndex(3)
     }
 
     private _messageService = inject(MessageService)
@@ -99,7 +100,10 @@ export class FichaViviendaComponent implements OnInit {
         try {
             this.formVivienda = this.fb.group({
                 iViendaCarId: [null],
-                iFichaDGId: [null, Validators.required],
+                iFichaDGId: [
+                    this.compartirFichaService.getiFichaDGId(),
+                    Validators.required,
+                ],
                 iTipoOcupaVivId: [null],
                 iMatPreId: [null],
                 iTipoVivId: [null],
@@ -146,36 +150,57 @@ export class FichaViviendaComponent implements OnInit {
             })
             .subscribe((data: any) => {
                 if (data.data.length) {
-                    this.setFormVivienda(data.data)
+                    this.setFormVivienda(data.data[0])
                 }
             })
     }
 
     setFormVivienda(data: FichaVivienda) {
         this.formVivienda.patchValue(data)
-        this.formVivienda
-            .get('iTipoOcupaVivId')
-            ?.setValue(+data.iTipoOcupaVivId)
-        this.formVivienda
-            .get('iViviendaCarNroPisos')
-            ?.setValue(+data.iViviendaCarNroPisos)
-        this.formVivienda
-            .get('iViviendaCarNroAmbientes')
-            ?.setValue(+data.iViviendaCarNroAmbientes)
-        this.formVivienda
-            .get('iViviendaCarNroHabitaciones')
-            ?.setValue(+data.iViviendaCarNroHabitaciones)
-        this.formVivienda.get('iEstadoVivId')?.setValue(+data.iEstadoVivId)
-        this.formVivienda.get('iMatTecVivId')?.setValue(+data.iMatTecVivId)
-        this.formVivienda.get('iMatPisoVivId')?.setValue(+data.iMatPisoVivId)
-        this.formVivienda.get('iMatPreId')?.setValue(+data.iMatPreId)
-        this.formVivienda.get('iTiposSsHhId')?.setValue(+data.iTiposSsHhId)
+        this.formatearFormControl(
+            'iTipoOcupaVivId',
+            data.iTipoOcupaVivId,
+            'num'
+        )
+        this.formatearFormControl('iMatPreId', data.iMatPreId, 'num')
+        this.formatearFormControl('iTipoVivId', data.iTipoVivId, 'num')
+        this.formatearFormControl(
+            'iViviendaCarNroPisos',
+            data.iViviendaCarNroPisos,
+            'num'
+        )
+        this.formatearFormControl(
+            'iViviendaCarNroAmbientes',
+            data.iViviendaCarNroAmbientes,
+            'num'
+        )
+        this.formatearFormControl(
+            'iViviendaCarNroHabitaciones',
+            data.iViviendaCarNroHabitaciones,
+            'num'
+        )
+        this.formatearFormControl('iEstadoVivId', data.iEstadoVivId, 'num')
+        this.formatearFormControl('iMatPisoVivId', data.iMatPisoVivId, 'num')
+        this.formatearFormControl('iMatTecVivId', data.iMatTecVivId, 'num')
+        this.formatearFormControl('iTiposSsHhId', data.iTiposSsHhId, 'num')
+        this.formatearFormControl('iTipoSumAId', data.iTipoSumAId, 'num')
+        // this.formatearFormControl('iTipoAlumId', data.iTipoAlumId, 'num')
+    }
+
+    formatearFormControl(id: string, value: any, tipo: string = 'str') {
+        if (tipo === 'num') {
+            this.formVivienda.get(id)?.setValue(value ? +value : null)
+        } else if (tipo === 'str') {
+            this.formVivienda.get(id)?.setValue(value)
+        } else {
+            this.formVivienda.get(id)?.setValue(value)
+        }
     }
 
     guardarDatos() {
         if (this.formVivienda.invalid) {
             this._messageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe completar los campos requeridos',
             })
@@ -191,6 +216,11 @@ export class FichaViviendaComponent implements OnInit {
                     this.vivienda_registrada = true
                     this.datosFichaBienestarService.formVivienda =
                         this.formVivienda.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro Exitoso',
+                        detail: 'Se registró la ficha de vivienda',
+                    })
                 },
                 error: (error) => {
                     console.error('Error guardando ficha:', error)
@@ -209,7 +239,7 @@ export class FichaViviendaComponent implements OnInit {
     actualizarDatos() {
         if (this.formVivienda.invalid) {
             this._messageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe completar los campos requeridos',
             })
@@ -225,6 +255,11 @@ export class FichaViviendaComponent implements OnInit {
                     this.vivienda_registrada = true
                     this.datosFichaBienestarService.formVivienda =
                         this.formVivienda.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización Exitosa',
+                        detail: 'Se actualizó la ficha de vivienda',
+                    })
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

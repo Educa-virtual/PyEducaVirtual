@@ -166,7 +166,10 @@ export class GestionFichasApoderadoComponent implements OnInit {
             console.log(perfil, 'perfil dremo', this.store)
             this.iPersApodrId = perfil.iPersId
             console.log('Id_Apoderado:', this.iPersApodrId)
+            this.iPersApodrId = perfil.iPersId
+            console.log('Id_Apoderado:', this.iPersApodrId)
             this.iIieeId = perfil.iIieeId
+            console.log('Id_Institucion Educativa:', this.iIieeId)
             console.log('Id_Institucion Educativa:', this.iIieeId)
         }
     }
@@ -178,11 +181,17 @@ export class GestionFichasApoderadoComponent implements OnInit {
             this.iIieeId,
             this.iYAcadId
         )
+        this.obtenerEstudiantesPorAnio(
+            this.iPersApodrId,
+            this.iIieeId,
+            this.iYAcadId
+        )
     }
 
     private getYear(): number {
         const storedYear = localStorage.getItem('dremoYear')
         const year = storedYear ? JSON.parse(storedYear) : 'No hay año'
+        console.log('Año obtenido:', year) // Mostrar en consola
         console.log('Año obtenido:', year) // Mostrar en consola
         return year
     }
@@ -242,6 +251,11 @@ export class GestionFichasApoderadoComponent implements OnInit {
 
         if (!apellidosYNombres && !dni) {
             // Si no hay búsqueda, se muestran todos los estudiantes nuevamente
+            this.obtenerEstudiantesPorAnio(
+                this.iPersApodrId,
+                this.iIieeId,
+                this.iYAcadId
+            )
             this.obtenerEstudiantesPorAnio(
                 this.iPersApodrId,
                 this.iIieeId,

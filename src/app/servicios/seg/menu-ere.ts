@@ -95,11 +95,6 @@ export const administradorDremo = [
                         icon: 'pi pi-user',
                         routerLink: ['/actualizacion-docente/instructores'],
                     },
-                    {
-                        label: 'Aula virtual',
-                        icon: 'pi pi-window-maximize',
-                        routerLink: ['/actualizacion-docente/aula-virtual'],
-                    },
                 ],
             },
             //reportesEre,

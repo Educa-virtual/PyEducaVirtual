@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import {
     TablePrimengComponent,
     IColumn,
@@ -34,7 +34,6 @@ interface Image {
         ToolbarPrimengComponent,
         TablePrimengComponent,
         GalleriaModule,
-        EditorComponent,
     ],
     providers: [
         MessageService,
@@ -42,6 +41,8 @@ interface Image {
     ],
 })
 export class AperturaCursoComponent implements OnInit {
+    @Input() tipoCapacitacion: any[] = []
+
     portada = imagenesRecursos
 
     backend = environment.backend
@@ -53,7 +54,6 @@ export class AperturaCursoComponent implements OnInit {
     private _capService = inject(CapacitacionesServiceService)
 
     iPago: boolean = true
-    tipoCapacitacion: any[] = []
     nivelPedagogico: any[] = []
     publicoObjetivo: any[] = []
     cursos: any[] = []
@@ -154,7 +154,6 @@ export class AperturaCursoComponent implements OnInit {
 
     ngOnInit() {
         // Obtener los select:
-        this.obtnerTipoCapacitacion()
         this.obtenerNivelPedagogico()
         this.obtenerTipodePublico()
 
@@ -557,15 +556,6 @@ export class AperturaCursoComponent implements OnInit {
                     detail: 'Capacitación no Eliminado',
                 })
             },
-        })
-    }
-
-    // metodo para obtener tipo capacitación:
-    obtnerTipoCapacitacion() {
-        const userId = 1
-        this._aulaService.obtenerTipoCapacitacion(userId).subscribe((Data) => {
-            this.tipoCapacitacion = Data['data']
-            // console.log('Datos tipo capacitacion', this.tipoCapacitacion)
         })
     }
 

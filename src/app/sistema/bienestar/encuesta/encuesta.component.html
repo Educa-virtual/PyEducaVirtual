@@ -1,0 +1,362 @@
+<form [formGroup]="formEncuesta">
+    <p-stepper class="mt-3" [(activeStep)]="active">
+        <p-stepperPanel>
+            <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index"
+            >
+                <button
+                    class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+                    (click)="onClick.emit()"
+                >
+                    <span
+                        class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                        [ngClass]="{
+                            'bg-primary border-primary': index <= active,
+                            'surface-border': index > active,
+                        }"
+                    >
+                        <i
+                            class="pi pi-info-circle"
+                            style="font-size: 1.5rem"
+                        ></i>
+                    </span>
+                    <span class="hidden md:block font-bold text-primary"
+                        >Información general</span
+                    >
+                </button>
+            </ng-template>
+            <ng-template
+                pTemplate="content"
+                let-nextCallback="nextCallback"
+                let-index="index"
+                class="p-0 m-0"
+            >
+                <div
+                    class="grid p-fluid mt-3 border-round border-2 surface-border p-3"
+                >
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Título </p-inputGroupAddon>
+                            <input
+                                type="text"
+                                pInputText
+                                formControlName="cEncuestaTitulo"
+                                class="w-full"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+                            <input
+                                type="text"
+                                pInputText
+                                formControlName="cEncuestaSubtitulo"
+                                class="w-full"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Categoría </p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="categorias"
+                                formControlName="iCategoriaEncuestaId"
+                                [filter]="true"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                placeholder="Seleccione"
+                                styleClass="group-element"
+                                [style]="{ flex: '1', width: '100%' }"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Estado </p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="estados"
+                                formControlName="iEstado"
+                                [filter]="true"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                placeholder="Seleccione"
+                                styleClass="group-element"
+                                [style]="{ flex: '1', width: '100%' }"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                Fecha de inicio
+                            </p-inputGroupAddon>
+                            <p-calendar
+                                formControlName="dFechaInicio"
+                                [iconDisplay]="'input'"
+                                [showIcon]="true"
+                                [minDate]="fecha_actual"
+                                [maxDate]="ultima_fecha_anio"
+                                inputId="dtInicio"
+                                inputStyleClass="group-element"
+                                [appendTo]="'body'"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                Fecha de cierre
+                            </p-inputGroupAddon>
+                            <p-calendar
+                                formControlName="dFechaFin"
+                                [iconDisplay]="'input'"
+                                [showIcon]="true"
+                                [showButtonBar]="true"
+                                [minDate]="fecha_actual"
+                                [maxDate]="ultima_fecha_anio"
+                                inputId="dtInicio"
+                                inputStyleClass="group-element"
+                                [appendTo]="'body'"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Descripción </p-inputGroupAddon>
+                            <textarea
+                                type="text"
+                                pInputTextarea
+                                formControlName="cEncuestaDescripcion"
+                                id="cEncuestaDescripcion"
+                                rows="4"
+                                style="resize: none"
+                                class="w-full"
+                            ></textarea>
+                        </p-inputGroup>
+                    </div>
+                </div>
+                <div class="flex pt-4 justify-content-end">
+                    <p-button
+                        label="Continuar"
+                        severity="success"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                        (onClick)="nextCallback.emit()"
+                    />
+                </div>
+            </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel>
+            <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index"
+            >
+                <button
+                    class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+                    (click)="onClick.emit()"
+                >
+                    <span
+                        class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                        [ngClass]="{
+                            'bg-primary border-primary': index <= active,
+                            'surface-border': index > active,
+                        }"
+                    >
+                        <i class="pi pi-users" style="font-size: 1.5rem"></i>
+                    </span>
+                    <span class="hidden md:block font-bold text-primary"
+                        >Población objetivo</span
+                    >
+                </button>
+            </ng-template>
+            <ng-template
+                pTemplate="content"
+                let-prevCallback="prevCallback"
+                let-nextCallback="nextCallback"
+                let-index="index"
+            >
+                <div
+                    class="grid p-fluid mt-3 border-round border-2 surface-border p-3"
+                >
+                    @if (es_especialista) {
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Gestión</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="tipo_sectores"
+                                    [showClear]="true"
+                                    formControlName="iTipoSectorId"
+                                    placeholder="Seleccione un tipo de gestión"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="zonas"
+                                    [showClear]="true"
+                                    formControlName="iZonaId"
+                                    placeholder="Seleccione un tipo de zona"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="ugeles"
+                                    [showClear]="true"
+                                    formControlName="iUgelId"
+                                    placeholder="Seleccione una UGEL"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="distritos"
+                                    [showClear]="true"
+                                    formControlName="iDsttId"
+                                    placeholder="Seleccione un distrito"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                    filter="true"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="ies"
+                                    [showClear]="true"
+                                    formControlName="iIieeId"
+                                    placeholder="Seleccione una Institución Educativa"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                    filter="true"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                    }
+                    <div class="col-12 md:col-4">
+                        <p-inputGroup title="* Campo obligatorio">
+                            <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="nivel_grados"
+                                formControlName="iNivelGradoId"
+                                placeholder="Seleccione un grado"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                                filter="true"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="secciones"
+                                [showClear]="true"
+                                formControlName="iSeccionId"
+                                placeholder="Seleccione una sección"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                                filter="true"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Sexo</p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="sexos"
+                                [showClear]="true"
+                                formControlName="cPersSexo"
+                                placeholder="Seleccione un sexo"
+                                styleClass="group-element"
+                                [appendTo]="'body'"
+                            ></p-dropdown>
+                        </p-inputGroup>
+                    </div>
+                </div>
+                <div class="flex pt-4 justify-content-between">
+                    <p-button
+                        label="Regresar"
+                        severity="secondary"
+                        icon="pi pi-arrow-left"
+                        (onClick)="prevCallback.emit()"
+                    />
+                    <p-button
+                        label="Guardar"
+                        severity="success"
+                        icon="pi pi-save"
+                        iconPos="right"
+                        (onClick)="guardarEncuesta()"
+                    />
+                </div>
+            </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel>
+            <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index"
+            >
+                <button
+                    class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+                    (click)="onClick.emit()"
+                >
+                    <span
+                        class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                        [ngClass]="{
+                            'bg-primary border-primary': index <= active,
+                            'surface-border': index > active,
+                        }"
+                    >
+                        <i
+                            class="pi pi-check-circle"
+                            style="font-size: 1.5rem"
+                        ></i>
+                    </span>
+                    <span class="hidden md:block font-bold text-primary"
+                        >Resumen</span
+                    >
+                </button>
+            </ng-template>
+            <ng-template
+                pTemplate="content"
+                let-prevCallback="prevCallback"
+                let-index="index"
+            >
+                <div class="flex flex-column h-12rem">
+                    <div
+                        class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+                    >
+                        Content III
+                    </div>
+                </div>
+                <div class="flex pt-4 justify-content-start">
+                    <p-button
+                        label="Regresar"
+                        severity="secondary"
+                        icon="pi pi-arrow-left"
+                        (onClick)="prevCallback.emit()"
+                    />
+                </div>
+            </ng-template>
+        </p-stepperPanel>
+    </p-stepper>
+</form>

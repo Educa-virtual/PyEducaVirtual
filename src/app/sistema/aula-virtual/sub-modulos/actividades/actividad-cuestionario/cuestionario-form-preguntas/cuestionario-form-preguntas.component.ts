@@ -7,6 +7,8 @@ import {
     Output,
     OnChanges,
     SimpleChanges,
+    ViewChild,
+    ElementRef,
 } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
@@ -29,8 +31,16 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     @Input() data
     @Input() titulo: string = ''
     @Input() opcion: string = ''
+    @ViewChild('editor', { static: true }) editor!: ElementRef
 
+    isFocused = false
     codigoTipoPregunta: string = ''
+
+    activeCommands = {
+        bold: false,
+        italic: false,
+        underline: false,
+    }
 
     formPreguntas = new FormGroup({
         iTipoPregId: new FormControl(),
@@ -87,5 +97,35 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         if (tipoPregunta) {
             this.codigoTipoPregunta = tipoPregunta.cCodeTipoPreg
         }
+    }
+
+    onFocus() {
+        this.isFocused = true
+        this.updateCommandStates()
+    }
+
+    onBlur(event: FocusEvent) {
+        const relatedTarget = event.relatedTarget as HTMLElement
+
+        // Si el nuevo foco está en un botón de la barra, no ocultar la barra
+        if (relatedTarget && relatedTarget.closest('.icon-button')) {
+            return
+        }
+
+        this.isFocused = false
+    }
+
+    toggleFormat(command: string) {
+        document.execCommand(command, false, '')
+        this.updateCommandStates()
+
+        // Mantener el focus en el editor después de aplicar formato
+        this.editor.nativeElement.focus()
+    }
+
+    updateCommandStates() {
+        this.activeCommands.bold = document.queryCommandState('bold')
+        this.activeCommands.italic = document.queryCommandState('italic')
+        this.activeCommands.underline = document.queryCommandState('underline')
     }
 }

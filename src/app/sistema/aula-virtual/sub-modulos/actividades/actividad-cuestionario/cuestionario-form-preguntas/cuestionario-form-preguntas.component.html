@@ -7,7 +7,81 @@
 >
     <form [formGroup]="formPreguntas" class="mt-4">
         <div class="grid">
-            <div class="col-8">
+            <div class="col-6">
+                <!-- Editor de texto -->
+                <div
+                    #editor
+                    contenteditable="true"
+                    class="editor"
+                    (focus)="onFocus()"
+                    (blur)="onBlur($event)"
+                    (mouseup)="updateCommandStates()"
+                    (keyup)="updateCommandStates()"
+                >
+                    Escribe aquí...
+                </div>
+                <!-- Toolbar: visible solo cuando el editor está enfocado -->
+                <div class="toolbar mt-1" *ngIf="isFocused">
+                    <div
+                        role="button"
+                        class="icon-button"
+                        [class.active]="activeCommands.bold"
+                        (mousedown)="toggleFormat('bold')"
+                        aria-label="Negrita"
+                        tabindex="0"
+                    >
+                        <b>B</b>
+                    </div>
+
+                    <div
+                        role="button"
+                        class="icon-button"
+                        [class.active]="activeCommands.italic"
+                        (mousedown)="toggleFormat('italic')"
+                        aria-label="Cursiva"
+                        tabindex="0"
+                    >
+                        <i>I</i>
+                    </div>
+
+                    <div
+                        role="button"
+                        class="icon-button"
+                        [class.active]="activeCommands.underline"
+                        (mousedown)="toggleFormat('underline')"
+                        aria-label="Subrayado"
+                        tabindex="0"
+                    >
+                        <u>U</u>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <p-dropdown
+                    formControlName="iTipoPregId"
+                    [options]="tipoPreguntas"
+                    optionValue="iTipoPregId"
+                    optionLabel="cTipoPregunta"
+                    placeholder="Tipo de Pregunta"
+                    [style]="{ width: '100%' }"
+                    [appendTo]="'body'"
+                    (onChange)="obtenerCodigoTipoPregunta($event)"
+                >
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi {{ selectedOption.cIcon }}"></i>
+                            <div>{{ selectedOption.cTipoPregunta }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-item pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi {{ item.cIcon }}"></i>
+                            <div>{{ item.cTipoPregunta }}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <!-- <div class="col-8">
                 <p-inputGroup>
                     <p-inputGroupAddon> Tipo de Pregunta </p-inputGroupAddon>
                     <p-dropdown
@@ -89,15 +163,46 @@
                         </div>
                     }
                 }
-            </div>
+            </div> -->
         </div>
     </form>
-    <div footer class="flex justify-content-end gap-2">
-        <p-button
+    <!-- <ng-template pTemplate="footer">
+        <p-divider />
+        <div class="flex justify-content-end gap-2">    
+            <p-button icon="pi pi-clone" [rounded]="true" [text]="true" severity="secondary" />
+            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="secondary" />
+            <p-inputSwitch formControlName="checked" />
+            <p-button icon="pi pi-check" [rounded]="true" [text]="true" severity="success" />
+        </div>
+    </ng-template> -->
+    <div footer>
+        <p-divider />
+        <div class="flex justify-content-end gap-2">
+            <p-button
+                icon="pi pi-clone"
+                [rounded]="true"
+                [text]="true"
+                severity="secondary"
+            />
+            <p-button
+                icon="pi pi-trash"
+                [rounded]="true"
+                [text]="true"
+                severity="secondary"
+            />
+            <!-- <p-inputSwitch formControlName="checked" /> -->
+            <p-button
+                icon="pi pi-check"
+                [rounded]="true"
+                [text]="true"
+                severity="success"
+            />
+        </div>
+        <!-- <p-button
             label="Cancelar"
             severity="secondary"
             (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
-        <p-button [label]="'Guardar'" />
+        <p-button [label]="'Add'" /> -->
     </div>
 </app-modal-primeng>

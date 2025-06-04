@@ -37,3 +37,52 @@
     cursor: inherit;
     display: block;
 }
+:host ::ng-deep .p-dialog-footer {
+    // background-color: var(--bg-header-modal) !important;
+    // color: var(--primary-color-text) !important;
+    width: 100% !important;
+}
+// .editor {
+//   border: 1px solid #ccc;
+//   padding: 10px;
+//   min-height: 100px;
+//   margin-bottom: 10px;
+// }
+// .toolbar button {
+//   margin-right: 5px;
+// }
+// ---------
+.toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.icon-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    transition: background 0.2s ease;
+}
+
+.icon-button:hover {
+    background: #e0e0e0;
+}
+
+.icon-button.active {
+    background: #b0b0b0;
+    //   border: 1px solid #666766;
+}
+
+.editor {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 50px;
+    border-radius: 2px;
+}

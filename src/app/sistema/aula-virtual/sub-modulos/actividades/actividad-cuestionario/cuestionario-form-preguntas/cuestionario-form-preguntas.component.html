@@ -228,29 +228,33 @@
                             >
                                 <label for="" class="mr-2">De</label>
                                 <p-dropdown
-                                    formControlName="selectedCity"
+                                    [(ngModel)]="escalaLine"
                                     [options]="scaleLineI"
                                     optionLabel="id"
+                                    optionValue="id"
                                     [appendTo]="'body'"
                                     styleClass="w-5rem h-3rem mr-2"
                                     class="dropdownLineal"
+                                    (onChange)="onEscalaLineChange($event)"
                                 />
                                 <label for="" class="mr-2">a</label>
                                 <p-dropdown
-                                    formControlName="selectedCity"
+                                    [(ngModel)]="escalaLine2"
                                     [options]="scaleLineF"
                                     optionLabel="id"
+                                    optionValue="id"
                                     [appendTo]="'body'"
                                     styleClass="w-5rem h-3rem mr-2"
                                     class="dropdownLineal"
+                                    (onChange)="cambiarEscalaLine($event)"
                                 />
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="flex col-6">
-                                <label for="" class="mr-2 align-content-center"
-                                    >1</label
-                                >
+                                <label for="" class="mr-2 align-content-center">
+                                    {{ escalaLine }}
+                                </label>
                                 <input
                                     class="ml-2"
                                     type="text"
@@ -260,9 +264,9 @@
                                 />
                             </div>
                             <div class="flex col-6">
-                                <label for="" class="mr-2 align-content-center"
-                                    >2</label
-                                >
+                                <label for="" class="mr-2 align-content-center">
+                                    {{ escalaLine2 }}
+                                </label>
                                 <input
                                     class="ml-2"
                                     type="text"

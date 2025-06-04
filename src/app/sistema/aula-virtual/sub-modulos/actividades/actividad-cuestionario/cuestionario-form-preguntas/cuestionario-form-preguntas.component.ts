@@ -36,6 +36,8 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     isFocused = false
     codigoTipoPregunta: string = ''
     opcionSeleccionada: number = 0 // Para manejar la opción seleccionada
+    escalaLine: string = '1'
+    escalaLine2: string = '2'
 
     activeCommands = {
         bold: false,
@@ -182,5 +184,13 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         if (file) {
             this.opciones[index].imagen = file
         }
+    }
+    onEscalaLineChange(event: any) {
+        this.escalaLine = event.value
+        console.log('Nuevo ID seleccionado:', event.value) // El nuevo id
+    }
+    cambiarEscalaLine(event: any) {
+        this.escalaLine2 = event.value
+        console.log('Nuevo ID seleccionado:', event.value) // El nuevo id
     }
 }

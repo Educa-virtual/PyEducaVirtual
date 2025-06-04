@@ -1,0 +1,103 @@
+<app-modal-primeng
+    [title]="titulo"
+    [showModal]="showModal"
+    [width]="'55rem'"
+    (accionBtnItem)="accionBtn($event)"
+    *ngIf="formPreguntas"
+>
+    <form [formGroup]="formPreguntas" class="mt-4">
+        <div class="grid">
+            <div class="col-8">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Tipo de Pregunta </p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="iTipoPregId"
+                        [options]="tipoPreguntas"
+                        optionValue="iTipoPregId"
+                        optionLabel="cTipoPregunta"
+                        placeholder="Tipo de Pregunta"
+                        [style]="{ width: '100%' }"
+                        (onChange)="obtenerCodigoTipoPregunta($event)"
+                    >
+                        <ng-template
+                            pTemplate="selectedItem"
+                            let-selectedOption
+                        >
+                            <div class="flex align-items-center gap-2">
+                                <i class="pi {{ selectedOption.cIcon }}"></i>
+                                <div>{{ selectedOption.cTipoPregunta }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-item pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <i class="pi {{ item.cIcon }}"></i>
+                                <div>{{ item.cTipoPregunta }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="col-4">
+                <p-button
+                    icon="pi pi-image "
+                    [rounded]="true"
+                    [text]="true"
+                    severity="info"
+                />
+            </div>
+            <div class="col-12 mt-1">
+                <label for="enunciado" class="my-2 font-bold"
+                    >Pregunta
+                    <span class="text-red-500 text-xs"
+                        >(*) Obligatorio</span
+                    ></label
+                >
+                <editor [init]="init" />
+            </div>
+            <div class="col-12 mt-1">
+                @switch (codigoTipoPregunta) {
+                    @case ('TIP-PREG-OPCIONES') {
+                        <div class="flex">
+                            <p-inputGroup class="mt-1">
+                                <p-radioButton></p-radioButton>
+                                <input
+                                    class="ml-2"
+                                    type="text"
+                                    pInputText
+                                    placeholder="Opción 1"
+                                />
+                                <button
+                                    pButton
+                                    type="button"
+                                    [text]="true"
+                                    class="p-button-primary btn-file-image"
+                                    size="small"
+                                >
+                                    <i class="pi pi-image"></i
+                                    ><input type="file" accept="image/*" />
+                                </button>
+                                <button
+                                    type="button"
+                                    pButton
+                                    icon="pi pi-trash"
+                                    class="p-button-danger"
+                                    size="small"
+                                >
+                                    &nbsp;
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </form>
+    <div footer class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
+        <p-button [label]="'Guardar'" />
+    </div>
+</app-modal-primeng>

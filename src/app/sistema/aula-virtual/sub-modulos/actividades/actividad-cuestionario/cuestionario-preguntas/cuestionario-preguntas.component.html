@@ -1,12 +1,6 @@
 <div class="card">
     <div class="grid">
-        <div class="col-12 md:col-6 align-content-center font-bold">
-            <b class="ml-1" style="font-size: 18px"
-                >Cuestionario: {{ data?.cEvaluacionNombre || '-' }} -
-                {{ data?.cNivelEvalNombre || '' }}</b
-            ><br />
-        </div>
-        <div class="col-12 md:col-3 text-center align-content-center font-bold">
+        <div class="col-12 md:col-9 align-content-between font-bold">
             <span style="font-size: 18px">Total Preguntas:</span>
             <span>
                 <p-badge
@@ -54,11 +48,12 @@
         } @else {}
     </div>
 </div>
-<p-dialog
-    [header]="'Agregar preguntas'"
-    [modal]="true"
-    [(visible)]="showModalBancoPreguntas"
-    [style]="{ width: '85rem' }"
->
-</p-dialog>
+<app-cuestionario-form-preguntas
+    [showModal]="showModal"
+    [data]="[]"
+    [titulo]="titulo"
+    [opcion]="opcion"
+    [tipoPreguntas]="tipoPreguntas"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-cuestionario-form-preguntas>
 <p-toast></p-toast>

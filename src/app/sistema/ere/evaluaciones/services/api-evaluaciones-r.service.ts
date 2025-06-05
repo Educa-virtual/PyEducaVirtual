@@ -490,7 +490,7 @@ export class ApiEvaluacionesRService {
 
     descargarMatrizPorEvaluacionArea(params) {
         return this.http.get(
-            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`,
+            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias`,
             {
                 responseType: 'blob',
             }

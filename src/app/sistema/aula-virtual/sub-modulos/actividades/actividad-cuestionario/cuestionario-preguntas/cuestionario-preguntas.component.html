@@ -59,21 +59,35 @@
                     <h5>{{ item.nombre }}</h5>
                     @switch (item.tipoCuestionario) {
                         @case ('TIP-PREG-TEXTO') {
-                            <div class="col-6">
+                            <div class="col-12">
                                 <input
                                     class="ml-2"
                                     type="text"
                                     pInputText
-                                    class="w-full custom-hover-input"
+                                    class="w-full custom-hover-input mb-2"
                                     placeholder="Tu respuesta...."
                                 />
                             </div>
                         }
 
                         @case ('TIP-PREG-OPCIONES') {
-                            <!-- <i class="pi pi-check-square text-success mr-2"></i>
-                                <span>Opción Única</span> -->
-                            {{ item.opciones }}
+                            <div class="align-content-center mb-2">
+                                <div
+                                    *ngFor="let opcion of item.opciones"
+                                    class="mb-2"
+                                >
+                                    <p-radioButton
+                                        id="opcion1"
+                                        name="grupoOpciones"
+                                        [value]="opcion.id"
+                                        [(ngModel)]="selectedOption"
+                                        class="mr-2"
+                                    ></p-radioButton>
+                                    <label for="opcion1">{{
+                                        opcion.label
+                                    }}</label>
+                                </div>
+                            </div>
                         }
 
                         @case ('TIP-PREG-CASILLA') {
@@ -82,8 +96,15 @@
                         }
 
                         @case ('TIP-PREG-DESPLEGABLE') {
-                            <i class="pi pi-file-text text-success mr-2"></i>
-                            <span>Desplegable</span>
+                            <div class="col-6">
+                                <p-dropdown
+                                    [options]="item.opciones"
+                                    [(ngModel)]="selectedDropdown"
+                                    placeholder="Selecciona una opción"
+                                    class="w-full custom-hover-input mb-2"
+                                    styleClass="w-full"
+                                ></p-dropdown>
+                            </div>
                         }
                     }
 

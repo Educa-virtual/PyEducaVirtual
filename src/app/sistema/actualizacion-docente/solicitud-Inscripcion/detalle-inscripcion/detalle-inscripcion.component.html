@@ -1,1 +1,46 @@
-<p>detalle-inscripcion works!</p>
+<app-container-page
+    title="Lista de Inscripciones"
+    [actions]="actionsContainer"
+    (accionBtnItem)="accionBnt($event)"
+>
+    <p-dataView #dv [value]="alumnos" [rows]="5" filterBy="">
+        <ng-template let-products pTemplate="listItem">
+            <app-table-primeng
+                [columnas]="columnasTabla"
+                [data]="alumnos"
+                [showCaption]="false"
+                (accionBtnItem)="accionBnt($event)"
+                [actions]="accionesTabla"
+            >
+                <!--(accionBtnItem)="accionBnt($event)" -->
+            </app-table-primeng>
+        </ng-template>
+    </p-dataView>
+</app-container-page>
+
+<p-dialog
+    [header]="'Voucher de : ' + nombreAlumno"
+    [(visible)]="showModal"
+    [modal]="true"
+    [style]="{ width: '60rem' }"
+>
+    <ng-container
+        *ngIf="alumnoSelect"
+        class="flex justify-content-between flex-wrap"
+    >
+        <p><strong>Nombre:</strong> {{ alumnoSelect.cNombresCompleto }}</p>
+        <p><strong>Voucher:</strong> {{ alumnoSelect.cVoucher }}</p>
+
+        <!-- Si es una imagen -->
+        <div class="flex justify-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center">
+                <img
+                    *ngIf="alumnoSelect.cVoucher"
+                    [src]="'/ruta/a/vouchers/' + alumnoSelect.cVoucher"
+                    alt="Voucher"
+                    style="width: 100%; margin-top: 1rem"
+                />
+            </div>
+        </div>
+    </ng-container>
+</p-dialog>

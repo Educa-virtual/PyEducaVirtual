@@ -8,16 +8,14 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core'
-import {
-    IColumn,
-    IActionTable,
-} from '@/app/shared/table-primeng/table-primeng.component'
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component'
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component'
 import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component'
 import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { PaginatorModule } from 'primeng/paginator'
+import { DetalleInscripcionComponent } from './detalle-inscripcion/detalle-inscripcion.component'
+import { DropdownChangeEvent } from 'primeng/dropdown'
 @Component({
     selector: 'app-solicitud-inscripcion',
     standalone: true,
@@ -30,11 +28,18 @@ import { PaginatorModule } from 'primeng/paginator'
         CardCapacitacionesComponent,
         AperturaCursoComponent,
         PaginatorModule,
+        DetalleInscripcionComponent,
     ],
 })
 export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
+    private _aulaService = inject(ApiAulaService)
+    private _ConstantesService = inject(ConstantesService)
+    @ViewChild('gridContainer') gridContainer!: ElementRef
+
     activeIndex: number = 1
     cursoSeleccionado
+    detalleVisible = false
+    idSeleccionado!: string
     tabs = [
         {
             title: 'Apertura de Curso',
@@ -52,543 +57,12 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.activeIndex = tab
     }
 
-    public columnasTabla: IColumn[] = [
-        {
-            type: 'item',
-            width: '1rem',
-            field: 'index',
-            header: 'Nro',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'nombreApellido',
-            header: 'Apellido y Nombre',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '1rem',
-            field: 'docente',
-            header: '¿Es Docente?',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'dni',
-            header: 'DNI/CE',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'telefono',
-            header: 'Celular',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'modalidad',
-            header: 'Modalidad',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'actions',
-            width: '1rem',
-            field: '',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
-        },
-    ]
-    public accionesTabla: IActionTable[] = [
-        {
-            labelTooltip: 'Agregar Conclusión descriptiva',
-            icon: 'pi pi-check',
-            accion: 'agregarConclusion',
-            type: 'item',
-            class: 'p-button-rounded p-button-success p-button-text',
-        },
-        {
-            labelTooltip: 'Agregar Conclusión descriptiva',
-            icon: 'pi pi-times',
-            accion: 'agregarConclusion',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-        {
-            labelTooltip: 'Agregar Conclusión descriptiva',
-            icon: 'pi pi-file-pdf',
-            accion: 'agregarConclusion',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-    ]
     data: any[] = []
-    // data = [
-    //     {
-    //         iCapacitacionId:
-    //             'BL5XB8NQmabwA3zDlgW710Jn0bPxMYeRVory4jKZvpGEkq2d90',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1',
-    //         iTipoCapId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iNivelPedId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo: 'Título 1',
-    //         cCapDescripcion: 'Descripción 1',
-    //         iTotalHrs: '5',
-    //         dFechaInicio: '2025-05-05',
-    //         dFechaFin: '2025-05-05',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '1.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '[{"id":2,"name":"Miss Lesson","url":"/images/recursos/miss-lesson-animate.svg"}]',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Diplomando',
-    //         cNivelPedNombre: 'Educación Inicial',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    //     {
-    //         iCapacitacionId:
-    //             'G1NzYXA5kg23LdaMq480mDQPj8nlGJrBV7Kb9yeowpWxvjRZER',
-    //         iTipoCapId: 'zR0lYAQJLx4e3jZ2wW7GrMN6obPomB89bqz5EdavkXpDy1KgVV',
-    //         iNivelPedId: '37A3j9KEx1GNyJV82MqekXwn3APbY4LvRpr0QdaWzlmg5DZBoZ',
-    //         iTipoPubId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         cCapTitulo:
-    //             'WebFlow University: Ultimate Web Design Course WebFlow University: Ultimate Web Design Course WebFlow University: Ultimate Web Design Course WebFlow University: Ultimate Web Design Course',
-    //         cCapDescripcion:
-    //             'El Ultimate Web Design Course es un curso gratuito ofrecido por la universidad de WebFlow, una plataforma de aprendizaje en línea alojada y desarrollada por el CMS y la herramienta de diseño WebFlow.',
-    //         iTotalHrs: '129',
-    //         dFechaInicio: '2025-05-14',
-    //         dFechaFin: '2025-05-28',
-    //         iInstId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         iCosto: '1',
-    //         nCosto: '120.00',
-    //         iImageAleatorio: '1',
-    //         cImagenUrl:
-    //             '{"id":3,"name":"Miss Student","url":"http://127.0.0.1:8000/images/recursos/miss-student-animate.svg"}',
-    //         iEstado: '1',
-    //         cTipoCapNombre: 'Capacitación',
-    //         cNivelPedNombre: 'Educación Secundaria',
-    //         cTipoPubNombre: 'General',
-    //         cPersNombre: 'MITWAR KENYO',
-    //         cPersPaterno: 'HUACAN',
-    //         cPersMaterno: 'QUISPE',
-    //     },
-    // ]
-
+    capacitacionFiltrado: any[] = []
+    tipoCapacitacion: any[] = [] // Datos de tipo de capacitación
+    tipoCapacitacionSearch: any[] = [] // Datos de tipo de capacitación para búsqueda
+    iTipoCapId: any = 0
+    dropdownStyle: boolean = false
     capacitaciones
     paginator = {
         first: 0,
@@ -604,13 +78,6 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.data = this.capacitaciones?.slice(start, end)
     }
 
-    private _aulaService = inject(ApiAulaService)
-    private _ConstantesService = inject(ConstantesService)
-
-    cursos
-
-    @ViewChild('gridContainer') gridContainer!: ElementRef
-
     ngAfterViewInit(): void {
         setTimeout(() => this.calculateRows(), 0) // Esperar renderizado
         window.addEventListener('resize', () => this.calculateRows())
@@ -618,8 +85,9 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.obtenerCapacitaciones()
+        this.obtenerTipoCapacitacion()
     }
-
+    // obtener y listar las capacitaciones
     obtenerCapacitaciones() {
         const iEstado = 1
         const iCredId = this._ConstantesService.iCredId
@@ -634,7 +102,21 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
                 this.capacitaciones = [...this.data] // cargar desde servicio o mock
                 this.paginator.total = this.capacitaciones.length
                 this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
+                this.capacitacionFiltrado = [...this.data] // Hacer una copia para filtrar
             },
+        })
+    }
+
+    // metodo para obtener tipo capacitación:
+    obtenerTipoCapacitacion() {
+        const userId = 1
+        this._aulaService.obtenerTipoCapacitacion(userId).subscribe((Data) => {
+            this.tipoCapacitacion = Data['data']
+            this.tipoCapacitacionSearch = [...this.tipoCapacitacion]
+            this.tipoCapacitacionSearch.unshift({
+                iTipoCapId: 0,
+                cTipoCapNombre: 'Todos los tipos',
+            })
         })
     }
 
@@ -655,5 +137,47 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.paginator.rows = itemsPerPage
         this.paginator.rowsPerPage = [itemsPerPage]
         this.onPageChange({ first: 0, rows: itemsPerPage })
+    }
+
+    onVerDetalle(id: string) {
+        this.idSeleccionado = id
+        this.detalleVisible = true
+    }
+
+    volverALista() {
+        this.detalleVisible = false
+        this.idSeleccionado = ''
+    }
+
+    filtrarCapacitaciones(event: DropdownChangeEvent) {
+        const iTipoCapId = event.value
+        this.data = [...this.capacitacionFiltrado]
+        if (!iTipoCapId || !this.data) return
+        if (iTipoCapId === '0') {
+            this.data = [...this.capacitacionFiltrado] // Mostrar todas las capacitaciones
+        } else {
+            this.data = this.capacitacionFiltrado.filter(
+                (capacitacion: any) => capacitacion.iTipoCapId === iTipoCapId
+            )
+        }
+        // const fechasFiltradas = this.data.fechas
+        //     .map((fecha: any) => {
+        //         const actividadesFiltradas = fecha.actividades.filter(
+        //             (actividad: any) =>
+        //                 Number(actividad.iActTipoId) === iActTipoId
+        //         )
+
+        //         if (actividadesFiltradas.length > 0) {
+        //             return {
+        //                 ...fecha,
+        //                 actividades: actividadesFiltradas,
+        //             }
+        //         }
+
+        //         return null
+        //     })
+        //     .filter((fecha: any) => fecha !== null)
+
+        // this.data.fechas = fechasFiltradas
     }
 }

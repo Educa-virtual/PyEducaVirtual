@@ -27,4 +27,7 @@ export interface ICurso {
     iIeCursoId?: string
     iNivelGradoId?: string
     iSeccionId?: string
+    bDocente?: string
+    cDocente?: string
+    bEstudiante?: string
 }

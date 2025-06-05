@@ -3,7 +3,7 @@
     <p-dataView
         #dv
         [value]="cursos"
-        [paginator]="layout === 'list' ? false : true"
+        [paginator]="false"
         [rows]="10"
         filterBy="cCursoNombre"
         [sortField]="sortField"
@@ -46,16 +46,12 @@
             </div>
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
-            <div class="cursos gap-4 py-2">
-                <!-- inicio de lista de cursos en cards -->
-                @for (curso of cursos; track curso) {
-                    <app-curso-card
-                        #dv
-                        class=""
-                        [curso]="curso"
-                    ></app-curso-card>
-                }
-                <!-- fin de lista de cursos en cards -->
+            <div class="grid" *ngIf="data && data.length > 0">
+                <div class="col-12 cursos">
+                    @for (curso of cursos; track curso) {
+                        <app-curso-card #dv [curso]="curso"></app-curso-card>
+                    }
+                </div>
             </div>
         </ng-template>
     </p-dataView>

@@ -31,7 +31,8 @@
                     }
                     @case (ESTUDIANTE) {
                         <th style="width: 1rem">#</th>
-                        <th style="width: 15rem">Nombre del Área Curricular</th>
+                        <th style="width: 10rem">Nombre del Área Curricular</th>
+                        <th style="width: 10rem">Nombre del Docente</th>
                         <th style="width: 2rem; text-align: center">Grado</th>
                         <th style="width: 2rem; text-align: center">Sección</th>
                         <th style="width: 2rem; text-align: center">
@@ -167,7 +168,7 @@
                         <td style="text-align: center">
                             <p-button
                                 severity="success"
-                                [routerLink]="['./', item.iSilaboId]"
+                                [routerLink]="['./', item.iSilaboId || 0]"
                                 [queryParams]="{
                                     cCursoNombre: item.cCursoNombre,
                                     cNivelTipoNombre: item.cNivelTipoNombre,
@@ -197,6 +198,12 @@
                         <td class="font-bold">
                             {{ item.cCursoNombre }}
                         </td>
+                        <td
+                            class="font-bold"
+                            [class]="item.bDocente === '0' ? 'text-center' : ''"
+                        >
+                            {{ item.bDocente === '1' ? item.cDocente : '-' }}
+                        </td>
                         <td style="text-align: center">
                             {{ item.cGradoAbreviacion }}
                         </td>
@@ -216,7 +223,7 @@
                         <td style="text-align: center">
                             <p-button
                                 severity="success"
-                                [routerLink]="['./', item.iSilaboId]"
+                                [routerLink]="['./', item.iSilaboId || 0]"
                                 [queryParams]="{
                                     cCursoNombre: item.cCursoNombre,
                                     cNivelTipoNombre: item.cNivelTipoNombre,

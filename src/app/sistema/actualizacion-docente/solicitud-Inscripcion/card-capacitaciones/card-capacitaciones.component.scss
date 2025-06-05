@@ -1,91 +1,60 @@
-:host {
-    display: block;
+.clash-card {
+    background: white;
+    width: 300px;
+    display: inline-block;
+    margin: auto;
+    border-radius: 14px + 5;
+    position: relative;
+    text-align: center;
+    box-shadow: -1px 15px 30px -12px black;
+
+    top: 50px;
+    transition: all 0.3s linear;
 }
 
-.curso__image-container {
-    height: 8rem;
+.clash-card__image {
+    position: relative;
+    height: 230px;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
 
+.clash-card__image--barbarian {
     img {
-        object-fit: cover;
+        width: 100%;
+        position: absolute;
+        top: -65px;
+        left: -0;
     }
 }
 
-.post-module {
-    position: relative;
-    z-index: 1;
-    display: block;
-    background: #ffffff;
-    width: 100%;
-    height: 370px;
-    -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-.post-module:hover,
+.clash-card:hover,
 .hover {
-    -webkit-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
 }
-.post-module:hover .img-transition img,
+
+.clash-card:hover .img-transition img,
 .hover .img-transition img {
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
     transform: scale(1.1);
     opacity: 0.6;
+    top: -75px;
 }
-.post-module .img-transition {
-    background: #000000;
-    height: 200px;
-    overflow: hidden;
-}
-.post-module .img-transition img {
-    display: block;
-    width: 120%;
-    -webkit-transition: all 0.4s linear 0s;
-    -moz-transition: all 0.4s linear 0s;
-    -ms-transition: all 0.4s linear 0s;
-    -o-transition: all 0.4s linear 0s;
-    transition: all 0.4s linear 0s;
+.img-transition img {
+    transition: all 0.4s linear;
 }
 
 i {
     color: #b51f32;
 }
 
-.image {
-    position: absolute;
-    top: -20px;
-    z-index: 10;
-}
-
-.small {
-    position: absolute;
-    top: 265px;
-    z-index: 20;
-}
-
-:host ::ng-deep p-button button {
-    background: #0e4194;
-}
-
 .title {
     display: -webkit-box;
-    height: 4rem;
-    -webkit-line-clamp: 2; /* Número máximo de líneas */
+    -webkit-line-clamp: 2;
     line-clamp: 2;
-    height: 44px;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 7px;
-    margin-bottom: 7px;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: wrap;
+    white-space: normal;
+    height: 44px;
+    margin: 7px 0;
 }

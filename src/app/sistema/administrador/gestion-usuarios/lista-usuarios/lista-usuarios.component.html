@@ -61,9 +61,9 @@
                     <button
                         pButton
                         pRipple
-                        label="+ Agregar Nuevo"
+                        label="+ Agregar"
                         class="p-button-success"
-                        (click)="agregarNuevoPersonal()"
+                        (click)="agregarUsuario()"
                     ></button>
                 </div>
             </div>
@@ -174,7 +174,7 @@
                             class="p-button-text p-button-help"
                             pTooltip="Cambiar fecha de caducidad"
                             tooltipPosition="top"
-                            (click)="editarPerfilesUsuario(user)"
+                            (click)="cambiarFechaCaducidad(user)"
                         ></button>
                     </td>
                 </tr>
@@ -195,12 +195,19 @@
     >
     </app-editar-perfil>
 
-    <!--<app-agregar-personal-plataforma
-        [visible]="modalAgregarPersonalVisible"
-        (visibleChange)="modalAgregarPersonalVisible = $event"
-        [personalData]="selectedUser"
+    <app-cambiar-fecha-caducidad
+        [visible]="modalCambiarFechaCaducidadVisible"
+        (visibleChange)="modalCambiarFechaCaducidadVisible = $event"
+        [usuario]="usuarioSeleccionado"
     >
-    </app-agregar-personal-plataforma>-->
+    </app-cambiar-fecha-caducidad>
+
+    <app-agregar-usuario
+        [visible]="modalAgregarUsuariolVisible"
+        (visibleChange)="modalAgregarUsuariolVisible = $event"
+        (usuarioRegistradoEvent)="usuarioRegistrado($event)"
+    >
+    </app-agregar-usuario>
 </div>
 
 <p-toast></p-toast>

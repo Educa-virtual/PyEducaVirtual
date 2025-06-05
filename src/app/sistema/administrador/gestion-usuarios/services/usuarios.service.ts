@@ -12,7 +12,7 @@ export class UsuariosService {
     constructor() {}
 
     obtenerListaUsuarios(params: any) {
-        return this.http.get(`${this.urlBackendApi}/seg/usuarios/perfiles`, {
+        return this.http.get(`${this.urlBackendApi}/seg/usuarios`, {
             params,
         })
     }
@@ -50,6 +50,27 @@ export class UsuariosService {
         )
     }
 
+    obtenerModulosAdministrativos() {
+        return this.http.get(
+            `${this.urlBackendApi}/seg/modulos-administrativos`
+        )
+    }
+
+    obtenerCursos() {
+        return this.http.get(`${this.urlBackendApi}/acad/cursos?nivel=0`)
+    }
+
+    obtenerUgeles() {
+        return this.http.get(`${this.urlBackendApi}/ere/Ugeles/obtenerUgeles`)
+    }
+
+    registrarPerfil(iCredId: number, data: any) {
+        return this.http.post(
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/perfiles`,
+            data
+        )
+    }
+
     obtenerSedesInstitucionEducativa(iIieeId: number) {
         return this.http.get(
             `${this.urlBackendApi}/acad/instituciones-educativas/${iIieeId}/sedes`
@@ -58,5 +79,23 @@ export class UsuariosService {
 
     obtenerPerfilesPorTipo(tipo: string) {
         return this.http.get(`${this.urlBackendApi}/seg/perfiles?tipo=${tipo}`)
+    }
+
+    //Genera credenciales para personal de IE y asignacion de credenciales a IE
+    registrarUsuario(data: any) {
+        return this.http.post(`${this.urlBackendApi}/seg/usuarios`, data)
+    }
+
+    buscarPersonaPorDocumento(tipoDocumento, nroDocumento) {
+        return this.http.get(
+            `${this.urlBackendApi}/seg/personas?iTipoIdentId=${tipoDocumento}&cPersDocumento=${nroDocumento}`
+        )
+    }
+
+    actualizarFechaVigencia(iCredId: number, dtCredCaduca: Date) {
+        return this.http.patch(
+            `${this.urlBackendApi}/seg/usuarios/${iCredId}/fecha-vigencia`,
+            { dtCredCaduca: dtCredCaduca }
+        )
     }
 }

@@ -58,6 +58,7 @@ export class PreguntasComponent implements OnInit {
     matrizCompetencia = []
     matrizCapacidad = []
     matrizCapacidadFiltrado = []
+    cantidadMaximaPreguntas: number = 20
     nIndexAcordionTab: number = null
     isSecundaria: boolean = false
     isDisabled: boolean =
@@ -146,6 +147,23 @@ export class PreguntasComponent implements OnInit {
     ngOnInit() {
         this.obtenerMatrizCompetencias()
         this.obtenerMatrizCapacidad()
+        this.obtenerCantidadMaximaPreguntas()
+    }
+
+    obtenerCantidadMaximaPreguntas() {
+        this._apiEre
+            .obtenerCantidadMaximaPreguntas(
+                this.iEvaluacionId,
+                this.iCursoNivelGradId
+            )
+            .subscribe({
+                next: (resp: any) => {
+                    this.cantidadMaximaPreguntas = resp.data
+                },
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
     }
 
     obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId() {
@@ -568,10 +586,11 @@ export class PreguntasComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
+                console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail: error.error.message,
                 })
             },
         })

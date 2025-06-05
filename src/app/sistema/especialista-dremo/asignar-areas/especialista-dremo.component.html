@@ -15,10 +15,9 @@
                     styleClass="w-full"
                     [showClear]="true"
                     [filter]="true"
-                    filterBy="cPersDocumento"
+                    filterBy="cPersDocumento,cPersPaterno,cPersMaterno,cPersNombre"
                     (onClear)="formatearData()"
                     (onChange)="obteneriCursosNivelGradIdxiDocenteId()"
-                    [(ngModel)]="iDocenteId"
                 >
                     <ng-template pTemplate="item" let-item>
                         {{ item.cPersDocumento }} - {{ item.cPersNombre }}

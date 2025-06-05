@@ -1,38 +1,39 @@
 <p-dialog
     [(visible)]="visible"
     [style]="{ width: '1000px' }"
-    header="Agregar Personal a la Plataforma"
+    header="Agregar usuario"
     [modal]="true"
     styleClass="p-fluid personal-dialog"
     [draggable]="false"
     (onHide)="closeDialog()"
-    >>
+>
     <div class="personal-container">
-        <form [formGroup]="personalForm">
+        <form [formGroup]="formUsuario">
             <div class="form-row">
-                <div class="p-inputgroup">
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="dni"
-                        placeholder="DNI"
-                    />
-                </div>
+                <p-dropdown
+                    appendTo="body"
+                    [options]="dataTiposDocumento"
+                    placeholder="Seleccione tipo"
+                    formControlName="iTipoIdentId"
+                    styleClass="dropdown-field"
+                    (onChange)="reiniciarFormulario()"
+                >
+                </p-dropdown>
 
                 <div class="p-inputgroup">
                     <input
                         type="text"
                         pInputText
-                        formControlName="numero"
+                        formControlName="cPersDocumento"
                         placeholder="Número"
                     />
                 </div>
 
                 <p-button
-                    label="Validar"
-                    [raised]="true"
+                    label="Buscar"
                     icon="pi pi-search"
                     severity="warning"
+                    (onClick)="buscarPersonaPorDocumento()"
                 />
             </div>
 
@@ -41,7 +42,7 @@
                     <input
                         type="text"
                         pInputText
-                        formControlName="apellidoPaterno"
+                        formControlName="cPersPaterno"
                         placeholder="Apellido paterno"
                     />
                 </div>
@@ -50,7 +51,7 @@
                     <input
                         type="text"
                         pInputText
-                        formControlName="apellidoMaterno"
+                        formControlName="cPersMaterno"
                         placeholder="Apellido materno"
                     />
                 </div>
@@ -59,27 +60,25 @@
                     <input
                         type="text"
                         pInputText
-                        formControlName="nombres"
-                        placeholder="Apellido materno"
+                        formControlName="cPersNombre"
+                        placeholder="Nombres"
                     />
                 </div>
 
-                <div class="p-inputgroup">
-                    <p-dropdown
-                        formControlName="sexo"
-                        [options]="sexoOptions"
-                        placeholder="Sexo"
-                        optionLabel="label"
-                        optionValue="value"
-                    ></p-dropdown>
-                </div>
+                <p-dropdown
+                    formControlName="cPersSexo"
+                    [options]="dataSexos"
+                    placeholder="Seleccione sexo"
+                ></p-dropdown>
             </div>
 
             <div class="form-actions">
+                <input type="hidden" formControlName="iPersId" />
                 <p-button
-                    label="Agregar y Asignar Rol"
-                    [raised]="true"
+                    (onClick)="registrarUsuario()"
+                    label="Registrar y continuar"
                     icon="pi pi-check-circle"
+                    [disabled]="formUsuario.invalid"
                     severity="success"
                 />
             </div>

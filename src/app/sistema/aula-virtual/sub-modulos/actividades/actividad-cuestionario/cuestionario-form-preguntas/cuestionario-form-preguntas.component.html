@@ -3,9 +3,8 @@
     [showModal]="showModal"
     [width]="'55rem'"
     (accionBtnItem)="accionBtn($event)"
-    *ngIf="formPreguntas"
 >
-    <form [formGroup]="formPreguntas" class="mt-4">
+    <div class="mt-4">
         <div class="grid">
             <div class="col-6">
                 <!-- Editor de texto -->
@@ -57,7 +56,6 @@
             </div>
             <div class="col-6">
                 <p-dropdown
-                    formControlName="iTipoPregId"
                     [options]="tipoPreguntas"
                     optionValue="iTipoPregId"
                     optionLabel="cTipoPregunta"
@@ -95,67 +93,69 @@
                         </div>
                     }
                     @case ('TIP-PREG-OPCIONES') {
-                        <div class="flex">
-                            <div
-                                *ngFor="let opcion of opciones; let i = index"
-                                class="mb-2"
-                            >
-                                <p-inputGroup class="mt-1">
-                                    <p-radioButton
-                                        name="grupoOpciones"
-                                        [value]="i"
-                                        [(ngModel)]="opcionSeleccionada"
-                                    ></p-radioButton>
+                        <div
+                            *ngFor="let opcion of opciones; let i = index"
+                            class="mb-2"
+                        >
+                            <p-inputGroup class="mt-1">
+                                <p-radioButton
+                                    name="grupoOpciones"
+                                    [value]="i"
+                                    [(ngModel)]="opcionSeleccionada"
+                                ></p-radioButton>
 
+                                <input
+                                    class="ml-2"
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="opcion.texto"
+                                    [placeholder]="'Opción ' + (i + 1)"
+                                    class="input-hover-underline flex-1"
+                                />
+
+                                <p-button
+                                    icon="pi pi-image"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    severity="secondary"
+                                    class="p-button-primary btn-file-image m-2"
+                                >
                                     <input
-                                        class="ml-2"
-                                        type="text"
-                                        pInputText
-                                        [(ngModel)]="opcion.texto"
-                                        [placeholder]="'Opción ' + (i + 1)"
-                                        class="input-hover-underline flex-1"
+                                        type="file"
+                                        accept="image/*"
+                                        (change)="
+                                            onImagenSeleccionada($event, i)
+                                        "
                                     />
+                                </p-button>
 
-                                    <p-button
-                                        icon="pi pi-image"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        severity="secondary"
-                                        class="p-button-primary btn-file-image m-2"
-                                    >
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            (change)="
-                                                onImagenSeleccionada($event, i)
-                                            "
-                                        />
-                                    </p-button>
-
-                                    <p-button
-                                        icon="pi pi-trash"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        severity="danger"
-                                        class="btn-trash m-2"
-                                        (click)="eliminarOpcion(i)"
-                                    >
-                                    </p-button>
-                                </p-inputGroup>
-                            </div>
-
-                            <!-- Botón para agregar nueva opción -->
-                            <p-radioButton></p-radioButton>
-                            <input
-                                class="ml-2"
-                                type="text"
-                                pInputText
-                                placeholder="Añadir opción"
-                                readonly
-                                class="input-hover-underline"
-                                (click)="agregarOpcion()"
-                            />
+                                <p-button
+                                    icon="pi pi-trash"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    severity="danger"
+                                    class="btn-trash m-2"
+                                    (click)="eliminarOpcion(i)"
+                                >
+                                </p-button>
+                            </p-inputGroup>
                         </div>
+
+                        <!-- Botón para agregar nueva opción -->
+                        <p-radioButton
+                            name="grupoOpcionesOtro"
+                            [value]="'otro'"
+                            [(ngModel)]="opcionSeleccionada"
+                        ></p-radioButton>
+                        <input
+                            class="ml-2"
+                            type="text"
+                            pInputText
+                            placeholder="Añadir opción"
+                            readonly
+                            class="input-hover-underline"
+                            (click)="agregarOpcion()"
+                        />
                     }
                     @case ('TIP-PREG-CASILLA') {
                         <div class="flex">
@@ -415,7 +415,7 @@
                 }
             </div> -->
         </div>
-    </form>
+    </div>
     <!-- <ng-template pTemplate="footer">
         <p-divider />
         <div class="flex justify-content-end gap-2">    
@@ -429,7 +429,7 @@
         <p-divider />
         <div class="flex align-items-center justify-content-end gap-2">
             <label for="checked" class="ml-2"> Obligatorio </label>
-            <p-inputSwitch formControlName="checked" />
+            <p-inputSwitch />
             <p-button [label]="'Añadir'" icon="pi pi-check" class="ml-4" />
         </div>
         <!-- <p-button

@@ -11,17 +11,13 @@ import {
     ElementRef,
 } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
-import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 
 @Component({
     selector: 'app-cuestionario-form-preguntas',
     standalone: true,
-    imports: [ModalPrimengComponent, PrimengModule, EditorComponent],
+    imports: [ModalPrimengComponent, PrimengModule],
     templateUrl: './cuestionario-form-preguntas.component.html',
     styleUrl: './cuestionario-form-preguntas.component.scss',
-    providers: [
-        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-    ],
 })
 export class CuestionarioFormPreguntasComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()

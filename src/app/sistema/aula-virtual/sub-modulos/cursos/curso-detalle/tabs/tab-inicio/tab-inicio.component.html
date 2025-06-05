@@ -151,45 +151,56 @@
                     <div class="pt-5">
                         <p-card
                             *ngFor="let card of dataFiltrada(); let i = index"
-                            [header]="card.cTitulo"
                             class="pt-20 relative overflow-visible"
                         >
                             <ng-template pTemplate="header">
-                                <span class="tag ml-3 font-bold"
-                                    >Anuncio: #{{ data.length - i }}
-                                </span>
-                                <span
-                                    class="flex flex-column md:align-items-end gap-0"
-                                >
-                                    <div
-                                        class="grid flex flex-row-reverse md:flex-row gap-2"
-                                    >
-                                        <p-button
-                                            icon="pi pi-thumbtack"
-                                            [rounded]="true"
-                                            [text]="true"
-                                            severity="secondary"
-                                            (click)="
-                                                fijarAnuncio(
-                                                    card.iAnuncioId,
-                                                    card.iFijado
-                                                )
-                                            "
-                                            [severity]="
-                                                card.iFijado === '0'
-                                                    ? 'secondary'
-                                                    : 'success'
-                                            "
-                                        />
-                                        <p-button
-                                            icon="pi pi-times"
-                                            [rounded]="true"
-                                            [text]="true"
-                                            severity="danger"
-                                            (click)="eliminarComunicado(card)"
-                                        />
+                                <div class="flex justify-content-end">
+                                    <div class="tag ml-3 font-bold">
+                                        Anuncio: #{{ data.length - i }}
                                     </div>
-                                </span>
+                                    <div>
+                                        <div
+                                            class="grid flex flex-row-reverse md:flex-row gap-2"
+                                        >
+                                            @if (iPerfilId === DOCENTE) {
+                                                <p-button
+                                                    icon="pi pi-thumbtack"
+                                                    [rounded]="true"
+                                                    [text]="true"
+                                                    severity="secondary"
+                                                    (click)="
+                                                        fijarAnuncio(
+                                                            card.iAnuncioId,
+                                                            card.iFijado
+                                                        )
+                                                    "
+                                                    [severity]="
+                                                        card.iFijado === '0'
+                                                            ? 'secondary'
+                                                            : 'success'
+                                                    "
+                                                />
+                                                <p-button
+                                                    icon="pi pi-times"
+                                                    [rounded]="true"
+                                                    [text]="true"
+                                                    severity="danger"
+                                                    (click)="
+                                                        eliminarComunicado(card)
+                                                    "
+                                                />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <p
+                                    class="ml-4 font-bold text-2xl"
+                                    [class]="
+                                        iPerfilId !== DOCENTE ? 'mt-4' : ''
+                                    "
+                                >
+                                    {{ card.cTitulo }}
+                                </p>
                             </ng-template>
                             <p class="cnt m-0 text-justify">
                                 {{ card.cContenido }}

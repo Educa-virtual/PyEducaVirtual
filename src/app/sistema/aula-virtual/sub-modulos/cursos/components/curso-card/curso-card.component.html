@@ -14,6 +14,16 @@
                 : curso?.cCursoNombre
         }}</span>
     </div>
+    <div
+        *ngIf="curso.bEstudiante === '1'"
+        class="title mt-4 font-bold text-center"
+    >
+        <span
+            >Docente: <br />{{
+                curso.bDocente === '1' ? curso.cDocente : '-'
+            }}</span
+        >
+    </div>
     <div class="mx-4 mt-3 col-12 grid">
         <div class="col-12 grid column-gap-1 align-items-center">
             <i class="pi pi-bookmark mr-2"></i>
@@ -30,7 +40,7 @@
             label="Ingresar"
             icon="pi pi-arrow-right"
             iconPos="right"
-            [routerLink]="['./', curso.iSilaboId]"
+            [routerLink]="['./', curso.iSilaboId || 0]"
             [queryParams]="{
                 cCursoNombre: curso.cCursoNombre,
                 cNivelTipoNombre: curso.cNivelTipoNombre,

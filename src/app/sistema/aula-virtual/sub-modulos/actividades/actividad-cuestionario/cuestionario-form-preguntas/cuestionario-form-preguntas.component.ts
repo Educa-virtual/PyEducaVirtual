@@ -38,6 +38,8 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     opcionSeleccionada: number = 0 // Para manejar la opción seleccionada
     escalaLine: string = '1'
     escalaLine2: string = '2'
+    selectNumber: number = 3
+    selectedIcon: string = 'pi pi-star'
 
     activeCommands = {
         bold: false,
@@ -80,19 +82,19 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         iCredId: new FormControl(),
     })
 
-    init: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
-        menubar: false,
-        selector: 'textarea',
-        placeholder: 'Escriba aquí...',
-        plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
-        height: 250,
-    }
+    // init: EditorComponent['init'] = {
+    //     base_url: '/tinymce', // Root for resources
+    //     suffix: '.min', // Suffix to use when loading resources
+    //     menubar: false,
+    //     selector: 'textarea',
+    //     placeholder: 'Escriba aquí...',
+    //     plugins: 'lists image table',
+    //     toolbar:
+    //         'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+    //         'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+    //         'image table',
+    //     height: 250,
+    // }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['showModal']) {
@@ -115,7 +117,6 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-
         switch (accion) {
             case 'close-modal':
                 this.accionBtnItem.emit({ accion, item })
@@ -192,5 +193,17 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     cambiarEscalaLine(event: any) {
         this.escalaLine2 = event.value
         console.log('Nuevo ID seleccionado:', event.value) // El nuevo id
+    }
+    // Generar un rango de números del 1 al n de ('TIP-PREG-CALIF')
+    getDisplayedNumbers(): number[] {
+        return Array.from({ length: this.selectNumber }, (_, i) => i + 1)
+    }
+    onSelectNumberChange(event: any) {
+        this.selectNumber = event.value
+        console.log('Nuevo número seleccionado:', event.value) // El nuevo número
+    }
+    selecIcons(event: any) {
+        this.selectedIcon = event.value
+        console.log('Nuevo icono seleccionado:', this.selectedIcon) // El nuevo icono
     }
 }

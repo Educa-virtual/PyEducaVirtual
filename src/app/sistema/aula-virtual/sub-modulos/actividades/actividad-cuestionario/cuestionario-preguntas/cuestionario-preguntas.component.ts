@@ -29,6 +29,7 @@ export class CuestionarioPreguntasComponent {
     showModal: boolean = false
     titulo: string = ''
     opcion: string = ''
+    codigoTipoPregunta: string = ''
     init: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
@@ -123,6 +124,34 @@ export class CuestionarioPreguntasComponent {
             cTipoPregunta: 'Cuadrícula de casillas',
             cIcon: 'pi-table',
             cCodeTipoPreg: 'TIP-PREG-CUAD-CASILLA',
+        },
+    ]
+
+    data: any = [
+        {
+            id: 1,
+            nombre: 'Pregunta 1',
+            tipoCuestionario: 'TIP-PREG-TEXTO',
+            estado: 'Activo',
+        },
+        {
+            id: 2,
+            nombre: 'Pregunta 2 Opciones',
+            tipoCuestionario: 'TIP-PREG-OPCIONES',
+            opciones: { 1: 'Opción 1', 2: 'Opción 2' },
+            estado: 'Activo',
+        },
+        {
+            id: 3,
+            nombre: 'Pregunta 3',
+            tipoCuestionario: 'TIP-PREG-CASILLA',
+            estado: 'Activo',
+        },
+        {
+            id: 4,
+            nombre: 'Pregunta 4',
+            tipoCuestionario: 'TIP-PREG-DESPLEGABLE',
+            estado: 'Activo',
         },
     ]
 

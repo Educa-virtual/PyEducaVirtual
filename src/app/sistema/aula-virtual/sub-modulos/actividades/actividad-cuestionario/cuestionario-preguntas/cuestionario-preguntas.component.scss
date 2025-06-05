@@ -1,0 +1,26 @@
+:host ::ng-deep .p-inputtext {
+    // border: none !important;
+    box-shadow: none !important;
+    // outline: none !important;
+}
+// .custom-hover-input {
+//   border: none;
+//   border-bottom: 2px solid transparent;
+//   transition: border-color 0.3s;
+// }
+// :host ::ng-deep .custom-hover-input .p-inputtext:hover,
+// .custom-hover-input:focus{
+//     border-bottom: 2px solid purple;
+// }
+::ng-deep .custom-hover-input {
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+    caret-color: purple;
+}
+
+::ng-deep .custom-hover-input:hover,
+::ng-deep .custom-hover-input:focus {
+    border-bottom: 2px solid purple;
+    outline: none;
+}

@@ -281,16 +281,21 @@
                         <div class="flex">
                             <p-dropdown
                                 [options]="calif"
+                                [(ngModel)]="selectNumber"
+                                optionValue="id"
                                 optionLabel="id"
                                 [appendTo]="'body'"
                                 styleClass="w-6rem h-3rem mr-2"
+                                (onChange)="onSelectNumberChange($event)"
                             />
                             <p-dropdown
                                 [options]="icons"
-                                optionValue="idIcn"
+                                [(ngModel)]="selectedIcon"
+                                optionValue="icon"
                                 optionLabel="icon"
                                 [appendTo]="'body'"
                                 styleClass="w-6rem h-3rem"
+                                (onChange)="selecIcons($event)"
                             >
                                 <!-- Plantilla para los ítems del dropdown -->
                                 <ng-template let-item pTemplate="item">
@@ -303,10 +308,25 @@
                                 <ng-template let-item pTemplate="selectedItem">
                                     <div class="flex align-items-center gap-2">
                                         <i [class]="item?.icon"></i>
+                                        <br />
                                         <span>{{ item?.id }}</span>
                                     </div>
                                 </ng-template>
                             </p-dropdown>
+                        </div>
+                        <!-- Vista generada -->
+                        <div class="flex justify-content-center mt-2">
+                            <div class="number-list">
+                                <div
+                                    *ngFor="let num of getDisplayedNumbers()"
+                                    class="number-item"
+                                >
+                                    <i [class]="selectedIcon"></i>
+                                    <!-- Icono seleccionado -->
+                                    <span>{{ num }}</span>
+                                    <!-- Número generado dinámicamente -->
+                                </div>
+                            </div>
                         </div>
                     }
                 }
@@ -410,7 +430,7 @@
         <div class="flex align-items-center justify-content-end gap-2">
             <label for="checked" class="ml-2"> Obligatorio </label>
             <p-inputSwitch formControlName="checked" />
-            <p-button [label]="'Add'" icon="pi pi-check" class="ml-4" />
+            <p-button [label]="'Añadir'" icon="pi pi-check" class="ml-4" />
         </div>
         <!-- <p-button
             label="Cancelar"

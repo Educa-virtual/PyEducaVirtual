@@ -50,6 +50,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     ],
 })
 export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
+    etiquetaInicio: string = 'Inicia en: '
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private router = inject(Router)

@@ -52,7 +52,33 @@
                 </p>
             </div>
 
+            <!--modificado
+            -->
             <div>
+                <span
+                    *ngIf="etiquetaInicio && +etiquetaInicio > 0"
+                    class="font-bold text-xl flex gap-2 mt-2"
+                >
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    {{ etiquetaInicio }}
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    @if (evaluacion?.dtExamenFechaInicio) {
+                        <app-time
+                            [inicio]="evaluacion?.dtHoraActual"
+                            [fin]="evaluacion?.dtExamenFechaInicio"
+                            (accionTime)="accionBtnItem($event)"
+                            [etiquetaTexto]="etiquetaInicio"
+                        ></app-time>
+                    }
+                </p>
+            </div>
+
+            <!--<div>  
                 <span class="font-bold text-xl flex gap-2 mt-2">
                     <app-icon
                         name="matCalendarMonth"
@@ -70,7 +96,7 @@
                         ></app-time>
                     }
                 </p>
-            </div>
+            </div>-->
         </div>
 
         <!-- tiempo de evaluación  -->

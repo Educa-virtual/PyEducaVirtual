@@ -16,6 +16,8 @@ import {
     imports: [],
 })
 export class TimeComponent implements OnChanges, OnDestroy {
+    @Input() etiquetaTexto: string = 'Inicia en: '
+    //etiquetaInicio: string = 'Inicia en: '
     @Output() accionTime = new EventEmitter()
 
     @Input() inicio // Fecha y hora de inicio
@@ -98,4 +100,13 @@ export class TimeComponent implements OnChanges, OnDestroy {
         const pad = (num: number) => num.toString().padStart(2, '0')
         return `${pad(this.hours)}:${pad(this.minutos)}:${pad(this.segundos)}`
     }
+
+    /*getTiempoFormateado(): string {
+    if (this.tiempoRestante <= 0) {
+        return '';
+    }
+    
+    const pad = (num: number) => num.toString().padStart(2, '0')
+    return `${pad(this.hours)}:${pad(this.minutos)}:${pad(this.segundos)}`
+}*/
 }

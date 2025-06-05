@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
+import { MessageService } from 'primeng/api'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 
 @Component({
     selector: 'app-ficha-recreacion',
@@ -16,9 +18,12 @@ export class FichaRecreacionComponent implements OnInit {
     visibleInput: Array<boolean>
     ficha_registrada: boolean = false
 
+    private _messageService = inject(MessageService)
+
     constructor(
         private fb: FormBuilder,
         private compartirFichaService: CompartirFichaService,
+        private datosFichaBienestarService: DatosFichaBienestarService,
         private router: Router
     ) {
         if (this.compartirFichaService.getiFichaDGId() === null) {
@@ -39,6 +44,8 @@ export class FichaRecreacionComponent implements OnInit {
             iReligionId: [null],
             bFichaDGPerteneceCentroArtistico: [false],
             cFichaDGPerteneceCentroArtistico: [''],
+            iActArtisticaId: [null],
+            cActArtisticaObs: [''],
             iPasaTiempoId: [null],
             cPasaTiempoObs: [''],
             bFichaDGAsistioConsultaPsicologica: [false],
@@ -50,6 +57,8 @@ export class FichaRecreacionComponent implements OnInit {
             cTransporteObs: [''],
             nTransFichaGastoSoles: [null],
             nTransFichaGastoTotal: [null],
+            jsonDeportes: [null],
+            jsonPasatiempos: [null],
         })
     }
 
@@ -189,13 +198,128 @@ export class FichaRecreacionComponent implements OnInit {
     }
 
     guardar() {
-        console.log('Guardando formulario...')
-        // Aquí va la lógica de guardado, por ejemplo, una llamada a servicio
+        if (this.formRecreacion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+
+        const deportes = []
+        this.formRecreacion.get('iDeporteId').value.forEach((elemento) => {
+            deportes.push({
+                iDeporteId: elemento,
+            })
+        })
+        this.formRecreacion
+            .get('jsonDeportes')
+            .setValue(JSON.stringify(deportes))
+
+        const pasatiempos = []
+        this.formRecreacion.get('iPasaTiempoId').value.forEach((elemento) => {
+            pasatiempos.push({
+                iPasaTiempoId: elemento,
+            })
+        })
+        this.formRecreacion.get('iPasaTiempoId').value.forEach((elemento) => {
+            pasatiempos.push({
+                iPasaTiempoId: elemento,
+            })
+        })
+        this.formRecreacion
+            .get('jsonPasatiempos')
+            .setValue(JSON.stringify(pasatiempos))
+
+        this.datosFichaBienestarService
+            .guardarFichaAlimentacion(this.formRecreacion.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formRecreacion =
+                        this.formRecreacion.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error guardando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.message,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     actualizar() {
-        console.log('Actualizando formulario...')
-        // Aquí va la lógica de actualización, por ejemplo, una llamada a servicio
+        if (this.formRecreacion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+
+        const deportes = []
+        this.formRecreacion.get('iDeporteId').value.forEach((elemento) => {
+            deportes.push({
+                iDeporteId: elemento,
+            })
+        })
+        this.formRecreacion
+            .get('jsonDeportes')
+            .setValue(JSON.stringify(deportes))
+
+        const pasatiempos = []
+        this.formRecreacion.get('iPasaTiempoId').value.forEach((elemento) => {
+            pasatiempos.push({
+                iPasaTiempoId: elemento,
+            })
+        })
+        this.formRecreacion
+            .get('jsonPasatiempos')
+            .setValue(JSON.stringify(pasatiempos))
+
+        this.datosFichaBienestarService
+            .actualizarFichaAlimentacion(this.formRecreacion.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formRecreacion =
+                        this.formRecreacion.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.message,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     salir() {

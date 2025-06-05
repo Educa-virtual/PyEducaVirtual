@@ -70,112 +70,121 @@
                 />
             </p-inputGroup>
         </div>
-        <div class="col-12 sm:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>
-                    <p-inputSwitch formControlName="bApoderadoTrabaja" />
-                    <span>¿El apoderado trabaja?</span>
-                </p-inputGroupAddon>
-            </p-inputGroup>
+        <div class="col-12">
+            <p-fieldset legend="Ingresos del apoderado">
+                <div class="grid p-fluid">
+                    <div class="col-12 sm:col-6">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                Ingresos mensuales del apoderado
+                            </p-inputGroupAddon>
+                            <p-inputNumber
+                                formControlName="iIngresoEcoEstudiante"
+                                maxlength="10"
+                                min="0"
+                                useGrouping="true"
+                                showButtons="false"
+                                class="group-element"
+                                placeholder="Especifique"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 sm:col-6">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                Rango de sueldo del apoderado
+                            </p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="rangos_sueldo"
+                                formControlName="iRangoSueldoIdPersona"
+                                [filter]="true"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                placeholder="Seleccione"
+                                styleClass="group-element"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 sm:col-6">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                Cantidad de horas trabajadas al día
+                            </p-inputGroupAddon>
+                            <p-inputNumber
+                                formControlName="iIngresoEcoTrabajoHoras"
+                                maxlength="2"
+                                min="1"
+                                useGrouping="true"
+                                showButtons="false"
+                                class="group-element"
+                                placeholder="Especifique"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 sm:col-6">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                Actividad que brinda ingresos al apoderado
+                            </p-inputGroupAddon>
+                            <input
+                                pInputText
+                                formControlName="cIngresoEcoDependeDe"
+                                class="group-element"
+                                placeholder="Especifique"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 sm:col-6">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                <p-button
+                                    severity="secondary"
+                                    icon="pi pi-info-circle"
+                                    [pTooltip]="iDepEcoIdInfo"
+                                    tooltipPosition="top"
+                                    tooltipEvent="both"
+                                    appendTo="body"
+                                    [autoHide]="false"
+                                >
+                                    <ng-template #iDepEcoIdInfo>
+                                        En esta pregunta "depender de otros" se
+                                        refiere a que no trabaja pero recibe
+                                        apoyo económico de amigos, familiares o
+                                        instituciones
+                                    </ng-template>
+                                </p-button>
+                                ¿De quien depende económicamente el apoderado?
+                            </p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="dependencias_economicas"
+                                formControlName="iDepEcoId"
+                                [filter]="true"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                placeholder="Seleccione"
+                                styleClass="group-element"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12 sm:col-6">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                ¿Cual es la jornada de trabajo del apoderado?
+                            </p-inputGroupAddon>
+                            <p-dropdown
+                                [options]="jornadas_trabajo"
+                                formControlName="iJorTrabId"
+                                [filter]="true"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                placeholder="Seleccione"
+                                styleClass="group-element"
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
         </div>
-
-        <p-fieldset legend="Ingresos del apoderado" *ngIf="apoderado_trabaja">
-            <div class="grid p-fluid">
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Ingresos mensuales del apoderado
-                        </p-inputGroupAddon>
-                        <p-inputNumber
-                            formControlName="iIngresoEcoEstudiante"
-                            maxlength="10"
-                            min="0"
-                            useGrouping="true"
-                            showButtons="false"
-                            class="group-element"
-                            placeholder="Especifique"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Rango de sueldo del apoderado
-                        </p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="rangos_sueldo"
-                            formControlName="iRangoSueldoIdPersona"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            placeholder="Seleccione"
-                            styleClass="group-element"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Cantidad de horas trabajadas
-                        </p-inputGroupAddon>
-                        <p-inputNumber
-                            formControlName="iIngresoEcoTrabajoHoras"
-                            maxlength="2"
-                            min="1"
-                            useGrouping="true"
-                            showButtons="false"
-                            class="group-element"
-                            placeholder="Especifique"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Fuente de ingresos
-                        </p-inputGroupAddon>
-                        <input
-                            pInputText
-                            formControlName="cIngresoEcoDependeDe"
-                            class="group-element"
-                            placeholder="Especifique"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Dependencia económica
-                        </p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="dependencias_economicas"
-                            formControlName="iDepEcoId"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            placeholder="Seleccione"
-                            styleClass="group-element"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 sm:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            Jornada de trabajo
-                        </p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="jornadas_trabajo"
-                            formControlName="iJorTrabId"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            placeholder="Seleccione"
-                            styleClass="group-element"
-                        />
-                    </p-inputGroup>
-                </div>
-            </div>
-        </p-fieldset>
     </div>
 </form>
 

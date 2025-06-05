@@ -180,6 +180,11 @@ export class FichaGeneralComponent implements OnInit {
                     this.ficha_registrada = true
                     this.datosFichaBienestarService.formGeneral =
                         this.formGeneral.value
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
                 },
                 error: (error) => {
                     console.error('Error guardando ficha:', error)
@@ -214,6 +219,11 @@ export class FichaGeneralComponent implements OnInit {
                     this.ficha_registrada = true
                     this.datosFichaBienestarService.formGeneral =
                         this.formGeneral.value
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

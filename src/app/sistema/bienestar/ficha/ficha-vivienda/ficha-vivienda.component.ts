@@ -256,8 +256,8 @@ export class FichaViviendaComponent implements OnInit {
                         this.formVivienda.value
                     this._messageService.add({
                         severity: 'success',
-                        summary: 'Registro Exitoso',
-                        detail: 'Se registró la ficha de vivienda',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
                     })
                 },
                 error: (error) => {
@@ -265,7 +265,7 @@ export class FichaViviendaComponent implements OnInit {
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
                 complete: () => {
@@ -316,8 +316,8 @@ export class FichaViviendaComponent implements OnInit {
                         this.formVivienda.value
                     this._messageService.add({
                         severity: 'success',
-                        summary: 'Actualización Exitosa',
-                        detail: 'Se actualizó la ficha de vivienda',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
                     })
                 },
                 error: (error) => {
@@ -325,7 +325,7 @@ export class FichaViviendaComponent implements OnInit {
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
                 complete: () => {

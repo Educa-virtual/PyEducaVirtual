@@ -193,6 +193,24 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
+    verFichaAlimentacion(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaAlimentacion`, data)
+    }
+
+    guardarFichaAlimentacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/guardarFichaAlimentacion`,
+            data
+        )
+    }
+
+    actualizarFichaAlimentacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaAlimentacion`,
+            data
+        )
+    }
+
     searchFichaRecreacion(data: any) {
         return this.http.post(
             `${baseUrl}/bienestar/searchFichaRecreacion`,

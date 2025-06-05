@@ -1,9 +1,10 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-ficha-discapacidad',
@@ -18,6 +19,8 @@ export class FichaDiscapacidadComponent implements OnInit {
     visibleLimitacionesInput: Array<boolean>
     ficha_registrada: boolean = false
     discapacidades: Array<object>
+
+    private _messageService = inject(MessageService)
 
     constructor(
         private fb: FormBuilder,
@@ -90,11 +93,103 @@ export class FichaDiscapacidadComponent implements OnInit {
     }
 
     guardar() {
-        console.log(this.formDiscapacidad.value)
+        if (this.formDiscapacidad.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+
+        const programas = []
+        this.formDiscapacidad.get('iProgAlimId').value.forEach((elemento) => {
+            programas.push({
+                iProgAlimId: elemento,
+            })
+        })
+        this.formDiscapacidad
+            .get('jsonProgramas')
+            .setValue(JSON.stringify(programas))
+
+        this.datosFichaBienestarService
+            .guardarFichaAlimentacion(this.formDiscapacidad.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formDiscapacidad =
+                        this.formDiscapacidad.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error guardando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.message,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     actualizar() {
-        console.log(this.formDiscapacidad.value)
+        if (this.formDiscapacidad.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+
+        const programas = []
+        this.formDiscapacidad.get('iProgAlimId').value.forEach((elemento) => {
+            programas.push({
+                iProgAlimId: elemento,
+            })
+        })
+        this.formDiscapacidad
+            .get('jsonProgramas')
+            .setValue(JSON.stringify(programas))
+
+        this.datosFichaBienestarService
+            .actualizarFichaAlimentacion(this.formDiscapacidad.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data[0].iFichaDGId
+                    )
+                    this.ficha_registrada = true
+                    this.datosFichaBienestarService.formDiscapacidad =
+                        this.formDiscapacidad.value
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.message,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     salir() {

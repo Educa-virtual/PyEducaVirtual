@@ -2,15 +2,13 @@
 
 <form [formGroup]="formAlimentacion">
     <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iFichaDGId" />
-
         <div class="col-12">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon>Programas de alimentación</p-inputGroupAddon>
                 <p-multiSelect
                     display="chip"
                     [options]="programas_alimentarios"
-                    formControlName="iProAlimId"
+                    formControlName="iProgAlimId"
                     [filter]="true"
                     [showClear]="true"
                     [maxSelectedLabels]="undefined"
@@ -27,7 +25,7 @@
                 @if (visibleInput[0] === true) {
                     <input
                         pInputText
-                        formControlName="cProAlimNombre"
+                        formControlName="cProgAlimNombre"
                         placeholder="Especifique otro *"
                         type="text"
                         class="group-element"
@@ -169,7 +167,7 @@
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
                                 <p-inputSwitch
-                                    formControlName="bAlergiasAlim"
+                                    formControlName="bFichaDGAlergiaAlimentos"
                                     (onChange)="handleSwitchChange($event, 2)"
                                 />
                                 <span>Alergias alimenticias</span>
@@ -177,7 +175,7 @@
                             @if (visibleAdicionalInput[2] === true) {
                                 <input
                                     type="text"
-                                    formControlName="cAlergiasAlimObs"
+                                    formControlName="cFichaDGAlergiaAlimentos"
                                     pInputText
                                     placeholder="Especifique"
                                     class="group-element"

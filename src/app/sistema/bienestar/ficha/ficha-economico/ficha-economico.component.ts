@@ -203,6 +203,11 @@ export class FichaEconomicoComponent implements OnInit {
                     this.ficha_registrada = true
                     this.datosFichaBienestarService.formGeneral =
                         this.formEconomico.value
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
                 },
                 error: (error) => {
                     console.error('Error guardando ficha:', error)
@@ -237,6 +242,11 @@ export class FichaEconomicoComponent implements OnInit {
                     this.ficha_registrada = true
                     this.datosFichaBienestarService.formEconomico =
                         this.formEconomico.value
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

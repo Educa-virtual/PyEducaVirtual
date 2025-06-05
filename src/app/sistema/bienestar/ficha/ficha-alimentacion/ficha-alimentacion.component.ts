@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
@@ -35,7 +35,7 @@ export class FichaAlimentacionComponent implements OnInit {
         this.compartirFichaService.setActiveIndex(4)
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.visibleInput = Array(1).fill(false)
         this.visibleAdicionalInput = Array(6).fill(false)
 
@@ -54,7 +54,7 @@ export class FichaAlimentacionComponent implements OnInit {
 
         try {
             this.formAlimentacion = this.fb.group({
-                iSesionId: this.compartirFichaService.perfil?.iCredId,
+                iAlimId: [null],
                 iFichaDGId: this.compartirFichaService.getiFichaDGId(),
                 iLugarAlimIdDesayuno: [null],
                 cLugarAlimDesayuno: [''],
@@ -62,14 +62,14 @@ export class FichaAlimentacionComponent implements OnInit {
                 cLugarAlimAlmuerzo: [''],
                 iLugarAlimIdCena: [null],
                 cLugarAlimCena: [''],
-                iProAlimId: [null],
-                cProAlimNombre: [''],
+                iProgAlimId: [null],
+                cProgAlimNombre: [''],
                 bDietaVegetariana: [false],
                 cDietaVegetarianaObs: [''],
                 bDietaVegana: [false],
                 cDietaVeganaObs: [''],
-                bAlergiasAlim: [false],
-                cAlergiasAlimObs: [''],
+                bFichaDGAlergiaAlimentos: [false],
+                cFichaDGAlergiaAlimentos: [''],
                 bIntoleranciaAlim: [false],
                 cIntoleranciaAlimObs: [''],
                 bSumplementosAlim: [false],
@@ -77,10 +77,19 @@ export class FichaAlimentacionComponent implements OnInit {
                 bDificultadAlim: [false],
                 cDificultadAlimObs: [''],
                 cInfoAdicionalAlimObs: [''],
+                jsonProgramas: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
+
+        if (this.compartirFichaService.getiFichaDGId()) {
+            this.verFichaAlimentacion()
+        }
+    }
+
+    get iProgAlimIdControl(): FormControl {
+        return this.formAlimentacion.controls['iProgAlimId'] as FormControl
     }
 
     handleDropdownChange(event: any, index: number) {
@@ -115,6 +124,72 @@ export class FichaAlimentacionComponent implements OnInit {
         }
     }
 
+    async verFichaAlimentacion() {
+        this.datosFichaBienestarService
+            .verFichaAlimentacion({
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            })
+            .subscribe((data: any) => {
+                if (data.data.length) {
+                    this.setFormAlimentacion(data.data[0])
+                }
+            })
+    }
+
+    setFormAlimentacion(data: any) {
+        if (data.iAlimId) {
+            this.ficha_registrada = true
+        } else {
+            return
+        }
+        this.formAlimentacion.patchValue(data)
+        this.formatearFormControl(
+            'bFichaDGAlergiaAlimentos',
+            data.bFichaDGAlergiaAlimentos,
+            'bool'
+        )
+        this.formatearFormControl(
+            'iLugarAlimIdDesayuno',
+            data.iLugarAlimIdDesayuno,
+            'num'
+        )
+        this.formatearFormControl(
+            'iLugarAlimIdAlmuerzo',
+            data.iLugarAlimIdAlmuerzo,
+            'num'
+        )
+        this.formatearFormControl(
+            'iLugarAlimIdCena',
+            data.iLugarAlimIdCena,
+            'num'
+        )
+
+        this.formatearFormControl('iProgAlimId', data.programas, 'json')
+    }
+
+    formatearFormControl(id: string, value: any, tipo: string = 'str') {
+        if (tipo === 'num') {
+            this.formAlimentacion.get(id)?.patchValue(value ? +value : null)
+        } else if (tipo === 'bool') {
+            this.formAlimentacion.get(id)?.patchValue(value == 1 ? true : false)
+        } else if (tipo === 'str') {
+            this.formAlimentacion.get(id)?.patchValue(value)
+        } else if (tipo === 'json') {
+            if (!value) {
+                this.formAlimentacion.get(id)?.patchValue(null)
+            } else {
+                const json = JSON.parse(value)
+                const items = []
+                for (let i = 0; i < json.length; i++) {
+                    items.push(json[i][id])
+                }
+                this.formAlimentacion.get(id)?.patchValue(items)
+            }
+        } else {
+            this.formAlimentacion.get(id)?.patchValue(value)
+        }
+    }
+
     guardar() {
         if (this.formAlimentacion.invalid) {
             this._messageService.add({
@@ -124,20 +199,31 @@ export class FichaAlimentacionComponent implements OnInit {
             })
             return
         }
+
+        const programas = []
+        this.formAlimentacion.get('iProgAlimId').value.forEach((elemento) => {
+            programas.push({
+                iProgAlimId: elemento,
+            })
+        })
+        this.formAlimentacion
+            .get('jsonProgramas')
+            .setValue(JSON.stringify(programas))
+
         this.datosFichaBienestarService
-            .guardarFichaVivienda(this.formAlimentacion.value)
+            .guardarFichaAlimentacion(this.formAlimentacion.value)
             .subscribe({
                 next: (data: any) => {
                     this.compartirFichaService.setiFichaDGId(
                         data.data[0].iFichaDGId
                     )
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formVivienda =
+                    this.datosFichaBienestarService.formAlimentacion =
                         this.formAlimentacion.value
                     this._messageService.add({
                         severity: 'success',
-                        summary: 'Registro Exitoso',
-                        detail: 'Se registró la ficha de vivienda',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
                     })
                 },
                 error: (error) => {
@@ -145,7 +231,7 @@ export class FichaAlimentacionComponent implements OnInit {
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.message,
                     })
                 },
                 complete: () => {
@@ -163,8 +249,19 @@ export class FichaAlimentacionComponent implements OnInit {
             })
             return
         }
+
+        const programas = []
+        this.formAlimentacion.get('iProgAlimId').value.forEach((elemento) => {
+            programas.push({
+                iProgAlimId: elemento,
+            })
+        })
+        this.formAlimentacion
+            .get('jsonProgramas')
+            .setValue(JSON.stringify(programas))
+
         this.datosFichaBienestarService
-            .actualizarFichaVivienda(this.formAlimentacion.value)
+            .actualizarFichaAlimentacion(this.formAlimentacion.value)
             .subscribe({
                 next: (data: any) => {
                     this.compartirFichaService.setiFichaDGId(
@@ -175,8 +272,8 @@ export class FichaAlimentacionComponent implements OnInit {
                         this.formAlimentacion.value
                     this._messageService.add({
                         severity: 'success',
-                        summary: 'Actualización Exitosa',
-                        detail: 'Se actualizó la ficha de vivienda',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
                     })
                 },
                 error: (error) => {
@@ -184,7 +281,7 @@ export class FichaAlimentacionComponent implements OnInit {
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.message,
                     })
                 },
                 complete: () => {

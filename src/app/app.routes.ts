@@ -115,6 +115,14 @@ export const routes: Routes = [
             ).then((m) => m.HorarioModule),
     },
     {
+        path: 'bienestar',
+
+        loadChildren: () =>
+            import('./sistema/bienestar/bienestar.module').then(
+                (m) => m.BienestarModule
+            ),
+    },
+    {
         path: 'apoderado',
         loadChildren: () =>
             import('./sistema/apoderado/apoderado.module').then(

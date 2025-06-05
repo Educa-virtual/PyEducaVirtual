@@ -1,0 +1,76 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            Gestionar encuestas de bienestar
+        </span>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex justify-content-center">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                pButton
+                pTooltip="Registrar ficha"
+                tooltipPosition="top"
+                (click)="verEncuesta()"
+                severity="success"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="ml-2 hidden sm:block">Registrar encuesta</span>
+            </button>
+        </div>
+    </ng-template>
+
+    <form [formGroup]="searchForm">
+        <div class="grid mb-3">
+            <div class="col-12 md:col-4">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Categoría </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="categorias"
+                        formControlName="iCategoriaEncuestaId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        placeholder="Seleccione"
+                        styleClass="group-element"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-8">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cEncuestaNombre"
+                        (input)="filtrarEstudiantes()"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </form>
+
+    <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="encuestas"
+        (accionBtnItem)="accionBnt($event)"
+        [actions]="accionesTabla"
+        [showCaption]="false"
+    />
+</p-panel>
+
+<p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="dialog_header"
+    [(visible)]="dialog_visible"
+    [style]="{ width: '60vw' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '1080px': '75vw', '640px': '100vw' }"
+>
+    <ng-content>
+        <app-encuesta (es_visible)="dialogVisible($event)" />
+    </ng-content>
+</p-dialog>

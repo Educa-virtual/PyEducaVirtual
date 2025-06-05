@@ -27,7 +27,6 @@
                                 <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                                 <p-dropdown
                                     [options]="nivel_tipos"
-                                    [showClear]="true"
                                     formControlName="iNivelTipoId"
                                     placeholder="Seleccione un nivel"
                                     styleClass="group-element"
@@ -40,7 +39,6 @@
                                 <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                                 <p-dropdown
                                     [options]="nivel_grados"
-                                    [showClear]="true"
                                     formControlName="iNivelGradoId"
                                     placeholder="Seleccione un grado"
                                     styleClass="group-element"
@@ -182,7 +180,7 @@
                     (onClick)="searchResultados()"
                 />
             </div>
-            <div class="flex">
+            <div class="flex" *ngIf="puede_exportar">
                 <p-toast />
                 <p-menu #menu [model]="btn_exportar" [popup]="true" />
                 <p-button
@@ -210,15 +208,14 @@
                     <div class="flex-wrap">Resumen</div>
                 </ng-template>
                 <div class="grid">
-                    <div class="col-12 md:col-6">
-                        <div class="flex justify-content-center">
-                            <p-chart
-                                type="doughnut"
-                                [data]="data_doughnut"
-                                [options]="options_doughnut"
-                            />
-                        </div>
-                    </div>
+                    <p-chart
+                        type="pie"
+                        [data]="data_doughnut"
+                        [options]="options_doughnut"
+                        [plugins]="piePlugin"
+                        class="col-12 md:col-6"
+                        height="300px"
+                    />
                     <div class="col-12 md:col-6">
                         <app-table-primeng
                             [columnas]="columns_promedio"
@@ -278,6 +275,7 @@
                             [options]="options_bar"
                             class="col"
                             height="300px"
+                            [plugins]="barPlugin"
                         />
                     </div>
                 }
@@ -288,7 +286,7 @@
                         <div class="flex-wrap">
                             <span class="hidden lg:inline"
                                 >Resultados por&nbsp;</span
-                            >IE
+                            >{{ tipo_reporte }}
                         </div>
                     </ng-template>
                     <app-table-primeng

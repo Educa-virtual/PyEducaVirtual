@@ -79,10 +79,24 @@ export class DatosInformesService {
             this.distritos = items.map((distrito) => ({
                 value: distrito.iDsttId,
                 label: distrito.cDsttNombre,
+                ugeles: distrito.ugeles,
             }))
             return this.distritos
         }
         return this.distritos
+    }
+
+    filterDistritos(iUgelId: any) {
+        if (!iUgelId) return null
+        return this.distritos.filter((distrito: any) => {
+            const pertenece_ugel = distrito.ugeles.find(
+                (ugel: any) => ugel.iUgelId === iUgelId
+            )
+            if (pertenece_ugel) {
+                return distrito
+            }
+            return null
+        })
     }
 
     getNivelesTipos(data: any) {
@@ -324,5 +338,9 @@ export class DatosInformesService {
             `${baseUrl}/ere/reportes/importarResultados`,
             data
         )
+    }
+
+    importarOffLine(data: any) {
+        return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data)
     }
 }

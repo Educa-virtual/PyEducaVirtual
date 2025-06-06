@@ -71,6 +71,10 @@ import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/
 export class ForoRoomComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() iIeCursoId
+    @Input() iSeccionId
+    @Input() iNivelGradoId
+
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
 
@@ -181,7 +185,7 @@ export class ForoRoomComponent implements OnInit {
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
-        //this.getEstudiantesMatricula()
+        this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }
     accionRubrica(elemento): void {
@@ -571,21 +575,22 @@ export class ForoRoomComponent implements OnInit {
     }
     // consulta para obtener los estudiantes
     getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params)
+        this._aulaService
+            .obtenerReporteFinalDeNotas({
+                iIeCursoId: this.iIeCursoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iSeccionId: this.iSeccionId,
+                iNivelGradoId: this.iNivelGradoId,
+            })
+            .subscribe((Data) => {
+                this.estudiantes = Data['data']
+                this.estudiantes = Data['data'].map((item: any) => {
+                    return {
+                        ...item,
+                        cTitulo: item.completoalumno,
+                    }
+                })
+            })
     }
 }

@@ -43,7 +43,6 @@ export class ForoFormContainerComponent implements OnInit {
     @Input() contenidoSemana
     tareas = []
     filteredTareas: any[] | undefined
-    FilesTareas = []
     nameEnlace: string = ''
     titleFileTareas: string = ''
     categorias: any[] = []
@@ -116,17 +115,12 @@ export class ForoFormContainerComponent implements OnInit {
         this.foroForm.controls.dtForoInicio.setValue(horaInicio)
         this.foroForm.controls.dtForoFin.setValue(horaFin)
         this.foroForm.controls.dtForoPublicacion.setValue(horaFin)
-        this.foroForm.controls.cForoUrl.setValue(
-            JSON.stringify(this.FilesTareas)
-        )
+        this.foroForm.controls.cForoUrl.setValue(JSON.stringify(this.filesUrl))
         // Limpiar el campo cForoDescripcion de etiquetas HTML
         const rawDescripcion =
             this.foroForm.controls.cForoDescripcion.value || ''
         const tempElement = document.createElement('div')
         tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
-
-        this.foroForm.controls.cForoDescripcion.setValue(cleanDescripcion)
 
         const value = {
             ...this.foroForm.value,
@@ -163,7 +157,6 @@ export class ForoFormContainerComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-        console.log(elemento)
         switch (accion) {
             case 'get_tareas_reutilizadas':
                 this.tareas = item
@@ -173,7 +166,7 @@ export class ForoFormContainerComponent implements OnInit {
                 this.showModal = false
                 break
             case 'subir-file-foros':
-                this.FilesTareas.push({
+                this.filesUrl.push({
                     type: 1, //1->file
                     nameType: 'file',
                     name: item.file.name,
@@ -184,7 +177,7 @@ export class ForoFormContainerComponent implements OnInit {
                 break
             case 'url-foros':
                 if (item === '') return
-                this.FilesTareas.push({
+                this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
                     name: item,
@@ -195,7 +188,7 @@ export class ForoFormContainerComponent implements OnInit {
                 this.nameEnlace = ''
                 break
             case 'youtube-foros':
-                this.FilesTareas.push({
+                this.filesUrl.push({
                     type: 3, //3->youtube
                     nameType: 'youtube',
                     name: item,
@@ -206,7 +199,7 @@ export class ForoFormContainerComponent implements OnInit {
                 this.nameEnlace = ''
                 break
             case 'subir-image-foros':
-                this.FilesTareas.push({
+                this.filesUrl.push({
                     type: 4, //4->image
                     nameType: 'youtube',
                     name: item,
@@ -219,9 +212,7 @@ export class ForoFormContainerComponent implements OnInit {
             case 'obtenerForoxiForoId':
                 const data = item.length ? item[0] : []
                 this.foroForm.patchValue(data)
-                this.FilesTareas = data.cForoUrl
-                    ? JSON.parse(data.cForoUrl)
-                    : []
+                this.filesUrl = data.cForoUrl ? JSON.parse(data.cForoUrl) : []
                 break
         }
     }

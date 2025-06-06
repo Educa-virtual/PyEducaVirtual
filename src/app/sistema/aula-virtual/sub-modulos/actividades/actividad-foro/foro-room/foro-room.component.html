@@ -15,131 +15,124 @@
                     'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')
                 "
             >
-                <button
-                    [ngClass]="{
-                        'border-none': true,
-                        'cursor-pointer': true,
-                    }"
-                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                    pButton
-                >
-                    <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
-                    <i
-                        class="pi pi-ellipsis-h text-white hover:text-blue-300"
-                    ></i>
-                </button>
             </app-toolbar-primeng>
-
-            <div
-                class="card"
-                [class]="
-                    iPerfilId === ESTUDIANTE ? 'col-12 md:col-8' : 'col-12'
-                "
-            >
-                <div class="grid mb-4">
-                    <div
-                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                    >
-                        <div class="col-12 md:col-6 gap-2 flex flex-column">
-                            <span class="font-bold text-xl">Catergoría:</span>
-                            {{ foro?.cForoCatDescripcion }}
+            <div clas="grid">
+                <div
+                    class="card"
+                    [class]="
+                        iPerfilId === ESTUDIANTE ? 'col-12 md:col-8' : 'col-12'
+                    "
+                >
+                    <div class="grid mb-4">
+                        <div
+                            class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                        >
+                            <div class="col-12 md:col-6 gap-2">
+                                <span class="font-bold text-xl"
+                                    >Catergoría:</span
+                                >
+                                {{ foro?.cForoCatDescripcion }}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid mb-4">
-                    <div class="col-12 md:col-6 flex flex-column gap-2">
-                        <span class="font-bold text-xl flex gap-2">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            ></app-icon>
-                            Inicio de Foro:
-                        </span>
-                        <!-- {{ foro.dtForoInicio }} -->
-                        <p class="flex gap-2 flex-wrap pl-5">
-                            {{
-                                foro?.dtForoInicio
-                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                            }}
-
-                            <span class="flex gap-2">
+                    <div class="grid mb-4">
+                        <div class="col-12 md:col-6 flex flex-column gap-2">
+                            <span class="font-bold text-xl flex gap-2">
                                 <app-icon
-                                    name="matAccessTime"
+                                    name="matCalendarMonth"
                                     class="text-primary"
                                     size="sm"
                                 ></app-icon>
-                                <span class="font-bold">Hora Limite:</span>
-                                {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                                Inicio de Foro:
                             </span>
-                        </p>
-                    </div>
-                    <div class="col-12 md:col-6 flex flex-column gap-2">
-                        <span class="font-bold text-xl flex gap-2">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            ></app-icon>
-                            Cierre de Foro
-                        </span>
-                        <!-- {{ foro.dtForoFin }} -->
-                        <p class="flex gap-2 flex-wrap pl-5">
-                            {{
-                                foro?.dtForoFin
-                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                            }}
+                            <!-- {{ foro.dtForoInicio }} -->
+                            <p class="flex gap-2 flex-wrap pl-5">
+                                {{
+                                    foro?.dtForoInicio
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
 
-                            <span class="flex gap-2">
+                                <span class="flex gap-2">
+                                    <app-icon
+                                        name="matAccessTime"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    <span class="font-bold">Hora Limite:</span>
+                                    {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-12 md:col-6 flex flex-column gap-2">
+                            <span class="font-bold text-xl flex gap-2">
                                 <app-icon
-                                    name="matAccessTime"
+                                    name="matCalendarMonth"
                                     class="text-primary"
                                     size="sm"
                                 ></app-icon>
-                                <span class="font-bold">Hora Limite:</span>
-                                {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                Cierre de Foro
                             </span>
-                        </p>
+                            <!-- {{ foro.dtForoFin }} -->
+                            <p class="flex gap-2 flex-wrap pl-5">
+                                {{
+                                    foro?.dtForoFin
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
+
+                                <span class="flex gap-2">
+                                    <app-icon
+                                        name="matAccessTime"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    <span class="font-bold">Hora Limite:</span>
+                                    {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 flex-wrap align-items-center mb-4">
+                        <app-icon
+                            name="matMessage"
+                            color="text-primary"
+                            size="sm"
+                        />
+                        <h3 class="text-lg m-0">Descripción:</h3>
+                        {{ foro?.cForoDescripcion }}
                     </div>
                 </div>
-
-                <div class="flex gap-2 flex-wrap align-items-center mb-4">
-                    <app-icon
-                        name="matMessage"
-                        color="text-primary"
-                        size="sm"
-                    />
-                    <h3 class="text-lg m-0">Descripción:</h3>
-                    {{ foro?.cForoDescripcion }}
-                </div>
-            </div>
-            <div class="col-12 md:col-4" [hidden]="iPerfilId !== ESTUDIANTE">
-                <div class="card" *ngFor="let respuesta of resptDocente">
-                    <h4>Mi Retroalimentación descriptiva:</h4>
-                    <!-- <p-divider></p-divider> -->
-                    <!-- <p-inputGroup>
+                <div
+                    class="col-12 md:col-4"
+                    [hidden]="iPerfilId !== ESTUDIANTE"
+                >
+                    <div class="card" *ngFor="let respuesta of resptDocente">
+                        <h4>Mi Retroalimentación descriptiva:</h4>
+                        <!-- <p-divider></p-divider> -->
+                        <!-- <p-inputGroup>
                         <p-inputGroupAddon> Nota </p-inputGroupAddon>
                         <input pInputText />
                     </p-inputGroup> -->
-                    <p-divider></p-divider>
-                    <p-inputGroup>
-                        <p-inputGroupAddon>
-                            Comentario Docente:
-                        </p-inputGroupAddon>
-                        <textarea
-                            pInputText
-                            rows="1"
-                            id="comentarioDocente"
-                            pInputTextarea
-                            rows="5"
-                            [disabled]="isDisabled"
-                            class="p-inputtextarea-lg"
-                            placeholder="Muestra Comentario Docente"
-                        >
+                        <p-divider></p-divider>
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                Comentario Docente:
+                            </p-inputGroupAddon>
+                            <textarea
+                                pInputText
+                                rows="1"
+                                id="comentarioDocente"
+                                pInputTextarea
+                                rows="5"
+                                [disabled]="isDisabled"
+                                class="p-inputtextarea-lg"
+                                placeholder="Muestra Comentario Docente"
+                            >
                             {{ respuesta?.cForoRptaDocente }} </textarea
-                        >
-                    </p-inputGroup>
+                            >
+                        </p-inputGroup>
+                    </div>
                 </div>
             </div>
             <div class="flex flex-column my-4 gap-4">
@@ -148,12 +141,12 @@
                     <div
                         class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                     >
-                        <app-rubricas
+                        <!-- <app-rubricas
                             [title]="'Rúbricas'"
                             mode="SELECTION"
                             [params]="params"
                             (rubricaSelectedChange)="accionRubrica($event)"
-                        ></app-rubricas>
+                        ></app-rubricas> -->
                     </div>
 
                     <!-- <div class="">
@@ -238,19 +231,6 @@
                     'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')
                 "
             >
-                <button
-                    [ngClass]="{
-                        'border-none': true,
-                        'cursor-pointer': true,
-                    }"
-                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                    pButton
-                >
-                    <!-- (click)="$event.stopPropagation(); menu.toggle($event)" -->
-                    <i
-                        class="pi pi-ellipsis-h text-white hover:text-blue-300"
-                    ></i>
-                </button>
             </app-toolbar-primeng>
             <form
                 [formGroup]="foroFormComntAl"
@@ -491,31 +471,24 @@
                                                                         </button>
                                                                     </div>
                                                                     <!-- Menú al final -->
-                                                                    <div
-                                                                        class=""
-                                                                    >
-                                                                        <button
-                                                                            [style.display]="
+                                                                    <!-- <div class="">
+                                                                    <button [style.display]="
                                                                                 !respuestas.iEstudianteId
                                                                                     ? respuestas.iDocenteId ===
                                                                                       iDocenteId
                                                                                     : respuestas.iEstudianteId ===
                                                                                       iEstudianteId
-                                                                            "
-                                                                            pButton
-                                                                            type="button"
-                                                                            icon="pi pi-ellipsis-v"
-                                                                            class="menu-container p-button-text"
-                                                                            (click)="
+                                                                            " pButton type="button"
+                                                                        icon="pi pi-ellipsis-v"
+                                                                        class="menu-container p-button-text" (click)="
                                                                                 itemRespuesta =
                                                                                     respuestas;
                                                                                 menu.toggle(
                                                                                     $event
                                                                                 )
                                                                             "
-                                                                            aria-label="Abrir menú de configuración"
-                                                                        ></button>
-                                                                    </div>
+                                                                        aria-label="Abrir menú de configuración"></button>
+                                                                </div> -->
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -754,7 +727,7 @@
                                             />
                                             <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                             <div class="perfil-name">
-                                                {{ estudiante?.nombrecompleto }}
+                                                {{ estudiante?.completoalumno }}
                                             </div>
                                             <div
                                                 class="btn-calificar-comentario"

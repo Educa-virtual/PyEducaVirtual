@@ -84,10 +84,7 @@ export class ForoFormContainerComponent implements OnInit {
         this.semana = [
             {
                 severity: 'info',
-                detail:
-                    this.contenidoSemana?.cContenidoSemNumero +
-                    ' SEMANA - ' +
-                    this.contenidoSemana?.cContenidoSemTitulo,
+                detail: this.contenidoSemana?.cContenidoSemTitulo,
             },
         ]
     }
@@ -166,7 +163,7 @@ export class ForoFormContainerComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-        // let params
+        console.log(elemento)
         switch (accion) {
             case 'get_tareas_reutilizadas':
                 this.tareas = item
@@ -175,7 +172,7 @@ export class ForoFormContainerComponent implements OnInit {
             case 'close-modal':
                 this.showModal = false
                 break
-            case 'subir-archivo-tareas':
+            case 'subir-file-foros':
                 this.FilesTareas.push({
                     type: 1, //1->file
                     nameType: 'file',
@@ -185,7 +182,7 @@ export class ForoFormContainerComponent implements OnInit {
                 })
                 this.showModal = false
                 break
-            case 'subir-url':
+            case 'url-foros':
                 if (item === '') return
                 this.FilesTareas.push({
                     type: 2, //2->url
@@ -197,10 +194,20 @@ export class ForoFormContainerComponent implements OnInit {
                 this.showModal = false
                 this.nameEnlace = ''
                 break
-            case 'subir-youtube':
-                if (item === '') return
+            case 'youtube-foros':
                 this.FilesTareas.push({
                     type: 3, //3->youtube
+                    nameType: 'youtube',
+                    name: item,
+                    size: '',
+                    ruta: item,
+                })
+                this.showModal = false
+                this.nameEnlace = ''
+                break
+            case 'subir-image-foros':
+                this.FilesTareas.push({
+                    type: 4, //4->image
                     nameType: 'youtube',
                     name: item,
                     size: '',

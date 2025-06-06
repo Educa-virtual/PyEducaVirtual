@@ -41,7 +41,13 @@ export class GeneralService {
         return this.url
     }
     getGralPrefixx(data) {
-        const url = `${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`
+        let url = `${baseUrl}/${data.group}/${data.prefix}/`
+
+        if (!data.ruta) {
+            url += ``
+        } else {
+            url += `${data.ruta}`
+        }
 
         switch (data.petition) {
             case 'get':

@@ -317,6 +317,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
                 this.tareasFalta = falta.length
                 this.tareasCulminado = culminado.length
+
+                console.log(this.grupos)
                 break
             case 'save-tarea-cabecera-grupos':
                 this.showModal = false

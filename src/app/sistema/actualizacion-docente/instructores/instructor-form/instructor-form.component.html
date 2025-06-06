@@ -30,6 +30,7 @@
                     type="button"
                     icon="pi pi-search"
                     label="Buscar"
+                    (click)="buscarDni()"
                 ></button>
             </div>
         </div>
@@ -45,6 +46,7 @@
                     type="text"
                     pInputText
                     placeholder="Nombre del Instructor"
+                    formControlName="cPersNombre"
                 />
             </p-inputGroup>
         </div>
@@ -58,6 +60,7 @@
                     type="text"
                     pInputText
                     placeholder="Apellido Paterno"
+                    formControlName="cPersPaterno"
                 />
             </p-inputGroup>
         </div>
@@ -71,6 +74,7 @@
                     type="text"
                     pInputText
                     placeholder="Apellido Materno"
+                    formControlName="cPersMaterno"
                 />
             </p-inputGroup>
         </div>
@@ -84,6 +88,7 @@
                     type="text"
                     pInputText
                     placeholder="Dirección"
+                    formControlName="cPersDomicilio"
                 />
             </p-inputGroup>
         </div>
@@ -97,6 +102,7 @@
                     type="text"
                     pInputText
                     placeholder="Correo Electrónico"
+                    formControlName="cInscripCorreo"
                 />
             </p-inputGroup>
         </div>
@@ -105,7 +111,13 @@
                 <p-inputGroupAddon>
                     <i class="pi pi-phone"></i>
                 </p-inputGroupAddon>
-                <input id="name" type="text" pInputText placeholder="Celular" />
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Celular"
+                    formControlName="cInscripCel"
+                />
             </p-inputGroup>
         </div>
     </form>

@@ -25,6 +25,8 @@ export class CardCapacitacionesComponent {
             : '/images/recursos/miss-lesson-animate.svg'
     }
     mostrarInscritos() {
-        this.verDetalle.emit(this.capacitacion.iCapacitacionId.toString())
+        // console.log('mostrarInscritos', this.capacitacion)
+        // this.verDetalle.emit(this.capacitacion.iCapacitacionId.toString())
+        this.verDetalle.emit(this.capacitacion)
     }
 }

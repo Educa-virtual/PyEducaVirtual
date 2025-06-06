@@ -330,8 +330,8 @@ export class AperturaCursoComponent implements OnInit {
     //
     seleccionarImagen(event: any) {
         const index = event.detail.index // Acceder al índice correcto
-        const imagenSeleccionada = this.portada[index] // Obtiene la imagen según el índice
-        console.log('Imagen seleccionada:', imagenSeleccionada)
+        this.portada[index] // Obtiene la imagen según el índice
+        // console.log('Imagen seleccionada:', imagenSeleccionada)
 
         // Guardar el ID en el formulario
         // this.formNuevaCapacitacion.patchValue({
@@ -483,20 +483,6 @@ export class AperturaCursoComponent implements OnInit {
                                 console.error('Comentario:', error)
                             },
                         })
-                        // ------------------------
-                        // this._aulaService.guardarCapacitacion(data).subscribe((data)=>{
-                        // Mensaje de guardado(opcional)
-                        // this.messageService.add({
-                        //     severity: 'success',
-                        //     summary: 'Guardado',
-                        //     detail: 'Acción éxitosa',
-                        // })
-                        // console.log(
-                        //     'datos de curso',
-                        //     this.formNuevaCapacitacion.value
-                        // )
-                        // this.formNuevaCapacitacion.reset()
-                        // })
                     },
                     reject: () => {
                         // Mensaje de cancelación (opcional)
@@ -607,7 +593,7 @@ export class AperturaCursoComponent implements OnInit {
                 ...instructor, // Mantiene los datos existentes
                 nombreLargo: `${instructor.cPersNombre} ${instructor.cPersPaterno} ${instructor.cPersMaterno}`, // Concatenar nombres
             }))
-            console.log('instructor', this.instructores)
+            // console.log('instructor', this.instructores)
             // // Aquí actualizas el nombre en el formulario
             //   this.formNuevaCapacitacion.patchValue({
             //     nombreLargo: `${this.instructores.cPersPaterno} ${this.instructores.cPersMaterno} ${this.instructores.cPersNombre}`,});

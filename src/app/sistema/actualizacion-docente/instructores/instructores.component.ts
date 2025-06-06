@@ -30,42 +30,42 @@ export class InstructoresComponent implements OnInit {
             cDatosInstructor:
                 '<b>Nombres y Apellidos: </b>Juan Pérez.<br><b>Correo Electrónico: </b>juan.perez@example.com<br><b>Teléfono: </b>987654321',
             bCredencial: true,
-            iEstado: '1',
+            cEstado: '<font color="red"><b>Activo</b></font>',
         },
         {
             id: 2,
             cDatosInstructor:
                 '<b>Nombres y Apellidos: </b>María Gómez.<br><b>Correo Electrónico: </b>maria.gomez@example.com<br><b>Teléfono: </b>987654322',
             bCredencial: false,
-            iEstado: '2',
+            cEstado: '<b>Activo</b>',
         },
         {
             id: 3,
             cDatosInstructor:
                 '<b>Nombres y Apellidos: </b>Luis Rodríguez.<br><b>Correo Electrónico: </b>luis.rodriguez@example.com<br><b>Teléfono: </b>987654323',
             bCredencial: true,
-            iEstado: '1',
+            cEstado: '<b>Activo</b>',
         },
         {
             id: 4,
             cDatosInstructor:
                 '<b>Nombres y Apellidos: </b>Ana Torres.<br><b>Correo Electrónico: </b>ana.torres@example.com<br><b>Teléfono: </b>987654324',
             bCredencial: true,
-            iEstado: '1',
+            cEstado: '<b>Activo</b>',
         },
         {
             id: 5,
             cDatosInstructor:
                 '<b>Nombres y Apellidos: </b>Pedro Martínez.<br><b>Correo Electrónico: </b>pedro.martinez@example.com<br><b>Teléfono: </b>987654325',
             bCredencial: false,
-            iEstado: '2',
+            cEstado: '<b>Activo</b>',
         },
         {
             id: 6,
             cDatosInstructor:
                 '<b>Nombres y Apellidos: </b>Laura Fernández.<br><b>Correo Electrónico: </b>laura.fernandez@example.com<br><b>Teléfono: </b>987654326',
             bCredencial: true,
-            iEstado: '1',
+            cEstado: '<b>Activo</b>',
         },
     ]
 
@@ -97,6 +97,14 @@ export class InstructoresComponent implements OnInit {
             text: 'center',
         },
         {
+            type: 'item-innerHtml',
+            width: '2rem',
+            field: 'cEstado',
+            header: 'Estado',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
             type: 'actions',
             width: '1rem',
             field: '',
@@ -113,7 +121,6 @@ export class InstructoresComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-succes p-button-text',
-            isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
         },
         {
             labelTooltip: 'Eliminar',
@@ -121,7 +128,6 @@ export class InstructoresComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: (row) => row.iEstado === '1',
         },
     ]
 

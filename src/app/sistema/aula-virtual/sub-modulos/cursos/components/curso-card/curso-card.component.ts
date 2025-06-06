@@ -21,4 +21,10 @@ export class CursoCardComponent {
     updateUrl(item) {
         item.cCursoImagen = 'cursos/images/no-image.jpg'
     }
+
+    getUrlImg(cCursoImagen: string) {
+        return cCursoImagen
+            ? '/' + cCursoImagen
+            : '/cursos/images/SVG/no-imagen.svg'
+    }
 }

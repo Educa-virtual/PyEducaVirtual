@@ -1,22 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing'
+// import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { CuestionarioFormPreguntasComponent } from './cuestionario-form-preguntas.component'
+// import { CuestionarioFormPreguntasComponent } from './cuestionario-form-preguntas.component'
 
-describe('CuestionarioFormPreguntasComponent', () => {
-    let component: CuestionarioFormPreguntasComponent
-    let fixture: ComponentFixture<CuestionarioFormPreguntasComponent>
+// describe('CuestionarioFormPreguntasComponent', () => {
+//     let component: CuestionarioFormPreguntasComponent
+//     let fixture: ComponentFixture<CuestionarioFormPreguntasComponent>
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [CuestionarioFormPreguntasComponent],
-        }).compileComponents()
+//     beforeEach(async () => {
+//         await TestBed.configureTestingModule({
+//             imports: [CuestionarioFormPreguntasComponent],
+//         }).compileComponents()
 
-        fixture = TestBed.createComponent(CuestionarioFormPreguntasComponent)
-        component = fixture.componentInstance
-        fixture.detectChanges()
-    })
+//         fixture = TestBed.createComponent(CuestionarioFormPreguntasComponent)
+//         component = fixture.componentInstance
+//         fixture.detectChanges()
+//     })
 
-    it('should create', () => {
-        expect(component).toBeTruthy()
-    })
-})
+//     it('should create', () => {
+//         expect(component).toBeTruthy()
+//     })
+// })

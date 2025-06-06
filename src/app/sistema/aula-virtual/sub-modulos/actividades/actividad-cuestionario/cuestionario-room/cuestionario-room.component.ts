@@ -76,7 +76,6 @@ export class CuestionarioRoomComponent implements OnInit {
         this.GeneralService.getGralPrefixx(data).subscribe({
             next: (resp) => {
                 this.cuestionario = resp.data.length ? resp.data[0] : {}
-                console.log('Respuesta del cuestionario:', this.cuestionario)
             },
             error: (err) => {
                 console.error('Error obteniendo cuestionario:', err)

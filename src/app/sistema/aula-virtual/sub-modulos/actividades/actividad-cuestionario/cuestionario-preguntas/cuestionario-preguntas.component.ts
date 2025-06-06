@@ -23,12 +23,17 @@ import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-pregunt
 })
 export class CuestionarioPreguntasComponent {
     private _ConstantesService = inject(ConstantesService)
+
     backend = environment.backend
     totalPregunta: number = 0
     preguntas: any[] = []
     showModal: boolean = false
     titulo: string = ''
     opcion: string = ''
+    codigoTipoPregunta: string = ''
+    selectedOption!: number
+    selectedDropdown!: number
+
     init: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
@@ -123,6 +128,43 @@ export class CuestionarioPreguntasComponent {
             cTipoPregunta: 'Cuadrícula de casillas',
             cIcon: 'pi-table',
             cCodeTipoPreg: 'TIP-PREG-CUAD-CASILLA',
+        },
+    ]
+
+    data: any = [
+        {
+            id: 1,
+            nombre: 'Pregunta 1',
+            tipoCuestionario: 'TIP-PREG-TEXTO',
+            estado: 'Activo',
+        },
+        {
+            id: 2,
+            nombre: 'Pregunta 2 Opciones',
+            tipoCuestionario: 'TIP-PREG-OPCIONES',
+            opciones: [
+                { id: 1, label: 'Si son opciones' },
+                { id: 2, label: 'No son opciones' },
+                { id: 3, label: 'Quizás son opciones' },
+            ],
+            estado: 'Activo',
+        },
+        {
+            id: 3,
+            nombre: 'Pregunta 3',
+            tipoCuestionario: 'TIP-PREG-CASILLA',
+            estado: 'Activo',
+        },
+        {
+            id: 4,
+            nombre: 'Pregunta 4',
+            tipoCuestionario: 'TIP-PREG-DESPLEGABLE',
+            opciones: [
+                { id: 1, label: 'Si son opciones' },
+                { id: 2, label: 'No son opciones' },
+                { id: 3, label: 'Quizás son opciones' },
+            ],
+            estado: 'Activo',
         },
     ]
 

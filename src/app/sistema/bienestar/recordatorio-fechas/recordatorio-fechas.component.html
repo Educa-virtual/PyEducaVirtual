@@ -1,1 +1,105 @@
-<p>recordatorio-fechas works!</p>
+<!-- <p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            Recordatorio de Cumpleaños
+        </span>
+    </ng-template>
+
+  <form [formGroup]="searchForm">
+            <div class="grid mb-3">
+              <div class="col-12 md:col-8">
+                <div class="flex align-items-center">
+                        <p-checkbox 
+                            [(ngModel)]="notificar"
+                            label="Si" 
+                            name="notificar" 
+                            value="Si" />
+                    </div>
+                    <div class="flex align-items-center">
+                        <p-checkbox 
+                            [(ngModel)]="notificar"
+                            label="No"
+                            name="No" 
+                            value="No" />
+                    </div>
+
+              </div>
+
+            <div class="col-12 md:col-4">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Categoría </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="dias_restantes"
+                        formControlName="iCategoriaEncuestaId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        placeholder="Seleccione"
+                        styleClass="group-element"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            </div>
+    </form> -->
+
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            Recordatorio de Cumpleaños
+        </span>
+    </ng-template>
+
+    <form [formGroup]="searchForm">
+        <div class="grid mb-3">
+            <div class="col-12 md:col-6">
+                <div class="flex align-items-center gap-3">
+                    <label for="notificar" class="font-bold"
+                        >¿Quiere ser Notificado?</label
+                    >
+                    <p-checkbox
+                        [(ngModel)]="notificar"
+                        label="Sí"
+                        name="notificar"
+                        value="Sí"
+                    >
+                    </p-checkbox>
+                    <p-checkbox
+                        [(ngModel)]="notificar"
+                        label="No"
+                        name="notificar"
+                        value="No"
+                    >
+                    </p-checkbox>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        ¿Con que frecuencia desea que se le notifique?
+                    </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="dias_restantes"
+                        formControlName="iCategoriaEncuestaId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        placeholder="Seleccione"
+                        styleClass="group-element"
+                        [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+        </div>
+    </form>
+    <!-- </p-panel> -->
+
+    <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="notificaciones"
+        (accionBtnItem)="accionBnt($event)"
+        [actions]="accionesTabla"
+        [showCaption]="false"
+    />
+</p-panel>

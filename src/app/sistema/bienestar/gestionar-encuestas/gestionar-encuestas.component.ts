@@ -34,7 +34,7 @@ export class GestionarEncuestasComponent implements OnInit {
     searchForm: FormGroup
     categorias: Array<object>
     dialog_visible: boolean = false
-    dialog_header: string = 'Registrar encuesta'
+    dialog_header: string = 'Registrar Notificacion'
 
     constructor(
         private fb: FormBuilder,

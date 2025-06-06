@@ -44,3 +44,287 @@
         </div>
     </ng-container>
 </p-dialog>
+
+<p-dialog
+    [header]="'Ficha de Inscripción'"
+    [(visible)]="showModalInscripcion"
+    [modal]="true"
+    [style]="{ width: '40rem' }"
+>
+    <form [formGroup]="formIncripcion" class="grid mt-4">
+        <div class="col-12">
+            <div class="custom-flex-group">
+                <p-dropdown
+                    [options]="tiposIdentificaciones"
+                    placeholder="Sele..."
+                    optionValue="iTipoIdentId"
+                    optionLabel="cTipoIdentSigla"
+                    [appendTo]="'body'"
+                    styleClass="w-full"
+                    formControlName="iTipoIdentId"
+                ></p-dropdown>
+                <input
+                    id="dni"
+                    type="text"
+                    formControlName="dni"
+                    pInputText
+                    class="flex-input"
+                    placeholder="Ingresar número"
+                    (keydown.enter)="buscarDni()"
+                />
+                <p-button
+                    label="Buscar"
+                    icon="pi pi-search"
+                    [loading]="loading"
+                    (onClick)="buscarDni()"
+                />
+            </div>
+        </div>
+
+        <div class="col-12">
+            <p-divider></p-divider>
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Nombre del Instructor"
+                    formControlName="cPersNombre"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Apellido Paterno"
+                    formControlName="cPersPaterno"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Apellido Materno"
+                    formControlName="cPersMaterno"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-home"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Dirección"
+                    formControlName="cPersDomicilio"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-7">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-at"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Correo Electrónico"
+                    formControlName="cInscripCorreo"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-phone"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Celular"
+                    formControlName="cInscripCel"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-toast />
+            <p-fileUpload
+                name="demo[]"
+                url="https://www.primefaces.org/cdn/api/upload.php"
+                (onUpload)="onUpload($event)"
+                [multiple]="true"
+                accept="image/*"
+                maxFileSize="1000000"
+            >
+                <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFiles.length">
+                        <li *ngFor="let file of uploadedFiles">
+                            {{ file.name }} - {{ file.size }} bytes
+                        </li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+        </div>
+    </form>
+    <div footer class="flex justify-content-end gap-2 mt-4">
+        <!-- <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        /> -->
+        <button
+            type="submit"
+            pButton
+            icon="pi pi-send"
+            label="Guardar"
+            class="p-button-success"
+            (click)="guardarInscripcion()"
+        ></button>
+    </div>
+</p-dialog>
+<p-toast />
+<!-- <app-modal-primeng
+    [title]="'Nuevo Instructor'"
+    [showModal]="showModalInscripcion"
+    (accionBtnItem)="accionBnt($event)"
+    width="35rem"
+    *ngIf="formIncripcion"
+>
+    <form [formGroup]="formIncripcion" class="grid mt-4">
+        <div class="col-12">
+            <div class="custom-flex-group">
+                <p-dropdown
+                    [options]="tiposIdentificaciones"
+                    placeholder="Sele..."
+                    optionValue="iTipoIdentId"
+                    optionLabel="cTipoIdentSigla"
+                    [appendTo]="'body'"
+                    styleClass="w-full"
+                    formControlName="iTipoIdentId"
+                ></p-dropdown>
+                <input
+                    id="dni"
+                    type="text"
+                    formControlName="dni"
+                    pInputText
+                    class="flex-input"
+                    placeholder="Ingresar número"
+                />
+                <button
+                    pButton
+                    type="button"
+                    icon="pi pi-search"
+                    label="Buscar"
+                ></button>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <p-divider></p-divider>
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Nombre del Instructor"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Apellido Paterno"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Apellido Materno"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-home"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Dirección"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-7">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-at"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Correo Electrónico"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-phone"></i>
+                </p-inputGroupAddon>
+                <input id="name" type="text" pInputText placeholder="Celular" />
+            </p-inputGroup>
+        </div>
+    </form>
+    <div footer class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
+        <button
+            type="submit"
+            pButton
+            label="Guardar Instructor"
+            class="p-button-success"
+        ></button>
+    </div>
+</app-modal-primeng> -->

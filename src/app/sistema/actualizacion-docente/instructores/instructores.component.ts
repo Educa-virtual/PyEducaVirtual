@@ -134,6 +134,7 @@ export class InstructoresComponent implements OnInit {
                 this.showModal = false
                 break
             case 'editar':
+                this.mostrarModalEditar(item)
                 break
             case 'eliminar':
                 this.eliminarInstructor(item)
@@ -158,5 +159,11 @@ export class InstructoresComponent implements OnInit {
     eliminarInstructor(item: any): void {
         // Implementar lógica para eliminar instructor
         console.log('Eliminar instructor:', item)
+    }
+    persona: any
+    mostrarModalEditar(event: string) {
+        this.persona = event
+        console.log('no se', event)
+        this.showModal = true
     }
 }

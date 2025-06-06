@@ -64,7 +64,7 @@
 
                     <div class="col-12 md:col-4">
                         <h3 class="text-lg m-0">Instrucciones:</h3>
-                        <div class="bg-blue-100 p-3 border-round text-center">
+                        <div class="bg-blue-100 p-3 border-round">
                             <!-- <p-editor
                                 appEditorOnlyView
                                 class="quill-only-view"
@@ -72,7 +72,7 @@
                             >
                             
                             </p-editor> -->
-                            {{ data?.cTareaDescripcion }}
+                            <div [innerHTML]="data?.cTareaDescripcion"></div>
                         </div>
                     </div>
                 </div>

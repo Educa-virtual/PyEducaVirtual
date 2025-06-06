@@ -8,6 +8,7 @@ import {
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
     APODERADO,
+    AUXILIAR,
 } from './perfilesConstantes'
 import {
     ADMINISTRADOR_DREMO,
@@ -562,6 +563,34 @@ const apoderado = [
     },
 ]
 
+const auxiliar = [
+    {
+        label: 'Auxiliar',
+        items: [
+            {
+                label: 'Asistencia',
+                icon: 'pi pi-qrcode',
+                routerLink: ['asistencia-auxiliar'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
+        ],
+    },
+]
+
 const first = [
     {
         items: [inicio],
@@ -605,9 +634,10 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
-
             case APODERADO:
                 return apoderado
+            case AUXILIAR:
+                return auxiliar
 
             default:
                 return first

@@ -8,6 +8,8 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { InstructorFormComponent } from './instructor-form/instructor-form.component'
 import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identificaciones.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-instructores',
@@ -23,51 +25,55 @@ import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identifi
 })
 export class InstructoresComponent implements OnInit {
     private _TiposIdentificacionesService = inject(TiposIdentificacionesService)
+    private _constantesService = inject(ConstantesService)
+    private GeneralService = inject(GeneralService)
 
-    data: any[] = [
-        {
-            id: 1,
-            cDatosInstructor:
-                '<b>Nombres y Apellidos: </b>Juan Pérez.<br><b>Correo Electrónico: </b>juan.perez@example.com<br><b>Teléfono: </b>987654321',
-            bCredencial: true,
-            cEstado: '<font color="red"><b>Activo</b></font>',
-        },
-        {
-            id: 2,
-            cDatosInstructor:
-                '<b>Nombres y Apellidos: </b>María Gómez.<br><b>Correo Electrónico: </b>maria.gomez@example.com<br><b>Teléfono: </b>987654322',
-            bCredencial: false,
-            cEstado: '<b>Activo</b>',
-        },
-        {
-            id: 3,
-            cDatosInstructor:
-                '<b>Nombres y Apellidos: </b>Luis Rodríguez.<br><b>Correo Electrónico: </b>luis.rodriguez@example.com<br><b>Teléfono: </b>987654323',
-            bCredencial: true,
-            cEstado: '<b>Activo</b>',
-        },
-        {
-            id: 4,
-            cDatosInstructor:
-                '<b>Nombres y Apellidos: </b>Ana Torres.<br><b>Correo Electrónico: </b>ana.torres@example.com<br><b>Teléfono: </b>987654324',
-            bCredencial: true,
-            cEstado: '<b>Activo</b>',
-        },
-        {
-            id: 5,
-            cDatosInstructor:
-                '<b>Nombres y Apellidos: </b>Pedro Martínez.<br><b>Correo Electrónico: </b>pedro.martinez@example.com<br><b>Teléfono: </b>987654325',
-            bCredencial: false,
-            cEstado: '<b>Activo</b>',
-        },
-        {
-            id: 6,
-            cDatosInstructor:
-                '<b>Nombres y Apellidos: </b>Laura Fernández.<br><b>Correo Electrónico: </b>laura.fernandez@example.com<br><b>Teléfono: </b>987654326',
-            bCredencial: true,
-            cEstado: '<b>Activo</b>',
-        },
-    ]
+    data: any[] = []
+
+    // data: any[] = [
+    //     {
+    //         id: 1,
+    //         cDatosInstructor:
+    //             '<b>Nombres y Apellidos: </b>Juan Pérez.<br><b>Correo Electrónico: </b>juan.perez@example.com<br><b>Teléfono: </b>987654321',
+    //         bCredencial: true,
+    //         cEstado: '<font color="red"><b>Activo</b></font>',
+    //     },
+    //     {
+    //         id: 2,
+    //         cDatosInstructor:
+    //             '<b>Nombres y Apellidos: </b>María Gómez.<br><b>Correo Electrónico: </b>maria.gomez@example.com<br><b>Teléfono: </b>987654322',
+    //         bCredencial: false,
+    //         cEstado: '<b>Activo</b>',
+    //     },
+    //     {
+    //         id: 3,
+    //         cDatosInstructor:
+    //             '<b>Nombres y Apellidos: </b>Luis Rodríguez.<br><b>Correo Electrónico: </b>luis.rodriguez@example.com<br><b>Teléfono: </b>987654323',
+    //         bCredencial: true,
+    //         cEstado: '<b>Activo</b>',
+    //     },
+    //     {
+    //         id: 4,
+    //         cDatosInstructor:
+    //             '<b>Nombres y Apellidos: </b>Ana Torres.<br><b>Correo Electrónico: </b>ana.torres@example.com<br><b>Teléfono: </b>987654324',
+    //         bCredencial: true,
+    //         cEstado: '<b>Activo</b>',
+    //     },
+    //     {
+    //         id: 5,
+    //         cDatosInstructor:
+    //             '<b>Nombres y Apellidos: </b>Pedro Martínez.<br><b>Correo Electrónico: </b>pedro.martinez@example.com<br><b>Teléfono: </b>987654325',
+    //         bCredencial: false,
+    //         cEstado: '<b>Activo</b>',
+    //     },
+    //     {
+    //         id: 6,
+    //         cDatosInstructor:
+    //             '<b>Nombres y Apellidos: </b>Laura Fernández.<br><b>Correo Electrónico: </b>laura.fernandez@example.com<br><b>Teléfono: </b>987654326',
+    //         bCredencial: true,
+    //         cEstado: '<b>Activo</b>',
+    //     },
+    // ]
 
     tiposIdentificaciones: any[] = []
     showModal: boolean = false
@@ -133,6 +139,7 @@ export class InstructoresComponent implements OnInit {
 
     ngOnInit(): void {
         this.obtenerTipoIdentificaciones()
+        this.obtenerInstructores()
     }
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -171,5 +178,21 @@ export class InstructoresComponent implements OnInit {
         this.persona = event
         console.log('no se', event)
         this.showModal = true
+    }
+    // metodo para obtener instructores
+    obtenerInstructores() {
+        const params = {
+            petition: 'get',
+            group: 'cap',
+            prefix: 'instructores',
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+            this.data = (Data as any)['data']
+            // console.log('Datos persona:', this.data);
+        })
     }
 }

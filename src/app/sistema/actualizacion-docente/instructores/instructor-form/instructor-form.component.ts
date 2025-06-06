@@ -160,4 +160,37 @@ export class InstructorFormComponent implements OnChanges {
             }
         }
     }
+    data
+    // método para guardar instructor
+    guardarInstructor() {
+        const data = {
+            iPersId: this.persona?.iPersId || null,
+            iTipoIdentId: this.instructorForm.get('iTipoIdentId')?.value,
+            cPersDocumento: this.instructorForm.get('dni')?.value,
+            cPersNombre: this.instructorForm.get('cPersNombre')?.value,
+            cPersPaterno: this.instructorForm.get('cPersPaterno')?.value,
+            cPersMaterno: this.instructorForm.get('cPersMaterno')?.value,
+            cPersCel: this.instructorForm.get('cInscripCel')?.value,
+            cPersCorreo: this.instructorForm.get('cInscripCorreo')?.value,
+            cPersDireccion: this.instructorForm.get('cPersDomicilio')?.value,
+            iCredId: this._constantesService.iCredId,
+        }
+        const params = {
+            petition: 'post',
+            group: 'cap',
+            prefix: 'instructores',
+            data: data,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+            this.data = (Data as any)['data']
+            this.instructorForm.reset()
+            this.showModal = false
+            // console.log('Datos persona:', this.data);
+        })
+        console.log('datos a guardar', data)
+    }
 }

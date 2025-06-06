@@ -18,7 +18,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identificaciones.service'
-import { MessageService } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { FileUploadModule } from 'primeng/fileupload'
 
@@ -55,6 +55,8 @@ export class DetalleInscripcionComponent implements OnInit {
     tiposIdentificaciones: any[] = []
     persona: any // variable para guardar al buscar dni
     uploadedFiles: any[] = []
+    datosCurso: any // variable para guardar los datos del curso
+    tituloCurso: Message[] = []
 
     public formIncripcion: FormGroup = this._formBuilder.group({
         iTipoIdentId: ['', [Validators.required]],
@@ -65,6 +67,7 @@ export class DetalleInscripcionComponent implements OnInit {
         cPersDomicilio: ['', [Validators.required]],
         cInscripCorreo: ['', [Validators.required]],
         cInscripCel: ['', [Validators.required]],
+        cIieeNombre: ['', [Validators.required]],
         cVoucher: ['', [Validators.required]],
     })
     constructor(private messageService: MessageService) {}
@@ -210,17 +213,19 @@ export class DetalleInscripcionComponent implements OnInit {
         console.log(this.alumnoSelect)
         this.showModal = true
     }
+
     // obtener las solicitudes del curso
     obtenerSolicitudesXCurso() {
+        this.datosCurso = this.id
         const iCredId = this._ConstantesService.iCredId
         const data = {
-            iCapacitacionId: this.id,
+            iCapacitacionId: this.datosCurso.iCapacitacionId,
             iCredId: iCredId,
         }
         this._capService.listarInscripcionxcurso(data).subscribe({
             next: (res: any) => {
                 this.alumnos = res['data']
-                console.log('datos del Alumnos incritos', this.alumnos)
+                // console.log('datos del Alumnos incritos', this.alumnos)
             },
         })
     }
@@ -266,11 +271,9 @@ export class DetalleInscripcionComponent implements OnInit {
                         })
                         return
                     } else {
-                        const iCapacitacionId = this.id
                         // Obtner datos para buscar la persona
                         const data = {
                             iTipoIdentId: idtipoDocumento,
-                            iCapacitacionId: iCapacitacionId,
                             iPersId: '',
                             cPersDocumento: dni,
                         }
@@ -284,18 +287,19 @@ export class DetalleInscripcionComponent implements OnInit {
                                 iCredId: this._constantesService.iCredId,
                             },
                         }
-                        console.log('datos a guardar', params)
                         // Servicio para buscar la persona
                         this.GeneralService.getGralPrefixx(params).subscribe(
-                            (Data) => {
-                                this.persona = (Data as any)['data']
-                                console.log('Datos persona', this.persona)
-
+                            (Data: any) => {
+                                // this.persona = (Data as any)['data']
+                                this.persona = Data.data // ← Accede al primer objeto del array "data"
+                                this.instituciones = Data.instituciones || [] // ← Asigna el segundo array
+                                // console.log('Datos persona:', this.persona);
+                                // console.log('Otra data:', this.instituciones);
                                 // Aquí actualizas el nombre en el formulario
                                 this.formIncripcion.patchValue({
                                     cPersNombre: this.persona.cPersNombre,
-                                    cPersPaterno: this.persona.cPersMaterno,
-                                    cPersMaterno: this.persona.cPersPaterno,
+                                    cPersPaterno: this.persona.cPersPaterno,
+                                    cPersMaterno: this.persona.cPersMaterno,
                                     cPersDomicilio: this.persona.cPersDomicilio,
                                     // nombreLargo: `${this.persona.cPersPaterno} ${this.persona.cPersMaterno} ${this.persona.cPersNombre}`,
                                 })
@@ -310,6 +314,7 @@ export class DetalleInscripcionComponent implements OnInit {
             }
         }
     }
+    instituciones: any[] = [] // Datos de instituciones educativas
 
     // metodo para subir el archivo
     onUpload(event: any) {
@@ -336,15 +341,15 @@ export class DetalleInscripcionComponent implements OnInit {
     guardarInscripcion() {
         const datos = this.formIncripcion.value
         const data = {
-            iCapacitacionId: this.id,
+            iCapacitacionId: this.datosCurso.iCapacitacionId,
             iPersId: this.persona.iPersId,
             cInscripCorreo: datos.cInscripCorreo,
             cInscripCel: datos.cInscripCel,
-            iIieeId: 1,
+            iIieeId: datos.cIieeNombre, // Institución Educativa ID
             iCredId: this._constantesService.iCredId, // Credencial ID
             cVoucher: 'noGuarda_DX.png', // Nombre del archivo
         }
-        console.log('datos de guardar', data)
+        // console.log('datos de guardar', data)
         // /cap/inscripciones/inscripcion`,
         const params = {
             petition: 'post',
@@ -374,8 +379,7 @@ export class DetalleInscripcionComponent implements OnInit {
             .subscribe({
                 next: (response: any) => {
                     this.tiposIdentificaciones = response.data
-
-                    console.log('tipodedato', this.tiposIdentificaciones)
+                    // console.log('tipodedato', this.tiposIdentificaciones)
                 },
                 error: (error) => {
                     console.error(
@@ -387,7 +391,14 @@ export class DetalleInscripcionComponent implements OnInit {
     }
     // mostrar el modal para inscribir en el curso desde administrador
     mostrarInscripcion() {
-        console.log('datos del curso')
         this.showModalInscripcion = true
+
+        this.tituloCurso = [
+            {
+                severity: 'info',
+                detail: 'Título del curso: ' + this.datosCurso.cCapTitulo,
+                // life: 5000,
+            },
+        ]
     }
 }

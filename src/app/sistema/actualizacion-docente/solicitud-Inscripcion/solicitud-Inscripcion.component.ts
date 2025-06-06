@@ -63,7 +63,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     tipoCapacitacionSearch: any[] = [] // Datos de tipo de capacitación para búsqueda
     iTipoCapId: any = 0
     dropdownStyle: boolean = false
-    capacitaciones
+    capacitaciones: any[] = [] // Datos de capacitaciones
     paginator = {
         first: 0,
         rows: 5,
@@ -99,6 +99,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this._aulaService.obtenerCapacitacion(data).subscribe({
             next: (res: any) => {
                 this.data = res['data']
+                console.log('Capacitaciones:', this.data)
                 this.capacitaciones = [...this.data] // cargar desde servicio o mock
                 this.paginator.total = this.capacitaciones.length
                 this.onPageChange({ first: 0, rows: this.paginator.rows }) // inicial
@@ -139,7 +140,8 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         this.onPageChange({ first: 0, rows: itemsPerPage })
     }
 
-    onVerDetalle(id: string) {
+    onVerDetalle(id: any) {
+        // console.log('onVerDetalle', id)
         this.idSeleccionado = id
         this.detalleVisible = true
     }

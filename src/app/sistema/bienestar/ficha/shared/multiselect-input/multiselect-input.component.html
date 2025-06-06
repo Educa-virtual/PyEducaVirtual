@@ -1,0 +1,31 @@
+<p-inputGroup styleClass="vertical-group">
+    <p-inputGroupAddon>
+        {{ addonLabel }}
+    </p-inputGroupAddon>
+    <p-multiSelect
+        display="chip"
+        [options]="multiselectItems"
+        [formControl]="multiselectControl"
+        [filter]="filter"
+        [showClear]="showClear"
+        [appendTo]="'body'"
+        [placeholder]="multiselectPlaceholder"
+        [maxSelectedLabels]="undefined"
+        (onChange)="handleDropdownChange($event)"
+        (onClear)="handleDropdownChange($event)"
+        [style]="{ flex: '1', width: '100%' }"
+        styleClass="group-element"
+        [showToggleAll]="showToggleAll"
+    />
+    @if (visibleInput === true) {
+        <input
+            pInputText
+            [formControl]="inputControl"
+            [placeholder]="inputPlaceholder"
+            [type]="inputType"
+            class="group-element"
+            [required]="inputRequired"
+            [value]="inputControl.value"
+        />
+    }
+</p-inputGroup>

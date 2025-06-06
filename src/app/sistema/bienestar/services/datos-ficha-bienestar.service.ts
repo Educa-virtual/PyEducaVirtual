@@ -13,6 +13,7 @@ import { FichaAlimentacion } from '../interfaces/FichaAlimentacion'
 import { FichaRecreacion } from '../interfaces/fichaRecreacion'
 import { FichaSalud } from '../interfaces/FichaSalud'
 import { FichaDiscapacidad } from '../interfaces/FichaDiscapacidad'
+import { FormGroup } from '@angular/forms'
 
 const baseUrl = environment.backendApi
 
@@ -79,6 +80,12 @@ export class DatosFichaBienestarService implements OnDestroy {
     dolencias: Array<object>
     pandemias: Array<object>
     seguros_salud: Array<object>
+
+    /* ficha recreacion */
+    deportes: Array<object>
+    transportes: Array<object>
+    pasatiempos: Array<object>
+    actividades: Array<object>
 
     formGeneral: FichaGeneral
     formFamiliar: FichaFamiliar
@@ -211,11 +218,8 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchFichaRecreacion(data: any) {
-        return this.http.post(
-            `${baseUrl}/bienestar/searchFichaRecreacion`,
-            data
-        )
+    verFichaRecreacion(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaRecreacion`, data)
     }
 
     guardarFichaRecreacion(data: any) {
@@ -612,6 +616,50 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.seguros_salud
     }
 
+    getDeportes(data: any) {
+        if (!this.deportes && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iDeporteId,
+                label: item.cDeporteNombre,
+            }))
+        }
+        return this.deportes
+    }
+
+    getTransportes(data: any) {
+        if (!this.transportes && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTransporteId,
+                label: item.cTransporteNombre,
+            }))
+        }
+        return this.transportes
+    }
+
+    getPasatiempos(data: any) {
+        if (!this.pasatiempos && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iPasaTiempoId,
+                label: item.cPasaTiempoNombre,
+            }))
+        }
+        return this.pasatiempos
+    }
+
+    getActividades(data: any) {
+        if (!this.actividades && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iPasaTiempoId,
+                label: item.cPasaTiempoNombre,
+            }))
+        }
+        return this.actividades
+    }
+
     getRangosSueldo(data: any) {
         if (!this.rangos_sueldo && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
@@ -719,5 +767,73 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.get(`${baseUrl}/bienestar/ficha-pdf/${id}/${anio}`, {
             responseType: 'blob',
         })
+    }
+
+    /**
+     * FUNCIONES PARA FORMATEAR DATOS EN FORMULARIOS
+     */
+
+    formatearFormControl(
+        form: FormGroup,
+        formControl: string,
+        value: any,
+        tipo: 'number' | 'string' | 'json' | 'boolean'
+    ) {
+        if (tipo === 'number') {
+            form.get(formControl)?.patchValue(value ? +value : null)
+        } else if (tipo === 'boolean') {
+            form.get(formControl)?.patchValue(value == 1 ? true : false)
+        } else if (tipo === 'string') {
+            form.get(formControl)?.patchValue(value)
+        } else if (tipo === 'json') {
+            if (!value) {
+                form.get(formControl)?.patchValue(null)
+            } else {
+                const json = JSON.parse(value)
+                const items = []
+                for (let i = 0; i < json.length; i++) {
+                    items.push(json[i][formControl])
+                }
+                form.get(formControl)?.patchValue(items)
+            }
+        } else {
+            form.get(formControl)?.patchValue(value)
+        }
+    }
+
+    formControlJsonStringify(
+        form: FormGroup,
+        formJson: string,
+        formControl: string | string[] | null
+    ) {
+        form.get(formJson).setValue(null)
+        if (!formControl) {
+            return null
+        }
+        const items = []
+        if (typeof formControl === 'string') {
+            if (form.get(formControl).value === null) {
+                form.get(formJson).setValue(null)
+                return null
+            }
+            console.log(form.get(formControl).value, 'items')
+            form.get(formControl).value.forEach((item) => {
+                items.push({
+                    [formControl]: item,
+                })
+            })
+        } else {
+            formControl.forEach((control) => {
+                if (form.get(control).value === null) {
+                    return null
+                }
+                form.get(control).value.forEach((item) => {
+                    items.push({
+                        [control]: item,
+                    })
+                })
+            })
+        }
+        form.get(formJson).setValue(JSON.stringify(items))
     }
 }

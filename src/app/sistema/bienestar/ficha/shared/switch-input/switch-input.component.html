@@ -1,0 +1,20 @@
+<p-inputGroup styleClass="vertical-group">
+    <p-inputGroupAddon>
+        <p-inputSwitch
+            [formControl]="switchControl"
+            (onChange)="handleSwitchChange($event)"
+        />
+        <span>{{ addonLabel }}</span>
+    </p-inputGroupAddon>
+    @if (visibleInput === true) {
+        <input
+            pInputText
+            [formControl]="inputControl"
+            [placeholder]="inputPlaceholder"
+            [type]="inputType"
+            class="group-element"
+            [required]="inputRequired"
+            [value]="inputControl.value"
+        />
+    }
+</p-inputGroup>

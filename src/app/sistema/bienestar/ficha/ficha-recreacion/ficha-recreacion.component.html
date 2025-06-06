@@ -8,55 +8,38 @@
             <p-fieldset legend="Deportes">
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon
-                                >Deporte que practica</p-inputGroupAddon
-                            >
-                            <p-multiSelect
-                                display="chip"
-                                [options]="deportes"
-                                formControlName="iDeporteId"
-                                [filter]="true"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                multiple="true"
-                                [maxSelectedLabels]="undefined"
-                                (onChange)="handleDropdownChange($event, 0)"
-                                (onClear)="handleDropdownChange($event, 0)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[0] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cDeporteObs"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-multiselect-input
+                            [multiselectItems]="deportes"
+                            multiselectPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(formRecreacion.controls['cDeporteObs'])
+                            "
+                            [multiselectControl]="
+                                $any(formRecreacion.controls['iDeporteId'])
+                            "
+                            addonLabel="Deporte que practica"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="handleSwitchChange($event, 1)"
-                                    name="bFichaDGPerteneceLigaDeportiva"
-                                />
-                                <span>Pertenece a una liga deportiva</span>
-                            </p-inputGroupAddon>
-                            @if (visibleInput[1] === true) {
-                                <input
-                                    type="text"
-                                    name="cFichaDGPerteneceLigaDeportiva"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Pertenece a una liga deportiva?"
+                            inputPlaceholder="Especifique *"
+                            inputType="text"
+                            [switchControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'bFichaDGPerteneceLigaDeportiva'
+                                    ]
+                                )
+                            "
+                            [inputControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'cFichaDGPerteneceLigaDeportiva'
+                                    ]
+                                )
+                            "
+                        />
                     </div>
                 </div>
             </p-fieldset>
@@ -65,113 +48,66 @@
             <p-fieldset legend="Cultura y Recreación">
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon> Religión </p-inputGroupAddon>
-                            <p-dropdown
-                                [options]="religion"
-                                formControlName="iReligionId"
-                                [filter]="false"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                (onChange)="handleDropdownChange($event, 2)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[2] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cReligionObs"
-                                    placeholder="Especifique otra"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-dropdown-input
+                            [dropdownItems]="religiones"
+                            dropdownPlaceholder="Seleccione"
+                            [dropdownControl]="
+                                $any(formRecreacion.controls['iReligionId'])
+                            "
+                            [inputControl]="
+                                $any(formRecreacion.controls['cReligionObs'])
+                            "
+                            addonLabel="Religión"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="handleSwitchChange($event, 3)"
-                                    name="bFichaDGPerteneceCentroArtistico"
-                                />
-                                <span>
-                                    Pertenece a un Centro Artístico o Cultural
-                                </span>
-                            </p-inputGroupAddon>
-                            @if (visibleInput[3] === true) {
-                                <input
-                                    type="text"
-                                    name="cFichaDGPerteneceCentroArtistico"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Pertenece a un Centro Artístico o Cultural?"
+                            inputPlaceholder="Especifique *"
+                            inputType="text"
+                            [switchControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'bFichaDGPerteneceCentroArtistico'
+                                    ]
+                                )
+                            "
+                            [inputControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'cFichaDGPerteneceCentroArtistico'
+                                    ]
+                                )
+                            "
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                Actividad artistica que practica
-                            </p-inputGroupAddon>
-                            <p-multiSelect
-                                display="chip"
-                                [options]="act_artistica"
-                                formControlName="iActArtisticaId"
-                                [filter]="true"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                multiple="true"
-                                [maxSelectedLabels]="undefined"
-                                showToggleAll="false"
-                                (onChange)="handleDropdownChange($event, 4)"
-                                (onClear)="handleDropdownChange($event, 4)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[4] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cActArtisticaObs"
-                                    placeholder="Especifique otra"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-multiselect-input
+                            [multiselectItems]="actividades"
+                            multiselectPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(
+                                    formRecreacion.controls['cActArtisticaObs']
+                                )
+                            "
+                            [multiselectControl]="
+                                $any(formRecreacion.controls['iActArtisticaId'])
+                            "
+                            addonLabel="Actividad artistica que practica"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon> Pasatiempos </p-inputGroupAddon>
-                            <p-multiSelect
-                                display="chip"
-                                [options]="Pasatiempos"
-                                formControlName="iPasaTiempoId"
-                                [filter]="true"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                multiple="true"
-                                [maxSelectedLabels]="undefined"
-                                showToggleAll="false"
-                                (onChange)="handleDropdownChange($event, 5)"
-                                (onClear)="handleDropdownChange($event, 5)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[5] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cPasaTiempoObs"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-multiselect-input
+                            [multiselectItems]="pasatiempos"
+                            multiselectPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(formRecreacion.controls['cPasaTiempoObs'])
+                            "
+                            [multiselectControl]="
+                                $any(formRecreacion.controls['iPasaTiempoId'])
+                            "
+                            addonLabel="Pasatiempos"
+                        />
                     </div>
                 </div>
             </p-fieldset>
@@ -180,68 +116,49 @@
             <p-fieldset legend="Psicopedagógico">
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="handleSwitchChange($event, 6)"
-                                    name="bFichaDGAsistioConsultaPsicologica"
-                                />
-                                <span>
-                                    ¿Alguna vez asistió a una consulta
-                                    psicológica?
-                                </span>
-                            </p-inputGroupAddon>
-                            @if (visibleInput[6] === true) {
-                                <input
-                                    type="text"
-                                    name="cFichaDGAsistioConsultaPsicologica"
-                                    pInputText
-                                    placeholder="Especifique cuando"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿El estudiante recibe atención psicológica?"
+                            inputPlaceholder="Especifique con que frecuencia *"
+                            inputType="text"
+                            [switchControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'bFichaDGAsistioConsultaPsicologica'
+                                    ]
+                                )
+                            "
+                            [inputControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'cFichaDGAsistioConsultaPsicologica'
+                                    ]
+                                )
+                            "
+                        />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <app-multiselect-input
+                            [multiselectItems]="tipos_familiares"
+                            multiselectPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(
+                                    formRecreacion.controls['cTipoFamiliarObs']
+                                )
+                            "
+                            [multiselectControl]="
+                                $any(formRecreacion.controls['iTipoFamiliarId'])
+                            "
+                            addonLabel="¿A quién acude cuando tiene problemas emocionales?"
+                        />
                     </div>
                     <div class="col-12 col-md-6">
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
-                                ¿A quién acude cuando tiene problemas
-                                emocionales?
-                            </p-inputGroupAddon>
-                            <p-multiSelect
-                                display="chip"
-                                [options]="Problememocional"
-                                formControlName="iTipoFamiliarId"
-                                [filter]="true"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                multiple="true"
-                                [maxSelectedLabels]="undefined"
-                                showToggleAll="false"
-                                (onChange)="handleDropdownChange($event, 7)"
-                                (onClear)="handleDropdownChange($event, 7)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[7] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cTipoFamiliarObs"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                ¿Cómo es la relacion con su familia?
+                                ¿Cómo es la relacion del estudiante con su
+                                familia?
                             </p-inputGroupAddon>
                             <p-dropdown
-                                [options]="Relac_familiar"
+                                [options]="relacion_familia"
                                 formControlName="iRelacionPadresId"
                                 [filter]="false"
                                 [showClear]="true"
@@ -259,45 +176,17 @@
             <p-fieldset legend="Transporte">
                 <div class="grid">
                     <div class="col-12 col-md-6">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                Medio de transporte más utilizado
-                            </p-inputGroupAddon>
-                            <p-dropdown
-                                [options]="mTransporteUrbano"
-                                formControlName="iTransporteId"
-                                [filter]="true"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                (onChange)="handleDropdownChange($event, 8)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[8] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cTransporteObs"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                Gasto aprox. diario en pasajes
-                            </p-inputGroupAddon>
-                            <p-inputNumber
-                                formControlName="nTransFichaGastoSoles"
-                                min="1"
-                                showButtons="false"
-                                class="group-element"
-                                mode="decimal"
-                            />
-                        </p-inputGroup>
+                        <app-dropdown-input
+                            [dropdownItems]="transportes"
+                            dropdownPlaceholder="Seleccione"
+                            [dropdownControl]="
+                                $any(formRecreacion.controls['iTransporteId'])
+                            "
+                            [inputControl]="
+                                $any(formRecreacion.controls['cTransporteObs'])
+                            "
+                            addonLabel="Medio de transporte más usado"
+                        />
                     </div>
                 </div>
             </p-fieldset>
@@ -313,23 +202,13 @@
         (onClick)="salir()"
         severity="secondary"
     />
-    @if (!ficha_registrada) {
-        <p-button
-            type="button"
-            label="Guardar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="guardar()"
-        />
-    } @else {
-        <p-button
-            type="button"
-            label="Actualizar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="actualizar()"
-        />
-    }
+    <p-button
+        type="button"
+        label="Actualizar y continuar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="actualizar()"
+    />
 </div>
 
 <p-toast></p-toast>

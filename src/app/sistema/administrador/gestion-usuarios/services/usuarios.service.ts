@@ -81,7 +81,6 @@ export class UsuariosService {
         return this.http.get(`${this.urlBackendApi}/seg/perfiles?tipo=${tipo}`)
     }
 
-    //Genera credenciales para personal de IE y asignacion de credenciales a IE
     registrarUsuario(data: any) {
         return this.http.post(`${this.urlBackendApi}/seg/usuarios`, data)
     }

@@ -277,7 +277,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
 
     preguntarEliminarPerfil(perfil: PerfilAsignado) {
         this.confirmationModalService.openConfirm({
-            header: 'Restablecer contraseña',
+            header: 'Eliminar perfil',
             message: `El perfil ${perfil.cPerfilNombre} será eliminado del usuario, ¿desea continuar?`,
             accept: () => {
                 this.eliminarPerfil(perfil.iCredEntPerfId)
@@ -369,12 +369,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                         this.formAgregarPerfil.get('perfilSeleccionado')?.value,
                     iCursosNivelGradId:
                         this.formAgregarPerfil.get('iCursoSeleccionado')?.value,
-                    cTipo:
-                        +this.formAgregarPerfil.get('perfilSeleccionado')
-                            ?.value == 2
-                            ? 'EspecialistaDre'
-                            : 'PerfilModuloDre',
-                    opcion: 'addPerfilDremo',
+                    opcion: 'dremo',
                 }
                 break
             case 2: //UGEL
@@ -386,7 +381,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                         this.formAgregarPerfil.get('perfilSeleccionado')?.value,
                     iCursosNivelGradId:
                         this.formAgregarPerfil.get('iCursoSeleccionado')?.value,
-                    opcion: 'addPerfilUgel',
+                    opcion: 'ugel',
                 }
                 break
             case 3: //IIEE
@@ -396,7 +391,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
                     iEntId: this.ENTIDAD,
                     iPerfilId:
                         this.formAgregarPerfil.get('perfilSeleccionado')?.value,
-                    opcion: 'addPerfilSede',
+                    opcion: 'iiee',
                 }
                 break
         }

@@ -713,6 +713,7 @@ export class PreguntasComponent implements OnInit {
                                 }
                                 item.title =
                                     'Pregunta #' +
+                                    //'Probando ' +
                                     this.totalPregunta +
                                     ': ' +
                                     (item.cPregunta || '')

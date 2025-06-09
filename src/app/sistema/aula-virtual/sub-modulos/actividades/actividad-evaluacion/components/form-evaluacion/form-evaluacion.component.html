@@ -26,7 +26,8 @@
                                 severity="info"
                                 [text]="
                                     'SEMANA ' +
-                                    semanaEvaluacion?.cContenidoSemNumero +
+                                    (semanaEvaluacion?.cContenidoSemNumero ||
+                                        '-') +
                                     ' ' +
                                     semanaEvaluacion?.cContenidoSemTitulo
                                 "

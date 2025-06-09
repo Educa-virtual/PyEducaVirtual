@@ -15,7 +15,6 @@ import { ButtonModule } from 'primeng/button'
 import { EditorModule } from 'primeng/editor'
 import { filtrarPreguntasUsadas } from '../pregunta-letra.model'
 import { DropdownModule } from 'primeng/dropdown'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 @Component({
     selector: 'app-alternativas-form',
     standalone: true,
@@ -82,9 +81,7 @@ export class AlternativasFormComponent implements OnInit {
     // construye el formulario de alternativa
     buildForm() {
         this.alternativaFormGroup = this._formBuilder.group({
-            iAlternativaId: new FormControl<number | string>(
-                generarIdAleatorio()
-            ),
+            iAlternativaId: new FormControl<number | string>(0),
             iPreguntaId: [0],
             cAlternativaDescripcion: [null, Validators.required],
             cAlternativaLetra: [

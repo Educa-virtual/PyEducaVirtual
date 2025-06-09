@@ -125,25 +125,30 @@ export class GestionFichasComponent implements OnInit {
     }
 
     descargarFicha(id: number, anio: number): void {
-        this.datosFichaBienestarService.downloadFicha(id, anio).subscribe({
-            next: (response) => {
-                // const url = window.URL.createObjectURL(blob)
-                // window.open(url, '_blank')
-                const blob = new Blob([response], {
-                    type: 'application/pdf',
-                })
-                const url = window.URL.createObjectURL(blob)
-                const link = document.createElement('a')
-                link.href = url
-                link.target = '_blank'
-                link.click()
-                // window.URL.revokeObjectURL(url)
-            },
-            error: (err) => {
-                console.error('Error al descargar el PDF:', err)
-                alert('No se pudo generar el PDF')
-            },
-        })
+        this.datosFichaBienestarService
+            .descargarFicha({
+                id: id,
+                anio: anio,
+            })
+            .subscribe({
+                next: (response) => {
+                    // const url = window.URL.createObjectURL(blob)
+                    // window.open(url, '_blank')
+                    const blob = new Blob([response], {
+                        type: 'application/pdf',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.target = '_blank'
+                    link.click()
+                    // window.URL.revokeObjectURL(url)
+                },
+                error: (err) => {
+                    console.error('Error al descargar el PDF:', err)
+                    alert('No se pudo generar el PDF')
+                },
+            })
     }
 
     public columnasTabla: IColumn[] = [

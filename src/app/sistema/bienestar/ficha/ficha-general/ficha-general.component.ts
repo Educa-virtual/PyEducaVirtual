@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { FichaGeneral } from '../../interfaces/fichaGeneral'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -19,14 +19,12 @@ import { ActivatedRoute } from '@angular/router'
         InputTextModule,
         FormsModule,
         PrimengModule,
-        //TablePrimengComponent,
         DropdownModule,
     ],
     templateUrl: './ficha-general.component.html',
     styleUrl: './ficha-general.component.scss',
 })
 export class FichaGeneralComponent implements OnInit {
-    formGroup: FormGroup | undefined
     formGeneral: FormGroup
     religiones: Array<object>
     tipos_vias: Array<object>
@@ -41,21 +39,20 @@ export class FichaGeneralComponent implements OnInit {
         private fb: FormBuilder,
         private datosFichaBienestarService: DatosFichaBienestarService,
         private compartirFichaService: CompartirFichaService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private router: Router
     ) {
         this.compartirFichaService.setActiveIndex(0)
-    }
-
-    ngOnInit() {
         this.route.parent?.paramMap.subscribe((params) => {
             this.idFicha = params.get('id')
         })
-        console.log(this.idFicha)
+    }
+
+    ngOnInit() {
         this.visibleInput = Array(3).fill(false)
 
         this.formGeneral = this.fb.group({
-            iPersId: this.compartirFichaService.perfil?.iPersId,
-            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            iFichaDGId: this.idFicha,
             iTipoViaId: [null, Validators.required],
             cTipoViaOtro: [''],
             cFichaDGDireccionNombreVia: ['', Validators.required],
@@ -124,7 +121,7 @@ export class FichaGeneralComponent implements OnInit {
 
     async searchFichaGeneral(): Promise<void> {
         const data = await this.datosFichaBienestarService.searchFichaGeneral({
-            iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
+            iFichaDGId: await this.idFicha,
         })
         if (data) {
             this.setFormGeneral(data)

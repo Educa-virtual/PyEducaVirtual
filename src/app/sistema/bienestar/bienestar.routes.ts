@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
+import { Routes } from '@angular/router'
 import { FichaComponent } from './ficha/ficha.component'
 import { FichaFamiliaComponent } from './ficha/ficha-familia/ficha-familia.component'
 import { FichaEconomicoComponent } from './ficha/ficha-economico/ficha-economico.component'
@@ -12,27 +11,15 @@ import { GestionFichasComponent } from './gestion-fichas/gestion-fichas.componen
 import { GestionFichasApoderadoComponent } from './gestion-fichas-apoderado/gestion-fichas-apoderado.component'
 import { FichaRecreacionComponent } from './ficha/ficha-recreacion/ficha-recreacion.component'
 import { GestionarEncuestasComponent } from './gestionar-encuestas/gestionar-encuestas.component'
+import { FichaDeclaracionComponent } from './ficha/ficha-declaracion/ficha-declaracion.component'
+
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
     {
         path: 'gestion-fichas-apoderado',
         component: GestionFichasApoderadoComponent,
     },
-    {
-        path: 'ficha',
-        component: FichaComponent,
-        children: [
-            { path: '', redirectTo: 'general', pathMatch: 'full' },
-            { path: 'general', component: FichaGeneralComponent },
-            { path: 'familia', component: FichaFamiliaComponent },
-            { path: 'economico', component: FichaEconomicoComponent },
-            { path: 'vivienda', component: FichaViviendaComponent },
-            { path: 'alimentacion', component: FichaAlimentacionComponent },
-            { path: 'discapacidad', component: FichaDiscapacidadComponent },
-            { path: 'salud', component: FichaSaludComponent },
-            { path: 'recreacion', component: FichaRecreacionComponent },
-        ],
-    },
+    { path: 'ficha-declaracion/:id', component: FichaDeclaracionComponent },
     {
         path: 'ficha/:id',
         component: FichaComponent,
@@ -50,8 +37,5 @@ const routes: Routes = [
     { path: 'gestionar-encuestas', component: GestionarEncuestasComponent },
 ]
 
-@NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule],
-})
-export class BienestarRoutingModule {}
+export class AppRoutingModule {}
+export default routes

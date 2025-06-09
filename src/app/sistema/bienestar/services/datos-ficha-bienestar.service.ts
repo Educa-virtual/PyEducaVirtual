@@ -97,13 +97,26 @@ export class DatosFichaBienestarService implements OnDestroy {
     formDiscapacidad: FichaDiscapacidad
 
     searchFichas(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichas`, data)
+        return this.http.post(`${baseUrl}/bienestar/listarFichas`, data)
     }
 
-    searchFicha(data: any): Promise<any> {
-        return this.http
-            .post(`${baseUrl}/bienestar/searchFicha`, data)
-            .toPromise()
+    listarEstudiantesApoderado(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/listarEstudiantesApoderado`,
+            data
+        )
+    }
+
+    crearFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/crearFicha`, data)
+    }
+
+    cancelarDeclaracion(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/cancelarDeclaracion`, data)
+    }
+
+    searchFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFicha`, data)
     }
 
     searchFichaGeneral(data: any): Promise<any> {
@@ -236,8 +249,10 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    /*
-     * Funciones para popular parametros de formularios de ficha
+    /**
+     *
+     * FUNCTIONES PARA POPULAR PARAMETROS DE FORMULARIOS DE FICHA
+     *
      */
 
     /**
@@ -245,12 +260,14 @@ export class DatosFichaBienestarService implements OnDestroy {
      */
     getFichaParametros() {
         if (!this.parametros) {
-            return this.http.get(`${baseUrl}/bienestar/createFicha`).pipe(
-                map((data: any) => {
-                    this.parametros = data.data[0]
-                    return this.parametros
-                })
-            )
+            return this.http
+                .get(`${baseUrl}/bienestar/obtenerParametrosFicha`)
+                .pipe(
+                    map((data: any) => {
+                        this.parametros = data.data[0]
+                        return this.parametros
+                    })
+                )
         }
         return of(this.parametros)
     }
@@ -752,25 +769,16 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/dosis/delete`, data)
     }
 
-    ngOnDestroy() {
-        this.onDestroy$.next(true)
-        this.onDestroy$.complete()
-    }
-
-    getEstudiantesPorAnio(iPerApodr: number, iIieeId: number, anio: number) {
-        return this.http.get(
-            `${baseUrl}/estudiantes/${iPerApodr}/${iIieeId}/${anio}`
-        )
-    }
-
-    downloadFicha(id: number, anio: number) {
-        return this.http.get(`${baseUrl}/bienestar/ficha-pdf/${id}/${anio}`, {
+    descargarFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/descargarFicha`, data, {
             responseType: 'blob',
         })
     }
 
     /**
+     *
      * FUNCIONES PARA FORMATEAR DATOS EN FORMULARIOS
+     *
      */
 
     formatearFormControl(
@@ -835,5 +843,10 @@ export class DatosFichaBienestarService implements OnDestroy {
             })
         }
         form.get(formJson).setValue(JSON.stringify(items))
+    }
+
+    ngOnDestroy() {
+        this.onDestroy$.next(true)
+        this.onDestroy$.complete()
     }
 }

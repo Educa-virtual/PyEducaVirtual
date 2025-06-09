@@ -597,7 +597,6 @@ export class AsistenciaComponent implements OnInit {
                 iSeccionId: this.iSeccionId,
                 iNivelGradoId: this.iNivelGradoId,
             },
-            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_fecha_importante')
     }
@@ -654,7 +653,6 @@ export class AsistenciaComponent implements OnInit {
                 iIieeId: this.iIieeId,
                 dtCtrlAsistencia: fechas,
             },
-            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_asistencia')
     }

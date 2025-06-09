@@ -1,9 +1,9 @@
-import { UsuariosService } from './../services/usuarios.service'
 import { MessageService, SelectItem } from 'primeng/api'
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
 import { PrimengModule } from '@/app/primeng.module'
+import { GestionUsuariosService } from '../services/gestion-usuarios.service'
 
 @Component({
     selector: 'app-agregar-usuario',
@@ -20,7 +20,7 @@ export class AgregarUsuarioComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private usuariosService: UsuariosService,
+        private usuariosService: GestionUsuariosService,
         private generalService: GeneralService,
         private messageService: MessageService
     ) {}

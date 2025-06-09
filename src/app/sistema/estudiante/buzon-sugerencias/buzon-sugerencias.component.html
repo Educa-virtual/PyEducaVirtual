@@ -25,12 +25,13 @@
 
     <app-table-primeng
         [columnas]="columns"
+        [searchPlaceholder]="'Buscar por asunto...'"
         [showCaption]="true"
         [data]="dataSugerencias"
         (accionBtnItem)="accionBtnItemTable($event)"
         [showPaginator]="true"
         sortMode="single"
-        sortField="_cPersNomape"
+        sortField="dtFechaCreacion"
         [sortOrder]="1"
         [(selectedRowData)]="selectedItem"
         [actions]="actions"

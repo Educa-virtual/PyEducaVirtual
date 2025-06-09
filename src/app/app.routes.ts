@@ -57,7 +57,7 @@ export const routes: Routes = [
                 path: 'sin-rol-asignado',
                 loadChildren: () =>
                     import(
-                        './sistema/sin-rol-asignado/sin-rol-asignado.routes'
+                        './sistema/usuarios/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
             },
             {

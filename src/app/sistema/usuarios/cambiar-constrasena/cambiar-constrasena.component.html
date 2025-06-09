@@ -13,11 +13,11 @@
 
             <form [formGroup]="form" class="flex flex-column gap-4">
                 <div class="p-field">
-                    <label for="contraseniaActual" class="block mb-2"
+                    <label for="contrasenaActual" class="block mb-2"
                         >Contraseña actual</label
                     >
                     <p-password
-                        formControlName="contraseniaActual"
+                        formControlName="contrasenaActual"
                         [feedback]="false"
                         [toggleMask]="true"
                         placeholder="Ingrese su contraseña actual"
@@ -26,8 +26,8 @@
                     <small
                         class="p-error"
                         *ngIf="
-                            form.get('contraseniaActual')?.invalid &&
-                            form.get('contraseniaActual')?.touched
+                            form.get('contrasenaActual')?.invalid &&
+                            form.get('contrasenaActual')?.touched
                         "
                     >
                         La contraseña actual es requerida
@@ -35,11 +35,11 @@
                 </div>
 
                 <div class="p-field">
-                    <label for="contraseniaNueva" class="block mb-2"
+                    <label for="contrasenaNueva" class="block mb-2"
                         >Contraseña nueva</label
                     >
                     <p-password
-                        formControlName="contraseniaNueva"
+                        formControlName="contrasenaNueva"
                         [toggleMask]="true"
                         placeholder="Contraseña nueva"
                         styleClass="w-full"
@@ -59,9 +59,8 @@
                     <small
                         class="p-error"
                         *ngIf="
-                            form.get('contraseniaNueva')?.errors?.[
-                                'required'
-                            ] && form.get('contraseniaNueva')?.touched
+                            form.get('contrasenaNueva')?.errors?.['required'] &&
+                            form.get('contrasenaNueva')?.touched
                         "
                     >
                         La nueva contraseña es requerida
@@ -69,9 +68,9 @@
                     <small
                         class="p-error"
                         *ngIf="
-                            form.get('contraseniaNueva')?.errors?.[
+                            form.get('contrasenaNueva')?.errors?.[
                                 'minlength'
-                            ] && form.get('contraseniaNueva')?.touched
+                            ] && form.get('contrasenaNueva')?.touched
                         "
                     >
                         La contraseña debe tener al menos 8 caracteres
@@ -79,11 +78,11 @@
                 </div>
 
                 <div class="p-field">
-                    <label for="contraseniaNueva" class="block mb-2"
+                    <label for="contrasenaNueva" class="block mb-2"
                         >Confirma la contraseña nueva</label
                     >
                     <p-password
-                        formControlName="confirmacionContrasenia"
+                        formControlName="confirmarContrasena"
                         [feedback]="false"
                         [toggleMask]="true"
                         placeholder="Confirma la contraseña nueva"
@@ -92,9 +91,9 @@
                     <small
                         class="p-error"
                         *ngIf="
-                            form.get('confirmacionContrasenia')?.errors?.[
+                            form.get('confirmarContrasena')?.errors?.[
                                 'required'
-                            ] && form.get('confirmacionContrasenia')?.touched
+                            ] && form.get('confirmarContrasena')?.touched
                         "
                     >
                         Confirme la nueva contraseña
@@ -102,9 +101,9 @@
                     <small
                         class="p-error"
                         *ngIf="
-                            form.get('confirmacionContrasenia')?.errors?.[
+                            form.get('confirmarContrasena')?.errors?.[
                                 'noCoinciden'
-                            ] && form.get('confirmacionContrasenia')?.touched
+                            ] && form.get('confirmarContrasena')?.touched
                         "
                     >
                         Las contraseñas no coinciden

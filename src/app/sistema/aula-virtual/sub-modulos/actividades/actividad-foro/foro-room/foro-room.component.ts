@@ -31,6 +31,9 @@ import { Message } from 'primeng/api'
 import { TimeComponent } from '@/app/shared/time/time.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 //import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-foro-room',
@@ -50,6 +53,8 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
         PrimengModule,
         NgFor,
         NgIf,
+        ToolbarPrimengComponent,
+        RubricasComponent,
     ],
     providers: [
         provideIcons({
@@ -66,6 +71,10 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 export class ForoRoomComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() iIeCursoId
+    @Input() iSeccionId
+    @Input() iNivelGradoId
+
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
 
@@ -159,9 +168,12 @@ export class ForoRoomComponent implements OnInit {
         this.perfil = this.store.getItem('dremoPerfil')
         //para obtener el idDocCursoId
     }
-
+    params: any = {}
     selectedItems = []
     ngOnInit(): void {
+        this.params = {
+            ejemplo: 'Este es un parámetro',
+        }
         // this.websocketService.messages$.subscribe((msg: any) => {
         //     this.messageWebs.push(`Servidor: ${msg}`)
         // })
@@ -175,6 +187,23 @@ export class ForoRoomComponent implements OnInit {
         this.getRespuestaF()
         this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
+    }
+    accionRubrica(elemento): void {
+        if (!elemento) return
+        this.obtenerRubricas()
+    }
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._constantesService.iDocenteId,
+        }
+        console.log(params)
+        // this._evaluacionService.obtenerRubricas(params).subscribe({
+        //     next: (data) => {
+        //         data.forEach((element) => {
+        //             this.rubricas.push(element)
+        //         })
+        //     },
+        // })
     }
     itemRespuesta: any[] = []
     // menu para editar y eliminar el comentario del foro
@@ -420,7 +449,13 @@ export class ForoRoomComponent implements OnInit {
                             detail: resp?.cForoDescripcion,
                         },
                     ]
-                    this.foro = resp
+
+                    if (Array.isArray(resp) && resp.length > 0) {
+                        this.foro = resp[0] // Tomar el primer objeto del array
+                    } else {
+                        this.foro = null // Evitar errores si no hay datos
+                    }
+                    // console.log('datos de foro',this.foro)
                     this.obtenerResptDocente()
                     // console.log('obtener datos de foro01', resp)
                     this.FilesTareas = this.foro?.cForoUrl
@@ -459,7 +494,7 @@ export class ForoRoomComponent implements OnInit {
             })
             .subscribe((Data) => {
                 this.resptDocente = Data['data']
-                console.log(this.resptDocente)
+                // console.log(this.resptDocente)
             })
     }
     formatDateISO(date: string | number | Date): string {
@@ -540,21 +575,22 @@ export class ForoRoomComponent implements OnInit {
     }
     // consulta para obtener los estudiantes
     getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params)
+        this._aulaService
+            .obtenerReporteFinalDeNotas({
+                iIeCursoId: this.iIeCursoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iSeccionId: this.iSeccionId,
+                iNivelGradoId: this.iNivelGradoId,
+            })
+            .subscribe((Data) => {
+                this.estudiantes = Data['data']
+                this.estudiantes = Data['data'].map((item: any) => {
+                    return {
+                        ...item,
+                        cTitulo: item.completoalumno,
+                    }
+                })
+            })
     }
 }

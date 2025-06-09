@@ -1,47 +1,36 @@
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, Input } from '@angular/core'
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormBuilder, Validators } from '@angular/forms'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
-import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
-import { DropdownModule } from 'primeng/dropdown'
-import { ButtonModule } from 'primeng/button'
-import { EditorModule } from 'primeng/editor'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { CalendarModule } from 'primeng/calendar'
-import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picker.directive'
-import { SelectButtonModule } from 'primeng/selectbutton'
 import { PrimengModule } from '@/app/primeng.module'
 import { Message } from 'primeng/api'
 import { DatePipe } from '@angular/common'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
-import { DialogModule } from 'primeng/dialog'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
+import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
     imports: [
-        CommonModule,
         ModalPrimengComponent,
         PrimengModule,
-        DialogModule,
-        CommonInputComponent,
         FileUploadPrimengComponent,
-        ReactiveFormsModule,
-        DisponibilidadFormComponent,
-        DropdownModule,
-        ButtonModule,
-        EditorModule,
-        CalendarModule,
-        BaseDatePickerDirective,
-        SelectButtonModule,
+        TypesFilesUploadPrimengComponent,
     ],
     templateUrl: './foro-form-container.component.html',
     styleUrl: './foro-form-container.component.scss',
 })
 export class ForoFormContainerComponent implements OnInit {
+    typesFiles = {
+        file: true,
+        url: true,
+        youtube: true,
+        repository: false,
+        image: true,
+    }
+    filesUrl = []
     // _aulaService obtener datos
     pipe = new DatePipe('es-ES')
     date = new Date()
@@ -54,7 +43,6 @@ export class ForoFormContainerComponent implements OnInit {
     @Input() contenidoSemana
     tareas = []
     filteredTareas: any[] | undefined
-    FilesTareas = []
     nameEnlace: string = ''
     titleFileTareas: string = ''
     categorias: any[] = []
@@ -62,7 +50,7 @@ export class ForoFormContainerComponent implements OnInit {
     selectProgramaAct = 0
 
     selectCategorias: any = {}
-
+    idDocCursoId: any
     public foroForm = this._formBuilder.group({
         iForoId: [],
         cForoTitulo: ['', [Validators.required]],
@@ -74,6 +62,7 @@ export class ForoFormContainerComponent implements OnInit {
         dtForoFin: [],
         cForoUrl: [],
         cForoCatDescripcion: [],
+        idDocCursoId: [],
 
         //VARIABLES DE AYUDA QUE NO ESTÀN EN LA BD
         dtInicio: [this.date, Validators.required],
@@ -83,6 +72,8 @@ export class ForoFormContainerComponent implements OnInit {
     opcion: string = 'GUARDAR'
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
+        this.idDocCursoId = this.dialogConfig.data.idDocCursoId
+
         console.log('hola', this.contenidoSemana)
         const data = this.dialogConfig.data
         if (data.action == 'editar') {
@@ -95,10 +86,7 @@ export class ForoFormContainerComponent implements OnInit {
         this.semana = [
             {
                 severity: 'info',
-                detail:
-                    this.contenidoSemana?.cContenidoSemNumero +
-                    ' SEMANA - ' +
-                    this.contenidoSemana?.cContenidoSemTitulo,
+                detail: this.contenidoSemana?.cContenidoSemTitulo,
             },
         ]
     }
@@ -130,18 +118,13 @@ export class ForoFormContainerComponent implements OnInit {
         this.foroForm.controls.dtForoInicio.setValue(horaInicio)
         this.foroForm.controls.dtForoFin.setValue(horaFin)
         this.foroForm.controls.dtForoPublicacion.setValue(horaFin)
-        this.foroForm.controls.cForoUrl.setValue(
-            JSON.stringify(this.FilesTareas)
-        )
+        this.foroForm.controls.cForoUrl.setValue(JSON.stringify(this.filesUrl))
         // Limpiar el campo cForoDescripcion de etiquetas HTML
         const rawDescripcion =
             this.foroForm.controls.cForoDescripcion.value || ''
         const tempElement = document.createElement('div')
         tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
-
-        this.foroForm.controls.cForoDescripcion.setValue(cleanDescripcion)
-
+        this.foroForm.controls.idDocCursoId.setValue(this.idDocCursoId)
         const value = {
             ...this.foroForm.value,
             iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,
@@ -177,7 +160,6 @@ export class ForoFormContainerComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-        // let params
         switch (accion) {
             case 'get_tareas_reutilizadas':
                 this.tareas = item
@@ -186,8 +168,8 @@ export class ForoFormContainerComponent implements OnInit {
             case 'close-modal':
                 this.showModal = false
                 break
-            case 'subir-archivo-tareas':
-                this.FilesTareas.push({
+            case 'subir-file-foros':
+                this.filesUrl.push({
                     type: 1, //1->file
                     nameType: 'file',
                     name: item.file.name,
@@ -196,9 +178,9 @@ export class ForoFormContainerComponent implements OnInit {
                 })
                 this.showModal = false
                 break
-            case 'subir-url':
+            case 'url-foros':
                 if (item === '') return
-                this.FilesTareas.push({
+                this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
                     name: item,
@@ -208,10 +190,20 @@ export class ForoFormContainerComponent implements OnInit {
                 this.showModal = false
                 this.nameEnlace = ''
                 break
-            case 'subir-youtube':
-                if (item === '') return
-                this.FilesTareas.push({
+            case 'youtube-foros':
+                this.filesUrl.push({
                     type: 3, //3->youtube
+                    nameType: 'youtube',
+                    name: item,
+                    size: '',
+                    ruta: item,
+                })
+                this.showModal = false
+                this.nameEnlace = ''
+                break
+            case 'subir-image-foros':
+                this.filesUrl.push({
+                    type: 4, //4->image
                     nameType: 'youtube',
                     name: item,
                     size: '',
@@ -223,9 +215,7 @@ export class ForoFormContainerComponent implements OnInit {
             case 'obtenerForoxiForoId':
                 const data = item.length ? item[0] : []
                 this.foroForm.patchValue(data)
-                this.FilesTareas = data.cForoUrl
-                    ? JSON.parse(data.cForoUrl)
-                    : []
+                this.filesUrl = data.cForoUrl ? JSON.parse(data.cForoUrl) : []
                 break
         }
     }

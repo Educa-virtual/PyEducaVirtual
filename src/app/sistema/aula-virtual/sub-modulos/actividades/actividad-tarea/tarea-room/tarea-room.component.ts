@@ -18,13 +18,16 @@ import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-tran
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConfirmationService, MessageService } from 'primeng/api'
-import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 import { Table } from 'primeng/table'
 import { ScrollerModule } from 'primeng/scroller'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
-import { RubricaCalificarComponent } from '../../../../features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
-import { RubricasComponent } from '../../../../features/rubricas/rubricas.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
+
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 
 @Component({
     selector: 'app-tarea-room',
@@ -35,10 +38,12 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
         FileUploadPrimengComponent,
         FormGrupoComponent,
         FormTransferirGrupoComponent,
-        RecursosListaComponent,
         ScrollerModule,
-        RubricaCalificarComponent,
         RubricasComponent,
+        CardOrderListComponent,
+        ToolbarPrimengComponent,
+        EmptySectionComponent,
+        RecursosListaComponent,
     ],
 
     templateUrl: './tarea-room.component.html',
@@ -47,6 +52,9 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
 })
 export class TareaRoomComponent implements OnChanges, OnInit {
     form: FormGroup
+    @Input() iIeCursoId
+    @Input() iSeccionId
+    @Input() iNivelGradoId
 
     params = {
         iCursoId: 0,
@@ -266,6 +274,17 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 break
             case 'get-tarea-estudiantes':
                 this.estudiantes = item
+                this.estudiantes = this.estudiantes.map((item: any) => {
+                    return {
+                        ...item,
+                        cTitulo:
+                            (item.cPersNombre || '') +
+                            ' ' +
+                            (item.cPersPaterno || '') +
+                            ' ' +
+                            (item.cPersMaterno || ''),
+                    }
+                })
                 falta = this.estudiantes.filter((i) => i.cEstado === '0')
                 culminado = this.estudiantes.filter((i) => i.cEstado === '1')
 
@@ -298,6 +317,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
                 this.tareasFalta = falta.length
                 this.tareasCulminado = culminado.length
+
+                console.log(this.grupos)
                 break
             case 'save-tarea-cabecera-grupos':
                 this.showModal = false
@@ -395,16 +416,6 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
     estudianteSeleccionado
     cTareaEstudianteUrlEstudiante
-    getTareaRealizada(item) {
-        this.estudianteSeleccionado = item
-        this.cTareaEstudianteUrlEstudiante = item.cTareaEstudianteUrlEstudiante
-            ? JSON.parse(item.cTareaEstudianteUrlEstudiante)
-            : []
-        this.iTareaEstudianteId = item.iTareaEstudianteId
-        this.iEscalaCalifId = item.iEscalaCalifId
-        this.cTareaEstudianteComentarioDocente =
-            item.cTareaEstudianteComentarioDocente
-    }
 
     updateTareas() {
         this.estudianteSeleccionado = null
@@ -432,6 +443,11 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             data: {
                 opcion: 'CONSULTAR-ASIGNACIONxiTareaId',
                 iTareaId: this.iTareaId,
+                iIeCursoId: this.iIeCursoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSedeId: this._constantesService.iSedeId,
+                iSeccionId: this.iSeccionId,
+                iNivelGradoId: this.iNivelGradoId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -486,7 +502,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             this.messageService.add({
                 severity: 'warn',
                 summary: 'Falta Entregar su tarea',
-                detail: 'Seleccione calaficación para guardar',
+                detail: 'Seleccione calificación para guardar',
             })
             return
         }
@@ -787,5 +803,30 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             return false
         }
         return true
+    }
+    getListFiles(files) {
+        if (files === null || files === undefined || files === '') {
+            return []
+        }
+
+        if (typeof files === 'string') {
+            return JSON.parse(files)
+        }
+
+        if (typeof files === 'object') {
+            return files
+        }
+        return []
+    }
+
+    obtenerEstudianteSeleccionado(item) {
+        this.estudianteSeleccionado = item
+        this.cTareaEstudianteUrlEstudiante = item.cTareaEstudianteUrlEstudiante
+            ? JSON.parse(item.cTareaEstudianteUrlEstudiante)
+            : []
+        this.iTareaEstudianteId = item.iTareaEstudianteId
+        this.iEscalaCalifId = item.iEscalaCalifId
+        this.cTareaEstudianteComentarioDocente =
+            item.cTareaEstudianteComentarioDocente
     }
 }

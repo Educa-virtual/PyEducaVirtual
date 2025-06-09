@@ -10,28 +10,116 @@
                     </span>
                 </div>
             </ng-template>
-            <div class="flex flex-column gap-4">
-                <div class="card grid">
-                    <div
-                        [class]="
-                            iPerfilId === ESTUDIANTE
-                                ? 'col-12 md:col-8'
-                                : 'col-12'
-                        "
-                    >
-                        <article class="card">
-                            <div class="TituloForo">
-                                {{ foro?.cForoTitulo }}
+            <app-toolbar-primeng
+                [title]="
+                    'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')
+                "
+            >
+            </app-toolbar-primeng>
+            @if (iPerfilId === DOCENTE) {
+                <div clas="grid">
+                    <div class="card col-12">
+                        <div class="grid mb-4">
+                            <div
+                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                            >
+                                <div class="col-12 md:col-6 gap-2">
+                                    <span class="font-bold text-xl"
+                                        >Catergoría:</span
+                                    >
+                                    {{ foro?.cForoCatDescripcion }}
+                                </div>
                             </div>
-                            <hr />
+                        </div>
 
+                        <div class="grid mb-4">
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <span class="font-bold text-xl flex gap-2">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    Inicio de Foro:
+                                </span>
+                                <!-- {{ foro.dtForoInicio }} -->
+                                <p class="flex gap-2 flex-wrap pl-5">
+                                    {{
+                                        foro?.dtForoInicio
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
+
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{
+                                            foro?.dtForoInicio | date: 'h:mm a'
+                                        }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <span class="font-bold text-xl flex gap-2">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    Cierre de Foro
+                                </span>
+                                <!-- {{ foro.dtForoFin }} -->
+                                <p class="flex gap-2 flex-wrap pl-5">
+                                    {{
+                                        foro?.dtForoFin
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
+
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex gap-2 flex-wrap align-items-center mb-4"
+                        >
+                            <app-icon
+                                name="matMessage"
+                                color="text-primary"
+                                size="sm"
+                            />
+                            <h3 class="text-lg m-0">Descripción:</h3>
+                            {{ foro?.cForoDescripcion }}
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (iPerfilId === ESTUDIANTE) {
+                <div clas="grid">
+                    <div class="col-12">
+                        <div class="card">
                             <div class="grid mb-4">
                                 <div
                                     class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                                 >
-                                    <div
-                                        class="col-12 md:col-6 gap-2 flex flex-column"
-                                    >
+                                    <div class="col-12 md:col-6 gap-2">
                                         <span class="font-bold text-xl"
                                             >Catergoría:</span
                                         >
@@ -53,7 +141,7 @@
                                         Inicio de Foro:
                                     </span>
                                     <!-- {{ foro.dtForoInicio }} -->
-                                    <p class="flex gap-2 flex-wrap">
+                                    <p class="flex gap-2 flex-wrap pl-5">
                                         {{
                                             foro?.dtForoInicio
                                                 | date
@@ -88,7 +176,7 @@
                                         Cierre de Foro
                                     </span>
                                     <!-- {{ foro.dtForoFin }} -->
-                                    <p class="flex gap-2 flex-wrap">
+                                    <p class="flex gap-2 flex-wrap pl-5">
                                         {{
                                             foro?.dtForoFin
                                                 | date
@@ -123,26 +211,17 @@
                                 <h3 class="text-lg m-0">Descripción:</h3>
                                 {{ foro?.cForoDescripcion }}
                             </div>
-
-                            <div
-                                class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
-                            ></div>
-                        </article>
-                    </div>
-                    <div
-                        class="col-12 md:col-4"
-                        [hidden]="iPerfilId !== ESTUDIANTE"
-                    >
+                        </div>
                         <div
-                            class="card"
+                            class="card mt-4"
                             *ngFor="let respuesta of resptDocente"
                         >
                             <h4>Mi Retroalimentación descriptiva:</h4>
                             <!-- <p-divider></p-divider> -->
                             <!-- <p-inputGroup>
-                                <p-inputGroupAddon> Nota </p-inputGroupAddon>
-                                <input pInputText />
-                            </p-inputGroup> -->
+                        <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                        <input pInputText />
+                    </p-inputGroup> -->
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
@@ -158,16 +237,92 @@
                                     class="p-inputtextarea-lg"
                                     placeholder="Muestra Comentario Docente"
                                 >
- {{ respuesta?.cForoRptaDocente }} </textarea
+                            {{ respuesta?.cForoRptaDocente }} </textarea
                                 >
                             </p-inputGroup>
                         </div>
                     </div>
                 </div>
+            }
+
+            <div class="flex flex-column my-4 gap-4">
+                <!-- card mostrar o agregar las rubricas de esa tarea -->
+                <article class="card">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
+                        <!-- <app-rubricas
+                            [title]="'Rúbricas'"
+                            mode="SELECTION"
+                            [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"
+                        ></app-rubricas> -->
+                    </div>
+
+                    <!-- <div class="">
+                        <app-rubrica-evaluacion
+                            (clickNameRubrica)="showRubrica($event)"
+                            class="w-full"
+                        >
+                        </app-rubrica-evaluacion>
+                    </div>
+                    <div class="">
+                        <p-dialog
+                            [modal]="true"
+                            [header]="
+                                'Rubrica - ' + dialogRubricaInfo.header
+                            "
+                            [(visible)]="dialogRubricaInfo.visible"
+                            [style]="{ width: '75rem' }"
+                            [breakpoints]="{
+                                '1199px': '75vw',
+                                '575px': '90vw',
+                            }"
+                            [maximizable]="true"
+                        >
+                            <app-rubrica-calificar
+                                [enableCellSelection]="false"
+                                [showSortIcon]="false"
+                                class="w-full"
+                            >
+                            </app-rubrica-calificar>
+                        </p-dialog> 
+                     </div> -->
+                </article>
+                <!-- Mostrar recursos o meteriales para la actividad -->
                 <article class="card">
                     <h2>Recursos:</h2>
-                    <app-recursos-lista [files]="FilesTareas">
-                    </app-recursos-lista>
+
+                    <p-accordion>
+                        <p-accordionTab header="Recursos Adjuntos">
+                            <!-- Verifica si no hay archivos adjuntos -->
+                            <ng-container
+                                *ngIf="
+                                    foro?.cForoUrl.length === 0;
+                                    else resourcesList
+                                "
+                            >
+                                <app-empty-section
+                                    class="w-full"
+                                    [message]="'Sin recursos asignados'"
+                                ></app-empty-section>
+                            </ng-container>
+
+                            <!-- Si hay recursos adjuntos -->
+                            <ng-template #resourcesList>
+                                <app-recursos-lista [files]="FilesTareas">
+                                </app-recursos-lista>
+                                <!-- <app-recursos-lista
+                                [files]="
+                                        evaluacion?.cEvaluacionArchivoAdjunto ??
+                                        []
+                                    "
+                                    
+                                >
+                                </app-recursos-lista> -->
+                            </ng-template>
+                        </p-accordionTab>
+                    </p-accordion>
                 </article>
             </div>
         </p-tabPanel>
@@ -181,16 +336,18 @@
                     </span>
                 </div>
             </ng-template>
+            <app-toolbar-primeng
+                [title]="
+                    'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')
+                "
+            >
+            </app-toolbar-primeng>
             <form
                 [formGroup]="foroFormComntAl"
                 class="flex flex-column gap-3 w-full"
             >
                 <div class="flex flex-column gap-4">
                     <div class="card">
-                        <div class="TituloForo">
-                            {{ foro?.cForoTitulo }}
-                        </div>
-                        <hr />
                         <!-- <div class="TituloCurso">Nombre de curso:</div> -->
                         <div class="grid">
                             <div class="col-12 md:col-6 flex flex-column gap-2">
@@ -246,16 +403,8 @@
                             </div>
                         </div>
                     </div>
-                    <p-messages
-                        *ngIf="messages"
-                        [(value)]="messages"
-                        [enableService]="false"
-                        [closable]="false"
-                        class="custom-message"
-                    />
-
-                    <div class="">
-                        <div class="card grid">
+                    <div class="card">
+                        <div class="grid">
                             <!-- listar comentarios -->
                             <div
                                 [class]="
@@ -343,13 +492,17 @@
                                                                             !respuestas.expanded
                                                                         "
                                                                     >
-                                                                        {{
-                                                                            respuestas?.cForoRptaRespuesta
-                                                                                | removeHTML
-                                                                                | slice
-                                                                                    : 0
-                                                                                    : 150
-                                                                        }}...
+                                                                        @if (
+                                                                            respuestas.cForoRptaRespuesta
+                                                                        ) {
+                                                                            {{
+                                                                                respuestas?.cForoRptaRespuesta
+                                                                                    | removeHTML
+                                                                                    | slice
+                                                                                        : 0
+                                                                                        : 150
+                                                                            }}...
+                                                                        }
                                                                     </span>
                                                                     <span
                                                                         *ngIf="
@@ -428,31 +581,24 @@
                                                                         </button>
                                                                     </div>
                                                                     <!-- Menú al final -->
-                                                                    <div
-                                                                        class=""
-                                                                    >
-                                                                        <button
-                                                                            [style.display]="
+                                                                    <!-- <div class="">
+                                                                    <button [style.display]="
                                                                                 !respuestas.iEstudianteId
                                                                                     ? respuestas.iDocenteId ===
                                                                                       iDocenteId
                                                                                     : respuestas.iEstudianteId ===
                                                                                       iEstudianteId
-                                                                            "
-                                                                            pButton
-                                                                            type="button"
-                                                                            icon="pi pi-ellipsis-v"
-                                                                            class="menu-container p-button-text"
-                                                                            (click)="
+                                                                            " pButton type="button"
+                                                                        icon="pi pi-ellipsis-v"
+                                                                        class="menu-container p-button-text" (click)="
                                                                                 itemRespuesta =
                                                                                     respuestas;
                                                                                 menu.toggle(
                                                                                     $event
                                                                                 )
                                                                             "
-                                                                            aria-label="Abrir menú de configuración"
-                                                                        ></button>
-                                                                    </div>
+                                                                        aria-label="Abrir menú de configuración"></button>
+                                                                </div> -->
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -691,7 +837,7 @@
                                             />
                                             <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                             <div class="perfil-name">
-                                                {{ estudiante?.nombrecompleto }}
+                                                {{ estudiante?.completoalumno }}
                                             </div>
                                             <div
                                                 class="btn-calificar-comentario"

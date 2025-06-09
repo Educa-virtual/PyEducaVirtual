@@ -1,0 +1,153 @@
+<div class="card">
+    <div class="grid">
+        <div class="col-12 md:col-9 align-content-between font-bold">
+            <span style="font-size: 18px">Total Preguntas:</span>
+            <span>
+                <p-badge
+                    [value]="totalPregunta"
+                    severity="primary"
+                    styleClass="ml-2"
+                    badgeSize="large"
+                >
+                </p-badge>
+            </span>
+        </div>
+        <div
+            class="flex col-12 md:col-3 justify-content-end align-items-center"
+        >
+            <!-- *ngIf="isDisabled" -->
+            <p-button
+                icon="pi pi-check"
+                label="Publicar"
+                severity="warning"
+                class="mr-3"
+            />
+            <p-button
+                icon="pi pi-plus"
+                label="Agregar"
+                (click)="menuAgregarPreguntas.toggle($event)"
+            />
+            <p-menu
+                #menuAgregarPreguntas
+                [popup]="true"
+                [model]="tiposAgregarPregunta"
+                appendTo="body"
+                styleClass="w-20rem"
+            >
+            </p-menu>
+        </div>
+        @if (!data.length) {
+            <div class="col-12">
+                <p-divider></p-divider>
+                <div class="p-4 rounded">
+                    <div class="m-4 text-center border-dashed rounded p-4">
+                        <app-no-data
+                            [showIcon]="'NO-DATA'"
+                            [mensaje]="
+                                'No se encontraron preguntas en esta evaluación'
+                            "
+                        ></app-no-data>
+                    </div>
+                </div>
+            </div>
+        } @else {
+            <div class="col-12">
+                <p-divider></p-divider>
+            </div>
+            <div class="col-12">
+                <div class="card col-12 mb-3 p-3" *ngFor="let item of data">
+                    <h5>{{ item.nombre }}</h5>
+                    @switch (item.tipoCuestionario) {
+                        @case ('TIP-PREG-TEXTO') {
+                            <div class="col-12">
+                                <input
+                                    class="ml-2"
+                                    type="text"
+                                    pInputText
+                                    class="w-full custom-hover-input mb-2"
+                                    placeholder="Tu respuesta...."
+                                />
+                            </div>
+                        }
+
+                        @case ('TIP-PREG-OPCIONES') {
+                            <div class="align-content-center mb-2">
+                                <div
+                                    *ngFor="let opcion of item.opciones"
+                                    class="mb-2"
+                                >
+                                    <p-radioButton
+                                        id="opcion1"
+                                        name="grupoOpciones"
+                                        [value]="opcion.id"
+                                        [(ngModel)]="selectedOption"
+                                        class="mr-2"
+                                    ></p-radioButton>
+                                    <label for="opcion1">{{
+                                        opcion.label
+                                    }}</label>
+                                </div>
+                            </div>
+                        }
+
+                        @case ('TIP-PREG-CASILLA') {
+                            <i class="pi pi-pencil text-success mr-2"></i>
+                            <span>Respuesta Corta</span>
+                        }
+
+                        @case ('TIP-PREG-DESPLEGABLE') {
+                            <div class="col-6">
+                                <p-dropdown
+                                    [options]="item.opciones"
+                                    [(ngModel)]="selectedDropdown"
+                                    placeholder="Selecciona una opción"
+                                    class="w-full custom-hover-input mb-2"
+                                    styleClass="w-full"
+                                ></p-dropdown>
+                            </div>
+                        }
+                    }
+
+                    <p-divider />
+                    <div
+                        class="flex align-items-center justify-content-end gap-2"
+                    >
+                        <p-button
+                            icon="pi pi-clone"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="secondary"
+                            tooltipPosition="bottom"
+                            pTooltip="Clonar pregunta"
+                        />
+                        <p-button
+                            icon="pi pi-trash"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="secondary"
+                            tooltipPosition="bottom"
+                            pTooltip="Eliminar pregunta"
+                        />
+                        <p-button
+                            icon="pi pi-file-edit"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="secondary"
+                            tooltipPosition="bottom"
+                            pTooltip="Editar pregunta"
+                        />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<app-cuestionario-form-preguntas
+    [showModal]="showModal"
+    [data]="[]"
+    [titulo]="titulo"
+    [opcion]="opcion"
+    [tipoPreguntas]="tipoPreguntas"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-cuestionario-form-preguntas>
+<p-toast></p-toast>

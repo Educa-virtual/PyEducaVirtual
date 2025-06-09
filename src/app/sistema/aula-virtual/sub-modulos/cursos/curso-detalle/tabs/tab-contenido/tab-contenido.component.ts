@@ -1,7 +1,4 @@
-import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
-import { FormsModule } from '@angular/forms'
-import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     EVALUACION,
     FORO,
@@ -9,11 +6,11 @@ import {
     MATERIAL,
     TAREA,
     VIDEO_CONFERENCIA,
+    CUESTIONARIO,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { MenuItem } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import {
     matFactCheck,
@@ -25,7 +22,6 @@ import {
 } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -34,32 +30,29 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import { DynamicDialogModule } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
-import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component'
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { CuestionarioFormComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-form/cuestionario-form.component'
+import { DropdownChangeEvent } from 'primeng/dropdown'
 
 @Component({
     selector: 'app-tab-contenido',
     standalone: true,
     imports: [
-        CommonModule,
-        FullCalendarModule,
-        FormsModule,
-        ActividadRowComponent,
         ActividadListaComponent,
-        VideoconferenciaContainerFormComponent,
-        IconComponent,
-        DynamicDialogModule,
         PrimengModule,
-        TareaFormContainerComponent,
         FormEvaluacionComponent,
         NoDataComponent,
+        ToolbarPrimengComponent,
+        CardOrderListComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -85,6 +78,7 @@ export class TabContenidoComponent implements OnInit {
     public actividadSelected: IActividad | undefined
     public accionSeleccionada: string | undefined
     public contenidoSemanas = []
+    public contenidosList = []
     // public actividades = actividadesConfigList
 
     // injeccion de dependencias
@@ -94,9 +88,16 @@ export class TabContenidoComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _evalService = inject(ApiEvaluacionesService)
 
-    private semanaSeleccionada
+    // para mostrar las actividades de la semana
+    // private semanaSeleccionadaS
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
+    // this.search_perfiles.unshift({
+    //     iPerfilId: '0',
+    //     cPerfilNombre: 'Todos los perfiles',
+    // }) // console.log('Request completed')
+    semanaSeleccionada: any = null
+    semanaActivado: number | null = null
 
     // lista de acciones base para la semana
     private handleActionsMap: Record<
@@ -108,6 +109,7 @@ export class TabContenidoComponent implements OnInit {
         [EVALUACION]: this.handleEvaluacionAction.bind(this),
         [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
         [MATERIAL]: this.handleMaterialAction.bind(this),
+        [CUESTIONARIO]: this.handleCuestionarioAction.bind(this), // Asumiendo que CUESTIONARIO
     }
 
     constructor(
@@ -119,6 +121,7 @@ export class TabContenidoComponent implements OnInit {
     iPerfilId: number = null
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
+
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()
@@ -128,37 +131,93 @@ export class TabContenidoComponent implements OnInit {
         this.rangeDates = [today, nextWeek]
 
         this.getData()
+        this.obtenerTipoActivadad()
+    }
+
+    // maneja el evento de seleccion de semana
+    semanaSeleccionadaFiltrada: any = null
+    mostrarDetalleSemana(semana: any) {
+        this.semanaActivado = semana.iContenidoSemId
+        const semanaSeleccionada = this.contenidoSemanas.find(
+            (item: any) => item.iContenidoSemId === semana.iContenidoSemId
+        )
+        this.semanaSeleccionada = semanaSeleccionada
+        this.semanaSeleccionadaFiltrada = semanaSeleccionada
     }
 
     private getData() {
         this.obtenerTipoActivadad()
-        this.obtenerContenidoSemanas()
+        this.obtenerContenidoSemanas(null)
     }
-
+    iActTipoId: number | string = 0
     obtenerTipoActivadad() {
         this._aulaService.obtenerTipoActividades().subscribe({
             next: (tipoActivadeds) => {
                 this.tipoActivadedes = tipoActivadeds
+                this.tipoActivadedes.unshift({
+                    iActTipoId: 0,
+                    cActTipoNombre: 'Todas las actividades',
+                })
+                // console.log('las actividades', this.tipoActivadedes)
                 this.generarAccionesContenido()
             },
         })
     }
     loadingContenidoSemanas: boolean = true
-    private obtenerContenidoSemanas() {
+    private obtenerContenidoSemanas(semana) {
         this.loadingContenidoSemanas = true
 
         this._aulaService
             .contenidoSemanasProgramacionActividades({
                 iSilaboId: this._iSilaboId,
                 perfil: this.iPerfilId === DOCENTE ? 'DOCENTE' : 'ESTUDIANTE',
+                iContenidoSemId: semana ? semana.iContenidoSemId : null,
             })
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
                     this.loadingContenidoSemanas = false
-                    this.contenidoSemanas = data
-                    // console.log('contenido semanas')
-                    // console.log(this.contenidoSemanas)
+                    if (semana) {
+                        this.semanaSeleccionada = data.length ? data[0] : []
+                        this.semanaActivado = semana.iContenidoSemId
+
+                        this.contenidoSemanas = this.contenidoSemanas.map(
+                            (item: any) =>
+                                item.iContenidoSemId === semana.iContenidoSemId
+                                    ? {
+                                          ...item,
+                                          ...this.semanaSeleccionada,
+                                      }
+                                    : item
+                        )
+
+                        this.contenidoSemanas = this.contenidoSemanas.map(
+                            (item: any) => {
+                                return {
+                                    ...item,
+                                    cTitulo:
+                                        'SEMANA ' +
+                                        (item.cContenidoSemNumero || ''),
+                                    cDescripcion:
+                                        item.cContenidoSemTitulo || '',
+                                }
+                            }
+                        )
+                    } else {
+                        this.contenidoSemanas = data
+                        this.contenidosList = this.contenidoSemanas.map(
+                            (item: any) => {
+                                return {
+                                    cTitulo:
+                                        'SEMANA ' +
+                                        (item.cContenidoSemNumero || ''),
+                                    cDescripcion:
+                                        item.cContenidoSemTitulo || '',
+                                    iContenidoSemId: item.iContenidoSemId,
+                                }
+                            }
+                        )
+                    }
                 },
                 error: (error) => {
                     console.log(error)
@@ -222,6 +281,10 @@ export class TabContenidoComponent implements OnInit {
             this.handleVideoconferenciaAction(action, actividad)
             return
         }
+        if (actividad.iActTipoId === CUESTIONARIO) {
+            this.handleCuestionarioAction(action, actividad)
+            return
+        }
 
         if (actividad.iActTipoId === MATERIAL) {
             this.handleMaterialAction('EDITAR', actividad, 'Editar Material')
@@ -241,6 +304,7 @@ export class TabContenidoComponent implements OnInit {
                             contenidoSemana: this.semanaSeleccionada,
                             iActTipoId: actividad.iActTipoId,
                             actividad: actividad,
+                            idDocCursoId: this.idDocCursoId,
                             action:
                                 action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                         },
@@ -252,15 +316,14 @@ export class TabContenidoComponent implements OnInit {
                 )
                 ref.onClose.subscribe((result) => {
                     if (result) {
-                        this.getData()
-                        console.log('Formulario enviado', result)
+                        // this.getData()
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                     } else {
                         console.log('Formulario cancelado')
                     }
                 })
                 break
             case 'ELIMINAR':
-                console.log(actividad)
                 this._confirmService.openConfirm({
                     header:
                         '¿Esta seguro de eliminar la tarea ' +
@@ -280,31 +343,82 @@ export class TabContenidoComponent implements OnInit {
                         '/' +
                         actividad.ixActivadadId +
                         '/' +
-                        actividad.iActTipoId,
+                        actividad.iActTipoId +
+                        '/' +
+                        this.curso.iIeCursoId +
+                        '/' +
+                        this.curso.iSeccionId +
+                        '/' +
+                        this.curso.iNivelGradoId,
                 ])
                 break
         }
     }
 
     handleVideoconferenciaAction(action: string, actividad: IActividad) {
-        if (action === 'EDITAR' || action === 'CREAR') {
-            let data = null
-            let header = 'Crear Videoconferencia'
-            if (action === 'EDITAR') {
-                data = actividad
-                header = 'Editar Videoconferencia'
-            }
-            this._dialogService.open(VideoconferenciaContainerFormComponent, {
-                ...MODAL_CONFIG,
-                data: data,
-                header: header,
-            })
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                const ref: DynamicDialogRef = this._dialogService.open(
+                    VideoconferenciaFormContainerComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        width: '40%',
+                        data: {
+                            contenidoSemana: this.semanaSeleccionada,
+                            iActTipoId: actividad.iActTipoId,
+                            actividad: actividad,
+                            idDocCursoId: this.idDocCursoId,
+                            action:
+                                action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                        },
+                        header:
+                            action === 'EDITAR'
+                                ? 'Editar Videoconferencia'
+                                : 'Crear Videoconferenciad',
+                    }
+                )
+                ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
+                break
+            case 'ELIMINAR':
+                this._confirmService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la videoconferencia ' +
+                        actividad['cRVirtualTema'] +
+                        ' ?',
+                    accept: () => {
+                        this.deleteReunionVirtualxiRVirtualId(actividad)
+                    },
+                })
+                break
+            case 'INGRESAR':
+                window.open(actividad['cRVirtualUrlJoin'], '_blank')
+                break
         }
+
+        // if (action === 'EDITAR' || action === 'CREAR') {
+        //     let data = null
+        //     let header = 'Crear Videoconferencia'
+        //     if (action === 'EDITAR') {
+        //         data = actividad
+        //         header = 'Editar Videoconferencia'
+        //     }
+        //     this._dialogService.open(VideoconferenciaFormContainerComponent, {
+        //         ...MODAL_CONFIG,
+        //         data: data,
+        //         header: header,
+        //     })
+        // }
     }
 
     handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
-            console.log('Editar', actividad)
             this._dialogService
                 .open(ForoFormContainerComponent, {
                     ...MODAL_CONFIG,
@@ -313,17 +427,19 @@ export class TabContenidoComponent implements OnInit {
                         iActTipoId: actividad.iActTipoId,
                         actividad: actividad,
                         action: 'editar',
+                        idDocCursoId: this.idDocCursoId,
                     },
                     header: 'Editar Foro',
                 })
                 .onClose.subscribe((result) => {
-                    console.log(result)
                     if (result) {
                         const data = {
                             ...result,
                         }
                         this._aulaService.actualizarForo(data).subscribe(() => {
-                            this.getData()
+                            this.obtenerContenidoSemanas(
+                                this.semanaSeleccionada
+                            )
                         })
                     } else {
                         console.log('Formulario cancelado')
@@ -340,19 +456,20 @@ export class TabContenidoComponent implements OnInit {
                         iActTipoId: actividad.iActTipoId,
                         actividad: actividad,
                         action: 'guardar',
+                        idDocCursoId: this.idDocCursoId,
                     },
                 })
                 .onClose.subscribe((result) => {
-                    console.log(result)
                     if (result) {
                         const data = {
                             ...result,
                             iContenidoSemId:
                                 this.semanaSeleccionada.iContenidoSemId,
                         }
-                        console.log('Formulario enviado', data)
                         this._aulaService.guardarForo(data).subscribe(() => {
-                            this.getData()
+                            this.obtenerContenidoSemanas(
+                                this.semanaSeleccionada
+                            )
                         })
                     } else {
                         console.log('Formulario cancelado')
@@ -378,6 +495,9 @@ export class TabContenidoComponent implements OnInit {
                     actividad.iProgActId,
                     actividad.ixActivadadId,
                     actividad.iActTipoId,
+                    this.curso.iIeCursoId,
+                    this.curso.iSeccionId,
+                    this.curso.iNivelGradoId,
                 ],
                 {
                     queryParams: {
@@ -390,6 +510,68 @@ export class TabContenidoComponent implements OnInit {
                     relativeTo: this._activatedRoute,
                 }
             )
+        }
+    }
+
+    handleCuestionarioAction(action: string, actividad: IActividad) {
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                const ref: DynamicDialogRef = this._dialogService.open(
+                    CuestionarioFormComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        data: {
+                            contenidoSemana: this.semanaSeleccionada,
+                            iActTipoId: actividad.iActTipoId,
+                            actividad: actividad,
+                            idDocCursoId: this.idDocCursoId,
+                            action:
+                                action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                        },
+                        header:
+                            action === 'EDITAR'
+                                ? 'Editar Cuestionario'
+                                : 'Crear Cuestionario',
+                    }
+                )
+                ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
+                break
+            case 'ELIMINAR':
+                this._confirmService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar el Cuestionario:  ' +
+                        actividad['cProgActTituloLeccion'] +
+                        ' ?',
+                    accept: () => {
+                        this.deleteCuestionarioxId(actividad)
+                    },
+                })
+                break
+            case 'VER':
+                this.router.navigate([
+                    'aula-virtual/areas-curriculares/' +
+                        'actividad' +
+                        '/' +
+                        actividad.iProgActId +
+                        '/' +
+                        actividad.ixActivadadId +
+                        '/' +
+                        actividad.iActTipoId +
+                        '/' +
+                        this.curso.iIeCursoId +
+                        '/' +
+                        this.curso.iSeccionId +
+                        '/' +
+                        this.curso.iNivelGradoId,
+                ])
+                break
         }
     }
 
@@ -412,7 +594,7 @@ export class TabContenidoComponent implements OnInit {
             .anularPublicacionEvaluacion({ iEvaluacionId })
             .subscribe({
                 next: () => {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 },
             })
     }
@@ -471,8 +653,6 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
-                console.log('actividades')
-                console.log(this.actividadSelected)
                 this.router.navigate(
                     [
                         '../',
@@ -480,6 +660,9 @@ export class TabContenidoComponent implements OnInit {
                         actividad.iProgActId,
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
+                        this.curso.iIeCursoId,
+                        this.curso.iSeccionId,
+                        this.curso.iNivelGradoId,
                     ],
                     {
                         queryParams: {
@@ -558,7 +741,7 @@ export class TabContenidoComponent implements OnInit {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: () => {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 },
             })
     }
@@ -569,7 +752,7 @@ export class TabContenidoComponent implements OnInit {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: () => {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 },
             })
     }
@@ -588,7 +771,26 @@ export class TabContenidoComponent implements OnInit {
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
                 if (resp.validated) {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                }
+            },
+        })
+    }
+    deleteCuestionarioxId(actividad) {
+        const params = {
+            petition: 'delete',
+            group: 'aula-virtual',
+            prefix: 'cuestionarios',
+            ruta: (actividad.iCuestionarioId = actividad.ixActivadadId),
+            params: {
+                iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+            },
+        }
+
+        this._generalService.getGralPrefixx(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 }
             },
         })
@@ -609,7 +811,30 @@ export class TabContenidoComponent implements OnInit {
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
                 if (resp.validated) {
-                    this.obtenerContenidoSemanas()
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                }
+            },
+        })
+    }
+
+    deleteReunionVirtualxiRVirtualId(actividad) {
+        actividad.opcion = 'ELIMINARxiTareaid'
+        actividad.iTareaId = actividad.ixActivadadId
+        const data = {
+            petition: 'delete',
+            group: 'aula-virtual',
+            prefix: 'reunion-virtuales',
+            data: actividad,
+            ruta: actividad.ixActivadadId.toString(),
+            params: {
+                skipSuccessMessage: true,
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        this._generalService.getGralPrefixx(data).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
                 }
             },
         })
@@ -624,5 +849,33 @@ export class TabContenidoComponent implements OnInit {
                 this.getData()
                 break
         }
+    }
+
+    filtrarSemanaSeleccionada(event: DropdownChangeEvent) {
+        const iActTipoId = Number(event.value)
+        this.semanaSeleccionada = { ...this.semanaSeleccionadaFiltrada } // Hacer copia (opcional según cómo esté estructurado)
+
+        if (!iActTipoId || !this.semanaSeleccionada) return
+
+        // Filtrar fechas que contienen actividades del tipo seleccionado
+        const fechasFiltradas = this.semanaSeleccionada.fechas
+            .map((fecha: any) => {
+                const actividadesFiltradas = fecha.actividades.filter(
+                    (actividad: any) =>
+                        Number(actividad.iActTipoId) === iActTipoId
+                )
+
+                if (actividadesFiltradas.length > 0) {
+                    return {
+                        ...fecha,
+                        actividades: actividadesFiltradas,
+                    }
+                }
+
+                return null
+            })
+            .filter((fecha: any) => fecha !== null)
+
+        this.semanaSeleccionada.fechas = fechasFiltradas
     }
 }

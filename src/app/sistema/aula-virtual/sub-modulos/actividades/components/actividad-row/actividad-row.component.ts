@@ -1,4 +1,5 @@
 import {
+    CUESTIONARIO,
     EVALUACION,
     FORO,
     IActividad,
@@ -56,6 +57,7 @@ export class ActividadRowComponent implements OnInit {
     iPerfilId: number = null
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
+
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
     }
@@ -78,6 +80,22 @@ export class ActividadRowComponent implements OnInit {
                 break
         }
         return styleActividad
+    }
+    // asignar el color de los caracteres del titulo
+    asignarColorActividad(): string {
+        if (this.actividad.iActTipoId === TAREA) {
+            return 'background-tarea'
+        }
+        if (this.actividad.iActTipoId === EVALUACION) {
+            return 'background-evaluacion'
+        }
+        if (this.actividad.iActTipoId === FORO) {
+            return 'background-foro'
+        }
+        if (this.actividad.iActTipoId === CUESTIONARIO) {
+            return 'background-cuestionario'
+        }
+        return 'background-default'
     }
 
     actividadSelected
@@ -104,6 +122,11 @@ export class ActividadRowComponent implements OnInit {
 
         if (actividad.iActTipoId === FORO) {
             this.handleForoAction(action, actividad)
+            return
+        }
+
+        if (actividad.iActTipoId === CUESTIONARIO) {
+            this.handleCuestionarioAction(action, actividad)
             return
         }
     }
@@ -151,6 +174,25 @@ export class ActividadRowComponent implements OnInit {
             {
                 queryParams: {
                     iEvaluacionId: this.actividadSelected['iForo'],
+                    // iCursoId: this.iCursoId,
+                    // idDocCursoId: this.idDocCursoId,
+                },
+                relativeTo: this._activatedRoute,
+            }
+        )
+    }
+    handleCuestionarioAction(action: string, actividad: IActividad) {
+        this.router.navigate(
+            [
+                '../',
+                'actividad',
+                actividad.iProgActId,
+                actividad.ixActivadadId,
+                actividad.iActTipoId,
+            ],
+            {
+                queryParams: {
+                    iCuestionarioId: this.actividadSelected['iCuestionarioId'],
                     // iCursoId: this.iCursoId,
                     // idDocCursoId: this.idDocCursoId,
                 },

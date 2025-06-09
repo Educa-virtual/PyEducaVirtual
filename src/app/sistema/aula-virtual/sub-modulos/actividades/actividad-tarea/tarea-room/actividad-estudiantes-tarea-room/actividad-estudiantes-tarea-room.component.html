@@ -1,0 +1,706 @@
+<app-toolbar-primeng
+    [title]="'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')"
+>
+</app-toolbar-primeng>
+<div class="flex flex-column gap-4 tab-content">
+    <div class="grid">
+        <div class="col-12 md:col-5">
+            <p-toolbar>
+                <div class="p-toolbar-group-start">
+                    <h4 class="text-primary font-bold">Asignar a:</h4>
+                </div>
+                <div class="p-toolbar-group-center">
+                    <p-selectButton
+                        [options]="tareaOptions"
+                        [(ngModel)]="tareaAsignar"
+                        [multiple]="false"
+                        optionLabel="name"
+                        optionValue="value"
+                        (onChange)="updateTareas()"
+                    />
+                </div>
+            </p-toolbar>
+
+            @if (tareaAsignar !== undefined) {
+                <p-accordion [activeIndex]="0">
+                    @if (!tareaAsignar) {
+                        <p-accordionTab header="Individual">
+                            <div class="grid">
+                                <div class="col-6 leyenda-tareas">
+                                    <div class="flex align-items-center">
+                                        <div
+                                            class="w-1rem h-1rem border-circle"
+                                            [ngClass]="'bg-red-500'"
+                                        ></div>
+                                        <div>
+                                            <b style="font-size: 1.5rem"
+                                                >&nbsp;{{ tareasFalta }}</b
+                                            ><small>&nbsp; Falta</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Contenedor principal para la leyenda de tareas, ocupa la mitad de la columna en un sistema de rejilla de 12 columnas. -->
+                                <div class="col-6 leyenda-tareas">
+                                    <div class="flex align-items-center">
+                                        <div
+                                            class="w-1rem h-1rem border-circle"
+                                            [ngClass]="'bg-green-500'"
+                                        ></div>
+                                        <div>
+                                            <b style="font-size: 1.5rem"
+                                                >&nbsp;{{ tareasCulminado }}</b
+                                            ><small>&nbsp;Culminado </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
+                                <app-card-orderlist class="col-12" [data]="[]">
+                                    <!-- (datoSeleccionado)="updateSelectedEstudiante($event)" -->
+                                </app-card-orderlist>
+                            </div>
+                        </p-accordionTab>
+                    } @else {
+                        <p-accordionTab header="Grupal">
+                            <div class="grid text-center">
+                                <div class="col-6 leyenda-tareas">
+                                    <div class="flex align-items-center">
+                                        <div
+                                            class="w-1rem h-1rem border-circle"
+                                            [ngClass]="'bg-red-500'"
+                                        ></div>
+                                        <div>
+                                            <b style="font-size: 1.5rem"
+                                                >&nbsp;{{ tareasFalta }}</b
+                                            ><small>&nbsp; Falta</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Contenedor flex para alinear los elementos en línea y centrarlos -->
+
+                                <div class="col-6 leyenda-tareas">
+                                    <div class="flex align-items-center">
+                                        <div
+                                            class="w-1rem h-1rem border-circle"
+                                            [ngClass]="'bg-green-500'"
+                                        ></div>
+                                        <div>
+                                            <b style="font-size: 1.5rem"
+                                                >&nbsp;{{ tareasCulminado }}</b
+                                            ><small>&nbsp; Culminado</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contenedor de la columna que ocupa todo el ancho disponible (12 columnas) y alinea el contenido a la derecha -->
+
+                                <div class="col-12 text-right">
+                                    <p-button
+                                        label="Crear Grupo"
+                                        icon="pi pi-plus"
+                                        (onClick)="
+                                            grupoSeleccionado = null;
+                                            showModal = true
+                                        "
+                                        iconPos="left"
+                                    />
+                                </div>
+                                <!-- Se utiliza para crear un acordeón en el que cada pestaña representa un grupo de estudiantes.-->
+                                <div class="col-12">
+                                    <!-- Contenedor de la columna principal -->
+                                    <p-accordion
+                                        [activeIndex]="0"
+                                        class="w-full"
+                                        expandIcon="pi pi-plus"
+                                        collapseIcon="pi pi-minus"
+                                    >
+                                        <!-- Recorremos la lista de grupos para crear un p-accordionTab por cada grupo -->
+
+                                        @for (
+                                            item of grupos;
+                                            track item;
+                                            let idx = $index
+                                        ) {
+                                            <p-accordionTab
+                                                (click)="
+                                                    seleccionarGrupo(item);
+                                                    nGrupal = idx
+                                                "
+                                                [ngClass]="{
+                                                    grupal: nGrupal === idx,
+                                                }"
+                                            >
+                                                <!-- Encabezado del tab de acordeón -->
+                                                <ng-template pTemplate="header">
+                                                    <!-- Contenedor principal que usa diseño de flexbox para alinear elementos y establecer un espacio entre ellos -->
+                                                    <div
+                                                        class="flex align-items-center gap-2 w-full"
+                                                    >
+                                                        <!-- Texto estático que indica que la siguiente parte es el nombre del grupo -->
+                                                        Grupo:
+                                                        {{
+                                                            item.cTareaGrupoNombre
+                                                        }}
+                                                        &nbsp;
+                                                    </div>
+                                                    <div
+                                                        class="flex align-items-center"
+                                                    >
+                                                        <!-- <b>Calif: </b>
+                                                                        {{
+                                                                        item.cEscalaCalifNombre ||
+                                                                        '-'
+                                                                        }} -->
+                                                        <div
+                                                            class="w-1rem h-1rem border-circle ml-3"
+                                                            [ngClass]="
+                                                                item.cEstado ===
+                                                                '0'
+                                                                    ? 'bg-red-500'
+                                                                    : item.cEstado ===
+                                                                        '2'
+                                                                      ? 'bg-yellow-500'
+                                                                      : 'bg-green-500'
+                                                            "
+                                                        ></div>
+                                                        <!-- Este botón, al ser clicado, se utiliza para seleccionar un grupo representado por item y mostrar un modal-->
+                                                        <p-button
+                                                            icon="pi pi-pencil"
+                                                            [rounded]="true"
+                                                            [text]="true"
+                                                            class="ml-3"
+                                                            severity="info"
+                                                            (onClick)="
+                                                                grupoSeleccionado =
+                                                                    item;
+                                                                showModal = true
+                                                            "
+                                                        />
+                                                        <p-button
+                                                            icon="pi pi-trash"
+                                                            [rounded]="true"
+                                                            [text]="true"
+                                                            severity="danger"
+                                                            (onClick)="
+                                                                eliminarTareaCabeceraGrupos(
+                                                                    item
+                                                                )
+                                                            "
+                                                        />
+                                                    </div>
+                                                </ng-template>
+                                                <!-- Componente p-table de PrimeNG para mostrar una tabla con funcionalidad de paginación y filtrado -->
+                                                <div>
+                                                    <p-table
+                                                        #dv
+                                                        class="col-12 hoverTable"
+                                                        [value]="
+                                                            item.json_estudiantes_asignado
+                                                        "
+                                                        paginator="false"
+                                                        styleClass="p-datatable-sm"
+                                                        [globalFilterFields]="[
+                                                            'cPersPaterno',
+                                                            'cPersMaterno',
+                                                            'cPersNombre',
+                                                        ]"
+                                                    >
+                                                        <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
+                                                        <ng-template
+                                                            pTemplate="caption"
+                                                        >
+                                                            <div
+                                                                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                                                            >
+                                                                <p-iconField
+                                                                    iconPosition="left"
+                                                                >
+                                                                    <p-inputIcon
+                                                                        styleClass="pi pi-search text-md"
+                                                                    />
+                                                                    <input
+                                                                        pInputText
+                                                                        type="text"
+                                                                        class="py-2"
+                                                                        (input)="
+                                                                            onGlobalFilter(
+                                                                                dv,
+                                                                                $event
+                                                                            )
+                                                                        "
+                                                                        placeholder="Buscar por apellidos y nombres"
+                                                                    />
+                                                                </p-iconField>
+                                                            </div>
+                                                        </ng-template>
+
+                                                        <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
+
+                                                        <ng-template
+                                                            pTemplate="header"
+                                                        >
+                                                            <tr
+                                                                class="sticky-header"
+                                                            >
+                                                                <th>#</th>
+                                                                <th>
+                                                                    Apellidos
+                                                                </th>
+                                                                <th>Nombres</th>
+                                                                <th>
+                                                                    Acciones
+                                                                </th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <!-- Esta etiqueta define una plantilla con el nombre "header" que se usa en una tabla con PrimeNG -->
+
+                                                        <ng-template
+                                                            pTemplate="body"
+                                                            let-estudiante
+                                                            let-rowIndex="rowIndex"
+                                                        >
+                                                            <!-- Verifica si un estudiante tiene la propiedad bAsignado establecida en true y, si es así, genera una fila en una tabla HTML que muestra su información y un botón para eliminarlo-->
+                                                            @if (
+                                                                estudiante.bAsignado
+                                                            ) {
+                                                                <tr>
+                                                                    <td>
+                                                                        {{
+                                                                            rowIndex +
+                                                                                1
+                                                                        }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{
+                                                                            estudiante.cPersPaterno
+                                                                        }}
+                                                                        {{
+                                                                            estudiante.cPersMaterno
+                                                                        }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{
+                                                                            estudiante?.cPersNombre
+                                                                        }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <!-- <p-button icon="pi pi-reply" [rounded]="
+                                                                                                true
+                                                                                            " [text]="
+                                                                                                true
+                                                                                            " severity="danger"
+                                                                                             (onClick)="
+                                                                                                transferirEstudiante(
+                                                                                                    estudiante
+                                                                                                )
+                                                                                            " /> -->
+                                                                        <p-button
+                                                                            icon="pi pi-trash"
+                                                                            [rounded]="
+                                                                                true
+                                                                            "
+                                                                            [text]="
+                                                                                true
+                                                                            "
+                                                                            severity="danger"
+                                                                            (onClick)="
+                                                                                eliminarEstudiante(
+                                                                                    estudiante
+                                                                                )
+                                                                            "
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </ng-template>
+
+                                                        <!-- Este bloque define un template para mostrar un mensaje personalizado
+                                                                            cuando no hay datos disponibles en la tabla -->
+                                                        <ng-template
+                                                            pTemplate="emptymessage"
+                                                            let-columns
+                                                        >
+                                                            <tr>
+                                                                <td
+                                                                    [attr.colspan]="
+                                                                        4
+                                                                    "
+                                                                >
+                                                                    No se
+                                                                    encontraron
+                                                                    resultados.
+                                                                </td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </p-accordionTab>
+                                        }
+                                    </p-accordion>
+                                </div>
+                            </div>
+                        </p-accordionTab>
+                    }
+                </p-accordion>
+            }
+        </div>
+        <div class="col-12 md:col-7">
+            <!-- Grupo de elementos alineados a la izquierda -->
+            <p-toolbar>
+                <div class="p-toolbar-group-start">
+                    <h4>
+                        <div class="text-primary font-bold">
+                            <i class="pi pi-pen-to-square"></i>&nbsp; Desarrollo
+                            de la tarea
+                        </div>
+                    </h4>
+                </div>
+                <div class="p-toolbar-group-end">
+                    <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Tarea" tooltipPosition="top"
+                                    [rounded]="true" [text]="true" severity="danger" /> -->
+                </div>
+            </p-toolbar>
+            <p-divider></p-divider>
+            @if (this.tareaAsignar !== null) {
+                <div [hidden]="this.tareaAsignar">
+                    @if (!estudianteSeleccionado) {
+                        <div align="center">
+                            <span
+                                class="pi pi-folder-open"
+                                style="font-size: 8rem"
+                            ></span>
+                        </div>
+                        <p class="text-center mt-2">
+                            Seleccione un estudiante para ver el desarrollo de
+                            su tarea
+                        </p>
+                    } @else {
+                        <p-message
+                            severity="info"
+                            [text]="
+                                'Estudiante: ' +
+                                estudianteSeleccionado.cPersNombre +
+                                ' ' +
+                                estudianteSeleccionado.cPersPaterno +
+                                ' ' +
+                                estudianteSeleccionado.cPersMaterno
+                            "
+                            styleClass="p-mr-2 w-full"
+                        ></p-message>
+                        <p-divider></p-divider>
+                        <p-fieldset [legend]="cTareaTitulo" [toggleable]="true">
+                            <div class="grid">
+                                @if (cTareaEstudianteUrlEstudiante.length) {
+                                    <div class="col-12">
+                                        <label for="" class="mt-2"
+                                            >Lista de Adjuntos</label
+                                        >
+
+                                        @for (
+                                            item of cTareaEstudianteUrlEstudiante;
+                                            track item;
+                                            let idx = $index
+                                        ) {
+                                            <p-inputGroup class="mt-1">
+                                                <p-inputGroupAddon>
+                                                    @switch (item.type) {
+                                                        @case (1) {
+                                                            <i
+                                                                class="pi pi-upload"
+                                                                style="
+                                                                    color: #333437;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                        @case (2) {
+                                                            <i
+                                                                class="pi pi-link"
+                                                                style="
+                                                                    color: #333437;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                        @case (3) {
+                                                            <i
+                                                                class="pi pi-youtube"
+                                                                style="
+                                                                    color: #c4302b;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                        @case (4) {
+                                                            <i
+                                                                class="pi pi-folder"
+                                                                style="
+                                                                    color: #ffd04b;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                    }
+                                                </p-inputGroupAddon>
+                                                <input
+                                                    type="text"
+                                                    pInputText
+                                                    [placeholder]="item.name"
+                                                    disabled
+                                                />
+                                                <button
+                                                    type="button"
+                                                    pButton
+                                                    icon="pi pi-eye"
+                                                    (click)="
+                                                        goLinkDocumento(
+                                                            item.ruta
+                                                        )
+                                                    "
+                                                    class="p-button-info"
+                                                >
+                                                    &nbsp;
+                                                </button>
+                                            </p-inputGroup>
+                                        }
+                                    </div>
+                                } @else {
+                                    <p class="text-danger">
+                                        Todavía el estudiante no ha entregado su
+                                        tarea
+                                    </p>
+                                }
+                            </div>
+                        </p-fieldset>
+                        <p-divider></p-divider>
+                        <p-fieldset legend="Calificación" [toggleable]="true">
+                            <div class="grid">
+                                <div class="col-12">
+                                    <p-inputGroup>
+                                        <p-inputGroupAddon
+                                            >Escala de
+                                            calificación</p-inputGroupAddon
+                                        >
+                                        <p-dropdown
+                                            [(ngModel)]="iEscalaCalifId"
+                                            [options]="escalaCalificaciones"
+                                            optionValue="iEscalaCalifId"
+                                            optionLabel="cEscalaCalifNombre"
+                                            placeholder="Seleccione calificación"
+                                            [style]="{
+                                                width: '100%',
+                                            }"
+                                        ></p-dropdown>
+                                    </p-inputGroup>
+                                </div>
+                                <div class="col-12">
+                                    <p-inputGroup>
+                                        <p-inputGroupAddon>
+                                            Conclusión Descriptiva
+                                        </p-inputGroupAddon>
+                                        <textarea
+                                            pInputText
+                                            [(ngModel)]="
+                                                cTareaEstudianteComentarioDocente
+                                            "
+                                        ></textarea>
+                                    </p-inputGroup>
+                                </div>
+                            </div>
+                        </p-fieldset>
+                        <div class="grid">
+                            <div class="col-12 text-right text-center">
+                                <p-toast></p-toast>
+                                <p-button
+                                    severity="success"
+                                    label="Guardar"
+                                    icon="pi pi-plus"
+                                    iconPos="left"
+                                    (onClick)="
+                                        guardarTareaEstudiantesxDocente()
+                                    "
+                                />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div [hidden]="!this.tareaAsignar">
+                    <!-- {{grupoSeleccionadoCalificar  | json}} -->
+                    @if (!grupoSeleccionadoCalificar.length) {
+                        <div align="center">
+                            <span
+                                class="pi pi-folder-open"
+                                style="font-size: 8rem"
+                            ></span>
+                        </div>
+                        <p class="text-center mt-2">
+                            Seleccione un grupo para ver el desarrollo de su
+                            tarea
+                        </p>
+                    } @else {
+                        <p-message
+                            severity="info"
+                            [text]="
+                                grupoSeleccionadoCalificar[0].cTareaGrupoNombre
+                            "
+                            styleClass="p-mr-2 w-full"
+                        ></p-message>
+                        <div class="mt-1">
+                            <b>Integrantes:</b>
+                        </div>
+                        @for (
+                            item of grupoSeleccionadoCalificar[0]
+                                .json_estudiantes;
+                            track item
+                        ) {
+                            @if (item.bAsignado) {
+                                <div>
+                                    - {{ item.cPersNombre }}
+                                    {{ item.cPersPaterno }}
+                                    {{ item.cPersMaterno }}
+                                </div>
+                            }
+                            <!-- <p-message severity="info"
+                                [text]="'Estudiante: '+ item.cPersNombre +' '+ item.cPersPaterno +' '+ item.cPersMaterno"
+                                styleClass="p-mr-2"></p-message> -->
+                        }
+                        <p-divider></p-divider>
+                        <!--Permite que el campo se pueda expandir o contraer-->
+                        <p-fieldset [legend]="cTareaTitulo" [toggleable]="true">
+                            <div class="grid">
+                                @if (cTareaGrupoUrl.length) {
+                                    <div class="col-12">
+                                        <label for="" class="mt-2"
+                                            >Lista de Adjuntos</label
+                                        >
+
+                                        @for (
+                                            item of cTareaGrupoUrl;
+                                            track item;
+                                            let idx = $index
+                                        ) {
+                                            <p-inputGroup class="mt-1">
+                                                <p-inputGroupAddon>
+                                                    @switch (item.type) {
+                                                        @case (1) {
+                                                            <i
+                                                                class="pi pi-upload"
+                                                                style="
+                                                                    color: #333437;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                        @case (2) {
+                                                            <i
+                                                                class="pi pi-link"
+                                                                style="
+                                                                    color: #333437;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                        @case (3) {
+                                                            <i
+                                                                class="pi pi-youtube"
+                                                                style="
+                                                                    color: #c4302b;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                        @case (4) {
+                                                            <i
+                                                                class="pi pi-folder"
+                                                                style="
+                                                                    color: #ffd04b;
+                                                                "
+                                                            ></i>
+                                                        }
+                                                    }
+                                                    <!-- Elemento de adición para el grupo de entrada -->
+                                                </p-inputGroupAddon>
+                                                <input
+                                                    type="text"
+                                                    pInputText
+                                                    [placeholder]="item.name"
+                                                    disabled
+                                                />
+                                                <button
+                                                    type="button"
+                                                    pButton
+                                                    icon="pi pi-eye"
+                                                    (click)="
+                                                        goLinkDocumento(
+                                                            item.ruta
+                                                        )
+                                                    "
+                                                    class="p-button-info"
+                                                >
+                                                    &nbsp;
+                                                </button>
+                                            </p-inputGroup>
+                                        }
+                                    </div>
+                                    <!-- Si 'cTareaGrupoUrl' está vacío, muestra un mensaje de error -->
+                                } @else {
+                                    <p class="text-danger">
+                                        Todavía el grupo no ha entregado su
+                                        tarea
+                                    </p>
+                                }
+                            </div>
+                        </p-fieldset>
+                        <p-divider></p-divider>
+                        <p-fieldset legend="Calificación" [toggleable]="true">
+                            <div class="grid">
+                                <div class="col-12">
+                                    <p-inputGroup>
+                                        <!-- Componente de grupo de entrada que permite incluir elementos de entrada relacionados de manera conjunta -->
+                                        <p-inputGroupAddon
+                                            >Escala de
+                                            calificación</p-inputGroupAddon
+                                        >
+                                        <p-dropdown
+                                            [(ngModel)]="iEscalaCalifId"
+                                            [options]="escalaCalificaciones"
+                                            optionValue="iEscalaCalifId"
+                                            optionLabel="cEscalaCalifNombre"
+                                            placeholder="Seleccione calificación"
+                                            [style]="{
+                                                width: '100%',
+                                            }"
+                                        ></p-dropdown>
+                                    </p-inputGroup>
+                                </div>
+                                <div class="col-12">
+                                    <p-inputGroup>
+                                        <!-- p-inputGroupAddon: Un componente de PrimeNG que se usa para agregar elementos al principio o al final de un grupo de entrada. -->
+                                        <p-inputGroupAddon>
+                                            Conclusión Descriptiva
+                                        </p-inputGroupAddon>
+                                        <!-- textarea: Un elemento de formulario de HTML que permite a los usuarios introducir texto en múltiples líneas. -->
+                                        <textarea
+                                            pInputText
+                                            [(ngModel)]="
+                                                cTareaGrupoComentarioDocente
+                                            "
+                                        ></textarea>
+                                    </p-inputGroup>
+                                </div>
+                            </div>
+                        </p-fieldset>
+                        <div class="grid">
+                            <div class="col-12 text-right text-center">
+                                <p-toast></p-toast>
+                                <!-- Bonton guardarTareaCabeceraGruposxDocente -->
+                                <p-button
+                                    severity="success"
+                                    label="Guardar"
+                                    icon="pi pi-plus"
+                                    iconPos="left"
+                                    (onClick)="
+                                        guardarTareaCabeceraGruposxDocente()
+                                    "
+                                    type="button"
+                                ></p-button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

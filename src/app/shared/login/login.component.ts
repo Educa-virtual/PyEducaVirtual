@@ -73,6 +73,14 @@ export class LoginComponent implements OnInit {
         this.loadingText = 'Verificando...'
         this.authService.login(this.formLogin.value).subscribe({
             next: (response: Data) => {
+                console.log(response)
+                if (!response.accessToken) {
+                    response.accessToken = response.data.accessToken
+                }
+                if (!response.user) {
+                    response.user = response.data.user
+                }
+
                 this.loading = false
 
                 /*if (!response.user)

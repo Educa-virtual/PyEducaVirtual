@@ -1,0 +1,226 @@
+<app-container-page
+    title="Lista de Inscripciones"
+    [actions]="actionsContainer"
+    (accionBtnItem)="accionBnt($event)"
+>
+    <p-dataView #dv [value]="alumnos" [rows]="5" filterBy="">
+        <ng-template let-products pTemplate="listItem">
+            <app-table-primeng
+                [columnas]="columnasTabla"
+                [data]="alumnos"
+                [showCaption]="false"
+                (accionBtnItem)="accionBnt($event)"
+                [actions]="accionesTabla"
+            >
+                <!--(accionBtnItem)="accionBnt($event)" -->
+            </app-table-primeng>
+        </ng-template>
+    </p-dataView>
+</app-container-page>
+
+<p-dialog
+    [header]="'Voucher de : ' + nombreAlumno"
+    [(visible)]="showModal"
+    [modal]="true"
+    [style]="{ width: '60rem' }"
+>
+    <ng-container
+        *ngIf="alumnoSelect"
+        class="flex justify-content-between flex-wrap"
+    >
+        <p><strong>Nombre:</strong> {{ alumnoSelect.cNombresCompleto }}</p>
+        <p><strong>Voucher:</strong> {{ alumnoSelect.cVoucher }}</p>
+
+        <!-- Si es una imagen -->
+        <div class="flex justify-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center">
+                <img
+                    *ngIf="alumnoSelect.cVoucher"
+                    [src]="'/ruta/a/vouchers/' + alumnoSelect.cVoucher"
+                    alt="Voucher"
+                    style="width: 100%; margin-top: 1rem"
+                />
+            </div>
+        </div>
+    </ng-container>
+</p-dialog>
+
+<p-dialog
+    [header]="'Ficha de Inscripción'"
+    [(visible)]="showModalInscripcion"
+    [modal]="true"
+    [style]="{ width: '45rem' }"
+>
+    <p-messages
+        [(value)]="tituloCurso"
+        [enableService]="false"
+        [closable]="false"
+    />
+    <form [formGroup]="formIncripcion" class="grid mt-4">
+        <div class="col-12">
+            <div class="custom-flex-group">
+                <p-dropdown
+                    [options]="tiposIdentificaciones"
+                    placeholder="Sele..."
+                    optionValue="iTipoIdentId"
+                    optionLabel="cTipoIdentSigla"
+                    [appendTo]="'body'"
+                    styleClass="w-full"
+                    formControlName="iTipoIdentId"
+                ></p-dropdown>
+                <input
+                    id="dni"
+                    type="text"
+                    formControlName="dni"
+                    pInputText
+                    class="flex-input"
+                    placeholder="Ingresar número"
+                    (keydown.enter)="buscarDni()"
+                />
+                <p-button
+                    label="Buscar"
+                    icon="pi pi-search"
+                    [loading]="loading"
+                    (onClick)="buscarDni()"
+                />
+            </div>
+        </div>
+
+        <div class="col-12">
+            <p-divider></p-divider>
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Nombre de Estudiante"
+                    formControlName="cPersNombre"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Apellido Paterno"
+                    formControlName="cPersPaterno"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-address-book"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Apellido Materno"
+                    formControlName="cPersMaterno"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-home"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Dirección"
+                    formControlName="cPersDomicilio"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-7">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-at"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Correo Electrónico"
+                    formControlName="cInscripCorreo"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-phone"></i>
+                </p-inputGroupAddon>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    placeholder="Celular"
+                    formControlName="cInscripCel"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-building-columns"></i>
+                </p-inputGroupAddon>
+                <p-dropdown
+                    [options]="instituciones"
+                    placeholder="Selecionar Institución"
+                    [filter]="true"
+                    optionValue="iIieeId"
+                    optionLabel="cIieeNombre"
+                    [appendTo]="'body'"
+                    styleClass="w-full"
+                    formControlName="cIieeNombre"
+                ></p-dropdown>
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-fileUpload
+                name="demo[]"
+                url="https://www.primefaces.org/cdn/api/upload.php"
+                (onUpload)="onUpload($event)"
+                [multiple]="true"
+                accept="image/*"
+                maxFileSize="1000000"
+            >
+                <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFiles.length">
+                        <li *ngFor="let file of uploadedFiles">
+                            {{ file.name }} - {{ file.size }} bytes
+                        </li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+        </div>
+    </form>
+    <div footer class="flex justify-content-end gap-2 mt-4">
+        <!-- <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        /> -->
+        <button
+            type="submit"
+            pButton
+            icon="pi pi-send"
+            label="Guardar"
+            class="p-button-success"
+            (click)="guardarInscripcion()"
+        ></button>
+    </div>
+</p-dialog>
+<p-toast />

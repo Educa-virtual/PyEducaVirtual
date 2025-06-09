@@ -221,6 +221,39 @@
                     </article>
                 </div>
             </p-tabPanel>
+
+            <!-- Tab para agregar preguntas la evaluación -->
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matListAlt"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Preguntas
+                        </span>
+                    </div>
+                </ng-template>
+                <app-toolbar-primeng
+                    [title]="
+                        'Gestionar preguntas de: ' +
+                        (evaluacion?.cEvaluacionTitulo || '')
+                    "
+                >
+                    <button
+                        [ngClass]="{
+                            'border-none': true,
+                            'cursor-pointer': true,
+                        }"
+                        class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                        pButton
+                        (click)="$event.stopPropagation(); menu.toggle($event)"
+                    >
+                        <i
+                            class="pi pi-ellipsis-h text-white hover:text-blue-300"
+                        ></i>
+                    </button>
+                </app-toolbar-primeng>
+                <app-evaluacion-agregar-preguntas></app-evaluacion-agregar-preguntas>
+            </p-tabPanel>
             <p-tabPanel [disabled]="evaluacion?.iEstado === 1">
                 <ng-template pTemplate="header">
                     <div class="flex align-items-center flex-column gap-2">

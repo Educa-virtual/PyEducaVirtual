@@ -42,10 +42,13 @@ export class CuestionarioFormComponent implements OnInit {
     actividad: IActividad | undefined
     action: string
     opcion: string = 'GUARDAR'
+    idDocCursoId: any
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
         this.actividad = this.dialogConfig.data.actividad
+        this.idDocCursoId = this.dialogConfig.data.idDocCursoId
+
         if (this.actividad?.ixActivadadId && this.action === 'ACTUALIZAR') {
             this.obtenerCuestionarioPorId(this.actividad.ixActivadadId)
         } else {
@@ -139,6 +142,8 @@ export class CuestionarioFormComponent implements OnInit {
             cProgActTituloLeccion: formValue.cTitulo, // Título de la lección del programa de actividad
             dtActualizado: '', // Fecha de actualización del programa de actividad
             dtCreado: '', // Fecha de creación del programa de actividad
+
+            idDocCursoId: this.idDocCursoId,
         }
         this._aulaService.guardarCuestionario(data).subscribe({
             next: (response) => {
@@ -215,6 +220,7 @@ export class CuestionarioFormComponent implements OnInit {
             cSubtitulo: '', // Subtítulo del cuestionario, si es necesario
             iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
             iProgActId: this.cuestionario.iProgActId, // Asignar el ID del programa de actividad
+            idDocCursoId: this.idDocCursoId,
         }
         // console.log('Actualizar cuestionario', update);
         const data = {

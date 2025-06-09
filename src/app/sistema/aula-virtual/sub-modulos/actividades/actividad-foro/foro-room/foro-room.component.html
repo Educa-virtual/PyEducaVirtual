@@ -16,125 +16,235 @@
                 "
             >
             </app-toolbar-primeng>
-            <div clas="grid">
-                <div
-                    class="card"
-                    [class]="
-                        iPerfilId === ESTUDIANTE ? 'col-12 md:col-8' : 'col-12'
-                    "
-                >
-                    <div class="grid mb-4">
-                        <div
-                            class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                        >
-                            <div class="col-12 md:col-6 gap-2">
-                                <span class="font-bold text-xl"
-                                    >Catergoría:</span
-                                >
-                                {{ foro?.cForoCatDescripcion }}
+            @if (iPerfilId === DOCENTE) {
+                <div clas="grid">
+                    <div class="card col-12">
+                        <div class="grid mb-4">
+                            <div
+                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                            >
+                                <div class="col-12 md:col-6 gap-2">
+                                    <span class="font-bold text-xl"
+                                        >Catergoría:</span
+                                    >
+                                    {{ foro?.cForoCatDescripcion }}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="grid mb-4">
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Inicio de Foro:
-                            </span>
-                            <!-- {{ foro.dtForoInicio }} -->
-                            <p class="flex gap-2 flex-wrap pl-5">
-                                {{
-                                    foro?.dtForoInicio
-                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
-
-                                <span class="flex gap-2">
+                        <div class="grid mb-4">
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <span class="font-bold text-xl flex gap-2">
                                     <app-icon
-                                        name="matAccessTime"
+                                        name="matCalendarMonth"
                                         class="text-primary"
                                         size="sm"
                                     ></app-icon>
-                                    <span class="font-bold">Hora Limite:</span>
-                                    {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                                    Inicio de Foro:
                                 </span>
-                            </p>
-                        </div>
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Cierre de Foro
-                            </span>
-                            <!-- {{ foro.dtForoFin }} -->
-                            <p class="flex gap-2 flex-wrap pl-5">
-                                {{
-                                    foro?.dtForoFin
-                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
+                                <!-- {{ foro.dtForoInicio }} -->
+                                <p class="flex gap-2 flex-wrap pl-5">
+                                    {{
+                                        foro?.dtForoInicio
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
 
-                                <span class="flex gap-2">
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{
+                                            foro?.dtForoInicio | date: 'h:mm a'
+                                        }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <span class="font-bold text-xl flex gap-2">
                                     <app-icon
-                                        name="matAccessTime"
+                                        name="matCalendarMonth"
                                         class="text-primary"
                                         size="sm"
                                     ></app-icon>
-                                    <span class="font-bold">Hora Limite:</span>
-                                    {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                    Cierre de Foro
                                 </span>
-                            </p>
-                        </div>
-                    </div>
+                                <!-- {{ foro.dtForoFin }} -->
+                                <p class="flex gap-2 flex-wrap pl-5">
+                                    {{
+                                        foro?.dtForoFin
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
 
-                    <div class="flex gap-2 flex-wrap align-items-center mb-4">
-                        <app-icon
-                            name="matMessage"
-                            color="text-primary"
-                            size="sm"
-                        />
-                        <h3 class="text-lg m-0">Descripción:</h3>
-                        {{ foro?.cForoDescripcion }}
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex gap-2 flex-wrap align-items-center mb-4"
+                        >
+                            <app-icon
+                                name="matMessage"
+                                color="text-primary"
+                                size="sm"
+                            />
+                            <h3 class="text-lg m-0">Descripción:</h3>
+                            {{ foro?.cForoDescripcion }}
+                        </div>
                     </div>
                 </div>
-                <div
-                    class="col-12 md:col-4"
-                    [hidden]="iPerfilId !== ESTUDIANTE"
-                >
-                    <div class="card" *ngFor="let respuesta of resptDocente">
-                        <h4>Mi Retroalimentación descriptiva:</h4>
-                        <!-- <p-divider></p-divider> -->
-                        <!-- <p-inputGroup>
+            }
+            @if (iPerfilId === ESTUDIANTE) {
+                <div clas="grid">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="grid mb-4">
+                                <div
+                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                                >
+                                    <div class="col-12 md:col-6 gap-2">
+                                        <span class="font-bold text-xl"
+                                            >Catergoría:</span
+                                        >
+                                        {{ foro?.cForoCatDescripcion }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid mb-4">
+                                <div
+                                    class="col-12 md:col-6 flex flex-column gap-2"
+                                >
+                                    <span class="font-bold text-xl flex gap-2">
+                                        <app-icon
+                                            name="matCalendarMonth"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        Inicio de Foro:
+                                    </span>
+                                    <!-- {{ foro.dtForoInicio }} -->
+                                    <p class="flex gap-2 flex-wrap pl-5">
+                                        {{
+                                            foro?.dtForoInicio
+                                                | date
+                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
+                                        }}
+
+                                        <span class="flex gap-2">
+                                            <app-icon
+                                                name="matAccessTime"
+                                                class="text-primary"
+                                                size="sm"
+                                            ></app-icon>
+                                            <span class="font-bold"
+                                                >Hora Limite:</span
+                                            >
+                                            {{
+                                                foro?.dtForoInicio
+                                                    | date: 'h:mm a'
+                                            }}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div
+                                    class="col-12 md:col-6 flex flex-column gap-2"
+                                >
+                                    <span class="font-bold text-xl flex gap-2">
+                                        <app-icon
+                                            name="matCalendarMonth"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        Cierre de Foro
+                                    </span>
+                                    <!-- {{ foro.dtForoFin }} -->
+                                    <p class="flex gap-2 flex-wrap pl-5">
+                                        {{
+                                            foro?.dtForoFin
+                                                | date
+                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
+                                        }}
+
+                                        <span class="flex gap-2">
+                                            <app-icon
+                                                name="matAccessTime"
+                                                class="text-primary"
+                                                size="sm"
+                                            ></app-icon>
+                                            <span class="font-bold"
+                                                >Hora Limite:</span
+                                            >
+                                            {{
+                                                foro?.dtForoFin | date: 'h:mm a'
+                                            }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex gap-2 flex-wrap align-items-center mb-4"
+                            >
+                                <app-icon
+                                    name="matMessage"
+                                    color="text-primary"
+                                    size="sm"
+                                />
+                                <h3 class="text-lg m-0">Descripción:</h3>
+                                {{ foro?.cForoDescripcion }}
+                            </div>
+                        </div>
+                        <div
+                            class="card mt-4"
+                            *ngFor="let respuesta of resptDocente"
+                        >
+                            <h4>Mi Retroalimentación descriptiva:</h4>
+                            <!-- <p-divider></p-divider> -->
+                            <!-- <p-inputGroup>
                         <p-inputGroupAddon> Nota </p-inputGroupAddon>
                         <input pInputText />
                     </p-inputGroup> -->
-                        <p-divider></p-divider>
-                        <p-inputGroup>
-                            <p-inputGroupAddon>
-                                Comentario Docente:
-                            </p-inputGroupAddon>
-                            <textarea
-                                pInputText
-                                rows="1"
-                                id="comentarioDocente"
-                                pInputTextarea
-                                rows="5"
-                                [disabled]="isDisabled"
-                                class="p-inputtextarea-lg"
-                                placeholder="Muestra Comentario Docente"
-                            >
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Comentario Docente:
+                                </p-inputGroupAddon>
+                                <textarea
+                                    pInputText
+                                    rows="1"
+                                    id="comentarioDocente"
+                                    pInputTextarea
+                                    rows="5"
+                                    [disabled]="isDisabled"
+                                    class="p-inputtextarea-lg"
+                                    placeholder="Muestra Comentario Docente"
+                                >
                             {{ respuesta?.cForoRptaDocente }} </textarea
-                            >
-                        </p-inputGroup>
+                                >
+                            </p-inputGroup>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+
             <div class="flex flex-column my-4 gap-4">
                 <!-- card mostrar o agregar las rubricas de esa tarea -->
                 <article class="card">

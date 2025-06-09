@@ -308,7 +308,7 @@ export class TabResultadosComponent implements OnInit {
         this._aulaService
             .obtenerResultados({
                 iEstudianteId: estudiantes.iEstudianteId,
-                idDocCursoId: estudiantes.iIeCursoId,
+                idDocCursoId: this.idDocCursoId,
             })
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({

@@ -29,7 +29,7 @@ export class TareaFormContainerComponent {
     contenidoSemana = []
 
     tarea = []
-
+    idDocCursoId: any
     private ref = inject(DynamicDialogRef)
     private _generalService = inject(GeneralService)
     private _constantsService = inject(ConstantesService)
@@ -37,6 +37,7 @@ export class TareaFormContainerComponent {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
         this.actividad = this.dialogConfig.data.actividad
+        this.idDocCursoId = this.dialogConfig.data.idDocCursoId
         // Verifica si hay una actividad específica y si la acción es 'ACTUALIZAR'
         if (this.actividad?.ixActivadadId && this.action === 'ACTUALIZAR') {
             this.getTareasxiTareaId(this.actividad.ixActivadadId)
@@ -59,7 +60,7 @@ una tarea o actividad a un servicio backend, con la finalidad de guardarla o act
         data.opcion = this.action + 'xProgActxiTarea'
         data.iDocenteId = this._constantsService.iDocenteId
         data.iActTipoId = this.dialogConfig.data.iActTipoId
-
+        data.idDocCursoId = this.idDocCursoId
         let prefix = ''
         if (this.action === 'GUARDAR') {
             data.iContenidoSemId =

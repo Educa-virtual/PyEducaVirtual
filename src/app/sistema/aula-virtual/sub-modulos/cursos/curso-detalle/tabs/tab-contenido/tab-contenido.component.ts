@@ -304,6 +304,7 @@ export class TabContenidoComponent implements OnInit {
                             contenidoSemana: this.semanaSeleccionada,
                             iActTipoId: actividad.iActTipoId,
                             actividad: actividad,
+                            idDocCursoId: this.idDocCursoId,
                             action:
                                 action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                         },
@@ -367,6 +368,7 @@ export class TabContenidoComponent implements OnInit {
                             contenidoSemana: this.semanaSeleccionada,
                             iActTipoId: actividad.iActTipoId,
                             actividad: actividad,
+                            idDocCursoId: this.idDocCursoId,
                             action:
                                 action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                         },
@@ -425,6 +427,7 @@ export class TabContenidoComponent implements OnInit {
                         iActTipoId: actividad.iActTipoId,
                         actividad: actividad,
                         action: 'editar',
+                        idDocCursoId: this.idDocCursoId,
                     },
                     header: 'Editar Foro',
                 })
@@ -453,6 +456,7 @@ export class TabContenidoComponent implements OnInit {
                         iActTipoId: actividad.iActTipoId,
                         actividad: actividad,
                         action: 'guardar',
+                        idDocCursoId: this.idDocCursoId,
                     },
                 })
                 .onClose.subscribe((result) => {
@@ -521,6 +525,7 @@ export class TabContenidoComponent implements OnInit {
                             contenidoSemana: this.semanaSeleccionada,
                             iActTipoId: actividad.iActTipoId,
                             actividad: actividad,
+                            idDocCursoId: this.idDocCursoId,
                             action:
                                 action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                         },

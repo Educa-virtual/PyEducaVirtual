@@ -50,7 +50,7 @@ export class ForoFormContainerComponent implements OnInit {
     selectProgramaAct = 0
 
     selectCategorias: any = {}
-
+    idDocCursoId: any
     public foroForm = this._formBuilder.group({
         iForoId: [],
         cForoTitulo: ['', [Validators.required]],
@@ -62,6 +62,7 @@ export class ForoFormContainerComponent implements OnInit {
         dtForoFin: [],
         cForoUrl: [],
         cForoCatDescripcion: [],
+        idDocCursoId: [],
 
         //VARIABLES DE AYUDA QUE NO ESTÀN EN LA BD
         dtInicio: [this.date, Validators.required],
@@ -71,6 +72,8 @@ export class ForoFormContainerComponent implements OnInit {
     opcion: string = 'GUARDAR'
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
+        this.idDocCursoId = this.dialogConfig.data.idDocCursoId
+
         console.log('hola', this.contenidoSemana)
         const data = this.dialogConfig.data
         if (data.action == 'editar') {
@@ -121,7 +124,7 @@ export class ForoFormContainerComponent implements OnInit {
             this.foroForm.controls.cForoDescripcion.value || ''
         const tempElement = document.createElement('div')
         tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-
+        this.foroForm.controls.idDocCursoId.setValue(this.idDocCursoId)
         const value = {
             ...this.foroForm.value,
             iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,

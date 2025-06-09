@@ -44,7 +44,7 @@ export class VideoconferenciaFormContainerComponent
     private GeneralService = inject(GeneralService)
 
     semana: Message[] = []
-
+    idDocCursoId: any
     public formConferencia = this._formBuilder.group({
         iRVirtualId: [''],
         cRVirtualTema: ['', [Validators.required, Validators.maxLength(250)]],
@@ -63,6 +63,7 @@ export class VideoconferenciaFormContainerComponent
         this.action = this.dialogConfig.data.action
         this.actividad = this.dialogConfig.data.actividad
         const data = this.dialogConfig.data
+        this.idDocCursoId = this.dialogConfig.data.idDocCursoId
 
         if (this.actividad.ixActivadadId && data.action == 'ACTUALIZAR') {
             this.obtenerReunionVirtualPorId(this.actividad.ixActivadadId)
@@ -73,10 +74,7 @@ export class VideoconferenciaFormContainerComponent
         this.semana = [
             {
                 severity: 'info',
-                detail:
-                    this.contenidoSemana?.cContenidoSemNumero +
-                    ' SEMANA - ' +
-                    this.contenidoSemana?.cContenidoSemTitulo,
+                detail: this.contenidoSemana?.cContenidoSemTitulo,
             },
         ]
     }
@@ -196,6 +194,7 @@ export class VideoconferenciaFormContainerComponent
                     'yyyy-MM-ddTHH:mm:ss'
                 ),
                 cRVirtualUrlJoin: this.formConferencia.value.cRVirtualUrlJoin,
+                idDocCursoId: this.idDocCursoId,
             }
 
             switch (this.action) {

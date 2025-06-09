@@ -78,20 +78,6 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         iCredId: new FormControl(),
     })
 
-    // init: EditorComponent['init'] = {
-    //     base_url: '/tinymce', // Root for resources
-    //     suffix: '.min', // Suffix to use when loading resources
-    //     menubar: false,
-    //     selector: 'textarea',
-    //     placeholder: 'Escriba aquí...',
-    //     plugins: 'lists image table',
-    //     toolbar:
-    //         'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-    //         'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-    //         'image table',
-    //     height: 250,
-    // }
-
     ngOnChanges(changes: SimpleChanges) {
         if (changes['showModal']) {
             this.showModal = changes['showModal']?.currentValue

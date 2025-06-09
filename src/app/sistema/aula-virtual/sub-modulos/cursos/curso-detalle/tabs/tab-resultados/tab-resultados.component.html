@@ -63,6 +63,79 @@
                             />
                         </div>
                     </div>
+                    <div class="grid">
+                        <div class="col-12">
+                            @for (
+                                actividad of obtenerActividadesxiActTipoId();
+                                track $index;
+                                let i = $index
+                            ) {
+                                <div
+                                    class="card mb-5 relative overflow-visible"
+                                    [style]="obtenerStyleActividad()"
+                                >
+                                    <div
+                                        class="flex flex-wrap w-full justify-content-between gap-0 m-0"
+                                    >
+                                        <div class="flex gap-4 font-normal">
+                                            <div class="align-content-center">
+                                                #{{ i + 1 }}
+                                            </div>
+                                            <div
+                                                class="flex flex-column my-2 align-items-start"
+                                            >
+                                                <span
+                                                    class="text-none font-bold"
+                                                    >{{
+                                                        actividad.cProgActTituloLeccion
+                                                    }}</span
+                                                >
+                                                <div class="mt-2">
+                                                    <i
+                                                        class="pi pi-calendar text-primary"
+                                                    ></i>
+                                                    <span>
+                                                        Fecha de Inicio:
+                                                        {{
+                                                            actividad[
+                                                                'dtProgActInicio'
+                                                            ]
+                                                                | date
+                                                                    : 'dd/MM/yyyy'
+                                                        }}
+                                                    </span>
+
+                                                    <span>
+                                                        Fecha de Fin:
+                                                        {{
+                                                            actividad[
+                                                                'dtProgActFin'
+                                                            ]
+                                                                | date
+                                                                    : 'dd/MM/yyyy'
+                                                        }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="flex flex-column align-items-end justify-content-center gap-2"
+                                        >
+                                            <div
+                                                class="align-content-center text-xl font-bold"
+                                            >
+                                                {{
+                                                    actividad[
+                                                        'nTareaEstudianteNota'
+                                                    ] || '-'
+                                                }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             }
         }

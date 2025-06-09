@@ -15,7 +15,12 @@ import {
     matRule,
     matStar,
 } from '@ng-icons/material-icons/baseline'
-import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import {
+    EVALUACION,
+    FORO,
+    TAREA,
+    tipoActividadesKeys,
+} from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { provideIcons } from '@ng-icons/core'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { PrimengModule } from '@/app/primeng.module'
@@ -28,12 +33,20 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { CardOrderListComponent } from '../../../../../../../shared/card-orderList/card-orderList.component'
 import { SelectButtonChangeEvent } from 'primeng/selectbutton'
 import { DetalleMatriculasService } from '@/app/servicios/acad/detalle-matriculas.service'
+import { IconComponent } from '@/app/shared/icon/icon.component'
+import { ActividadConfigPipe } from '@/app/sistema/aula-virtual/pipes/actividad-config.pipe'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
     templateUrl: './tab-resultados.component.html',
     styleUrls: ['./tab-resultados.component.scss'],
-    imports: [TablePrimengComponent, PrimengModule, CardOrderListComponent],
+    imports: [
+        TablePrimengComponent,
+        PrimengModule,
+        CardOrderListComponent,
+        IconComponent,
+        ActividadConfigPipe,
+    ],
     providers: [
         provideIcons({
             matHideSource,
@@ -114,14 +127,14 @@ export class TabResultadosComponent implements OnInit {
     listarActividades: any[] = [
         {
             label: 'Actividad de Aprendizaje',
-            value: '1',
+            value: TAREA,
             styleClass: 'btn-success',
         },
-        { label: 'Foro', value: '2', styleClass: 'btn-success' },
-        { label: 'Evaluación', value: '3', styleClass: 'btn-danger' },
+        { label: 'Foro', value: FORO, styleClass: 'btn-success' },
+        { label: 'Evaluación', value: EVALUACION, styleClass: 'btn-danger' },
     ]
     seleccionarResultado = '1'
-    actividadSeleccionado = '1'
+    actividadSeleccionado = TAREA
 
     public califcFinal: FormGroup = this._formBuilder.group({
         cDetMatrConclusionDesc1: ['', [Validators.required]],
@@ -131,6 +144,8 @@ export class TabResultadosComponent implements OnInit {
         iEscalaCalifId: ['', [Validators.required]],
         cDetMatConclusionDescPromedio: ['', [Validators.required]],
     })
+
+    detalleActividades: any[] = []
 
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
@@ -313,50 +328,7 @@ export class TabResultadosComponent implements OnInit {
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.comentariosSelect = []
-                    //console.log('obtener comentarios', resp)
-                    resp.forEach((element) => {
-                        element['foro'] = element['foro']
-                            ? JSON.parse(element['foro'])
-                            : []
-                    })
-                    this.comentariosSelect = resp.length ? resp[0]['foro'] : []
-                    //console.log('Mis foros', this.comentariosSelect)
-
-                    this.comentarioSelectTareas = []
-                    resp.forEach((element) => {
-                        element['tarea'] = element['tarea']
-                            ? JSON.parse(element['tarea'])
-                            : []
-                    })
-                    this.comentarioSelectTareas = resp.length
-                        ? resp[0]['tarea']
-                        : []
-                    //console.log('Mis tareas', this.comentarioSelectTareas)
-
-                    this.comentarioSelectEvaluaciones = []
-                    resp.forEach((element) => {
-                        element['evaluacion'] = element['evaluacion']
-                            ? JSON.parse(element['evaluacion'])
-                            : []
-                    })
-                    this.comentarioSelectEvaluaciones = resp.length
-                        ? resp[0]['evaluacion']
-                        : []
-                    // console.log(
-                    //     'Mis evaluaciones',
-                    //     this.comentarioSelectEvaluaciones
-                    // )
-                    //console.log(resp)
-                    //comentariosForo
-                    //comentariosTareas
-
-                    // this.messages = [
-                    //     {
-                    //         severity: 'info',
-                    //         detail: resp?.iEscalaCalifId,
-                    //     },
-                    // ]
+                    this.detalleActividades = resp.length ? resp[0] : []
                 },
             })
     }
@@ -398,12 +370,14 @@ export class TabResultadosComponent implements OnInit {
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
-                this.reporteNotasFinales = Data['data'].map((item: any) => {
-                    return {
-                        ...item,
-                        cTitulo: item.completoalumno,
+                this.reporteNotasFinales = Data['data'].map(
+                    (item: any, index) => {
+                        return {
+                            ...item,
+                            cTitulo: index + 1 + '.- ' + item.completoalumno,
+                        }
                     }
-                })
+                )
                 // console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
                 //console.log('Mostrar notas finales', this.reporteNotasFinales)
@@ -642,5 +616,55 @@ export class TabResultadosComponent implements OnInit {
         } else {
             this.iTabSeleccionado = evn.value
         }
+    }
+
+    obtenerActividadesxiActTipoId() {
+        switch (this.actividadSeleccionado) {
+            case TAREA:
+                const tarea = this.detalleActividades['tarea']
+                tarea ? JSON.parse(tarea) : []
+                return tarea ? JSON.parse(tarea) : []
+            case FORO:
+                const foro = this.detalleActividades['foro']
+                foro ? JSON.parse(foro) : []
+                return foro ? JSON.parse(foro) : []
+            case EVALUACION:
+                const evaluacion = this.detalleActividades['evaluacion']
+                evaluacion ? JSON.parse(evaluacion) : []
+                return evaluacion ? JSON.parse(evaluacion) : []
+        }
+        return []
+    }
+
+    obtenerStyleActividad() {
+        let styleActividad = ''
+        switch (Number(this.actividadSeleccionado)) {
+            case 1: //PROCESO TAREA
+                styleActividad =
+                    'border-left:15px solid var(--green-500); border-right:15px solid var(--green-500);'
+                break
+            case 2: //NO PUBLICADO FORO
+                styleActividad =
+                    'border-left:15px solid var(--yellow-500); border-right:15px solid var(--yellow-500);'
+                break
+            case 0: //CULMINADO EVALUACION
+                styleActividad =
+                    'border-left:15px solid var(--red-500); border-right:15px solid var(--red-500);'
+                break
+        }
+        return styleActividad
+    }
+
+    asignarColorActividad(): string {
+        if (this.actividadSeleccionado === TAREA) {
+            return 'background-tarea'
+        }
+        if (this.actividadSeleccionado === FORO) {
+            return 'background-evaluacion'
+        }
+        if (this.actividadSeleccionado === EVALUACION) {
+            return 'background-foro'
+        }
+        return ''
     }
 }

@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { Component, inject, OnInit } from '@angular/core'
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
@@ -17,6 +17,7 @@ export class FichaDeclaracionComponent implements OnInit {
     iPersId: number = 0
     iFichaDGId: number = 0
     ficha: any = null
+    verDeclaracion: boolean = false
 
     private _messageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -25,12 +26,13 @@ export class FichaDeclaracionComponent implements OnInit {
         private compartirFichaService: CompartirFichaService,
         private datosFichaBienestarService: DatosFichaBienestarService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private cdRef: ChangeDetectorRef
     ) {
         this.iPersId = this.route.snapshot.params['id'] || 0
     }
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.ficha = this.datosFichaBienestarService
             .searchFicha({
                 iPersId: this.iPersId,
@@ -39,7 +41,6 @@ export class FichaDeclaracionComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.iFichaDGId = data.data[0].iFichaDGId || 0
-                    console.log('Ficha encontrada:', this.iFichaDGId)
                     if (this.iFichaDGId) {
                         this.router.navigate([
                             `/bienestar/ficha/${this.iFichaDGId}/general`,
@@ -55,6 +56,10 @@ export class FichaDeclaracionComponent implements OnInit {
                     })
                 },
             })
+        if (!this.ficha) {
+            this.verDeclaracion = true
+            this.cdRef.detectChanges()
+        }
     }
 
     aceptarDeclaracion() {

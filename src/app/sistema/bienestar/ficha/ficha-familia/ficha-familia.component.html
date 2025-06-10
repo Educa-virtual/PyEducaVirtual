@@ -34,10 +34,12 @@
     [style]="{ width: '56rem' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="hideDialog()"
 >
     <app-ficha-familia-registro
+        #fichaFamiliaRegistroRef
         [iFamiliarId]="iFamiliarId"
-        (es_visible)="visibleDialog($event)"
+        (esVisibleChange)="visibleDialog($event)"
     />
 </p-dialog>
 <p-toast></p-toast>

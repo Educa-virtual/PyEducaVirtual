@@ -1,6 +1,4 @@
 <form [formGroup]="formFamiliar">
-    <input type="hidden" formControlName="iPersId" />
-
     <br />
 
     <p-fieldset legend="Relación familiar con el estudiante">
@@ -182,6 +180,145 @@
 
     <br />
 
+    <p-fieldset legend="Dirección del familiar" *ngIf="ver_controles_direccion">
+        <div class="grid p-fluid mt-3">
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-dropdown-input
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iTipoViaId'])
+                    "
+                    addonLabel="Tipo de vía *"
+                    [dropdownItems]="tipos_vias"
+                    placeholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                    inputType="text"
+                    [inputControl]="$any(formFamiliar.controls['cTipoViaOtro'])"
+                    inputPlaceholder="Especifique otro"
+                    [inputMaxlength]="100"
+                />
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon> Nombre de la vía * </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionNombreVia"
+                        maxlength="150"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon> Nro. de Puerta </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionNroPuerta"
+                        maxlength="10"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Bloque</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionBlock"
+                        maxlength="3"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Interior</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionInterior"
+                        maxlength="3"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Piso</p-inputGroupAddon>
+                    <p-inputNumber
+                        formControlName="iFamiliarDireccionPiso"
+                        maxlength="3"
+                        useGrouping="false"
+                        showButtons="true"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Manzana</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionManzana"
+                        maxlength="10"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Lote</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionLote"
+                        maxlength="3"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Km</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionKm"
+                        maxlength="10"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Referencia</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFamiliarDireccionReferencia"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
     <p-fieldset legend="Ubigeo" [toggleable]="true">
         <div class="grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
@@ -233,137 +370,6 @@
                     <input
                         pInputText
                         formControlName="cPersDomicilio"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Tipo de vía * </p-inputGroupAddon>
-                    <p-dropdown
-                        formControlName="iTipoViaId"
-                        [options]="tipos_vias"
-                        placeholder="Seleccione"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-8 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nombre de la vía * </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionNombreVia"
-                        maxlength="150"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nro. de Puerta </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionNroPuerta"
-                        maxlength="10"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Bloque</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionBlock"
-                        maxlength="3"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Interior</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDirecionInterior"
-                        maxlength="3"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Piso</p-inputGroupAddon>
-                    <p-inputNumber
-                        formControlName="cFichaDGDirecionPiso"
-                        maxlength="3"
-                        useGrouping="false"
-                        showButtons="true"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Manzana</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionManzana"
-                        maxlength="10"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Lote</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionLote"
-                        maxlength="3"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Km</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionKm"
-                        maxlength="10"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-8 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Referencia</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFichaDGDireccionReferencia"
                         class="group-element"
                     />
                 </p-inputGroup>

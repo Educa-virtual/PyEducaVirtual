@@ -1,12 +1,11 @@
-import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, inject, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { PrimengModule } from '@/app/primeng.module'
@@ -25,6 +24,9 @@ import { CompartirFichaService } from '../../services/compartir-ficha.service'
     styleUrl: './ficha-familia.component.scss',
 })
 export class FichaFamiliaComponent implements OnInit {
+    @ViewChild('fichaFamiliaRegistroRef')
+    fichaFamiliaRegistro!: FichaFamiliaRegistroComponent
+    iFichaDGId: string | null = null
     familiares: any[]
     visibleDialogFamiliar: boolean = false
     dialogTitle: string = ''
@@ -35,24 +37,31 @@ export class FichaFamiliaComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private store: LocalStoreService,
-        private DatosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService
+        private route: ActivatedRoute,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private compartirFicha: CompartirFichaService
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(1)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(1)
     }
 
     ngOnInit(): void {
-        if (this.compartirFichaService.getiFichaDGId() !== null) {
+        if (this.iFichaDGId) {
             this.searchFamiliares()
         }
     }
 
+    hideDialog() {
+        this.fichaFamiliaRegistro.salirResetearForm()
+    }
+
     visibleDialog(event: any) {
-        this.visibleDialogFamiliar = event.value
+        this.visibleDialogFamiliar = event.value || false
         this.iFamiliarId = null
         this.searchFamiliares()
     }
@@ -64,22 +73,24 @@ export class FichaFamiliaComponent implements OnInit {
     }
 
     async searchFamiliares() {
-        this.DatosFichaBienestarService.searchFamiliares({
-            iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
-        }).subscribe({
-            next: (data: any) => {
-                this.familiares = data.data
-            },
-            error: (error) => {
-                console.error('Error al obtener familiares:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-            complete: () => {},
-        })
+        this.datosFichaBienestar
+            .searchFamiliares({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.familiares = data.data
+                },
+                error: (error) => {
+                    console.error('Error al obtener familiares:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message || 'Error al obtener datos',
+                    })
+                },
+                complete: () => {},
+            })
     }
 
     /**
@@ -87,28 +98,31 @@ export class FichaFamiliaComponent implements OnInit {
      * @param item datos del familiar seleccionado
      */
     borrarFamiliar(item: any) {
-        this.DatosFichaBienestarService.borrarFamiliar({
-            iFamiliarId: item.iFamiliarId,
-        }).subscribe({
-            next: () => {
-                this._messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Se eliminó exitosamente',
-                })
-                this.familiares = this.familiares.filter(
-                    (item: any) => item.iFamiliarId !== item.iFamiliarId
-                )
-            },
-            error: (error) => {
-                console.error('Error eliminando familiar:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-        })
+        this.datosFichaBienestar
+            .borrarFamiliar({
+                iFamiliarId: item.iFamiliarId,
+            })
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Se eliminó exitosamente',
+                    })
+                    this.familiares = this.familiares.filter(
+                        (item: any) => item.iFamiliarId !== item.iFamiliarId
+                    )
+                },
+                error: (error) => {
+                    console.error('Error eliminando familiar:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error.error.message || 'Error al quitar familiar',
+                    })
+                },
+            })
     }
 
     accionBtnItemTable({ accion, item }) {

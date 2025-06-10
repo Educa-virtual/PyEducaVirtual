@@ -6,34 +6,23 @@
     <p-fieldset legend="1. Dirección del estudiante">
         <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Tipo de vía * </p-inputGroupAddon>
-                    <p-dropdown
-                        formControlName="iTipoViaId"
-                        [options]="tipos_vias"
-                        placeholder="Seleccione"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                        (onChange)="handleDropdownChange($event, 1)"
-                        [style]="{ flex: '1', width: '100%' }"
-                        styleClass="group-element"
-                    />
-                    @if (visibleInput[1] === true) {
-                        <input
-                            pInputText
-                            formControlName="cTipoViaNombre"
-                            placeholder="Especifique otro tipo de vía"
-                            type="text"
-                            class="group-element"
-                        />
-                    }
-                </p-inputGroup>
+                <app-dropdown-input
+                    [dropdownControl]="$any(formGeneral.controls['iTipoViaId'])"
+                    addonLabel="Tipo de vía *"
+                    [dropdownItems]="tipos_vias"
+                    placeholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                    inputType="text"
+                    [inputControl]="$any(formGeneral.controls['cTipoViaOtro'])"
+                    inputPlaceholder="Especifique otro"
+                    [inputMaxlength]="100"
+                />
             </div>
 
             <div class="col-12 lg:col-8 md:col-6">
                 <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nombre de la vía * </p-inputGroupAddon>
+                    <p-inputGroupAddon> Nombre de la vía *</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
@@ -78,7 +67,7 @@
                     <input
                         type="text"
                         pInputText
-                        formControlName="cFichaDGDirecionInterior"
+                        formControlName="cFichaDGDireccionInterior"
                         maxlength="3"
                         class="group-element"
                     />
@@ -89,8 +78,9 @@
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>Piso</p-inputGroupAddon>
                     <p-inputNumber
-                        formControlName="cFichaDGDirecionPiso"
-                        maxlength="3"
+                        formControlName="iFichaDGDireccionPiso"
+                        min="1"
+                        maxlength="2"
                         useGrouping="false"
                         showButtons="true"
                         class="group-element"
@@ -167,8 +157,8 @@
             <div class="col-12 md:col-4">
                 <p-inputGroup styleClass="vertical-group">
                     <p-inputGroupAddon>
-                        ¿La mamá del estudiante está viva?
                         <p-inputSwitch formControlName="bFamiliarMadreVive" />
+                        <span>¿La mamá del estudiante está viva?</span>
                     </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
@@ -183,30 +173,23 @@
                 </p-inputGroup>
             </div>
             <div class="col-12 md:col-4">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>
-                        ¿El estudiante tiene hijos/hijas?
-                        <p-inputSwitch formControlName="bFichaDGTieneHijos" />
-                    </p-inputGroupAddon>
-                </p-inputGroup>
+                <app-switch-input
+                    [switchControl]="
+                        $any(formGeneral.controls['bFichaDGTieneHijos'])
+                    "
+                    addonLabel="¿El estudiante tiene hijos/as?"
+                    inputType="number"
+                    inputPlaceholder="¿Cuántos hijos/as?"
+                    [inputControl]="
+                        $any(formGeneral.controls['iFichaDGNroHijos'])
+                    "
+                    [inputUseGrouping]="false"
+                    [inputShowButtons]="true"
+                    [inputMaxlength]="2"
+                    [inputMin]="1"
+                    [inputStep]="1"
+                />
             </div>
-            @if (visibleInput[0] === true) {
-                <div class="col-12 md:col-4">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            ¿Cuántos hijos/hijas?
-                        </p-inputGroupAddon>
-                        <p-inputNumber
-                            formControlName="iFichaDGNroHijos"
-                            min="1"
-                            maxlength="3"
-                            useGrouping="false"
-                            showButtons="true"
-                            class="group-element"
-                        />
-                    </p-inputGroup>
-                </div>
-            }
         </div>
     </p-fieldset>
 
@@ -214,23 +197,13 @@
 
     <!-- Botón Guardar y Seguir -->
     <div class="flex justify-content-end gap-2">
-        @if (!ficha_registrada) {
-            <p-button
-                type="button"
-                label="Guardar y continuar"
-                icon="pi pi-save"
-                severity="success"
-                (click)="guardar()"
-            />
-        } @else {
-            <p-button
-                type="button"
-                label="Actualizar y continuar"
-                icon="pi pi-save"
-                severity="success"
-                (click)="actualizar()"
-            />
-        }
+        <p-button
+            type="button"
+            label="Actualizar y continuar"
+            icon="pi pi-save"
+            severity="success"
+            (click)="actualizar()"
+        />
     </div>
 </form>
 <p-toast></p-toast>

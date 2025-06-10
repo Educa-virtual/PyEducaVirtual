@@ -23,8 +23,15 @@ export class SwitchInputComponent implements OnInit {
     @Input() addonLabel: string = 'Campo'
 
     @Input() inputPlaceholder: string = 'Especifique otro'
-    @Input() inputType: string = 'text'
+    @Input() inputType: 'text' | 'number' = 'text'
     @Input() inputRequired: boolean = false
+
+    @Input() inputMaxlength: number = null
+    @Input() inputMin: number = 1
+    @Input() inputMax: number = null
+    @Input() inputStep: number = 1
+    @Input() inputUseGrouping: boolean = false
+    @Input() inputShowButtons: boolean = false
 
     @Input() visibleInput: boolean = false
 
@@ -42,12 +49,14 @@ export class SwitchInputComponent implements OnInit {
     handleSwitchChange(event: any) {
         if (event?.checked === undefined) {
             this.visibleInput = false
+            this.inputControl.setValue(null)
             return null
         }
         if (event.checked === true) {
             this.visibleInput = true
         } else {
             this.visibleInput = false
+            this.inputControl.setValue(null)
         }
     }
 

@@ -28,6 +28,7 @@ export class DropdownInputComponent implements OnInit {
     @Input() inputPlaceholder: string = 'Especifique otro'
     @Input() inputType: string = 'text'
     @Input() inputRequired: boolean = false
+    @Input() inputMaxlength: number = null
 
     @Input() visibleInput: boolean = false
 
@@ -49,12 +50,14 @@ export class DropdownInputComponent implements OnInit {
     handleDropdownChange(event: any) {
         if (event?.value === undefined) {
             this.visibleInput = false
+            this.inputControl.setValue(null)
             return null
         }
         if (event.value == 1) {
             this.visibleInput = true
         } else {
             this.visibleInput = false
+            this.inputControl.setValue(null)
         }
     }
 

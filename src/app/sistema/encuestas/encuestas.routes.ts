@@ -10,7 +10,7 @@ const routes: Routes = [
         loadChildren: () =>
             import(
                 './configuracion-encuestas/configuracion-encuentras.routes'
-            ).then((m) => m.configuracionEncuestaRoutes),
+            ).then((r) => r.configuracionEncuestaRoutes),
         canActivate: [RoleGuard],
         data: {
             expectedRole: [ADMINISTRADOR],

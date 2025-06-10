@@ -6,6 +6,7 @@ import {
     listaEncuestaColumns,
     listaEncuestaContainerActions,
 } from '../config/tables/lista-encuestas'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-lista-encuestas',
@@ -15,16 +16,32 @@ import {
     styleUrl: './lista-encuestas.component.scss',
 })
 export class ListaEncuestasComponent implements OnInit {
-    title = 'Lista de Encuestas'
+    title = 'CENSO DRE/UGEL'
 
     listaEncuestaColumns = listaEncuestaColumns
     listaEncuestasContainerActions = listaEncuestaContainerActions
+
+    constructor(private router: Router) {}
 
     ngOnInit(): void {
         console.log()
     }
 
-    handleActions(e) {
-        console.log(e)
+    handleActions({ accion, item }) {
+        switch (accion) {
+            case 'agregar':
+                console.log(item)
+
+                this.router.navigate([
+                    '/encuestas/configuracion-encuesta/informacion-general',
+                ])
+
+                break
+
+            default:
+                break
+        }
+
+        console.log(accion)
     }
 }

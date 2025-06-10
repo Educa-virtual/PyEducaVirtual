@@ -20,11 +20,20 @@
             </p-accordionTab>
         }
     </p-accordion>
-    <p-button
-        class="align-self-end"
-        icon="pi pi-arrow-right"
-        label="Siguiente"
-        severity="success"
-        iconPos="right"
-    />
+    <div class="grid justify-content-between">
+        <p-button
+            icon="pi pi-arrow-left"
+            label="Anterior"
+            severity="success"
+            iconPos="left"
+            (onClick)="prevRoute()"
+        />
+        <p-button
+            icon="pi pi-arrow-right"
+            label="Siguiente"
+            severity="success"
+            iconPos="right"
+            (onClick)="nextRoute()"
+        />
+    </div>
 </div>

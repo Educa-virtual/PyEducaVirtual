@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown'
 import { CheckboxModule } from 'primeng/checkbox'
 import { ButtonModule } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-informacion-adicional',
@@ -34,7 +35,10 @@ export class InformacionAdicionalComponent implements OnInit {
     form: FormGroup
     tiempos: any[]
 
-    constructor(private fb: FormBuilder) {
+    constructor(
+        private router: Router,
+        private fb: FormBuilder
+    ) {
         this.form = this.fb.group({
             title: [''],
             subTitle: [''],
@@ -54,5 +58,11 @@ export class InformacionAdicionalComponent implements OnInit {
             { label: '5 meses', value: '5 meses' },
             { label: '6 meses', value: '6 meses' },
         ]
+    }
+
+    nextRoute() {
+        this.router.navigate([
+            '/encuestas/configuracion-encuesta/poblacion-objetivo',
+        ])
     }
 }

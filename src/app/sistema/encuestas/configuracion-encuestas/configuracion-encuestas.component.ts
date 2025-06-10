@@ -4,6 +4,7 @@ import { StepsModule } from 'primeng/steps'
 import { actionsContainer } from './config/actions/container'
 import { steps } from './config/steps'
 import { MenuItem } from 'primeng/api'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-configuracion-encuestas',
@@ -18,17 +19,27 @@ export class ConfiguracionEncuestasComponent implements OnInit {
     items: MenuItem[] | undefined
 
     activeIndex: number = 0
-    title: string = 'CENSO DRE/UGEL 2024'
+    title: string = 'Gestionar encuesta'
 
     ngOnInit(): void {
         this.items = steps
     }
 
+    constructor(private router: Router) {}
+
     onActiveIndexChange(event: number) {
         this.activeIndex = event
     }
 
-    handleActions(e) {
-        console.log(e)
+    handleActions({ accion }) {
+        switch (accion) {
+            case 'regresar':
+                this.router.navigate(['/encuestas/configuracion-encuesta'])
+
+                break
+
+            default:
+                break
+        }
     }
 }

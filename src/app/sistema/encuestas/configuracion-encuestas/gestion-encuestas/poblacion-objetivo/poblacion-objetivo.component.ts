@@ -3,6 +3,7 @@ import { AccordionModule } from 'primeng/accordion'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { poblacionObjetivoColumns } from '../../config/tables/poblacion-objetivo'
 import { ButtonModule } from 'primeng/button'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-poblacion-objetivo',
@@ -33,4 +34,16 @@ export class PoblacionObjetivoComponent {
     ]
 
     poblacionObjetivoColumns = poblacionObjetivoColumns
+
+    constructor(private router: Router) {}
+
+    prevRoute() {
+        this.router.navigate([
+            '/encuestas/configuracion-encuesta/informacion-general',
+        ])
+    }
+
+    nextRoute() {
+        this.router.navigate(['/encuestas/configuracion-encuesta/resumen'])
+    }
 }

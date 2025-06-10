@@ -4,7 +4,7 @@
             <p-button
                 icon="pi pi-plus"
                 label="Nuevo Instructor"
-                (onClick)="showModal = true"
+                (onClick)="accionBnt({ accion: 'guardar' })"
             ></p-button>
         </app-toolbar-primeng>
         <app-table-primeng
@@ -24,7 +24,8 @@
 
 <app-instructor-form
     [showModal]="showModal"
-    [instructor]="persona"
+    [instructor]="instructor"
+    [action]="accion"
     [tiposIdentificaciones]="tiposIdentificaciones"
     (accionBtnItem)="accionBnt($event)"
 ></app-instructor-form>

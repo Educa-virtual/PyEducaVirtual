@@ -34,6 +34,8 @@ export class InstructoresComponent implements OnInit {
     data: any[] = []
     tiposIdentificaciones: any[] = []
     showModal: boolean = false
+    instructor // obtene datos del instructor
+    accion //variable para las acciones en el modal
 
     constructor(private messageService: MessageService) {}
 
@@ -96,18 +98,47 @@ export class InstructoresComponent implements OnInit {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
+    // para mas delante ji
+    // obtenerIcono(accion: string, estado: string): string {
+    //     const iconos = {
+    //         editar: {
+    //             activo: 'pi pi-pencil',
+    //             inactivo: 'pi pi-ban',
+    //         },
+    //         eliminar: {
+    //             Activo: 'pi pi-trash',
+    //             Eliminado: 'pi pi-check',
+    //         },
+    //     };
+    //     return iconos[accion][estado] || 'pi pi-question'; // Ícono por defecto si el estado no coincide
+    // //     cambiarEstado(accion: string, nuevoEstado: string) {
+    // //     this.accionesTabla = this.accionesTabla.map((accionItem) => {
+    // //         if (accionItem.accion === accion) {
+    // //             return { ...accionItem, estado: nuevoEstado, icon: this.obtenerIcono(accionItem.accion, nuevoEstado) };
+    // //         }
+    // //         return accionItem;
+    // //     });
+    // // }
+    // }
 
     ngOnInit(): void {
         this.obtenerTipoIdentificaciones()
         this.obtenerInstructores()
     }
-    accionBnt({ accion, item }): void {
+    accionBnt({ accion, item }: { accion: string; item?: any }): void {
         switch (accion) {
             case 'close-modal':
                 this.showModal = false
                 break
+            case 'guardar':
+                this.accion = accion
+                this.showModal = true
+                break
             case 'editar':
-                this.mostrarModalEditar(item)
+                this.accion = accion
+                console.log(item)
+                this.instructor = item
+                this.showModal = true
                 break
             case 'eliminar':
                 this.eliminarInstructor(item)
@@ -143,19 +174,24 @@ export class InstructoresComponent implements OnInit {
                     petition: 'delete',
                     group: 'cap',
                     prefix: 'instructores',
+                    ruta: data.iInstId,
                     params: {
                         iCredId: this._constantesService.iCredId,
                     },
                 }
                 // Servicio para obtener los instructores
-                this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
-                    this.data = (Data as any)['data']
-                    // this.instructorForm.reset()
-                    // this.showModal = false
-                    // console.log('Datos persona:', this.data);
+                this.GeneralService.getGralPrefixx(params).subscribe({
+                    next: (resp) => {
+                        if (resp.validated) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Acción exitosa',
+                                detail: resp.message,
+                            })
+                            this.obtenerInstructores()
+                        }
+                    },
                 })
-                console.log('Eliminado')
-                // this.deleteCuestionarioxId(actividad)
             },
             reject: () => {
                 // Mensaje de cancelación (opcional)
@@ -167,10 +203,8 @@ export class InstructoresComponent implements OnInit {
             },
         })
     }
-    persona: any
-    mostrarModalEditar(event: string) {
-        this.persona = event
-        console.log('no se', event)
+
+    mostrarModalGuarda() {
         this.showModal = true
     }
     // metodo para obtener instructores

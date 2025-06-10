@@ -211,6 +211,7 @@ export class FichaFamiliaComponent implements OnInit {
             header: 'Tipo de Doc.',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:block',
         },
         {
             type: 'text',
@@ -219,12 +220,13 @@ export class FichaFamiliaComponent implements OnInit {
             header: 'Documento',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:block',
         },
         {
             type: 'text',
             width: '45%',
             field: 'cPersNombresApellidos',
-            header: 'Nombre Completo',
+            header: 'Nombres',
             text_header: 'left',
             text: 'left',
         },

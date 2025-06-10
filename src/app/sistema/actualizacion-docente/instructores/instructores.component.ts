@@ -10,6 +10,8 @@ import { InstructorFormComponent } from './instructor-form/instructor-form.compo
 import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identificaciones.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-instructores',
@@ -27,56 +29,14 @@ export class InstructoresComponent implements OnInit {
     private _TiposIdentificacionesService = inject(TiposIdentificacionesService)
     private _constantesService = inject(ConstantesService)
     private GeneralService = inject(GeneralService)
+    private _confirmService = inject(ConfirmationModalService)
 
     data: any[] = []
-
-    // data: any[] = [
-    //     {
-    //         id: 1,
-    //         cDatosInstructor:
-    //             '<b>Nombres y Apellidos: </b>Juan Pérez.<br><b>Correo Electrónico: </b>juan.perez@example.com<br><b>Teléfono: </b>987654321',
-    //         bCredencial: true,
-    //         cEstado: '<font color="red"><b>Activo</b></font>',
-    //     },
-    //     {
-    //         id: 2,
-    //         cDatosInstructor:
-    //             '<b>Nombres y Apellidos: </b>María Gómez.<br><b>Correo Electrónico: </b>maria.gomez@example.com<br><b>Teléfono: </b>987654322',
-    //         bCredencial: false,
-    //         cEstado: '<b>Activo</b>',
-    //     },
-    //     {
-    //         id: 3,
-    //         cDatosInstructor:
-    //             '<b>Nombres y Apellidos: </b>Luis Rodríguez.<br><b>Correo Electrónico: </b>luis.rodriguez@example.com<br><b>Teléfono: </b>987654323',
-    //         bCredencial: true,
-    //         cEstado: '<b>Activo</b>',
-    //     },
-    //     {
-    //         id: 4,
-    //         cDatosInstructor:
-    //             '<b>Nombres y Apellidos: </b>Ana Torres.<br><b>Correo Electrónico: </b>ana.torres@example.com<br><b>Teléfono: </b>987654324',
-    //         bCredencial: true,
-    //         cEstado: '<b>Activo</b>',
-    //     },
-    //     {
-    //         id: 5,
-    //         cDatosInstructor:
-    //             '<b>Nombres y Apellidos: </b>Pedro Martínez.<br><b>Correo Electrónico: </b>pedro.martinez@example.com<br><b>Teléfono: </b>987654325',
-    //         bCredencial: false,
-    //         cEstado: '<b>Activo</b>',
-    //     },
-    //     {
-    //         id: 6,
-    //         cDatosInstructor:
-    //             '<b>Nombres y Apellidos: </b>Laura Fernández.<br><b>Correo Electrónico: </b>laura.fernandez@example.com<br><b>Teléfono: </b>987654326',
-    //         bCredencial: true,
-    //         cEstado: '<b>Activo</b>',
-    //     },
-    // ]
-
     tiposIdentificaciones: any[] = []
     showModal: boolean = false
+
+    constructor(private messageService: MessageService) {}
+
     public columnasTabla: IColumn[] = [
         {
             type: 'item',
@@ -170,8 +130,42 @@ export class InstructoresComponent implements OnInit {
             })
     }
     eliminarInstructor(item: any): void {
-        // Implementar lógica para eliminar instructor
-        console.log('Eliminar instructor:', item)
+        const data = item
+        this._confirmService.openConfirm({
+            header:
+                '¿Esta seguro de eliminar instructor:  ' +
+                data.cPersNombre +
+                ' ' +
+                data.cPersPaterno +
+                ' ?',
+            accept: () => {
+                const params = {
+                    petition: 'delete',
+                    group: 'cap',
+                    prefix: 'instructores',
+                    params: {
+                        iCredId: this._constantesService.iCredId,
+                    },
+                }
+                // Servicio para obtener los instructores
+                this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+                    this.data = (Data as any)['data']
+                    // this.instructorForm.reset()
+                    // this.showModal = false
+                    // console.log('Datos persona:', this.data);
+                })
+                console.log('Eliminado')
+                // this.deleteCuestionarioxId(actividad)
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
     }
     persona: any
     mostrarModalEditar(event: string) {

@@ -155,7 +155,18 @@ export class InstructorFormComponent implements OnChanges {
 
                     break
                 case 2: // RUC
-                    console.log('RUC')
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Ruc no disponible',
+                    })
+                    break
+                default:
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No disponible',
+                    })
                     break
             }
         }

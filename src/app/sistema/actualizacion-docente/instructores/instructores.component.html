@@ -24,7 +24,9 @@
 
 <app-instructor-form
     [showModal]="showModal"
-    [instructor]="{}"
+    [instructor]="persona"
     [tiposIdentificaciones]="tiposIdentificaciones"
     (accionBtnItem)="accionBnt($event)"
 ></app-instructor-form>
+
+<p-toast />

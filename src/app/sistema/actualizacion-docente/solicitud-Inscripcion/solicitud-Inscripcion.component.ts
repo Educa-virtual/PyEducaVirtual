@@ -89,7 +89,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     }
     // obtener y listar las capacitaciones
     obtenerCapacitaciones() {
-        const iEstado = 1
+        const iEstado = 2
         const iCredId = this._ConstantesService.iCredId
         const data = {
             iEstado: iEstado,

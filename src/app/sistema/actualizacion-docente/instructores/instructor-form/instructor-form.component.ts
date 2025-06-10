@@ -192,7 +192,7 @@ export class InstructorFormComponent implements OnChanges {
             cPersMaterno: this.instructorForm.get('cPersMaterno')?.value,
             cPersCelular: this.instructorForm.get('cPersCelular')?.value,
             cPersCorreo: this.instructorForm.get('cPersCorreo')?.value,
-            cPersDireccion: this.instructorForm.get('cPersDomicilio')?.value,
+            cPersDireccion: this.instructorForm.get('cPersDireccion')?.value,
             iCredId: this._constantesService.iCredId,
         }
         const params = {

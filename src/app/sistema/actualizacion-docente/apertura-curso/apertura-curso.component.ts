@@ -565,7 +565,7 @@ export class AperturaCursoComponent implements OnInit {
 
     // obtener las capacitaciones
     obtenerCapacitaciones() {
-        const iEstado = 1
+        const iEstado = null
         const iCredId = this._ConstantesService.iCredId
         const data = {
             iEstado: iEstado,

@@ -75,21 +75,21 @@ export class LoginComponent implements OnInit {
             next: (response: Data) => {
                 this.loading = false
 
-                if (!response.user)
+                if (!response.data.user)
                     return this.messageService.add({
                         severity: 'error',
                         summary: 'Acceso Denegado!',
                         detail: 'No hay registros con las credenciales ingresadas',
                     })
 
-                const item = response.user
+                const item = response.data.user
 
                 this.tokenStorage.setItem('dremoToken', response.accessToken)
-                this.tokenStorage.setItem('dremoUser', response.user)
+                this.tokenStorage.setItem('dremoUser', response.data.user)
 
                 if (
-                    !response.user.perfiles ||
-                    response.user.perfiles.length === 0
+                    !response.data.user.perfiles ||
+                    response.data.user.perfiles.length === 0
                 ) {
                     // Si no tiene perfiles, redirigir a sin-rol-asignado
                     this.router.navigate(['/sin-rol-asignado'])

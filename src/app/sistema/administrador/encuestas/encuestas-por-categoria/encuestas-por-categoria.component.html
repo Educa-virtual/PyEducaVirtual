@@ -1,22 +1,23 @@
 <div class="categorias-container">
-    <!-- cabecera -->
-    <div class="header-section mb-4">
-        <div class="flex justify-content-between align-items-center mb-3">
-            <h1 class="text-3xl font-bold text-primary">
-                Categoría de encuestas
-            </h1>
-            <button
-                pButton
-                pRipple
-                label="Nueva"
-                icon="pi pi-plus"
-                class="p-button-success"
-                (click)="mostrarDialogNuevaCategoria = true"
-            ></button>
-        </div>
+    <p-panel class="categoria-panel">
+        <ng-template pTemplate="header">
+            <div class="flex justify-content-between align-items-center w-full">
+                <span class="text-xl font-bold text-primary"
+                    >Categoría de encuestas</span
+                >
+                <button
+                    pButton
+                    pRipple
+                    label="Nueva"
+                    icon="pi pi-plus"
+                    class="p-button-success"
+                    (click)="mostrarDialogNuevaCategoria = true"
+                ></button>
+            </div>
+        </ng-template>
 
         <!-- Search Bar -->
-        <div class="search-container">
+        <div class="search-container mb-4">
             <span class="p-input-icon-left w-full">
                 <i class="pi pi-search"></i>
                 <input
@@ -27,46 +28,52 @@
                 />
             </span>
         </div>
-    </div>
 
-    <!-- Grid de Categorías -->
-    <div class="categorias-grid">
-        <div *ngFor="let categoria of categorias" class="categoria-item">
-            <article
-                class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
-            >
-                <div class="curso__image-container img-transition">
-                    <img
-                        [src]="
-                            backend + '/' + categoria.cCategoriaEncuestaImagen
-                        "
-                        [alt]="categoria.cCategoriaEncuestaNombre"
-                        class="w-full h-full"
-                        (error)="updateUrl(categoria)"
-                    />
-                </div>
-                <div class="p-3 mb-auto">
-                    <h3 class="text-xl">
-                        {{ categoria.cCategoriaEncuestaNombre | stringCase }}
-                    </h3>
-                </div>
-                <footer
-                    class="p-3 pt-0 flex align-items-center justify-content-between"
+        <!-- Grid de Categorías -->
+        <div class="categorias-grid">
+            <div *ngFor="let categoria of categorias" class="categoria-item">
+                <article
+                    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
                 >
-                    <p class="">{{ categoria.iCantidadEncuestas }} encuestas</p>
-                    <button
-                        [size]="'small'"
-                        [rounded]="true"
-                        pButton
-                        pRipple
-                        ngClass="p-button-primary"
+                    <div class="curso__image-container img-transition">
+                        <img
+                            [src]="
+                                backend +
+                                '/' +
+                                categoria.cCategoriaEncuestaImagen
+                            "
+                            [alt]="categoria.cCategoriaEncuestaNombre"
+                            class="w-full h-full"
+                            (error)="updateUrl(categoria)"
+                        />
+                    </div>
+                    <div class="p-3 mb-auto">
+                        <h3 class="text-xl">
+                            {{
+                                categoria.cCategoriaEncuestaNombre | stringCase
+                            }}
+                        </h3>
+                    </div>
+                    <footer
+                        class="p-3 pt-0 flex align-items-center justify-content-between"
                     >
-                        <i class="pi pi-plus"></i> Acciones
-                    </button>
-                </footer>
-            </article>
+                        <p class="">
+                            {{ categoria.iCantidadEncuestas }} encuestas
+                        </p>
+                        <button
+                            [size]="'small'"
+                            [rounded]="true"
+                            pButton
+                            pRipple
+                            ngClass="p-button-primary"
+                        >
+                            <i class="pi pi-plus"></i> Acciones
+                        </button>
+                    </footer>
+                </article>
+            </div>
         </div>
-    </div>
+    </p-panel>
 </div>
 
 <app-nueva-categoria

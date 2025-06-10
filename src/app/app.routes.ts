@@ -11,7 +11,7 @@ import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
-
+import { EncuestasPorCategoriaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/encuestas-por-categoria.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -79,6 +79,11 @@ export const routes: Routes = [
             {
                 path: 'asistencia-auxiliar',
                 component: AuxiliarComponent,
+            },
+            // encuestas por categoria
+            {
+                path: 'encuesta-por-categoria',
+                component: EncuestasPorCategoriaComponent,
             },
         ],
     },

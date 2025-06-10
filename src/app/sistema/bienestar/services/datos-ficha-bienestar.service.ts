@@ -409,7 +409,6 @@ export class DatosFichaBienestarService implements OnDestroy {
         if (!iDptoId) {
             return null
         }
-        console.log(this.provincias, 'provincias')
         return this.provincias.filter((provincia: any) => {
             if (provincia.iDptoId === iDptoId) {
                 return provincia
@@ -785,14 +784,26 @@ export class DatosFichaBienestarService implements OnDestroy {
         form: FormGroup,
         formControl: string,
         value: any,
-        tipo: 'number' | 'string' | 'json' | 'boolean'
+        tipo: 'number' | 'string' | 'json' | 'boolean' | 'date'
     ) {
         if (tipo === 'number') {
-            form.get(formControl)?.patchValue(value ? +value : null)
+            if (!value || isNaN(Number(value))) {
+                value = null
+            } else {
+                value = +value
+            }
+            console.log(value, formControl)
+            form.get(formControl).patchValue(value)
         } else if (tipo === 'boolean') {
+            if (!value || isNaN(Number(value))) value = 0
             form.get(formControl)?.patchValue(value == 1 ? true : false)
         } else if (tipo === 'string') {
+            if (!value) value = null
             form.get(formControl)?.patchValue(value)
+        } else if (tipo === 'date') {
+            if (!value) value = null
+            const fecha = new Date(value)
+            form.get(formControl)?.patchValue(fecha)
         } else if (tipo === 'json') {
             if (!value) {
                 form.get(formControl)?.patchValue(null)
@@ -805,6 +816,7 @@ export class DatosFichaBienestarService implements OnDestroy {
                 form.get(formControl)?.patchValue(items)
             }
         } else {
+            if (!value) value = null
             form.get(formControl)?.patchValue(value)
         }
     }
@@ -824,7 +836,6 @@ export class DatosFichaBienestarService implements OnDestroy {
                 form.get(formJson).setValue(null)
                 return null
             }
-            console.log(form.get(formControl).value, 'items')
             form.get(formControl).value.forEach((item) => {
                 items.push({
                     [formControl]: item,

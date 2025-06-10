@@ -63,8 +63,8 @@ export class InstructorFormComponent implements OnChanges {
         cPersPaterno: new FormControl(null, Validators.required),
         cPersMaterno: new FormControl(null, Validators.required),
         cPersDomicilio: new FormControl(null, Validators.required),
-        cInscripCorreo: new FormControl(null, Validators.required),
-        cInscripCel: new FormControl(null, Validators.required),
+        cPersCorreo: new FormControl(null, Validators.required),
+        cPersCelular: new FormControl(null, Validators.required),
     })
 
     accionBtn(elemento): void {
@@ -125,10 +125,10 @@ export class InstructorFormComponent implements OnChanges {
                             cPersDocumento: dni,
                         }
                         const params = {
-                            petition: 'post',
+                            petition: 'get',
                             group: 'cap',
-                            prefix: 'inscripciones',
-                            ruta: 'persona-inscripcion',
+                            prefix: 'instructores',
+                            ruta: idtipoDocumento + '/' + dni,
                             data: data,
                             params: {
                                 iCredId: this._constantesService.iCredId,
@@ -181,8 +181,8 @@ export class InstructorFormComponent implements OnChanges {
             cPersNombre: this.instructorForm.get('cPersNombre')?.value,
             cPersPaterno: this.instructorForm.get('cPersPaterno')?.value,
             cPersMaterno: this.instructorForm.get('cPersMaterno')?.value,
-            cPersCel: this.instructorForm.get('cInscripCel')?.value,
-            cPersCorreo: this.instructorForm.get('cInscripCorreo')?.value,
+            cPersCelular: this.instructorForm.get('cPersCelular')?.value,
+            cPersCorreo: this.instructorForm.get('cPersCorreo')?.value,
             cPersDireccion: this.instructorForm.get('cPersDomicilio')?.value,
             iCredId: this._constantesService.iCredId,
         }

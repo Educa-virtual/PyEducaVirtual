@@ -217,6 +217,31 @@ export class InstructorFormComponent implements OnChanges {
                     this.instructorForm.reset()
                 }
             },
+            error: (error) => {
+                const errores = error?.error?.errors
+
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
         })
         console.log('datos a guardar', data)
     }
@@ -242,7 +267,7 @@ export class InstructorFormComponent implements OnChanges {
                 iCredId: this._constantesService.iCredId,
             },
         }
-        console.log(params)
+        // console.log(params)
         // Servicio para obtener los instructores
         this.GeneralService.getGralPrefixx(params).subscribe({
             next: (resp) => {
@@ -253,6 +278,31 @@ export class InstructorFormComponent implements OnChanges {
                         detail: resp.message,
                     })
                     this.showModal = false
+                }
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
                 }
             },
             // console.log('Datos persona:', this.data);

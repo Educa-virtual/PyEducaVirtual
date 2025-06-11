@@ -8,7 +8,6 @@ import { nationalHolidayStructureImport } from './config/date-special-import'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiService } from '@/app/servicios/api.service,obs'
 import { nationalHolidayService } from './service/national-holiday.service'
 import { nationalHoliday } from './table/national-holiday-table-columns'
 import { DatePipe } from '@angular/common'
@@ -51,7 +50,6 @@ export class ConfigFechasComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         public messageService: MessageService,
-        public apiService: ApiService,
         public dialog: ConfirmationModalService,
         public nationalHolidayService: nationalHolidayService,
         public datePipe: DatePipe

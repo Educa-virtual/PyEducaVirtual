@@ -57,6 +57,7 @@ export class FichaFamiliaComponent implements OnInit {
     }
 
     hideDialog() {
+        this.iFamiliarId = null
         this.fichaFamiliaRegistro.salirResetearForm()
     }
 
@@ -110,7 +111,9 @@ export class FichaFamiliaComponent implements OnInit {
                         detail: 'Se eliminó exitosamente',
                     })
                     this.familiares = this.familiares.filter(
-                        (item: any) => item.iFamiliarId !== item.iFamiliarId
+                        (familiar: any) =>
+                            Number(familiar.iFamiliarId) !=
+                            Number(item.iFamiliarId)
                     )
                 },
                 error: (error) => {
@@ -127,8 +130,8 @@ export class FichaFamiliaComponent implements OnInit {
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
-            this.visibleDialogFamiliar = true
             this.iFamiliarId = item.iFamiliarId
+            this.visibleDialogFamiliar = true
         }
         if (accion === 'anular') {
             this._confirmService.openConfirm({
@@ -149,11 +152,6 @@ export class FichaFamiliaComponent implements OnInit {
                 this.visibleDialogFamiliar = true
                 break
         }
-    }
-
-    //Maquetar tablas
-    handleActions(actions) {
-        console.log(actions)
     }
 
     accionesPrincipal: IActionContainer[] = [
@@ -195,6 +193,7 @@ export class FichaFamiliaComponent implements OnInit {
             header: '',
             text_header: 'left',
             text: 'center',
+            class: 'hidden md:table-cell',
         },
         {
             type: 'text',
@@ -211,7 +210,7 @@ export class FichaFamiliaComponent implements OnInit {
             header: 'Tipo de Doc.',
             text_header: 'center',
             text: 'center',
-            class: 'hidden md:block',
+            class: 'hidden md:table-cell',
         },
         {
             type: 'text',
@@ -220,7 +219,7 @@ export class FichaFamiliaComponent implements OnInit {
             header: 'Documento',
             text_header: 'center',
             text: 'center',
-            class: 'hidden md:block',
+            class: 'hidden md:table-cell',
         },
         {
             type: 'text',

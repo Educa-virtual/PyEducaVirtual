@@ -54,3 +54,9 @@ tr {
 .SELECTED-CELL {
     background-color: #bee5ff;
 }
+
+@media (min-width: 768px) {
+    .md\:table-cell {
+        display: table-cell !important;
+    }
+}

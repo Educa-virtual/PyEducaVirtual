@@ -108,8 +108,8 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
 
         try {
             this.formFamiliar = this.fb.group({
-                iSesionId: this.compartirFichaService.perfil?.iCredId,
-                iFichaDGId: this.iFichaDGId, // PK
+                iFamiliarId: this.iFamiliarId,
+                iFichaDGId: [this.iFichaDGId, Validators.required], // PK
                 iPersId: [null],
                 iTipoFamiliarId: [null, Validators.required],
                 bFamiliarVivoConEl: [false],
@@ -224,6 +224,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges() {
+        console.log(this.iFamiliarId, 'ngOnChanges')
         this.showFamiliar()
     }
 
@@ -239,12 +240,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
 
     showFamiliar() {
         this.formFamiliar?.reset()
-        this.formFamiliar
-            ?.get('iSesionId')
-            ?.setValue(this.compartirFichaService.perfil?.iCredId)
-        this.formFamiliar
-            ?.get('iFichaDGId')
-            ?.setValue(this.compartirFichaService.getiFichaDGId())
+        this.formFamiliar?.get('iFichaDGId')?.setValue(this.iFichaDGId)
 
         if (!this.iFamiliarId) return null
 
@@ -253,7 +249,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                 iFamiliarId: this.iFamiliarId,
             })
             .subscribe((data: any) => {
-                console.log(data, 'data familiar')
                 this.setFormFamiliar(data.data[0])
             })
     }
@@ -280,7 +275,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             })
             .subscribe({
                 next: (data: any) => {
-                    console.log(data, 'validar persona')
                     this.setFormFamiliar(data.data)
                     this._messageService.add({
                         severity: 'success',
@@ -297,17 +291,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                             error.error.message || 'Error al validar persona',
                     })
                 },
-                complete: () => {
-                    console.log('Request completed')
-                },
             })
-    }
-
-    /**
-     * Buscar datos de familiar segun id compartido
-     */
-    buscarFamiliar() {
-        console.log('buscar familiar')
     }
 
     /**
@@ -317,6 +301,13 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     setFormFamiliar(item: FichaFamiliar) {
         // Deben ser strings o null
         this.formFamiliar.patchValue(item)
+        this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId)
+        this.datosFichaBienestar.formatearFormControl(
+            this.formFamiliar,
+            'bFamiliarVivoConEl',
+            item.bFamiliarVivoConEl,
+            'boolean'
+        )
         this.datosFichaBienestar.formatearFormControl(
             this.formFamiliar,
             'iTipoIdentId',
@@ -389,17 +380,16 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             item.dPersNacimiento,
             'date'
         )
+        this.familiar_registrado = true
     }
 
     guardarFamiliar() {
         this.datosFichaBienestar
             .guardarFamiliar(this.formFamiliar.value)
             .subscribe({
-                next: (data: any) => {
-                    console.log(data, 'guardado')
+                next: () => {
                     this.familiar_registrado = true
-                    // this.datosFichaBienestar.formFamiliar =
-                    //     this.formFamiliar.value
+                    this.salirResetearForm()
                 },
                 error: (error) => {
                     console.error('Error guardando familiar:', error)
@@ -409,10 +399,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                         detail: error.error.message || 'Error al guardar datos',
                     })
                 },
-                complete: () => {
-                    console.log('Request completed')
-                    this.esVisibleChange.emit(false)
-                },
             })
     }
 
@@ -420,11 +406,9 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
         this.datosFichaBienestar
             .actualizarFamiliar(this.formFamiliar.value)
             .subscribe({
-                next: (data: any) => {
-                    console.log(data, 'actualizado')
+                next: () => {
                     this.familiar_registrado = true
-                    // this.datosFichaBienestar.formFamiliar =
-                    //     this.formFamiliar.value
+                    this.salirResetearForm()
                 },
                 error: (error) => {
                     console.error('Error actualizando familiar:', error)
@@ -435,17 +419,17 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                             error.error.message || 'Error al actualizar datos',
                     })
                 },
-                complete: () => {
-                    console.log('Request completed')
-                    this.esVisibleChange.emit(false)
-                },
             })
     }
 
     salirResetearForm() {
-        this.esVisibleChange.emit(false)
+        if (this.familiar_registrado) {
+            this.esVisibleChange.emit(false)
+        }
         this.formFamiliar.reset()
         this.formFamiliar.get('iPersId')?.setValue(null)
         this.formFamiliar.get('iFichaDGId')?.setValue(null)
+        this.iFamiliarId = null
+        this.familiar_registrado = false
     }
 }

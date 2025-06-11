@@ -792,7 +792,6 @@ export class DatosFichaBienestarService implements OnDestroy {
             } else {
                 value = +value
             }
-            console.log(value, formControl)
             form.get(formControl).patchValue(value)
         } else if (tipo === 'boolean') {
             if (!value || isNaN(Number(value))) value = 0

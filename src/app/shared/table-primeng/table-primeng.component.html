@@ -89,6 +89,7 @@
                                 [rowSpan]="col.rowspan"
                                 [ngStyle]="getStyleColumnGroup(col, $index)"
                                 [pSortableColumnDisabled]="enableCellSelection"
+                                [class]="col.class"
                             >
                                 <div
                                     [style.text-align]="col.text_header"

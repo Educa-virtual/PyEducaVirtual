@@ -1,9 +1,10 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { HistorialAsistenciaComponent } from './historial-asistencia/historial-asistencia.component'
 import { ConfiguracionAsistenciaComponent } from './configuracion-asistencia/configuracion-asistencia.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { MessageService } from 'primeng/api'
 @Component({
     selector: 'app-auxiliar',
     standalone: true,
@@ -12,25 +13,30 @@ import { GeneralService } from '@/app/servicios/general.service'
         HistorialAsistenciaComponent,
         ConfiguracionAsistenciaComponent,
     ],
+    providers: [MessageService],
     templateUrl: './auxiliar.component.html',
     styleUrl: './auxiliar.component.scss',
 })
-export class AuxiliarComponent {
-    mensaje: any[] | undefined
-    datos: any
+export class AuxiliarComponent implements OnInit {
+    visible: boolean = false
     grupo: boolean = false
-    iSedeId: string
     habilitarGrupo: boolean = true
+
+    nombreGrupo: string | undefined
+    descripcionGrupo: string | undefined
+    iSedeId: string
+
+    mensaje: any[] | undefined
 
     private generalService = inject(GeneralService)
     private constantesService = inject(ConstantesService)
 
-    constructor() {
+    constructor(private messageService: MessageService) {
         this.iSedeId = this.constantesService.iSedeId
     }
-    // ngOnInit() {
-    //   this.verificarCreacionGrupos()
-    // }
+    ngOnInit() {
+        this.verificarCreacionGrupos()
+    }
 
     verificarCreacionGrupos() {
         const params = {
@@ -52,12 +58,11 @@ export class AuxiliarComponent {
             },
             error: (error) => {
                 const mensaje = error.error.message
-                this.mensaje = [
-                    {
-                        severity: 'error',
-                        summary: mensaje,
-                    },
-                ]
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Sin Grupos',
+                    detail: mensaje,
+                })
             },
             complete: () => {},
         })
@@ -68,13 +73,15 @@ export class AuxiliarComponent {
 
         switch (accion) {
             case 'verificar_grupos':
-                console.log(item)
-                this.mensaje = [
-                    {
-                        severity: 'success',
-                        summary: 'Se creo con exito los grupos de Asistencia',
-                    },
-                ]
+                if (item) {
+                    this.grupo = true
+                    this.habilitarGrupo = false
+                }
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Grupos Creados',
+                    detail: 'Se creo con exito los grupos de Asistencia',
+                })
                 break
             default:
                 break

@@ -3,6 +3,15 @@
         <p-fieldset legend="Hora de Ingreso / Almuerzo / Salida">
             <div class="grid m-0">
                 <div class="col-2">
+                    <button
+                        pButton
+                        type="button"
+                        (click)="visible = true"
+                        class="w-full btn-primary font-bold"
+                    >
+                        <i class="pi pi-plus"></i>&nbsp;Crear Nuevo Grupo
+                    </button>
+                    <p-divider />
                     <p-listbox
                         [options]="roles"
                         [(ngModel)]="selRol"
@@ -10,8 +19,98 @@
                         class="w-full"
                     />
                 </div>
-                <div class="col-10">nuevos</div>
+                <div class="col-10">
+                    <p-card header="Docente" *ngIf="selRol.id === 1">
+                        <div class="m-0 grid">
+                            <div class="col-6">
+                                <label
+                                    for="calendar-timeonly"
+                                    class="font-bold block mb-2"
+                                >
+                                    Time Only
+                                </label>
+                                <p-calendar
+                                    inputId="calendar-timeonly"
+                                    [(ngModel)]="time"
+                                    [timeOnly]="true"
+                                />
+                            </div>
+                        </div>
+                    </p-card>
+                    <p-card header="Administrador" *ngIf="selRol.id === 2">
+                        <div class="m-0 grid">
+                            <div class="col-4">col 1</div>
+                            <div class="col-4">col 2</div>
+                            <div class="col-4">col 3</div>
+                        </div>
+                    </p-card>
+                    <p-card header="Estudiante" *ngIf="selRol.id === 3">
+                        <div class="m-0 grid">
+                            <div class="col-4">col 1</div>
+                            <div class="col-4">col 2</div>
+                            <div class="col-4">col 3</div>
+                        </div>
+                    </p-card>
+                </div>
             </div>
         </p-fieldset>
     </div>
 </div>
+
+<p-dialog
+    header="Header"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '25rem' }"
+>
+    <ng-template pTemplate="header">
+        <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+        >
+            <span class="font-bold white-space-nowrap">
+                Crear Grupos de Asistencia
+            </span>
+        </div>
+    </ng-template>
+    <hr />
+    <div class="flex align-items-center gap-3 mb-3">
+        <label for="grupo" class="font-semibold w-6rem">
+            Nombre de Grupo
+        </label>
+        <input
+            pInputText
+            [(ngModel)]="nombreGrupo"
+            id="grupo"
+            class="flex-auto"
+            autocomplete="off"
+        />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="descripcion" class="font-semibold w-6rem"
+            >Descripcion</label
+        >
+        <input
+            pInputText
+            [(ngModel)]="descripcionGrupo"
+            id="descripcion"
+            class="flex-auto"
+            autocomplete="off"
+        />
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button
+            label="Cancelar"
+            [text]="true"
+            severity="secondary"
+            (click)="visible = false"
+        />
+        <p-button
+            label="Guardar"
+            [outlined]="true"
+            severity="success"
+            (click)="guardarGrupo()"
+        />
+    </ng-template>
+</p-dialog>
+
+<p-toast />

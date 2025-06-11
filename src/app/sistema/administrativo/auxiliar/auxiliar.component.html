@@ -29,19 +29,19 @@
                         <p-button
                             *ngIf="!grupo"
                             (click)="verificarCreacionGrupos()"
-                            icon="pi pi-sync"
+                            icon="pi pi-users"
                             label="Crear Grupo de Asistencia"
                             class=""
                         >
                         </p-button>
                     </div>
-                    <div class="col-9">
+                    <!-- <div class="col-9">
                         <p-messages
                             class="w-full"
                             [(value)]="mensaje"
-                            [closable]="false"
+                            [closable]="true"
                         />
-                    </div>
+                    </div> -->
                 </div>
             </p-tabPanel>
             <p-tabPanel
@@ -52,14 +52,74 @@
                 <app-configuracion-asistencia
                     *ngIf="grupo"
                 ></app-configuracion-asistencia>
-                <p-progressSpinner
+                <!-- <p-progressSpinner
                     *ngIf="!grupo"
                     styleClass="w-4rem h-4rem"
                     strokeWidth="8"
                     fill="var(--surface-ground)"
                     animationDuration=".10s"
-                />
+                /> -->
             </p-tabPanel>
         </p-tabView>
     </div>
 </p-panel>
+
+<!-- toast -->
+<p-toast />
+<!-- modal -->
+
+<p-dialog
+    header="Header"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '25rem' }"
+>
+    <ng-template pTemplate="header">
+        <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+        >
+            <span class="font-bold white-space-nowrap">
+                Crear Grupos de Asistencia
+            </span>
+        </div>
+    </ng-template>
+    <hr />
+    <div class="flex align-items-center gap-3 mb-3">
+        <label for="grupo" class="font-semibold w-6rem">
+            Nombre de Grupo
+        </label>
+        <input
+            pInputText
+            [(ngModel)]="nombreGrupo"
+            id="grupo"
+            class="flex-auto"
+            autocomplete="off"
+        />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="descripcion" class="font-semibold w-6rem"
+            >Descripcion</label
+        >
+        <input
+            pInputText
+            [(ngModel)]="descripcionGrupo"
+            id="descripcion"
+            class="flex-auto"
+            autocomplete="off"
+        />
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button
+            label="Cancelar"
+            [text]="true"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+        <p-button
+            label="Guardar"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+    </ng-template>
+</p-dialog>

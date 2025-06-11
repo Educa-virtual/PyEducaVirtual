@@ -13,6 +13,8 @@ export class HistorialAsistenciaComponent implements OnInit {
     selectedRol: any
     personal: any = []
 
+    grupo = []
+
     roles: any = [
         { id: 1, cNombre: 'Todos' },
         { id: 2, cNombre: 'Auxiliar' },
@@ -24,12 +26,14 @@ export class HistorialAsistenciaComponent implements OnInit {
     headers: any = [
         { campo: '#' },
         { campo: 'Nombre y Apellidos' },
-        { campo: 'Rol' },
+        { campo: 'Grupo' },
         { campo: 'Hora de Ingreso' },
         { campo: 'Acciones' },
     ]
 
     ngOnInit() {
+        this.grupo = []
+
         this.roles = [
             { name: 'New York', code: 'NY' },
             { name: 'Rome', code: 'RM' },

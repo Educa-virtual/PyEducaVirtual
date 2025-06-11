@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="col-12">
-        <p-table [value]="personal" [tableStyle]="{ 'min-width': '50rem' }">
+        <p-table [value]="grupo">
             <ng-template pTemplate="header">
                 <tr>
                     <th *ngFor="let header of headers">
@@ -31,12 +31,20 @@
                     </th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-product>
+            <ng-template pTemplate="body" let-grupo>
+                <tr *ngIf="grupo.length > 0">
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td>{{ product.code }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>{{ product.quantity }}</td>
+                    <td colspan="5" class="text-center">
+                        No hay registros disponibles
+                    </td>
                 </tr>
             </ng-template>
         </p-table>

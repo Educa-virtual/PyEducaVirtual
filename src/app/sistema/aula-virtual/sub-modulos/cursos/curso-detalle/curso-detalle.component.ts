@@ -6,7 +6,7 @@ import {
     OnInit,
     AfterViewChecked,
 } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { ICurso } from '../interfaces/curso.interface'
 import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.interface'
 import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
@@ -58,11 +58,21 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
 
     public estudiantes: IEstudiante[] = []
 
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router
+    ) {}
+
     ngOnInit() {
-        const storedTab = localStorage.getItem('selectedTab')
-        if (storedTab !== null) {
-            this.selectTab = Number(storedTab)
-        }
+        // const storedTab = localStorage.getItem('selectedTab')
+        // if (storedTab !== null) {
+        //     this.selectTab = Number(storedTab)
+        // }
+        this.route.queryParams.subscribe((params) => {
+            if (params['tab'] !== undefined) {
+                this.selectTab = Number(params['tab'])
+            }
+        })
         this.listenParams()
     }
 
@@ -110,8 +120,12 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
         }
     }
     updateTab(tab): void {
-        this.selectTab = tab
-        localStorage.setItem('selectedTab', tab.toString()) // mostrar la misma pagina al recargar
+        this.router.navigate([], {
+            queryParams: { tab: tab },
+            queryParamsHandling: 'merge',
+        })
+        // this.selectTab = tab
+        // localStorage.setItem('selectedTab', tab.toString()) // mostrar la misma pagina al recargar
     }
 
     ngAfterViewChecked() {

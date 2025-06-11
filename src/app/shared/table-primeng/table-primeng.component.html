@@ -125,6 +125,7 @@
                             [style.width]="col.width"
                             [style.padding]="col.padding"
                             [pSortableColumnDisabled]="enableCellSelection"
+                            [class]="col.class"
                         >
                             @switch (col.type) {
                                 @case ('actions') {
@@ -156,10 +157,7 @@
                                     </div>
                                 }
                                 @default {
-                                    <div
-                                        [style.text-align]="col.text_header"
-                                        [class]="col.class"
-                                    >
+                                    <div [style.text-align]="col.text_header">
                                         <span> {{ col.header }}</span>
                                         @if (showSortIcon) {
                                             <p-sortIcon
@@ -217,6 +215,7 @@
                         }"
                         [pEditableColumn]="rowData[col.field]"
                         [pEditableColumnField]="col.field"
+                        [class]="col.class"
                     >
                         @if (col.type === 'expansion') {
                             <button

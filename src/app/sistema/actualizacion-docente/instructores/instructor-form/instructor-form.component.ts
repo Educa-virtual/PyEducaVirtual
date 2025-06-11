@@ -205,11 +205,18 @@ export class InstructorFormComponent implements OnChanges {
             },
         }
         // Servicio para obtener los instructores
-        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
-            this.data = (Data as any)['data']
-            this.instructorForm.reset()
-            this.showModal = false
-            // console.log('Datos persona:', this.data);
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Acción exitosa',
+                        detail: resp.message,
+                    })
+                    this.showModal = false
+                    this.instructorForm.reset()
+                }
+            },
         })
         console.log('datos a guardar', data)
     }

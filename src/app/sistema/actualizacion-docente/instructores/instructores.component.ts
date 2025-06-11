@@ -129,6 +129,7 @@ export class InstructoresComponent implements OnInit {
         switch (accion) {
             case 'close-modal':
                 this.showModal = false
+                this.obtenerInstructores()
                 break
             case 'guardar':
                 this.accion = accion

@@ -34,7 +34,10 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
     @Input() iSilaboId: string
     private _activatedRoute = inject(ActivatedRoute)
     private _ChangeDetectorRef = inject(ChangeDetectorRef)
+
     curso: ICurso | undefined
+    selectTab: number = 0
+
     tabs = [
         {
             title: 'Inicio',
@@ -52,11 +55,14 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             tab: 'resultados',
         },
     ]
-    selectTab: number = 0
 
     public estudiantes: IEstudiante[] = []
 
     ngOnInit() {
+        const storedTab = localStorage.getItem('selectedTab')
+        if (storedTab !== null) {
+            this.selectTab = Number(storedTab)
+        }
         this.listenParams()
     }
 
@@ -105,6 +111,7 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
     }
     updateTab(tab): void {
         this.selectTab = tab
+        localStorage.setItem('selectedTab', tab.toString()) // mostrar la misma pagina al recargar
     }
 
     ngAfterViewChecked() {

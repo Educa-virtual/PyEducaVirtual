@@ -10,7 +10,7 @@ import {
 } from '@angular/core'
 import { MenuModule } from 'primeng/menu'
 import { ButtonModule } from 'primeng/button'
-import { MenuItem } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { environment } from '@/environments/environment'
 import { CommonModule } from '@angular/common'
@@ -19,12 +19,19 @@ import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
+import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/perfilesConstantes'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-area-card',
     standalone: true,
-    imports: [CommonModule, MenuModule, ButtonModule, StringCasePipe],
+    imports: [
+        CommonModule,
+        MenuModule,
+        ButtonModule,
+        StringCasePipe,
+        PrimengModule,
+    ],
     templateUrl: './area-card.component.html',
     styleUrl: './area-card.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,8 +56,14 @@ export class AreaCardComponent implements OnInit {
     @Output() dialogImportarResultados = new EventEmitter<{
         curso: ICurso
     }>()
+    @Output() dialogGuardarResultadosOnline = new EventEmitter<{
+        curso: ICurso
+    }>()
 
-    constructor(private store: LocalStoreService) {}
+    constructor(
+        private store: LocalStoreService,
+        private messageService: MessageService
+    ) {}
 
     ngOnInit() {
         this.acciones = [
@@ -62,7 +75,9 @@ export class AreaCardComponent implements OnInit {
                         `ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${this.curso.iCursosNivelGradId}/preguntas`,
                     ])
                 },
-                disabled: this.iPerfilId === DIRECTOR_IE,
+                disabled:
+                    this.iPerfilId === DIRECTOR_IE ||
+                    this.iPerfilId === DOCENTE,
             },
             {
                 label: 'Descargar matriz',
@@ -70,7 +85,6 @@ export class AreaCardComponent implements OnInit {
                 command: () => {
                     this.descargarMatrizPorEvaluacionArea()
                 },
-                disabled: this.iPerfilId === DIRECTOR_IE,
             },
             {
                 label: 'Config. nivel de logro',
@@ -80,9 +94,9 @@ export class AreaCardComponent implements OnInit {
                         curso: this.curso,
                     })
                 },
-                disabled: this.iPerfilId === DIRECTOR_IE,
+                disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
-            {
+            /*{
                 label: 'Exportar a Word',
                 icon: 'pi pi-angle-right',
                 command: () => {
@@ -92,19 +106,17 @@ export class AreaCardComponent implements OnInit {
                         this.descargarArchivoPreguntasPorArea('word')
                     }
                 },
-                disabled: this.iPerfilId === DIRECTOR_IE,
-            },
+                disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
+            },*/
             {
-                label: 'Subir eval. PDF',
+                label: 'Subir eval. en PDF',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.dialogSubirArchivoEvent.emit({
                         curso: this.curso,
                     })
                 },
-                disabled:
-                    this.iPerfilId == DIRECTOR_IE ||
-                    this.iPerfilId !== ESPECIALISTA_DREMO,
+                disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
             {
                 label: 'Descargar eval. en PDF',
@@ -118,10 +130,29 @@ export class AreaCardComponent implements OnInit {
                 },
             },
             {
+                label: 'Descargar cartilla de respuestas',
+                icon: 'pi pi-angle-right',
+                command: () => {
+                    this.descargarCartillaRespuestas()
+                },
+            },
+            {
                 label: 'Subir resultados',
                 icon: 'pi pi-upload',
                 command: () => {
                     this.dialogImportarResultados.emit({
+                        curso: this.curso,
+                    })
+                },
+                disabled:
+                    this.iPerfilId !== DIRECTOR_IE &&
+                    this.iPerfilId !== ESPECIALISTA_DREMO,
+            },
+            {
+                label: 'Subir resultados en linea',
+                icon: 'pi pi-upload',
+                command: () => {
+                    this.dialogGuardarResultadosOnline.emit({
                         curso: this.curso,
                     })
                 },
@@ -142,7 +173,50 @@ export class AreaCardComponent implements OnInit {
             iCursosNivelGradId: this.curso.iCursosNivelGradId,
             tipoArchivo: tipoArchivo,
         }
-        this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
+        const extension = tipoArchivo === 'pdf' ? 'pdf' : 'docx'
+        this.evaluacionesService
+            .descargarArchivoPreguntasPorArea(params)
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `Evaluacion ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}.${extension}`
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al descargar el archivo',
+                        detail: error,
+                    })
+                },
+            })
+    }
+
+    descargarCartillaRespuestas() {
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId,
+        }
+        this.evaluacionesService.descargarCartillaRespuestas(params).subscribe({
+            next: (response: Blob) => {
+                const url = window.URL.createObjectURL(response)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = `Cartilla respuestas.docx` //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al descargar el archivo',
+                    detail: error,
+                })
+            },
+        })
     }
 
     descargarMatrizPorEvaluacionArea() {
@@ -152,7 +226,26 @@ export class AreaCardComponent implements OnInit {
             iCursosNivelGradId: this.curso.iCursosNivelGradId,
             iDocenteId: user.iDocenteId,
         }
-        this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
+
+        this.evaluacionesService
+            .descargarMatrizPorEvaluacionArea(params)
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `Matriz ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}.pdf`
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al descargar el archivo',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     importarResultados() {

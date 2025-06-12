@@ -150,7 +150,7 @@ export class BuzonSugerenciasComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Problema al obtener sugerencias',
-                    detail: error,
+                    detail: error.error.message,
                 })
             },
         })
@@ -179,7 +179,7 @@ export class BuzonSugerenciasComponent implements OnInit {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
             })

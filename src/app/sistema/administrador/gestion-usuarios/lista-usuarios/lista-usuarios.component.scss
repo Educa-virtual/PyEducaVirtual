@@ -1,0 +1,206 @@
+.user-management-container {
+    font-family: Arial, sans-serif;
+    position: relative;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.24);
+    margin: 1rem;
+    overflow: hidden;
+
+    // Barra de navegación superior (breadcrumb)
+    .breadcrumb-container {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+
+        span {
+            margin-right: 0.25rem;
+        }
+
+        .pi-home {
+            color: #1976d2;
+            margin-right: 0.25rem;
+        }
+    }
+
+    // Cabecera
+    .header {
+        background-color: #1976d2 !important;
+        color: white;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: white !important;
+        }
+    }
+
+    // Sección de búsqueda
+    .search-section {
+        padding: 1rem;
+    }
+
+    .search-header {
+        background-color: #ff7800 !important;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px 4px 0 0;
+        font-weight: bold;
+    }
+
+    .search-content {
+        background-color: white;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        padding: 1.25rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    // Fila de filtros
+    .filter-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        label {
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        p-dropdown {
+            width: 10rem;
+        }
+    }
+
+    .search-input-container {
+        margin-bottom: 0.5rem;
+    }
+
+    // Estilos para la tabla
+    p-table {
+        .p-datatable {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+    }
+
+    // Paginación
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    // Estilos responsivos
+    @media screen and (max-width: 991px) {
+        .filter-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .filter-item,
+        .search-input-container {
+            width: 100%;
+            margin-right: 0;
+            margin-bottom: 0.75rem;
+        }
+
+        .ml-auto {
+            margin-left: 0;
+            width: 100%;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+}
+
+// Estilos globales para PrimeNG
+:host ::ng-deep {
+    .p-dropdown {
+        .p-dropdown-label {
+            padding: 0.5rem 0.75rem;
+        }
+    }
+
+    .p-paginator {
+        background-color: transparent;
+        border: none;
+
+        .p-paginator-page.p-highlight {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+    }
+
+    .p-button.p-button-text {
+        &.p-button-warning {
+            color: #ff9800 !important;
+        }
+
+        &.p-button-info {
+            color: #2196f3 !important;
+        }
+
+        &.p-button-danger {
+            color: #dc3545 !important;
+        }
+    }
+
+    // Inputs
+    .p-inputtext {
+        padding: 0.5rem 0.75rem;
+    }
+
+    // Estilo específico para el botón de agregar nuevo
+    .p-button-success {
+        .p-button-icon {
+            font-size: 0.875rem;
+        }
+    }
+
+    // Estilos específicos para la tabla
+    .p-datatable {
+        .p-datatable-thead > tr > th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .p-datatable-tbody > tr > td {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .p-datatable-tbody > tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    }
+}
+
+.p-inputgroup-addon {
+    padding: 0px;
+}

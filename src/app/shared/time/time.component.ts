@@ -17,7 +17,7 @@ import {
 })
 export class TimeComponent implements OnChanges, OnDestroy {
     @Output() accionTime = new EventEmitter()
-
+    @Input() etiqueta: string = 'Tiempo restante'
     @Input() inicio // Fecha y hora de inicio
     @Input() fin // Fecha y hora de fin
 

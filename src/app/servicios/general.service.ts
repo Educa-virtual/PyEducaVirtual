@@ -401,4 +401,20 @@ export class GeneralService {
     actualizarCurriculas(data: any) {
         return this.http.post(`${baseUrl}/administrador/updCurriculas`, data)
     }
+    insertarCurriculaCusros(data: any) {
+        return this.http.post(`${baseUrl}/administrador/addCurriculas`, data)
+    }
+
+    obtenerEstudiantesMatriculados(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/obtenerEstudiantesMatriculados`,
+            data
+        )
+    }
+    insertarCuestionarioNotas(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/Evaluaciones/insertarCuestionarioNotas`,
+            data
+        )
+    }
 }

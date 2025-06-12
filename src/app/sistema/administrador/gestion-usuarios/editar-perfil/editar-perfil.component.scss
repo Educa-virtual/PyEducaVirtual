@@ -1,0 +1,175 @@
+.asignar-rol-container {
+    font-family: Arial, sans-serif;
+
+    // Estilos para la fila de filtros con espaciado exacto según Figma
+    .filtros-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 15px; // Espaciado exacto entre elementos según Figma
+        margin-bottom: 1.5rem;
+    }
+
+    .filtro-item {
+        flex: 1;
+        min-width: 180px; // Ancho mínimo para evitar que se compriman demasiado
+        max-width: 220px; // Ancho máximo para mantener proporciones
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+    }
+
+    // Contenedor del botón agregar
+    .agregar-btn-container {
+        display: flex;
+        align-items: flex-end;
+        margin-left: 10px; // Espaciado adicional a la izquierda según Figma
+        padding-bottom: 1px; // Para alinear perfectamente con los dropdowns
+    }
+}
+
+:host ::ng-deep {
+    .dropdown-field {
+        width: 100% !important;
+        font-size: 0.9rem;
+
+        .p-dropdown-label {
+            padding: 0.5rem 0.75rem;
+        }
+
+        // Bordes sutiles para los dropdowns
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+
+        &:hover {
+            border-color: #bfc8d0;
+        }
+
+        &:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+    }
+
+    // Botón verde de Agregar Nuevo - Color exacto según Figma
+    .agregar-nuevo-btn {
+        background-color: #28a745 !important; // Verde exacto según Figma
+        border-color: #28a745 !important;
+        border-radius: 4px !important;
+        font-size: 0.9rem !important;
+        padding: 0.5rem 1rem !important;
+        height: 38px !important; // Altura exacta según Figma
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        .p-button-icon {
+            font-size: 0.9rem !important;
+            margin-right: 0.4rem !important;
+        }
+
+        &:hover {
+            background-color: #218838 !important;
+            border-color: #1e7e34 !important;
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5) !important;
+        }
+
+        &:disabled {
+            background-color: #6c757d !important;
+            border-color: #6c757d !important;
+            opacity: 0.65;
+        }
+    }
+
+    /* Estilo para el botón de eliminar (trash) */
+    .p-button-rounded.p-button-danger.delete-button {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+        background-color: white !important;
+        border: 1px solid #dc3545 !important;
+        color: #dc3545 !important;
+        padding: 0 !important;
+
+        .p-button-icon {
+            font-size: 0.7rem !important;
+            color: #dc3545 !important;
+        }
+
+        &:hover {
+            background-color: #ffeeee !important;
+        }
+
+        &:focus {
+            box-shadow:
+                0 0 0 2px #ffffff,
+                0 0 0 4px rgba(220, 53, 69, 0.5) !important;
+        }
+    }
+
+    .card {
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow:
+            0 2px 1px -1px rgba(0, 0, 0, 0.2),
+            0 1px 1px 0 rgba(0, 0, 0, 0.14),
+            0 1px 3px 0 rgba(0, 0, 0, 0.12);
+        margin-bottom: 2rem;
+        background-color: #fff;
+    }
+
+    // Estilos de la tabla
+    .p-datatable {
+        margin-top: 1rem;
+
+        .p-datatable-thead > tr > th {
+            padding: 0.5rem 0.5rem;
+            font-size: 0.9rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            font-weight: 600;
+        }
+    }
+}
+
+// Media queries para responsividad
+@media screen and (max-width: 992px) {
+    .asignar-rol-container {
+        .filtro-item {
+            max-width: none;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .asignar-rol-container {
+        .filtros-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+
+            .filtro-item,
+            .agregar-btn-container {
+                width: 100%;
+                max-width: none;
+                margin-bottom: 0.75rem;
+            }
+        }
+
+        .agregar-btn-container {
+            padding-bottom: 0;
+            margin-left: 0;
+
+            .agregar-nuevo-btn {
+                width: 100%;
+            }
+        }
+    }
+}

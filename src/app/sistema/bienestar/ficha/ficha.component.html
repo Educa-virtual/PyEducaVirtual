@@ -1,0 +1,24 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-xl">Ficha socioeconómica</span>
+    </ng-template>
+    <p-tabMenu
+        #tabMenu
+        [model]="items"
+        scrollable="true"
+        [(activeItem)]="activeItem"
+        (activeItemChange)="handleTabChange($event)"
+    >
+        <ng-template pTemplate="item" let-item>
+            <ng-container *ngIf="item.route">
+                <a [routerLink]="item.route" class="p-menuitem-link">
+                    <span [class]="item.icon"></span>
+                    <span class="ml-2">
+                        {{ item.label }}
+                    </span>
+                </a>
+            </ng-container>
+        </ng-template>
+    </p-tabMenu>
+    <router-outlet></router-outlet>
+</p-panel>

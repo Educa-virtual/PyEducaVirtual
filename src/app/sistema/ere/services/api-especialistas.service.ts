@@ -14,18 +14,6 @@ export class ApiEspecialistasService {
     private http = inject(HttpClient)
     constructor() {}
 
-    obtenerAreasPorEvaluacionyEspecialista(
-        iEvaluacionId,
-        iEspecialistaId,
-        iCredEntPerfId
-    ): Observable<any> {
-        return this.http
-            .get(
-                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/especialistas/${iEspecialistaId}/perfiles/${iCredEntPerfId}/areas`
-            )
-            .pipe(map((resp) => resp['data']))
-    }
-
     listarEspecialista(
         iPersId: number,
         iDocenteId: number,

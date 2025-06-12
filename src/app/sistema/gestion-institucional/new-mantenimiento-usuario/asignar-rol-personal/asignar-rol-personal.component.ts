@@ -1,12 +1,21 @@
-import { Component, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    OnInit,
+    OnChanges,
+    SimpleChanges,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
-
-// PrimeNG imports
 import { DropdownModule } from 'primeng/dropdown'
 import { TableModule } from 'primeng/table'
 import { ButtonModule } from 'primeng/button'
 import { TooltipModule } from 'primeng/tooltip'
+import { RippleModule } from 'primeng/ripple'
+import { PrimengModule } from '@/app/primeng.module'
+import { DialogModule } from 'primeng/dialog'
 
 interface Institucion {
     nombre: string
@@ -46,11 +55,14 @@ interface AsignacionRol {
         TableModule,
         ButtonModule,
         TooltipModule,
+        RippleModule,
+        PrimengModule,
+        DialogModule,
     ],
     templateUrl: './asignar-rol-personal.component.html',
-    styleUrl: './asignar-rol-personal.component.scss',
+    styleUrls: ['./asignar-rol-personal.component.scss'],
 })
-export class AsignarRolPersonalComponent implements OnInit {
+export class AsignarRolPersonalComponent implements OnInit, OnChanges {
     instituciones: Institucion[] = []
     niveles: Nivel[] = []
     modulos: Modulo[] = []
@@ -63,8 +75,23 @@ export class AsignarRolPersonalComponent implements OnInit {
 
     asignaciones: AsignacionRol[] = []
 
+    // Propiedades para el diálogo
+    @Input() visible: boolean = false
+    @Input() personalData: any = null
+    @Output() visibleChange = new EventEmitter<boolean>()
+    @Output() rolAsignado = new EventEmitter<any>()
+
     ngOnInit() {
-        // Inicializar datos de ejemplo
+        this.inicializarDatos()
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['visible'] && changes['visible'].currentValue === true) {
+            this.inicializarDatos()
+        }
+    }
+
+    inicializarDatos() {
         this.instituciones = [
             { nombre: 'I.E. Rafael Díaz', codigo: 'RAF' },
             { nombre: 'I.E. Simón Bolívar', codigo: 'SIM' },
@@ -87,6 +114,10 @@ export class AsignarRolPersonalComponent implements OnInit {
             { nombre: 'Director', codigo: 'DIR' },
         ]
 
+        if (this.personalData) {
+            console.log('Cargando datos del usuario:', this.personalData)
+        }
+
         this.asignaciones = [
             {
                 id: 1,
@@ -103,7 +134,7 @@ export class AsignarRolPersonalComponent implements OnInit {
                 fechaAsignacion: '04/07/2024',
             },
             {
-                id: 2,
+                id: 3,
                 rol: 'Director',
                 nivel: 'Secundario',
                 institucion: 'I.E. Rafael Díaz',
@@ -113,67 +144,55 @@ export class AsignarRolPersonalComponent implements OnInit {
     }
 
     agregarAsignacion() {
-        // Implementar lógica para agregar nueva asignación
-        console.log(
-            'Agregar asignación',
-            this.institucionSeleccionada,
-            this.nivelSeleccionado,
-            this.moduloSeleccionado,
-            this.rolSeleccionado
-        )
+        if (
+            this.rolSeleccionado &&
+            this.nivelSeleccionado &&
+            this.institucionSeleccionada
+        ) {
+            const nuevoId =
+                this.asignaciones.length > 0
+                    ? Math.max(...this.asignaciones.map((a) => a.id)) + 1
+                    : 1
+
+            const nuevaAsignacion: AsignacionRol = {
+                id: nuevoId,
+                rol: this.rolSeleccionado.nombre,
+                nivel: this.nivelSeleccionado.nombre,
+                institucion: this.institucionSeleccionada.nombre,
+                fechaAsignacion: this.formatearFecha(new Date()),
+            }
+
+            this.asignaciones = [...this.asignaciones, nuevaAsignacion]
+
+            this.rolSeleccionado = null
+        } else {
+            console.error('Falta seleccionar algún campo')
+        }
     }
 
     eliminarUsuario(id: number) {
-        // Implementar lógica para eliminar asignación
         this.asignaciones = this.asignaciones.filter((item) => item.id !== id)
     }
-}
-/*import { Component,  } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
-
-@Component({
-  selector: 'app-asignar-rol-personal',
-  standalone: true,
-  imports: [TableModule, InputGroupAddonModule, InputGroupModule,
-  ],
-  templateUrl: './asignar-rol-personal.component.html',
-  styleUrl: './asignar-rol-personal.component.scss'
-})
-export class AsignarRolPersonalComponent {
-  instituciones = [{ label: 'I.E. Rafael Díaz', value: 'I.E. Rafael Díaz' }, { label: 'I.E. Simón Bolívar', value: 'I.E. Simón Bolívar' }];
-  niveles = [{ label: 'Secundario', value: 'Secundario' }, { label: 'Superior', value: 'Superior' }];
-  modulos = [...this.instituciones]; // Asumimos mismo contenido
-  roles = [{ label: 'Docente', value: 'Docente' }, { label: 'Estudiante', value: 'Estudiante' }, { label: 'Director', value: 'Director' }];
-
-  selectedInstitucion?: string;
-  selectedNivel?: string;
-  selectedModulo?: string;
-  selectedRol?: string;
-
-  rolesAsignados: any[] = [
-    { rol: 'Docente', nivel: 'Secundario', institucion: 'I.E. Rafael Díaz', fecha: '04/07/2024' },
-    { rol: 'Estudiante', nivel: 'Superior', institucion: 'I.E. Simón Bolívar', fecha: '04/07/2024' },
-    { rol: 'Director', nivel: 'Secundario', institucion: 'I.E. Rafael Díaz', fecha: '04/07/2024' }
-  ];
-
-  agregarRol() {
-    if (this.selectedRol && this.selectedNivel && this.selectedInstitucion) {
-      this.rolesAsignados.push({
-        rol: this.selectedRol,
-        nivel: this.selectedNivel,
-        institucion: this.selectedInstitucion,
-        fecha: new Date().toLocaleDateString('en-GB')
-      });
-      // Reset
-      this.selectedRol = this.selectedNivel = this.selectedInstitucion = undefined;
+    private formatearFecha(fecha: Date): string {
+        const dia = fecha.getDate().toString().padStart(2, '0')
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0')
+        const anio = fecha.getFullYear()
+        return `${dia}/${mes}/${anio}`
     }
-  }
 
-  eliminarRol(index: number) {
-    this.rolesAsignados.splice(index, 1);
-  }
+    closeDialog() {
+        this.visible = false
+        this.visibleChange.emit(false)
+    }
+
+    guardarCambios() {
+        this.rolAsignado.emit({
+            asignaciones: this.asignaciones,
+            personalData: this.personalData,
+        })
+
+        // Cerrar el diálogo
+        this.closeDialog()
+    }
 }
-*/

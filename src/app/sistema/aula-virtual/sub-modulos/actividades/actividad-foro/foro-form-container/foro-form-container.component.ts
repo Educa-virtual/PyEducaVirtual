@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { PrimengModule } from '@/app/primeng.module'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { DatePipe } from '@angular/common'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
@@ -23,6 +23,8 @@ import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-uploa
     styleUrl: './foro-form-container.component.scss',
 })
 export class ForoFormContainerComponent implements OnInit {
+    @Input() contenidoSemana
+
     typesFiles = {
         file: true,
         url: true,
@@ -40,7 +42,6 @@ export class ForoFormContainerComponent implements OnInit {
     private ref = inject(DynamicDialogRef)
     private GeneralService = inject(GeneralService)
 
-    @Input() contenidoSemana
     tareas = []
     filteredTareas: any[] | undefined
     nameEnlace: string = ''
@@ -70,14 +71,18 @@ export class ForoFormContainerComponent implements OnInit {
     })
 
     opcion: string = 'GUARDAR'
-    constructor(private dialogConfig: DynamicDialogConfig) {
+    action: string
+    constructor(
+        private dialogConfig: DynamicDialogConfig,
+        private messageService: MessageService
+    ) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.idDocCursoId = this.dialogConfig.data.idDocCursoId
+        this.action = this.dialogConfig.data.action
 
-        console.log('hola', this.contenidoSemana)
         const data = this.dialogConfig.data
-        if (data.action == 'editar') {
-            this.opcion = 'ACTUALIZAR'
+
+        if (this.action == 'ACTUALIZAR') {
             this.obtenerForoxiForoId(data.actividad.ixActivadadId)
         } else {
             this.opcion = 'GUARDAR'
@@ -129,8 +134,16 @@ export class ForoFormContainerComponent implements OnInit {
             ...this.foroForm.value,
             iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,
         }
-        console.log('Guardar Foros', value)
-        this.ref.close(value)
+        if (this.foroForm.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Campos vacios!',
+            })
+        } else {
+            console.log('Guardar Foros', value)
+            this.ref.close(value)
+        }
     }
     obtenerForoxiForoId(iForoId: string) {
         const params = {
@@ -152,7 +165,28 @@ export class ForoFormContainerComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
             },
         })
     }

@@ -92,7 +92,16 @@
     </div>
 </form>
 <!-- button de cancelar y guardar -->
-<div class="flex justify-content-center gap-2 pt-3">
+<div
+    class="flex justify-content-end gap-2 pt-3"
+    style="
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        padding: 1rem;
+        border-top: 1px solid #ddd;
+    "
+>
     <button
         pButton
         pRipple
@@ -106,10 +115,14 @@
     <button
         pButton
         pRipple
-        [label]="opcion"
+        [label]="action === 'ACTUALIZAR' ? 'Editar Foro' : 'Crear Foro'"
         icon="pi pi-check"
         size="small"
-        class="p-button-primary"
+        [class]="
+            action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'
+        "
         (click)="submit()"
     ></button>
 </div>
+
+<p-toast />

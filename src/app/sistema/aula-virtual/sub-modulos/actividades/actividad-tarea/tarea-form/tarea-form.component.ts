@@ -276,7 +276,7 @@ export class TareaFormComponent implements OnChanges {
             JSON.stringify(this.filesUrl)
         )
         const value = this.formTareas.value
-        console.log('datos de guardar 01', value)
+        // console.log('datos de guardar 01', value)
         if (this.formTareas.invalid) {
             this.messageService.add({
                 severity: 'error',

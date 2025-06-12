@@ -170,49 +170,92 @@ export class VideoconferenciaFormContainerComponent
         console.log('this.action')
         console.log(this.action)
 
-        // if (!this.formConferencia.invalid) {
-        // console.log('Formulario válido', this.formConferencia.value)
+        if (this.formConferencia.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Campos vacios!',
+            })
+            // console.log('Formulario válido', this.formConferencia.value)
+        } else {
+            const data = {
+                opcion: 'GUARDARxProgActxiRVirtualId',
+                iContenidoSemId: this.contenidoSemana.iContenidoSemId,
+                iActTipoId: VIDEO_CONFERENCIA,
+                dtProgActPublicacion: this.pipe.transform(
+                    this.formConferencia.value.dtRVirtualInicio,
+                    'dd/MM/yyyy HH:mm:ss'
+                ),
+                cProgActTituloLeccion: this.formConferencia.value.cRVirtualTema,
+                dtProgActInicio: this.pipe.transform(
+                    this.formConferencia.value.dtRVirtualInicio,
+                    'dd/MM/yyyy HH:mm:ss'
+                ),
+                dtProgActFin: this.pipe.transform(
+                    this.formConferencia.value.dtRVirtualFin,
+                    'dd/MM/yyyy HH:mm:ss'
+                ),
+                iEstado: 1,
+                iCredId: this._constantesService.iCredId,
+                cRVirtualTema: this.formConferencia.value.cRVirtualTema,
+                dtRVirtualInicio: this.pipe.transform(
+                    this.formConferencia.value.dtRVirtualInicio,
+                    'yyyy-MM-ddTHH:mm:ss'
+                ),
+                dtRVirtualFin: this.pipe.transform(
+                    this.formConferencia.value.dtRVirtualFin,
+                    'yyyy-MM-ddTHH:mm:ss'
+                ),
+                cRVirtualUrlJoin: this.formConferencia.value.cRVirtualUrlJoin,
+                idDocCursoId: this.idDocCursoId,
+            }
 
-        const data = {
-            opcion: 'GUARDARxProgActxiRVirtualId',
-            iContenidoSemId: this.contenidoSemana.iContenidoSemId,
-            iActTipoId: VIDEO_CONFERENCIA,
-            dtProgActPublicacion: this.pipe.transform(
-                this.formConferencia.value.dtRVirtualInicio,
-                'dd/MM/yyyy HH:mm:ss'
-            ),
-            cProgActTituloLeccion: this.formConferencia.value.cRVirtualTema,
-            dtProgActInicio: this.pipe.transform(
-                this.formConferencia.value.dtRVirtualInicio,
-                'dd/MM/yyyy HH:mm:ss'
-            ),
-            dtProgActFin: this.pipe.transform(
-                this.formConferencia.value.dtRVirtualFin,
-                'dd/MM/yyyy HH:mm:ss'
-            ),
-            iEstado: 1,
-            iCredId: this._constantesService.iCredId,
-            cRVirtualTema: this.formConferencia.value.cRVirtualTema,
-            dtRVirtualInicio: this.pipe.transform(
-                this.formConferencia.value.dtRVirtualInicio,
-                'yyyy-MM-ddTHH:mm:ss'
-            ),
-            dtRVirtualFin: this.pipe.transform(
-                this.formConferencia.value.dtRVirtualFin,
-                'yyyy-MM-ddTHH:mm:ss'
-            ),
-            cRVirtualUrlJoin: this.formConferencia.value.cRVirtualUrlJoin,
-            idDocCursoId: this.idDocCursoId,
-        }
+            switch (this.action) {
+                case 'ACTUALIZAR':
+                    this.apiAulaService
+                        .actualizarReunionVirtual(
+                            data,
+                            this.actividad.ixActivadadId
+                        )
+                        .subscribe({
+                            next: (response: any) => {
+                                console.log('response')
+                                console.log(response)
+                                this.closeModal(response.validated)
+                            },
+                            error: (error) => {
+                                const errores = error?.error?.errors
+                                if (error.status === 422 && errores) {
+                                    // Recorre y muestra cada mensaje de error
+                                    Object.keys(errores).forEach((campo) => {
+                                        errores[campo].forEach(
+                                            (mensaje: string) => {
+                                                this.messageService.add({
+                                                    severity: 'error',
+                                                    summary:
+                                                        'Error de validación',
+                                                    detail: mensaje,
+                                                })
+                                            }
+                                        )
+                                    })
+                                } else {
+                                    // Error genérico si no hay errores específicos
+                                    this.messageService.add({
+                                        severity: 'error',
+                                        summary: 'Error',
+                                        detail:
+                                            error?.error?.message ||
+                                            'Ocurrió un error inesperado',
+                                    })
+                                }
+                            },
+                        })
 
-        switch (this.action) {
-            case 'ACTUALIZAR':
-                this.apiAulaService
-                    .actualizarReunionVirtual(
-                        data,
-                        this.actividad.ixActivadadId
-                    )
-                    .subscribe({
+                    break
+                case 'GUARDAR':
+                    console.log('datos de guardar', data)
+                    this.apiAulaService.guardarReunionVirtual(data).subscribe({
                         next: (response: any) => {
                             console.log('response')
                             console.log(response)
@@ -245,42 +288,8 @@ export class VideoconferenciaFormContainerComponent
                             }
                         },
                     })
-
-                break
-            case 'GUARDAR':
-                console.log('datos de guardar', data)
-                this.apiAulaService.guardarReunionVirtual(data).subscribe({
-                    next: (response: any) => {
-                        console.log('response')
-                        console.log(response)
-                        this.closeModal(response.validated)
-                    },
-                    error: (error) => {
-                        const errores = error?.error?.errors
-                        if (error.status === 422 && errores) {
-                            // Recorre y muestra cada mensaje de error
-                            Object.keys(errores).forEach((campo) => {
-                                errores[campo].forEach((mensaje: string) => {
-                                    this.messageService.add({
-                                        severity: 'error',
-                                        summary: 'Error de validación',
-                                        detail: mensaje,
-                                    })
-                                })
-                            })
-                        } else {
-                            // Error genérico si no hay errores específicos
-                            this.messageService.add({
-                                severity: 'error',
-                                summary: 'Error',
-                                detail:
-                                    error?.error?.message ||
-                                    'Ocurrió un error inesperado',
-                            })
-                        }
-                    },
-                })
-                break
+                    break
+            }
         }
         // }
         // else {

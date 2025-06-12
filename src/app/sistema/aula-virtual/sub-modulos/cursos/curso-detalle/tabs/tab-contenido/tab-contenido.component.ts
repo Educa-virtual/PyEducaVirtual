@@ -426,10 +426,10 @@ export class TabContenidoComponent implements OnInit {
                         contenidoSemana: this.semanaSeleccionada,
                         iActTipoId: actividad.iActTipoId,
                         actividad: actividad,
-                        action: 'editar',
+                        action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                         idDocCursoId: this.idDocCursoId,
                     },
-                    header: 'Editar Foro',
+                    header: action === 'EDITAR' ? 'Editar Foro' : 'Crear Foro',
                 })
                 .onClose.subscribe((result) => {
                     if (result) {

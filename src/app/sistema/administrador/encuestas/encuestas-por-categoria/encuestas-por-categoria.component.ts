@@ -26,12 +26,9 @@ export interface IEncuestaCategoria {
     styleUrl: './encuestas-por-categoria.component.scss',
 })
 export class EncuestasPorCategoriaComponent implements OnInit {
+    titleEncuestasPorCategoria: string = 'Encuestas por categoría'
     backend = environment.backend
-
-    // Dialog nueva categoría
     mostrarDialogNuevaCategoria: boolean = false
-
-    // Modelo del formulario para nueva categoría
     nuevaCategoria = {
         cCategoriaNombre: '',
         cDescripcion: '',
@@ -87,19 +84,14 @@ export class EncuestasPorCategoriaComponent implements OnInit {
 
     finalizarCreacionCategoria() {
         if (this.nuevaCategoria.cCategoriaNombre.trim()) {
-            // Crear nueva categoría
             const categoria: IEncuestaCategoria = {
                 iCategoriaEncuestaId: Date.now(), // ID temporal
                 cCategoriaEncuestaNombre: this.nuevaCategoria.cCategoriaNombre,
                 cCategoriaEncuestaImagen: 'categorias/images/default.jpg',
                 iCantidadEncuestas: 0,
             }
-
-            // Agregar al array
             this.categorias.push(categoria)
             console.log('Nueva categoría creada:', categoria)
-
-            // Cerrar diálogo
             this.cerrarDialogNuevaCategoria()
         }
     }

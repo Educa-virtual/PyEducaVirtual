@@ -12,6 +12,8 @@ import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
 import { EncuestasPorCategoriaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/encuestas-por-categoria.component'
+import { ListaCategoriasComponent } from './sistema/administrador/encuestas/lista-categorias/lista-categorias.component'
+import { LlenadoPreguntasEncuestaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -85,7 +87,17 @@ export const routes: Routes = [
                 path: 'encuesta-por-categoria',
                 component: EncuestasPorCategoriaComponent,
             },
-        ],
+            // lista de encuestas
+            {
+                path: 'lista-encuestas',
+                component: ListaCategoriasComponent,
+            },
+            // llenado de preguntas de encuesta
+            { 
+                path: 'llenado-preguntas-encuesta',
+                component: LlenadoPreguntasEncuestaComponent,
+            },
+                  ],
     },
     {
         path: 'especialista-ugel',

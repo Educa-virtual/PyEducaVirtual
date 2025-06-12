@@ -37,12 +37,18 @@ export class CambiarConstrasenaComponent {
         //private _GeneralService: GeneralService,
         //private _ConstantesService: ConstantesService
     ) {
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+
         this.form = this.fb.group(
             {
                 contrasenaActual: ['', [Validators.required]],
                 contrasenaNueva: [
                     '',
-                    [Validators.required, Validators.minLength(8)],
+                    [
+                        Validators.required,
+                        Validators.minLength(8),
+                        Validators.pattern(passwordPattern),
+                    ],
                 ],
                 confirmarContrasena: ['', Validators.required],
                 //iCredId: [this._ConstantesService.iCredId],
@@ -85,9 +91,9 @@ export class CambiarConstrasenaComponent {
                     })
                     this.form.reset()
                     this.accionCloseItem.emit()
-                    setTimeout(() => {
+                    /*setTimeout(() => {
                         window.location.reload()
-                    }, 1000)
+                    }, 1000)*/
                 },
                 error: (error) => {
                     this.messageService.add({

@@ -99,7 +99,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
                             tap((res: any) => {
                                 this.messageService.add({
                                     severity: 'success',
-                                    summary: 'Feriados nacionales',
+                                    summary: 'Fechas importantes',
                                     detail: res.message,
                                     life: 3000,
                                 })
@@ -123,7 +123,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
                             error: (error) => {
                                 this.messageService.add({
                                     severity: 'error',
-                                    summary: 'Feriados nacionales',
+                                    summary: 'Fechas importantes',
                                     detail:
                                         error ??
                                         'Ha ocurrido un error al eliminar el feriado nacional',
@@ -139,10 +139,21 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
 }
 
 function saveData(this: FechasImportentesComponent) {
+    if (!this.importantDay.calendar?.iCalAcadId) {
+        this.messageService.add({
+            severity: 'warn',
+            summary: 'Fechas importantes',
+            detail: 'No se ha configurado del calendario académico',
+            life: 3000,
+        })
+
+        return
+    }
+
     const data: any = {
         iTipoFerId: this.form.value.iTipoFerId,
         cFechaImpNombre: this.form.value.cFechaImpNombre,
-        iCalAcadId: this.importantDay.calendar.iCalAcadId,
+        iCalAcadId: this.importantDay.calendar?.iCalAcadId,
         dtFechaImpFecha: this.datePipe.transform(
             this.form.value.dtFechaImpFecha,
             'yyyy-MM-dd'
@@ -164,7 +175,7 @@ function saveData(this: FechasImportentesComponent) {
 
                     this.messageService.add({
                         severity: isSuccess ? 'success' : 'warn',
-                        summary: 'Feriados nacionales',
+                        summary: 'Fechas importantes',
                         detail: result.resultado,
                         life: 3000,
                     })
@@ -186,13 +197,11 @@ function saveData(this: FechasImportentesComponent) {
                     )
 
                     const result = res.data[0]
-                    console.log('result')
-                    console.log(result)
 
                     if (result.Message) {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Feriados nacionales',
+                            summary: 'Fechas importantes',
                             detail: result.resultado,
                             life: 3000,
                         })
@@ -201,7 +210,7 @@ function saveData(this: FechasImportentesComponent) {
                 error: (error) => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Feriados nacionales',
+                        summary: 'Fechas importantes',
                         detail:
                             error ??
                             'Ha ocurrido un error al guardar los feriados nacionales',
@@ -223,7 +232,7 @@ function saveData(this: FechasImportentesComponent) {
 
                     this.messageService.add({
                         severity: isSuccess ? 'success' : 'warn',
-                        summary: 'Feriados nacionales',
+                        summary: 'Fechas importantes',
                         detail: result.resultado,
                         life: 3000,
                     })
@@ -251,7 +260,7 @@ function saveData(this: FechasImportentesComponent) {
                     // if (result.Message) {
                     //     this.messageService.add({
                     //         severity: 'error',
-                    //         summary: 'Feriados nacionales',
+                    //         summary: 'Fechas importantes',
                     //         detail: result.resultado,
                     //         life: 3000,
                     //     })
@@ -260,7 +269,7 @@ function saveData(this: FechasImportentesComponent) {
                 error: (error) => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Feriados nacionales',
+                        summary: 'Fechas importantes',
                         detail:
                             error ??
                             'Ha ocurrido un error al guardar los feriados nacionales',

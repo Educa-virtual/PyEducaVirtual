@@ -1,0 +1,107 @@
+<p-toast />
+<app-container-page
+    title="Registrar feriados importantes"
+    [actions]="importantDay.container.actions"
+    (accionBtnItem)="importantDay.table.accionBtnItem($event)"
+>
+    <div class="card">
+        <app-table-primeng
+            [columnas]="importantDay.table.columns.core"
+            [showCaption]="false"
+            [data]="importantDay.table.data.core"
+            (accionBtnItem)="importantDay.table.accionBtnItem($event)"
+            [actions]="importantDay.table.actions"
+        >
+        </app-table-primeng>
+    </div>
+</app-container-page>
+
+<p-dialog
+    [header]="dialogs.nationalHoliday.title"
+    [(visible)]="dialogs.nationalHoliday.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form [formGroup]="form">
+        <div class="grid mt-2">
+            <div class="col-12 grid">
+                <div class="col-10 flex flex-column gap-2">
+                    <label for="dtFeriado">Fecha</label>
+                    <p-calendar
+                        appendTo="body"
+                        [showOnFocus]="false"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        formControlName="dtFechaImpFecha"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="dtFeriado"
+                    />
+                </div>
+                <div class="col flex flex-column gap-2">
+                    <label for="bFechaImpSeraLaborable">Es recuperable</label>
+                    <p-toggleButton
+                        formControlName="bFechaImpSeraLaborable"
+                        onLabel="Si"
+                        offLabel="No"
+                        styleClass="w-full"
+                    />
+                </div>
+            </div>
+
+            <div class="col-12 grid">
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="cFeriadoNombre">Nombre</label>
+                    <input
+                        pInputText
+                        id="cFechaImpNombre"
+                        formControlName="cFechaImpNombre"
+                        aria-describedby="cFeriadoNombre-help"
+                    />
+                </div>
+
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="cFeriadoNombre">Tipo de fecha</label>
+                    <p-dropdown
+                        styleClass="w-full"
+                        appendTo="body"
+                        formControlName="iTipoFerId"
+                        [options]="importantDay.types"
+                        optionLabel="name"
+                        optionValue="code"
+                        placeholder="Seccione un tipo de fecha"
+                    />
+                </div>
+            </div>
+
+            <div class="col-12 flex flex-column gap-2">
+                <label for="cDocumento">URL del documento</label>
+                <input
+                    pInputText
+                    id="cDocumento"
+                    formControlName="cFechaImpURLDocumento"
+                    aria-describedby="cDocumento-help"
+                />
+            </div>
+
+            <div class="col-12 flex flex-column gap-2">
+                <label for="cDocumento">Información adicional</label>
+                <input
+                    pInputText
+                    id="cDocumento"
+                    formControlName="cFechaImpInfoAdicional"
+                    aria-describedby="cDocumento-help"
+                />
+            </div>
+
+            <div class="col-12">
+                <p-button
+                    label="Guardar"
+                    [disabled]="form.invalid"
+                    styleClass="w-full"
+                    (onClick)="importantDay.saveData()"
+                />
+            </div>
+        </div>
+    </form>
+</p-dialog>

@@ -149,7 +149,7 @@ const administrador = [
             {
                 label: 'Registro de fechas especiales',
                 icon: 'pi pi-calendar',
-                routerLink: ['/gestion-institucional/fechas'],
+                routerLink: ['/gestion-institucional/fechas-nacionales'],
             },
             {
                 label: 'Backup de BD',
@@ -248,6 +248,19 @@ const administracion = [
                 label: 'Comunicados',
                 icon: 'pi pi-fw pi-bell',
                 routerLink: ['/docente/comunicados'],
+            },
+            {
+                label: 'Registro de fechas especiales',
+                icon: 'pi pi-calendar',
+                items: [
+                    {
+                        label: 'Fechas importantes',
+                        icon: 'pi pi-calendar',
+                        routerLink: [
+                            '/gestion-institucional/fechas-importantes',
+                        ],
+                    },
+                ],
             },
             {
                 label: 'Administracion de tablas maestras',

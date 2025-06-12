@@ -27,6 +27,7 @@ import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-us
 import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
+import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component'
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
     { path: 'configGradoSeccion', component: ConfigGradoSeccionComponent },
@@ -38,7 +39,8 @@ const routes: Routes = [
     { path: 'hora-docente', component: ConfigHoraDocenteComponent },
     { path: 'asignar-grado', component: ConfigAsignarGradoComponent },
     { path: 'resumen', component: ConfigResumenComponent },
-    { path: 'fechas', component: ConfigFechasComponent },
+    { path: 'fechas-nacionales', component: ConfigFechasComponent },
+    { path: 'fechas-importantes', component: FechasImportantesComponent },
     { path: 'IesPersonal', component: IesPersonalComponent },
     { path: 'horario', component: HorarioComponent },
     { path: 'configurar-horario', component: ConfiguracionHorarioComponent },

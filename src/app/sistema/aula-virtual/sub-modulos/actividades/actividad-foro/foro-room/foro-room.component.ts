@@ -450,30 +450,30 @@ export class ForoRoomComponent implements OnInit {
                         },
                     ]
 
-                    if (Array.isArray(resp) && resp.length > 0) {
-                        this.foro = resp[0] // Tomar el primer objeto del array
-                    } else {
-                        this.foro = null // Evitar errores si no hay datos
-                    }
-                    // console.log('datos de foro',this.foro)
-                    this.obtenerResptDocente()
-                    // console.log('obtener datos de foro01', resp)
-                    this.FilesTareas = this.foro?.cForoUrl
-                        ? JSON.parse(this.foro?.cForoUrl)
-                        : []
-                    // Formatear fechas (si existen)
-                    // Formatear fechas (si existen)
-                    if (this.foro?.dtForoInicio) {
-                        this.foro.dtForoInicio = this.formatDateISO(
-                            this.foro.dtForoInicio
-                        )
-                    }
+                    // if (Array.isArray(resp) && resp.length > 0) {
+                    //     this.foro = resp[0] // Tomar el primer objeto del array
+                    // } else {
+                    //     this.foro = null // Evitar errores si no hay datos
+                    // }
+                    // // console.log('datos de foro',this.foro)
+                    // this.obtenerResptDocente()
+                    // // console.log('obtener datos de foro01', resp)
+                    // this.FilesTareas = this.foro?.cForoUrl
+                    //     ? JSON.parse(this.foro?.cForoUrl)
+                    //     : []
+                    // // Formatear fechas (si existen)
+                    // // Formatear fechas (si existen)
+                    // if (this.foro?.dtForoInicio) {
+                    //     this.foro.dtForoInicio = this.formatDateISO(
+                    //         this.foro.dtForoInicio
+                    //     )
+                    // }
 
-                    if (this.foro?.dtForoFin) {
-                        this.foro.dtForoFin = this.formatDateISO(
-                            this.foro.dtForoFin
-                        )
-                    }
+                    // if (this.foro?.dtForoFin) {
+                    //     this.foro.dtForoFin = this.formatDateISO(
+                    //         this.foro.dtForoFin
+                    //     )
+                    // }
                 },
             })
     }

@@ -10,6 +10,8 @@ import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
@@ -41,6 +43,7 @@ export class ForoFormContainerComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private ref = inject(DynamicDialogRef)
     private GeneralService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService)
 
     tareas = []
     filteredTareas: any[] | undefined
@@ -53,37 +56,33 @@ export class ForoFormContainerComponent implements OnInit {
     selectCategorias: any = {}
     idDocCursoId: any
     public foroForm = this._formBuilder.group({
-        iForoId: [],
         cForoTitulo: ['', [Validators.required]],
         cForoDescripcion: ['', [Validators.required]],
         iForoCatId: [0, [Validators.required]],
-        dtForoInicio: [''],
-        iEstado: [true],
-        dtForoPublicacion: [''],
-        dtForoFin: [],
+        dtForoInicio: [this.date, Validators.required],
+        dtForoFin: [this.date, Validators.required],
         cForoUrl: [],
-        cForoCatDescripcion: [],
-        idDocCursoId: [],
-
-        //VARIABLES DE AYUDA QUE NO ESTÀN EN LA BD
-        dtInicio: [this.date, Validators.required],
-        dtFin: [this.date, Validators.required],
     })
 
     opcion: string = 'GUARDAR'
     action: string
+    perfil: any
+    data: any
     constructor(
         private dialogConfig: DynamicDialogConfig,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private store: LocalStoreService
     ) {
+        this.perfil = this.store.getItem('dremoPerfil')
+
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.idDocCursoId = this.dialogConfig.data.idDocCursoId
         this.action = this.dialogConfig.data.action
 
-        const data = this.dialogConfig.data
+        this.data = this.dialogConfig.data
 
         if (this.action == 'ACTUALIZAR') {
-            this.obtenerForoxiForoId(data.actividad.ixActivadadId)
+            this.obtenerForoxiForoId(this.data.actividad.ixActivadadId)
         } else {
             this.opcion = 'GUARDAR'
         }
@@ -112,28 +111,51 @@ export class ForoFormContainerComponent implements OnInit {
     }
     // Guardar foro
     submit() {
-        let horaInicio = this.foroForm.value.dtInicio.toLocaleString('en-GB', {
-            timeZone: 'America/Lima',
-        })
-        horaInicio = horaInicio.replace(',', '')
-        let horaFin = this.foroForm.value.dtFin.toLocaleString('en-GB', {
-            timeZone: 'America/Lima',
-        })
-        horaFin = horaFin.replace(',', '')
-        this.foroForm.controls.dtForoInicio.setValue(horaInicio)
-        this.foroForm.controls.dtForoFin.setValue(horaFin)
-        this.foroForm.controls.dtForoPublicacion.setValue(horaFin)
-        this.foroForm.controls.cForoUrl.setValue(JSON.stringify(this.filesUrl))
-        // Limpiar el campo cForoDescripcion de etiquetas HTML
-        const rawDescripcion =
-            this.foroForm.controls.cForoDescripcion.value || ''
-        const tempElement = document.createElement('div')
-        tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-        this.foroForm.controls.idDocCursoId.setValue(this.idDocCursoId)
-        const value = {
-            ...this.foroForm.value,
-            iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,
+        const data = this.foroForm.value
+        const dataForo = {
+            iForoCatId: data.iForoCatId,
+            iDocenteId: this.perfil.iPerfilId,
+            cForoTitulo: data.cForoTitulo,
+            cForoDescripcion: data.cForoDescripcion,
+            dtForoInicio: this.pipe.transform(
+                data.dtForoInicio,
+                'yyyy-MM-ddTHH:mm:ss'
+            ),
+            dtForoFin: this.pipe.transform(
+                data.dtForoFin,
+                'yyyy-MM-ddTHH:mm:ss'
+            ),
+            iContenidoSemId: this.contenidoSemana.iContenidoSemId,
+            iActTipoId: this.data.iActTipoId,
+            idDocCursoId: this.contenidoSemana.idDocCursoId,
+            iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+            cForoUrl: this.filesUrl.length
+                ? JSON.stringify(this.filesUrl)
+                : null,
         }
+        console.log('foro a guardar', dataForo)
+        // let horaInicio = this.foroForm.value.dtInicio.toLocaleString('en-GB', {
+        //     timeZone: 'America/Lima',
+        // })
+        // horaInicio = horaInicio.replace(',', '')
+        // let horaFin = this.foroForm.value.dtFin.toLocaleString('en-GB', {
+        //     timeZone: 'America/Lima',
+        // })
+        // horaFin = horaFin.replace(',', '')
+        // this.foroForm.controls.dtForoInicio.setValue(horaInicio)
+        // this.foroForm.controls.dtForoFin.setValue(horaFin)
+        // this.foroForm.controls.dtForoPublicacion.setValue(horaFin)
+        // this.foroForm.controls.cForoUrl.setValue(JSON.stringify(this.filesUrl))
+        // // Limpiar el campo cForoDescripcion de etiquetas HTML
+        // const rawDescripcion =
+        //     this.foroForm.controls.cForoDescripcion.value || ''
+        // const tempElement = document.createElement('div')
+        // tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
+        // this.foroForm.controls.idDocCursoId.setValue(this.idDocCursoId)
+        // const value = {
+        //     ...this.foroForm.value,
+        //     iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,
+        // }
         if (this.foroForm.invalid) {
             this.messageService.add({
                 severity: 'error',
@@ -141,8 +163,8 @@ export class ForoFormContainerComponent implements OnInit {
                 detail: 'Campos vacios!',
             })
         } else {
-            console.log('Guardar Foros', value)
-            this.ref.close(value)
+            console.log('Guardar Foros', dataForo)
+            this.ref.close(dataForo)
         }
     }
     obtenerForoxiForoId(iForoId: string) {

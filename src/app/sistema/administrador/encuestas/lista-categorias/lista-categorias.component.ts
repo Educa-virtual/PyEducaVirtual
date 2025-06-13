@@ -79,7 +79,7 @@ export class ListaCategoriasComponent implements OnInit {
     actions: IActionTable[] = [
         {
             labelTooltip: 'Ver encuesta',
-            icon: 'pi pi-eye',
+            icon: 'pi pi-user-plus',
             accion: 'ver',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',

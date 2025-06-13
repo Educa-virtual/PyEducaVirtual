@@ -62,6 +62,7 @@ export class ForoFormContainerComponent implements OnInit {
         dtForoInicio: [this.date, Validators.required],
         dtForoFin: [this.date, Validators.required],
         cForoUrl: [],
+        iForoId: [],
     })
 
     opcion: string = 'GUARDAR'
@@ -132,30 +133,9 @@ export class ForoFormContainerComponent implements OnInit {
             cForoUrl: this.filesUrl.length
                 ? JSON.stringify(this.filesUrl)
                 : null,
+            iForoId: data.iForoId,
         }
         console.log('foro a guardar', dataForo)
-        // let horaInicio = this.foroForm.value.dtInicio.toLocaleString('en-GB', {
-        //     timeZone: 'America/Lima',
-        // })
-        // horaInicio = horaInicio.replace(',', '')
-        // let horaFin = this.foroForm.value.dtFin.toLocaleString('en-GB', {
-        //     timeZone: 'America/Lima',
-        // })
-        // horaFin = horaFin.replace(',', '')
-        // this.foroForm.controls.dtForoInicio.setValue(horaInicio)
-        // this.foroForm.controls.dtForoFin.setValue(horaFin)
-        // this.foroForm.controls.dtForoPublicacion.setValue(horaFin)
-        // this.foroForm.controls.cForoUrl.setValue(JSON.stringify(this.filesUrl))
-        // // Limpiar el campo cForoDescripcion de etiquetas HTML
-        // const rawDescripcion =
-        //     this.foroForm.controls.cForoDescripcion.value || ''
-        // const tempElement = document.createElement('div')
-        // tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-        // this.foroForm.controls.idDocCursoId.setValue(this.idDocCursoId)
-        // const value = {
-        //     ...this.foroForm.value,
-        //     iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,
-        // }
         if (this.foroForm.invalid) {
             this.messageService.add({
                 severity: 'error',
@@ -270,7 +250,21 @@ export class ForoFormContainerComponent implements OnInit {
                 break
             case 'obtenerForoxiForoId':
                 const data = item.length ? item[0] : []
-                this.foroForm.patchValue(data)
+                console.log(data)
+                this.foroForm.patchValue({
+                    cForoTitulo: data.cForoTitulo ?? '',
+                    cForoDescripcion: data.cForoDescripcion ?? '',
+                    dtForoInicio: data.dtForoInicio
+                        ? new Date(data.dtForoInicio)
+                        : this.date,
+                    dtForoFin: data.dtForoFin
+                        ? new Date(data.dtForoFin)
+                        : this.date,
+                    iForoId: data.iForoId,
+                    iForoCatId: data.iForoCatId,
+                })
+                console.log(this.foroForm.value)
+                // this.foroForm.patchValue(data)
                 this.filesUrl = data.cForoUrl ? JSON.parse(data.cForoUrl) : []
                 break
         }

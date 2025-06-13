@@ -79,10 +79,24 @@ export class DatosInformesService {
             this.distritos = items.map((distrito) => ({
                 value: distrito.iDsttId,
                 label: distrito.cDsttNombre,
+                ugeles: distrito.ugeles,
             }))
             return this.distritos
         }
         return this.distritos
+    }
+
+    filterDistritos(iUgelId: any) {
+        if (!iUgelId) return null
+        return this.distritos.filter((distrito: any) => {
+            const pertenece_ugel = distrito.ugeles.find(
+                (ugel: any) => ugel.iUgelId === iUgelId
+            )
+            if (pertenece_ugel) {
+                return distrito
+            }
+            return null
+        })
     }
 
     getNivelesTipos(data: any) {
@@ -91,21 +105,14 @@ export class DatosInformesService {
             this.nivel_tipos = items.map((nivel) => ({
                 value: nivel.iNivelTipoId,
                 label: nivel.cNivelTipoNombre,
-                iEvaluacionId: nivel.iEvaluacionId,
             }))
             return this.nivel_tipos
         }
         return this.nivel_tipos
     }
 
-    filterNivelesTipos(iEvaluacionId: any) {
-        if (!iEvaluacionId) return null
-        return this.nivel_tipos.filter((nivel_tipo: any) => {
-            if (nivel_tipo.iEvaluacionId === iEvaluacionId) {
-                return nivel_tipo
-            }
-            return null
-        })
+    filterNivelesTipos() {
+        return this.nivel_tipos
     }
 
     getNivelesGrados(data: any) {
@@ -228,34 +235,11 @@ export class DatosInformesService {
         iTipoSectorId: any,
         iUgelId: any
     ) {
-        console.log(
-            iEvaluacionId,
-            iNivelTipoId,
-            iDsttId,
-            'filterInstitucionesEducativas'
-        )
         let ies_tmp: Array<object> = this.instituciones_educativas
-        if (!iEvaluacionId && !iNivelTipoId) {
+        if (!iNivelTipoId) {
             return null
         }
-        if (iEvaluacionId) {
-            ies_tmp = ies_tmp.filter((ie: any) => {
-                if (!ie.evaluaciones) return null
-                const esta_en_evaluacion = ie.evaluaciones.filter(
-                    (evaluacion: any) => {
-                        if (evaluacion.iEvaluacionId == iEvaluacionId) {
-                            return evaluacion
-                        }
-                        return null
-                    }
-                )
-                if (esta_en_evaluacion.length > 0) {
-                    return ie
-                }
-            })
-        }
         if (iNivelTipoId) {
-            console.log(ies_tmp, 'ies_tmp')
             ies_tmp = ies_tmp.filter((ie: any) => {
                 if (ie.iNivelTipoId == iNivelTipoId) {
                     return ie
@@ -298,9 +282,25 @@ export class DatosInformesService {
         return ies_tmp
     }
 
+    getTiposReportes() {
+        return [
+            { value: 'ESTUDIANTES', label: 'DETALLE DE ESTUDIANTES' },
+            { value: 'UGEL', label: 'AGRUPADO POR UGEL' },
+            { value: 'DISTRITO', label: 'AGRUPADO POR DISTRITO' },
+            { value: 'IE', label: 'AGRUPADO POR INSTITUCION EDUCATIVA' },
+        ]
+    }
+
     obtenerInformeResumen(data: any) {
         return this.http.post(
             `${baseUrl}/ere/reportes/obtenerInformeResumen`,
+            data
+        )
+    }
+
+    obtenerInformeComparacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/obtenerInformeComparacion`,
             data
         )
     }
@@ -317,10 +317,30 @@ export class DatosInformesService {
         })
     }
 
+    exportarComparacionPdf(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/generarPdfComparacion`,
+            data,
+            { responseType: 'blob' }
+        )
+    }
+
+    exportarComparacionExcel(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/reportes/generarExcelComparacion`,
+            data,
+            { responseType: 'blob' }
+        )
+    }
+
     importarResultados(data: any) {
         return this.http.post(
             `${baseUrl}/ere/reportes/importarResultados`,
             data
         )
+    }
+
+    importarOffLine(data: any) {
+        return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data)
     }
 }

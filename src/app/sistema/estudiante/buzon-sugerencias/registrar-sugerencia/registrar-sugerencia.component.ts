@@ -71,7 +71,8 @@ export class RegistrarSugerenciaComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail:
+                        error.error.message || 'Error al obtener prioridades',
                 })
             },
         })
@@ -104,7 +105,8 @@ export class RegistrarSugerenciaComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Problema al registrar sugerencia',
-                    detail: error,
+                    detail:
+                        error.error.message || 'Error al registrar sugerencia',
                 })
             },
         })

@@ -1,0 +1,301 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            Comparativo de resultados ERE
+        </span>
+    </ng-template>
+    <form [formGroup]="formFiltros">
+        <div class="grid">
+            <div class="col-12 md:col-6">
+                <p-inputGroup title="* Campo obligatorio">
+                    <p-inputGroupAddon>Evaluación 1 *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="evaluaciones"
+                        formControlName="iEvaluacion1"
+                        placeholder="Seleccione una evaluación"
+                        styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+                <p-inputGroup title="* Campo obligatorio">
+                    <p-inputGroupAddon>Evaluación 2 *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="evaluaciones"
+                        formControlName="iEvaluacion2"
+                        placeholder="Seleccione una evaluación"
+                        styleClass="group-element"
+                        [appendTo]="'body'"
+                        filter="true"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+        <br />
+        <div class="grid">
+            <div class="col-12">
+                <p-fieldset legend="Filtros obligatorios">
+                    <div class="grid p-fluid">
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup title="* Campo obligatorio">
+                                <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="nivel_tipos"
+                                    formControlName="iNivelTipoId"
+                                    placeholder="Seleccione un nivel"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup title="* Campo obligatorio">
+                                <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="nivel_grados"
+                                    formControlName="iNivelGradoId"
+                                    placeholder="Seleccione un grado"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                    filter="true"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup title="* Campo obligatorio">
+                                <p-inputGroupAddon>Área *</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="areas"
+                                    formControlName="iCursoId"
+                                    placeholder="Seleccione un área"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                    filter="true"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+            <div class="col-12">
+                <p-fieldset legend="Filtros adicionales" [toggleable]="true">
+                    <div class="grid p-fluid">
+                        @if (es_especialista) {
+                            <div class="col-12 md:col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Gestión</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        [options]="tipo_sectores"
+                                        [showClear]="true"
+                                        formControlName="iTipoSectorId"
+                                        placeholder="Seleccione un tipo de gestión"
+                                        styleClass="group-element"
+                                        [appendTo]="'body'"
+                                    ></p-dropdown>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-12 md:col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                                    <p-dropdown
+                                        [options]="zonas"
+                                        [showClear]="true"
+                                        formControlName="iZonaId"
+                                        placeholder="Seleccione un tipo de zona"
+                                        styleClass="group-element"
+                                        [appendTo]="'body'"
+                                    ></p-dropdown>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-12 md:col-4">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                                    <p-dropdown
+                                        [options]="ugeles"
+                                        [showClear]="true"
+                                        formControlName="iUgelId"
+                                        placeholder="Seleccione una UGEL"
+                                        styleClass="group-element"
+                                        [appendTo]="'body'"
+                                    ></p-dropdown>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Distrito</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        [options]="distritos"
+                                        [showClear]="true"
+                                        formControlName="iDsttId"
+                                        placeholder="Seleccione un distrito"
+                                        styleClass="group-element"
+                                        [appendTo]="'body'"
+                                        filter="true"
+                                    ></p-dropdown>
+                                </p-inputGroup>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                                    <p-dropdown
+                                        [options]="ies"
+                                        [showClear]="true"
+                                        formControlName="iIieeId"
+                                        placeholder="Seleccione una Institución Educativa"
+                                        styleClass="group-element"
+                                        [appendTo]="'body'"
+                                        filter="true"
+                                    ></p-dropdown>
+                                </p-inputGroup>
+                            </div>
+                        }
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="secciones"
+                                    [showClear]="true"
+                                    formControlName="iSeccionId"
+                                    placeholder="Seleccione una sección"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                    filter="true"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Sexo</p-inputGroupAddon>
+                                <p-dropdown
+                                    [options]="sexos"
+                                    [showClear]="true"
+                                    formControlName="cPersSexo"
+                                    placeholder="Seleccione un sexo"
+                                    styleClass="group-element"
+                                    [appendTo]="'body'"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+        </div>
+        <div class="flex flex-row flex-wrap gap-2 mt-3">
+            <div class="flex">
+                <p-button
+                    pRipple
+                    severity="success"
+                    label="Buscar datos"
+                    icon="pi pi-fw pi-search"
+                    (onClick)="searchResultados()"
+                />
+            </div>
+            <div class="flex" *ngIf="puede_exportar">
+                <p-toast />
+                <p-menu #menu [model]="btn_exportar" [popup]="true" />
+                <p-button
+                    (onClick)="menu.toggle($event)"
+                    pRipple
+                    severity="success"
+                    label="Exportar"
+                    icon="pi pi-fw pi-print"
+                />
+            </div>
+        </div>
+    </form>
+
+    <br />
+
+    @if (!hay_resultados) {
+        <app-no-data
+            [showIcon]="'NO-DATA'"
+            mensaje="No se encontraron datos para esta comparación"
+        />
+    } @else {
+        <p-tabView>
+            <p-tabPanel>
+                <ng-template pTemplate="header"> Comparativa </ng-template>
+                <p-table [value]="niveles" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2">NIVEL DE LOGRO</th>
+                            <th colspan="2" class="text-center">
+                                {{ evaluacion1 }}
+                            </th>
+                            <th colspan="2" class="text-center">
+                                {{ evaluacion2 }}
+                            </th>
+                        </tr>
+                        <tr class="text-center">
+                            <th class="text-center">CANTIDAD</th>
+                            <th class="text-center">PORCENTAJE</th>
+                            <th class="text-center">CANTIDAD</th>
+                            <th class="text-center">PORCENTAJE</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-nivel>
+                        <tr>
+                            <td>{{ nivel.nivel }}</td>
+                            <td class="text-center">{{ nivel.valor1 }}</td>
+                            <td class="text-center highlighted-cell">
+                                {{ nivel.porcentaje1 }}
+                            </td>
+                            <td class="text-center">{{ nivel.valor2 }}</td>
+                            <td class="text-center highlighted-cell">
+                                {{ nivel.porcentaje2 }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <tr>
+                            <td>TOTAL DE ESTUDIANTES</td>
+                            <td class="text-center">{{ total1 }}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center">{{ total2 }}</td>
+                            <td class="text-center"></td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div class="grid">
+                    <p-chart
+                        type="bar"
+                        [data]="data_bar"
+                        [options]="options_bar"
+                        class="col"
+                        height="300px"
+                        [plugins]="barPlugin"
+                    />
+                </div>
+            </p-tabPanel>
+            <p-tabPanel>
+                <ng-template pTemplate="header"> Evaluación 1 </ng-template>
+                <app-table-primeng
+                    [columnas]="columns_resultados"
+                    [showCaption]="false"
+                    [data]="resultados1"
+                    [showPaginator]="true"
+                    [showSortIcon]="false"
+                    sortMode="multiple"
+                />
+            </p-tabPanel>
+            <p-tabPanel>
+                <ng-template pTemplate="header"> Evaluación 2 </ng-template>
+                <app-table-primeng
+                    [columnas]="columns_resultados"
+                    [showCaption]="false"
+                    [data]="resultados2"
+                    [showPaginator]="true"
+                    [showSortIcon]="false"
+                    sortMode="multiple"
+                />
+            </p-tabPanel>
+        </p-tabView>
+    }
+</p-panel>
+<p-toast></p-toast>

@@ -1,5 +1,4 @@
 <div class="mt-4">
-    <!-- Scroll Panel para el Formulario -->
     <p-scrollPanel [style]="{ width: '100%', height: '550px' }">
         <form [formGroup]="evaluacionFormGroup">
             <p-stepper
@@ -7,223 +6,220 @@
                 [linear]="!iEvaluacionId ? true : false"
                 [(activeStep)]="activeStep"
             >
-                <!-- Primer panel: Información Evaluación -->
                 <p-stepperPanel header="Información de la evaluación">
                     <ng-template
                         pTemplate="content"
                         let-nextCallback="nextCallback"
                     >
-                        <!-- p-dropdown de tipo de evaluación y nivel de evaluación -->
-                        <div class="formgrid grid flex">
-                            <!-- Tipo Evaluación -->
-                            <div class="field flex flex-column col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>
-                                        Tipo de evaluación
-                                    </p-inputGroupAddon>
-                                    <!-- Componente de calendario para seleccionar una fecha y hora -->
-                                    <p-dropdown
-                                        styleClass="w-full"
-                                        optionValue="idTipoEvalId"
-                                        placeholder="Seleccionar"
-                                        formControlName="idTipoEvalId"
-                                        [options]="tipoEvaluacion"
-                                        optionLabel="cTipoEvalDescripcion"
-                                        [styleClass]="
-                                            evaluacionFormGroup.get(
-                                                'idTipoEvalId'
-                                            )?.invalid &&
-                                            evaluacionFormGroup.get(
-                                                'idTipoEvalId'
-                                            )?.touched
-                                                ? 'w-full ng-dirty ng-invalid p-invalid'
-                                                : 'w-full '
-                                        "
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                                <small
-                                    *ngIf="
-                                        evaluacionFormGroup
-                                            .get('idTipoEvalId')
-                                            ?.hasError('required') &&
-                                        evaluacionFormGroup.get('idTipoEvalId')
-                                            ?.touched
-                                    "
-                                    class="text-red-500"
-                                >
-                                    Este campo es requerido
-                                </small>
-                            </div>
-                            <!-- Nivel Evaluación -->
-                            <div class="field flex flex-column col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>
-                                        Nivel de evaluación</p-inputGroupAddon
-                                    >
-                                    <!-- Componente de calendario para seleccionar una fecha y hora -->
-                                    <p-dropdown
-                                        styleClass="w-full"
-                                        placeholder="Seleccionar"
-                                        optionValue="iNivelEvalId"
-                                        formControlName="iNivelEvalId"
-                                        [options]="nivelEvaluacion"
-                                        optionLabel="cNivelEvalNombre"
-                                        [styleClass]="
-                                            evaluacionFormGroup.get(
-                                                'iNivelEvalId'
-                                            )?.invalid &&
-                                            evaluacionFormGroup.get(
-                                                'iNivelEvalId'
-                                            )?.touched
-                                                ? 'w-full ng-dirty ng-invalid p-invalid'
-                                                : 'w-full'
-                                        "
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                                <small
-                                    *ngIf="
-                                        evaluacionFormGroup
-                                            .get('idTipoEvalId')
-                                            ?.hasError('required') &&
-                                        evaluacionFormGroup.get('idTipoEvalId')
-                                            ?.touched
-                                    "
-                                    class="text-red-500"
-                                >
-                                    Este campo es requerido
-                                </small>
-                            </div>
-                        </div>
-                        <!-- Nombre Evaluación -->
-                        <div class="formgrid grid">
-                            <div class="field col">
-                                <app-common-input
-                                    controlKey="cEvaluacionNombre"
-                                    label="Nombre"
-                                ></app-common-input>
-                            </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
-                                <label for="descripcion" class="mt-1"
-                                    >Descripción
-                                    <span class="text-red-500 text-xs"
-                                        >(*) Obligatorio</span
-                                    ></label
-                                >
-                                <div class="mt-2">
-                                    <textarea
-                                        class="w-full"
-                                        rows="4"
-                                        placeholder="Escribe una Descripción"
-                                        pInputText
-                                        formControlName="cEvaluacionDescripcion"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- URLs -->
-                        <div class="formgrid grid flex">
-                            <div class="field col">
-                                <label for="descripcion" class="mt-1"
-                                    >Enlace a carpeta compartida
-                                    <span class="text-red-500 text-xs"
-                                        >(*) Obligatorio</span
-                                    ></label
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        pInputText
-                                        class="w-full"
-                                        formControlName="cEvaluacionUrlDrive"
-                                        placeholder="Ruta que empiece con http:// o https://"
-                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
-                                    />
-                                </div>
-                                <!-- Mostrar error si la URL es inválida -->
-                                <div
-                                    *ngIf="
-                                        evaluacionFormGroup.controls
-                                            .cEvaluacionUrlDrive.invalid &&
-                                        evaluacionFormGroup.controls
-                                            .cEvaluacionUrlDrive.touched
-                                    "
-                                    class="text-red-500 text-sm"
-                                >
-                                    La URL debe comenzar con http:// o https://
-                                </div>
-                            </div>
-                        </div>
-                        <div class="formgrid grid flex">
-                            <!-- Fecha de Inicio de Evaluación -->
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>
-                                        Fecha de inicio
-                                    </p-inputGroupAddon>
-                                    <!-- Componente de calendario para seleccionar una fecha y hora -->
-                                    <p-calendar
-                                        formControlName="dtEvaluacionFechaInicio"
-                                        [iconDisplay]="'input'"
-                                        dateFormat="dd/mm/yy"
-                                        styleClass="w-full"
-                                        [showIcon]="true"
-                                        type="date"
-                                        inputId="dtEvaluacionFechaInicio"
-                                        appendTo="body"
-                                    />
-                                </p-inputGroup>
-                            </div>
-                            <!-- Fecha Fin de Evaluación -->
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>
-                                        Fecha fin
-                                    </p-inputGroupAddon>
-                                    <!-- Componente de calendario para seleccionar una fecha y hora -->
-                                    <p-calendar
-                                        formControlName="dtEvaluacionFechaFin"
-                                        [iconDisplay]="'input'"
-                                        dateFormat="dd/mm/yy"
-                                        styleClass="w-full"
-                                        [showIcon]="true"
-                                        type="date"
-                                        inputId="dtEvaluacionFechaFin"
-                                        appendTo="body"
-                                    />
-                                </p-inputGroup>
-                            </div>
-                        </div>
                     </ng-template>
                 </p-stepperPanel>
 
-                <!-- Segundo Panel: Instituciones Educativas -->
                 <p-stepperPanel #stepper header="Instituciones Educativas">
                     <ng-template
                         pTemplate="content"
                         let-prevCallback="prevCallback"
                         let-nextCallback="nextCallback"
                     >
-                        <div>
-                            <app-ieparticipa
-                                [_iEvaluacionId]="iEvaluacionId"
-                            ></app-ieparticipa>
-                        </div>
                     </ng-template>
                 </p-stepperPanel>
 
-                <!-- Tercer Panel: Áreas -->
                 <p-stepperPanel header="Áreas">
                     <ng-template
                         pTemplate="content"
                         let-prevCallback="prevCallback"
                     >
-                        <app-evaluacion-areas
-                            [_iEvaluacionId]="iEvaluacionId"
-                        ></app-evaluacion-areas>
                     </ng-template>
                 </p-stepperPanel>
             </p-stepper>
+
+            <div class="stepper-content-container mt-4">
+                <div [style.display]="activeStep === 0 ? 'block' : 'none'">
+                    <div class="formgrid grid flex">
+                        <div class="field flex flex-column col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Tipo de evaluación
+                                </p-inputGroupAddon>
+                                <p-dropdown
+                                    styleClass="w-full"
+                                    optionValue="idTipoEvalId"
+                                    placeholder="Seleccionar"
+                                    formControlName="idTipoEvalId"
+                                    [options]="tipoEvaluacion"
+                                    optionLabel="cTipoEvalDescripcion"
+                                    [styleClass]="
+                                        evaluacionFormGroup.get('idTipoEvalId')
+                                            ?.invalid &&
+                                        evaluacionFormGroup.get('idTipoEvalId')
+                                            ?.touched
+                                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                                            : 'w-full '
+                                    "
+                                ></p-dropdown>
+                            </p-inputGroup>
+                            <small
+                                *ngIf="
+                                    evaluacionFormGroup
+                                        .get('idTipoEvalId')
+                                        ?.hasError('required') &&
+                                    evaluacionFormGroup.get('idTipoEvalId')
+                                        ?.touched
+                                "
+                                class="text-red-500"
+                            >
+                                Este campo es requerido
+                            </small>
+                        </div>
+                        <div class="field flex flex-column col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Nivel de evaluación</p-inputGroupAddon
+                                >
+                                <p-dropdown
+                                    styleClass="w-full"
+                                    placeholder="Seleccionar"
+                                    optionValue="iNivelEvalId"
+                                    formControlName="iNivelEvalId"
+                                    [options]="nivelEvaluacion"
+                                    optionLabel="cNivelEvalNombre"
+                                    [styleClass]="
+                                        evaluacionFormGroup.get('iNivelEvalId')
+                                            ?.invalid &&
+                                        evaluacionFormGroup.get('iNivelEvalId')
+                                            ?.touched
+                                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                                            : 'w-full'
+                                    "
+                                ></p-dropdown>
+                            </p-inputGroup>
+                            <small
+                                *ngIf="
+                                    evaluacionFormGroup
+                                        .get('iNivelEvalId')
+                                        ?.hasError('required') &&
+                                    evaluacionFormGroup.get('iNivelEvalId')
+                                        ?.touched
+                                "
+                                class="text-red-500"
+                            >
+                                Este campo es requerido
+                            </small>
+                        </div>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <app-common-input
+                                controlKey="cEvaluacionNombre"
+                                label="Nombre"
+                            ></app-common-input>
+                        </div>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="descripcion" class="mt-1"
+                                >Descripción
+                                <span class="text-red-500 text-xs"
+                                    >(*) Obligatorio</span
+                                ></label
+                            >
+                            <div class="mt-2">
+                                <textarea
+                                    class="w-full"
+                                    rows="4"
+                                    placeholder="Escribe una Descripción"
+                                    pInputText
+                                    formControlName="cEvaluacionDescripcion"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formgrid grid flex">
+                        <div class="field col">
+                            <label for="descripcion" class="mt-1"
+                                >Enlace a carpeta compartida
+                                <span class="text-red-500 text-xs"
+                                    >(*) Obligatorio</span
+                                ></label
+                            >
+                            <div class="mt-2">
+                                <input
+                                    pInputText
+                                    class="w-full"
+                                    formControlName="cEvaluacionUrlDrive"
+                                    placeholder="Ruta que empiece con http:// o https://"
+                                    pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                                />
+                            </div>
+                            <div
+                                *ngIf="
+                                    evaluacionFormGroup.controls
+                                        .cEvaluacionUrlDrive.invalid &&
+                                    evaluacionFormGroup.controls
+                                        .cEvaluacionUrlDrive.touched
+                                "
+                                class="text-red-500 text-sm"
+                            >
+                                La URL debe comenzar con http:// o https://
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formgrid grid flex">
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Fecha de inicio
+                                </p-inputGroupAddon>
+                                <p-calendar
+                                    formControlName="dtEvaluacionFechaInicio"
+                                    [iconDisplay]="'input'"
+                                    dateFormat="dd/mm/yy"
+                                    styleClass="w-full"
+                                    [showIcon]="true"
+                                    type="date"
+                                    inputId="dtEvaluacionFechaInicio"
+                                    appendTo="body"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Fecha fin
+                                </p-inputGroupAddon>
+                                <p-calendar
+                                    formControlName="dtEvaluacionFechaFin"
+                                    [iconDisplay]="'input'"
+                                    dateFormat="dd/mm/yy"
+                                    styleClass="w-full"
+                                    [showIcon]="true"
+                                    type="date"
+                                    inputId="dtEvaluacionFechaFin"
+                                    appendTo="body"
+                                />
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </div>
+
+                <div [style.display]="activeStep === 1 ? 'block' : 'none'">
+                    <app-ieparticipa
+                        [_iEvaluacionId]="iEvaluacionId"
+                    ></app-ieparticipa>
+                </div>
+
+                <div [style.display]="activeStep === 2 ? 'block' : 'none'">
+                    <app-evaluacion-areas
+                        *ngIf="iEvaluacionId"
+                        [_iEvaluacionId]="iEvaluacionId"
+                    ></app-evaluacion-areas>
+                    <div *ngIf="!iEvaluacionId" class="text-center p-4">
+                        <p>
+                            Primero debe completar la información de la
+                            evaluación
+                        </p>
+                    </div>
+                </div>
+            </div>
         </form>
     </p-scrollPanel>
 
@@ -252,4 +248,4 @@
         ></p-button>
     </div>
 </div>
-<p-toast> </p-toast>
+<p-toast></p-toast>

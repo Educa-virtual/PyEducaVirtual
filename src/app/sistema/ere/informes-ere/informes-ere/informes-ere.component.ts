@@ -14,30 +14,45 @@ import {
     ESPECIALISTA_UGEL,
     ESPECIALISTA_DREMO,
 } from '@/app/servicios/seg/perfiles'
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
+import { SheetToMatrix } from '@/app/sistema/gestion-institucional/sincronizar-archivo/bulk-data-import/utils/sheetToMatrix'
 
 @Component({
     selector: 'app-informes-ere',
     standalone: true,
     templateUrl: './informes-ere.component.html',
     styleUrls: ['./informes-ere.component.scss'],
-    imports: [PrimengModule, ChartModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        ChartModule,
+        TablePrimengComponent,
+        NoDataComponent,
+    ],
 })
 export class InformesEreComponent implements OnInit {
     formFiltros: FormGroup
+    formFiltrosObtenido: FormGroup
     data_doughnut: any
     options_doughnut: any
     data_bar: any
     options_bar: ChartOptions
+    hide_filters: boolean = false
 
     resultados: Array<object>
     resumen: Array<object>
     matriz: Array<object>
     promedio: Array<object>
     niveles: Array<object>
+    agrupado: Array<object>
+    filtros: []
+    fullData: Array<object>
+
+    tipo_reporte: string = 'IE'
 
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
     hay_resultados: boolean = false
+    puede_exportar: boolean = false
 
     es_especialista: boolean = false
 
@@ -53,6 +68,7 @@ export class InformesEreComponent implements OnInit {
     zonas: Array<object>
     tipo_sectores: Array<object>
     ugeles: Array<object>
+    tipos_reportes: Array<object>
 
     private _MessageService = inject(MessageService)
 
@@ -90,12 +106,14 @@ export class InformesEreComponent implements OnInit {
                 iIieeId: [null],
                 iSeccionId: [null],
                 cPersSexo: [null],
+                cTipoReporte: ['ESTUDIANTES', Validators.required],
             })
         } catch (error) {
             console.log(error, 'error de formulario')
         }
 
         this.sexos = this.datosInformes.getSexos()
+        this.tipos_reportes = this.datosInformes.getTiposReportes()
         this.datosInformes
             .obtenerParametros(this.formFiltros.value)
             .subscribe((data: any) => {
@@ -113,26 +131,16 @@ export class InformesEreComponent implements OnInit {
                     data?.tipo_sectores
                 )
                 this.ugeles = this.datosInformes.getUgeles(data?.ugeles)
-
-                this.datosInformes.getNivelesTipos(data?.nivel_tipos)
-                this.datosInformes.getNivelesGrados(data?.nivel_grados)
-                this.datosInformes.getAreas(data?.areas)
-                this.datosInformes.getInstitucionesEducativas(
+                this.nivel_tipos = this.datosInformes.getNivelesTipos(
+                    data?.nivel_tipos
+                )
+                this.ies = this.datosInformes.getInstitucionesEducativas(
                     data?.instituciones_educativas
                 )
+                this.datosInformes.getNivelesGrados(data?.nivel_grados)
+                this.datosInformes.getAreas(data?.areas)
             })
 
-        this.formFiltros
-            .get('iEvaluacionId')
-            .valueChanges.subscribe((value) => {
-                this.formFiltros.get('iNivelTipoId')?.setValue(null)
-                this.nivel_tipos = null
-                this.filterNivelesTipos(value)
-
-                this.formFiltros.get('iIieeId')?.setValue(null)
-                this.ies = null
-                this.filterInstitucionesEducativas()
-            })
         this.formFiltros.get('iNivelTipoId').valueChanges.subscribe((value) => {
             this.formFiltros.get('iNivelGradoId')?.setValue(null)
             this.nivel_grados = null
@@ -161,15 +169,23 @@ export class InformesEreComponent implements OnInit {
             this.ies = null
             this.filterInstitucionesEducativas()
         })
-        this.formFiltros.get('iUgelId').valueChanges.subscribe(() => {
+        this.formFiltros.get('iUgelId').valueChanges.subscribe((value) => {
+            this.formFiltros.get('iDsttId')?.setValue(null)
             this.formFiltros.get('iIieeId')?.setValue(null)
             this.ies = null
+            this.distritos = null
             this.filterInstitucionesEducativas()
+            this.filterDistritos(value)
+        })
+        this.formFiltros.valueChanges.subscribe((value) => {
+            this.puede_exportar =
+                JSON.stringify(value) ===
+                JSON.stringify(this.formFiltrosObtenido)
         })
     }
 
-    filterNivelesTipos(iEvaluacionId: number) {
-        this.nivel_tipos = this.datosInformes.filterNivelesTipos(iEvaluacionId)
+    filterNivelesTipos() {
+        this.nivel_tipos = this.datosInformes.filterNivelesTipos()
     }
 
     filterNivelesGrados(iNivelTipoId: number) {
@@ -178,6 +194,10 @@ export class InformesEreComponent implements OnInit {
 
     filterAreas(iNivelTipoId: number) {
         this.areas = this.datosInformes.filterAreas(iNivelTipoId)
+    }
+
+    filterDistritos(iUgelId: number) {
+        this.distritos = this.datosInformes.filterDistritos(iUgelId)
     }
 
     filterInstitucionesEducativas() {
@@ -196,6 +216,88 @@ export class InformesEreComponent implements OnInit {
             iUgelId
         )
     }
+
+    piePlugin = [
+        {
+            afterDraw: (chart) => {
+                if (chart.data.datasets[0].data.length == 0) return
+                const {
+                    ctx,
+                    chartArea: { width, height },
+                } = chart
+
+                const cx = chart._metasets[0].data[0].x
+                const cy = chart._metasets[0].data[0].y
+
+                const sum = chart.data.datasets[0].data.reduce(
+                    (a, b) => a + b,
+                    0
+                )
+                chart.data.datasets.forEach((dataset, i) => {
+                    chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+                        const valor = chart.data.datasets[0].data[index]
+                        const isHidden = chart.legend.legendItems[index].hidden
+                        if (valor == 0 || isHidden) return
+                        const { x: a, y: b } = datapoint.tooltipPosition()
+
+                        const x = 2 * a - cx
+                        const y = 2 * b - cy
+
+                        // draw line
+                        const halfwidth = width / 2
+                        const halfheight = height / 2
+                        const xLine = x >= halfwidth ? x + 5 : x - 5
+                        const yLine = y >= halfheight ? y + 5 : y - 5
+                        const extraLine = x >= halfwidth ? 10 : -10
+
+                        ctx.beginPath()
+                        ctx.moveTo(x, y)
+                        ctx.lineTo(xLine + extraLine, yLine)
+                        // ctx.strokeStyle = dataset.backgroundColor[index];
+                        ctx.strokeStyle = 'black'
+                        ctx.stroke()
+
+                        ctx.font = '12px Arial'
+                        const textXPosition = x >= halfwidth ? 'left' : 'right'
+                        const plusFivePx = x >= halfwidth ? 5 : -5
+                        ctx.textAlign = textXPosition
+                        ctx.textBaseline = 'middle'
+                        ctx.fillStyle = dataset.backgroundColor[index]
+                        //ctx.fillStyle = "black";
+
+                        ctx.fillText(
+                            (
+                                (chart.data.datasets[0].data[index] * 100) /
+                                sum
+                            ).toFixed(2) + '%',
+                            xLine + extraLine + plusFivePx,
+                            yLine
+                        )
+                    })
+                })
+            },
+        },
+    ]
+
+    barPlugin = [
+        {
+            afterDraw: (chart) => {
+                const { ctx } = chart
+                chart.data.datasets.forEach((dataset, i) => {
+                    if (dataset.data.length == 0) return
+                    const isHidden = chart.legend.legendItems[i]?.hidden
+                    if (isHidden) return
+                    chart.getDatasetMeta(i).data.forEach((bar, index) => {
+                        const data = dataset.data[index]
+                        if (Number(data) == 0 || isHidden) return
+                        ctx.font = '0.75em Arial'
+                        ctx.fillStyle = dataset.backgroundColor[index]
+                        ctx.fillText(data + '%', bar.x - 15, bar.y - 5)
+                    })
+                })
+            },
+        },
+    ]
 
     btn_exportar: Array<MenuItem> = [
         {
@@ -217,9 +319,9 @@ export class InformesEreComponent implements OnInit {
     searchResultados() {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe seleccionar los filtros requeridos',
+                detail: 'Debe seleccionar los filtros obligatorios',
             })
             return
         }
@@ -227,16 +329,30 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
-                    this.resultados = data.data[1]
-                    this.niveles = data.data[2]
-                    this.resumen = data.data[3]
-                    this.matriz = data.data[4]
-                    this.mostrarEstadisticaNivel()
-                    this.generarColumnas(this.resumen)
-                    this.mostrarEstadisticaPregunta()
+                    if (data.data.length == 0) {
+                        this.sinDatos()
+                    } else {
+                        this.formFiltrosObtenido = this.formFiltros.value
+                        this.puede_exportar = true
+                        this.fullData = data.data
+                        this.filtros = data.data[0][0]
+                        this.resultados = data.data[1]
+                        this.niveles = data.data[2]
+                        this.resumen = data.data[3]
+                        this.matriz = data.data[4]
+                        this.mostrarEstadisticaNivel()
+                        this.generarColumnas(this.resumen)
+
+                        this.agrupado = data.data[5]
+                        this.calcularPorcentajesAgrupado(this.agrupado)
+                        this.generarColumnasAgrupado()
+
+                        this.mostrarEstadisticaPregunta()
+                    }
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
+                    this.sinDatos()
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -247,6 +363,36 @@ export class InformesEreComponent implements OnInit {
                     console.log('Request completed')
                 },
             })
+    }
+
+    calcularPorcentajesAgrupado(agrupado: any) {
+        if (!agrupado) return
+        this.agrupado = this.agrupado.map((item: any) => {
+            let sumatoria = 0
+            this.niveles.forEach((nivel: any) => {
+                sumatoria += Number(item[nivel.nivel_logro_id] ?? 0)
+            })
+            this.niveles.forEach((nivel: any) => {
+                item[nivel.nivel_logro_id] = Number(
+                    (Number(item[nivel.nivel_logro_id] ?? 0) / sumatoria) * 100
+                ).toFixed(2)
+            })
+            item.total = sumatoria
+            return item
+        })
+    }
+
+    sinDatos() {
+        this.formFiltrosObtenido = null
+        this.hay_resultados = false
+        this.puede_exportar = false
+        this.promedio = []
+        this.resultados = []
+        this.niveles = []
+        this.resumen = []
+        this.matriz = []
+        this.agrupado = []
+        this.mostrarEstadisticaNivel()
     }
 
     mostrarEstadisticaNivel() {
@@ -264,7 +410,9 @@ export class InformesEreComponent implements OnInit {
         const niveles_nombres = this.niveles.map(
             (item: any) => item.nivel_logro
         )
-        const niveles_valores = this.niveles.map((item: any) => item.cantidad)
+        const niveles_valores = this.niveles.map((item: any) =>
+            Number(item.cantidad)
+        )
         const total = niveles_valores.reduce((a, b) => Number(a) + Number(b), 0)
 
         this.data_doughnut = {
@@ -289,7 +437,7 @@ export class InformesEreComponent implements OnInit {
         }
 
         this.options_doughnut = {
-            cutout: '60%',
+            radius: '50%',
             plugins: {
                 title: {
                     display: true,
@@ -335,6 +483,97 @@ export class InformesEreComponent implements OnInit {
             })
         }
         this.columns_resumen = columnas
+    }
+
+    generarColumnasAgrupado() {
+        if (this.niveles.length == 0) {
+            return
+        }
+        let columnas = []
+        if (this.filtros['cod_ie'] !== undefined) {
+            this.tipo_reporte = 'SECCION'
+            columnas = [
+                {
+                    type: 'item',
+                    width: '5%',
+                    field: 'item',
+                    header: '#',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '20%',
+                    field: 'agrupado',
+                    header: 'SECCION',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'total',
+                    header: 'Total',
+                    text_header: 'left',
+                    text: 'left',
+                },
+            ]
+        } else {
+            this.tipo_reporte = 'IE'
+            columnas = [
+                {
+                    type: 'item',
+                    width: '5%',
+                    field: 'item',
+                    header: '#',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '20%',
+                    field: 'agrupado',
+                    header: 'IE',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'ugel',
+                    header: 'UGEL',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'distrito',
+                    header: 'Distrito',
+                    text_header: 'left',
+                    text: 'left',
+                },
+                {
+                    type: 'text',
+                    width: '10%',
+                    field: 'total',
+                    header: 'Total',
+                    text_header: 'left',
+                    text: 'left',
+                },
+            ]
+        }
+        this.niveles.forEach((item: any) => {
+            columnas.push({
+                type: 'text',
+                width: '1rem',
+                field: `${item.nivel_logro_id}`,
+                header: `% ${item.nivel_logro}`,
+                text_header: 'center',
+                text: 'center',
+            })
+        })
+        this.columns_group = columnas
     }
 
     mostrarEstadisticaPregunta() {
@@ -438,9 +677,9 @@ export class InformesEreComponent implements OnInit {
     exportar(tipo: number) {
         if (this.formFiltros.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe seleccionar los filtros requeridos',
+                detail: 'Debe seleccionar los filtros obligatorios',
             })
             return
         }
@@ -468,28 +707,156 @@ export class InformesEreComponent implements OnInit {
                 },
             })
         } else {
-            this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
-                next: (response) => {
-                    const blob = new Blob([response], {
-                        type: 'application/vnd.ms-excel',
-                    })
-                    const url = window.URL.createObjectURL(blob)
-                    const link = document.createElement('a')
-                    link.href = url
-                    link.download = 'Resultados-ERE.xlsx'
-                    link.target = '_blank'
-                    link.click()
-                    window.URL.revokeObjectURL(url)
-                },
-                error: (error) => {
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
-                },
+            this.exportarExcelLocal()
+            // this.exportarExcelAPI()
+        }
+    }
+
+    exportarExcelLocal() {
+        // Formatear parametros
+        const parametros = []
+        const params = this.fullData[0][0]
+        for (const index in params) {
+            let index_formateado = index
+            if (['autor', 'year_oficial', 'tipo_reporte'].includes(index))
+                continue
+            switch (index) {
+                case 'cod_ie':
+                    index_formateado = 'institucion educativa'
+                    break
+                case 'curso':
+                    index_formateado = 'area'
+                    break
+            }
+            parametros.push({
+                titulo: index_formateado.toUpperCase(),
+                valor: params[index],
             })
         }
+
+        // formatear columnas de preguntas
+        const preguntas = this.fullData[3]
+        const preguntas_count = Object.keys(preguntas[0]).length - 1
+        const columnas_preguntas = [{ key: 'metrica', header: 'PREGUNTA' }]
+        for (let i = 1; i <= preguntas_count; i++) {
+            columnas_preguntas.push({
+                key: `${i}`,
+                header: `${i}`,
+            })
+        }
+
+        // formatear columnas de agrupado
+        let columnas_agrupado = []
+        if (this.tipo_reporte === 'IE') {
+            columnas_agrupado = [
+                { key: 'index', header: 'ITEM' },
+                { key: 'agrupado', header: 'IE' },
+                { key: 'ugel', header: 'UGEL' },
+                { key: 'distrito', header: 'DISTRITO' },
+                { key: 'total', header: 'TOTAL' },
+            ]
+        } else {
+            columnas_agrupado = [
+                { key: 'index', header: 'ITEM' },
+                { key: 'agrupado', header: 'SECCION' },
+                { key: 'total', header: 'TOTAL' },
+            ]
+        }
+        this.niveles.forEach((item: any) => {
+            columnas_agrupado.push({
+                key: `${item.nivel_logro_id}`,
+                header: `% ${item.nivel_logro}`,
+            })
+        })
+
+        // Formatear hojas y columnas
+        const worksheets = [
+            {
+                sheetName: 'Parametros',
+                data: parametros,
+                columns: [
+                    { key: 'titulo', header: 'PARÁMETRO' },
+                    { key: 'valor', header: 'VALOR' },
+                ],
+            },
+            {
+                sheetName: 'Resumen',
+                data: this.fullData[2],
+                columns: [
+                    { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                    { key: 'cantidad', header: 'CANTIDAD' },
+                ],
+            },
+            {
+                sheetName: 'Estudiantes',
+                data: this.fullData[1],
+                columns: [
+                    { key: 'index', header: 'ITEM' },
+                    { key: 'cod_ie', header: 'I.E.' },
+                    { key: 'distrito', header: 'DISTRITO' },
+                    { key: 'seccion', header: 'SECCIÓN' },
+                    { key: 'estudiante', header: 'ESTUDIANTE' },
+                    { key: 'aciertos', header: 'ACIERTOS' },
+                    { key: 'desaciertos', header: 'DESACIERTOS' },
+                    { key: 'blancos', header: 'BLANCOS' },
+                    { key: 'docente', header: 'DOCENTE' },
+                    { key: 'nivel_logro', header: 'NIVEL DE LOGRO' },
+                ],
+            },
+            {
+                sheetName: 'Preguntas',
+                data: this.fullData[3],
+                columns: columnas_preguntas,
+            },
+            {
+                sheetName: 'Matriz',
+                data: this.fullData[4],
+                columns: [
+                    { key: 'competencia', header: 'COMPETENCIA' },
+                    { key: 'capacidad', header: 'CAPACIDAD' },
+                    { key: 'desempeno', header: 'DESEMPEÑO' },
+                    { key: 'pregunta_nro', header: 'PREGUNTA N°' },
+                    { key: 'aciertos', header: 'ACIERTOS' },
+                    { key: 'desaciertos', header: 'DESACIERTOS' },
+                    { key: 'porcentaje_aciertos', header: '% ACIERTOS' },
+                    {
+                        key: 'porcentaje_desaciertos',
+                        header: '% DESACIERTOS',
+                    },
+                ],
+            },
+            {
+                sheetName: 'Agrupado',
+                data: this.fullData[5],
+                columns: columnas_agrupado,
+            },
+        ]
+
+        SheetToMatrix.exportToExcel(worksheets)
+    }
+
+    exportarExcelAPI() {
+        this.datosInformes.exportarExcel(this.formFiltros.value).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], {
+                    type: 'application/vnd.ms-excel',
+                })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = 'Resultados-ERE.xlsx'
+                link.target = '_blank'
+                link.click()
+                window.URL.revokeObjectURL(url)
+            },
+            error: (error) => {
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -501,7 +868,9 @@ export class InformesEreComponent implements OnInit {
 
     actionsLista: IActionTable[]
 
-    columns = [
+    columns = []
+
+    columns_estudiantes = [
         {
             type: 'item',
             width: '5%',
@@ -570,9 +939,60 @@ export class InformesEreComponent implements OnInit {
             type: 'text',
             width: '10%',
             field: 'nivel_logro',
-            header: 'NIVEL',
+            header: 'Nivel de logro',
             text_header: 'center',
             text: 'center',
+        },
+    ]
+
+    columns_group = [
+        {
+            type: 'text',
+            width: '5%',
+            field: 'item',
+            header: '#',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '20%',
+            field: 'agrupado',
+            header: 'IE',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'ugel',
+            header: 'UGEL',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'distrito',
+            header: 'Distrito',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'total',
+            header: 'Total',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10%',
+            field: 'nivel_logro',
+            header: 'Nivel',
+            text_header: 'left',
+            text: 'left',
         },
     ]
 

@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx'
+import * as XLSX from 'xlsx-js-style'
 import { Excel, isRange } from '../types/excel'
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 
@@ -222,5 +222,226 @@ export class SheetToMatrix {
     // Reset de todas
     public static clearAllInstances(): void {
         SheetToMatrix._instances.clear()
+    }
+
+    public static exportToExcel(worksheets: any): void {
+        const workbook: XLSX.WorkBook = {
+            SheetNames: worksheets.map((ws) => ws.sheetName),
+            Sheets: worksheets.reduce(
+                (acc, ws) => {
+                    const allQuestions = new Set<number>()
+
+                    // Paso 1: recolectar todas las preguntas únicas
+                    ws.data.forEach((row) => {
+                        const respuestas = JSON.parse(row.respuestas || '[]')
+                        respuestas.forEach((resp: any) => {
+                            allQuestions.add(resp.p)
+                        })
+                    })
+
+                    const orderedQuestions = Array.from(allQuestions).sort(
+                        (a, b) => a - b
+                    )
+
+                    const extendedColumns = [
+                        ...ws.columns,
+                        ...orderedQuestions.map((num) => ({
+                            key: `p${num}`,
+                            header: `${num}`,
+                        })),
+                    ]
+
+                    // Mapas para estilos
+                    const cellCorrectMap = new Set<string>()
+                    const cellIncorrectMap = new Set<string>()
+
+                    // Paso 2: Mapear datos
+                    const mappedData = ws.data.map((row, rowIdx) => {
+                        const newRow: Record<string, any> = {}
+                        const respuestas = JSON.parse(row.respuestas || '[]')
+
+                        extendedColumns.forEach((col, colIdx) => {
+                            if (col.key === 'index') {
+                                newRow[col.header] = rowIdx + 1
+                            } else if (/^p\d+$/.test(col.key)) {
+                                const questionNum = parseInt(col.header)
+                                const respuesta = respuestas.find(
+                                    (r: any) => r.p == questionNum
+                                )
+                                newRow[col.header] = respuesta?.r ?? ''
+
+                                const cellKey = `${rowIdx + 1}:${colIdx}`
+
+                                if (respuesta?.c == true) {
+                                    cellCorrectMap.add(cellKey)
+                                } else if (respuesta && respuesta.c == false) {
+                                    cellIncorrectMap.add(cellKey)
+                                }
+                            } else if (Array.isArray(col.key)) {
+                                if (col.operation === 'sum') {
+                                    const total = col.key.reduce(
+                                        (acc, value) => {
+                                            const num = Number(row[value]) || 0
+                                            return acc + num
+                                        },
+                                        0
+                                    )
+                                    newRow[col.header] = total
+                                }
+                            } else {
+                                newRow[col.header] = row[col.key]
+                            }
+                        })
+
+                        return newRow
+                    })
+
+                    const headers = extendedColumns.map((col) => col.header)
+                    const sheet = XLSX.utils.json_to_sheet(mappedData, {
+                        header: headers,
+                    })
+
+                    // Paso 3: Aplicar estilos a encabezados
+                    headers.forEach((header, colIdx) => {
+                        const headerCellAddress = XLSX.utils.encode_cell({
+                            r: 0,
+                            c: colIdx,
+                        })
+                        const headerCell = sheet[headerCellAddress]
+                        if (headerCell) {
+                            headerCell.s = {
+                                font: { bold: true },
+
+                                border: {
+                                    top: {
+                                        style: 'thin',
+                                        color: { rgb: '000000' },
+                                    },
+                                    bottom: {
+                                        style: 'thin',
+                                        color: { rgb: '000000' },
+                                    },
+                                    left: {
+                                        style: 'thin',
+                                        color: { rgb: '000000' },
+                                    },
+                                    right: {
+                                        style: 'thin',
+                                        color: { rgb: '000000' },
+                                    },
+                                },
+                                alignment: { horizontal: 'center' },
+                                fill: {
+                                    patternType: 'solid',
+                                    fgColor: { rgb: 'dae0e5' },
+                                },
+                            }
+                        }
+
+                        // Paso 4: Aplicar estilos condicionales por celda
+                        for (
+                            let rowIdx = 1;
+                            rowIdx <= mappedData.length;
+                            rowIdx++
+                        ) {
+                            const cellKey = `${rowIdx}:${colIdx}`
+                            const cellAddress = XLSX.utils.encode_cell({
+                                r: rowIdx,
+                                c: colIdx,
+                            })
+                            const cell = sheet[cellAddress]
+
+                            if (cell) {
+                                if (cellCorrectMap.has(cellKey)) {
+                                    cell.s = {
+                                        font: {
+                                            color: { rgb: '008000' },
+                                            // bold: true,
+                                        }, // Verde
+                                        border: {
+                                            top: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            bottom: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            left: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            right: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                        },
+                                        fill: {
+                                            patternType: 'solid',
+                                            fgColor: { rgb: 'dae0e5' },
+                                        },
+                                        alignment: { horizontal: 'center' },
+                                    }
+                                } else if (cellIncorrectMap.has(cellKey)) {
+                                    cell.s = {
+                                        font: {
+                                            color: { rgb: 'FF0000' },
+                                            // italic: true,
+                                        }, // Rojo
+                                        border: {
+                                            top: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            bottom: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            left: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            right: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                        },
+
+                                        alignment: { horizontal: 'center' },
+                                    }
+                                } else {
+                                    cell.s = {
+                                        border: {
+                                            top: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            bottom: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            left: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                            right: {
+                                                style: 'thin',
+                                                color: { rgb: '000000' },
+                                            },
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                    acc[ws.sheetName] = sheet
+                    return acc
+                },
+                {} as Record<string, XLSX.WorkSheet>
+            ),
+        }
+
+        XLSX.writeFile(workbook, 'datos.xlsx', { compression: true })
     }
 }

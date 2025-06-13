@@ -146,11 +146,7 @@ const administrador = [
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
             },
-            {
-                label: 'Registro de fechas especiales',
-                icon: 'pi pi-calendar',
-                routerLink: ['/gestion-institucional/fechas-nacionales'],
-            },
+
             {
                 label: 'Backup de BD',
                 icon: 'pi pi-fw pi-database',
@@ -250,29 +246,16 @@ const administracion = [
                 routerLink: ['/docente/comunicados'],
             },
             {
-                label: 'Registro de fechas especiales',
-                icon: 'pi pi-calendar',
-                items: [
-                    {
-                        label: 'Fechas importantes',
-                        icon: 'pi pi-calendar',
-                        routerLink: [
-                            '/gestion-institucional/fechas-importantes',
-                        ],
-                    },
-                ],
-            },
-            {
                 label: 'Administracion de tablas maestras',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    // {
-                    //     label: 'Registro de año escolar',
-                    //     icon: 'pi pi-wrench',
-                    //     routerLink: [
-                    //         '/gestion-institucional/calendarioAcademico',
-                    //     ],
-                    // },
+                    {
+                        label: 'Registro de año escolar',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/calendarioAcademico',
+                        ],
+                    },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',
@@ -337,6 +320,13 @@ const administracion = [
                             // },
                         ],
                         //ConfigGradoSeccion
+                    },
+                    {
+                        label: 'Gestión de fechas importantes',
+                        icon: 'pi pi-calendar',
+                        routerLink: [
+                            '/gestion-institucional/fechas-importantes',
+                        ],
                     },
                     {
                         label: 'Gestión de horarios y asignaciones',

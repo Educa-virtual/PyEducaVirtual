@@ -1,7 +1,7 @@
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
-    routerLink: [''],
+    routerLink: ['/inicio'],
 }
 
 /*export const evaluacionesEre = {
@@ -20,6 +20,16 @@ export const administradorDremo = [
     {
         items: [
             inicio,
+            {
+                label: 'Gestión de feriados nacionales',
+                icon: 'pi pi-calendar',
+                routerLink: ['/gestion-institucional/fechas-nacionales'],
+            },
+            {
+                label: 'Gestión de semanas lectivas',
+                icon: 'pi pi-wrench',
+                routerLink: ['/gestion-institucional/semanas-lectivas'],
+            },
             /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',

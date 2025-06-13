@@ -23,7 +23,10 @@
         </h3>
     </div>
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-        <p class="">{{ curso.iCantidadPreguntas }} preguntas</p>
+        <p class="">
+            {{ curso.iCantidadPreguntas }} /
+            {{ curso.iCantidadMaximaPreguntas }} preguntas
+        </p>
         <button
             [size]="'small'"
             [rounded]="true"
@@ -31,9 +34,9 @@
             pRipple
             (click)="$event.stopPropagation(); menuContenido.toggle($event)"
             ngClass="p-button-primary"
-        >
-            <i class="pi pi-plus"></i> Acciones
-        </button>
+            icon="pi pi-plus"
+            label="Acciones"
+        ></button>
     </footer>
 </article>
 
@@ -50,3 +53,4 @@
         </a>
     </ng-template>
 </p-menu>
+<p-toast />

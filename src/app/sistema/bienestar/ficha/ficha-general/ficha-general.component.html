@@ -1,0 +1,236 @@
+<br />
+
+<!-- Contenido del Formulario de Datos Generales -->
+<form [formGroup]="formGeneral" class="section">
+    <!-- Dirección Actual -->
+    <p-fieldset legend="1. Dirección del estudiante">
+        <div class="grid p-fluid">
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon> Tipo de vía * </p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="iTipoViaId"
+                        [options]="tipos_vias"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        (onChange)="handleDropdownChange($event, 1)"
+                        [style]="{ flex: '1', width: '100%' }"
+                        styleClass="group-element"
+                    />
+                    @if (visibleInput[1] === true) {
+                        <input
+                            pInputText
+                            formControlName="cTipoViaNombre"
+                            placeholder="Especifique otro tipo de vía"
+                            type="text"
+                            class="group-element"
+                        />
+                    }
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon> Nombre de la vía * </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionNombreVia"
+                        maxlength="150"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+
+        <div class="grid p-fluid">
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon> Nro. de Puerta </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionNroPuerta"
+                        maxlength="10"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Bloque</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionBlock"
+                        maxlength="3"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Interior</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDirecionInterior"
+                        maxlength="3"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Piso</p-inputGroupAddon>
+                    <p-inputNumber
+                        formControlName="cFichaDGDirecionPiso"
+                        maxlength="3"
+                        useGrouping="false"
+                        showButtons="true"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Manzana</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionManzana"
+                        maxlength="10"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Lote</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionLote"
+                        maxlength="3"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Km</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionKm"
+                        maxlength="10"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>Referencia</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionReferencia"
+                        class="group-element"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <!-- Relaciones familiares -->
+    <p-fieldset legend="2. Relaciones familiares del estudiante">
+        <div class="grid">
+            <div class="col-12 md:col-4">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>
+                        <p-inputSwitch formControlName="bFamiliarPadreVive" />
+                        <span>¿El papá del estudiante está vivo?</span>
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>
+                        ¿La mamá del estudiante está viva?
+                        <p-inputSwitch formControlName="bFamiliarMadreVive" />
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>
+                        <p-inputSwitch
+                            formControlName="bFamiliarPadresVivenJuntos"
+                        />
+                        <span>Los padres del estudiante viven juntos?</span>
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-inputGroup styleClass="vertical-group">
+                    <p-inputGroupAddon>
+                        ¿El estudiante tiene hijos/hijas?
+                        <p-inputSwitch formControlName="bFichaDGTieneHijos" />
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            @if (visibleInput[0] === true) {
+                <div class="col-12 md:col-4">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            ¿Cuántos hijos/hijas?
+                        </p-inputGroupAddon>
+                        <p-inputNumber
+                            formControlName="iFichaDGNroHijos"
+                            min="1"
+                            maxlength="3"
+                            useGrouping="false"
+                            showButtons="true"
+                            class="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+            }
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <!-- Botón Guardar y Seguir -->
+    <div class="flex justify-content-end gap-2">
+        @if (!ficha_registrada) {
+            <p-button
+                type="button"
+                label="Guardar y continuar"
+                icon="pi pi-save"
+                severity="success"
+                (click)="guardar()"
+            />
+        } @else {
+            <p-button
+                type="button"
+                label="Actualizar y continuar"
+                icon="pi pi-save"
+                severity="success"
+                (click)="actualizar()"
+            />
+        }
+    </div>
+</form>
+<p-toast></p-toast>

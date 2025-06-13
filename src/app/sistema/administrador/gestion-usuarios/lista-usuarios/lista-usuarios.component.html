@@ -1,0 +1,213 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
+<div class="user-management-container">
+    <div class="header bg-primary text-white p-3">
+        <h1 class="m-0">Gestión de usuarios</h1>
+    </div>
+
+    <div class="search-section p-3">
+        <div class="search-header bg-orange-500 text-white p-2 rounded-top">
+            <span class="search-title font-bold">Búsqueda de usuario</span>
+        </div>
+
+        <div
+            class="search-content p-3 border border-top-0 bg-white rounded-bottom"
+        >
+            <div class="filter-row flex flex-wrap align-items-center">
+                <div class="filter-item mr-3">
+                    <label for="modulos">Buscar por:</label>
+                    <p-dropdown
+                        [options]="opcionesBusqueda"
+                        [(ngModel)]="opcionBusquedaSeleccionada"
+                        optionLabel="name"
+                        styleClass="w-full"
+                        (onChange)="cambioOpcionBusqueda()"
+                    >
+                    </p-dropdown>
+                </div>
+
+                <div class="search-input-container flex-grow-1 mr-3">
+                    <span class="p-input-icon-right w-full">
+                        <i class="pi pi-search"></i>
+                        <input
+                            type="text"
+                            pInputText
+                            [(ngModel)]="criterioBusqueda"
+                            (ngModelChange)="cambioCriterioBusqueda()"
+                            placeholder="Escriba su búsqueda"
+                            class="w-full"
+                        />
+                    </span>
+                </div>
+
+                <!--<div class="filter-item mr-1">
+                    <label for="modulos">Filtrar por:</label>
+                    <p-dropdown [options]="filtrosInstituciones" [(ngModel)]="filtroInstitucionSeleccionada"
+                        optionLabel="name" styleClass="w-full">
+                    </p-dropdown>
+                </div>
+
+                <div class="filter-item mr-3">
+                    <p-dropdown [options]="filtrosRoles" [(ngModel)]="filtroPerfilSeleccionado" optionLabel="name"
+                        styleClass="w-full">
+                    </p-dropdown>
+                </div>-->
+
+                <div class="ml-auto">
+                    <button
+                        pButton
+                        pRipple
+                        label="+ Agregar"
+                        class="p-button-success"
+                        (click)="agregarUsuario()"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-3">
+        <p-table
+            [value]="dataUsuarios"
+            styleClass="p-datatable-sm"
+            [lazy]="true"
+            [paginator]="true"
+            [rows]="20"
+            [totalRecords]="totalDataUsuarios"
+            [loading]="loading"
+            (onLazyLoad)="loadUsuariosLazy($event)"
+            [scrollable]="true"
+        >
+            <ng-template pTemplate="header">
+                <tr class="bg-gray-200">
+                    <th style="width: 3%" class="text-center">N°</th>
+                    <th style="width: 15%" class="text-center">
+                        Documento / Usuario
+                    </th>
+                    <th style="width: 25%" class="text-center">
+                        Apellidos y nombres
+                    </th>
+                    <th class="text-center">Verificado</th>
+                    <th class="text-center">Estado usuario</th>
+                    <th class="text-center">Fecha caducidad</th>
+                    <th class="text-center">Ctd. perfiles</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user let-i="rowIndex">
+                <tr [ngClass]="{ 'bg-gray-100': i % 2 === 0 }">
+                    <td class="text-center">{{ i + 1 }}</td>
+                    <td class="text-center">
+                        {{ user.cPersDocumento }}
+                        @if (user.cPersDocumento !== user.cCredUsuario) {
+                            <br />
+                            (<span pTooltip="Usuario" tooltipPosition="top"
+                                >{{ user.cCredUsuario }})</span
+                            >
+                        }
+                    </td>
+                    <td>{{ user.cApellidosNombres }}</td>
+                    <td class="text-center">
+                        @if (user.bCredVerificado === '1') {
+                            <span class="text-green-600">Sí</span>
+                        } @else {
+                            <span class="text-red-600">No</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (user.iCredEstado === '1') {
+                            <span class="text-green-600">Activo</span>
+                        } @else {
+                            <span class="text-red-600">Inactivo</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
+                        @if (usuarioExpirado(user.dtCredCaduca)) {
+                            <p class="text-red-600">Caducado</p>
+                        }
+                    </td>
+                    <td class="text-center">{{ user.iCantidadPerfiles }}</td>
+                    <td class="text-center action-buttons">
+                        <button
+                            pButton
+                            icon="pi pi-user-edit"
+                            class="p-button-text p-button-warning"
+                            pTooltip="Editar perfiles"
+                            tooltipPosition="top"
+                            (click)="editarPerfilesUsuario(user)"
+                        ></button>
+                        <button
+                            pButton
+                            icon="pi pi-key"
+                            class="p-button-text p-button-info"
+                            pTooltip="Restablecer contraseña"
+                            tooltipPosition="top"
+                            (click)="preguntarCambiarClave(user)"
+                        ></button>
+                        @if (user.iCredEstado === '1') {
+                            <button
+                                pButton
+                                icon="pi pi-ban"
+                                class="p-button-text p-button-danger"
+                                pTooltip="Desactivar usuario"
+                                tooltipPosition="top"
+                                (click)="preguntarDesactivarUsuario(user)"
+                            ></button>
+                        } @else {
+                            <button
+                                pButton
+                                icon="pi pi-check-circle"
+                                class="p-button-text p-button-success"
+                                pTooltip="Activar usuario"
+                                tooltipPosition="top"
+                                (click)="preguntarReactivarUsuario(user)"
+                            ></button>
+                        }
+                        <button
+                            pButton
+                            icon="pi pi-calendar"
+                            class="p-button-text p-button-help"
+                            pTooltip="Cambiar fecha de caducidad"
+                            tooltipPosition="top"
+                            (click)="cambiarFechaCaducidad(user)"
+                        ></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <!--<div class="p-3 pagination-container">
+        <p-paginator [rows]="10" [totalRecords]="dataUsuarios.length" [rowsPerPageOptions]="[10, 20, 30]"
+            [showCurrentPageReport]="true">
+        </p-paginator>
+    </div>-->
+
+    <app-editar-perfil
+        [visible]="modalAsignarRolVisible"
+        (visibleChange)="modalAsignarRolVisible = $event"
+        [usuario]="usuarioSeleccionado"
+    >
+    </app-editar-perfil>
+
+    <app-cambiar-fecha-caducidad
+        [visible]="modalCambiarFechaCaducidadVisible"
+        (visibleChange)="modalCambiarFechaCaducidadVisible = $event"
+        [usuario]="usuarioSeleccionado"
+    >
+    </app-cambiar-fecha-caducidad>
+
+    <app-agregar-usuario
+        [visible]="modalAgregarUsuariolVisible"
+        (visibleChange)="modalAgregarUsuariolVisible = $event"
+        (usuarioRegistradoEvent)="usuarioRegistrado($event)"
+    >
+    </app-agregar-usuario>
+</div>
+
+<p-toast></p-toast>

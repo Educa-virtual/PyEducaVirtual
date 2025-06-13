@@ -45,6 +45,11 @@ export const administradorDremo = [
                         routerLink: ['/ere/informes-ere'],
                     },
                     {
+                        label: 'Comparar resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-comparar-ere'],
+                    },
+                    {
                         label: 'Evaluaciones',
                         icon: 'pi pi-list-check',
                         routerLink: ['/ere/evaluaciones'],
@@ -101,6 +106,11 @@ export const especialistaDremo = [
                         routerLink: ['/ere/informes-ere'],
                     },
                     {
+                        label: 'Comparar resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-comparar-ere'],
+                    },
+                    {
                         label: 'Evaluaciones',
                         icon: 'pi pi-list-check',
                         routerLink: ['/ere/evaluaciones'],
@@ -134,6 +144,11 @@ export const especialistaUgel = [
                         label: 'Resultados',
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
+                    },
+                    {
+                        label: 'Comparar resultados',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-comparar-ere'],
                     },
                     {
                         label: 'Evaluaciones',

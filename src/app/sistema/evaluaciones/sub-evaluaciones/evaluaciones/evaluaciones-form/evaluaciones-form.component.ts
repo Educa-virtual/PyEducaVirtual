@@ -173,8 +173,8 @@ export class EvaluacionesFormComponent implements OnInit {
             if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: `Rellene los campos que esten vacíos o inválidos: ${camposInvalidos.join(', ')}`,
+                    summary: 'Faltan datos en campos requeridos',
+                    detail: `Ingrese datos en los campos resaltados en rojo`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
@@ -212,8 +212,8 @@ export class EvaluacionesFormComponent implements OnInit {
             if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: `Los siguientes campos están vacíos o inválidos: ${camposInvalidos.join(', ')}`,
+                    summary: 'Faltan datos en campos requeridos',
+                    detail: `Ingrese datos en los campos resaltados en rojo`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
@@ -298,12 +298,29 @@ export class EvaluacionesFormComponent implements OnInit {
     ereVerEvaluacion() {
         const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
         if (evaluacionData) {
-            this.evaluacionFormGroup.patchValue(evaluacionData)
+            const patchData = { ...evaluacionData }
+            if (patchData.dtEvaluacionFechaInicio) {
+                const [dia, mes, anio] =
+                    patchData.dtEvaluacionFechaInicio.split('/')
+                patchData.dtEvaluacionFechaInicio = new Date(
+                    Number(anio),
+                    Number(mes) - 1,
+                    Number(dia)
+                )
+            }
+            if (patchData.dtEvaluacionFechaFin) {
+                const [dia, mes, anio] =
+                    patchData.dtEvaluacionFechaFin.split('/')
+                patchData.dtEvaluacionFechaFin = new Date(
+                    Number(anio),
+                    Number(mes) - 1,
+                    Number(dia)
+                )
+            }
+            this.evaluacionFormGroup.patchValue(patchData)
         }
     }
     guardarEvaluacion() {
-        // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
-        // console.log(this.evaluacionFormGroup.get('idTipoEvalId').value)
         const estado = 1
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
@@ -360,15 +377,15 @@ export class EvaluacionesFormComponent implements OnInit {
             'dtEvaluacionFechaFin'
         ).value
         // Se agrega logs para depuración
-        console.log('Fecha Inicio (original):', fechaInicioOriginal)
+        /*console.log('Fecha Inicio (original):', fechaInicioOriginal)
         console.log('Tipo de fecha inicio:', typeof fechaInicioOriginal)
         console.log('Es Date?', fechaInicioOriginal instanceof Date)
 
         console.log('Fecha Fin (original):', fechaFinOriginal)
         console.log('Tipo de fecha fin:', typeof fechaFinOriginal)
-        console.log('Es Date?', fechaFinOriginal instanceof Date)
+        console.log('Es Date?', fechaFinOriginal instanceof Date)*/
 
-        const formatearFecha = (fecha) => {
+        /*const formatearFecha = (fecha) => {
             if (!fecha) return null
 
             if (fecha instanceof Date) {
@@ -388,10 +405,8 @@ export class EvaluacionesFormComponent implements OnInit {
                     return fecha
                 }
             }
-
-            console.log('Formato de fecha no reconocido:', fecha)
             return null
-        }
+        }*/
 
         const data = {
             iEvaluacionId: Number(
@@ -411,11 +426,11 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            dtEvaluacionFechaInicio: formatearFecha(fechaInicioOriginal),
-            dtEvaluacionFechaFin: formatearFecha(fechaFinOriginal),
+            dtEvaluacionFechaInicio: fechaInicioOriginal, //formatearFecha(fechaInicioOriginal),
+            dtEvaluacionFechaFin: fechaFinOriginal, //formatearFecha(fechaFinOriginal),
         }
 
-        console.log('Datos para actualizar (con fechas formateadas):', data)
+        //console.log('Datos para actualizar (con fechas formateadas):', data)
 
         if (!data.dtEvaluacionFechaInicio || !data.dtEvaluacionFechaFin) {
             this._MessageService.add({
@@ -427,24 +442,21 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         this._apiEre.actualizarEvaluacion(data).subscribe({
-            next: (resp) => {
-                console.log('respuesta de actualizacion', resp)
+            next: () => {
+                //console.log('respuesta de actualizacion', resp)
                 this._MessageService.add({
                     severity: 'success',
                     summary: 'Actualización exitosa',
                     detail: 'Los datos de la evaluación han sido actualizados.',
                 })
             },
-            error: (error) => {
-                console.error('Error al actualizar la evaluación:', error)
+            error: () => {
+                //console.error('Error al actualizar la evaluación:', error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error de actualización',
                     detail: 'No se pudo actualizar la evaluación. Por favor intente de nuevo.',
                 })
-            },
-            complete: () => {
-                console.log('Actualización completada')
             },
         })
     }

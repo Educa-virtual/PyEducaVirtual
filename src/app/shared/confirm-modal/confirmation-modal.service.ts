@@ -25,8 +25,6 @@ export class ConfirmationModalService {
     }: Omit<IModal, 'header'> & {
         header: string
     }) {
-        console.log(message === '')
-
         this.dialogState.next({
             header,
             key: 'manual',

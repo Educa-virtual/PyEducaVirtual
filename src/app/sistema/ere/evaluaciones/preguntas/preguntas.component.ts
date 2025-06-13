@@ -58,6 +58,7 @@ export class PreguntasComponent implements OnInit {
     matrizCompetencia = []
     matrizCapacidad = []
     matrizCapacidadFiltrado = []
+    cantidadMaximaPreguntas: number = 20
     nIndexAcordionTab: number = null
     isSecundaria: boolean = false
     isDisabled: boolean =
@@ -85,7 +86,7 @@ export class PreguntasComponent implements OnInit {
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
         height: 400,
         editable_root: this.isDisabled,
@@ -100,7 +101,7 @@ export class PreguntasComponent implements OnInit {
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
         editable_root: this.isDisabled,
     }
@@ -146,6 +147,23 @@ export class PreguntasComponent implements OnInit {
     ngOnInit() {
         this.obtenerMatrizCompetencias()
         this.obtenerMatrizCapacidad()
+        this.obtenerCantidadMaximaPreguntas()
+    }
+
+    obtenerCantidadMaximaPreguntas() {
+        this._apiEre
+            .obtenerCantidadMaximaPreguntas(
+                this.iEvaluacionId,
+                this.iCursoNivelGradId
+            )
+            .subscribe({
+                next: (resp: any) => {
+                    this.cantidadMaximaPreguntas = resp.data
+                },
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
     }
 
     obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId() {
@@ -353,8 +371,8 @@ export class PreguntasComponent implements OnInit {
     /*guardarPreguntaSinEnunciadoSinData() {
         if (!this.isDisabled) {
             return
-        } 
-        //const orden = this.totalPregunta + 1 // pregunta orden 
+        }
+        //const orden = this.totalPregunta + 1 // pregunta orden
         const orden = this.totalPregunta + 1
 
         const params = {
@@ -430,7 +448,8 @@ export class PreguntasComponent implements OnInit {
             })
             return
         }
-        data.alternativas.forEach((alternativa) => {
+        //Se desactiva la validación de alternativas vacías porque a veces se suben imágenes
+        /*data.alternativas.forEach((alternativa) => {
             {
                 if (
                     alternativa.cAlternativaDescripcion == '' ||
@@ -439,7 +458,7 @@ export class PreguntasComponent implements OnInit {
                     error = true
                 }
             }
-        })
+        })*/
         if (error) {
             this._MessageService.add({
                 severity: 'error',
@@ -488,7 +507,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return;
         }
-        
+
         // Solo permitimos una opción seleccionada a la vez
         alternativas.forEach((alternativa) => {
             if (alternativa.iAlternativaId != iAlternativaId) {
@@ -567,10 +586,11 @@ export class PreguntasComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
+                console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail: error.error.message,
                 })
             },
         })
@@ -658,7 +678,7 @@ export class PreguntasComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Preguntas',
+                            title: 'Pregunta',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                             iOrden: key,
                         })
@@ -814,6 +834,19 @@ export class PreguntasComponent implements OnInit {
         this.matrizCapacidadFiltrado = this.matrizCapacidad.filter(
             (i) => i.iCompetenciaId === item.iCompetenciaId
         )
+    }
+
+    filtrarCapacidades(item): any[] {
+        return this.matrizCapacidad.filter(
+            (i) => i.iCompetenciaId === item.iCompetenciaId
+        )
+    }
+
+    obtenerIdCompetenciaPorIdCapacidad(iCapacidadId: any): any {
+        const capacidad = this.matrizCapacidad.find(
+            (cap) => cap.iCapacidadId === iCapacidadId
+        )
+        return capacidad ? capacidad.iCompetenciaId : null
     }
 
     guardarEnunciadoEnCache(id: number, contenido: string): void {

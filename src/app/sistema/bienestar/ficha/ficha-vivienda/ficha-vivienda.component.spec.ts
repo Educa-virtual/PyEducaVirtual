@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { PrincipalComponent } from './principal.component'
+import { FichaViviendaComponent } from './ficha-vivienda.component'
 
-describe('PrincipalComponent', () => {
-    let component: PrincipalComponent
-    let fixture: ComponentFixture<PrincipalComponent>
+describe('FichaViviendaComponent', () => {
+    let component: FichaViviendaComponent
+    let fixture: ComponentFixture<FichaViviendaComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [PrincipalComponent],
+            imports: [FichaViviendaComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(PrincipalComponent)
+        fixture = TestBed.createComponent(FichaViviendaComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

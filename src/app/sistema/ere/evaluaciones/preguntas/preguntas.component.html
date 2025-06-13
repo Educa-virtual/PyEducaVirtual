@@ -1,3 +1,6 @@
+<!--
+html
+-->
 <p-breadcrumb
     class="max-w-full"
     [model]="breadCrumbItems"
@@ -30,6 +33,14 @@
             <span>
                 <p-badge
                     [value]="totalPregunta"
+                    severity="primary"
+                    styleClass="ml-2"
+                    badgeSize="large"
+                >
+                </p-badge>
+                /
+                <p-badge
+                    [value]="cantidadMaximaPreguntas"
                     severity="primary"
                     styleClass="ml-2"
                     badgeSize="large"
@@ -322,7 +333,9 @@
                                                                                 placeholder="Seleccione la capacidad"
                                                                                 optionValue="iCapacidadId"
                                                                                 [options]="
-                                                                                    matrizCapacidad
+                                                                                    filtrarCapacidades(
+                                                                                        encab
+                                                                                    )
                                                                                 "
                                                                                 optionLabel="cCapacidadNombre"
                                                                                 [(ngModel)]="
@@ -725,7 +738,9 @@
                                                     styleClass="w-full"
                                                     placeholder="Seleccione la capacidad"
                                                     optionValue="iCapacidadId"
-                                                    [options]="matrizCapacidad"
+                                                    [options]="
+                                                        filtrarCapacidades(item)
+                                                    "
                                                     optionLabel="cCapacidadNombre"
                                                     [(ngModel)]="
                                                         item.iCapacidadId

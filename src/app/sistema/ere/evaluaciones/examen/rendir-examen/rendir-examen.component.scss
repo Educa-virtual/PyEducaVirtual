@@ -111,3 +111,9 @@ div.p-dialog-content {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
 }
+
+::ng-deep div.contenido-encabezado img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}

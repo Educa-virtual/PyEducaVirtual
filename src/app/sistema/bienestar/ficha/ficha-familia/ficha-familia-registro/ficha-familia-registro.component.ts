@@ -224,7 +224,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges() {
-        console.log(this.iFamiliarId, 'ngOnChanges')
         this.showFamiliar()
     }
 

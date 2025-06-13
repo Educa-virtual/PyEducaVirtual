@@ -140,7 +140,7 @@ const estudiante = [
                     {
                         label: 'Ficha Socioeconomica',
                         icon: 'pi pi-fw pi-file-edit',
-                        routerLink: ['/bienestar/ficha'],
+                        routerLink: ['/bienestar/ficha-declaracion'],
                     },
                     {
                         label: 'Gestionar encuestas',

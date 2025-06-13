@@ -20,10 +20,12 @@ const routes: Routes = [
         component: GestionFichasApoderadoComponent,
     },
     { path: 'ficha-declaracion/:id', component: FichaDeclaracionComponent },
+    { path: 'ficha-declaracion', component: FichaDeclaracionComponent },
     {
         path: 'ficha/:id',
         component: FichaComponent,
         children: [
+            { path: '', redirectTo: 'general', pathMatch: 'full' },
             { path: 'general', component: FichaGeneralComponent },
             { path: 'familia', component: FichaFamiliaComponent },
             { path: 'economico', component: FichaEconomicoComponent },

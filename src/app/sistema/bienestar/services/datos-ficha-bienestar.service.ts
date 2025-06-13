@@ -311,8 +311,8 @@ export class DatosFichaBienestarService implements OnDestroy {
         if (!this.tipos_ies && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
             this.tipos_ies = items.map((tipo_ie) => ({
-                value: tipo_ie.iNivelEstudiosId,
-                label: tipo_ie.cNivelEstudiosNombre,
+                value: tipo_ie.iTipoIeEstId,
+                label: tipo_ie.cTipoIeEstNombre,
             }))
             return this.tipos_ies
         }

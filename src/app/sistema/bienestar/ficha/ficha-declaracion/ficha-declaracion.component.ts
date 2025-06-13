@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { ActivatedRoute, Router } from '@angular/router'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-ficha-declaracion',
@@ -27,9 +28,17 @@ export class FichaDeclaracionComponent implements OnInit {
         private datosFichaBienestarService: DatosFichaBienestarService,
         private route: ActivatedRoute,
         private router: Router,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
+        private store: LocalStoreService
     ) {
         this.iPersId = this.route.snapshot.params['id'] || 0
+        const perfil = this.store.getItem('dremoPerfil')
+        if (Number(this.iPersId) == 0 && Number(perfil.iPerfilId) == 80) {
+            this.iPersId = Number(perfil.iPersId)
+            this.router.navigate([
+                `/bienestar/ficha-declaracion/${this.iPersId}`,
+            ])
+        }
     }
 
     ngOnInit() {
@@ -40,7 +49,12 @@ export class FichaDeclaracionComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    this.iFichaDGId = data.data[0].iFichaDGId || 0
+                    if (data.data.length == 0) {
+                        this.verDeclaracion = true
+                        this.cdRef.detectChanges()
+                        return
+                    }
+                    this.iFichaDGId = data?.data[0].iFichaDGId || 0
                     if (this.iFichaDGId) {
                         this.router.navigate([
                             `/bienestar/ficha/${this.iFichaDGId}/general`,
@@ -69,10 +83,28 @@ export class FichaDeclaracionComponent implements OnInit {
             message:
                 '¿Está seguro de aceptar la declaración de consentimiento?',
             accept: () => {
-                this.datosFichaBienestarService.crearFicha({
-                    iYAcadId: this.compartirFichaService.iYAcadId,
-                    iPersId: this.iPersId,
-                })
+                this.datosFichaBienestarService
+                    .crearFicha({
+                        iYAcadId: this.compartirFichaService.iYAcadId,
+                        iPersId: this.iPersId,
+                    })
+                    .subscribe({
+                        next: (data: any) => {
+                            if (data.data.length == 0) return
+                            this.iFichaDGId = data.data[0].iFichaDGId || 0
+                            this.router.navigate([
+                                `/bienestar/ficha/${this.iFichaDGId}`,
+                            ])
+                        },
+                        error: (error) => {
+                            console.error('Error al guardar:', error)
+                            this._messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: error,
+                            })
+                        },
+                    })
             },
         })
     }

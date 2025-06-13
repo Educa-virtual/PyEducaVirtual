@@ -24,10 +24,13 @@ export class AuthInterceptorService implements HttpInterceptor {
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
         const token = localStorage.getItem('dremoToken')
+        const dremoPerfil = JSON.parse(localStorage.getItem('dremoPerfil'))
+        //iCredEntPerfId
         if (token) {
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${token.replaceAll('"', '')}`,
+                    icredentperfid: dremoPerfil.iCredEntPerfId,
                 },
             })
         }
@@ -46,9 +49,9 @@ export class AuthInterceptorService implements HttpInterceptor {
                 if (err instanceof HttpErrorResponse) {
                     if (err.status === 401) {
                         // Redirigir al usuario a la página de login
-                        /*localStorage.clear()
+                        localStorage.clear()
                         this.tokenStorageService.signOut()
-                        this.router.navigate(['/login'])*/
+                        this.router.navigate(['/login'])
                     }
                 }
                 return throwError(() => err)

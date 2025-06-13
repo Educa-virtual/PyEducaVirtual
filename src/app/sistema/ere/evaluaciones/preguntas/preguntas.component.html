@@ -21,6 +21,8 @@ html
     "
     [actions]="[]"
 >
+    <editor [init]="initLimpio"> </editor>
+
     <div class="grid">
         <div class="col-12 md:col-6 align-content-center font-bold">
             <b class="ml-1" style="font-size: 18px"
@@ -503,14 +505,22 @@ html
                                                                                             alternativa.cAlternativaLetra
                                                                                         }}
                                                                                     </p-inputGroupAddon>
-                                                                                    <input
+                                                                                    .
+                                                                                    <!--<input
                                                                                         type="text"
                                                                                         pInputText
                                                                                         placeholder="Ingrese la alternativa"
                                                                                         [(ngModel)]="
                                                                                             alternativa.cAlternativaDescripcion
                                                                                         "
-                                                                                    />
+                                                                                    />-->
+                                                                                    <editor
+                                                                                        [init]="
+                                                                                            initLimpio
+                                                                                        "
+                                                                                        type="text"
+                                                                                    >
+                                                                                    </editor>
                                                                                     <div
                                                                                         *ngIf="
                                                                                             isDisabled

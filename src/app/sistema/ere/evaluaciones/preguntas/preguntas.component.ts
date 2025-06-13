@@ -115,6 +115,26 @@ export class PreguntasComponent implements OnInit {
     activeAccordionIndex: number | null = null
     shouldOpenLastAccordion: boolean = false
 
+    // input tinymce (editor)
+    initLimpio: EditorComponent['init'] = {
+        base_url: '/tinymce',
+        suffix: '.min',
+        menubar: false,
+        toolbar: false,
+        statusbar: false,
+        selector: 'textarea',
+        plugins: '',
+        height: 40,
+        min_height: 40,
+        max_height: 40,
+        width: '30%',
+        resize: false,
+        editable_root: this.isDisabled,
+        branding: false,
+        content_style:
+            'body { margin: 0; padding: 6px 12px; font-size: 14px; line-height: 1.2; overflow: hidden; }',
+    }
+
     tiposAgregarPregunta: MenuItem[] = [
         {
             label: 'Pregunta simple',

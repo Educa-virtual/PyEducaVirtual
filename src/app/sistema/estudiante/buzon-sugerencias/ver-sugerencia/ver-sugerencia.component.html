@@ -1,0 +1,127 @@
+<form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+        <div class="field col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Alumno</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cNombreEstudiante"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="dtFechaCreacion"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Asunto</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cAsunto"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
+                <input
+                    pInputText
+                    type="text"
+                    formControlName="cPrioridadNombre"
+                    [readonly]="true"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="field col-12">
+            <label for="cSugerencia">Sugerencia del alumno:</label>
+            <div class="p-inputgroup p-fluid estilo-editor">
+                <!-- Pintamos el HTML con innerHTML -->
+                <div
+                    id="cSugerencia"
+                    [innerHTML]="form.get('cSugerencia')?.value"
+                ></div>
+            </div>
+        </div>
+        <div class="field col-12">
+            <label for="cSugerencia">Archivos subidos</label>
+            @if (archivos?.length > 0) {
+                <div class="estilo-editor">
+                    <ul>
+                        <li *ngFor="let archivo of archivos">
+                            <a
+                                href="#"
+                                (click)="
+                                    descargarArchivo(
+                                        $event,
+                                        archivo.nombreArchivo
+                                    )
+                                "
+                                >{{ archivo.nombreArchivo }}</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            } @else {
+                <p-message severity="info" text="No se han subido archivos." />
+            }
+            <div>
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-8">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>{{
+                                nombreDirector
+                            }}</p-inputGroupAddon>
+                            <input
+                                pInputText
+                                type="text"
+                                [readOnly]="true"
+                                disabled
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>{{
+                                fechaRespuesta
+                            }}</p-inputGroupAddon>
+                            <input
+                                pInputText
+                                type="text"
+                                [readOnly]="true"
+                                disabled
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+                <div class="card">
+                    <p-editor
+                        [readonly]="true"
+                        [style]="{ height: '320px' }"
+                        [modules]="{ toolbar: false }"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--*ngIf="!disable_form" (onClick)="guardarSugerencia()"-->
+    <div class="flex justify-content-end">
+        <p-button
+            label="Cerrar"
+            severity="secondary"
+            [disabled]="form.invalid"
+            (click)="cerrarDialog()"
+        />
+    </div>
+</form>

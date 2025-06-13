@@ -8,6 +8,7 @@ import {
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
     APODERADO,
+    AUXILIAR,
 } from './perfilesConstantes'
 import {
     ADMINISTRADOR_DREMO,
@@ -50,11 +51,6 @@ const docente = [
                 label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Mi Perfil',
-                icon: 'pi pi-fw pi-id-card',
-                routerLink: ['/docente/perfil'],
             },
             {
                 label: 'Actividades No Lectivas',
@@ -126,6 +122,11 @@ const estudiante = [
                 label: 'Practicar evaluación ERE',
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
+            },
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/estudiante/buzon-sugerencias'],
             },
         ],
     },
@@ -358,6 +359,13 @@ const administracion = [
                             '/gestion-institucional/estudiante/registro',
                         ],
                     },
+                    {
+                        label: 'Buzon de Sugerencias',
+                        icon: 'pi pi-fw pi-envelope',
+                        routerLink: [
+                            '/gestion-institucional/gestionar-sugerencias',
+                        ],
+                    },
                 ],
             },
             {
@@ -473,6 +481,14 @@ const administracion = [
             //         },
             //     ],
             // },
+
+            //director buzon
+
+            {
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/buzon-director'],
+            },
         ],
     },
 ]
@@ -497,6 +513,34 @@ const apoderado = [
                 label: 'Visualizar datos',
                 icon: 'pi pi-fw pi-eye',
                 routerLink: ['apoderado/seguimiento-apoderado'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
+        ],
+    },
+]
+
+const auxiliar = [
+    {
+        label: 'Auxiliar',
+        items: [
+            {
+                label: 'Asistencia',
+                icon: 'pi pi-qrcode',
+                routerLink: ['asistencia-auxiliar'],
             },
             {
                 label: 'Registro de apoderados',
@@ -560,9 +604,10 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
-
             case APODERADO:
                 return apoderado
+            case AUXILIAR:
+                return auxiliar
 
             default:
                 return first
@@ -585,4 +630,5 @@ export class ConstantesService {
     cNivelTipoNombre = perfil ? perfil.cNivelTipoNombre : null
     cNivelNombre = perfil ? perfil.cNivelNombre : null
     year = years ? years : null
+    fotografia = user ? user.cPersFotografia : null
 }

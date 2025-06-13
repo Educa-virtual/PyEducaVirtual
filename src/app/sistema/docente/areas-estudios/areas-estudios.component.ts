@@ -64,12 +64,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     selectedData = []
     items = []
     // data = []
-    messages = [
-        {
-            severity: 'info',
-            detail: 'En esta sección podrá visualizar las áreas curriculares asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
-        },
-    ]
+
     iPerfilId: number
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE

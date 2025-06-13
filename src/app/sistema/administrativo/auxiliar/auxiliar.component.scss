@@ -1,0 +1,11 @@
+:host ::ng-deep {
+    .p-panel-header {
+        background-color: var(--primary-700);
+        color: white;
+    }
+    .p-inputgroup p-dropdown {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

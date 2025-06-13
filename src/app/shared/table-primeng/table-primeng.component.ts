@@ -63,11 +63,11 @@ export interface IColumn {
         value: string
     }[]
     text: string
+    styles?: object | undefined
     customFalsy?: {
         trueText: string
         falseText: string
     }
-    styles?: object | undefined
 }
 
 export interface IActionTable {
@@ -117,6 +117,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
 
+    //placeholder search
+    @Input() searchPlaceholder: string = 'Buscar por nombre....'
     debug(d) {
         console.log('d')
         console.log(d)

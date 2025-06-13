@@ -39,7 +39,7 @@ export class FechasImportentesComponent implements OnInit {
             title: '',
             visible: false,
         },
-        nationalHoliday: {
+        importantDay: {
             title: '',
             visible: false,
         },

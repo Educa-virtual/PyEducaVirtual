@@ -60,16 +60,16 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
 
     switch (accion) {
         case 'agregar':
-            this.dialogs.nationalHoliday = {
-                title: 'Agregar feriado nacional',
+            this.dialogs.importantDay = {
+                title: 'Agregar fecha importante',
                 visible: true,
             }
             console.log(item)
 
             break
         case 'editar':
-            this.dialogs.nationalHoliday = {
-                title: 'Editar feriado nacional',
+            this.dialogs.importantDay = {
+                title: 'Editar fecha importante',
                 visible: true,
             }
 
@@ -87,7 +87,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
             break
         case 'eliminar':
             this.dialog.openConfirm({
-                header: 'Eliminar Registro',
+                header: `Eliminar fecha importante: ${item?.cFechaImpNombre}`,
                 accept: () => {
                     of(null)
                         .pipe(
@@ -126,7 +126,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
                                     summary: 'Fechas importantes',
                                     detail:
                                         error ??
-                                        'Ha ocurrido un error al eliminar el feriado nacional',
+                                        'Ha ocurrido un error al eliminar el fecha importante',
                                     life: 3000,
                                 })
                             },
@@ -180,7 +180,7 @@ function saveData(this: FechasImportentesComponent) {
                         life: 3000,
                     })
 
-                    this.dialogs.nationalHoliday.visible = !isSuccess
+                    this.dialogs.importantDay.visible = !isSuccess
                 }),
                 switchMap(() => this.importantDayService.getFechasImportantes())
             )
@@ -213,7 +213,7 @@ function saveData(this: FechasImportentesComponent) {
                         summary: 'Fechas importantes',
                         detail:
                             error ??
-                            'Ha ocurrido un error al guardar los feriados nacionales',
+                            'Ha ocurrido un error al guardar los fecha importante|',
                         life: 3000,
                     })
                 },
@@ -237,7 +237,7 @@ function saveData(this: FechasImportentesComponent) {
                         life: 3000,
                     })
 
-                    this.dialogs.nationalHoliday.visible = !isSuccess
+                    this.dialogs.importantDay.visible = !isSuccess
                 }),
                 switchMap(() => this.importantDayService.getFechasImportantes())
             )
@@ -272,7 +272,7 @@ function saveData(this: FechasImportentesComponent) {
                         summary: 'Fechas importantes',
                         detail:
                             error ??
-                            'Ha ocurrido un error al guardar los feriados nacionales',
+                            'Ha ocurrido un error al guardar los fecha importante',
                         life: 3000,
                     })
                 },

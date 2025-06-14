@@ -17,96 +17,59 @@
             >
             </app-toolbar-primeng>
             @if (iPerfilId === DOCENTE) {
-                <div clas="grid">
-                    <div class="card col-12">
-                        <div class="grid mb-4">
-                            <div
-                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                <div class="card">
+                    <div class="grid">
+                        <div class="col-12 md:col-8">
+                            <!-- Mostrar fecha y hora de inicio -->
+                            <span class="font-bold text-xl flex gap-2">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Fecha de Inicio:
+                            </span>
+                            <p class="pl-5 mt-1">
+                                <i class="pi pi-calendar text-primary"></i>
+                                {{
+                                    foro?.dtForoInicio
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
+                                <i class="pi pi-clock text-primary"></i>
+                                {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                            </p>
+
+                            <!-- Mostrar fecha y hora de fin -->
+                            <span class="font-bold text-xl flex gap-2 mt-4">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Fecha Fin:
+                            </span>
+                            <p class="pl-5 mt-1">
+                                <i class="pi pi-calendar text-primary"></i>
+                                {{
+                                    foro?.dtForoFin
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
+                                <i class="pi pi-clock text-primary"></i>
+                                {{ foro?.dtForoFin | date: 'h:mm a' }}
+                            </p>
+
+                            <span class="font-bold text-xl flex gap-2 mt-4"
+                                >Categoría:</span
                             >
-                                <div class="col-12 md:col-6 gap-2">
-                                    <span class="font-bold text-xl"
-                                        >Catergoría:</span
-                                    >
-                                    {{ foro?.cForoCatDescripcion }}
-                                </div>
-                            </div>
+                            {{ foro?.cForoCatDescripcion }}
                         </div>
-
-                        <div class="grid mb-4">
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Inicio de Foro:
-                                </span>
-                                <!-- {{ foro.dtForoInicio }} -->
-                                <p class="flex gap-2 flex-wrap pl-5">
-                                    {{
-                                        foro?.dtForoInicio
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{
-                                            foro?.dtForoInicio | date: 'h:mm a'
-                                        }}
-                                    </span>
-                                </p>
+                        <div class="col-12 md:col-4">
+                            <h3 class="text-lg m-0">Instrucciones:</h3>
+                            <div
+                                class="bg-blue-100 p-3 border-round text-center text-justify"
+                            >
+                                {{ foro?.cForoDescripcion | removeHTML }}
                             </div>
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Cierre de Foro
-                                </span>
-                                <!-- {{ foro.dtForoFin }} -->
-                                <p class="flex gap-2 flex-wrap pl-5">
-                                    {{
-                                        foro?.dtForoFin
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="flex gap-2 flex-wrap align-items-center mb-4"
-                        >
-                            <app-icon
-                                name="matMessage"
-                                color="text-primary"
-                                size="sm"
-                            />
-                            <h3 class="text-lg m-0">Descripción:</h3>
-                            {{ foro?.cForoDescripcion }}
                         </div>
                     </div>
                 </div>
@@ -298,7 +261,7 @@
                             <!-- Verifica si no hay archivos adjuntos -->
                             <ng-container
                                 *ngIf="
-                                    foro?.cForoUrl.length === 0;
+                                    foro?.cForoUrl?.length === 0;
                                     else resourcesList
                                 "
                             >
@@ -868,6 +831,21 @@
                     </div>
                 </div>
             </form>
+        </p-tabPanel>
+        <!-- Ver Comentarios de los Foros -->
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center flex-column gap-2">
+                    <app-icon name="matRule"></app-icon>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Ver Foro detalle
+                    </span>
+                </div>
+            </ng-template>
+            <app-foro-room-detalle
+                *ngIf="foro"
+                [dataForo]="foro"
+            ></app-foro-room-detalle>
         </p-tabPanel>
     </p-tabView>
 </section>

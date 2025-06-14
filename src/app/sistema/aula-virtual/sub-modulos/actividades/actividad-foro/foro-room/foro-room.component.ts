@@ -34,6 +34,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
+import { ForoRoomDetalleComponent } from '../foro-room-detalle/foro-room-detalle.component'
 //import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-foro-room',
@@ -55,6 +56,7 @@ import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/
         NgIf,
         ToolbarPrimengComponent,
         RubricasComponent,
+        ForoRoomDetalleComponent,
     ],
     providers: [
         provideIcons({
@@ -182,9 +184,9 @@ export class ForoRoomComponent implements OnInit {
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
         this.obtenerIdPerfil()
-        this.mostrarCalificacion()
+        // this.mostrarCalificacion()
         this.obtenerForo()
-        this.getRespuestaF()
+        // this.getRespuestaF()
         this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }
@@ -434,7 +436,13 @@ export class ForoRoomComponent implements OnInit {
         })
     }
     foroRespaldo = []
+    // obtener informacion general de foro
     obtenerForo() {
+        console.log(
+            'datos para obtener foro',
+            this.iActTopId,
+            this.ixActivadadId
+        )
         this._aulaService
             .obtenerForo({
                 iActTipoId: this.iActTopId,
@@ -443,6 +451,10 @@ export class ForoRoomComponent implements OnInit {
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
+                    this.foro = resp.length ? resp[0] : {}
+                    this.FilesTareas = this.foro?.cForoUrl
+                        ? JSON.parse(this.foro?.cForoUrl)
+                        : []
                     this.messages = [
                         {
                             severity: 'info',

@@ -186,7 +186,7 @@ export class ForoRoomComponent implements OnInit {
         this.obtenerIdPerfil()
         // this.mostrarCalificacion()
         this.obtenerForo()
-        // this.getRespuestaF()
+        this.getRespuestaF()
         this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }

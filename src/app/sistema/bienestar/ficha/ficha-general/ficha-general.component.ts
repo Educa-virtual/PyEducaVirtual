@@ -157,13 +157,8 @@ export class FichaGeneralComponent implements OnInit {
         this.datosFichaBienestarService
             .actualizarFichaGeneral(this.formGeneral.value)
             .subscribe({
-                next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
+                next: () => {
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formGeneral =
-                        this.formGeneral.value
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',

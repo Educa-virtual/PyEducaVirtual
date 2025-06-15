@@ -27,7 +27,7 @@
                     formControlName="iRangoSueldoId"
                     [filter]="true"
                     [showClear]="true"
-                    [appendTo]="'body'"
+                    appendTo="body"
                     placeholder="Seleccione"
                     styleClass="group-element"
                 />
@@ -64,7 +64,7 @@
                     formControlName="iTipoAEcoId"
                     [filter]="true"
                     [showClear]="true"
-                    [appendTo]="'body'"
+                    appendTo="body"
                     placeholder="Seleccione"
                     styleClass="group-element"
                 />
@@ -99,7 +99,7 @@
                                 formControlName="iRangoSueldoIdPersona"
                                 [filter]="true"
                                 [showClear]="true"
-                                [appendTo]="'body'"
+                                appendTo="body"
                                 placeholder="Seleccione"
                                 styleClass="group-element"
                             />
@@ -137,22 +137,27 @@
                     <div class="col-12 sm:col-6">
                         <p-inputGroup styleClass="vertical-group">
                             <p-inputGroupAddon>
-                                <p-button
-                                    severity="secondary"
-                                    icon="pi pi-info-circle"
-                                    [pTooltip]="iDepEcoIdInfo"
-                                    tooltipPosition="top"
-                                    tooltipEvent="both"
-                                    appendTo="body"
-                                    [autoHide]="false"
+                                <a
+                                    role="button"
+                                    class="p-button p-button-secondary"
+                                    (click)="iDepEcoIdPanel.toggle($event)"
+                                    (keypress)="iDepEcoIdPanel.toggle($event)"
+                                    tabindex="0"
                                 >
-                                    <ng-template #iDepEcoIdInfo>
+                                    <i class="pi pi-question-circle"></i>
+                                </a>
+                                <p-overlayPanel
+                                    #iDepEcoIdPanel
+                                    [showCloseIcon]="true"
+                                    appendTo="body"
+                                >
+                                    <div class="flex w-15rem">
                                         En esta pregunta "depender de otros" se
                                         refiere a que no trabaja pero recibe
                                         apoyo económico de amigos, familiares o
                                         instituciones
-                                    </ng-template>
-                                </p-button>
+                                    </div>
+                                </p-overlayPanel>
                                 ¿De quien depende económicamente el apoderado?
                             </p-inputGroupAddon>
                             <p-dropdown
@@ -160,7 +165,7 @@
                                 formControlName="iDepEcoId"
                                 [filter]="true"
                                 [showClear]="true"
-                                [appendTo]="'body'"
+                                appendTo="body"
                                 placeholder="Seleccione"
                                 styleClass="group-element"
                             />
@@ -176,7 +181,7 @@
                                 formControlName="iJorTrabId"
                                 [filter]="true"
                                 [showClear]="true"
-                                [appendTo]="'body'"
+                                appendTo="body"
                                 placeholder="Seleccione"
                                 styleClass="group-element"
                             />
@@ -196,22 +201,12 @@
         (onClick)="salir()"
         severity="secondary"
     />
-    @if (!ficha_registrada) {
-        <p-button
-            type="button"
-            label="Guardar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="guardar()"
-        />
-    } @else {
-        <p-button
-            type="button"
-            label="Actualizar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="actualizar()"
-        />
-    }
+    <p-button
+        type="button"
+        label="Actualizar y continuar"
+        icon="pi pi-save"
+        severity="success"
+        (onClick)="actualizar()"
+    />
 </div>
 <p-toast></p-toast>

@@ -1,8 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { FichaEconomico } from '../../interfaces/FichaEconomico'
 import { MessageService } from 'primeng/api'
@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/api'
     styleUrl: './ficha-economico.component.scss',
 })
 export class FichaEconomicoComponent implements OnInit {
+    iFichaDGId: any = null
     formEconomico: FormGroup
     ficha_registrada: boolean
     apoderado_trabaja: boolean = false
@@ -29,53 +30,52 @@ export class FichaEconomicoComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private router: Router,
-        private compartirFichaService: CompartirFichaService,
-        private datosFichaBienestarService: DatosFichaBienestarService
+        private compartirFicha: CompartirFichaService,
+        private route: ActivatedRoute,
+        private datosFichaBienestar: DatosFichaBienestarService
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(2)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(2)
     }
 
     ngOnInit(): void {
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.rangos_sueldo =
-                    this.datosFichaBienestarService.getRangosSueldo(
-                        data?.rangos_sueldo
-                    )
-                this.dependencias_economicas =
-                    this.datosFichaBienestarService.getDependenciasEconomicas(
-                        data?.dependencias_economicas
-                    )
-                this.tipos_apoyo_economico =
-                    this.datosFichaBienestarService.getTiposApoyoEconomico(
-                        data?.tipos_apoyo_economico
-                    )
-                this.jornadas_trabajo =
-                    this.datosFichaBienestarService.getJornadasTrabajo(
-                        data?.jornadas_trabajo
-                    )
-            })
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.rangos_sueldo = this.datosFichaBienestar.getRangosSueldo(
+                data?.rangos_sueldo
+            )
+            this.dependencias_economicas =
+                this.datosFichaBienestar.getDependenciasEconomicas(
+                    data?.dependencias_economicas
+                )
+            this.tipos_apoyo_economico =
+                this.datosFichaBienestar.getTiposApoyoEconomico(
+                    data?.tipos_apoyo_economico
+                )
+            this.jornadas_trabajo = this.datosFichaBienestar.getJornadasTrabajo(
+                data?.jornadas_trabajo
+            )
+        })
 
-        if (this.compartirFichaService.getiFichaDGId()) {
+        if (this.iFichaDGId) {
             this.searchFichaEconomico()
         }
 
         try {
             this.formEconomico = this.fb.group({
-                iCredId: this.compartirFichaService.perfil.iCredId,
+                iFichaDGId: this.iFichaDGId,
                 iIngresoEcoId: [null],
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
                 iIngresoEcoFamiliar: [null],
-                cIngresoEcoActividad: [null],
+                cIngresoEcoActividad: [null, Validators.maxLength(100)],
                 iIngresoEcoEstudiante: [null],
                 iIngresoEcoTrabajoHoras: [null],
                 bIngresoEcoTrabaja: [null],
                 bApoderadoTrabaja: [null],
-                cIngresoEcoDependeDe: [null],
+                cIngresoEcoDependeDe: [null, Validators.maxLength(100)],
                 iRangoSueldoId: [null],
                 iRangoSueldoIdPersona: [null],
                 iDepEcoId: [null],
@@ -85,103 +85,88 @@ export class FichaEconomicoComponent implements OnInit {
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
-
-        this.formEconomico
-            .get('bApoderadoTrabaja')
-            .valueChanges.subscribe((value) => {
-                if (value) {
-                    this.apoderado_trabaja = true
-                    this.formEconomico
-                        .get('iIngresoEcoEstudiante')
-                        .setValue(null)
-                    this.formEconomico
-                        .get('iRangoSueldoIdPersona')
-                        .setValue(null)
-                    this.formEconomico
-                        .get('iIngresoEcoTrabajoHoras')
-                        .setValue(null)
-                    this.formEconomico
-                        .get('cIngresoEcoDependeDe')
-                        .setValue(null)
-                    this.formEconomico.get('iDepEcoId').setValue(null)
-                    this.formEconomico.get('iJorTrabId').setValue(null)
-                } else {
-                    this.apoderado_trabaja = false
-                }
-            })
     }
 
     async searchFichaEconomico(): Promise<void> {
-        const data = await this.datosFichaBienestarService.searchFichaEconomico(
-            {
-                iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
-            }
-        )
+        const data = await this.datosFichaBienestar.searchFichaEconomico({
+            iFichaDGId: this.iFichaDGId,
+        })
         if (data) {
             this.setFormEconomico(data)
         }
     }
 
     setFormEconomico(data: FichaEconomico) {
-        this.ficha_registrada = true
+        if (data.iIngresoEcoId) {
+            this.ficha_registrada = true
+        }
         this.formEconomico.patchValue(data)
-        this.formEconomico
-            .get('iIngresoEcoId')
-            .setValue(data?.iIngresoEcoId ? +data.iIngresoEcoId : null)
-        this.formEconomico
-            .get('iIngresoEcoFamiliar')
-            .setValue(
-                data?.iIngresoEcoFamiliar ? +data.iIngresoEcoFamiliar : null
-            )
-        this.formEconomico
-            .get('cIngresoEcoActividad')
-            .setValue(
-                data?.cIngresoEcoActividad ? data.cIngresoEcoActividad : null
-            )
-        this.formEconomico
-            .get('iIngresoEcoEstudiante')
-            .setValue(
-                data?.iIngresoEcoEstudiante ? +data.iIngresoEcoEstudiante : null
-            )
-        this.formEconomico
-            .get('iIngresoEcoTrabajoHoras')
-            .setValue(
-                data?.iIngresoEcoTrabajoHoras
-                    ? +data.iIngresoEcoTrabajoHoras
-                    : null
-            )
-        this.formEconomico
-            .get('bIngresoEcoTrabaja')
-            .setValue(
-                data?.bIngresoEcoTrabaja ? +data.bIngresoEcoTrabaja : null
-            )
-        this.formEconomico
-            .get('cIngresoEcoDependeDe')
-            .setValue(
-                data?.cIngresoEcoDependeDe ? +data.cIngresoEcoDependeDe : null
-            )
-        this.formEconomico
-            .get('iRangoSueldoId')
-            .setValue(data?.iRangoSueldoId ? +data.iRangoSueldoId : null)
-        this.formEconomico
-            .get('iRangoSueldoIdPersona')
-            .setValue(
-                data?.iRangoSueldoIdPersona ? +data.iRangoSueldoIdPersona : null
-            )
-        this.formEconomico
-            .get('iDepEcoId')
-            .setValue(data?.iDepEcoId ? +data.iDepEcoId : null)
-        this.formEconomico
-            .get('iTipoAEcoId')
-            .setValue(data?.iTipoAEcoId ? +data.iTipoAEcoId : null)
-        this.formEconomico
-            .get('iJorTrabId')
-            .setValue(data?.iJorTrabId ? +data.iJorTrabId : null)
-        this.formEconomico
-            .get('bIngresoEcoTrabaja')
-            .setValue(
-                data?.bIngresoEcoTrabaja ? !!+data.bIngresoEcoTrabaja : null
-            )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iIngresoEcoId',
+            data.iIngresoEcoId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iIngresoEcoFamiliar',
+            data.iIngresoEcoFamiliar,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iIngresoEcoEstudiante',
+            data.iIngresoEcoEstudiante,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iIngresoEcoTrabajoHoras',
+            data.iIngresoEcoTrabajoHoras,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'bIngresoEcoTrabaja',
+            data.bIngresoEcoTrabaja,
+            'boolean'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iRangoSueldoId',
+            data.iRangoSueldoId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iRangoSueldoIdPersona',
+            data.iRangoSueldoIdPersona,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iDepEcoId',
+            data.iDepEcoId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iTipoAEcoId',
+            data.iTipoAEcoId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'iJorTrabId',
+            data.iJorTrabId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formEconomico,
+            'bIngresoEcoTrabaja',
+            data.bIngresoEcoTrabaja,
+            'boolean'
+        )
     }
 
     guardar() {
@@ -193,16 +178,14 @@ export class FichaEconomicoComponent implements OnInit {
             })
             return
         }
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .guardarFichaEconomico(this.formEconomico.value)
             .subscribe({
                 next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formGeneral =
-                        this.formEconomico.value
+                    this.formEconomico
+                        .get('iIngresoEcoId')
+                        .setValue(data.data[0].iIngresoEcoId)
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Registro exitoso',
@@ -232,16 +215,13 @@ export class FichaEconomicoComponent implements OnInit {
             })
             return
         }
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFichaEconomico(this.formEconomico.value)
             .subscribe({
                 next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
-                    this.ficha_registrada = true
-                    this.datosFichaBienestarService.formEconomico =
-                        this.formEconomico.value
+                    this.formEconomico
+                        .get('iIngresoEcoId')
+                        .setValue(data.data[0].iIngresoEcoId)
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',

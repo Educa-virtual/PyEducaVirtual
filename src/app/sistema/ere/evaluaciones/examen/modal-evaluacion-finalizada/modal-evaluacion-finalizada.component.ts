@@ -53,11 +53,11 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
 
     logout(): void {
         if (this.cerrarSesion) {
-            this.router.navigate(['/'])
-        } else {
             this.store.clear()
             this.tokenStorageService.signOut()
             window.location.reload()
+        } else {
+            this.router.navigate(['/'])
         }
     }
 }

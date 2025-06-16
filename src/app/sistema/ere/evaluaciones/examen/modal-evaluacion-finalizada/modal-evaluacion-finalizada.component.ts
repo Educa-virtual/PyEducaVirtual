@@ -13,6 +13,7 @@ import { Router } from '@angular/router'
 })
 export class ModalEvaluacionFinalizadaComponent implements OnInit {
     @Input() grado: string
+    @Input() cerrarSesion: boolean = false
     visible: boolean = true
     mostrarBotonEncuesta: boolean = false
 
@@ -51,8 +52,12 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
     }
 
     logout(): void {
-        this.store.clear()
-        this.tokenStorageService.signOut()
-        window.location.reload()
+        if (this.cerrarSesion) {
+            this.router.navigate(['/'])
+        } else {
+            this.store.clear()
+            this.tokenStorageService.signOut()
+            window.location.reload()
+        }
     }
 }

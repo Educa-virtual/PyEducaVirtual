@@ -1,19 +1,28 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
+import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
+import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
+import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 
 @Component({
     selector: 'app-ficha-alimentacion',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [
+        PrimengModule,
+        MultiselectInputComponent,
+        DropdownInputComponent,
+        SwitchInputComponent,
+    ],
     templateUrl: './ficha-alimentacion.component.html',
     styleUrl: './ficha-alimentacion.component.scss',
 })
 export class FichaAlimentacionComponent implements OnInit {
+    iFichaDGId: any = null
     formAlimentacion: FormGroup
     lugares_alimentacion: Array<object>
     programas_alimentarios: Array<object>
@@ -25,37 +34,36 @@ export class FichaAlimentacionComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private compartirFichaService: CompartirFichaService,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private router: Router
+        private compartirFicha: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(4)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(4)
     }
 
-    async ngOnInit(): Promise<void> {
-        this.visibleInput = Array(1).fill(false)
-        this.visibleAdicionalInput = Array(6).fill(false)
-
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.lugares_alimentacion =
-                    this.datosFichaBienestarService.getLugaresAlimentacion(
-                        data?.lugares_alimentacion
-                    )
-                this.programas_alimentarios =
-                    this.datosFichaBienestarService.getProgramasAlimentarios(
-                        data?.programas_alimentarios
-                    )
-            })
+    ngOnInit() {
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.lugares_alimentacion =
+                this.datosFichaBienestar.getLugaresAlimentacion(
+                    data?.lugares_alimentacion
+                )
+            this.programas_alimentarios =
+                this.datosFichaBienestar.getProgramasAlimentarios(
+                    data?.programas_alimentarios
+                )
+        })
 
         try {
             this.formAlimentacion = this.fb.group({
                 iAlimId: [null],
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+                iFichaDGId: [this.iFichaDGId, Validators.required],
                 iLugarAlimIdDesayuno: [null],
                 cLugarAlimDesayuno: [''],
                 iLugarAlimIdAlmuerzo: [null],
@@ -64,10 +72,8 @@ export class FichaAlimentacionComponent implements OnInit {
                 cLugarAlimCena: [''],
                 iProgAlimId: [null],
                 cProgAlimNombre: [''],
-                bDietaVegetariana: [false],
-                cDietaVegetarianaObs: [''],
-                bDietaVegana: [false],
-                cDietaVeganaObs: [''],
+                bDietaEspecial: [false],
+                cDietaEspecialObs: [''],
                 bFichaDGAlergiaAlimentos: [false],
                 cFichaDGAlergiaAlimentos: [''],
                 bIntoleranciaAlim: [false],
@@ -76,58 +82,22 @@ export class FichaAlimentacionComponent implements OnInit {
                 cSumplementosAlimObs: [''],
                 bDificultadAlim: [false],
                 cDificultadAlimObs: [''],
-                cInfoAdicionalAlimObs: [''],
+                cAlimObs: [''],
                 jsonProgramas: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
 
-        if (this.compartirFichaService.getiFichaDGId()) {
+        if (this.iFichaDGId) {
             this.verFichaAlimentacion()
         }
     }
 
-    get iProgAlimIdControl(): FormControl {
-        return this.formAlimentacion.controls['iProgAlimId'] as FormControl
-    }
-
-    handleDropdownChange(event: any, index: number) {
-        if (event?.value === undefined) {
-            this.visibleInput[index] = false
-            return null
-        }
-        if (Array.isArray(event.value)) {
-            if (event.value.includes(1)) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        } else {
-            if (event.value == 1) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        }
-    }
-
-    handleSwitchChange(event: any, index: number) {
-        if (event?.checked === undefined) {
-            this.visibleAdicionalInput[index] = false
-            return null
-        }
-        if (event.checked === true) {
-            this.visibleAdicionalInput[index] = true
-        } else {
-            this.visibleAdicionalInput[index] = false
-        }
-    }
-
     async verFichaAlimentacion() {
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .verFichaAlimentacion({
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+                iFichaDGId: this.iFichaDGId,
             })
             .subscribe((data: any) => {
                 if (data.data.length) {
@@ -140,54 +110,40 @@ export class FichaAlimentacionComponent implements OnInit {
         if (data.iAlimId) {
             this.ficha_registrada = true
         } else {
+            this.ficha_registrada = false
             return
         }
         this.formAlimentacion.patchValue(data)
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formAlimentacion,
             'bFichaDGAlergiaAlimentos',
             data.bFichaDGAlergiaAlimentos,
-            'bool'
+            'boolean'
         )
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formAlimentacion,
             'iLugarAlimIdDesayuno',
             data.iLugarAlimIdDesayuno,
-            'num'
+            'number'
         )
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formAlimentacion,
             'iLugarAlimIdAlmuerzo',
             data.iLugarAlimIdAlmuerzo,
-            'num'
+            'number'
         )
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formAlimentacion,
             'iLugarAlimIdCena',
             data.iLugarAlimIdCena,
-            'num'
+            'number'
         )
-
-        this.formatearFormControl('iProgAlimId', data.programas, 'json')
-    }
-
-    formatearFormControl(id: string, value: any, tipo: string = 'str') {
-        if (tipo === 'num') {
-            this.formAlimentacion.get(id)?.patchValue(value ? +value : null)
-        } else if (tipo === 'bool') {
-            this.formAlimentacion.get(id)?.patchValue(value == 1 ? true : false)
-        } else if (tipo === 'str') {
-            this.formAlimentacion.get(id)?.patchValue(value)
-        } else if (tipo === 'json') {
-            if (!value) {
-                this.formAlimentacion.get(id)?.patchValue(null)
-            } else {
-                const json = JSON.parse(value)
-                const items = []
-                for (let i = 0; i < json.length; i++) {
-                    items.push(json[i][id])
-                }
-                this.formAlimentacion.get(id)?.patchValue(items)
-            }
-        } else {
-            this.formAlimentacion.get(id)?.patchValue(value)
-        }
+        this.datosFichaBienestar.formatearFormControl(
+            this.formAlimentacion,
+            'iProgAlimId',
+            data.programas,
+            'json'
+        )
     }
 
     guardar() {
@@ -210,16 +166,11 @@ export class FichaAlimentacionComponent implements OnInit {
             .get('jsonProgramas')
             .setValue(JSON.stringify(programas))
 
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .guardarFichaAlimentacion(this.formAlimentacion.value)
             .subscribe({
-                next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
+                next: () => {
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formAlimentacion =
-                        this.formAlimentacion.value
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Registro exitoso',
@@ -250,26 +201,29 @@ export class FichaAlimentacionComponent implements OnInit {
             return
         }
 
-        const programas = []
-        this.formAlimentacion.get('iProgAlimId').value.forEach((elemento) => {
-            programas.push({
-                iProgAlimId: elemento,
-            })
-        })
-        this.formAlimentacion
-            .get('jsonProgramas')
-            .setValue(JSON.stringify(programas))
+        if (this.formAlimentacion.get('iAlimId').value !== null) {
+            const programas = []
+            this.formAlimentacion
+                .get('iProgAlimId')
+                .value.forEach((elemento) => {
+                    programas.push({
+                        iProgAlimId: elemento,
+                    })
+                })
+            this.formAlimentacion
+                .get('jsonProgramas')
+                .setValue(JSON.stringify(programas))
+        } else {
+            this.formAlimentacion.get('jsonProgramas').setValue(null)
+        }
 
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFichaAlimentacion(this.formAlimentacion.value)
             .subscribe({
                 next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
-                    this.ficha_registrada = true
-                    this.datosFichaBienestarService.formAlimentacion =
-                        this.formAlimentacion.value
+                    this.formAlimentacion
+                        .get('iAlimId')
+                        .setValue(data.data[0].iAlimId)
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',

@@ -2,62 +2,31 @@
 
 <form [formGroup]="formVivienda">
     <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iFichaDGId" />
-
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>
-                    Tipo de ocupación de vivienda
-                </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="ocupaciones_vivienda"
-                    formControlName="iTipoOcupaVivId"
-                    [filter]="false"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 0)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[0] === true) {
-                    <input
-                        pInputText
-                        formControlName="cTipoOcupaVivDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="ocupaciones_vivienda"
+                [dropdownControl]="
+                    $any(formVivienda).controls['iTipoOcupaVivId']
+                "
+                addonLabel="Tipo de ocupación de vivienda"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="
+                    $any(formVivienda).controls['cTipoOcupaVivOtro']
+                "
+                inputPlaceholder="Especifique otro"
+            />
         </div>
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Estado de vivienda </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="estados_vivienda"
-                    formControlName="iEstadoVivId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 1)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[1] === true) {
-                    <input
-                        pInputText
-                        formControlName="cEstadoVivDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="estados_vivienda"
+                [dropdownControl]="$any(formVivienda).controls['iEstadoVivId']"
+                addonLabel="Estado de vivienda"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cEstadoVivOtro']"
+                inputPlaceholder="Especifique otro"
+            />
         </div>
-
-        <div class="field col-12 md:col-4">
+        <div class="col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon> Número de pisos </p-inputGroupAddon>
                 <p-inputNumber
@@ -68,7 +37,7 @@
                 />
             </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-4">
+        <div class="col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon> Número de cuartos </p-inputGroupAddon>
                 <p-inputNumber
@@ -79,7 +48,7 @@
                 />
             </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-4">
+        <div class="col-12 md:col-4">
             <p-inputGroup styleClass="vertical-group">
                 <p-inputGroupAddon> Número de dormitorios </p-inputGroupAddon>
                 <p-inputNumber
@@ -90,223 +59,92 @@
                 />
             </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Material del techo </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="materiales_techos_vivienda"
-                    formControlName="iMatTecVivId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 2)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[2] === true) {
-                    <input
-                        pInputText
-                        formControlName="cMatTecVivDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="materiales_techos_vivienda"
+                [dropdownControl]="$any(formVivienda).controls['iMatTecVivId']"
+                addonLabel="Material del techo"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cMatTecVivOtro']"
+                inputPlaceholder="Especifique otro"
+            />
         </div>
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Material del piso </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="materiales_pisos_vivienda"
-                    formControlName="iMatPisoVivId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 3)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[3] === true) {
-                    <input
-                        pInputText
-                        formControlName="cMatPisoVivDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="materiales_pisos_vivienda"
+                [dropdownControl]="$any(formVivienda).controls['iMatPisoVivId']"
+                addonLabel="Material del piso"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cMatPisoVivOtro']"
+                inputPlaceholder="Especifique otro"
+            />
         </div>
-
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Material de las paredes </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="materiales_paredes_vivienda"
-                    formControlName="iMatPreId"
-                    [filter]="false"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 4)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[4] === true) {
-                    <input
-                        pInputText
-                        formControlName="cMatPreDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="materiales_paredes_vivienda"
+                [dropdownControl]="$any(formVivienda).controls['iMatPreId']"
+                addonLabel="Material de las paredes"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cMatPreOtro']"
+                inputPlaceholder="Especifique otro"
+            />
         </div>
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Suministro de agua </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="suministros_agua"
-                    formControlName="iTipoSumAId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 5)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[5] === true) {
-                    <input
-                        pInputText
-                        formControlName="cTipoSumADescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="suministros_agua"
+                [dropdownControl]="$any(formVivienda).controls['iTipoSumAId']"
+                addonLabel="Suministro de agua"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cTipoSumAOtro']"
+                inputPlaceholder="Especifique otro"
+            />
+        </div>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="suministros_agua"
+                [dropdownControl]="$any(formVivienda).controls['iTipoVivId']"
+                addonLabel="Tipo de vivienda"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cTipoVivOtro']"
+                inputPlaceholder="Especifique otro"
+            />
+        </div>
+        <div class="col-12 md:col-6">
+            <app-dropdown-input
+                [dropdownItems]="tipos_sshh"
+                [dropdownControl]="$any(formVivienda).controls['iTiposSsHhId']"
+                addonLabel="Tipo de servicio higiénico"
+                dropdownPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cTipoSsHhOtro']"
+                inputPlaceholder="Especifique otro"
+            />
         </div>
 
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Tipo de vivienda </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="tipos_vivienda"
-                    formControlName="iTipoVivId"
-                    [filter]="false"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 6)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[6] === true) {
-                    <input
-                        pInputText
-                        formControlName="cTipoVivDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-multiselect-input
+                [multiselectItems]="tipos_alumbrado"
+                [multiselectControl]="
+                    $any(formVivienda).controls['iTipoAlumId']
+                "
+                addonLabel="Tipo de alumbrado"
+                multiselectPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cTipoAlumOtro']"
+                inputPlaceholder="Especifique otro"
+                inputType="text"
+            />
         </div>
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>
-                    Tipo de servicio higiénico
-                </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="tipos_sshh"
-                    formControlName="iTiposSsHhId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    (onChange)="handleDropdownChange($event, 7)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[7] === true) {
-                    <input
-                        pInputText
-                        formControlName="cTipoSsHhDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
-        </div>
-
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Tipo de alumbrado </p-inputGroupAddon>
-                <p-multiSelect
-                    display="chip"
-                    [options]="tipos_alumbrado"
-                    formControlName="iTipoAlumId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    multiple="true"
-                    [maxSelectedLabels]="undefined"
-                    showToggleAll="false"
-                    (onChange)="handleDropdownChange($event, 8)"
-                    (onClear)="handleDropdownChange($event, 8)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[8] === true) {
-                    <input
-                        pInputText
-                        formControlName="cTipoAlumDescripcion"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
-        </div>
-        <div class="field col-12 md:col-6">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>
-                    Otros elementos en la vivienda del estudiante
-                </p-inputGroupAddon>
-                <p-multiSelect
-                    display="chip"
-                    [options]="otros_elementos"
-                    formControlName="iEleParaVivId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    multiple="true"
-                    [maxSelectedLabels]="undefined"
-                    showToggleAll="false"
-                    (onChange)="handleDropdownChange($event, 9)"
-                    (onClear)="handleDropdownChange($event, 9)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[9] === true) {
-                    <input
-                        pInputText
-                        formControlName="cEleParaVivDescripcion"
-                        placeholder="Especifique otros"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+        <div class="col-12 md:col-6">
+            <app-multiselect-input
+                [multiselectItems]="tipos_alumbrado"
+                [multiselectControl]="
+                    $any(formVivienda).controls['iEleParaVivId']
+                "
+                addonLabel="Otros elementos en la vivienda del estudiante"
+                multiselectPlaceholder="Seleccione"
+                [inputControl]="$any(formVivienda).controls['cEleParaVivOtro']"
+                inputPlaceholder="Especifique otro"
+                inputType="text"
+            />
         </div>
     </div>
 </form>
@@ -319,22 +157,12 @@
         (onClick)="salir()"
         severity="secondary"
     />
-    @if (!ficha_registrada) {
-        <p-button
-            type="button"
-            label="Guardar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="guardar()"
-        />
-    } @else {
-        <p-button
-            type="button"
-            label="Actualizar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="actualizar()"
-        />
-    }
+    <p-button
+        type="button"
+        label="Actualizar y continuar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="actualizar()"
+    />
 </div>
 <p-toast></p-toast>

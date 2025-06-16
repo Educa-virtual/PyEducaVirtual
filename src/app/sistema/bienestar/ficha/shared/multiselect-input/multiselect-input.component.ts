@@ -28,6 +28,7 @@ export class MultiselectInputComponent implements OnInit {
     @Input() inputPlaceholder: string = 'Especifique otro'
     @Input() inputType: string = 'text'
     @Input() inputRequired: boolean = false
+    @Input() inputMaxlength: number = null
 
     @Input() visibleInput: boolean = false
 

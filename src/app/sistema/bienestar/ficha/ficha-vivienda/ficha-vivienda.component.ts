@@ -4,18 +4,21 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { MessageService } from 'primeng/api'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
+import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
 
 @Component({
     selector: 'app-ficha-vivienda',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, DropdownInputComponent, MultiselectInputComponent],
     templateUrl: './ficha-vivienda.component.html',
     styleUrl: './ficha-vivienda.component.scss',
 })
 export class FichaViviendaComponent implements OnInit {
     formVivienda: FormGroup
     ficha_registrada: boolean = false
+    iFichaDGId: any
 
     ocupaciones_vivienda: Array<object>
     pisos_vivienda: Array<object>
@@ -31,66 +34,63 @@ export class FichaViviendaComponent implements OnInit {
 
     visibleInput: Array<boolean>
 
-    constructor(
-        private fb: FormBuilder,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService,
-        private router: Router
-    ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
-        }
-        this.compartirFichaService.setActiveIndex(3)
-    }
-
     private _messageService = inject(MessageService)
 
-    ngOnInit(): void {
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.ocupaciones_vivienda =
-                    this.datosFichaBienestarService.getOcupacionesVivienda(
-                        data?.ocupaciones_vivienda
-                    )
-                this.estados_vivienda =
-                    this.datosFichaBienestarService.getEstadosVivienda(
-                        data?.estados_vivienda
-                    )
-                this.tipos_vivienda =
-                    this.datosFichaBienestarService.getTiposVivienda(
-                        data?.tipos_vivienda
-                    )
-                this.materiales_paredes_vivienda =
-                    this.datosFichaBienestarService.getParedesVivienda(
-                        data?.materiales_paredes_vivienda
-                    )
-                this.materiales_techos_vivienda =
-                    this.datosFichaBienestarService.getTechosVivienda(
-                        data?.materiales_techos_vivienda
-                    )
-                this.materiales_pisos_vivienda =
-                    this.datosFichaBienestarService.getPisosVivienda(
-                        data?.materiales_pisos_vivienda
-                    )
-                this.suministros_agua =
-                    this.datosFichaBienestarService.getSuministrosAgua(
-                        data?.suministros_agua
-                    )
-                this.tipos_sshh = this.datosFichaBienestarService.getTiposSshh(
-                    data?.tipos_sshh
-                )
-                this.tipos_alumbrado =
-                    this.datosFichaBienestarService.getTiposAlumbrado(
-                        data?.tipos_alumbrado
-                    )
-                this.otros_elementos =
-                    this.datosFichaBienestarService.getOtrosElementos(
-                        data?.otros_elementos
-                    )
-            })
+    constructor(
+        private fb: FormBuilder,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private compartirFicha: CompartirFichaService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) {
+        this.compartirFicha.setActiveIndex(3)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
+        }
+    }
 
-        if (this.compartirFichaService.getiFichaDGId()) {
+    ngOnInit(): void {
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.ocupaciones_vivienda =
+                this.datosFichaBienestar.getOcupacionesVivienda(
+                    data?.ocupaciones_vivienda
+                )
+            this.estados_vivienda = this.datosFichaBienestar.getEstadosVivienda(
+                data?.estados_vivienda
+            )
+            this.tipos_vivienda = this.datosFichaBienestar.getTiposVivienda(
+                data?.tipos_vivienda
+            )
+            this.materiales_paredes_vivienda =
+                this.datosFichaBienestar.getParedesVivienda(
+                    data?.materiales_paredes_vivienda
+                )
+            this.materiales_techos_vivienda =
+                this.datosFichaBienestar.getTechosVivienda(
+                    data?.materiales_techos_vivienda
+                )
+            this.materiales_pisos_vivienda =
+                this.datosFichaBienestar.getPisosVivienda(
+                    data?.materiales_pisos_vivienda
+                )
+            this.suministros_agua = this.datosFichaBienestar.getSuministrosAgua(
+                data?.suministros_agua
+            )
+            this.tipos_sshh = this.datosFichaBienestar.getTiposSshh(
+                data?.tipos_sshh
+            )
+            this.tipos_alumbrado = this.datosFichaBienestar.getTiposAlumbrado(
+                data?.tipos_alumbrado
+            )
+            this.otros_elementos = this.datosFichaBienestar.getOtrosElementos(
+                data?.otros_elementos
+            )
+        })
+
+        if (this.iFichaDGId) {
             this.verFichaVivienda()
         }
 
@@ -99,10 +99,7 @@ export class FichaViviendaComponent implements OnInit {
         try {
             this.formVivienda = this.fb.group({
                 iViendaCarId: [null],
-                iFichaDGId: [
-                    this.compartirFichaService.getiFichaDGId(),
-                    Validators.required,
-                ],
+                iFichaDGId: [this.iFichaDGId, Validators.required],
                 iTipoOcupaVivId: [null],
                 iMatPreId: [null],
                 iTipoVivId: [null],
@@ -115,41 +112,29 @@ export class FichaViviendaComponent implements OnInit {
                 iTiposSsHhId: [null],
                 iTipoSumAId: [null],
                 iTipoAlumId: [null],
-                cTipoAlumDescripcion: [null],
                 iEleParaVivId: [null],
-                cEleParaVivDescripcion: [null],
                 jsonAlumbrados: [null],
                 jsonElementos: [null],
+                cTipoOcupaVivOtro: [''],
+                cEstadoVivOtro: [''],
+                cMatTecVivOtro: [''],
+                cMatPisoVivOtro: [''],
+                cMatPreOtro: [''],
+                cTipoSumAOtro: [''],
+                cTipoVivOtro: [''],
+                cTipoSsHhOtro: [''],
+                cTipoAlumOtro: [''],
+                cEleParaVivOtro: [''],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
     }
 
-    handleDropdownChange(event: any, index: number) {
-        if (event?.value === undefined) {
-            this.visibleInput[index] = false
-            return null
-        }
-        if (Array.isArray(event.value)) {
-            if (event.value.includes(1)) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        } else {
-            if (event.value == 1) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        }
-    }
-
     async verFichaVivienda() {
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .verFichaVivienda({
-                iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
+                iFichaDGId: this.iFichaDGId,
             })
             .subscribe((data: any) => {
                 if (data.data.length) {
@@ -161,57 +146,84 @@ export class FichaViviendaComponent implements OnInit {
     setFormVivienda(data: any) {
         this.ficha_registrada = true
         this.formVivienda.patchValue(data)
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
             'iTipoOcupaVivId',
             data.iTipoOcupaVivId,
-            'num'
+            'number'
         )
-        this.formatearFormControl('iMatPreId', data.iMatPreId, 'num')
-        this.formatearFormControl('iTipoVivId', data.iTipoVivId, 'num')
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iMatPreId',
+            data.iMatPreId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iTipoVivId',
+            data.iTipoVivId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
             'iViviendaCarNroPisos',
             data.iViviendaCarNroPisos,
-            'num'
+            'number'
         )
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
             'iViviendaCarNroAmbientes',
             data.iViviendaCarNroAmbientes,
-            'num'
+            'number'
         )
-        this.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
             'iViviendaCarNroHabitaciones',
             data.iViviendaCarNroHabitaciones,
-            'num'
+            'number'
         )
-        this.formatearFormControl('iEstadoVivId', data.iEstadoVivId, 'num')
-        this.formatearFormControl('iMatPisoVivId', data.iMatPisoVivId, 'num')
-        this.formatearFormControl('iMatTecVivId', data.iMatTecVivId, 'num')
-        this.formatearFormControl('iTiposSsHhId', data.iTiposSsHhId, 'num')
-        this.formatearFormControl('iTipoSumAId', data.iTipoSumAId, 'num')
-
-        this.formatearFormControl('iTipoAlumId', data.alumbrados, 'json')
-        this.formatearFormControl('iEleParaVivId', data.elementos, 'json')
-    }
-
-    formatearFormControl(id: string, value: any, tipo: string = 'str') {
-        if (tipo === 'num') {
-            this.formVivienda.get(id)?.setValue(value ? +value : null)
-        } else if (tipo === 'str') {
-            this.formVivienda.get(id)?.setValue(value)
-        } else if (tipo === 'json') {
-            if (!value) {
-                this.formVivienda.get(id)?.setValue(null)
-            } else {
-                const json = JSON.parse(value)
-                const items = []
-                for (let i = 0; i < json.length; i++) {
-                    items.push(json[i][id])
-                }
-                this.formVivienda.get(id)?.setValue(items)
-            }
-        } else {
-            this.formVivienda.get(id)?.setValue(value)
-        }
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iEstadoVivId',
+            data.iEstadoVivId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iMatPisoVivId',
+            data.iMatPisoVivId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iMatTecVivId',
+            data.iMatTecVivId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iTiposSsHhId',
+            data.iTiposSsHhId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iTipoSumAId',
+            data.iTipoSumAId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iTipoAlumId',
+            data.alumbrados,
+            'json'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formVivienda,
+            'iEleParaVivId',
+            data.elementos,
+            'json'
+        )
     }
 
     guardar() {
@@ -244,15 +256,13 @@ export class FichaViviendaComponent implements OnInit {
             .get('jsonAlumbrados')
             .setValue(JSON.stringify(alumbrados))
 
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .guardarFichaVivienda(this.formVivienda.value)
             .subscribe({
                 next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
+                    this.compartirFicha.setiFichaDGId(data.data[0].iFichaDGId)
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formVivienda =
+                    this.datosFichaBienestar.formVivienda =
                         this.formVivienda.value
                     this._messageService.add({
                         severity: 'success',
@@ -284,36 +294,42 @@ export class FichaViviendaComponent implements OnInit {
             return
         }
 
-        const elementos = []
-        this.formVivienda.get('iEleParaVivId').value.forEach((elemento) => {
-            elementos.push({
-                iEleParaVivId: elemento,
+        if (this.formVivienda.get('iEleParaVivId').value !== null) {
+            const elementos = []
+            this.formVivienda.get('iEleParaVivId').value.forEach((elemento) => {
+                elementos.push({
+                    iEleParaVivId: elemento,
+                })
             })
-        })
-        this.formVivienda
-            .get('jsonElementos')
-            .setValue(JSON.stringify(elementos))
+            this.formVivienda
+                .get('jsonElementos')
+                .setValue(JSON.stringify(elementos))
+        } else {
+            this.formVivienda.get('jsonElementos').setValue(null)
+        }
 
-        const alumbrados = []
-        this.formVivienda.get('iTipoAlumId').value.forEach((elemento) => {
-            alumbrados.push({
-                iTipoAlumId: elemento,
+        if (this.formVivienda.get('iTipoAlumId').value !== null) {
+            const alumbrados = []
+            this.formVivienda.get('iTipoAlumId').value.forEach((elemento) => {
+                alumbrados.push({
+                    iTipoAlumId: elemento,
+                })
             })
-        })
-        this.formVivienda
-            .get('jsonAlumbrados')
-            .setValue(JSON.stringify(alumbrados))
+            this.formVivienda
+                .get('jsonAlumbrados')
+                .setValue(JSON.stringify(alumbrados))
+        } else {
+            this.formVivienda.get('jsonAlumbrados').setValue(null)
+        }
 
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFichaVivienda(this.formVivienda.value)
             .subscribe({
                 next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
+                    this.formVivienda
+                        .get('iViendaCarId')
+                        .setValue(data.data[0].iIngresoEcoId)
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formVivienda =
-                        this.formVivienda.value
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',

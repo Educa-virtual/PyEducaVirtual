@@ -530,22 +530,22 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         }
         console.log('subirArchivo', subirArchivo)
 
-        // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
-        //     next: (data: any) => {
-        //         console.log('Datos Subidas de Importar Resultados:', data)
-        //     },
-        //     error: (error) => {
-        //         console.error('Error subiendo archivo:', error)
-        //         this._messageService.add({
-        //             severity: 'error',
-        //             summary: 'Error',
-        //             detail: error,
-        //         })
-        //     },
-        //     complete: () => {
-        //         console.log('Request completed')
-        //     },
-        // })
+        this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+            next: (data: any) => {
+                console.log('Datos Subidas de Importar Resultados:', data)
+            },
+            error: (error) => {
+                console.error('Error subiendo archivo:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
     }
     // Angular: componente donde se envía el JSON
     // async subirArchivo(datos_hojas: Array<object>) {

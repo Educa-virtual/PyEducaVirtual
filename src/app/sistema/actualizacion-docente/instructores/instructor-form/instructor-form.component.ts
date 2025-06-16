@@ -2,6 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
+import { GestionUsuariosService } from '@/app/sistema/administrador/gestion-usuarios/services/gestion-usuarios.service'
 import {
     Component,
     EventEmitter,
@@ -31,6 +32,7 @@ export class InstructorFormComponent implements OnChanges {
 
     private _constantesService = inject(ConstantesService)
     private GeneralService = inject(GeneralService)
+    private _GestionUsuariosService = inject(GestionUsuariosService)
 
     dropdownStyle: boolean = false
     loading: boolean = false
@@ -125,41 +127,66 @@ export class InstructorFormComponent implements OnChanges {
                         })
                         return
                     } else {
-                        // const iCapacitacionId = this.id
-                        // Obtner datos para buscar la persona
-                        const data = {
-                            iTipoIdentId: idtipoDocumento,
-                            // iCapacitacionId: iCapacitacionId,
-                            iPersId: '',
-                            cPersDocumento: dni,
-                        }
-                        const params = {
-                            petition: 'get',
-                            group: 'cap',
-                            prefix: 'instructores',
-                            ruta: idtipoDocumento + '/' + dni,
-                            data: data,
-                            params: {
-                                iCredId: this._constantesService.iCredId,
-                            },
-                        }
-                        console.log('datos a guardar', params)
-                        // Servicio para buscar la persona
-                        this.GeneralService.getGralPrefixx(params).subscribe(
-                            (Data) => {
-                                this.persona = (Data as any)['data']
-                                console.log('Datos persona', this.persona)
+                        this._GestionUsuariosService
+                            .buscarPersonaPorDocumento(idtipoDocumento, dni)
+                            .subscribe({
+                                next: (data: any) => {
+                                    console.log(data.data)
+                                    this.persona = data.data
+                                    this.instructorForm.patchValue({
+                                        cPersNombre: this.persona.cPersNombre,
+                                        cPersPaterno: this.persona.cPersMaterno,
+                                        cPersMaterno: this.persona.cPersPaterno,
+                                        cPersDireccion:
+                                            this.persona.cPersDomicilio,
+                                    })
+                                    this.messageService.add({
+                                        severity: 'success',
+                                        summary: 'Datos encontrados',
+                                        detail: 'Se obtuvo la información de la persona',
+                                    })
+                                },
+                                error: (error) => {
+                                    this.messageService.add({
+                                        severity: 'error',
+                                        summary: 'Problema al obtener datos',
+                                        detail: 'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
+                                    })
+                                    console.error(
+                                        'Error obteniendo datos:',
+                                        error
+                                    )
+                                },
+                            })
+                        // const data = {
+                        //     iTipoIdentId: idtipoDocumento,
+                        //     iPersId: '',
+                        //     cPersDocumento: dni,
+                        // }
+                        // const params = {
+                        //     petition: 'get',
+                        //     group: 'cap',
+                        //     prefix: 'instructores',
+                        //     ruta: idtipoDocumento + '/' + dni,
+                        //     data: data,
+                        //     params: {
+                        //         iCredId: this._constantesService.iCredId,
+                        //     },
+                        // }
+                        // this.GeneralService.getGralPrefixx(params).subscribe(
+                        //     (Data) => {
+                        //         this.persona = (Data as any)['data']
+                        //         console.log('Datos persona', this.persona)
 
-                                // Aquí actualizas el nombre en el formulario
-                                this.instructorForm.patchValue({
-                                    cPersNombre: this.persona.cPersNombre,
-                                    cPersPaterno: this.persona.cPersMaterno,
-                                    cPersMaterno: this.persona.cPersPaterno,
-                                    cPersDireccion: this.persona.cPersDomicilio,
-                                    // nombreLargo: `${this.persona.cPersPaterno} ${this.persona.cPersMaterno} ${this.persona.cPersNombre}`,
-                                })
-                            }
-                        )
+                        //         this.instructorForm.patchValue({
+                        //             cPersNombre: this.persona.cPersNombre,
+                        //             cPersPaterno: this.persona.cPersMaterno,
+                        //             cPersMaterno: this.persona.cPersPaterno,
+                        //             cPersDireccion: this.persona.cPersDomicilio,
+
+                        //         })
+                        //     }
+                        // )
                     }
 
                     break

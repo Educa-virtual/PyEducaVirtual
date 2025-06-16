@@ -21,6 +21,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 })
 export class CuestionarioFormPreguntasComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
+    @Output() formpregunta: any = new EventEmitter()
 
     @Input() showModal: boolean = true
     @Input() tipoPreguntas = []
@@ -76,6 +77,8 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     formPreguntas = new FormGroup({
         iTipoPregId: new FormControl(),
         iCredId: new FormControl(),
+        cPregunta: new FormControl(),
+        jsonAlternativas: new FormControl(),
     })
 
     ngOnChanges(changes: SimpleChanges) {
@@ -113,6 +116,33 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         if (tipoPregunta) {
             this.codigoTipoPregunta = tipoPregunta.cCodeTipoPreg
         }
+    }
+
+    guardarPregunta() {
+        const jsonAlternativas = JSON.stringify(
+            this.formPreguntas.value.jsonAlternativas
+        )
+        const data = {
+            cPregunta: this.formPreguntas.value.cPregunta,
+            iTipoPregId: this.formPreguntas.value.iTipoPregId,
+            jsonAlternativas: jsonAlternativas,
+        }
+        this.formpregunta = data
+        this.formpregunta.emit()
+        console.log('datos', data)
+        // "iCuestionarioId":"1011",
+        // "iTipoPregId":"2",
+        // "cPregunta":"¿Qué piensas acerca de la IA?",
+        // "cPreguntaImg":"",
+        // "cIndicaciones":"",
+        // "cTextoAyuda":"",
+        // "tTiempo":"",
+        // "jsonAlternativas":"[{\"cAlternativa\":\"Opcion 1\",\"cAlternativaImg\":\"\"},{\"cAlternativa\":\"Opcion 2\",\"cAlternativaImg\":\"\"},{\"cAlternativa\":\"Opcion 3\",\"cAlternativaImg\":\"\"}]",
+        // "iCredId": "1"
+    }
+    onInput(event: Event) {
+        const value = (event.target as HTMLElement).innerText
+        this.formPreguntas.get('cPregunta')?.setValue(value)
     }
 
     onFocus() {

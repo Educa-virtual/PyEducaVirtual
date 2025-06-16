@@ -1,11 +1,12 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { MenuItem } from 'primeng/api'
 import { environment } from '@/environments/environment'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-preguntas/cuestionario-form-preguntas.component'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-cuestionario-preguntas',
@@ -21,8 +22,10 @@ import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-pregunt
         { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
     ],
 })
-export class CuestionarioPreguntasComponent {
+export class CuestionarioPreguntasComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
+    private _constantesService = inject(ConstantesService)
+    private GeneralService = inject(GeneralService)
 
     backend = environment.backend
     totalPregunta: number = 0
@@ -33,6 +36,8 @@ export class CuestionarioPreguntasComponent {
     codigoTipoPregunta: string = ''
     selectedOption!: number
     selectedDropdown!: number
+
+    datosPreguntas: any
 
     init: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -71,14 +76,19 @@ export class CuestionarioPreguntasComponent {
                 this.opcion = 'GUARDAR'
             },
         },
-        {
-            label: 'Importar preguntas',
-            icon: 'pi pi-plus',
-            command: () => {
-                //
-            },
-        },
+        // {
+        //     label: 'Importar preguntas',
+        //     icon: 'pi pi-plus',
+        //     command: () => {
+        //         //
+        //     },
+        // },
     ]
+
+    ngOnInit(): void {
+        this.obtenerCuestionario()
+        console.log(this.datosPreguntas)
+    }
 
     tipoPreguntas: any[] = [
         {
@@ -177,5 +187,20 @@ export class CuestionarioPreguntasComponent {
                 this.showModal = false
                 break
         }
+    }
+    obtenerCuestionario() {
+        const params = {
+            petition: 'get',
+            group: 'aula-virtual',
+            prefix: 'preguntas',
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+            this.data = (Data as any)['data']
+            console.log('Datos persona:', this.data)
+        })
     }
 }

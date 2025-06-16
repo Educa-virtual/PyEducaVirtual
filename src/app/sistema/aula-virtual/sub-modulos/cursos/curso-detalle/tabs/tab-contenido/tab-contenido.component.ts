@@ -436,14 +436,22 @@ export class TabContenidoComponent implements OnInit {
                 .onClose.subscribe((result) => {
                     if (result) {
                         const data = {
-                            ...result,
+                            // ...result,
+                            iForoId: result.iForoId,
+                            iForoCatId: result.iForoCatId,
+                            iDocenteId: result.iDocenteId,
+                            cForoTitulo: result.cForoTitulo,
+                            cForoDescripcion: result.cForoDescripcion,
+                            dtForoPublicacion: result.dtForoInicio,
+                            dtForoInicio: result.dtForoInicio,
+                            dtForoFin: result.dtForoFin,
                         }
                         console.log('datos para el backend', data)
-                        // this._aulaService.actualizarForo(data).subscribe(() => {
-                        //     this.obtenerContenidoSemanas(
-                        //         this.semanaSeleccionada
-                        //     )
-                        // })
+                        this._aulaService.actualizarForo(data).subscribe(() => {
+                            this.obtenerContenidoSemanas(
+                                this.semanaSeleccionada
+                            )
+                        })
                     } else {
                         console.log('Formulario cancelado')
                     }

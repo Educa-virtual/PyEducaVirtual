@@ -4,6 +4,7 @@ import { Routes } from '@angular/router'
 import { InstructoresComponent } from './instructores/instructores.component'
 import { SolicitudInscripcionComponent } from './solicitud-Inscripcion/solicitud-Inscripcion.component'
 import { AulaCardCapacitacionesComponent } from './aula-virtual-capacitaciones/aulaCard-capacitaciones/aulaCard-capacitaciones.component'
+import { ResultadosCursosComponent } from './resultados-cursos/resultados-cursos.component'
 
 const routes: Routes = [
     {
@@ -37,6 +38,15 @@ const routes: Routes = [
                 data: {
                     expectedRole: [ADMINISTRADOR_DREMO],
                     breadcrumb: 'Instructores',
+                    icon: 'pi pi-user',
+                },
+            },
+            {
+                path: 'resultados',
+                component: ResultadosCursosComponent,
+                data: {
+                    expectedRole: [ADMINISTRADOR_DREMO],
+                    breadcrumb: 'Resultados',
                     icon: 'pi pi-user',
                 },
             },

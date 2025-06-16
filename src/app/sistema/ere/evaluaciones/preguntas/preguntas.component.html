@@ -21,8 +21,6 @@ html
     "
     [actions]="[]"
 >
-    <editor [init]="initLimpio"> </editor>
-
     <div class="grid">
         <div class="col-12 md:col-6 align-content-center font-bold">
             <b class="ml-1" style="font-size: 18px"
@@ -503,9 +501,8 @@ html
                                                                                     <p-inputGroupAddon>
                                                                                         {{
                                                                                             alternativa.cAlternativaLetra
-                                                                                        }}
-                                                                                    </p-inputGroupAddon>
-                                                                                    .
+                                                                                        }} </p-inputGroupAddon
+                                                                                    >probando
                                                                                     <!--<input
                                                                                         type="text"
                                                                                         pInputText
@@ -514,13 +511,32 @@ html
                                                                                             alternativa.cAlternativaDescripcion
                                                                                         "
                                                                                     />-->
-                                                                                    <editor
-                                                                                        [init]="
-                                                                                            initLimpio
-                                                                                        "
+                                                                                    <!--<editor [init]="initLimpio" [(ngModel)]="alternativa.cAlternativaDescripcion"/>-->
+                                                                                    <input
                                                                                         type="text"
-                                                                                    >
-                                                                                    </editor>
+                                                                                        pInputText
+                                                                                        placeholder="Ingrese la alternativa"
+                                                                                        [(ngModel)]="
+                                                                                            alternativa.cAlternativaDescripcion
+                                                                                        "
+                                                                                        (paste)="
+                                                                                            onPasteImage(
+                                                                                                $event,
+                                                                                                alternativa
+                                                                                            )
+                                                                                        "
+                                                                                        (dragover)="
+                                                                                            onDragOver(
+                                                                                                $event
+                                                                                            )
+                                                                                        "
+                                                                                        (drop)="
+                                                                                            onDropImage(
+                                                                                                $event,
+                                                                                                alternativa
+                                                                                            )
+                                                                                        "
+                                                                                    />
                                                                                     <div
                                                                                         *ngIf="
                                                                                             isDisabled
@@ -570,7 +586,8 @@ html
                                                                                     >
                                                                                         &nbsp;
                                                                                     </button>
-                                                                                    <button
+                                                                                    <!-- subir imagenes pregunta multiple -->
+                                                                                    <!--<button
                                                                                         *ngIf="
                                                                                             isDisabled
                                                                                         "
@@ -595,7 +612,7 @@ html
                                                                                                 )
                                                                                             "
                                                                                         />
-                                                                                    </button>
+                                                                                    </button>-->
                                                                                     <p-checkbox
                                                                                         [class]="
                                                                                             !isDisabled
@@ -874,6 +891,23 @@ html
                                                             [(ngModel)]="
                                                                 alternativa.cAlternativaDescripcion
                                                             "
+                                                            (paste)="
+                                                                onPasteImage(
+                                                                    $event,
+                                                                    alternativa
+                                                                )
+                                                            "
+                                                            (dragover)="
+                                                                onDragOver(
+                                                                    $event
+                                                                )
+                                                            "
+                                                            (drop)="
+                                                                onDropImage(
+                                                                    $event,
+                                                                    alternativa
+                                                                )
+                                                            "
                                                         />
 
                                                         <div
@@ -913,7 +947,8 @@ html
                                                         >
                                                             &nbsp;
                                                         </button>
-                                                        <button
+                                                        <!-- subir imagenes pregunta simple -->
+                                                        <!--<button
                                                             *ngIf="isDisabled"
                                                             pButton
                                                             type="button"
@@ -934,7 +969,7 @@ html
                                                                     )
                                                                 "
                                                             />
-                                                        </button>
+                                                        </button>-->
                                                         <p-checkbox
                                                             [class]="
                                                                 !isDisabled

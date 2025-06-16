@@ -115,26 +115,6 @@ export class PreguntasComponent implements OnInit {
     activeAccordionIndex: number | null = null
     shouldOpenLastAccordion: boolean = false
 
-    // input tinymce (editor)
-    initLimpio: EditorComponent['init'] = {
-        base_url: '/tinymce',
-        suffix: '.min',
-        menubar: false,
-        toolbar: false,
-        statusbar: false,
-        selector: 'textarea',
-        plugins: '',
-        height: 40,
-        min_height: 40,
-        max_height: 40,
-        width: '30%',
-        resize: false,
-        editable_root: this.isDisabled,
-        branding: false,
-        content_style:
-            'body { margin: 0; padding: 6px 12px; font-size: 14px; line-height: 1.2; overflow: hidden; }',
-    }
-
     tiposAgregarPregunta: MenuItem[] = [
         {
             label: 'Pregunta simple',
@@ -899,5 +879,64 @@ export class PreguntasComponent implements OnInit {
 
     onAccordionTabClose(): void {
         this.activeAccordionIndex = null
+    }
+    // copy and pace
+
+    onPasteImage(event: ClipboardEvent, alternativa: any) {
+        const items = event.clipboardData?.items
+        if (items) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile()
+                    if (file) {
+                        this.uploadImageFile(file, alternativa)
+                        event.preventDefault() // Previene el pegado normal
+                    }
+                }
+            }
+        }
+    }
+
+    onDragOver(event: DragEvent) {
+        event.preventDefault()
+    }
+
+    onDropImage(event: DragEvent, alternativa: any) {
+        event.preventDefault()
+        const files = event.dataTransfer?.files
+        if (files && files.length > 0) {
+            const file = files[0]
+            if (file.type.startsWith('image/')) {
+                this.uploadImageFile(file, alternativa)
+            }
+        }
+    }
+
+    async uploadImageFile(file: File, alternativa: any) {
+        const dataFile = await this.objectToFormData({
+            file: file,
+            nameFile: 'alternativas',
+        })
+
+        this.http
+            .post(`${this.backendApi}/general/subir-archivo`, dataFile)
+            .subscribe({
+                next: (response: any) => {
+                    if (response.validated) {
+                        alternativa.cAlternativaImagen = response.data
+                        // Opcional: mostrar mensaje de éxito
+                        this._MessageService.add({
+                            severity: 'success',
+                            detail: 'Imagen pegada correctamente',
+                        })
+                    }
+                },
+                error: () => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        detail: 'Error al subir la imagen',
+                    })
+                },
+            })
     }
 }

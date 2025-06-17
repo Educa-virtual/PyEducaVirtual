@@ -111,9 +111,6 @@ export class PreguntasComponent implements OnInit {
     showModalBancoPreguntas: boolean = false
     totalPregunta: number = 0
     iNivelGradoId: number = null
-    //nueva funcion accordion
-    activeAccordionIndex: number | null = null
-    shouldOpenLastAccordion: boolean = false
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -762,14 +759,6 @@ export class PreguntasComponent implements OnInit {
                     }
                 })
                 break
-                // Abrir automáticamente la última pregunta creada
-                if (this.shouldOpenLastAccordion && this.preguntas.length > 0) {
-                    setTimeout(() => {
-                        this.activeAccordionIndex = this.preguntas.length - 1
-                        this.shouldOpenLastAccordion = false
-                    }, 100)
-                }
-                break
 
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
                 this._MessageService.add({
@@ -797,8 +786,6 @@ export class PreguntasComponent implements OnInit {
                 break
             case 'GUARDAR-PREGUNTAS':
             case 'GUARDAR-ENCABEZADO-PREGUNTAS':
-                //Nueva funcion de accordion
-                this.shouldOpenLastAccordion = true
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 break
         }
@@ -872,15 +859,7 @@ export class PreguntasComponent implements OnInit {
     limpiarCacheEnunciados(): void {
         this.enunciadosCache.clear()
     }
-    // MÉTODOS NUEVOS PARA MANEJAR EL ACCORDION
-    onAccordionTabOpen(index: number): void {
-        this.activeAccordionIndex = index
-    }
-
-    onAccordionTabClose(): void {
-        this.activeAccordionIndex = null
-    }
-    // copy and pace
+    // copy and paste
 
     onPasteImage(event: ClipboardEvent, alternativa: any) {
         const items = event.clipboardData?.items
@@ -890,7 +869,7 @@ export class PreguntasComponent implements OnInit {
                     const file = items[i].getAsFile()
                     if (file) {
                         this.uploadImageFile(file, alternativa)
-                        event.preventDefault() // Previene el pegado normal
+                        event.preventDefault()
                     }
                 }
             }
@@ -924,7 +903,6 @@ export class PreguntasComponent implements OnInit {
                 next: (response: any) => {
                     if (response.validated) {
                         alternativa.cAlternativaImagen = response.data
-                        // Opcional: mostrar mensaje de éxito
                         this._MessageService.add({
                             severity: 'success',
                             detail: 'Imagen pegada correctamente',

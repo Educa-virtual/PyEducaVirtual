@@ -83,22 +83,9 @@ html
             </div>
         } @else {
             <div class="col-12">
-                <p-accordion
-                    styleClass="w-full"
-                    [activeIndex]="activeAccordionIndex"
-                    (onOpen)="onAccordionTabOpen($event.index)"
-                    (onClose)="onAccordionTabClose()"
-                >
+                <p-accordion styleClass="w-full">
                     @for (list of preguntas; track id; let id = $index) {
-                        <p-accordionTab
-                            iconPos="end"
-                            [ngClass]="{
-                                indexTab: activeAccordionIndex === id,
-                                'nueva-pregunta':
-                                    shouldOpenLastAccordion &&
-                                    id === preguntas.length - 1,
-                            }"
-                        >
+                        <p-accordionTab iconPos="end">
                             <ng-template pTemplate="header">
                                 <span
                                     class="flex align-items-center justify-content-start w-full"

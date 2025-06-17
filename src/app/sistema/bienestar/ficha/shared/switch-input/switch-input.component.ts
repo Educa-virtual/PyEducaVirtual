@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnChanges, OnInit } from '@angular/core'
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 @Component({
@@ -16,14 +16,14 @@ import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
         },
     ],
 })
-export class SwitchInputComponent implements OnInit {
+export class SwitchInputComponent implements OnInit, OnChanges {
     @Input() switchControl: FormControl
     @Input() inputControl: FormControl
 
     @Input() addonLabel: string = 'Campo'
 
     @Input() inputPlaceholder: string = 'Especifique otro'
-    @Input() inputType: 'text' | 'number' = 'text'
+    @Input() inputType: 'text' | 'number' | 'textarea' = 'text'
     @Input() inputRequired: boolean = false
 
     @Input() inputMaxlength: number = null
@@ -32,6 +32,13 @@ export class SwitchInputComponent implements OnInit {
     @Input() inputStep: number = 1
     @Input() inputUseGrouping: boolean = false
     @Input() inputShowButtons: boolean = false
+
+    @Input() inputInitRows: number = 3
+    @Input() inputMinRows: number = 3
+    @Input() inputMaxRows: number = 6
+
+    inputMinRowsString: string
+    inputMaxRowsString: string
 
     @Input() visibleInput: boolean = false
 
@@ -44,6 +51,12 @@ export class SwitchInputComponent implements OnInit {
         this.switchControl.valueChanges.subscribe((value) => {
             this.handleSwitchChange({ checked: value })
         })
+        this.inputMinRowsString = `${this.inputMinRows}lh`
+        this.inputMaxRowsString = `${this.inputMaxRows}lh`
+    }
+
+    ngOnChanges() {
+        this.handleSwitchChange({ checked: this.switchControl.value })
     }
 
     handleSwitchChange(event: any) {
@@ -52,7 +65,7 @@ export class SwitchInputComponent implements OnInit {
             this.inputControl.setValue(null)
             return null
         }
-        if (event.checked === true) {
+        if (event.checked == true) {
             this.visibleInput = true
         } else {
             this.visibleInput = false
@@ -62,7 +75,7 @@ export class SwitchInputComponent implements OnInit {
 
     writeValue(value: any) {
         if (value) {
-            this.switchControl.setValue(value) // Assign the values to the MultiSelect
+            this.switchControl.setValue(value) // Assign the values to the Switch
         } else {
             this.switchControl.setValue(null) // Reset if value is null or undefined
         }

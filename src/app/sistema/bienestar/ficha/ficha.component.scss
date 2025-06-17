@@ -148,3 +148,7 @@
 :host ::ng-deep .p-panel-header .p-panel-header-icon {
     color: var(--primary-color-text) !important;
 }
+
+.p-inputgroup textarea {
+    resize: vertical;
+}

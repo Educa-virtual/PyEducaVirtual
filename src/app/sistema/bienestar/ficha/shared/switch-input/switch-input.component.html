@@ -7,31 +7,47 @@
         <span>{{ addonLabel }}</span>
     </p-inputGroupAddon>
     @if (visibleInput === true) {
-        @if (inputType === 'text') {
-            <input
-                pInputText
-                [formControl]="inputControl"
-                [placeholder]="inputPlaceholder"
-                type="text"
-                class="group-element"
-                [maxlength]="inputMaxlength"
-                [required]="inputRequired"
-                [value]="inputControl.value"
-            />
-        }
-        @if (inputType === 'number') {
-            <p-inputNumber
-                [formControl]="inputControl"
-                [min]="inputMin"
-                [max]="inputMax"
-                [step]="inputStep"
-                [placeholder]="inputPlaceholder"
-                [maxlength]="inputMaxlength"
-                [useGrouping]="inputUseGrouping"
-                [showButtons]="inputShowButtons"
-                [required]="inputRequired"
-                class="group-element"
-            />
+        @switch (inputType) {
+            @case ('text') {
+                <input
+                    pInputText
+                    [formControl]="inputControl"
+                    [placeholder]="inputPlaceholder"
+                    type="text"
+                    class="group-element"
+                    [maxlength]="inputMaxlength"
+                    [required]="inputRequired"
+                    [value]="inputControl.value"
+                />
+            }
+            @case ('number') {
+                <p-inputNumber
+                    [formControl]="inputControl"
+                    [min]="inputMin"
+                    [max]="inputMax"
+                    [step]="inputStep"
+                    [placeholder]="inputPlaceholder"
+                    [maxlength]="inputMaxlength"
+                    [useGrouping]="inputUseGrouping"
+                    [showButtons]="inputShowButtons"
+                    [required]="inputRequired"
+                    class="group-element"
+                />
+            }
+            @case ('textarea') {
+                <textarea
+                    pInputTextarea
+                    [formControl]="inputControl"
+                    [maxlength]="inputMaxlength"
+                    [placeholder]="inputPlaceholder"
+                    [required]="inputRequired"
+                    [rows]="inputInitRows"
+                    class="group-element"
+                    [style.minHeight]="inputMinRowsString"
+                    [style.maxHeight]="inputMaxRowsString"
+                    >{{ inputControl.value }}</textarea
+                >
+            }
         }
     }
 </p-inputGroup>

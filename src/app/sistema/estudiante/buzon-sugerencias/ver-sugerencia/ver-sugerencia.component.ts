@@ -1,25 +1,40 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core'
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    OnChanges,
+    OnInit,
+} from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
 import { MessageService } from 'primeng/api'
+import { ReactiveFormsModule } from '@angular/forms'
+import { EditorModule } from 'primeng/editor'
 
 @Component({
     selector: 'app-ver-sugerencia',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, ReactiveFormsModule, EditorModule],
     templateUrl: './ver-sugerencia.component.html',
     styleUrl: './ver-sugerencia.component.scss',
 })
-export class VerSugerenciaComponent implements OnInit {
-    form: FormGroup
-    private _selectedItem: any
-    archivos: any[] = []
+export class VerSugerenciaComponent implements OnInit, OnChanges {
+    @Input() vista: string = 'estudiante'
+    @Input() visible: boolean = false
+    @Input() titulo: string = 'Ver sugerencia'
     @Output() cerrarDialogVerSugerenciaEvent = new EventEmitter<boolean>()
-    nombreDirector: string = 'Director: '
-    fechaRespuesta: string = 'Fecha de respuesta'
+    form: FormGroup
+    @Input() selectedItem: any = null
+    sugerenciaAlumno: string = 'Sugerencia del alumno'
+    //private _selectedItem: any
+    archivos: any[] = []
+    //nombreDirector: string = 'Director: '
+    //fechaRespuesta: string = 'Fecha de respuesta'
 
-    @Input()
+    /*@Input()
     set selectedItem(value: any) {
         this._selectedItem = value
         if (this.form) {
@@ -29,13 +44,14 @@ export class VerSugerenciaComponent implements OnInit {
                 cAsunto: this._selectedItem?.cAsunto,
                 cPrioridadNombre: this._selectedItem?.cPrioridadNombre,
                 cSugerencia: this._selectedItem?.cSugerencia,
+                cRespuesta: this._selectedItem?.cRespuesta,
             })
             this.obtenerArchivosSugerencia()
         }
-    }
-    get selectedItem(): any {
+    }*/
+    /*get selectedItem(): any {
         return this._selectedItem
-    }
+    }*/
     constructor(
         private fb: FormBuilder,
         private buzonSugerenciasService: BuzonSugerenciasService,
@@ -49,7 +65,22 @@ export class VerSugerenciaComponent implements OnInit {
             cAsunto: [null],
             cPrioridadNombre: [null],
             cSugerencia: [null],
+            cRespuesta: [null],
         })
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['visible'] && changes['visible'].currentValue === true) {
+            this.form.patchValue({
+                cNombreEstudiante: this.selectedItem?.cNombreEstudiante,
+                dtFechaCreacion: this.selectedItem?.dtFechaCreacion,
+                cAsunto: this.selectedItem?.cAsunto,
+                cPrioridadNombre: this.selectedItem?.cPrioridadNombre,
+                cSugerencia: this.selectedItem?.cSugerencia,
+                cRespuesta: this.selectedItem?.cRespuesta,
+            })
+            this.obtenerArchivosSugerencia()
+        }
     }
 
     obtenerArchivosSugerencia() {
@@ -87,7 +118,6 @@ export class VerSugerenciaComponent implements OnInit {
     }
 
     cerrarDialog() {
-        this.selectedItem = null
         this.archivos = []
         this.form.reset()
         this.cerrarDialogVerSugerenciaEvent.emit(false)

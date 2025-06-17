@@ -5,7 +5,7 @@ import { environment } from '@/environments/environment'
 @Injectable({
     providedIn: 'root',
 })
-export class UsuariosService {
+export class GestionUsuariosService {
     private urlBackendApi = environment.backendApi
     private urlBackend = environment.backend
     private http = inject(HttpClient)

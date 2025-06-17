@@ -128,12 +128,12 @@ const estudiante = [
                 label: 'Practicar evaluación ERE',
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
-            } /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
+            },
             {
                 label: 'Buzón de sugerencias',
                 icon: 'pi pi-fw pi-envelope',
                 routerLink: ['/estudiante/buzon-sugerencias'],
-            },*/,
+            },
         ],
     },
 ]

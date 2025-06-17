@@ -6,7 +6,7 @@
 .hoverTable tr th {
     background-color: #e6e6ee;
 }
-.hoverTable tr:hover {
+.hoverTable tr:hover:not(.itemSelected) {
     background-color: var(--highlight-bg);
 }
 tr {
@@ -53,4 +53,9 @@ tr {
 
 .SELECTED-CELL {
     background-color: #bee5ff;
+}
+
+.itemSelected {
+    background: var(--green-500);
+    color: white;
 }

@@ -96,12 +96,17 @@ export interface IActionTable {
 export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
+    trSelected
+    itemSelected
     getClass(rowData: any, classes: string): { [key: string]: boolean } {
         const fieldValue = rowData?.[classes]
-        if (classes) {
-            return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
-        } else {
-            return undefined
+        return fieldValue ? { [String(fieldValue)]: true } : {}
+    }
+
+    getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
+        return {
+            ...this.getClass(rowData, 'class'),
+            itemSelected: rowIndex === this.trSelected,
         }
     }
 

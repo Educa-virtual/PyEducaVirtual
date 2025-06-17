@@ -196,7 +196,8 @@
         >
             <tr
                 [pSelectableRow]="rowData"
-                [ngClass]="getClass(rowData, 'class')"
+                [ngClass]="getRowClasses(rowData, rowIndex)"
+                (click)="trSelected = rowIndex"
             >
                 @for (
                     col of columnasSeleccionadas;

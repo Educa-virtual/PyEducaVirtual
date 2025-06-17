@@ -363,9 +363,13 @@
                 <!-- <label for="checked" class="ml-2"> Obligatorio </label>
             <p-inputSwitch /> -->
                 <p-button
-                    [label]="'Añadir'"
+                    [label]="
+                        action === 'ACTUALIZAR'
+                            ? 'Editar Instructor'
+                            : 'Añadir Pregunta'
+                    "
                     icon="pi pi-check"
-                    class="ml-4"
+                    [severity]="action === 'ACTUALIZAR' ? 'warning' : 'success'"
                     (click)="guardarPregunta()"
                 />
             </div>

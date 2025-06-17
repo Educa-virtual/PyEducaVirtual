@@ -1,7 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit } from '@angular/core'
-import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
-import { MenuItem } from 'primeng/api'
+import { Component, inject, Input, OnInit } from '@angular/core'
+import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
+import { MenuItem, MessageService } from 'primeng/api'
 import { environment } from '@/environments/environment'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
@@ -23,7 +23,9 @@ import { GeneralService } from '@/app/servicios/general.service'
     ],
 })
 export class CuestionarioPreguntasComponent implements OnInit {
-    private _ConstantesService = inject(ConstantesService)
+    @Input() datosGenerales: any
+
+    // private _ConstantesService = inject(ConstantesService)
     private _constantesService = inject(ConstantesService)
     private GeneralService = inject(GeneralService)
 
@@ -38,33 +40,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
     selectedDropdown!: number
 
     datosPreguntas: any
-
-    init: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
-        menubar: false,
-        selector: 'textarea',
-        placeholder: 'Escriba aquí...',
-        plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
-        height: 400,
-    }
-    initEnunciado: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
-        menubar: false,
-        selector: 'textarea',
-        placeholder: 'Escribe aqui...',
-        height: 1000,
-        plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
-    }
+    datos: any
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -84,10 +60,14 @@ export class CuestionarioPreguntasComponent implements OnInit {
         //     },
         // },
     ]
+    constructor(
+        // private dialogConfig: DynamicDialogConfig,
+        private messageService: MessageService
+    ) {}
 
     ngOnInit(): void {
         this.obtenerCuestionario()
-        console.log(this.datosPreguntas)
+        this.datos = this.datosGenerales
     }
 
     tipoPreguntas: any[] = [
@@ -177,6 +157,65 @@ export class CuestionarioPreguntasComponent implements OnInit {
             estado: 'Activo',
         },
     ]
+    guardarPregunta(data: any) {
+        // "iCuestionarioId":"1011",
+        // "iTipoPregId":"2",
+        // "cPregunta":"¿Qué piensas acerca de la IA?",
+        // "cPreguntaImg":"",
+        // "cIndicaciones":"",
+        // "cTextoAyuda":"",
+        // "tTiempo":"",
+        // "jsonAlternativas":"[{\"cAlternativa\":\"Opcion 1\",\"cAlternativaImg\":\"\"},{\"cAlternativa\":\"Opcion 2\",\"cAlternativaImg\":\"\"},{\"cAlternativa\":\"Opcion 3\",\"cAlternativaImg\":\"\"}]",
+        // "iCredId": "1"
+        const datos = {
+            iCuestionarioId: this.datosGenerales.iCuestionarioId,
+            iTipoPregId: data.iTipoPregId,
+            cPregunta: data.cPregunta,
+            jsonAlternativas: data.jsonAlternativas,
+            iCredId: this._constantesService.iCredId,
+        }
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'preguntas',
+            data: datos,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (response) => {
+                console.log('Cuestionario guardado con éxito', response)
+                // this.ref.close(true)
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
+        })
+        console.log('datos del formulario', params)
+    }
 
     accionBtnItem(elemento): void {
         const { accion } = elemento
@@ -189,18 +228,18 @@ export class CuestionarioPreguntasComponent implements OnInit {
         }
     }
     obtenerCuestionario() {
-        const params = {
-            petition: 'get',
-            group: 'aula-virtual',
-            prefix: 'preguntas',
-            params: {
-                iCredId: this._constantesService.iCredId,
-            },
-        }
-        // Servicio para obtener los instructores
-        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
-            this.data = (Data as any)['data']
-            console.log('Datos persona:', this.data)
-        })
+        // const params = {
+        //     petition: 'get',
+        //     group: 'aula-virtual',
+        //     prefix: 'preguntas',
+        //     params: {
+        //         iCredId: this._constantesService.iCredId,
+        //     },
+        // }
+        // // Servicio para obtener los instructores
+        // this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+        //     this.data = (Data as any)['data']
+        //     console.log('Datos persona:', this.data)
+        // })
     }
 }

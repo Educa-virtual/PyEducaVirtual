@@ -21,7 +21,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 })
 export class CuestionarioFormPreguntasComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
-    @Output() formpregunta: any = new EventEmitter()
+    @Output() formpregunta = new EventEmitter()
 
     @Input() showModal: boolean = true
     @Input() tipoPreguntas = []
@@ -37,6 +37,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     escalaLine2: string = '2'
     selectNumber: number = 3
     selectedIcon: string = 'pi pi-star'
+    action: string
 
     activeCommands = {
         bold: false,
@@ -97,6 +98,10 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         if (changes['data']) {
             this.data = changes['data']?.currentValue
         }
+
+        if (this.opcion === 'ACTUALIZAR') {
+            this.action = 'Actualizar Pregunta'
+        }
     }
 
     accionBtn(elemento): void {
@@ -105,6 +110,8 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         switch (accion) {
             case 'close-modal':
                 this.accionBtnItem.emit({ accion, item })
+                break
+            case 'añadir':
                 break
         }
     }
@@ -127,8 +134,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
             iTipoPregId: this.formPreguntas.value.iTipoPregId,
             jsonAlternativas: jsonAlternativas,
         }
-        this.formpregunta = data
-        this.formpregunta.emit()
+        this.formpregunta.emit(data)
         console.log('datos', data)
         // "iCuestionarioId":"1011",
         // "iTipoPregId":"2",

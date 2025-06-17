@@ -99,7 +99,10 @@
             <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo">
             </app-toolbar-primeng>
             <!-- Componente cuestionario-preguntas -->
-            <app-cuestionario-preguntas></app-cuestionario-preguntas>
+            <app-cuestionario-preguntas
+                *ngIf="cuestionario"
+                [datosGenerales]="cuestionario"
+            ></app-cuestionario-preguntas>
         </p-tabPanel>
         <p-tabPanel>
             <ng-template pTemplate="header" class="header-fixed">

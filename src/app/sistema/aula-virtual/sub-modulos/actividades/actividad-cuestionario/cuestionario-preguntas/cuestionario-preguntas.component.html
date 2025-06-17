@@ -112,14 +112,14 @@
                     <div
                         class="flex align-items-center justify-content-end gap-2"
                     >
-                        <p-button
+                        <!-- <p-button
                             icon="pi pi-clone"
                             [rounded]="true"
                             [text]="true"
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Clonar pregunta"
-                        />
+                        /> -->
                         <p-button
                             icon="pi pi-trash"
                             [rounded]="true"
@@ -149,6 +149,6 @@
     [opcion]="opcion"
     [tipoPreguntas]="tipoPreguntas"
     (accionBtnItem)="accionBtnItem($event)"
-    (formpregunta)="(datosPreguntas)"
+    (formpregunta)="guardarPregunta($event)"
 ></app-cuestionario-form-preguntas>
 <p-toast></p-toast>

@@ -41,9 +41,6 @@ const columns: IColumn[] = [
 function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
     this.forms.importantDayRecovery.reset()
 
-    console.log('item')
-    console.log(item)
-
     switch (accion) {
         case 'agregar':
             this.dialogs.importantDayRecovery = {
@@ -161,7 +158,7 @@ function saveData(this: FechasImportentesComponent) {
     }
 
     const data: any = {
-        iTipoFerId: this.importantDay.typeActive,
+        iTipoFerId: 3 /* FECHA DE RECUPERACIÓN */,
         cFechaImpNombre: this.forms.importantDayRecovery.value.cFechaImpNombre,
         iCalAcadId: this.importantDay.calendar?.iCalAcadId,
         dtFechaImpFecha: this.datePipe.transform(

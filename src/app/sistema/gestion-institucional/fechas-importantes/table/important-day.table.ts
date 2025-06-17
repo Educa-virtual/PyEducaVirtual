@@ -76,18 +76,12 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
                 title: 'Agregar fecha importante',
                 visible: true,
             }
-            console.log(item)
-
-            this.importantDay.typeActive = 4 /* FECHA ESPECIAL IE */
-
             break
         case 'editar':
             this.dialogs.importantDay = {
                 title: 'Editar fecha importante',
                 visible: true,
             }
-
-            this.importantDay.typeActive = 4 /* FECHA ESPECIAL IE */
 
             this.forms.importantDay.patchValue({
                 iFechaImpId: item.iFechaImpId,
@@ -165,8 +159,6 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
                 visible: true,
             }
 
-            this.importantDay.typeActive = 3 /* FECHA DE RECUPERACIÓN */
-
             this.forms.importantDay.patchValue({
                 iFechaImpId: item.iFechaImpId,
                 iTipoFerId: item.iTipoFerId,
@@ -219,7 +211,7 @@ function saveData(this: FechasImportentesComponent) {
     }
 
     const data: any = {
-        iTipoFerId: this.importantDay.typeActive,
+        iTipoFerId: 4 /* FECHA ESPECIAL IE */,
         cFechaImpNombre: this.forms.importantDay.value.cFechaImpNombre,
         iCalAcadId: this.importantDay.calendar?.iCalAcadId,
         dtFechaImpFecha: this.datePipe.transform(

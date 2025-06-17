@@ -38,6 +38,10 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     selectNumber: number = 3
     selectedIcon: string = 'pi pi-star'
     action: string
+    // valores para guardar pregunta
+    iTipoPregId: number
+    cPregunta: string = ''
+    jsonAlternativas: string = ''
 
     activeCommands = {
         bold: false,
@@ -98,9 +102,11 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         if (changes['data']) {
             this.data = changes['data']?.currentValue
         }
-
+        this.iTipoPregId = this.data.iTipoPregId
+        this.cPregunta = this.data.cPregunta
+        console.log(this.iTipoPregId)
         if (this.opcion === 'ACTUALIZAR') {
-            this.action = 'Actualizar Pregunta'
+            this.action = 'ACTUALIZAR'
         }
     }
 
@@ -126,29 +132,26 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     }
 
     guardarPregunta() {
-        const jsonAlternativas = JSON.stringify(
-            this.formPreguntas.value.jsonAlternativas
-        )
+        // Estructura que espera tu backend
+        const alternativasFormateadas = this.opciones.map((op) => ({
+            cAlternativa: op.texto || '',
+            cAlternativaImg: op.imagen || '',
+        }))
+
+        // Convertir a JSON y guardar en una variable
+        this.jsonAlternativas = JSON.stringify(alternativasFormateadas)
+
         const data = {
-            cPregunta: this.formPreguntas.value.cPregunta,
-            iTipoPregId: this.formPreguntas.value.iTipoPregId,
-            jsonAlternativas: jsonAlternativas,
+            cPregunta: this.cPregunta,
+            iTipoPregId: this.iTipoPregId,
+            jsonAlternativas: this.jsonAlternativas,
         }
         this.formpregunta.emit(data)
-        console.log('datos', data)
-        // "iCuestionarioId":"1011",
-        // "iTipoPregId":"2",
-        // "cPregunta":"¿Qué piensas acerca de la IA?",
-        // "cPreguntaImg":"",
-        // "cIndicaciones":"",
-        // "cTextoAyuda":"",
-        // "tTiempo":"",
-        // "jsonAlternativas":"[{\"cAlternativa\":\"Opcion 1\",\"cAlternativaImg\":\"\"},{\"cAlternativa\":\"Opcion 2\",\"cAlternativaImg\":\"\"},{\"cAlternativa\":\"Opcion 3\",\"cAlternativaImg\":\"\"}]",
-        // "iCredId": "1"
     }
     onInput(event: Event) {
         const value = (event.target as HTMLElement).innerText
-        this.formPreguntas.get('cPregunta')?.setValue(value)
+        this.cPregunta = value
+        // this.formPreguntas.get('cPregunta')?.setValue(value)
     }
 
     onFocus() {

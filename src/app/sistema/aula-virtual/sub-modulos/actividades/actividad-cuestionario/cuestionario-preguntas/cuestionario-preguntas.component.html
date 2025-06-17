@@ -4,7 +4,7 @@
             <span style="font-size: 18px">Total Preguntas:</span>
             <span>
                 <p-badge
-                    [value]="totalPregunta"
+                    [value]="data.length"
                     severity="primary"
                     styleClass="ml-2"
                     badgeSize="large"
@@ -56,8 +56,8 @@
             </div>
             <div class="col-12">
                 <div class="card col-12 mb-3 p-3" *ngFor="let item of data">
-                    <h5>{{ item.nombre }}</h5>
-                    @switch (item.tipoCuestionario) {
+                    <h5>{{ item.cPregunta }}</h5>
+                    @switch (item.cCodeTipoPreg) {
                         @case ('TIP-PREG-TEXTO') {
                             <div class="col-12">
                                 <input
@@ -73,33 +73,50 @@
                         @case ('TIP-PREG-OPCIONES') {
                             <div class="align-content-center mb-2">
                                 <div
-                                    *ngFor="let opcion of item.opciones"
+                                    *ngFor="let opcion of item.jsonAlternativas"
                                     class="mb-2"
                                 >
                                     <p-radioButton
                                         id="opcion1"
                                         name="grupoOpciones"
-                                        [value]="opcion.id"
+                                        [value]="opcion.iPregAlterId"
                                         [(ngModel)]="selectedOption"
                                         class="mr-2"
                                     ></p-radioButton>
                                     <label for="opcion1">{{
-                                        opcion.label
+                                        opcion.cAlternativa
                                     }}</label>
                                 </div>
                             </div>
                         }
 
                         @case ('TIP-PREG-CASILLA') {
-                            <i class="pi pi-pencil text-success mr-2"></i>
-                            <span>Respuesta Corta</span>
+                            <div class="align-content-center mb-2">
+                                <div
+                                    *ngFor="let opcion of item.jsonAlternativas"
+                                    class="mb-2"
+                                >
+                                    <p-checkbox
+                                        id="opcion1"
+                                        name="grupoOpciones"
+                                        [value]="opcion.iPregAlterId"
+                                        [(ngModel)]="selectedOption"
+                                        class="mr-2"
+                                    />
+
+                                    <label for="opcion1">{{
+                                        opcion.cAlternativa
+                                    }}</label>
+                                </div>
+                            </div>
                         }
 
                         @case ('TIP-PREG-DESPLEGABLE') {
                             <div class="col-6">
                                 <p-dropdown
-                                    [options]="item.opciones"
+                                    [options]="item.jsonAlternativas"
                                     [(ngModel)]="selectedDropdown"
+                                    optionLabel="cAlternativa"
                                     placeholder="Selecciona una opción"
                                     class="w-full custom-hover-input mb-2"
                                     styleClass="w-full"
@@ -127,6 +144,7 @@
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Eliminar pregunta"
+                            (click)="eliminarPregunta(item)"
                         />
                         <p-button
                             icon="pi pi-file-edit"
@@ -135,6 +153,7 @@
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Editar pregunta"
+                            (click)="editarPregunta(item)"
                         />
                     </div>
                 </div>
@@ -144,7 +163,7 @@
 </div>
 <app-cuestionario-form-preguntas
     [showModal]="showModal"
-    [data]="[]"
+    [data]="params"
     [titulo]="titulo"
     [opcion]="opcion"
     [tipoPreguntas]="tipoPreguntas"

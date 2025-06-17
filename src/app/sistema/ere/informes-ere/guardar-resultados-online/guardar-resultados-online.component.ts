@@ -33,7 +33,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     alumnosFiltrados: any[] = []
     iSemAcadId: number // ID del semestre académico
 
-    // formulario guardar resultados online
+    // formulario guardar resultados onlinee
     public formCurso: FormGroup = this._formBuilder.group({
         cCursoNombre: ['', [Validators.required]],
         cGradoAbreviacion: ['', [Validators.required]],
@@ -83,9 +83,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: (rowData) => {
-                console.log('rowData')
-                console.log(rowData)
-
                 return rowData.iEstado === 1
             },
         },
@@ -449,6 +446,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
                         return {
                             ...alumno,
                             iEstado: 0,
+                            bActive: 1, // Asignar un valor por defecto a bActive
                         }
                     } else {
                         return {
@@ -548,6 +546,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.alumnosFiltrados = this.alumnosFiltrados.map((item) => ({
             ...item,
             iEstado: 1,
+            bActive: 0, // Asignar un valor por defecto a bActive
         }))
 
         console.log(
@@ -577,6 +576,14 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
         this.datosInformesService.importarOffLine(subirArchivo).subscribe({
             next: (data: any) => {
+                const documento =
+                    datos_hojas.length > 0 ? datos_hojas[0]['documento'] : null
+                this.alumnosFiltrados.map((alumno) => {
+                    if (alumno.documento === documento) {
+                        alumno.bActive = 1
+                        alumno.iEstado = 0
+                    }
+                })
                 console.log('Datos Subidas de Importar Resultados:', data)
             },
             error: (error) => {
@@ -588,7 +595,11 @@ export class GuardarResultadosOnlineComponent implements OnInit {
                 })
             },
             complete: () => {
-                console.log('Request completed')
+                this._messageService.add({
+                    severity: 'success',
+                    summary: 'Mensaje del sistema',
+                    detail: 'Se aactualizo la tabla de resultados',
+                })
             },
         })
     }

@@ -72,6 +72,7 @@ export class AuxiliarComponent implements OnInit {
             complete: () => {},
         })
     }
+
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento

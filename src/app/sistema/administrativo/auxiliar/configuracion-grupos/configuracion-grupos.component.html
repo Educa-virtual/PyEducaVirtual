@@ -100,6 +100,10 @@
         />
     </div>
     <div class="flex align-items-center gap-3 mb-5">
+        <label class="font-semibold w-6rem" for="elegir">Ingresar/Elegir</label>
+        <p-inputSwitch [(ngModel)]="elegir" />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
         <label for="descripcion" class="font-semibold w-6rem">Ingreso</label>
         <p-calendar
             appendTo="body"

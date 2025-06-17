@@ -15,6 +15,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 })
 export class ConfiguracionGruposComponent implements OnInit {
     // @Input() datosGrupos: any = [];
+    elegir: boolean = false
     ingreso: string | undefined
     salida: string | undefined
     visible: boolean = false

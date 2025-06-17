@@ -1,95 +1,154 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
+import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 
 @Component({
     selector: 'app-ficha-discapacidad',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, SwitchInputComponent],
     templateUrl: './ficha-discapacidad.component.html',
     styleUrl: './ficha-discapacidad.component.scss',
 })
 export class FichaDiscapacidadComponent implements OnInit {
+    iFichaDGId: any = null
     formDiscapacidad: FormGroup
     visibleProgramaInput: Array<boolean>
     visibleLimitacionesInput: Array<boolean>
     ficha_registrada: boolean = false
     discapacidades: Array<object>
+    get controles_discapacidades(): FormArray {
+        return this.formDiscapacidad.get(
+            'controles_discapacidades'
+        ) as FormArray
+    }
 
     private _messageService = inject(MessageService)
 
     constructor(
         private fb: FormBuilder,
-        private compartirFichaService: CompartirFichaService,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private router: Router
+        private compartirFicha: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(5)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(5)
     }
 
     ngOnInit(): void {
-        this.visibleProgramaInput = Array(3).fill(false)
-
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.discapacidades =
-                    this.datosFichaBienestarService.getDiscapacidades(
-                        data?.discapacidades
-                    )
-                if (this.discapacidades.length > 0) {
-                    this.visibleLimitacionesInput = Array(
-                        this.discapacidades.length
-                    ).fill(false)
-                }
-            })
-
         try {
             this.formDiscapacidad = this.fb.group({
-                iFichaDGId: [null, Validators.required],
+                iFichaDGId: [this.iFichaDGId, Validators.required],
                 bFichaDGEstaEnCONADIS: [false],
-                cCodigoCONADIS: [null],
+                cFichaDGCodigoCONADIS: [null, Validators.maxLength(50)],
                 bFichaDGEstaEnOMAPED: [false],
-                cCodigoOMAPED: [null],
-                bFichaDGEstaEnOtro: [false],
-                cOtroProgramaDiscapacidad: [null],
-                iDiscId: [null],
-                cDiscFichaObs: [null],
+                cFichaDGCodigoOMAPED: [null, Validators.maxLength(50)],
+                bOtroProgramaDiscapacidad: [false],
+                cOtroProgramaDiscapacidad: [null, Validators.maxLength(50)],
+                controles_discapacidades: this.fb.array([]),
+                jsonDiscapacidades: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
+
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.discapacidades = this.datosFichaBienestar.getDiscapacidades(
+                data?.discapacidades
+            )
+            if (this.discapacidades.length > 0) {
+                this.crearControlesDiscapacidades(this.discapacidades)
+            }
+        })
+
+        if (this.iFichaDGId) {
+            this.verFichaDiscapacidad()
+        }
     }
 
-    handleSwitchProgramaChange(event: any, index: any) {
-        if (event?.checked === undefined) {
-            this.visibleProgramaInput[index] = false
-            return null
-        }
-        if (event.checked === true) {
-            this.visibleProgramaInput[index] = true
-        } else {
-            this.visibleProgramaInput[index] = false
-        }
+    crearControlesDiscapacidades(discapacidades: Array<object>) {
+        const formArray = this.formDiscapacidad.get(
+            'controles_discapacidades'
+        ) as FormArray
+        formArray.clear()
+        this.discapacidades.map((param: any) => {
+            const registro = discapacidades.find(
+                (registro: any) => registro.value === param.value
+            )
+            let grupo: FormGroup = null
+            if (!registro) {
+                grupo = this.fb.group({
+                    iDiscId: [param.value],
+                    bDiscFicha: [false],
+                    cDiscFichaObs: [null],
+                })
+                formArray.push(grupo)
+            } else {
+                grupo = this.fb.group({
+                    iDiscId: [param.value],
+                    bDiscFicha: [registro['estado']],
+                    cDiscFichaObs: [registro['obs']],
+                })
+                formArray.push(grupo)
+                grupo
+                    .get('bDiscFicha')
+                    .setValue(registro['estado'], { emitEvent: true })
+            }
+        })
     }
 
-    handleSwitchLimitacionChange(event: any, index: number) {
-        if (event?.checked === undefined) {
-            this.visibleLimitacionesInput[index] = false
-            return null
-        }
-        if (event.checked === true) {
-            this.visibleLimitacionesInput[index] = true
-        } else {
-            this.visibleLimitacionesInput[index] = false
-        }
+    async verFichaDiscapacidad(): Promise<void> {
+        this.datosFichaBienestar
+            .verFichaDiscapacidad({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                if (data) {
+                    this.setFormDiscapacidad(data.data[0])
+                }
+            })
+    }
+
+    setFormDiscapacidad(data: any) {
+        this.formDiscapacidad.patchValue(data)
+        this.datosFichaBienestar.formatearFormControl(
+            this.formDiscapacidad,
+            'bFichaDGEstaEnCONADIS',
+            data.bFichaDGEstaEnCONADIS,
+            'boolean'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formDiscapacidad,
+            'bFichaDGEstaEnOMAPED',
+            data.bFichaDGEstaEnOMAPED,
+            'boolean'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formDiscapacidad,
+            'bOtroProgramaDiscapacidad',
+            data.bOtroProgramaDiscapacidad,
+            'boolean'
+        )
+        const discapacidades = JSON.parse(data.discapacidades).map(
+            (discapacidad: any) => {
+                return {
+                    value: discapacidad.iDiscId,
+                    estado: discapacidad.bDiscFicha == 1 ? true : false,
+                    obs: discapacidad.cDiscFichaObs || null,
+                }
+            }
+        )
+        this.crearControlesDiscapacidades(discapacidades)
     }
 
     guardar() {
@@ -101,27 +160,11 @@ export class FichaDiscapacidadComponent implements OnInit {
             })
             return
         }
-
-        const programas = []
-        this.formDiscapacidad.get('iProgAlimId').value.forEach((elemento) => {
-            programas.push({
-                iProgAlimId: elemento,
-            })
-        })
-        this.formDiscapacidad
-            .get('jsonProgramas')
-            .setValue(JSON.stringify(programas))
-
-        this.datosFichaBienestarService
-            .guardarFichaAlimentacion(this.formDiscapacidad.value)
+        this.datosFichaBienestar
+            .guardarFichaDiscapacidad(this.formDiscapacidad.value)
             .subscribe({
-                next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
+                next: () => {
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formDiscapacidad =
-                        this.formDiscapacidad.value
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Registro exitoso',
@@ -151,27 +194,13 @@ export class FichaDiscapacidadComponent implements OnInit {
             })
             return
         }
-
-        const programas = []
-        this.formDiscapacidad.get('iProgAlimId').value.forEach((elemento) => {
-            programas.push({
-                iProgAlimId: elemento,
-            })
-        })
         this.formDiscapacidad
-            .get('jsonProgramas')
-            .setValue(JSON.stringify(programas))
-
-        this.datosFichaBienestarService
-            .actualizarFichaAlimentacion(this.formDiscapacidad.value)
+            .get('jsonDiscapacidades')
+            .setValue(JSON.stringify(this.controles_discapacidades.value))
+        this.datosFichaBienestar
+            .actualizarFichaDiscapacidad(this.formDiscapacidad.value)
             .subscribe({
-                next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
-                    this.ficha_registrada = true
-                    this.datosFichaBienestarService.formDiscapacidad =
-                        this.formDiscapacidad.value
+                next: () => {
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',
@@ -183,7 +212,7 @@ export class FichaDiscapacidadComponent implements OnInit {
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error.message,
+                        detail: error.error.message,
                     })
                 },
                 complete: () => {

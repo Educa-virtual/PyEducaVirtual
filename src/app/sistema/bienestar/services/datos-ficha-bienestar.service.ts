@@ -249,6 +249,24 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
+    verFichaDiscapacidad(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaDiscapacidad`, data)
+    }
+
+    guardarFichaDiscapacidad(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/guardarFichaDiscapacidad`,
+            data
+        )
+    }
+
+    actualizarFichaDiscapacidad(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaDiscapacidad`,
+            data
+        )
+    }
+
     /**
      *
      * FUNCTIONES PARA POPULAR PARAMETROS DE FORMULARIOS DE FICHA

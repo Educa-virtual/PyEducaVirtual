@@ -2,7 +2,13 @@
     <ng-template pTemplate="header">
         <span class="text-xl">Ficha socioeconómica</span>
     </ng-template>
-    <p-tabMenu #tabMenu [model]="items" scrollable="true">
+    <p-tabMenu
+        #tabMenu
+        [model]="items"
+        scrollable="true"
+        (activeItemChange)="scrollToActiveTab(activeItem)"
+        [activeItem]="activeItem"
+    >
         <ng-template pTemplate="item" let-item>
             <ng-container *ngIf="item.route">
                 @if (items[activeItem] === item) {

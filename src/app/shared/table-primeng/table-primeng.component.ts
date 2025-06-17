@@ -97,17 +97,32 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
     trSelected
-    itemSelected
+
     getClass(rowData: any, classes: string): { [key: string]: boolean } {
         const fieldValue = rowData?.[classes]
         return fieldValue ? { [String(fieldValue)]: true } : {}
     }
 
     getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
+        console.log(rowData)
         return {
             ...this.getClass(rowData, 'class'),
             itemSelected: rowIndex === this.trSelected,
+            itemActive: Number(rowData.bActive) ? true : false,
         }
+    }
+
+    getColorEstado(
+        rowData: any,
+        rowIndex: number,
+        tipo: 'check' | 'times'
+    ): string {
+        const isActiveOrSelected =
+            !!Number(rowData.bActive) || this.trSelected === rowIndex
+
+        if (isActiveOrSelected) return 'white'
+
+        return tipo === 'check' ? 'green' : 'red'
     }
 
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =

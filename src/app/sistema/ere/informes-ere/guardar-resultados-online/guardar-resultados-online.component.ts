@@ -12,6 +12,7 @@ import {
 import { GeneralService } from '@/app/servicios/general.service'
 
 import { DatosInformesService } from '../../services/datos-informes.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 @Component({
     selector: 'app-guardar-resultados-online',
     standalone: true,
@@ -51,7 +52,8 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     constructor(
         private store: LocalStoreService,
         private query: GeneralService,
-        private datosInformesService: DatosInformesService
+        private datosInformesService: DatosInformesService,
+        private dialogConfirm: ConfirmationModalService
     ) {}
 
     ngOnInit() {
@@ -80,7 +82,26 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             accion: 'guardar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: (rowData) => {
+                console.log('rowData')
+                console.log(rowData)
+
+                return rowData.iEstado === 1
+            },
         },
+        // {
+        //     labelTooltip: 'guardar',
+        //     icon: 'pi pi-plus',
+        //     accion: 'guardar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-primary p-button-text',
+        //     isVisible: (rowData) => {
+        //         console.log('rowData');
+        //         console.log(rowData);
+
+        //         return rowData.sexo == "F"
+        //     }
+        // },
     ]
     columnas: IColumn[] = [
         // {
@@ -419,7 +440,26 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         // console.log('Item recibido:', item)
 
         //this.subirArchivo(item) // Ahora item completo será enviado
-        this.subirArchivo([item])
+
+        this.dialogConfirm.openConfirm({
+            header: `Se va a guardar los resultados ingresados del estudiante: ${item.documento}`,
+            accept: () => {
+                this.alumnosFiltrados = this.alumnosFiltrados.map((alumno) => {
+                    if (alumno.documento == item.documento) {
+                        return {
+                            ...alumno,
+                            iEstado: 0,
+                        }
+                    } else {
+                        return {
+                            ...alumno,
+                        }
+                    }
+                })
+
+                this.subirArchivo([item])
+            },
+        })
     }
 
     getSeccion() {
@@ -504,6 +544,11 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.alumnosFiltrados = this.alumnos.filter(
             (alumno) => alumno.iSeccionId === Number(seccionIdSeleccionada)
         )
+
+        this.alumnosFiltrados = this.alumnosFiltrados.map((item) => ({
+            ...item,
+            iEstado: 1,
+        }))
 
         console.log(
             this.alumnosFiltrados,

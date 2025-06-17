@@ -34,7 +34,7 @@ export class ImagePreviewComponent implements OnChanges {
     }
 
     aumentarZoom() {
-        if (this.zoomLevel == 100) {
+        if (this.zoomLevel == 120) {
             return
         }
         this.zoomLevel = this.zoomLevel + 10

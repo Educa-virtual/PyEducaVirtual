@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
+import { MessageService } from 'primeng/api'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-historial-asistencia',
     standalone: true,
@@ -10,12 +13,12 @@ import { PrimengModule } from '@/app/primeng.module'
     styleUrl: './historial-asistencia.component.scss',
 })
 export class HistorialAsistenciaComponent implements OnInit {
-    selectedRol: any
+    @Input() datosGrupos: any = []
+    iSedeId: string
+    selGrupo: any
     personal: any = []
 
-    grupo = []
-
-    roles: any = [
+    grupo: any = [
         { id: 1, cNombre: 'Todos' },
         { id: 2, cNombre: 'Auxiliar' },
         { id: 3, cNombre: 'Estudiante' },
@@ -31,15 +34,60 @@ export class HistorialAsistenciaComponent implements OnInit {
         { campo: 'Acciones' },
     ]
 
-    ngOnInit() {
-        this.grupo = []
+    private generalService = inject(GeneralService)
+    private constantesService = inject(ConstantesService)
 
-        this.roles = [
-            { name: 'New York', code: 'NY' },
-            { name: 'Rome', code: 'RM' },
-            { name: 'London', code: 'LDN' },
-            { name: 'Istanbul', code: 'IST' },
-            { name: 'Paris', code: 'PRS' },
-        ]
+    constructor(private messageService: MessageService) {
+        this.iSedeId = this.constantesService.iSedeId
+    }
+
+    ngOnInit() {
+        console.log(1)
+        // this.buscarGrupos();
+    }
+    buscarGrupos() {
+        const params = {
+            petition: 'post',
+            group: 'asi',
+            prefix: 'grupos',
+            ruta: 'verificar-grupo-asistencia',
+            data: {
+                iSedeId: this.iSedeId,
+            },
+        }
+        this.getInformation(params, 'verificar_grupos')
+    }
+
+    getInformation(params, accion) {
+        this.generalService.getGralPrefix(params).subscribe({
+            next: (response: any) => {
+                this.accionBtnItem({ accion, item: response?.data })
+            },
+            error: (error) => {
+                const mensaje = error.error.message
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Sin Grupos',
+                    detail: mensaje,
+                })
+            },
+            complete: () => {},
+        })
+    }
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
+
+        switch (accion) {
+            case 'verificar_grupos':
+                if (item) {
+                    console.log(item)
+                    this.grupo = item
+                }
+                break
+            default:
+                break
+        }
     }
 }

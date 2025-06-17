@@ -11,12 +11,13 @@
         </div>
         <div class="col-12 md:col-6">
             <p-inputGroup>
-                <p-inputGroupAddon>Fecha: </p-inputGroupAddon>
+                <p-inputGroupAddon>Grupo: </p-inputGroupAddon>
                 <p-dropdown
-                    [options]="roles"
-                    [(ngModel)]="selectedRol"
-                    optionLabel="name"
-                    placeholder="Seleccionar Rol"
+                    [options]="datosGrupos"
+                    [(ngModel)]="selGrupo"
+                    [optionLabel]="'cGrupoNombre'"
+                    [optionValue]="'iGrupoId'"
+                    placeholder="Seleccionar Grupo"
                 >
                 </p-dropdown>
             </p-inputGroup>

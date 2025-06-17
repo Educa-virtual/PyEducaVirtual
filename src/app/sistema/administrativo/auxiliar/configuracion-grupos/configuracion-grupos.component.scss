@@ -1,0 +1,17 @@
+:host ::ng-deep {
+    .nuevo-card {
+        background-color: white;
+        transition: 0.5s;
+        cursor: pointer;
+        &:hover {
+            background-color: var(--green-200);
+            i {
+                color: white;
+            }
+        }
+    }
+    .nuevo-card i {
+        color: var(--green-400);
+        transition: 0.5s;
+    }
+}

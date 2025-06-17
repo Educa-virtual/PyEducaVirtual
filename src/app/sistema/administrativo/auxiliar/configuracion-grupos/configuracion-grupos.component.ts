@@ -1,32 +1,28 @@
-import { Component, inject, OnInit, Input } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
-import { ConstantesService } from '@/app/servicios/constantes.service'
-import { GeneralService } from '@/app/servicios/general.service'
+import { PrimengModule } from '@/app/primeng.module'
 import { MessageService } from 'primeng/api'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+
 @Component({
-    selector: 'app-configuracion-asistencia',
+    selector: 'app-configuracion-grupos',
     standalone: true,
-    imports: [CommonModule, PrimengModule, FormsModule],
-    providers: [MessageService],
-    templateUrl: './configuracion-asistencia.component.html',
-    styleUrl: './configuracion-asistencia.component.scss',
+    imports: [CommonModule, FormsModule, PrimengModule],
+    templateUrl: './configuracion-grupos.component.html',
+    styleUrl: './configuracion-grupos.component.scss',
 })
-export class ConfiguracionAsistenciaComponent implements OnInit {
-    @Input() datosGrupos: any = []
+export class ConfiguracionGruposComponent implements OnInit {
+    // @Input() datosGrupos: any = [];
+    ingreso: string | undefined
+    salida: string | undefined
     visible: boolean = false
+    time: Date[] | undefined
+    datosGrupos: any = []
+    iSedeId: string
     nombreGrupo: string | undefined
     descripcionGrupo: string | undefined
-    iSedeId: string
-    selGrupo: any | number = 1
-    time: Date | undefined
-    grupo = []
-    roles: any = [
-        { id: 1, cNombre: 'Docente' },
-        { id: 2, cNombre: 'Administrativo' },
-        { id: 3, cNombre: 'Estudiante' },
-    ]
 
     private generalService = inject(GeneralService)
     private constantesService = inject(ConstantesService)
@@ -36,8 +32,7 @@ export class ConfiguracionAsistenciaComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log(1)
-        // this.buscarGrupos()
+        this.buscarGrupos()
     }
 
     guardarGrupo() {
@@ -53,7 +48,6 @@ export class ConfiguracionAsistenciaComponent implements OnInit {
             },
         }
         this.getInformation(params, 'guardar_grupos')
-        // this.visible = false
     }
 
     buscarGrupos() {
@@ -61,11 +55,10 @@ export class ConfiguracionAsistenciaComponent implements OnInit {
             petition: 'post',
             group: 'asi',
             prefix: 'grupos',
-            ruta: 'verificar-grupo-asistencia',
+            ruta: 'verificar-horario',
             data: {
                 iSedeId: this.iSedeId,
             },
-            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'verificar_grupos')
     }
@@ -92,30 +85,31 @@ export class ConfiguracionAsistenciaComponent implements OnInit {
         const { item } = elemento
 
         switch (accion) {
+            case 'guardar_grupos':
+                break
             case 'verificar_grupos':
                 if (item) {
-                    console.log(item)
-                    this.grupo = item
-                }
-                break
-            case 'guardar_grupos':
-                const respuesta = Number(item[0]['respuesta'])
-                if (respuesta != 0) {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Nuevo Grupo',
-                        detail: 'Se ha creado el grupo',
-                        life: 10000,
+                    this.datosGrupos = item.map((element) => {
+                        if (element.configuracion != null) {
+                            return {
+                                ...element,
+                                configuracion: JSON.parse(
+                                    element.configuracion
+                                ),
+                            }
+                        } else {
+                            return {
+                                ...element,
+                                configuracion: {
+                                    iConfHorarioId: 0,
+                                    iGrupoId: 0,
+                                    tConfHorarioEntTur: '1900-01-01T00:00:00',
+                                    tConfHorarioSalTur: '1900-01-01T00:00:00',
+                                },
+                            }
+                        }
                     })
-                } else {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Fallo al Crear Nuevo Grupo',
-                        detail: 'No se ha creado el grupo porque ya existe',
-                        life: 10000,
-                    })
                 }
-                this.visible = false
                 break
             default:
                 break

@@ -13,14 +13,15 @@
                     </button>
                     <p-divider />
                     <p-listbox
-                        [options]="roles"
-                        [(ngModel)]="selRol"
-                        optionLabel="cNombre"
+                        [options]="datosGrupos"
+                        [(ngModel)]="selGrupo"
+                        [optionLabel]="'cGrupoNombre'"
+                        [optionValue]="'iGrupoId'"
                         class="w-full"
                     />
                 </div>
                 <div class="col-10">
-                    <p-card header="Docente" *ngIf="selRol.id === 1">
+                    <p-card header="Docente" *ngIf="selGrupo.id === 1">
                         <div class="m-0 grid">
                             <div class="col-6">
                                 <label
@@ -37,14 +38,14 @@
                             </div>
                         </div>
                     </p-card>
-                    <p-card header="Administrador" *ngIf="selRol.id === 2">
+                    <p-card header="Administrador" *ngIf="selGrupo.id === 2">
                         <div class="m-0 grid">
                             <div class="col-4">col 1</div>
                             <div class="col-4">col 2</div>
                             <div class="col-4">col 3</div>
                         </div>
                     </p-card>
-                    <p-card header="Estudiante" *ngIf="selRol.id === 3">
+                    <p-card header="Estudiante" *ngIf="selGrupo.id === 3">
                         <div class="m-0 grid">
                             <div class="col-4">col 1</div>
                             <div class="col-4">col 2</div>

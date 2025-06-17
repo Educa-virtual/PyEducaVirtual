@@ -23,6 +23,7 @@
                 <!-- Historial de Asistencia -->
                 <app-historial-asistencia
                     *ngIf="grupo"
+                    [datosGrupos]="datosGrupos"
                 ></app-historial-asistencia>
                 <div class="grid">
                     <div class="col-3 flex align-items-center h-8rem">
@@ -35,13 +36,6 @@
                         >
                         </p-button>
                     </div>
-                    <!-- <div class="col-9">
-                        <p-messages
-                            class="w-full"
-                            [(value)]="mensaje"
-                            [closable]="true"
-                        />
-                    </div> -->
                 </div>
             </p-tabPanel>
             <p-tabPanel
@@ -51,7 +45,21 @@
                 <!-- Configuracion de Ingreso / Salida -->
                 <app-configuracion-asistencia
                     *ngIf="grupo"
+                    [datosGrupos]="datosGrupos"
                 ></app-configuracion-asistencia>
+                <!-- <p-progressSpinner
+                    *ngIf="!grupo"
+                    styleClass="w-4rem h-4rem"
+                    strokeWidth="8"
+                    fill="var(--surface-ground)"
+                    animationDuration=".10s"
+                /> -->
+            </p-tabPanel>
+            <p-tabPanel header="Configurar Grupos" [disabled]="habilitarGrupo">
+                <!-- Configuracion de Ingreso / Salida -->
+                <app-configuracion-grupos
+                    *ngIf="grupo"
+                ></app-configuracion-grupos>
                 <!-- <p-progressSpinner
                     *ngIf="!grupo"
                     styleClass="w-4rem h-4rem"

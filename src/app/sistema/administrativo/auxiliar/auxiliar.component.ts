@@ -1,7 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, Input } from '@angular/core'
 import { HistorialAsistenciaComponent } from './historial-asistencia/historial-asistencia.component'
 import { ConfiguracionAsistenciaComponent } from './configuracion-asistencia/configuracion-asistencia.component'
+import { ConfiguracionGruposComponent } from './configuracion-grupos/configuracion-grupos.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
@@ -12,12 +13,15 @@ import { MessageService } from 'primeng/api'
         PrimengModule,
         HistorialAsistenciaComponent,
         ConfiguracionAsistenciaComponent,
+        ConfiguracionGruposComponent,
     ],
     providers: [MessageService],
     templateUrl: './auxiliar.component.html',
     styleUrl: './auxiliar.component.scss',
 })
 export class AuxiliarComponent implements OnInit {
+    @Input() datosGrupos: any = []
+
     visible: boolean = false
     grupo: boolean = false
     habilitarGrupo: boolean = true
@@ -34,6 +38,7 @@ export class AuxiliarComponent implements OnInit {
     constructor(private messageService: MessageService) {
         this.iSedeId = this.constantesService.iSedeId
     }
+
     ngOnInit() {
         this.verificarCreacionGrupos()
     }
@@ -74,6 +79,7 @@ export class AuxiliarComponent implements OnInit {
         switch (accion) {
             case 'verificar_grupos':
                 if (item) {
+                    this.datosGrupos = item
                     this.grupo = true
                     this.habilitarGrupo = false
                 }

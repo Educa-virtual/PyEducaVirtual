@@ -1,0 +1,150 @@
+<div class="grid">
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon> Buscar: </p-inputGroupAddon>
+            <input pInputText placeholder="Buscar Grupo" />
+        </p-inputGroup>
+    </div>
+    <div class="col-3" style="height: 350px">
+        <p-card
+            styleClass="nuevo-card h-full flex justify-content-center align-items-center"
+            (click)="visible = true"
+        >
+            <i class="pi pi-plus-circle text-bold text-5xl"></i>
+        </p-card>
+    </div>
+    <div class="col-3" *ngFor="let grupo of datosGrupos">
+        <p-card header="Grupo {{ grupo.cGrupoNombre }}">
+            <div class="p-1 text-center">
+                <i class="pi pi-user text-4xl"></i>
+            </div>
+            <div class="p-1">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Cantidad:</p-inputGroupAddon>
+                    <input type="text" pInputText placeholder="0" />
+                </p-inputGroup>
+            </div>
+            <div class="p-1">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Ingreso:</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        [(ngModel)]="grupo.configuracion.iGrupoId"
+                        pInputText
+                        placeholder="00:00"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="p-1">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Salida:</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        [(ngModel)]="grupo.configuracion.iGrupoId"
+                        pInputText
+                        placeholder="00:00"
+                    />
+                </p-inputGroup>
+            </div>
+            <ng-template pTemplate="footer">
+                <div class="flex gap-3 mt-1">
+                    <p-button
+                        label="Editar Grupo"
+                        class="w-full"
+                        styleClass="w-full"
+                    />
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+</div>
+
+<p-dialog
+    header="Header"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '25rem' }"
+>
+    <ng-template pTemplate="header">
+        <div
+            class="inline-flex align-items-center justify-content-center gap-2"
+        >
+            <span class="font-bold white-space-nowrap">
+                Crear Grupos de Asistencia
+            </span>
+        </div>
+    </ng-template>
+    <hr />
+    <div class="flex align-items-center gap-3 mb-3">
+        <label for="grupo" class="font-semibold w-6rem">
+            Nombre de Grupo
+        </label>
+        <input
+            pInputText
+            [(ngModel)]="nombreGrupo"
+            id="grupo"
+            class="flex-auto"
+            autocomplete="off"
+        />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="descripcion" class="font-semibold w-6rem"
+            >Descripcion</label
+        >
+        <input
+            pInputText
+            [(ngModel)]="descripcionGrupo"
+            id="descripcion"
+            class="flex-auto"
+            autocomplete="off"
+        />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="descripcion" class="font-semibold w-6rem">Ingreso</label>
+        <p-calendar
+            appendTo="body"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            [timeOnly]="true"
+            inputId="templatedisplay"
+        >
+            <ng-template
+                pTemplate="inputicon"
+                let-clickCallBack="clickCallBack"
+            >
+                <i class="pi pi-clock pointer-events-none"></i>
+            </ng-template>
+        </p-calendar>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="descripcion" class="font-semibold w-6rem">Salida</label>
+        <p-calendar
+            appendTo="body"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            [timeOnly]="true"
+            inputId="templatedisplay"
+        >
+            <ng-template
+                pTemplate="inputicon"
+                let-clickCallBack="clickCallBack"
+            >
+                <i class="pi pi-clock pointer-events-none"></i>
+            </ng-template>
+        </p-calendar>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button
+            label="Cancelar"
+            [text]="true"
+            severity="secondary"
+            (click)="visible = false"
+        />
+        <p-button
+            label="Guardar"
+            [outlined]="true"
+            severity="success"
+            (click)="guardarGrupo()"
+        />
+    </ng-template>
+</p-dialog>

@@ -33,6 +33,12 @@ export class importantDayService {
         })
     }
 
+    getDependenciaFechas(data) {
+        return this.http.get(
+            `${this.endPoint}/getDependenciaFechas/${data.iFechaImpId}`
+        )
+    }
+
     getFechasImportantes() {
         const iYAcadId = JSON.parse(localStorage.getItem('dremoiYAcadId'))
         const iSedeId = JSON.parse(localStorage.getItem('dremoPerfil'))?.iSedeId

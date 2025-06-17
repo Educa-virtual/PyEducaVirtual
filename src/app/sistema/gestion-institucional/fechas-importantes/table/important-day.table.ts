@@ -1,7 +1,8 @@
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { FechasImportentesComponent } from '../fechas-importantes.component'
-import { container } from '../actions/actions.container'
+import { container } from '../actions/important-day.actions.container'
 import { of, switchMap, tap } from 'rxjs'
+import { table } from '../actions/important-day.actions.table'
 
 const columns: IColumn[] = [
     {
@@ -45,18 +46,29 @@ const columns: IColumn[] = [
         text: 'center',
     },
     {
+        type: 'text',
+        width: '5rem',
+        field: 'observacion',
+        header: 'Observación',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
         type: 'actions',
         width: '3rem',
         field: 'actions',
         header: 'Acciones',
         text_header: 'center',
-        text: 'center',
+        text: 'right',
     },
 ]
 
 function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
-    this.form.reset()
+    this.forms.importantDay.reset()
+    this.forms.importantDay.enable()
     this.importantDay.table.data.import = []
+    1
+    this.importantDay.typeActive = undefined /* SIN TIPO */
 
     switch (accion) {
         case 'agregar':
@@ -66,6 +78,8 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
             }
             console.log(item)
 
+            this.importantDay.typeActive = 4 /* FECHA ESPECIAL IE */
+
             break
         case 'editar':
             this.dialogs.importantDay = {
@@ -73,13 +87,19 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
                 visible: true,
             }
 
-            const [day, month, year] = item.dtFechaImpFecha.split('/')
+            this.importantDay.typeActive = 4 /* FECHA ESPECIAL IE */
 
-            this.form.patchValue({
+            this.forms.importantDay.patchValue({
                 iFechaImpId: item.iFechaImpId,
                 iTipoFerId: item.iTipoFerId,
                 cFechaImpNombre: item.cFechaImpNombre,
-                dtFechaImpFecha: new Date(`${month}/${day}/${year}`),
+                dtFechaImpFecha: new Date(
+                    (() => {
+                        const [day, month, year] =
+                            item.dtFechaImpFecha.split('/')
+                        return `${month}/${day}/${year}`
+                    })()
+                ),
                 cFechaImpURLDocumento: item.cFechaImpURLDocumento,
                 bFechaImpSeraLaborable: Number(item.bFechaImpSeraLaborable),
                 cFechaImpInfoAdicional: item.cFechaImpInfoAdicional,
@@ -135,6 +155,54 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
             })
 
             break
+
+        case 'mostrarFechaRecuperable':
+            this.forms.importantDay.disable()
+            this.importantDay.table.data.recovery = []
+
+            this.dialogs.importantDaysRecovery = {
+                title: 'Fechas de recuperación',
+                visible: true,
+            }
+
+            this.importantDay.typeActive = 3 /* FECHA DE RECUPERACIÓN */
+
+            this.forms.importantDay.patchValue({
+                iFechaImpId: item.iFechaImpId,
+                iTipoFerId: item.iTipoFerId,
+                cFechaImpNombre: item.cFechaImpNombre,
+                dtFechaImpFecha: new Date(
+                    (() => {
+                        const [day, month, year] =
+                            item.dtFechaImpFecha.split('/')
+                        return `${month}/${day}/${year}`
+                    })()
+                ),
+                cFechaImpURLDocumento: item.cFechaImpURLDocumento,
+                bFechaImpSeraLaborable: Number(item.bFechaImpSeraLaborable),
+                cFechaImpInfoAdicional: item.cFechaImpInfoAdicional,
+            })
+
+            this.importantDayService
+                .getDependenciaFechas(this.forms.importantDay.value)
+                .subscribe({
+                    next: (res: any) => {
+                        const result = res.data[0]
+                        const iDepFechaImpId = result && 'iFechaImpId' in result
+
+                        if (iDepFechaImpId) {
+                            this.importantDay.table.data.recovery =
+                                res.data.map((item) => ({
+                                    ...item,
+                                    dtFechaImpFecha: this.datePipe.transform(
+                                        item.dtFechaImpFecha,
+                                        'dd/MM/yyyy'
+                                    ),
+                                }))
+                        }
+                    },
+                })
+            break
     }
 }
 
@@ -151,19 +219,23 @@ function saveData(this: FechasImportentesComponent) {
     }
 
     const data: any = {
-        iTipoFerId: this.form.value.iTipoFerId,
-        cFechaImpNombre: this.form.value.cFechaImpNombre,
+        iTipoFerId: this.importantDay.typeActive,
+        cFechaImpNombre: this.forms.importantDay.value.cFechaImpNombre,
         iCalAcadId: this.importantDay.calendar?.iCalAcadId,
         dtFechaImpFecha: this.datePipe.transform(
-            this.form.value.dtFechaImpFecha,
+            this.forms.importantDay.value.dtFechaImpFecha,
             'yyyy-MM-dd'
         ),
-        bFechaImpSeraLaborable: Number(this.form.value.bFechaImpSeraLaborable),
-        cFechaImpURLDocumento: this.form.value.cFechaImpURLDocumento,
-        cFechaImpInfoAdicional: this.form.value.cFechaImpInfoAdicional,
+        bFechaImpSeraLaborable: Number(
+            this.forms.importantDay.value.bFechaImpSeraLaborable
+        ),
+        cFechaImpURLDocumento:
+            this.forms.importantDay.value.cFechaImpURLDocumento,
+        cFechaImpInfoAdicional:
+            this.forms.importantDay.value.cFechaImpInfoAdicional,
     }
 
-    if (!this.form.value.iFechaImpId) {
+    if (!this.forms.importantDay.value.iFechaImpId) {
         of(null)
             .pipe(
                 switchMap(() =>
@@ -219,7 +291,7 @@ function saveData(this: FechasImportentesComponent) {
                 },
             })
     } else {
-        data.iFechaImpId = this.form.value.iFechaImpId
+        data.iFechaImpId = this.forms.importantDay.value.iFechaImpId
 
         of(null)
             .pipe(
@@ -252,19 +324,6 @@ function saveData(this: FechasImportentesComponent) {
                             ),
                         })
                     )
-
-                    // const result = res.data[0]
-                    // console.log('result')
-                    // console.log(result)
-
-                    // if (result.Message) {
-                    //     this.messageService.add({
-                    //         severity: 'error',
-                    //         summary: 'Fechas importantes',
-                    //         detail: result.resultado,
-                    //         life: 3000,
-                    //     })
-                    // }
                 },
                 error: (error) => {
                     this.messageService.add({
@@ -285,4 +344,5 @@ export const importantDay = {
     accionBtnItem,
     saveData,
     container,
+    table,
 }

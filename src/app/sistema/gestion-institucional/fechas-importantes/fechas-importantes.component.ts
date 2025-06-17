@@ -7,12 +7,12 @@ import { FormBuilder, FormGroup } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { importantDayService } from './service/important-day.service'
-import { importantDay } from './table/important-day-table-columns'
+import { importantDay } from './table/important-day.table'
 import { DatePipe } from '@angular/common'
-import { editar, eliminar } from '@/app/shared/actions/actions.table'
 import { ToastModule } from 'primeng/toast'
 import { ToggleButtonModule } from 'primeng/togglebutton'
 import { DropdownModule } from 'primeng/dropdown'
+import { importantDayRecovery } from './table/important-day-recovery.table'
 
 @Component({
     selector: 'app-fechas-importantes',
@@ -32,17 +32,28 @@ import { DropdownModule } from 'primeng/dropdown'
 })
 export class FechasImportentesComponent implements OnInit {
     file: any
-    form: FormGroup
     option: string
     dialogs = {
-        importNationalHolyday: {
-            title: '',
-            visible: false,
-        },
         importantDay: {
             title: '',
             visible: false,
         },
+        importantDaysRecovery: {
+            title: '',
+            visible: false,
+        },
+        importantDayRecovery: {
+            title: '',
+            visible: false,
+        },
+    }
+
+    forms: {
+        importantDay: FormGroup
+        importantDayRecovery: FormGroup
+    } = {
+        importantDay: new FormGroup({}),
+        importantDayRecovery: new FormGroup({}),
     }
 
     constructor(
@@ -52,7 +63,7 @@ export class FechasImportentesComponent implements OnInit {
         public importantDayService: importantDayService,
         public datePipe: DatePipe
     ) {
-        this.form = this.fb.group({
+        this.forms.importantDay = this.fb.group({
             iFechaImpId: [''],
             iTipoFerId: [''],
             cFechaImpNombre: [''],
@@ -61,6 +72,19 @@ export class FechasImportentesComponent implements OnInit {
             bFechaImpSeraLaborable: [''],
             cFechaImpURLDocumento: [''],
             cFechaImpInfoAdicional: [''],
+        })
+
+        this.forms.importantDayRecovery = this.fb.group({
+            iFechaImpId: [''],
+            iTipoFerId: [''],
+            cFechaImpNombre: [''],
+            iCalAcadId: [''],
+            dtFechaImpFecha: [''],
+            bFechaImpSeraLaborable: [''],
+            cFechaImpURLDocumento: [''],
+            cFechaImpInfoAdicional: [''],
+
+            iDepFechaImpId: [''],
         })
     }
 
@@ -102,18 +126,30 @@ export class FechasImportentesComponent implements OnInit {
     importantDay = {
         calendar: null,
         types: null,
+        typeActive: undefined,
         table: {
             columns: {
                 core: importantDay.columns,
+                recovery: importantDayRecovery.columns,
             },
             data: {
                 core: [],
                 import: [],
+                recovery: [],
             },
-            actions: [editar, eliminar],
-            accionBtnItem: importantDay.accionBtnItem.bind(this),
+            actions: {
+                core: importantDay.table.actions,
+                recovery: importantDayRecovery.table.actions,
+            },
+            accionBtnItem: {
+                core: importantDay.accionBtnItem.bind(this),
+                recovery: importantDayRecovery.accionBtnItem.bind(this),
+            },
         },
         container: importantDay.container,
-        saveData: importantDay.saveData.bind(this),
+        saveData: {
+            core: importantDay.saveData.bind(this),
+            recovery: importantDayRecovery.saveData.bind(this),
+        },
     }
 }

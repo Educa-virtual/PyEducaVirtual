@@ -1,11 +1,12 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, Input, OnChanges, OnInit } from '@angular/core'
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { TextFieldModule } from '@angular/cdk/text-field'
 
 @Component({
     selector: 'app-switch-input',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, TextFieldModule],
     templateUrl: './switch-input.component.html',
     styleUrl: './switch-input.component.scss',
     providers: [

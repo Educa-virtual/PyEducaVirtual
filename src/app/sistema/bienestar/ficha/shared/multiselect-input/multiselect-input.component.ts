@@ -50,6 +50,7 @@ export class MultiselectInputComponent implements OnInit {
     handleDropdownChange(event: any) {
         if (event?.value === undefined) {
             this.visibleInput = false
+            this.inputControl.setValue(null)
             return null
         }
         if (Array.isArray(event.value)) {
@@ -57,12 +58,14 @@ export class MultiselectInputComponent implements OnInit {
                 this.visibleInput = true
             } else {
                 this.visibleInput = false
+                this.inputControl.setValue(null)
             }
         } else {
             if (event.value == 1) {
                 this.visibleInput = true
             } else {
                 this.visibleInput = false
+                this.inputControl.setValue(null)
             }
         }
     }

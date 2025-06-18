@@ -36,6 +36,8 @@
             }
             @case ('textarea') {
                 <textarea
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
                     pInputTextarea
                     [formControl]="inputControl"
                     [maxlength]="inputMaxlength"
@@ -45,6 +47,9 @@
                     class="group-element"
                     [style.minHeight]="inputMinRowsString"
                     [style.maxHeight]="inputMaxRowsString"
+                    [cdkAutosizeMinRows]="inputInitRows + 1.5"
+                    [cdkAutosizeMaxRows]="inputMaxRows"
+                >
                     >{{ inputControl.value }}</textarea
                 >
             }

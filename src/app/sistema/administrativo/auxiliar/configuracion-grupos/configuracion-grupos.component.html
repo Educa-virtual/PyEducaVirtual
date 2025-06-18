@@ -100,10 +100,12 @@
         />
     </div>
     <div class="flex align-items-center gap-3 mb-5">
-        <label class="font-semibold w-6rem" for="elegir">Ingresar/Elegir</label>
-        <p-inputSwitch [(ngModel)]="elegir" />
+        <div class="font-semibold w-[6rem] white-space-normal">
+            Ingresar/Seleccionar
+        </div>
+        <p-inputSwitch [(ngModel)]="elegir" styleClass="ml-1" />
     </div>
-    <div class="flex align-items-center gap-3 mb-5">
+    <div class="flex align-items-center gap-3 mb-5" *ngIf="elegir">
         <label for="descripcion" class="font-semibold w-6rem">Ingreso</label>
         <p-calendar
             appendTo="body"
@@ -120,7 +122,7 @@
             </ng-template>
         </p-calendar>
     </div>
-    <div class="flex align-items-center gap-3 mb-5">
+    <div class="flex align-items-center gap-3 mb-5" *ngIf="elegir">
         <label for="descripcion" class="font-semibold w-6rem">Salida</label>
         <p-calendar
             appendTo="body"
@@ -136,6 +138,19 @@
                 <i class="pi pi-clock pointer-events-none"></i>
             </ng-template>
         </p-calendar>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5" *ngIf="elegir === false">
+        <label for="descripcion" class="font-semibold w-6rem"
+            >Horario Establecido</label
+        >
+        <p-dropdown
+            appendTo="body"
+            [options]="horario"
+            [(ngModel)]="selHorario"
+            optionLabel="horario"
+            optionValue="iConfHorarioId"
+            placeholder="Seleccionar Horario"
+        />
     </div>
     <ng-template pTemplate="footer">
         <p-button

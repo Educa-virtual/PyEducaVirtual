@@ -15,6 +15,9 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 })
 export class ConfiguracionGruposComponent implements OnInit {
     // @Input() datosGrupos: any = [];
+    horario: any[] = []
+    selHorario: any
+    configHoario: any = []
     elegir: boolean = false
     ingreso: string | undefined
     salida: string | undefined
@@ -34,9 +37,25 @@ export class ConfiguracionGruposComponent implements OnInit {
 
     ngOnInit() {
         this.buscarGrupos()
+        this.buscarHorarioInstitucion()
+    }
+
+    buscarHorarioInstitucion() {
+        const params = {
+            petition: 'post',
+            group: 'asi',
+            prefix: 'grupos',
+            ruta: 'buscar-horario-ie',
+            data: {
+                iSedeId: this.iSedeId,
+            },
+        }
+        this.getInformation(params, 'buscar_horario_institucion')
     }
 
     guardarGrupo() {
+        this.selHorario = !this.elegir ? this.selHorario : '0'
+
         const params = {
             petition: 'post',
             group: 'asi',
@@ -46,6 +65,9 @@ export class ConfiguracionGruposComponent implements OnInit {
                 cGrupoNombre: this.nombreGrupo,
                 cGrupoDescripcion: this.descripcionGrupo,
                 iSedeId: this.iSedeId,
+                iConfHorarioId: this.selHorario,
+                tConfHorarioEntTur: this.ingreso,
+                tConfHorarioSalTur: this.salida,
             },
         }
         this.getInformation(params, 'guardar_grupos')
@@ -111,6 +133,9 @@ export class ConfiguracionGruposComponent implements OnInit {
                         }
                     })
                 }
+                break
+            case 'buscar_horario_institucion':
+                this.horario = item
                 break
             default:
                 break

@@ -30,6 +30,11 @@ export const administradorDremo = [
                 icon: 'pi pi-wrench',
                 routerLink: ['/gestion-institucional/semanas-lectivas'],
             },
+            {
+                label: 'Gestión de ciclos',
+                icon: 'pi pi-wrench',
+                routerLink: ['/gestion-institucional/ciclo'],
+            },
             /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',

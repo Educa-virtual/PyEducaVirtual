@@ -1,0 +1,91 @@
+<app-container-page
+    [title]="'Registro de ciclos'"
+    [actions]="[]"
+    (accionBtnItem)="('')"
+    ><p-toast />
+
+    <form [formGroup]="form">
+        <p-fieldset
+            legend="Datos del ciclo"
+            [toggleable]="true"
+            [collapsed]="false"
+        >
+            <div class="grid p-fluid mt-2">
+                <div class="field col-6 md:col-3">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            formControlName="cCicloNombre"
+                            placeholder="Nombre de ciclo"
+                            aria-describedby="cCicloNombre-help"
+                        />
+                        <label for="cCicloNombre">Nombre:</label>
+                    </span>
+                </div>
+                <div class="field col-6 md:col-2">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            formControlName="cCicloRomanos"
+                            placeholder="Número en romanos"
+                            aria-describedby="cCicloRomanos-help"
+                        />
+                        <label for="cCicloRomanos">Número en romanos:</label>
+                    </span>
+                </div>
+
+                <div class="field col-4 md:col-2">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            formControlName="cCicloAbreviacion"
+                            placeholder="Abreviación"
+                            aria-describedby="cCicloAbreviacion-help"
+                        />
+                        <label for="cCicloAbreviacion"
+                            >Abreviación del ciclo:</label
+                        >
+                    </span>
+                </div>
+
+                <div class="field col-12 md:col-2">
+                    <span class="p-float-label">
+                        <p-inputSwitch
+                            formControlName="iYearEstado"
+                            [trueValue]="1"
+                            [falseValue]="0"
+                        />
+                    </span>
+                    <span class="p-float-label"> Estado</span>
+                </div>
+
+                <div class="field col-12 md:col-3">
+                    <button
+                        pButton
+                        [label]="'Registrar ciclo'"
+                        icon="pi pi-check"
+                        size="small"
+                        class="p-button-success"
+                        [disabled]="form.invalid"
+                        (click)="accionBtnItemTable('agregar')"
+                    ></button>
+                </div>
+            </div>
+        </p-fieldset>
+    </form>
+
+    <div class="card">
+        <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="ciclos"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            [(selectedRowData)]="selectedItems"
+            [actions]="actions"
+        >
+            <!-- <ng-container slot="caption-content"> </ng-container> -->
+        </app-table-primeng>
+        <ng-container slot="caption-content"> </ng-container>
+    </div>
+</app-container-page>

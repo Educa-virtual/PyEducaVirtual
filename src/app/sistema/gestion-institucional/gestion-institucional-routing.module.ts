@@ -51,6 +51,7 @@ const routes: Routes = [
     { path: 'registro-vacantes', component: GestionVacantesComponent },
     { path: 'Informacion-ie', component: InformacionComponent },
     { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
+    //{ path: 'mantenimiento-ciclo', component: SincronizarArchivoComponent },
 
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
@@ -83,6 +84,14 @@ const routes: Routes = [
             import(
                 './gestion-traslados/traslado-externo/traslado-externo.component'
             ).then((c) => c.TrasladoExternoComponent),
+    },
+
+    {
+        path: 'ciclo',
+        loadComponent: () =>
+            import(
+                './mantenimiento/mantenimiento-ciclo/mantenimiento-ciclo.component'
+            ).then((c) => c.MantenimientoCicloComponent),
     },
     {
         path: 'traslado-interno',

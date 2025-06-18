@@ -5,7 +5,12 @@
                 <p-inputGroupAddon>
                     <i class="pi pi-search"></i>
                 </p-inputGroupAddon>
-                <input pInputText placeholder="Buscar" />
+                <input
+                    #filtro
+                    pInputText
+                    placeholder="Buscar"
+                    (input)="filtrarTabla()"
+                />
             </p-inputGroup>
         </div>
         <div class="col-auto align-content-center">
@@ -22,7 +27,7 @@
     <app-table-primeng
         [columnas]="columns"
         [showCaption]="false"
-        [data]="dosis"
+        [data]="dosis_filtradas"
         (accionBtnItem)="accionBtnItemTable($event)"
         [showPaginator]="false"
         [(selectedRowData)]="selectedItems"
@@ -39,33 +44,26 @@
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
     (onClose)="clearForm()"
-    (onShow)="setFormDosis()"
 >
     <ng-content>
         <form [formGroup]="formDosis">
             <div class="grid p-fluid mt-3">
-                <input type="hidden" formControlName="iFamiliarId" />
-
                 <br />
 
-                <div class="col-12 md:col-6">
+                <div class="col-12">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>Pandemia * </p-inputGroupAddon>
                         <p-dropdown
                             [options]="pandemias"
-                            formControlName="iTipoFamiliarId"
-                            optionLabel="nombre"
-                            [checkmark]="true"
-                            optionValue="id"
+                            formControlName="iPandemiaId"
                             [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
+                            appendTo="body"
                             placeholder="Seleccione"
                             styleClass="group-element"
                         />
                     </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>Nro de Dosis *</p-inputGroupAddon>
                         <p-inputNumber
@@ -77,16 +75,17 @@
                     </p-inputGroup>
                 </div>
 
-                <div class="col-12 md:col-6">
+                <div class="col-12">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>Fecha de Dosis *</p-inputGroupAddon>
                         <p-calendar
                             formControlName="dtPanDFichaDosis"
-                            [iconDisplay]="'input'"
+                            iconDisplay="input"
                             [showIcon]="true"
                             inputId="dtPanDFichaDosis"
-                            [appendTo]="'body'"
+                            appendTo="body"
                             inputStyleClass="group-element"
+                            [maxDate]="fecha_actual"
                         />
                     </p-inputGroup>
                 </div>
@@ -109,6 +108,5 @@
         </div>
     </ng-content>
 </p-dialog>
-<p-toast></p-toast>
 
 <br />

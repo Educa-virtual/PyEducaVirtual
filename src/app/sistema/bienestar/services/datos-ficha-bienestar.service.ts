@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Subject } from 'rxjs'
-import { map, takeUntil } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment'
@@ -483,18 +483,6 @@ export class DatosFichaBienestarService implements OnDestroy {
         })
     }
 
-    getLenguas() {
-        if (!this.lenguas) {
-            this.lenguas = [
-                { label: 'ESPAÑOL', value: '1' },
-                { label: 'QUECHUA', value: '2' },
-                { label: 'AYMARA', value: '3' },
-                { label: 'INGLÉS', value: '4' },
-            ]
-        }
-        return this.lenguas
-    }
-
     getReligiones(data: any) {
         if (!this.religiones && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
@@ -759,28 +747,15 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.jornadas_trabajo
     }
 
-    getPandemias() {
-        if (!this.pandemias) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'pandemias',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.pandemias = items.map((religion) => ({
-                            value: religion.iPandemiaId,
-                            label: religion.cPandemiaNombre,
-                        }))
-                        return this.pandemias
-                    })
-                )
+    getPandemias(data: any) {
+        if (!this.pandemias && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iPandemiaId,
+                label: item.cPandemiaNombre,
+            }))
         }
-        return of(this.pandemias)
+        return this.pandemias
     }
 
     subirArchivo(data: any) {
@@ -795,16 +770,24 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchDosis(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/dosis/index`, data)
+    listarDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/listarDosis`, data)
     }
 
-    agregarDosis(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/dosis/save`, data)
+    verDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verDosis`, data)
+    }
+
+    guardarDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarDosis`, data)
+    }
+
+    actualizarDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarDosis`, data)
     }
 
     borrarDosis(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/dosis/delete`, data)
+        return this.http.post(`${baseUrl}/bienestar/borrarDosis`, data)
     }
 
     descargarFicha(data: any) {

@@ -18,3 +18,10 @@
     width: fit-content; /* Para que no ocupe más de lo necesario */
     font-size: 13px;
 }
+:host ::ng-deep .p-datatable-thead > tr > th,
+:host ::ng-deep .p-datatable-tbody > tr > td {
+    border: 1px solid #ccc;
+}
+:host ::ng-deep .p-datatable-table {
+    border-collapse: collapse;
+}

@@ -133,7 +133,6 @@ export class TabContenidoComponent implements OnInit {
         this.rangeDates = [today, nextWeek]
 
         this.getData()
-        this.obtenerTipoActivadad()
     }
 
     // maneja el evento de seleccion de semana

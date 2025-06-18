@@ -39,7 +39,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     selectedIcon: string = 'pi pi-star'
     action: string
     // valores para guardar pregunta
-    iTipoPregId: number
+    iTipoPregId: string | number
     cPregunta: string = ''
     jsonAlternativas: string = ''
 
@@ -101,10 +101,10 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         }
         if (changes['data']) {
             this.data = changes['data']?.currentValue
+            this.cPregunta = this.data?.cPregunta
+            this.iTipoPregId = this.data?.iTipoPregId
         }
-        this.iTipoPregId = this.data.iTipoPregId
-        this.cPregunta = this.data.cPregunta
-        console.log(this.iTipoPregId)
+
         if (this.opcion === 'ACTUALIZAR') {
             this.action = 'ACTUALIZAR'
         }

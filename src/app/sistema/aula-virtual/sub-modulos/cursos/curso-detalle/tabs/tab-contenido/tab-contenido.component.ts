@@ -667,28 +667,6 @@ export class TabContenidoComponent implements OnInit {
                     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
                 this.semanaEvaluacion = this.semanaSeleccionada
                 this.dataActividad = actividad
-                // const ref = this._dialogService.open(
-                //     EvaluacionFormContainerComponent,
-                //     {
-                //         ...MODAL_CONFIG,
-                //         maximizable: true,
-                //         header: !actividad['iEvaluacionId']
-                //             ? 'Crear Evaluación'
-                //             : 'Editar Evaluación',
-                //         data: {
-                //             actividad,
-                //             semana: this.semanaSeleccionada,
-                //         },
-                //     }
-                // )
-                // this._dialogService.getInstance(ref).maximize()
-                // ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
-                //     next: () => {
-                //         // todo validar solo cuando sea necesario
-                //         this.obtenerContenidoSemanas()
-                //     },
-                // })
-
                 break
             case 'ELIMINAR':
                 this._confirmService.openConfirm({

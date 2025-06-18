@@ -13,8 +13,6 @@ import {
     Output,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
-import { DialogService } from 'primeng/dynamicdialog'
-import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.component'
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
@@ -51,8 +49,6 @@ export class FormEvaluacionComponent implements OnChanges {
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _ConstantesService = inject(ConstantesService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
-    private _DialogService = inject(DialogService)
-    private _store = inject(LocalStoreService)
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private _ApiAulaService = inject(ApiAulaService)
@@ -98,15 +94,12 @@ export class FormEvaluacionComponent implements OnChanges {
      * @type {'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS'}
      */
 
-    showMostrarVista: 'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS' =
-        'FORM-EVALUACION'
     titulo: string
 
     /**
      * Formulario de evaluación con múltiples campos para capturar información relevante.
      */
     formEvaluacion = this._FormBuilder.group({
-        opcion: [''],
         iEvaluacionId: [],
         iTipoEvalId: [1],
         iInstrumentoId: [],
@@ -118,42 +111,15 @@ export class FormEvaluacionComponent implements OnChanges {
         cEvaluacionObjetivo: [],
         nEvaluacionPuntaje: [],
         iEvaluacionNroPreguntas: [],
-        dtEvaluacionInicio: ['', Validators.required],
-        dtEvaluacionFin: ['', Validators.required],
+        dtEvaluacionInicio: [this.date, Validators.required],
+        dtEvaluacionFin: [this.date, Validators.required],
         iEvaluacionDuracionHoras: [],
         iEvaluacionDuracionMinutos: [],
+        iEvaluacionIdPadre: [],
         cEvaluacionArchivoAdjunto: [],
-
-        /**
-         * Inicializa las fechas de inicio y fin para un formulario, con la fecha de inicio establecida
-         * en el valor de `this.date` y la fecha de fin ajustada a una hora posterior a la actual.
-         */
-        dtInicio: [this.date],
-        dtFin: [
-            new Date(
-                this.ajustarAHorarioDeMediaHora(new Date()).setHours(
-                    this.date.getHours() + 1
-                )
-            ),
-            Validators.required,
-        ],
-
-        dFechaEvaluacionPublicacion: [],
-        dFechaEvaluacionInico: [this.date],
-        dFechaEvaluacionFin: [this.date],
-        tHoraEvaluacionPublicacion: [],
-        tHoraEvaluacionInico: [],
-        tHoraEvaluacionFin: [],
-
-        //Tabla:Programacion de Actividades
-        iProgActId: [],
-        iContenidoSemId: [],
-        iActTipoId: [EVALUACION],
-        dtProgActInicio: [],
-        dtProgActFin: [],
-        cProgActTituloLeccion: [''],
-        cProgActDescripcion: [''],
-        dtProgActPublicacion: [],
+        iContenidoSemId: [null, Validators.required],
+        iActTipoId: [EVALUACION, Validators.required],
+        idDocCursoId: [null, Validators.required],
     })
 
     /**
@@ -180,15 +146,6 @@ export class FormEvaluacionComponent implements OnChanges {
         if (changes.dataActividad?.currentValue) {
             this.dataActividad = changes.dataActividad.currentValue
             this.dataActividad?.ixActivadadId ? this.obtenerEvaluacion() : null
-        }
-        // Lógica de control de vistas según el valor de 'showMostrarVista'
-        switch (this.showMostrarVista) {
-            case 'FORM-EVALUACION':
-                this.titulo =
-                    this.tituloEvaluacion +
-                    ' EVALUACIÓN: ' +
-                    this.curso?.cCursoNombre
-                break
         }
     }
 
@@ -219,34 +176,34 @@ export class FormEvaluacionComponent implements OnChanges {
      * @returns {void} No devuelve ningún valor, solo actualiza el formulario.
      */
     obtenerEvaluacion() {
-        this._ApiAulaService
-            .obtenerActividad({
-                iActTipoId: EVALUACION,
-                ixActivadadId: this.dataActividad?.ixActivadadId,
-            })
-            .subscribe({
-                next: (data) => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        this.formEvaluacion.patchValue(data[0])
-                    } else {
-                        console.warn(
-                            ' No se encontraron datos para asignar al formulario.'
-                        )
-                    }
-                    //console.log(typeof this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
-                    this.filesUrl =
-                        this.formEvaluacion.value.cEvaluacionArchivoAdjunto
-                    // this.filesUrl = this.formEvaluacion.value.cEvaluacionArchivoAdjunto.length>0
-                    //     ? JSON.parse(this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
-                    //     : []
-                    this.formEvaluacion.controls.dtFin.setValue(
-                        new Date(this.formEvaluacion.value.dtEvaluacionFin)
-                    )
-                    this.formEvaluacion.controls.dtInicio.setValue(
-                        new Date(this.formEvaluacion.value.dtEvaluacionInicio)
-                    )
-                },
-            })
+        // this._ApiAulaService
+        //     .obtenerActividad({
+        //         iActTipoId: EVALUACION,
+        //         ixActivadadId: this.dataActividad?.ixActivadadId,
+        //     })
+        //     .subscribe({
+        //         next: (data) => {
+        //             if (Array.isArray(data) && data.length > 0) {
+        //                 this.formEvaluacion.patchValue(data[0])
+        //             } else {
+        //                 console.warn(
+        //                     ' No se encontraron datos para asignar al formulario.'
+        //                 )
+        //             }
+        //             //console.log(typeof this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
+        //             this.filesUrl =
+        //                 this.formEvaluacion.value.cEvaluacionArchivoAdjunto
+        //             // this.filesUrl = this.formEvaluacion.value.cEvaluacionArchivoAdjunto.length>0
+        //             //     ? JSON.parse(this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
+        //             //     : []
+        //             this.formEvaluacion.controls.dtFin.setValue(
+        //                 new Date(this.formEvaluacion.value.dtEvaluacionFin)
+        //             )
+        //             this.formEvaluacion.controls.dtInicio.setValue(
+        //                 new Date(this.formEvaluacion.value.dtEvaluacionInicio)
+        //             )
+        //         },
+        //     })
     }
 
     /**
@@ -273,7 +230,6 @@ export class FormEvaluacionComponent implements OnChanges {
         const { item } = elemento
         switch (accion) {
             case 'close-modal':
-                this.showMostrarVista = 'FORM-EVALUACION'
                 this.accionBtnItem.emit({ accion, item })
                 break
             case 'subir-file-evaluacion':
@@ -308,12 +264,12 @@ export class FormEvaluacionComponent implements OnChanges {
                 this.guardarActualizarFormInfo()
                 break
             case 'GUARDARxProgActxiEvaluacionId':
-            case 'ACTUALIZARxProgActxiEvaluacionId':
-                this.iEvaluacionId = item.length
-                    ? item[0]['iEvaluacionId']
-                    : null
-                this.openModalListPreguntas()
-                break
+            // case 'ACTUALIZARxProgActxiEvaluacionId':
+            //     this.iEvaluacionId = item.length
+            //         ? item[0]['iEvaluacionId']
+            //         : null
+            //     this.openModalListPreguntas()
+            //     break
         }
     }
 
@@ -329,141 +285,96 @@ export class FormEvaluacionComponent implements OnChanges {
      *                  actualización.
      */
     private guardarActualizarFormInfo() {
-        this.formEvaluacion.controls.dFechaEvaluacionInico.setValue(
-            this.formEvaluacion.value.dtInicio
-        )
-        this.formEvaluacion.controls.dFechaEvaluacionFin.setValue(
-            this.formEvaluacion.value.dtFin
-        )
-
-        const data = this.formEvaluacion.getRawValue()
-        data.iDocenteId = this._ConstantesService.iDocenteId
-        data.iActTipoId = EVALUACION
-        data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
-
-        let horaInicio: any = data.dFechaEvaluacionInico.toLocaleString(
-            'en-GB',
-            {
-                timeZone: 'America/Lima',
-            }
-        )
-        let horaFin: any = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
-            timeZone: 'America/Lima',
-        })
-        horaInicio = horaInicio.split(',')
-        horaFin = horaFin.split(',')
-
-        this.formEvaluacion.controls['dFechaEvaluacionPublicacion'].setValue(
-            horaInicio[0]
-        )
-        this.formEvaluacion.controls['tHoraEvaluacionPublicacion'].setValue(
-            horaInicio[1].replace(' ', '')
-        )
-        this.formEvaluacion.controls['dFechaEvaluacionInico'].setValue(
-            horaInicio[0]
-        )
-        this.formEvaluacion.controls['tHoraEvaluacionInico'].setValue(
-            horaInicio[1].replace(' ', '')
-        )
-        this.formEvaluacion.controls['dFechaEvaluacionFin'].setValue(horaFin[0])
-        this.formEvaluacion.controls['tHoraEvaluacionFin'].setValue(
-            horaFin[1].replace(' ', '')
-        )
-
-        data.dFechaEvaluacionPublicacion = horaInicio[0]
-        data.tHoraEvaluacionPublicacion = horaInicio[1].replace(' ', '')
-
-        data.dFechaEvaluacionInico = horaInicio[0]
-        data.tHoraEvaluacionInico = horaInicio[1].replace(' ', '')
-
-        data.dFechaEvaluacionFin = horaFin[0]
-        data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
-
-        if (
-            data.dFechaEvaluacionPublicacion &&
-            data.tHoraEvaluacionPublicacion
-        ) {
-            data.dtEvaluacionPublicacion =
-                data.dFechaEvaluacionPublicacion +
-                ' ' +
-                data.tHoraEvaluacionPublicacion
-        }
-        if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
-            data.dtEvaluacionInicio =
-                data.dFechaEvaluacionInico + ' ' + data.tHoraEvaluacionInico
-            this.formEvaluacion.controls.dtEvaluacionInicio.setValue(
-                data.dtEvaluacionInicio
-            )
-        }
-
-        if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
-            data.dtEvaluacionFin =
-                data.dFechaEvaluacionFin + ' ' + data.tHoraEvaluacionFin
-            this.formEvaluacion.controls.dtEvaluacionFin.setValue(
-                data.dtEvaluacionFin
-            )
-        }
-
-        //PROGRAMACIÓN ACTIVIDADES
-        data.dtProgActInicio = data.dtEvaluacionInicio
-        data.dtProgActFin = data.dtEvaluacionFin
-        data.cProgActTituloLeccion = data.cEvaluacionTitulo
-        data.dtProgActPublicacion = data.dtEvaluacionPublicacion
-
-        if (this.formEvaluacion.invalid) {
-            this.formEvaluacion.markAllAsTouched()
-            return
-        }
-
-        data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
-
-        if (this.opcionEvaluacion === 'GUARDAR') {
-            data.opcion = 'GUARDARxProgActxiEvaluacionId'
-        } else {
-            data.opcion = 'ACTUALIZARxProgActxiEvaluacionId'
-        }
-
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'programacion-actividades',
-            ruta: 'store',
-            data: data,
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params, data.opcion)
-    }
-
-    /**
-     * Abre un modal de confirmación para agregar o actualizar preguntas.
-     * Dependiendo de la opción de evaluación ('GUARDAR' o 'ACTUALIZAR'), el modal muestra un mensaje
-     * con la acción correspondiente y actualiza el estado de la vista y el título del formulario.
-     *
-     * Si el usuario acepta la acción, la vista se cambia a 'LIST-PREGUNTAS' y el título se actualiza con
-     * la opción de evaluación y el nombre del curso. Si el usuario rechaza, se cierra el modal sin realizar
-     * ninguna acción adicional.
-     *
-     * @method openModalListPreguntas
-     * @returns {void} No devuelve ningún valor, solo ejecuta la lógica de apertura del modal y
-     * realiza cambios en el estado de la vista y título.
-     */
-    openModalListPreguntas() {
-        const accion =
-            this.opcionEvaluacion === 'GUARDAR' ? 'agregar' : 'actualizar'
-        this._ConfirmationModalService.openConfirm({
-            header: '¿Deseas ' + accion + ' preguntas?',
-            accept: () => {
-                this.showMostrarVista = 'LIST-PREGUNTAS'
-                this.titulo =
-                    this.opcionEvaluacion +
-                    ' PREGUNTAS PARA: ' +
-                    this.curso?.cCursoNombre
-            },
-            reject: () => {
-                this.accionBtn({ accion: 'close-modal', item: [] })
-            },
-        })
+        // this.formEvaluacion.controls.dFechaEvaluacionInico.setValue(
+        //     this.formEvaluacion.value.dtInicio
+        // )
+        // this.formEvaluacion.controls.dFechaEvaluacionFin.setValue(
+        //     this.formEvaluacion.value.dtFin
+        // )
+        // const data = this.formEvaluacion.getRawValue()
+        // data.iDocenteId = this._ConstantesService.iDocenteId
+        // data.iActTipoId = EVALUACION
+        // data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
+        // let horaInicio: any = data.dFechaEvaluacionInico.toLocaleString(
+        //     'en-GB',
+        //     {
+        //         timeZone: 'America/Lima',
+        //     }
+        // )
+        // let horaFin: any = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
+        //     timeZone: 'America/Lima',
+        // })
+        // horaInicio = horaInicio.split(',')
+        // horaFin = horaFin.split(',')
+        // this.formEvaluacion.controls['dFechaEvaluacionPublicacion'].setValue(
+        //     horaInicio[0]
+        // )
+        // this.formEvaluacion.controls['tHoraEvaluacionPublicacion'].setValue(
+        //     horaInicio[1].replace(' ', '')
+        // )
+        // this.formEvaluacion.controls['dFechaEvaluacionInico'].setValue(
+        //     horaInicio[0]
+        // )
+        // this.formEvaluacion.controls['tHoraEvaluacionInico'].setValue(
+        //     horaInicio[1].replace(' ', '')
+        // )
+        // this.formEvaluacion.controls['dFechaEvaluacionFin'].setValue(horaFin[0])
+        // this.formEvaluacion.controls['tHoraEvaluacionFin'].setValue(
+        //     horaFin[1].replace(' ', '')
+        // )
+        // data.dFechaEvaluacionPublicacion = horaInicio[0]
+        // data.tHoraEvaluacionPublicacion = horaInicio[1].replace(' ', '')
+        // data.dFechaEvaluacionInico = horaInicio[0]
+        // data.tHoraEvaluacionInico = horaInicio[1].replace(' ', '')
+        // data.dFechaEvaluacionFin = horaFin[0]
+        // data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
+        // if (
+        //     data.dFechaEvaluacionPublicacion &&
+        //     data.tHoraEvaluacionPublicacion
+        // ) {
+        //     data.dtEvaluacionPublicacion =
+        //         data.dFechaEvaluacionPublicacion +
+        //         ' ' +
+        //         data.tHoraEvaluacionPublicacion
+        // }
+        // if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
+        //     data.dtEvaluacionInicio =
+        //         data.dFechaEvaluacionInico + ' ' + data.tHoraEvaluacionInico
+        //     this.formEvaluacion.controls.dtEvaluacionInicio.setValue(
+        //         data.dtEvaluacionInicio
+        //     )
+        // }
+        // if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
+        //     data.dtEvaluacionFin =
+        //         data.dFechaEvaluacionFin + ' ' + data.tHoraEvaluacionFin
+        //     this.formEvaluacion.controls.dtEvaluacionFin.setValue(
+        //         data.dtEvaluacionFin
+        //     )
+        // }
+        // //PROGRAMACIÓN ACTIVIDADES
+        // data.dtProgActInicio = data.dtEvaluacionInicio
+        // data.dtProgActFin = data.dtEvaluacionFin
+        // data.cProgActTituloLeccion = data.cEvaluacionTitulo
+        // data.dtProgActPublicacion = data.dtEvaluacionPublicacion
+        // if (this.formEvaluacion.invalid) {
+        //     this.formEvaluacion.markAllAsTouched()
+        //     return
+        // }
+        // data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
+        // if (this.opcionEvaluacion === 'GUARDAR') {
+        //     data.opcion = 'GUARDARxProgActxiEvaluacionId'
+        // } else {
+        //     data.opcion = 'ACTUALIZARxProgActxiEvaluacionId'
+        // }
+        // const params = {
+        //     petition: 'post',
+        //     group: 'aula-virtual',
+        //     prefix: 'programacion-actividades',
+        //     ruta: 'store',
+        //     data: data,
+        //     params: { skipSuccessMessage: true },
+        // }
+        // this.getInformation(params, data.opcion)
     }
 
     /**

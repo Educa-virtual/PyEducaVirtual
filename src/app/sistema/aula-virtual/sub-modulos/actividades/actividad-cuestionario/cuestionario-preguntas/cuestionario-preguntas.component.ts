@@ -70,53 +70,54 @@ export class CuestionarioPreguntasComponent implements OnInit {
     ngOnInit(): void {
         this.obtenerCuestionario()
         this.datos = this.datosGenerales
+        this.obtenerTipoPreguntas()
     }
 
     tipoPreguntas: any[] = [
         {
-            iTipoPregId: 1,
+            iTipoPregId: '1',
             cTipoPregunta: 'Texto',
             cIcon: 'pi-align-left',
             cCodeTipoPreg: 'TIP-PREG-TEXTO',
         },
         {
-            iTipoPregId: 2,
+            iTipoPregId: '2',
             cTipoPregunta: 'Varias opciones',
             cIcon: 'pi-stop-circle',
             cCodeTipoPreg: 'TIP-PREG-OPCIONES',
         },
         {
-            iTipoPregId: 4,
+            iTipoPregId: '4',
             cTipoPregunta: 'Casillas',
             cIcon: 'pi-stop-circle',
             cCodeTipoPreg: 'TIP-PREG-CASILLA',
         },
         {
-            iTipoPregId: 5,
+            iTipoPregId: '5',
             cTipoPregunta: 'Desplegable',
             cIcon: 'pi-chevron-circle-down',
             cCodeTipoPreg: 'TIP-PREG-DESPLEGABLE',
         },
         {
-            iTipoPregId: 7,
+            iTipoPregId: '7',
             cTipoPregunta: 'Escala lineal',
             cIcon: 'pi-ellipsis-h',
             cCodeTipoPreg: 'TIP-PREG-ESC-LINEAL',
         },
         {
-            iTipoPregId: 8,
+            iTipoPregId: '8',
             cTipoPregunta: 'Calificación',
             cIcon: 'pi-star',
             cCodeTipoPreg: 'TIP-PREG-CALIF',
         },
         {
-            iTipoPregId: 9,
+            iTipoPregId: '9',
             cTipoPregunta: 'Cuadrícula de varias opciones',
             cIcon: 'pi-th-large',
             cCodeTipoPreg: 'TIP-PREG-CUAD-OPCIONES',
         },
         {
-            iTipoPregId: 10,
+            iTipoPregId: '10',
             cTipoPregunta: 'Cuadrícula de casillas',
             cIcon: 'pi-table',
             cCodeTipoPreg: 'TIP-PREG-CUAD-CASILLA',
@@ -223,6 +224,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
         switch (accion) {
             case 'close-modal':
                 this.showModal = false
+                this.obtenerCuestionario()
                 break
         }
     }
@@ -303,6 +305,21 @@ export class CuestionarioPreguntasComponent implements OnInit {
                     detail: 'Acción cancelada',
                 })
             },
+        })
+    }
+    tipopregunta: any
+    obtenerTipoPreguntas() {
+        const params = {
+            petition: 'get',
+            group: 'enc',
+            prefix: 'tipo-preguntas',
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+            this.tipoPreguntas = (Data as any)['data']
         })
     }
 }

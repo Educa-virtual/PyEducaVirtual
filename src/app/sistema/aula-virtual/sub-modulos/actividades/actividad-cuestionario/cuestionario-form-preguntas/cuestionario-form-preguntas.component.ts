@@ -147,6 +147,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
             jsonAlternativas: this.jsonAlternativas,
         }
         this.formpregunta.emit(data)
+        this.showModal = false
     }
     onInput(event: Event) {
         const value = (event.target as HTMLElement).innerText

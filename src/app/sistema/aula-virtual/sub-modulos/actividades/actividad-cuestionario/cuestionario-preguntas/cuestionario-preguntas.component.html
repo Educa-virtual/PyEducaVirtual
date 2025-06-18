@@ -55,7 +55,11 @@
                 <p-divider></p-divider>
             </div>
             <div class="col-12">
-                <div class="card col-12 mb-3 p-3" *ngFor="let item of data">
+                <div
+                    class="card col-12 mb-5 p-3 relative"
+                    *ngFor="let item of data; let i = index"
+                >
+                    <div class="tag ml-3 font-bold">Pregunta: #{{ i + 1 }}</div>
                     <h5>{{ item.cPregunta }}</h5>
                     @switch (item.cCodeTipoPreg) {
                         @case ('TIP-PREG-TEXTO') {
@@ -71,21 +75,23 @@
                         }
 
                         @case ('TIP-PREG-OPCIONES') {
-                            <div class="align-content-center mb-2">
+                            <div class="mb-2">
                                 <div
                                     *ngFor="let opcion of item.jsonAlternativas"
-                                    class="mb-2"
+                                    class="mb-3"
                                 >
-                                    <p-radioButton
-                                        id="opcion1"
-                                        name="grupoOpciones"
-                                        [value]="opcion.iPregAlterId"
-                                        [(ngModel)]="selectedOption"
-                                        class="mr-2"
-                                    ></p-radioButton>
-                                    <label for="opcion1">{{
-                                        opcion.cAlternativa
-                                    }}</label>
+                                    <p-inputGroup class="mt-1">
+                                        <p-radioButton
+                                            id="opcion1"
+                                            name="grupoOpciones"
+                                            [value]="opcion.iPregAlterId"
+                                            [(ngModel)]="selectedOption"
+                                            class="mr-2"
+                                        ></p-radioButton>
+                                        <label for="opcion1">{{
+                                            opcion.cAlternativa
+                                        }}</label>
+                                    </p-inputGroup>
                                 </div>
                             </div>
                         }

@@ -1,61 +1,55 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Component, inject, OnInit } from '@angular/core'
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { GestionPandemiaDosisComponent } from './gestion-pandemia-dosis/gestion-pandemia-dosis.component'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
+import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
+import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-ficha-salud',
     standalone: true,
-    imports: [PrimengModule, GestionPandemiaDosisComponent],
+    imports: [
+        PrimengModule,
+        GestionPandemiaDosisComponent,
+        MultiselectInputComponent,
+        SwitchInputComponent,
+    ],
     templateUrl: './ficha-salud.component.html',
     styleUrl: './ficha-salud.component.scss',
 })
 export class FichaSaludComponent implements OnInit {
+    iFichaDGId: any = null
     formSalud: FormGroup
     dolencias: Array<object>
-    visibleInput: Array<boolean>
-    visibleAlergiaInput: Array<boolean>
-    visibleSeguroInput: Array<boolean>
-    visibleDolenciasInput: Array<boolean>
     seguros_salud: Array<object>
     ficha_registrada: boolean = false
+    get controles_dolencias(): FormArray {
+        return this.formSalud.get('controles_dolencias') as FormArray
+    }
+
+    private _messageService = inject(MessageService)
 
     constructor(
         private fb: FormBuilder,
-        private compartirFichaService: CompartirFichaService,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private router: Router
+        private compartirFicha: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(6)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(6)
     }
 
     ngOnInit(): void {
-        this.visibleInput = Array(7).fill(false)
-        this.visibleAlergiaInput = Array(2).fill(false)
-        this.visibleSeguroInput = Array(1).fill(false)
-
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.dolencias = this.datosFichaBienestarService.getDolencias(
-                    data?.dolencias
-                )
-                if (this.dolencias && this.dolencias.length > 0) {
-                    this.visibleDolenciasInput = Array(
-                        this.dolencias.length
-                    ).fill(false)
-                }
-                this.seguros_salud = this.datosFichaBienestarService.getSeguros(
-                    data?.seguros_salud
-                )
-            })
-
         try {
             this.formSalud = this.fb.group({
                 iFichaDGId: [null, Validators.required],
@@ -67,62 +61,133 @@ export class FichaSaludComponent implements OnInit {
                 cSeguroSaludObs: [null],
                 iDolenciaId: [null],
                 cDolFichaObs: [null],
+                controles_dolencias: this.fb.array([]),
+                jsonDolencias: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
-    }
 
-    handleSwitchChange(event: any, index: number) {
-        if (event?.checked === undefined) {
-            this.visibleInput[index] = false
-            return null
-        }
-        if (event.checked === true) {
-            this.visibleInput[index] = true
-        } else {
-            this.visibleInput[index] = false
-        }
-    }
-
-    handleSwitchAlergiaChange(event: any, index: number) {
-        if (event?.checked === undefined) {
-            this.visibleAlergiaInput[index] = false
-            return null
-        }
-        if (event.checked === true) {
-            this.visibleAlergiaInput[index] = true
-        } else {
-            this.visibleAlergiaInput[index] = false
-        }
-    }
-
-    handleDropdownChange(event: any, index: number) {
-        if (event?.value === undefined) {
-            this.visibleSeguroInput[index] = false
-            return null
-        }
-        if (Array.isArray(event.value)) {
-            if (event.value.includes(0)) {
-                this.visibleSeguroInput[index] = true
-            } else {
-                this.visibleSeguroInput[index] = false
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.seguros_salud = this.datosFichaBienestar.getSeguros(
+                data?.seguros_salud
+            )
+            this.dolencias = this.datosFichaBienestar.getDolencias(
+                data?.dolencias
+            )
+            if (this.dolencias && this.dolencias.length > 0) {
+                this.crearControlesDolencias(this.dolencias)
             }
-        } else {
-            if (event.value == 0) {
-                this.visibleSeguroInput[index] = true
-            } else {
-                this.visibleSeguroInput[index] = false
-            }
+        })
+
+        if (this.iFichaDGId) {
+            this.verFichaSalud()
         }
     }
 
-    guardar() {
-        console.log(this.formSalud.value, 'guardando datos')
+    crearControlesDolencias(dolencias: Array<object>) {
+        const formArray = this.formSalud.get('controles_dolencias') as FormArray
+        formArray.clear()
+        this.dolencias.map((param: any) => {
+            const registro = dolencias.find(
+                (registro: any) => registro.value === param.value
+            )
+            let grupo: FormGroup = null
+            if (!registro) {
+                grupo = this.fb.group({
+                    iDolenciaId: [param.value],
+                    bDolFicha: [false],
+                    cDolFichaObs: [null],
+                })
+                formArray.push(grupo)
+            } else {
+                grupo = this.fb.group({
+                    iDolenciaId: [param.value],
+                    bDolFicha: [registro['estado']],
+                    cDolFichaObs: [registro['obs']],
+                })
+                formArray.push(grupo)
+                grupo
+                    .get('bDolFicha')
+                    .setValue(registro['estado'], { emitEvent: true })
+            }
+        })
+    }
+
+    async verFichaSalud(): Promise<void> {
+        this.datosFichaBienestar
+            .verFichaSalud({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                if (data) {
+                    this.setFormSalud(data.data[0])
+                }
+            })
+    }
+
+    setFormSalud(data: any) {
+        this.formSalud.patchValue(data)
+        this.datosFichaBienestar.formatearFormControl(
+            this.formSalud,
+            'bFichaDGAlergiaMedicamentos',
+            data.bFichaDGAlergiaMedicamentos,
+            'boolean'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formSalud,
+            'bFichaDGAlergiaOtros',
+            data.bFichaDGAlergiaOtros,
+            'boolean'
+        )
+        if (data.dolencias) {
+            const dolencias = JSON.parse(data.dolencias).map(
+                (dolencia: any) => {
+                    return {
+                        value: dolencia.iDolenciaId,
+                        estado: dolencia.bDolFicha == 1 ? true : false,
+                        obs: dolencia.cDolFichaObs || null,
+                    }
+                }
+            )
+            this.crearControlesDolencias(dolencias)
+        }
     }
 
     actualizar() {
-        console.log(this.formSalud.value, 'actualizando datos')
+        if (this.formSalud.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.formSalud
+            .get('jsonDolencias')
+            .setValue(JSON.stringify(this.controles_dolencias.value))
+        this.datosFichaBienestar
+            .actualizarFichaSalud(this.formSalud.value)
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     salir() {

@@ -139,16 +139,18 @@ export class FichaDiscapacidadComponent implements OnInit {
             data.bOtroProgramaDiscapacidad,
             'boolean'
         )
-        const discapacidades = JSON.parse(data.discapacidades).map(
-            (discapacidad: any) => {
-                return {
-                    value: discapacidad.iDiscId,
-                    estado: discapacidad.bDiscFicha == 1 ? true : false,
-                    obs: discapacidad.cDiscFichaObs || null,
+        if (data.discapacidades) {
+            const discapacidades = JSON.parse(data.discapacidades).map(
+                (discapacidad: any) => {
+                    return {
+                        value: discapacidad.iDiscId,
+                        estado: discapacidad.bDiscFicha == 1 ? true : false,
+                        obs: discapacidad.cDiscFichaObs || null,
+                    }
                 }
-            }
-        )
-        this.crearControlesDiscapacidades(discapacidades)
+            )
+            this.crearControlesDiscapacidades(discapacidades)
+        }
     }
 
     guardar() {

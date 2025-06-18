@@ -201,7 +201,7 @@ export class FichaAlimentacionComponent implements OnInit {
             return
         }
 
-        if (this.formAlimentacion.get('iAlimId').value !== null) {
+        if (this.formAlimentacion.get('iProgAlimId').value !== null) {
             const programas = []
             this.formAlimentacion
                 .get('iProgAlimId')

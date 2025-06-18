@@ -86,6 +86,7 @@ export class DatosFichaBienestarService implements OnDestroy {
     transportes: Array<object>
     pasatiempos: Array<object>
     actividades: Array<object>
+    estados_relacion: Array<object>
 
     formGeneral: FichaGeneral
     formFamiliar: FichaFamiliar
@@ -267,6 +268,18 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
+    verFichaSalud(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaSalud`, data)
+    }
+
+    guardarFichaSalud(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarFichaSalud`, data)
+    }
+
+    actualizarFichaSalud(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarFichaSalud`, data)
+    }
+
     /**
      *
      * FUNCTIONES PARA POPULAR PARAMETROS DE FORMULARIOS DE FICHA
@@ -347,6 +360,14 @@ export class DatosFichaBienestarService implements OnDestroy {
             return this.tipos_familiares
         }
         return this.tipos_familiares
+    }
+
+    getEstadosRelacion() {
+        return [
+            { value: 1, label: 'Buena' },
+            { value: 2, label: 'Regular' },
+            { value: 3, label: 'Mala' },
+        ]
     }
 
     getNacionalidades(data: any) {
@@ -798,11 +819,20 @@ export class DatosFichaBienestarService implements OnDestroy {
      *
      */
 
+    /**
+     *
+     * @param form El nombre del formulario
+     * @param formControl El nombre del control del formulario
+     * @param value El valor del control
+     * @param tipo El tipo del control
+     * @param groupControl El control por el que se agrupan los datos en el json, por defecto es null
+     */
     formatearFormControl(
         form: FormGroup,
         formControl: string,
         value: any,
-        tipo: 'number' | 'string' | 'json' | 'boolean' | 'date'
+        tipo: 'number' | 'string' | 'json' | 'boolean' | 'date',
+        groupControl: string | null = null
     ) {
         if (tipo === 'number') {
             if (!value || isNaN(Number(value))) {
@@ -828,7 +858,11 @@ export class DatosFichaBienestarService implements OnDestroy {
                 const json = JSON.parse(value)
                 const items = []
                 for (let i = 0; i < json.length; i++) {
-                    items.push(json[i][formControl])
+                    if (groupControl) {
+                        items.push(json[i][groupControl])
+                    } else {
+                        items.push(json[i][formControl])
+                    }
                 }
                 form.get(formControl)?.patchValue(items)
             }
@@ -838,38 +872,43 @@ export class DatosFichaBienestarService implements OnDestroy {
         }
     }
 
+    /**
+     * Funcion para guardar los datos de un grupo de controles en un control de json
+     * @param form El nombre del formulario
+     * @param formJson El control del formulario que contiene el json
+     * @param formControlName El control o los controles del formulario que contienen los datos a guardar
+     * @param groupControl El control por el que se agrupan los datos en el json, por defecto es null
+     */
     formControlJsonStringify(
         form: FormGroup,
         formJson: string,
-        formControl: string | string[] | null
-    ) {
+        formControlName: string | string[] | null,
+        groupControl: string | null = null
+    ): void {
         form.get(formJson).setValue(null)
-        if (!formControl) {
+        if (!formControlName) {
             return null
         }
         const items = []
-        if (typeof formControl === 'string') {
-            if (form.get(formControl).value === null) {
-                form.get(formJson).setValue(null)
+        if (typeof formControlName === 'string') {
+            formControlName = [formControlName]
+        }
+        formControlName.forEach((control) => {
+            if (form.get(control).value === null) {
                 return null
             }
-            form.get(formControl).value.forEach((item) => {
-                items.push({
-                    [formControl]: item,
-                })
-            })
-        } else {
-            formControl.forEach((control) => {
-                if (form.get(control).value === null) {
-                    return null
-                }
-                form.get(control).value.forEach((item) => {
+            form.get(control).value.forEach((item) => {
+                if (groupControl) {
+                    items.push({
+                        [groupControl]: item,
+                    })
+                } else {
                     items.push({
                         [control]: item,
                     })
-                })
+                }
             })
-        }
+        })
         form.get(formJson).setValue(JSON.stringify(items))
     }
 

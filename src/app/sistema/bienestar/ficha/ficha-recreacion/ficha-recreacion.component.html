@@ -2,8 +2,6 @@
 
 <form [formGroup]="formRecreacion">
     <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iFichaDGId" />
-
         <div class="col-12 lg:col-6">
             <p-fieldset legend="Deportes">
                 <div class="grid">
@@ -12,7 +10,7 @@
                             [multiselectItems]="deportes"
                             multiselectPlaceholder="Seleccione"
                             [inputControl]="
-                                $any(formRecreacion.controls['cDeporteObs'])
+                                $any(formRecreacion.controls['cDeporteOtro'])
                             "
                             [multiselectControl]="
                                 $any(formRecreacion.controls['iDeporteId'])
@@ -55,7 +53,7 @@
                                 $any(formRecreacion.controls['iReligionId'])
                             "
                             [inputControl]="
-                                $any(formRecreacion.controls['cReligionObs'])
+                                $any(formRecreacion.controls['cReligionOtro'])
                             "
                             addonLabel="Religión"
                         />
@@ -87,7 +85,7 @@
                             multiselectPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(
-                                    formRecreacion.controls['cActArtisticaObs']
+                                    formRecreacion.controls['cActArtisticaOtro']
                                 )
                             "
                             [multiselectControl]="
@@ -101,7 +99,7 @@
                             [multiselectItems]="pasatiempos"
                             multiselectPlaceholder="Seleccione"
                             [inputControl]="
-                                $any(formRecreacion.controls['cPasaTiempoObs'])
+                                $any(formRecreacion.controls['cPasaTiempoOtro'])
                             "
                             [multiselectControl]="
                                 $any(formRecreacion.controls['iPasaTiempoId'])
@@ -142,7 +140,7 @@
                             multiselectPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(
-                                    formRecreacion.controls['cTipoFamiliarObs']
+                                    formRecreacion.controls['cTipoFamiliarOtro']
                                 )
                             "
                             [multiselectControl]="
@@ -158,8 +156,8 @@
                                 familia?
                             </p-inputGroupAddon>
                             <p-dropdown
-                                [options]="relacion_familia"
-                                formControlName="iRelacionPadresId"
+                                [options]="estados_relacion"
+                                formControlName="iEstadoRelFamiliar"
                                 [filter]="false"
                                 [showClear]="true"
                                 [appendTo]="'body'"
@@ -176,16 +174,16 @@
             <p-fieldset legend="Transporte">
                 <div class="grid">
                     <div class="col-12 col-md-6">
-                        <app-dropdown-input
-                            [dropdownItems]="transportes"
+                        <app-multiselect-input
+                            [multiselectItems]="transportes"
                             dropdownPlaceholder="Seleccione"
-                            [dropdownControl]="
+                            [multiselectControl]="
                                 $any(formRecreacion.controls['iTransporteId'])
                             "
                             [inputControl]="
-                                $any(formRecreacion.controls['cTransporteObs'])
+                                $any(formRecreacion.controls['cTransporteOtro'])
                             "
-                            addonLabel="Medio de transporte más usado"
+                            addonLabel="Medios de transporte más usados"
                         />
                     </div>
                 </div>

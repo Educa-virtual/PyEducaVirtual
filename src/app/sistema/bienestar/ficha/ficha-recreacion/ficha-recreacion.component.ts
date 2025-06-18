@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
@@ -22,6 +22,7 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
     styleUrl: './ficha-recreacion.component.scss',
 })
 export class FichaRecreacionComponent implements OnInit {
+    iFichaDGId: any = null
     formRecreacion: FormGroup | undefined
     visibleInput: Array<boolean>
     ficha_registrada: boolean = false
@@ -33,97 +34,84 @@ export class FichaRecreacionComponent implements OnInit {
     actividades: Array<any> = []
     tipos_familiares: Array<any> = []
     relacion_familia: Array<any> = []
+    estados_relacion: Array<any> = []
 
     private _messageService = inject(MessageService)
 
     constructor(
         private fb: FormBuilder,
-        private compartirFichaService: CompartirFichaService,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private router: Router
+        private compartirFicha: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(7)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(7)
     }
 
-    async ngOnInit() {
-        this.visibleInput = Array(8).fill(false)
-
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.deportes = this.datosFichaBienestarService.getDeportes(
-                    data?.deportes
-                )
-                this.religiones = this.datosFichaBienestarService.getReligiones(
-                    data?.religiones
-                )
-                this.transportes =
-                    this.datosFichaBienestarService.getTransportes(
-                        data?.transportes
-                    )
-                this.pasatiempos =
-                    this.datosFichaBienestarService.getPasatiempos(
-                        data?.pasatiempos
-                    )
-                this.actividades =
-                    this.datosFichaBienestarService.getActividades(
-                        data?.actividades
-                    )
-                this.tipos_familiares =
-                    this.datosFichaBienestarService.getTiposFamiliares(
-                        data?.tipos_familiares
-                    )
-            })
-        this.relacion_familia = [
-            { value: 1, label: 'Buena' },
-            { value: 2, label: 'Regular' },
-            { value: 3, label: 'Mala' },
-        ]
-
-        if (this.compartirFichaService.getiFichaDGId() !== undefined) {
-            this.verFichaRecreacion()
-        }
-
+    ngOnInit() {
         this.formRecreacion = this.fb.group({
-            iFichaDGId: [
-                this.compartirFichaService.getiFichaDGId(),
-                Validators.required,
-            ],
+            iFichaDGId: [this.iFichaDGId, Validators.required],
             iDeporteId: [null],
-            cDeporteObs: [''],
+            cDeporteOtro: ['', Validators.maxLength(80)],
             bFichaDGPerteneceLigaDeportiva: [false],
             cFichaDGPerteneceLigaDeportiva: [''],
             iReligionId: [null],
-            cReligionObs: [''],
+            cReligionOtro: ['', Validators.maxLength(80)],
             bFichaDGPerteneceCentroArtistico: [false],
             cFichaDGPerteneceCentroArtistico: [''],
             iActArtisticaId: [null],
-            cActArtisticaObs: [''],
+            cActArtisticaOtro: ['', Validators.maxLength(80)],
             iPasaTiempoId: [null],
-            cPasaTiempoObs: [''],
+            cPasaTiempoOtro: ['', Validators.maxLength(80)],
             bFichaDGAsistioConsultaPsicologica: [false],
             cFichaDGAsistioConsultaPsicologica: [''],
             iTipoFamiliarId: [null],
-            cTipoFamiliarObs: [''],
-            iRelacionPadresId: [null],
+            cTipoFamiliarOtro: ['', Validators.maxLength(80)],
+            iEstadoRelFamiliar: [null],
             iTransporteId: [null],
-            cTransporteObs: [''],
-            nTransFichaGastoSoles: [null],
-            nTransFichaGastoTotal: [null],
+            cTransporteOtro: ['', Validators.maxLength(80)],
             jsonDeportes: [null],
             jsonPasatiempos: [null],
             jsonProblemas: [null],
             jsonTransportes: [null],
         })
+
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.deportes = this.datosFichaBienestar.getDeportes(data?.deportes)
+            this.religiones = this.datosFichaBienestar.getReligiones(
+                data?.religiones
+            )
+            this.transportes = this.datosFichaBienestar.getTransportes(
+                data?.transportes
+            )
+            this.pasatiempos = this.datosFichaBienestar.getPasatiempos(
+                data?.pasatiempos
+            )
+            this.actividades = this.datosFichaBienestar.getActividades(
+                data?.actividades
+            )
+            this.tipos_familiares = this.datosFichaBienestar.getTiposFamiliares(
+                data?.tipos_familiares
+            )
+            this.estados_relacion =
+                this.datosFichaBienestar.getEstadosRelacion()
+        })
+
+        if (this.iFichaDGId) {
+            this.verFichaRecreacion()
+        }
     }
 
     async verFichaRecreacion() {
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .verFichaRecreacion({
-                iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
+                iFichaDGId: this.iFichaDGId,
             })
             .subscribe((data: any) => {
                 if (data.data.length) {
@@ -136,25 +124,62 @@ export class FichaRecreacionComponent implements OnInit {
         this.ficha_registrada = true
         this.formRecreacion.patchValue(data)
 
-        this.datosFichaBienestarService.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
             this.formRecreacion,
             'iDeporteId',
             data.deportes,
             'json'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iPasaTiempoId',
+            data.pasatiempos,
+            'json'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iActArtisticaId',
+            data.actividades,
+            'json',
+            'iPasaTiempoId'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iTipoFamiliarId',
+            data.problemas_emocionales,
+            'json'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iTransporteId',
+            data.transportes,
+            'json'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iEstadoRelFamiliar',
+            data.iEstadoRelFamiliar,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iReligionId',
+            data.iReligionId,
+            'number'
+        )
+        this.datosFichaBienestar.formatearFormControl(
             this.formRecreacion,
             'bFichaDGPerteneceLigaDeportiva',
             data.bFichaDGPerteneceLigaDeportiva,
             'boolean'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
             this.formRecreacion,
             'bFichaDGPerteneceCentroArtistico',
             data.bFichaDGPerteneceCentroArtistico,
             'boolean'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.datosFichaBienestar.formatearFormControl(
             this.formRecreacion,
             'bFichaDGAsistioConsultaPsicologica',
             data.bFichaDGAsistioConsultaPsicologica,
@@ -172,34 +197,32 @@ export class FichaRecreacionComponent implements OnInit {
             return
         }
 
-        this.datosFichaBienestarService.formControlJsonStringify(
+        this.datosFichaBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonDeportes',
             'iDeporteId'
         )
-        this.datosFichaBienestarService.formControlJsonStringify(
+        this.datosFichaBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonPasatiempos',
-            ['iPasaTiempoId', 'iActArtisticaId']
+            ['iPasaTiempoId', 'iActArtisticaId'],
+            'iPasaTiempoId'
         )
-        this.datosFichaBienestarService.formControlJsonStringify(
+        this.datosFichaBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonProblemas',
             'iTipoFamiliarId'
         )
-        this.datosFichaBienestarService.formControlJsonStringify(
+        this.datosFichaBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonTransportes',
             'iTransporteId'
         )
 
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFichaRecreacion(this.formRecreacion.value)
             .subscribe({
                 next: () => {
-                    this.ficha_registrada = true
-                    this.datosFichaBienestarService.formRecreacion =
-                        this.formRecreacion.value
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',

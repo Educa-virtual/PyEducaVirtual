@@ -17,7 +17,6 @@ import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { BancoPreguntasComponent } from '../banco-preguntas/banco-preguntas-ere.component'
 import { PreguntasEreService } from '../services/preguntas-ere.service'
-
 @Component({
     selector: 'app-preguntas',
     standalone: true,

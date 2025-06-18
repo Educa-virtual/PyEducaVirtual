@@ -112,7 +112,7 @@
                                     class="ml-2"
                                     type="text"
                                     pInputText
-                                    [(ngModel)]="opcion.texto"
+                                    [(ngModel)]="opcion.cAlternativa"
                                     [placeholder]="'Opción ' + (i + 1)"
                                     class="input-hover-underline flex-1"
                                 />
@@ -178,7 +178,7 @@
                                     class="ml-2"
                                     type="text"
                                     pInputText
-                                    [(ngModel)]="opcion.texto"
+                                    [(ngModel)]="opcion.cAlternativa"
                                     [placeholder]="'Opción ' + (i + 1)"
                                     class="input-hover-underline flex-1"
                                 />
@@ -222,7 +222,7 @@
                                     class="ml-2"
                                     type="text"
                                     pInputText
-                                    [(ngModel)]="opcion.texto"
+                                    [(ngModel)]="opcion.cAlternativa"
                                     [placeholder]="'Opción ' + (i + 1)"
                                     class="input-hover-underline flex-1"
                                 />
@@ -375,7 +375,11 @@
                 "
                 icon="pi pi-check"
                 [severity]="action === 'ACTUALIZAR' ? 'warning' : 'success'"
-                (click)="guardarPregunta()"
+                (click)="
+                    action === 'ACTUALIZAR'
+                        ? actuaizarPregunta()
+                        : guardarPregunta()
+                "
             />
         </div>
     </div>

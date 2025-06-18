@@ -103,6 +103,9 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
             this.data = changes['data']?.currentValue
             this.cPregunta = this.data?.cPregunta
             this.iTipoPregId = this.data?.iTipoPregId
+            this.codigoTipoPregunta = this.data?.cCodeTipoPreg
+            this.opciones = this.data?.jsonAlternativas
+            console.log('datos de oppciones', this.iTipoPregId)
         }
 
         if (this.opcion === 'ACTUALIZAR') {
@@ -116,6 +119,12 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         switch (accion) {
             case 'close-modal':
                 this.accionBtnItem.emit({ accion, item })
+                this.iTipoPregId = ''
+                this.cPregunta = ''
+                this.opcion = ''
+                this.action = ''
+
+                console.log('modal cerrado')
                 break
             case 'añadir':
                 break
@@ -134,7 +143,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     guardarPregunta() {
         // Estructura que espera tu backend
         const alternativasFormateadas = this.opciones.map((op) => ({
-            cAlternativa: op.texto || '',
+            cAlternativa: op.cAlternativa || '',
             cAlternativaImg: op.imagen || '',
         }))
 
@@ -148,6 +157,23 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         }
         this.formpregunta.emit(data)
         this.showModal = false
+    }
+    actuaizarPregunta() {
+        // Estructura que espera tu backend
+        const alternativasFormateadas = this.opciones.map((op) => ({
+            cAlternativa: op.cAlternativa || '',
+            cAlternativaImg: op.imagen || '',
+        }))
+
+        // Convertir a JSON y guardar en una variable
+        this.jsonAlternativas = JSON.stringify(alternativasFormateadas)
+
+        const data = {
+            cPregunta: this.cPregunta,
+            iTipoPregId: this.iTipoPregId,
+            jsonAlternativas: this.jsonAlternativas,
+        }
+        console.log('datos actualizados', data)
     }
     onInput(event: Event) {
         const value = (event.target as HTMLElement).innerText
@@ -186,11 +212,11 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     }
 
     opciones: {
-        texto: string
+        cAlternativa: string
         imagen?: File | null
-    }[] = [{ texto: '' }]
+    }[] = [{ cAlternativa: '' }]
     agregarOpcion() {
-        this.opciones.push({ texto: '' })
+        this.opciones.push({ cAlternativa: '' })
     }
     eliminarOpcion(index: number) {
         this.opciones.splice(index, 1)

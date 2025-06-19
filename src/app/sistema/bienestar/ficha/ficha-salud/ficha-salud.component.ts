@@ -86,42 +86,13 @@ export class FichaSaludComponent implements OnInit {
         }
     }
 
-    crearControlesDolencias(dolencias: Array<object>) {
-        const formArray = this.formSalud.get('controles_dolencias') as FormArray
-        formArray.clear()
-        this.dolencias.map((param: any) => {
-            const registro = dolencias.find(
-                (registro: any) => registro.value === param.value
-            )
-            let grupo: FormGroup = null
-            if (!registro) {
-                grupo = this.fb.group({
-                    iDolenciaId: [param.value],
-                    bDolFicha: [false],
-                    cDolFichaObs: [null],
-                })
-                formArray.push(grupo)
-            } else {
-                grupo = this.fb.group({
-                    iDolenciaId: [param.value],
-                    bDolFicha: [registro['estado']],
-                    cDolFichaObs: [registro['obs']],
-                })
-                formArray.push(grupo)
-                grupo
-                    .get('bDolFicha')
-                    .setValue(registro['estado'], { emitEvent: true })
-            }
-        })
-    }
-
-    async verFichaSalud(): Promise<void> {
+    verFichaSalud() {
         this.datosFichaBienestar
             .verFichaSalud({
                 iFichaDGId: this.iFichaDGId,
             })
             .subscribe((data: any) => {
-                if (data) {
+                if (data.data.length) {
                     this.setFormSalud(data.data[0])
                 }
             })
@@ -153,6 +124,35 @@ export class FichaSaludComponent implements OnInit {
             )
             this.crearControlesDolencias(dolencias)
         }
+    }
+
+    crearControlesDolencias(dolencias: Array<object>) {
+        const formArray = this.formSalud.get('controles_dolencias') as FormArray
+        formArray.clear()
+        this.dolencias.map((param: any) => {
+            const registro = dolencias.find(
+                (registro: any) => registro.value === param.value
+            )
+            let grupo: FormGroup = null
+            if (!registro) {
+                grupo = this.fb.group({
+                    iDolenciaId: [param.value],
+                    bDolFicha: [false],
+                    cDolFichaObs: [null],
+                })
+                formArray.push(grupo)
+            } else {
+                grupo = this.fb.group({
+                    iDolenciaId: [param.value],
+                    bDolFicha: [registro['estado']],
+                    cDolFichaObs: [registro['obs']],
+                })
+                formArray.push(grupo)
+                grupo
+                    .get('bDolFicha')
+                    .setValue(registro['estado'], { emitEvent: true })
+            }
+        })
     }
 
     actualizar() {

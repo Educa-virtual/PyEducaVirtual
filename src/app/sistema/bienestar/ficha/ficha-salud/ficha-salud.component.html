@@ -18,7 +18,9 @@
             />
         </div>
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Dolencias o enfermedades crónicas">
+            <p-fieldset
+                legend="Dolencias o enfermedades crónicas del estudiante"
+            >
                 <div
                     class="grid"
                     *ngIf="
@@ -46,14 +48,20 @@
                                 ]
                             "
                             inputPlaceholder="Indique si está diagnosticado o no, la severidad y el tiempo que tiene esta dolencia o enfermedad"
+                            [infoAdicional]="bDolFicha"
                         />
+                        <ng-template #bDolFicha>
+                            Indique si está diagnosticado o no, la severidad, si
+                            necesita apoyo o acomodaciones y el tiempo que tiene
+                            esta dolencia o enfermedad
+                        </ng-template>
                     </div>
                 </div>
             </p-fieldset>
         </div>
 
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Indique si tiene alergias">
+            <p-fieldset legend="Indique si el estudiante tiene alergias">
                 <div class="grid">
                     <div class="col-12">
                         <app-switch-input

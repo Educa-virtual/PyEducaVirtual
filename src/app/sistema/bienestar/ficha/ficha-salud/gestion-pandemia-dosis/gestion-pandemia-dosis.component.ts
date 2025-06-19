@@ -16,11 +16,18 @@ import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienes
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-simple.component'
+import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component'
 
 @Component({
     selector: 'app-gestion-pandemia-dosis',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        DropdownSimpleComponent,
+        InputSimpleComponent,
+    ],
     templateUrl: './gestion-pandemia-dosis.component.html',
     styleUrl: './gestion-pandemia-dosis.component.scss',
 })
@@ -34,7 +41,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
     dosis_registrada: boolean = false
     visible: boolean = false
     caption: string = ''
-    fecha_actual = new Date()
+    fecha_actual: Date = new Date()
 
     private _messageService = inject(MessageService)
     private _confirmService = inject(ConfirmationModalService)
@@ -50,9 +57,9 @@ export class GestionPandemiaDosisComponent implements OnInit {
             this.formDosis = this.fb.group({
                 iFichaDGId: [this.iFichaDGId, Validators.required],
                 iPanDFichaId: [null],
-                iPandemiaId: [null],
-                iPanDFichaNroDosis: [null],
-                dtPanDFichaDosis: [null],
+                iPandemiaId: [null, Validators.required],
+                iPanDFichaNroDosis: [null, Validators.required],
+                dtPanDFichaDosis: [null, Validators.required],
             })
         } catch (error) {
             console.log(error, 'error de formulario')
@@ -70,11 +77,14 @@ export class GestionPandemiaDosisComponent implements OnInit {
     }
 
     filtrarTabla() {
-        const filtro = this.filtro.nativeElement.value
+        const filtro = this.filtro.nativeElement.value.toLowerCase()
         this.dosis_filtradas = this.dosis.filter((dosis: any) => {
-            if (dosis.iPanDFichaNroDosis.includes(filtro)) return dosis
-            if (dosis.dtPanDFichaDosis.includes(filtro)) return dosis
-            if (dosis.cPandemiaNombre.includes(filtro)) return dosis
+            if (dosis.iPanDFichaNroDosis.toLowerCase().includes(filtro))
+                return dosis
+            if (dosis.dtPanDFichaDosis.toLowerCase().includes(filtro))
+                return dosis
+            if (dosis.cPandemiaNombre.toLowerCase().includes(filtro))
+                return dosis
             return null
         })
     }
@@ -173,6 +183,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
                     this.dosis = this.dosis.filter(
                         (dosis: any) => dosis.iPanDFichaId !== iPanDFichaId
                     )
+                    this.dosis_filtradas = this.dosis
                 },
                 error: (error) => {
                     console.error('Error eliminando dosis:', error)

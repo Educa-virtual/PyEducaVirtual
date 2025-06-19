@@ -750,27 +750,7 @@ export class TabContenidoComponent implements OnInit {
     }
 
     publicarEvaluacion(actividad: IActividad) {
-        const data = {
-            iEvaluacionId: actividad.ixActivadadId,
-            iCursoId: this.semanaSeleccionada.iCursoId,
-            // obtener iseccionId
-            iSeccionId: this.semanaSeleccionada.iSeccionId,
-            iGradoId: this.semanaSeleccionada.iGradoId,
-            iYAcadId: this._constantesService.iYAcadId,
-            iSemAcadId: this.semanaSeleccionada.iSemAcadId,
-            iNivelGradoId: this.semanaSeleccionada.iNivelGradoId,
-            iCurrId: this.semanaSeleccionada.iCurrId,
-            iEstado: 2,
-        }
-
-        this._evalService
-            .publicarEvaluacion(data)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: () => {
-                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
-                },
-            })
+        console.log(actividad)
     }
 
     private eliminarEvaluacion(iEvaluacionId) {

@@ -853,7 +853,7 @@ export class DatosFichaBienestarService implements OnDestroy {
         groupControl: string | null = null
     ): void {
         form.get(formJson).setValue(null)
-        if (!formControlName || form.get(formControlName).value === null) {
+        if (!formControlName) {
             return null
         }
         const items = []

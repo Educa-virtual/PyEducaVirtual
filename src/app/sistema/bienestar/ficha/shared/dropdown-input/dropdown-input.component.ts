@@ -38,6 +38,8 @@ export class DropdownInputComponent implements OnInit {
 
     @Input() infoAdicional!: TemplateRef<any>
 
+    @Input() inputTrigger: number = 1
+
     onChange = () => {}
     onTouched = () => {}
     touched = false
@@ -55,7 +57,7 @@ export class DropdownInputComponent implements OnInit {
             this.inputControl.setValue(null)
             return null
         }
-        if (event.value == 1) {
+        if (event.value == this.inputTrigger) {
             this.visibleInput = true
         } else {
             this.visibleInput = false

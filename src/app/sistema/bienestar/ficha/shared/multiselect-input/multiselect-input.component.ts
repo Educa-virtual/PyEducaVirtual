@@ -38,6 +38,8 @@ export class MultiselectInputComponent implements OnInit {
 
     @Input() infoAdicional!: TemplateRef<any>
 
+    @Input() inputTrigger: number = 1
+
     onChange = () => {}
     onTouched = () => {}
     touched = false
@@ -56,14 +58,14 @@ export class MultiselectInputComponent implements OnInit {
             return null
         }
         if (Array.isArray(event.value)) {
-            if (event.value.includes(1)) {
+            if (event.value.includes(this.inputTrigger)) {
                 this.visibleInput = true
             } else {
                 this.visibleInput = false
                 this.inputControl.setValue(null)
             }
         } else {
-            if (event.value == 1) {
+            if (event.value == this.inputTrigger) {
                 this.visibleInput = true
             } else {
                 this.visibleInput = false

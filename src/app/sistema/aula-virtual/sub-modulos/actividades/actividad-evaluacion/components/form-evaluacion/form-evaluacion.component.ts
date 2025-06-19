@@ -1,8 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { ConstantesService } from '@/app/servicios/constantes.service'
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
-import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { NgIf } from '@angular/common'
 import {
     Component,
@@ -13,27 +10,21 @@ import {
     Output,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
-import { GeneralService } from '@/app/servicios/general.service'
-import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.component'
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { MessageService } from 'primeng/api'
-import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 
-/**
- * @Component Decorator que define la metadata del componente `FormEvaluacionComponent`.
- * Este componente representa un formulario de evaluación que permite la carga de archivos,
- * la selección de preguntas, y otras funcionalidades relacionadas.
- */
 @Component({
-    // Selector del componente para usarlo en plantillas HTML.
     selector: 'app-form-evaluacion',
     standalone: true,
-    // Módulos e importaciones que utiliza este componente.
     imports: [
         PrimengModule,
         NgIf,
         TypesFilesUploadPrimengComponent,
-        ListPreguntasComponent,
+        ModalPrimengComponent,
     ],
     templateUrl: './form-evaluacion.component.html',
     styleUrl: './form-evaluacion.component.scss',
@@ -46,26 +37,20 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
  */
 export class FormEvaluacionComponent implements OnChanges {
     private _FormBuilder = inject(FormBuilder)
-    private _evaluacionService = inject(ApiEvaluacionesService)
-    private _ConstantesService = inject(ConstantesService)
-    private _ConfirmationModalService = inject(ConfirmationModalService)
-    private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
-    private _ApiAulaService = inject(ApiAulaService)
+    private _ValidacionFormulariosService = inject(ValidacionFormulariosService)
+    private _EvaluacionesService = inject(EvaluacionesService)
+    private _ConstantesService = inject(ConstantesService)
 
     @Output() accionBtnItem = new EventEmitter()
     @Input() showModalEvaluacion: boolean = false
     @Input() tituloEvaluacion: string
     @Input() opcionEvaluacion: string
-    @Input() semana
-    @Input() idDocCursoId
     @Input() semanaEvaluacion
-    @Input() curso
-    @Input() dataActividad
+    @Input() iEvaluacionId: string | number
 
+    isLoading: boolean = false
     date = this.ajustarAHorarioDeMediaHora(new Date())
-    cursos = []
-    tipoEvaluaciones = []
     filesUrl = []
     typesFiles = {
         file: true,
@@ -74,8 +59,7 @@ export class FormEvaluacionComponent implements OnChanges {
         repository: false,
         image: false,
     }
-    titulo: string
-    iEvaluacionId: string | number
+
     formEvaluacion = this._FormBuilder.group({
         iEvaluacionId: [],
         iTipoEvalId: [1],
@@ -83,7 +67,7 @@ export class FormEvaluacionComponent implements OnChanges {
         iEscalaCalifId: [],
         iDocenteId: [0, Validators.required],
         dtEvaluacionPublicacion: [],
-        cEvaluacionTitulo: ['', Validators.required],
+        cEvaluacionTitulo: [null, Validators.required],
         cEvaluacionDescripcion: ['', Validators.required],
         cEvaluacionObjetivo: [],
         nEvaluacionPuntaje: [],
@@ -95,8 +79,9 @@ export class FormEvaluacionComponent implements OnChanges {
         iEvaluacionIdPadre: [],
         cEvaluacionArchivoAdjunto: [],
         iContenidoSemId: [null, Validators.required],
-        iActTipoId: [EVALUACION, Validators.required],
+        iActTipoId: [0, Validators.required],
         idDocCursoId: [null, Validators.required],
+        iCredId: [null, Validators.required],
     })
 
     ngOnChanges(changes) {
@@ -108,56 +93,79 @@ export class FormEvaluacionComponent implements OnChanges {
         if (changes.semanaEvaluacion?.currentValue) {
             this.semanaEvaluacion = changes.semanaEvaluacion.currentValue
         }
-        if (changes.curso?.currentValue) {
-            this.curso = changes.curso.currentValue
-        }
-
-        if (changes.dataActividad?.currentValue) {
-            this.dataActividad = changes.dataActividad.currentValue
-            if (this.dataActividad?.ixActivadadId) {
-                this.iEvaluacionId = this.dataActividad.ixActivadadId
-                this.obtenerEvaluacion(this.dataActividad.ixActivadadId)
-            }
+        if (changes.iEvaluacionId?.currentValue) {
+            this.iEvaluacionId = changes.iEvaluacionId.currentValue
+            this.obtenerEvaluacion(this.iEvaluacionId)
         }
     }
 
     obtenerEvaluacion(iEvaluacionId: string | number) {
-        console.log(iEvaluacionId)
-        // this._ApiAulaService
-        //     .obtenerActividad({
-        //         iActTipoId: EVALUACION,
-        //         ixActivadadId: this.dataActividad?.ixActivadadId,
-        //     })
-        //     .subscribe({
-        //         next: (data) => {
-        //             if (Array.isArray(data) && data.length > 0) {
-        //                 this.formEvaluacion.patchValue(data[0])
-        //             } else {
-        //                 console.warn(
-        //                     ' No se encontraron datos para asignar al formulario.'
-        //                 )
-        //             }
-        //             //console.log(typeof this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
-        //             this.filesUrl =
-        //                 this.formEvaluacion.value.cEvaluacionArchivoAdjunto
-        //             // this.filesUrl = this.formEvaluacion.value.cEvaluacionArchivoAdjunto.length>0
-        //             //     ? JSON.parse(this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
-        //             //     : []
-        //             this.formEvaluacion.controls.dtFin.setValue(
-        //                 new Date(this.formEvaluacion.value.dtEvaluacionFin)
-        //             )
-        //             this.formEvaluacion.controls.dtInicio.setValue(
-        //                 new Date(this.formEvaluacion.value.dtEvaluacionInicio)
-        //             )
-        //         },
-        //     })
+        const params = {
+            iCredId: this._ConstantesService.iCredId,
+        }
+        this._EvaluacionesService
+            .obtenerEvaluacionesxiEvaluacionId(iEvaluacionId, params)
+            .subscribe({
+                next: (resp) => {
+                    if (resp.validated) {
+                        let data = resp.data
+                        data = data.length ? data[0] : []
+                        data.cEvaluacionArchivoAdjunto =
+                            data.cEvaluacionArchivoAdjunto
+                                ? JSON.parse(data.cEvaluacionArchivoAdjunto)
+                                : []
+                        this.filesUrl = data.cEvaluacionArchivoAdjunto
+                        this.formEvaluacion.patchValue({
+                            ...data,
+                            dtEvaluacionInicio: new Date(
+                                data.dtEvaluacionInicio
+                            ),
+                            dtEvaluacionFin: new Date(data.dtEvaluacionFin),
+                        })
+                    }
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                },
+            })
     }
 
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
         switch (accion) {
+            case 'close-modal-validated':
             case 'close-modal':
+                this.formEvaluacion.reset()
+                this.formEvaluacion.patchValue({
+                    cEvaluacionDescripcion: null,
+                    dtEvaluacionInicio: this.date,
+                    dtEvaluacionFin: this.date,
+                })
+
+                this.filesUrl = []
+
                 this.accionBtnItem.emit({ accion, item })
                 break
             case 'subir-file-evaluacion':
@@ -191,133 +199,148 @@ export class FormEvaluacionComponent implements OnChanges {
     }
 
     guardarActualizarFormInfo() {
-        if (this.formEvaluacion.invalid) {
-            this.formEvaluacion.markAllAsTouched()
+        if (this.isLoading) return // evitar doble clic
+        this.isLoading = true
 
-            const camposInvalidos = []
-            const controles = this.formEvaluacion.controls
+        this.formEvaluacion.patchValue({
+            iContenidoSemId: this.semanaEvaluacion.iContenidoSemId,
+            idDocCursoId: this.semanaEvaluacion.idDocCursoId,
+            iDocenteId: this._ConstantesService.iDocenteId,
+            iActTipoId: EVALUACION,
+            iCredId: this._ConstantesService.iCredId,
+            cEvaluacionArchivoAdjunto: JSON.stringify(this.filesUrl),
+        })
 
-            const nombresCampos: Record<string, string> = {
-                iDocenteId: 'Docente',
-                cEvaluacionTitulo: 'Título de la evaluación',
-                cEvaluacionDescripcion: 'Descripción',
-                dtEvaluacionInicio: 'Fecha de inicio',
-                dtEvaluacionFin: 'Fecha de fin',
-                iContenidoSemId: 'Semana de contenido',
-                iActTipoId: 'Tipo de actividad',
-                idDocCursoId: 'Curso',
-            }
-
-            for (const nombreCampo in controles) {
-                const control = controles[nombreCampo]
-                if (control.invalid && nombresCampos[nombreCampo]) {
-                    camposInvalidos.push(nombresCampos[nombreCampo])
-                }
-            }
-
-            if (camposInvalidos.length) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Formulario incompleto',
-                    detail: `Faltan completar los siguientes campos: ${camposInvalidos.join(', ')}.`,
-                })
-            }
-
-            return // salir si es inválido
+        const nombresCampos: Record<string, string> = {
+            iDocenteId: 'Docente',
+            cEvaluacionTitulo: 'Título de la evaluación',
+            cEvaluacionDescripcion: 'Descripción',
+            dtEvaluacionInicio: 'Fecha de inicio',
+            dtEvaluacionFin: 'Fecha de fin',
+            iContenidoSemId: 'Semana de contenido',
+            iActTipoId: 'Tipo de actividad',
+            idDocCursoId: 'Curso',
+            iCredId: 'Credencial',
         }
-        console.log(this.formEvaluacion.value)
-        console.log(this.formEvaluacion)
-        console.log(this.filesUrl)
-        // this.formEvaluacion.controls.dFechaEvaluacionInico.setValue(
-        //     this.formEvaluacion.value.dtInicio
-        // )
-        // this.formEvaluacion.controls.dFechaEvaluacionFin.setValue(
-        //     this.formEvaluacion.value.dtFin
-        // )
-        // const data = this.formEvaluacion.getRawValue()
-        // data.iDocenteId = this._ConstantesService.iDocenteId
-        // data.iActTipoId = EVALUACION
-        // data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
-        // let horaInicio: any = data.dFechaEvaluacionInico.toLocaleString(
-        //     'en-GB',
-        //     {
-        //         timeZone: 'America/Lima',
-        //     }
-        // )
-        // let horaFin: any = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
-        //     timeZone: 'America/Lima',
-        // })
-        // horaInicio = horaInicio.split(',')
-        // horaFin = horaFin.split(',')
-        // this.formEvaluacion.controls['dFechaEvaluacionPublicacion'].setValue(
-        //     horaInicio[0]
-        // )
-        // this.formEvaluacion.controls['tHoraEvaluacionPublicacion'].setValue(
-        //     horaInicio[1].replace(' ', '')
-        // )
-        // this.formEvaluacion.controls['dFechaEvaluacionInico'].setValue(
-        //     horaInicio[0]
-        // )
-        // this.formEvaluacion.controls['tHoraEvaluacionInico'].setValue(
-        //     horaInicio[1].replace(' ', '')
-        // )
-        // this.formEvaluacion.controls['dFechaEvaluacionFin'].setValue(horaFin[0])
-        // this.formEvaluacion.controls['tHoraEvaluacionFin'].setValue(
-        //     horaFin[1].replace(' ', '')
-        // )
-        // data.dFechaEvaluacionPublicacion = horaInicio[0]
-        // data.tHoraEvaluacionPublicacion = horaInicio[1].replace(' ', '')
-        // data.dFechaEvaluacionInico = horaInicio[0]
-        // data.tHoraEvaluacionInico = horaInicio[1].replace(' ', '')
-        // data.dFechaEvaluacionFin = horaFin[0]
-        // data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
-        // if (
-        //     data.dFechaEvaluacionPublicacion &&
-        //     data.tHoraEvaluacionPublicacion
-        // ) {
-        //     data.dtEvaluacionPublicacion =
-        //         data.dFechaEvaluacionPublicacion +
-        //         ' ' +
-        //         data.tHoraEvaluacionPublicacion
-        // }
-        // if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
-        //     data.dtEvaluacionInicio =
-        //         data.dFechaEvaluacionInico + ' ' + data.tHoraEvaluacionInico
-        //     this.formEvaluacion.controls.dtEvaluacionInicio.setValue(
-        //         data.dtEvaluacionInicio
-        //     )
-        // }
-        // if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
-        //     data.dtEvaluacionFin =
-        //         data.dFechaEvaluacionFin + ' ' + data.tHoraEvaluacionFin
-        //     this.formEvaluacion.controls.dtEvaluacionFin.setValue(
-        //         data.dtEvaluacionFin
-        //     )
-        // }
-        // //PROGRAMACIÓN ACTIVIDADES
-        // data.dtProgActInicio = data.dtEvaluacionInicio
-        // data.dtProgActFin = data.dtEvaluacionFin
-        // data.cProgActTituloLeccion = data.cEvaluacionTitulo
-        // data.dtProgActPublicacion = data.dtEvaluacionPublicacion
-        // if (this.formEvaluacion.invalid) {
-        //     this.formEvaluacion.markAllAsTouched()
-        //     return
-        // }
-        // data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
-        // if (this.opcionEvaluacion === 'GUARDAR') {
-        //     data.opcion = 'GUARDARxProgActxiEvaluacionId'
-        // } else {
-        //     data.opcion = 'ACTUALIZARxProgActxiEvaluacionId'
-        // }
-        // const params = {
-        //     petition: 'post',
-        //     group: 'aula-virtual',
-        //     prefix: 'programacion-actividades',
-        //     ruta: 'store',
-        //     data: data,
-        //     params: { skipSuccessMessage: true },
-        // }
-        // this.getInformation(params, data.opcion)
+        const { valid, message } =
+            this._ValidacionFormulariosService.validarFormulario(
+                this.formEvaluacion,
+                nombresCampos
+            )
+
+        if (!valid && message) {
+            this.mostrarMensajeToast(message)
+            this.isLoading = false
+            return
+        }
+
+        const data = {
+            ...this.formEvaluacion.value,
+            dtEvaluacionInicio: this.formatearFechaLocal(
+                this.formEvaluacion.value.dtEvaluacionInicio
+            ),
+            dtEvaluacionFin: this.formatearFechaLocal(
+                this.formEvaluacion.value.dtEvaluacionFin
+            ),
+        }
+
+        if (this.iEvaluacionId) {
+            this.actualizarEvaluacion(data)
+        } else {
+            this.guardarEvaluacion(data)
+        }
+    }
+    guardarEvaluacion(data) {
+        this._EvaluacionesService.guardarEvaluaciones(data).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.mostrarMensajeToast({
+                        severity: 'success',
+                        summary: 'Genial!',
+                        detail: resp.message,
+                    })
+                    this.accionBtn({
+                        accion: 'close-modal-validated',
+                        item: [],
+                    })
+                }
+                this.isLoading = false
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.mostrarMensajeToast({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.mostrarMensajeToast({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+                this.isLoading = false
+            },
+        })
+    }
+    actualizarEvaluacion(data) {
+        const params = {
+            ...data,
+            iCredId: this._ConstantesService.iCredId,
+        }
+        this._EvaluacionesService
+            .actualizarEvaluacionesxiEvaluacionId(this.iEvaluacionId, params)
+            .subscribe({
+                next: (resp) => {
+                    if (resp.validated) {
+                        this.mostrarMensajeToast({
+                            severity: 'success',
+                            summary: 'Genial!',
+                            detail: resp.message,
+                        })
+                        this.accionBtn({
+                            accion: 'close-modal-validated',
+                            item: [],
+                        })
+                    }
+                    this.isLoading = false
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                    this.isLoading = false
+                },
+            })
     }
 
     ajustarAHorarioDeMediaHora(fecha) {
@@ -330,5 +353,14 @@ export class FormEvaluacionComponent implements OnChanges {
         fecha.setSeconds(0)
         fecha.setMilliseconds(0)
         return fecha
+    }
+
+    mostrarMensajeToast(message) {
+        this._MessageService.add(message)
+    }
+
+    formatearFechaLocal(date: Date): string {
+        const pad = (n: number) => n.toString().padStart(2, '0')
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
     }
 }

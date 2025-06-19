@@ -1,11 +1,9 @@
-<p-dialog
-    [header]="titulo"
-    [modal]="true"
-    [(visible)]="showModalEvaluacion"
-    [style]="{ width: '95%', minWidth: '90%', height: '90%' }"
-    (onHide)="accionBtn({ accion: 'close-modal', item: [] })"
-    [draggable]="false"
-    [resizable]="false"
+<app-modal-primeng
+    *ngIf="showModalEvaluacion"
+    [title]="tituloEvaluacion + ' EVALUACIÓN FORMATIVA'"
+    [showModal]="showModalEvaluacion"
+    (accionBtnItem)="accionBtn({ accion: 'close-modal', item: [] })"
+    width="65rem"
 >
     <form [formGroup]="formEvaluacion" class="mt-4" *ngIf="formEvaluacion">
         <div class="grid">
@@ -110,23 +108,20 @@
             </div>
         </div>
     </form>
-
-    <!-- Pie del modal con botones de acción -->
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-end gap-2">
-            <!-- Botón de cancelar -->
-            <p-button
-                label="Cancelar"
-                severity="secondary"
-                (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-            />
-            <!-- Botón de acción dinámica -->
-            <p-button
-                [label]="opcionEvaluacion"
-                (onClick)="guardarActualizarFormInfo()"
-            />
-        </div>
-    </ng-template>
-</p-dialog>
-
-<p-toast></p-toast>
+    <div footer class="flex justify-content-end gap-2">
+        <!-- Botón de cancelar -->
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
+        <!-- Botón de acción dinámica -->
+        <p-button
+            [label]="opcionEvaluacion"
+            (onClick)="guardarActualizarFormInfo()"
+            [loading]="isLoading"
+            [disabled]="isLoading"
+        />
+    </div>
+</app-modal-primeng>
+<p-toast />

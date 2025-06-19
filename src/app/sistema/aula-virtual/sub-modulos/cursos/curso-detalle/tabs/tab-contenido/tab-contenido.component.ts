@@ -42,6 +42,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 import { CuestionarioFormComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-form/cuestionario-form.component'
 import { DropdownChangeEvent } from 'primeng/dropdown'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -88,6 +89,8 @@ export class TabContenidoComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _evalService = inject(ApiEvaluacionesService)
     private GeneralService = inject(GeneralService)
+    private _EvaluacionesService = inject(EvaluacionesService)
+    private _MessageService = inject(MessageService)
 
     // para mostrar las actividades de la semana
     // private semanaSeleccionadaS
@@ -655,6 +658,7 @@ export class TabContenidoComponent implements OnInit {
     opcionEvaluacion: string
     semanaEvaluacion
     dataActividad
+    iEvaluacionId: string | number
     handleEvaluacionAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
@@ -665,17 +669,13 @@ export class TabContenidoComponent implements OnInit {
                 this.opcionEvaluacion =
                     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
                 this.semanaEvaluacion = this.semanaSeleccionada
-                this.dataActividad = actividad
+                this.iEvaluacionId = actividad.ixActivadadId
                 break
             case 'ELIMINAR':
                 this._confirmService.openConfirm({
                     header: '¿Esta seguro de eliminar la evaluación?',
                     accept: () => {
-                        this.eliminarActividad(
-                            actividad.iProgActId,
-                            actividad.iActTipoId,
-                            actividad.ixActivadadId
-                        )
+                        this.eliminarActividad(actividad.ixActivadadId)
                     },
                 })
                 break
@@ -773,13 +773,45 @@ export class TabContenidoComponent implements OnInit {
             })
     }
 
-    private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {
-        this._aulaService
-            .eliminarActividad({ iProgActId, iActTipoId, ixActivadadId })
-            .pipe(takeUntil(this._unsubscribe$))
+    private eliminarActividad(iEvaluacionId) {
+        const params = {
+            iCredId: this._constantesService.iCredId,
+        }
+        this._EvaluacionesService
+            .eliminarEvaluacionesxiEvaluacionId(iEvaluacionId, params)
             .subscribe({
-                next: () => {
-                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                next: (resp) => {
+                    if (resp.validated) {
+                        this.mostrarMensajeToast({
+                            severity: 'success',
+                            summary: 'Genial!',
+                            detail: resp.message,
+                        })
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                    }
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
                 },
             })
     }
@@ -871,9 +903,14 @@ export class TabContenidoComponent implements OnInit {
         const { accion } = elemento
         //const { item } = elemento
         switch (accion) {
-            case 'close-modal':
+            case 'close-modal-validated':
                 this.showModalEvaluacion = false
-                this.getData()
+                this.iEvaluacionId = null
+                this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                break
+            case 'close-modal':
+                this.iEvaluacionId = null
+                this.showModalEvaluacion = false
                 break
         }
     }
@@ -904,5 +941,9 @@ export class TabContenidoComponent implements OnInit {
             .filter((fecha: any) => fecha !== null)
 
         this.semanaSeleccionada.fechas = fechasFiltradas
+    }
+
+    mostrarMensajeToast(message) {
+        this._MessageService.add(message)
     }
 }

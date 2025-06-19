@@ -104,9 +104,8 @@ const docente = [
                 icon: 'pi pi-fw pi-check-square',
                 items: [
                     {
-                        label: 'Consultar Fichas Socioeconómicas',
-                        icon: 'pi pi-fw pi-user-edit',
-                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
                     },
                 ],
             },
@@ -426,23 +425,14 @@ const administracion = [
                 icon: 'pi pi-fw pi-check-square',
                 items: [
                     {
-                        label: 'Consultar Fichas',
+                        label: 'Consultar Fichas Socioeconómicas',
                         icon: 'pi pi-fw pi-user-edit',
                         routerLink: ['/bienestar/gestion-fichas'],
-                    },
-                    {
-                        label: 'Ficha Socioeconomica',
-                        icon: 'pi pi-fw pi-file-edit',
-                        routerLink: ['/bienestar/ficha'],
                     },
                     {
                         label: 'Gestionar encuestas',
                         icon: 'pi pi-fw pi-list-check',
                         routerLink: ['/bienestar/gestionar-encuestas'],
-                    },
-                    {
-                        label: 'Recordatorios de cumpleaños',
-                        icon: 'pi pi-fw pi-bell',
                     },
                     {
                         label: 'Reportes e informes',

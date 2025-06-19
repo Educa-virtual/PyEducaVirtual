@@ -120,6 +120,10 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/verFicha`, data)
     }
 
+    borrarFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/borrarFicha`, data)
+    }
+
     verFichaGeneral(data: any) {
         return this.http.post(`${baseUrl}/bienestar/verFichaGeneral`, data)
     }

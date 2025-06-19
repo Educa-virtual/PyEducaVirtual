@@ -3,13 +3,15 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Component,
+    inject,
     OnInit,
     ViewChild,
 } from '@angular/core'
-import { MenuItem } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { ActivatedRoute } from '@angular/router'
 import { CompartirFichaService } from '../services/compartir-ficha.service'
 import { TabMenu } from 'primeng/tabmenu'
+import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service'
 
 @Component({
     selector: 'app-ficha',
@@ -26,10 +28,13 @@ export class FichaComponent implements OnInit, AfterViewInit {
 
     @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu
 
+    private _messageService = inject(MessageService)
+
     constructor(
         private route: ActivatedRoute,
         private cf: ChangeDetectorRef,
-        private compartirFicha: CompartirFichaService
+        private compartirFicha: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService
     ) {
         this.route.paramMap.subscribe((params: any) => {
             this.iFichaDGId = params.params.id || 0
@@ -110,5 +115,30 @@ export class FichaComponent implements OnInit, AfterViewInit {
                 })
             }
         }
+    }
+
+    descargarFicha() {
+        this.datosFichaBienestar.descargarFicha(this.iFichaDGId).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], {
+                    type: 'application/pdf',
+                })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = 'ficha-socioeconomica.pdf'
+                link.target = '_blank'
+                link.click()
+                window.URL.revokeObjectURL(url)
+            },
+            error: (error) => {
+                console.log(error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                })
+            },
+        })
     }
 }

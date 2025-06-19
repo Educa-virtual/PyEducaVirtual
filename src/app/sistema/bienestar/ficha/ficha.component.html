@@ -2,6 +2,17 @@
     <ng-template pTemplate="header">
         <span class="text-xl">Ficha socioeconómica</span>
     </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <p-button
+                icon="pi pi-download"
+                label="Descargar Ficha"
+                size="small"
+                severity="info"
+                (onClick)="descargarFicha()"
+            />
+        </div>
+    </ng-template>
     <p-tabMenu
         #tabMenu
         [model]="items"

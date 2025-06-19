@@ -675,7 +675,7 @@ export class TabContenidoComponent implements OnInit {
                 this._confirmService.openConfirm({
                     header: '¿Esta seguro de eliminar la evaluación?',
                     accept: () => {
-                        this.eliminarActividad(actividad.ixActivadadId)
+                        this.eliminarEvaluacion(actividad.ixActivadadId)
                     },
                 })
                 break
@@ -773,7 +773,7 @@ export class TabContenidoComponent implements OnInit {
             })
     }
 
-    private eliminarActividad(iEvaluacionId) {
+    private eliminarEvaluacion(iEvaluacionId) {
         const params = {
             iCredId: this._constantesService.iCredId,
         }

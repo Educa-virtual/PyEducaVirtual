@@ -76,44 +76,13 @@ export class FichaDiscapacidadComponent implements OnInit {
         }
     }
 
-    crearControlesDiscapacidades(discapacidades: Array<object>) {
-        const formArray = this.formDiscapacidad.get(
-            'controles_discapacidades'
-        ) as FormArray
-        formArray.clear()
-        this.discapacidades.map((param: any) => {
-            const registro = discapacidades.find(
-                (registro: any) => registro.value === param.value
-            )
-            let grupo: FormGroup = null
-            if (!registro) {
-                grupo = this.fb.group({
-                    iDiscId: [param.value],
-                    bDiscFicha: [false],
-                    cDiscFichaObs: [null],
-                })
-                formArray.push(grupo)
-            } else {
-                grupo = this.fb.group({
-                    iDiscId: [param.value],
-                    bDiscFicha: [registro['estado']],
-                    cDiscFichaObs: [registro['obs']],
-                })
-                formArray.push(grupo)
-                grupo
-                    .get('bDiscFicha')
-                    .setValue(registro['estado'], { emitEvent: true })
-            }
-        })
-    }
-
-    async verFichaDiscapacidad(): Promise<void> {
+    verFichaDiscapacidad() {
         this.datosFichaBienestar
             .verFichaDiscapacidad({
                 iFichaDGId: this.iFichaDGId,
             })
             .subscribe((data: any) => {
-                if (data) {
+                if (data.data.length) {
                     this.setFormDiscapacidad(data.data[0])
                 }
             })
@@ -153,38 +122,35 @@ export class FichaDiscapacidadComponent implements OnInit {
         }
     }
 
-    guardar() {
-        if (this.formDiscapacidad.invalid) {
-            this._messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe completar los campos requeridos',
-            })
-            return
-        }
-        this.datosFichaBienestar
-            .guardarFichaDiscapacidad(this.formDiscapacidad.value)
-            .subscribe({
-                next: () => {
-                    this.ficha_registrada = true
-                    this._messageService.add({
-                        severity: 'success',
-                        summary: 'Registro exitoso',
-                        detail: 'Se registraron los datos',
-                    })
-                },
-                error: (error) => {
-                    console.error('Error guardando ficha:', error)
-                    this._messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error.message,
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+    crearControlesDiscapacidades(discapacidades: Array<object>) {
+        const formArray = this.formDiscapacidad.get(
+            'controles_discapacidades'
+        ) as FormArray
+        formArray.clear()
+        this.discapacidades.map((param: any) => {
+            const registro = discapacidades.find(
+                (registro: any) => registro.value === param.value
+            )
+            let grupo: FormGroup = null
+            if (!registro) {
+                grupo = this.fb.group({
+                    iDiscId: [param.value],
+                    bDiscFicha: [false],
+                    cDiscFichaObs: [null],
+                })
+                formArray.push(grupo)
+            } else {
+                grupo = this.fb.group({
+                    iDiscId: [param.value],
+                    bDiscFicha: [registro['estado']],
+                    cDiscFichaObs: [registro['obs']],
+                })
+                formArray.push(grupo)
+                grupo
+                    .get('bDiscFicha')
+                    .setValue(registro['estado'], { emitEvent: true })
+            }
+        })
     }
 
     actualizar() {
@@ -196,9 +162,11 @@ export class FichaDiscapacidadComponent implements OnInit {
             })
             return
         }
+
         this.formDiscapacidad
             .get('jsonDiscapacidades')
             .setValue(JSON.stringify(this.controles_discapacidades.value))
+
         this.datosFichaBienestar
             .actualizarFichaDiscapacidad(this.formDiscapacidad.value)
             .subscribe({

@@ -135,10 +135,8 @@ export class FichaComponent implements OnInit, AfterViewInit {
                 const url = window.URL.createObjectURL(blob)
                 const link = document.createElement('a')
                 link.href = url
-                link.download = 'ficha-socioeconomica.pdf'
                 link.target = '_blank'
                 link.click()
-                window.URL.revokeObjectURL(url)
             },
             error: (error) => {
                 console.log(error)

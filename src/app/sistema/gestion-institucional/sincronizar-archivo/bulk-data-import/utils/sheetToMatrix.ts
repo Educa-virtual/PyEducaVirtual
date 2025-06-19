@@ -268,7 +268,7 @@ export class SheetToMatrix {
                                 const respuesta = respuestas.find(
                                     (r: any) => r.p == questionNum
                                 )
-                                newRow[col.header] = respuesta?.r ?? ''
+                                newRow[col.header] = respuesta?.pt ?? 0
 
                                 const cellKey = `${rowIdx + 1}:${colIdx}`
 

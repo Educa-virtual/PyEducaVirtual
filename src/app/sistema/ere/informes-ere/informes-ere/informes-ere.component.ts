@@ -329,7 +329,7 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length == 0) {
+                    if (data.data[1].length == 0) {
                         this.sinDatos()
                     } else {
                         this.formFiltrosObtenido = this.formFiltros.value
@@ -351,6 +351,7 @@ export class InformesEreComponent implements OnInit {
                     }
                 },
                 error: (error) => {
+                    this.puede_exportar = false
                     console.error('Error consultando resultados:', error)
                     this.sinDatos()
                     this._MessageService.add({

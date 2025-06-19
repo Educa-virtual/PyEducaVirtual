@@ -150,22 +150,18 @@
                         />
                     </div>
                     <div class="col-12 col-md-6">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                ¿Cómo es la relacion del estudiante con su
-                                familia?
-                            </p-inputGroupAddon>
-                            <p-dropdown
-                                [options]="estados_relacion"
-                                formControlName="iEstadoRelFamiliar"
-                                [filter]="false"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                        </p-inputGroup>
+                        <app-dropdown-simple
+                            [dropdownItems]="estados_relacion"
+                            dropdownPlaceholder="Seleccione"
+                            [dropdownControl]="
+                                $any(
+                                    formRecreacion.controls[
+                                        'iEstadoRelFamiliar'
+                                    ]
+                                )
+                            "
+                            addonLabel="¿Cómo es la relación del estudiante con su familia?"
+                        />
                     </div>
                 </div>
             </p-fieldset>

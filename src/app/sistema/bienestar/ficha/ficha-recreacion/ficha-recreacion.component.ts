@@ -8,6 +8,7 @@ import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar
 import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
+import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component'
 
 @Component({
     selector: 'app-ficha-recreacion',
@@ -17,6 +18,7 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
         MultiselectInputComponent,
         SwitchInputComponent,
         DropdownInputComponent,
+        DropdownSimpleComponent,
     ],
     templateUrl: './ficha-recreacion.component.html',
     styleUrl: './ficha-recreacion.component.scss',
@@ -108,7 +110,7 @@ export class FichaRecreacionComponent implements OnInit {
         }
     }
 
-    async verFichaRecreacion() {
+    verFichaRecreacion() {
         this.datosFichaBienestar
             .verFichaRecreacion({
                 iFichaDGId: this.iFichaDGId,

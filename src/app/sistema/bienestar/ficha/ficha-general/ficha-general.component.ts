@@ -12,6 +12,8 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { ActivatedRoute, Router } from '@angular/router'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
+import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
+import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -24,6 +26,8 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
         DropdownModule,
         SwitchInputComponent,
         DropdownInputComponent,
+        InputSimpleComponent,
+        SwitchSimpleComponent,
     ],
     templateUrl: './ficha-general.component.html',
     styleUrl: './ficha-general.component.scss',

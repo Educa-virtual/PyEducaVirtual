@@ -11,6 +11,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CuestionarioPreguntasComponent } from '../cuestionario-preguntas/cuestionario-preguntas.component'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-cuestionario-room',
     standalone: true,
@@ -34,9 +35,13 @@ export class CuestionarioRoomComponent implements OnInit {
     private _constantesService = inject(ConstantesService)
     private GeneralService = inject(GeneralService)
 
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
+
     items: MenuItem[] | undefined
     home: MenuItem | undefined
     cuestionario: any
+    iPerfilId: number
 
     constructor(private location: Location) {}
 
@@ -57,6 +62,8 @@ export class CuestionarioRoomComponent implements OnInit {
         this.home = { icon: 'pi pi-home', routerLink: '/' }
         // -----------------
         this.obtenerInformacion()
+
+        this.iPerfilId = Number(this._constantesService.iPerfilId)
     }
     goBack() {
         this.location.back()
@@ -76,7 +83,7 @@ export class CuestionarioRoomComponent implements OnInit {
         this.GeneralService.getGralPrefixx(data).subscribe({
             next: (resp) => {
                 this.cuestionario = resp.data.length ? resp.data[0] : {}
-                console.log(this.cuestionario)
+                console.log('infomación general', this.cuestionario)
             },
             error: (err) => {
                 console.error('Error obteniendo cuestionario:', err)

@@ -104,7 +104,7 @@
                 [datosGenerales]="cuestionario"
             ></app-cuestionario-preguntas>
         </p-tabPanel>
-        <p-tabPanel>
+        <p-tabPanel *ngIf="iPerfilId !== ESTUDIANTE">
             <ng-template pTemplate="header" class="header-fixed">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matPeople"></app-icon>
@@ -113,6 +113,7 @@
                     </span>
                 </div>
             </ng-template>
+
             <app-toolbar-primeng [title]="'Actividad de los alumnos: '">
             </app-toolbar-primeng>
         </p-tabPanel>

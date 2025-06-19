@@ -48,6 +48,7 @@ export class TabInicioComponent implements OnInit {
     //Inicializamos
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
+        console.log(this.iPerfilId)
         this.obtenerAnuncios()
 
         // contador de caracteres de descripcion

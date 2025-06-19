@@ -25,6 +25,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
     activeItem: any
     previousItem: any
     iFichaDGId: any = 0
+    cPersNombreApellidos: string = ''
 
     @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu
 
@@ -42,6 +43,14 @@ export class FichaComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.datosFichaBienestar
+            .verFicha({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                this.cPersNombreApellidos = data.data[0].cPersNombreApellidos
+            })
+
         this.items = [
             {
                 label: 'General',

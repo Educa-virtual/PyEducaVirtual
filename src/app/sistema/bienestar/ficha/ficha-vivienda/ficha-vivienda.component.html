@@ -27,37 +27,49 @@
             />
         </div>
         <div class="col-12 md:col-4">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Número de pisos </p-inputGroupAddon>
-                <p-inputNumber
-                    formControlName="iViviendaCarNroPisos"
-                    min="1"
-                    showButtons="true"
-                    class="group-element"
-                />
-            </p-inputGroup>
+            <app-input-simple
+                inputType="number"
+                [inputControl]="
+                    $any(formVivienda).controls['iViviendaCarNroPisos']
+                "
+                addonLabel="Número de pisos"
+                [inputMin]="1"
+                [inputShowButtons]="true"
+            />
         </div>
         <div class="col-12 md:col-4">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Número de cuartos </p-inputGroupAddon>
-                <p-inputNumber
-                    formControlName="iViviendaCarNroAmbientes"
-                    min="1"
-                    showButtons="true"
-                    class="group-element"
-                />
-            </p-inputGroup>
+            <app-input-simple
+                inputType="number"
+                [inputControl]="
+                    $any(formVivienda).controls['iViviendaCarNroAmbientes']
+                "
+                addonLabel="Número de cuartos"
+                [inputMin]="1"
+                [inputShowButtons]="true"
+                [infoAdicional]="iViviendaCarNroAmbientes"
+            />
+            <ng-template #iViviendaCarNroAmbientes>
+                Aquí puede indicar el número de habitaciones, ambientes o
+                cuartos que tiene en la vivienda, esto puede incluir
+                dormitorios, salas, comedores, cuartos de baño, de cocina, etc.
+            </ng-template>
         </div>
         <div class="col-12 md:col-4">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon> Número de dormitorios </p-inputGroupAddon>
-                <p-inputNumber
-                    formControlName="iViviendaCarNroHabitaciones"
-                    min="0"
-                    showButtons="true"
-                    class="group-element"
-                />
-            </p-inputGroup>
+            <app-input-simple
+                inputType="number"
+                [inputControl]="
+                    $any(formVivienda).controls['iViviendaCarNroHabitaciones']
+                "
+                addonLabel="Número de dormitorios"
+                [inputMin]="0"
+                [inputShowButtons]="true"
+                [infoAdicional]="iViviendaCarNroHabitaciones"
+            />
+            <ng-template #iViviendaCarNroHabitaciones>
+                Aquí puede indicar el número de dormitorios que tiene en la
+                vivienda, un ambiente se considera dormitorio si contiene al
+                menos una cama.
+            </ng-template>
         </div>
         <div class="col-12 md:col-6">
             <app-dropdown-input
@@ -101,7 +113,7 @@
         </div>
         <div class="col-12 md:col-6">
             <app-dropdown-input
-                [dropdownItems]="suministros_agua"
+                [dropdownItems]="tipos_vivienda"
                 [dropdownControl]="$any(formVivienda).controls['iTipoVivId']"
                 addonLabel="Tipo de vivienda"
                 dropdownPlaceholder="Seleccione"
@@ -135,7 +147,7 @@
         </div>
         <div class="col-12 md:col-6">
             <app-multiselect-input
-                [multiselectItems]="tipos_alumbrado"
+                [multiselectItems]="otros_elementos"
                 [multiselectControl]="
                     $any(formVivienda).controls['iEleParaVivId']
                 "

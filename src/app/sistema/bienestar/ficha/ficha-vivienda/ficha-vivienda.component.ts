@@ -7,11 +7,17 @@ import { MessageService } from 'primeng/api'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
+import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
 
 @Component({
     selector: 'app-ficha-vivienda',
     standalone: true,
-    imports: [PrimengModule, DropdownInputComponent, MultiselectInputComponent],
+    imports: [
+        PrimengModule,
+        DropdownInputComponent,
+        MultiselectInputComponent,
+        InputSimpleComponent,
+    ],
     templateUrl: './ficha-vivienda.component.html',
     styleUrl: './ficha-vivienda.component.scss',
 })
@@ -115,23 +121,23 @@ export class FichaViviendaComponent implements OnInit {
                 iEleParaVivId: [null],
                 jsonAlumbrados: [null],
                 jsonElementos: [null],
-                cTipoOcupaVivOtro: [''],
-                cEstadoVivOtro: [''],
-                cMatTecVivOtro: [''],
-                cMatPisoVivOtro: [''],
-                cMatPreOtro: [''],
-                cTipoSumAOtro: [''],
-                cTipoVivOtro: [''],
-                cTipoSsHhOtro: [''],
-                cTipoAlumOtro: [''],
-                cEleParaVivOtro: [''],
+                cTipoOcupaVivOtro: ['', Validators.maxLength(80)],
+                cEstadoVivOtro: ['', Validators.maxLength(80)],
+                cMatTecVivOtro: ['', Validators.maxLength(80)],
+                cMatPisoVivOtro: ['', Validators.maxLength(80)],
+                cMatPreOtro: ['', Validators.maxLength(80)],
+                cTipoSumAOtro: ['', Validators.maxLength(80)],
+                cTipoVivOtro: ['', Validators.maxLength(80)],
+                cTipoSsHhOtro: ['', Validators.maxLength(80)],
+                cTipoAlumOtro: ['', Validators.maxLength(80)],
+                cEleParaVivOtro: ['', Validators.maxLength(80)],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
     }
 
-    async verFichaVivienda() {
+    verFichaVivienda() {
         this.datosFichaBienestar
             .verFichaVivienda({
                 iFichaDGId: this.iFichaDGId,
@@ -226,64 +232,6 @@ export class FichaViviendaComponent implements OnInit {
         )
     }
 
-    guardar() {
-        if (this.formVivienda.invalid) {
-            this._messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe completar los campos requeridos',
-            })
-            return
-        }
-
-        const elementos = []
-        this.formVivienda.get('iEleParaVivId').value.forEach((elemento) => {
-            elementos.push({
-                iEleParaVivId: elemento,
-            })
-        })
-        this.formVivienda
-            .get('jsonElementos')
-            .setValue(JSON.stringify(elementos))
-
-        const alumbrados = []
-        this.formVivienda.get('iTipoAlumId').value.forEach((elemento) => {
-            alumbrados.push({
-                iTipoAlumId: elemento,
-            })
-        })
-        this.formVivienda
-            .get('jsonAlumbrados')
-            .setValue(JSON.stringify(alumbrados))
-
-        this.datosFichaBienestar
-            .guardarFichaVivienda(this.formVivienda.value)
-            .subscribe({
-                next: (data: any) => {
-                    this.compartirFicha.setiFichaDGId(data.data[0].iFichaDGId)
-                    this.ficha_registrada = true
-                    this.datosFichaBienestar.formVivienda =
-                        this.formVivienda.value
-                    this._messageService.add({
-                        severity: 'success',
-                        summary: 'Registro exitoso',
-                        detail: 'Se registraron los datos',
-                    })
-                },
-                error: (error) => {
-                    console.error('Error guardando ficha:', error)
-                    this._messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error.error.message,
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
     actualizar() {
         if (this.formVivienda.invalid) {
             this._messageService.add({
@@ -294,33 +242,16 @@ export class FichaViviendaComponent implements OnInit {
             return
         }
 
-        if (this.formVivienda.get('iEleParaVivId').value !== null) {
-            const elementos = []
-            this.formVivienda.get('iEleParaVivId').value.forEach((elemento) => {
-                elementos.push({
-                    iEleParaVivId: elemento,
-                })
-            })
-            this.formVivienda
-                .get('jsonElementos')
-                .setValue(JSON.stringify(elementos))
-        } else {
-            this.formVivienda.get('jsonElementos').setValue(null)
-        }
-
-        if (this.formVivienda.get('iTipoAlumId').value !== null) {
-            const alumbrados = []
-            this.formVivienda.get('iTipoAlumId').value.forEach((elemento) => {
-                alumbrados.push({
-                    iTipoAlumId: elemento,
-                })
-            })
-            this.formVivienda
-                .get('jsonAlumbrados')
-                .setValue(JSON.stringify(alumbrados))
-        } else {
-            this.formVivienda.get('jsonAlumbrados').setValue(null)
-        }
+        this.datosFichaBienestar.formControlJsonStringify(
+            this.formVivienda,
+            'jsonElementos',
+            'iEleParaVivId'
+        )
+        this.datosFichaBienestar.formControlJsonStringify(
+            this.formVivienda,
+            'jsonAlumbrados',
+            'iTipoAlumId'
+        )
 
         this.datosFichaBienestar
             .actualizarFichaVivienda(this.formVivienda.value)
@@ -328,7 +259,7 @@ export class FichaViviendaComponent implements OnInit {
                 next: (data: any) => {
                     this.formVivienda
                         .get('iViendaCarId')
-                        .setValue(data.data[0].iIngresoEcoId)
+                        .setValue(data.data[0].iViendaCarId)
                     this.ficha_registrada = true
                     this._messageService.add({
                         severity: 'success',

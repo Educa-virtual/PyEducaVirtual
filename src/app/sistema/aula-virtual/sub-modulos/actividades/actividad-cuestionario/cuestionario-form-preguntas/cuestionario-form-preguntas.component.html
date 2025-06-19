@@ -9,6 +9,7 @@
         <div class="grid">
             <div class="col-6">
                 <!-- Editor de texto -->
+                <!-- [innerHTML]="cPregunta" -->
                 <div
                     #editor
                     contenteditable="true"
@@ -18,7 +19,6 @@
                     (blur)="onBlur($event)"
                     (mouseup)="updateCommandStates()"
                     (keyup)="updateCommandStates()"
-                    [innerHTML]="cPregunta"
                     tabindex="-1"
                 ></div>
                 <!-- Toolbar: visible solo cuando el editor está enfocado -->
@@ -377,7 +377,7 @@
                 [severity]="action === 'ACTUALIZAR' ? 'warning' : 'success'"
                 (click)="
                     action === 'ACTUALIZAR'
-                        ? actuaizarPregunta()
+                        ? accionBtn({ accion: 'ACTUALIZAR' })
                         : guardarPregunta()
                 "
             />

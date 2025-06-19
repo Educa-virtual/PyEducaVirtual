@@ -159,7 +159,12 @@
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Editar pregunta"
-                            (click)="editarPregunta(item)"
+                            (click)="
+                                accionBtnItem({
+                                    accion: 'ACTUALIZAR',
+                                    item: item,
+                                })
+                            "
                         />
                     </div>
                 </div>
@@ -175,5 +180,6 @@
     [tipoPreguntas]="tipoPreguntas"
     (accionBtnItem)="accionBtnItem($event)"
     (formpregunta)="guardarPregunta($event)"
+    (actualizarPregunta)="actualizarPregunta($event)"
 ></app-cuestionario-form-preguntas>
 <p-toast></p-toast>

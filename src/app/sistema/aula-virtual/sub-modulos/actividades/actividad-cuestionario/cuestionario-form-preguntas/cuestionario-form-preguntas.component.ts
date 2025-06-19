@@ -22,6 +22,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 export class CuestionarioFormPreguntasComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
     @Output() formpregunta = new EventEmitter()
+    @Output() actualizarPregunta = new EventEmitter()
 
     @Input() showModal: boolean = true
     @Input() tipoPreguntas = []
@@ -90,26 +91,36 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         if (changes['showModal']) {
             this.showModal = changes['showModal']?.currentValue
         }
-        if (changes['tipoPreguntas']) {
-            this.tipoPreguntas = changes['tipoPreguntas']?.currentValue
-        }
+        // if (changes['tipoPreguntas']) {
+        //     this.tipoPreguntas = changes['tipoPreguntas']?.currentValue
+        // }
         if (changes['titulo']) {
             this.titulo = changes['titulo']?.currentValue
         }
-        if (changes['opcion']) {
-            this.opcion = changes['opcion']?.currentValue
-        }
-        if (changes['data']) {
-            this.data = changes['data']?.currentValue
-            this.cPregunta = this.data?.cPregunta
-            this.iTipoPregId = this.data?.iTipoPregId
-            this.codigoTipoPregunta = this.data?.cCodeTipoPreg
-            this.opciones = this.data?.jsonAlternativas
-            console.log('datos de oppciones', this.iTipoPregId)
-        }
+        // if (changes['opcion']) {
+        //     this.opcion = changes['opcion']?.currentValue
+        // }
 
         if (this.opcion === 'ACTUALIZAR') {
             this.action = 'ACTUALIZAR'
+            if (changes['data']) {
+                this.data = changes['data']?.currentValue
+                this.cPregunta = this.data?.cPregunta
+                this.iTipoPregId = this.data?.iTipoPregId
+                this.codigoTipoPregunta = this.data?.cCodeTipoPreg
+                this.opciones = this.data?.jsonAlternativas
+                console.log('datos de oppciones', this.iTipoPregId)
+            }
+        }
+        if (this.opcion === 'GUARDAR') {
+            this.action = 'GUARDAR'
+            this.limpiarPregunta()
+            console.log(
+                'datos para guardar',
+                this.data,
+                this.codigoTipoPregunta,
+                this.opciones
+            )
         }
     }
 
@@ -121,16 +132,21 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
                 this.accionBtnItem.emit({ accion, item })
                 this.iTipoPregId = ''
                 this.cPregunta = ''
-                this.opcion = ''
-                this.action = ''
 
                 console.log('modal cerrado')
                 break
-            case 'añadir':
+            case 'ACTUALIZAR':
+                this.actuaizarPregunta()
                 break
         }
     }
-
+    limpiarPregunta() {
+        console.log('datos limpios')
+        this.cPregunta = ''
+        this.iTipoPregId = ''
+        this.codigoTipoPregunta = ''
+        this.opciones = []
+    }
     obtenerCodigoTipoPregunta(even: any): void {
         const tipoPregunta = this.tipoPreguntas.find(
             (t) => t.iTipoPregId === even.value
@@ -158,6 +174,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         this.formpregunta.emit(data)
         this.showModal = false
     }
+    actualizar: any
     actuaizarPregunta() {
         // Estructura que espera tu backend
         const alternativasFormateadas = this.opciones.map((op) => ({
@@ -169,11 +186,13 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         this.jsonAlternativas = JSON.stringify(alternativasFormateadas)
 
         const data = {
+            iPregId: this.data.iPregId,
             cPregunta: this.cPregunta,
             iTipoPregId: this.iTipoPregId,
             jsonAlternativas: this.jsonAlternativas,
         }
-        console.log('datos actualizados', data)
+        this.actualizarPregunta.emit(data)
+        console.log('datos actualizados', this.data)
     }
     onInput(event: Event) {
         const value = (event.target as HTMLElement).innerText

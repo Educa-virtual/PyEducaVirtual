@@ -4,7 +4,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
@@ -24,10 +24,11 @@ import { CompartirFichaService } from '../../services/compartir-ficha.service'
     styleUrl: './ficha-familia.component.scss',
 })
 export class FichaFamiliaComponent implements OnInit {
-    @ViewChild('fichaFamiliaRegistroRef')
+    @ViewChild('filtro') filtro: ElementRef
     fichaFamiliaRegistro!: FichaFamiliaRegistroComponent
     iFichaDGId: string | null = null
-    familiares: any[]
+    familiares: Array<object>
+    familiares_filtrados: Array<object>
     visibleDialogFamiliar: boolean = false
     dialogTitle: string = ''
     iFamiliarId: string | null = null
@@ -81,6 +82,7 @@ export class FichaFamiliaComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.familiares = data.data
+                    this.familiares_filtrados = this.familiares
                 },
                 error: (error) => {
                     console.error('Error al obtener familiares:', error)
@@ -115,6 +117,7 @@ export class FichaFamiliaComponent implements OnInit {
                             Number(familiar.iFamiliarId) !=
                             Number(item.iFamiliarId)
                     )
+                    this.familiares_filtrados = this.familiares
                 },
                 error: (error) => {
                     console.error('Error eliminando familiar:', error)
@@ -126,6 +129,23 @@ export class FichaFamiliaComponent implements OnInit {
                     })
                 },
             })
+    }
+
+    filtrarTabla() {
+        const filtro = this.filtro.nativeElement.value.toLowerCase()
+        this.familiares_filtrados = this.familiares.filter((familiar: any) => {
+            if (
+                familiar.cTipoFamiliarDescripcion.toLowerCase().includes(filtro)
+            )
+                return familiar
+            if (familiar.cTipoIdentSigla.toLowerCase().includes(filtro))
+                return familiar
+            if (familiar.cPersDocumento.toLowerCase().includes(filtro))
+                return familiar
+            if (familiar.cPersNombresApellidos.toLowerCase().includes(filtro))
+                return familiar
+            return null
+        })
     }
 
     accionBtnItemTable({ accion, item }) {

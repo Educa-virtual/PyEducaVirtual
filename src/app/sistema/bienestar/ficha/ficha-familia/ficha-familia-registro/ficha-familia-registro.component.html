@@ -1,50 +1,19 @@
 <form [formGroup]="formFamiliar">
     <br />
 
-    <p-fieldset legend="Relación familiar con el estudiante">
-        <div class="pt-2 grid p-fluid mt-3">
-            <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Relación familiar * </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="tipos_familiares"
-                        formControlName="iTipoFamiliarId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>
-                        <p-inputSwitch formControlName="bFamiliarVivoConEl" />
-                        <span>¿Vive en la misma dirección del estudiante?</span>
-                    </p-inputGroupAddon>
-                </p-inputGroup>
-            </div>
-        </div>
-    </p-fieldset>
-
-    <br />
-
     <p-fieldset legend="Identidad">
         <div class="pt-2 grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Tipo de Documento *</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="tipos_documentos"
-                        formControlName="iTipoIdentId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Tipo de Documento *"
+                    [dropdownItems]="tipos_documentos"
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iTipoIdentId'])
+                    "
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-6 sm:col-6">
                 <p-inputGroup styleClass="vertical-group">
@@ -69,74 +38,74 @@
                 </p-inputGroup>
             </div>
 
+            <div class="col-12 sm:col-6">
+                <app-dropdown-simple
+                    addonLabel="Relación familiar *"
+                    [dropdownItems]="tipos_familiares"
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iTipoFamiliarId'])
+                    "
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
+            </div>
+            <div class="col-12 sm:col-6">
+                <app-switch-simple
+                    [switchControl]="
+                        $any(formFamiliar.controls['bFamiliarVivoConEl'])
+                    "
+                    addonLabel="¿Vive en la misma dirección del estudiante?"
+                />
+            </div>
+
             <div class="col-6 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Sexo *</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="sexos"
-                        formControlName="cPersSexo"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Sexo *"
+                    [dropdownItems]="sexos"
+                    [dropdownControl]="$any(formFamiliar.controls['cPersSexo'])"
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-6 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Estado Civil</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="estados_civiles"
-                        formControlName="iTipoEstCivId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Estado Civil"
+                    [dropdownItems]="estados_civiles"
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iTipoEstCivId'])
+                    "
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
 
             <div class="col-12">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nombres *</p-inputGroupAddon>
-                    <input
-                        pInputText
-                        id="cPersNombre"
-                        formControlName="cPersNombre"
-                        aria-describedby="cPersNombre-help"
-                        maxlength="50"
-                        class="group-element"
-                    />
-                </p-inputGroup>
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="$any(formFamiliar.controls['cPersNombre'])"
+                    addonLabel="Nombres *"
+                    [inputMaxlength]="50"
+                />
             </div>
 
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Primer Apellido *</p-inputGroupAddon>
-                    <input
-                        pInputText
-                        id="cPersPaterno"
-                        formControlName="cPersPaterno"
-                        aria-describedby="cPersPaterno-help"
-                        maxlength="50"
-                        class="group-element"
-                    />
-                </p-inputGroup>
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="$any(formFamiliar.controls['cPersPaterno'])"
+                    addonLabel="Primer Apellido *"
+                    [inputMaxlength]="50"
+                />
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Segundo Apellido </p-inputGroupAddon>
-                    <input
-                        pInputText
-                        id="cPersMaterno"
-                        formControlName="cPersMaterno"
-                        aria-describedby="cPersMaterno-help"
-                        maxlength="50"
-                        class="group-element"
-                    />
-                </p-inputGroup>
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="$any(formFamiliar.controls['cPersMaterno'])"
+                    addonLabel="Segundo Apellido"
+                    [inputMaxlength]="50"
+                />
             </div>
         </div>
     </p-fieldset>
@@ -146,34 +115,24 @@
     <p-fieldset legend="Nacimiento">
         <div class="grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nacionalidad</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="nacionalidades"
-                        formControlName="iNacionId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Nacionalidad"
+                    [dropdownItems]="nacionalidades"
+                    [dropdownControl]="$any(formFamiliar.controls['iNacionId'])"
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>
-                        Fecha de nacimiento *</p-inputGroupAddon
-                    >
-                    <p-calendar
-                        formControlName="dPersNacimiento"
-                        [iconDisplay]="'input'"
-                        [showIcon]="true"
-                        inputId="dPersNacimiento"
-                        appendTo="body"
-                        [maxDate]="fecha_actual"
-                        inputStyleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-input-simple
+                    inputType="date"
+                    [inputControl]="
+                        $any(formFamiliar.controls['dPersNacimiento'])
+                    "
+                    addonLabel="Fecha de nacimiento *"
+                    [inputMaxDate]="fecha_actual"
+                />
             </div>
         </div>
     </p-fieldset>
@@ -196,123 +155,146 @@
                     [inputControl]="$any(formFamiliar.controls['cTipoViaOtro'])"
                     inputPlaceholder="Especifique otro"
                     [inputMaxlength]="100"
+                    [infoAdicional]="iTipoViaId"
+                />
+                <ng-template #iTipoViaId>
+                    <strong>Obligatoriamente</strong> debe indicar el óvalo del
+                    número que identifica el tipo de vía. Otro puede ser: ladera
+                    de cerro, acequia, etc., según corresponda.
+                </ng-template>
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(
+                            formFamiliar.controls['cFamiliarDireccionNombreVia']
+                        )
+                    "
+                    addonLabel="Nombre de la vía *"
+                    [inputMaxlength]="150"
+                    [infoAdicional]="cFamiliarDireccionNombreVia"
+                />
+                <ng-template #cFamiliarDireccionNombreVia>
+                    <strong>Obligatoriamente</strong> debe indicar el nombre de
+                    la vía donde está ubicada la vivienda. De no tener nombre,
+                    anota SN (Sin nombre).
+                </ng-template>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(
+                            formFamiliar.controls['cFamiliarDireccionNroPuerta']
+                        )
+                    "
+                    addonLabel="Nro. de Puerta"
+                    [inputMaxlength]="10"
+                />
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(formFamiliar.controls['cFamiliarDireccionBlock'])
+                    "
+                    addonLabel="Bloque"
+                    [inputMaxlength]="3"
+                    [infoAdicional]="cFamiliarDireccionBlock"
+                />
+                <ng-template #cFamiliarDireccionBlock>
+                    Si la vivienda se encuentra ubicada en un block o edificio
+                    dentro de un conjunto habitacional entonces indique el
+                    número, letra o nombre de éste.
+                </ng-template>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(
+                            formFamiliar.controls['cFamiliarDireccionInterior']
+                        )
+                    "
+                    addonLabel="Interior"
+                    [inputMaxlength]="3"
+                    [infoAdicional]="cFamiliarDireccionInterior"
+                />
+                <ng-template #cFamiliarDireccionInterior>
+                    Indique el número o letra que identifica a la vivienda en el
+                    interior de un block, conjunto habitacional, edificio,
+                    quinta, casa de vecindad, callejón, etc.
+                </ng-template>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="number"
+                    [inputControl]="
+                        $any(formFamiliar.controls['iFamiliarDireccionPiso'])
+                    "
+                    addonLabel="Piso"
+                    [inputMin]="1"
+                    [inputMax]="2"
+                    [inputShowButtons]="true"
+                    [infoAdicional]="iFamiliarDireccionPiso"
+                />
+                <ng-template #iFamiliarDireccionPiso>
+                    El piso debe tener acceso al exterior de forma directa e
+                    independiente. Si la vivienda está en un sótano indique 1.
+                </ng-template>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(formFamiliar.controls['cFamiliarDireccionManzana'])
+                    "
+                    addonLabel="Manzana"
+                    [inputMaxlength]="10"
+                />
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(formFamiliar.controls['cFamiliarDireccionLote'])
+                    "
+                    addonLabel="Lote"
+                    [inputMaxlength]="3"
+                />
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(formFamiliar.controls['cFamiliarDireccionKm'])
+                    "
+                    addonLabel="Km"
+                    [inputMaxlength]="10"
                 />
             </div>
 
             <div class="col-12 lg:col-8 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nombre de la vía * </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionNombreVia"
-                        maxlength="150"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Nro. de Puerta </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionNroPuerta"
-                        maxlength="10"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Bloque</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionBlock"
-                        maxlength="3"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Interior</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionInterior"
-                        maxlength="3"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Piso</p-inputGroupAddon>
-                    <p-inputNumber
-                        formControlName="iFamiliarDireccionPiso"
-                        maxlength="3"
-                        useGrouping="false"
-                        showButtons="true"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Manzana</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionManzana"
-                        maxlength="10"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Lote</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionLote"
-                        maxlength="3"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-4 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Km</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionKm"
-                        maxlength="10"
-                        class="group-element"
-                    />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 lg:col-8 md:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>Referencia</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cFamiliarDireccionReferencia"
-                        class="group-element"
-                    />
-                </p-inputGroup>
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(
+                            formFamiliar.controls[
+                                'cFamiliarDireccionReferencia'
+                            ]
+                        )
+                    "
+                    addonLabel="Referencia"
+                />
             </div>
         </div>
     </p-fieldset>
@@ -322,57 +304,44 @@
     <p-fieldset legend="Ubigeo" [toggleable]="true">
         <div class="grid p-fluid mt-3">
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Departamento</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="departamentos"
-                        formControlName="iDptoId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Departamento"
+                    [dropdownItems]="departamentos"
+                    [dropdownControl]="$any(formFamiliar.controls['iDptoId'])"
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Provincia</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="provincias"
-                        formControlName="iPrvnId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Provincia"
+                    [dropdownItems]="provincias"
+                    [dropdownControl]="$any(formFamiliar.controls['iPrvnId'])"
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
 
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Distrito</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="distritos"
-                        formControlName="iDsttId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Distrito"
+                    [dropdownItems]="distritos"
+                    [dropdownControl]="$any(formFamiliar.controls['iDsttId'])"
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Domicilio</p-inputGroupAddon>
-                    <input
-                        pInputText
-                        formControlName="cPersDomicilio"
-                        class="group-element"
-                    />
-                </p-inputGroup>
+                <app-input-simple
+                    inputType="text"
+                    [inputControl]="
+                        $any(formFamiliar.controls['cPersDomicilio'])
+                    "
+                    addonLabel="Domicilio"
+                />
             </div>
         </div>
     </p-fieldset>
@@ -382,50 +351,40 @@
     <p-fieldset legend="Adicionales" [toggleable]="true">
         <div class="grid p-fluid mt-3">
             <div class="col-12">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon> Ocupación </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="ocupaciones"
-                        formControlName="iOcupacionId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Ocupación"
+                    [dropdownItems]="ocupaciones"
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iOcupacionId'])
+                    "
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>
-                        Grado de instrucción
-                    </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="grados_instruccion"
-                        formControlName="iGradoInstId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="Grado de instrucción"
+                    [dropdownItems]="grados_instruccion"
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iGradoInstId'])
+                    "
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
             <div class="col-12 sm:col-6">
-                <p-inputGroup styleClass="vertical-group">
-                    <p-inputGroupAddon>
-                        I.E. en la que estudió
-                    </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="tipos_ies"
-                        formControlName="iTipoIeEstId"
-                        [filter]="true"
-                        [showClear]="true"
-                        appendTo="body"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                    />
-                </p-inputGroup>
+                <app-dropdown-simple
+                    addonLabel="I.E. en la que estudió"
+                    [dropdownItems]="tipos_ies"
+                    [dropdownControl]="
+                        $any(formFamiliar.controls['iTipoIeEstId'])
+                    "
+                    dropdownPlaceholder="Seleccione"
+                    [filter]="true"
+                    [showClear]="true"
+                />
             </div>
         </div>
     </p-fieldset>

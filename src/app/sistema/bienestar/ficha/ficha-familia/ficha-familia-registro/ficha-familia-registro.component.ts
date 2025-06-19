@@ -16,11 +16,20 @@ import { CompartirFichaService } from '../../../services/compartir-ficha.service
 import { FichaFamiliar } from '../../../interfaces/fichaFamiliar'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DropdownInputComponent } from '../../shared/dropdown-input/dropdown-input.component'
+import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-simple.component'
+import { SwitchSimpleComponent } from '../../shared/switch-simple/switch-simple.component'
+import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component'
 
 @Component({
     selector: 'app-ficha-familia-registro',
     standalone: true,
-    imports: [PrimengModule, DropdownInputComponent],
+    imports: [
+        PrimengModule,
+        DropdownInputComponent,
+        DropdownSimpleComponent,
+        SwitchSimpleComponent,
+        InputSimpleComponent,
+    ],
     templateUrl: './ficha-familia-registro.component.html',
     styleUrl: './ficha-familia-registro.component.scss',
 })
@@ -248,7 +257,13 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                 iFamiliarId: this.iFamiliarId,
             })
             .subscribe((data: any) => {
-                this.setFormFamiliar(data.data[0])
+                if (data.data.length === 1) {
+                    this.setFormFamiliar(data.data[0])
+                    this.familiar_registrado = true
+                } else {
+                    this.setFormFamiliar(null)
+                    this.familiar_registrado = false
+                }
             })
     }
 
@@ -298,7 +313,11 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
      * @param item datos del familiar seleccionado
      */
     setFormFamiliar(item: FichaFamiliar) {
-        // Deben ser strings o null
+        if (!item) {
+            this.formFamiliar.reset()
+            this.familiar_registrado = false
+            return
+        }
         this.formFamiliar.patchValue(item)
         this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId)
         this.datosFichaBienestar.formatearFormControl(
@@ -379,7 +398,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             item.dPersNacimiento,
             'date'
         )
-        this.familiar_registrado = true
     }
 
     guardarFamiliar() {
@@ -387,6 +405,11 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             .guardarFamiliar(this.formFamiliar.value)
             .subscribe({
                 next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
                     this.familiar_registrado = true
                     this.salirResetearForm()
                 },
@@ -406,6 +429,11 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             .actualizarFamiliar(this.formFamiliar.value)
             .subscribe({
                 next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
                     this.familiar_registrado = true
                     this.salirResetearForm()
                 },

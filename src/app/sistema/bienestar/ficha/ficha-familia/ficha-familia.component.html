@@ -2,7 +2,12 @@
     <div class="col" style="margin-left: -0.5rem">
         <p-inputGroup>
             <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
-            <input pInputText placeholder="Buscar" />
+            <input
+                #filtro
+                pInputText
+                placeholder="Buscar"
+                (input)="filtrarTabla()"
+            />
         </p-inputGroup>
     </div>
     <div class="col-auto align-content-center">
@@ -19,9 +24,9 @@
 <app-table-primeng
     [columnas]="columns"
     [showCaption]="false"
-    [data]="familiares"
+    [data]="familiares_filtrados"
     (accionBtnItem)="accionBtnItemTable($event)"
-    [showPaginator]="true"
+    [showPaginator]="false"
     [(selectedRowData)]="selectedItems"
     [actions]="actions"
     [showAdvancedFilter]="false"

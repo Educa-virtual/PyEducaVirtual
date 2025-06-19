@@ -6,11 +6,19 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { FichaEconomico } from '../../interfaces/FichaEconomico'
 import { MessageService } from 'primeng/api'
+import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
+import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component'
+import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component'
 
 @Component({
     selector: 'app-ficha-economico',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [
+        PrimengModule,
+        InputSimpleComponent,
+        DropdownSimpleComponent,
+        SwitchSimpleComponent,
+    ],
     templateUrl: './ficha-economico.component.html',
     styleUrl: './ficha-economico.component.scss',
 })
@@ -62,7 +70,7 @@ export class FichaEconomicoComponent implements OnInit {
         })
 
         if (this.iFichaDGId) {
-            this.searchFichaEconomico()
+            this.verFichaEconomico()
         }
 
         try {
@@ -87,13 +95,16 @@ export class FichaEconomicoComponent implements OnInit {
         }
     }
 
-    async searchFichaEconomico(): Promise<void> {
-        const data = await this.datosFichaBienestar.searchFichaEconomico({
-            iFichaDGId: this.iFichaDGId,
-        })
-        if (data) {
-            this.setFormEconomico(data)
-        }
+    verFichaEconomico() {
+        this.datosFichaBienestar
+            .verFichaEconomico({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                if (data.data.length) {
+                    this.setFormEconomico(data.data[0])
+                }
+            })
     }
 
     setFormEconomico(data: FichaEconomico) {
@@ -167,43 +178,6 @@ export class FichaEconomicoComponent implements OnInit {
             data.bIngresoEcoTrabaja,
             'boolean'
         )
-    }
-
-    guardar() {
-        if (this.formEconomico.invalid) {
-            this._MessageService.add({
-                severity: 'warning',
-                summary: 'Advertencia',
-                detail: 'Debe completar los campos requeridos',
-            })
-            return
-        }
-        this.datosFichaBienestar
-            .guardarFichaEconomico(this.formEconomico.value)
-            .subscribe({
-                next: (data: any) => {
-                    this.ficha_registrada = true
-                    this.formEconomico
-                        .get('iIngresoEcoId')
-                        .setValue(data.data[0].iIngresoEcoId)
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Registro exitoso',
-                        detail: 'Se registraron los datos',
-                    })
-                },
-                error: (error) => {
-                    console.error('Error guardando ficha:', error)
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
     }
 
     actualizar() {

@@ -4,14 +4,17 @@
     [width]="'55rem'"
     (accionBtnItem)="accionBtn($event)"
 >
+    <!-- <form [formGroup]="formPreguntas" class="flex flex-column gap-3 w-full"> -->
     <div class="mt-4">
         <div class="grid">
             <div class="col-6">
                 <!-- Editor de texto -->
+                <!-- [innerHTML]="cPregunta" -->
                 <div
                     #editor
                     contenteditable="true"
                     class="editor"
+                    (input)="onInput($event)"
                     (focus)="onFocus()"
                     (blur)="onBlur($event)"
                     (mouseup)="updateCommandStates()"
@@ -58,11 +61,12 @@
                 <p-dropdown
                     [options]="tipoPreguntas"
                     optionValue="iTipoPregId"
-                    optionLabel="cTipoPregunta"
+                    optionLabel="cCodeTipoPreg"
                     placeholder="Tipo de Pregunta"
                     [style]="{ width: '100%' }"
                     [appendTo]="'body'"
                     (onChange)="obtenerCodigoTipoPregunta($event)"
+                    [(ngModel)]="iTipoPregId"
                 >
                     <ng-template pTemplate="selectedItem" let-selectedOption>
                         <div class="flex align-items-center gap-2">
@@ -108,7 +112,7 @@
                                     class="ml-2"
                                     type="text"
                                     pInputText
-                                    [(ngModel)]="opcion.texto"
+                                    [(ngModel)]="opcion.cAlternativa"
                                     [placeholder]="'Opción ' + (i + 1)"
                                     class="input-hover-underline flex-1"
                                 />
@@ -158,14 +162,24 @@
                         />
                     }
                     @case ('TIP-PREG-CASILLA') {
-                        <div class="flex">
+                        <div
+                            *ngFor="let opcion of opciones; let i = index"
+                            class="mb-2"
+                        >
                             <p-inputGroup class="mt-1">
-                                <p-checkbox [binary]="true" inputId="binary" />
+                                <p-checkbox
+                                    [binary]="true"
+                                    inputId="binary"
+                                    name="grupoOpciones"
+                                    [value]="i"
+                                    [(ngModel)]="opcionSeleccionada"
+                                />
                                 <input
                                     class="ml-2"
                                     type="text"
                                     pInputText
-                                    placeholder="Opción"
+                                    [(ngModel)]="opcion.cAlternativa"
+                                    [placeholder]="'Opción ' + (i + 1)"
                                     class="input-hover-underline flex-1"
                                 />
                                 <p-button
@@ -177,49 +191,64 @@
                                 >
                                 </p-button>
                             </p-inputGroup>
-                            <!-- Botón para agregar nueva opción -->
-                            <p-checkbox [binary]="true" inputId="binary" />
-                            <input
-                                class="ml-2"
-                                type="text"
-                                pInputText
-                                class="input-hover-underline flex-1"
-                                placeholder="Añadir opción"
-                            />
                         </div>
+                        <!-- Botón para agregar nueva opción -->
+                        <p-checkbox
+                            name="grupoOpcionesOtro"
+                            [value]="'otro'"
+                            [(ngModel)]="opcionSeleccionada"
+                        />
+                        <input
+                            class="ml-2"
+                            type="text"
+                            pInputText
+                            class="input-hover-underline flex-1"
+                            placeholder="Añadir opción"
+                            (click)="agregarOpcion()"
+                        />
                     }
                     @case ('TIP-PREG-DESPLEGABLE') {
-                        <div class="flex">
-                            <label for="" class="align-content-center mr-2"
-                                >1</label
-                            >
-                            <input
-                                class="ml-2"
-                                type="text"
-                                pInputText
-                                placeholder="Opción"
-                                class="input-hover-underline flex-1"
-                            />
-                            <p-button
-                                icon="pi pi-trash"
-                                [rounded]="true"
-                                [text]="true"
-                                severity="danger"
-                                class="btn-trash m-2"
-                            >
-                            </p-button>
-                            <!-- Botón para agregar nueva opción -->
-                            <label for="" class="align-content-center mr-2"
-                                >1</label
-                            >
-                            <input
-                                class="ml-2"
-                                type="text"
-                                pInputText
-                                class="input-hover-underline flex-1"
-                                placeholder="Añadir opción"
-                            />
+                        <div
+                            *ngFor="let opcion of opciones; let i = index"
+                            class="mb-2"
+                        >
+                            <p-inputGroup class="mt-1">
+                                <label
+                                    for=""
+                                    class="align-content-center mr-2"
+                                    >{{ i + 1 }}</label
+                                >
+                                <input
+                                    class="ml-2"
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="opcion.cAlternativa"
+                                    [placeholder]="'Opción ' + (i + 1)"
+                                    class="input-hover-underline flex-1"
+                                />
+                                <p-button
+                                    icon="pi pi-trash"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    severity="danger"
+                                    class="btn-trash m-2"
+                                >
+                                </p-button>
+                            </p-inputGroup>
                         </div>
+
+                        <!-- <label for="" class="align-content-center mr-2"
+                                >1</label
+                            > -->
+                        <i class="pi pi-plus mr-3" style="color: slateblue"></i>
+                        <input
+                            class="ml-4"
+                            type="text"
+                            pInputText
+                            class="input-hover-underline flex-1"
+                            placeholder="Añadir opción"
+                            (click)="agregarOpcion()"
+                        />
                     }
                     @case ('TIP-PREG-ESC-LINEAL') {
                         <div class="flex align-content-center flex-wrap">
@@ -336,9 +365,23 @@
     <div footer>
         <p-divider />
         <div class="flex align-items-center justify-content-end gap-2">
-            <label for="checked" class="ml-2"> Obligatorio </label>
-            <p-inputSwitch />
-            <p-button [label]="'Añadir'" icon="pi pi-check" class="ml-4" />
+            <!-- <label for="checked" class="ml-2"> Obligatorio </label>
+            <p-inputSwitch /> -->
+            <p-button
+                [label]="
+                    action === 'ACTUALIZAR'
+                        ? 'Editar Pregunta'
+                        : 'Añadir Pregunta'
+                "
+                icon="pi pi-check"
+                [severity]="action === 'ACTUALIZAR' ? 'warning' : 'success'"
+                (click)="
+                    action === 'ACTUALIZAR'
+                        ? accionBtn({ accion: 'ACTUALIZAR' })
+                        : guardarPregunta()
+                "
+            />
         </div>
     </div>
+    <!-- </form> -->
 </app-modal-primeng>

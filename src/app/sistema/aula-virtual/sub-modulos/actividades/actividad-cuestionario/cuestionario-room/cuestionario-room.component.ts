@@ -36,7 +36,7 @@ export class CuestionarioRoomComponent implements OnInit {
 
     items: MenuItem[] | undefined
     home: MenuItem | undefined
-    cuestionario: any = {}
+    cuestionario: any
 
     constructor(private location: Location) {}
 
@@ -76,6 +76,7 @@ export class CuestionarioRoomComponent implements OnInit {
         this.GeneralService.getGralPrefixx(data).subscribe({
             next: (resp) => {
                 this.cuestionario = resp.data.length ? resp.data[0] : {}
+                console.log(this.cuestionario)
             },
             error: (err) => {
                 console.error('Error obteniendo cuestionario:', err)

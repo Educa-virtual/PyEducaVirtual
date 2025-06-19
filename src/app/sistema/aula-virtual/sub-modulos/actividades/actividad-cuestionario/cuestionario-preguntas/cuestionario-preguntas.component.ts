@@ -1,11 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject } from '@angular/core'
-import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
-import { MenuItem } from 'primeng/api'
+import { Component, inject, Input, OnInit } from '@angular/core'
+import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
+import { MenuItem, MessageService } from 'primeng/api'
 import { environment } from '@/environments/environment'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-preguntas/cuestionario-form-preguntas.component'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+// import { aC } from '@fullcalendar/core/internal-common'
 
 @Component({
     selector: 'app-cuestionario-preguntas',
@@ -21,8 +24,13 @@ import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-pregunt
         { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
     ],
 })
-export class CuestionarioPreguntasComponent {
-    private _ConstantesService = inject(ConstantesService)
+export class CuestionarioPreguntasComponent implements OnInit {
+    @Input() datosGenerales: any
+
+    // private _ConstantesService = inject(ConstantesService)
+    private _constantesService = inject(ConstantesService)
+    private GeneralService = inject(GeneralService)
+    private _confirmService = inject(ConfirmationModalService)
 
     backend = environment.backend
     totalPregunta: number = 0
@@ -34,32 +42,9 @@ export class CuestionarioPreguntasComponent {
     selectedOption!: number
     selectedDropdown!: number
 
-    init: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
-        menubar: false,
-        selector: 'textarea',
-        placeholder: 'Escriba aquí...',
-        plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
-        height: 400,
-    }
-    initEnunciado: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
-        menubar: false,
-        selector: 'textarea',
-        placeholder: 'Escribe aqui...',
-        height: 1000,
-        plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
-            'image table',
-    }
+    datosPreguntas: any
+    datos: any
+    params: any // variable para enviar datos para actualizar
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -71,66 +56,76 @@ export class CuestionarioPreguntasComponent {
                 this.opcion = 'GUARDAR'
             },
         },
-        {
-            label: 'Importar preguntas',
-            icon: 'pi pi-plus',
-            command: () => {
-                //
-            },
-        },
+        // {
+        //     label: 'Importar preguntas',
+        //     icon: 'pi pi-plus',
+        //     command: () => {
+        //         //
+        //     },
+        // },
     ]
+    constructor(
+        // private dialogConfig: DynamicDialogConfig,
+        private messageService: MessageService
+    ) {}
+
+    ngOnInit(): void {
+        this.obtenerCuestionario()
+        this.datos = this.datosGenerales
+        this.obtenerTipoPreguntas()
+    }
 
     tipoPreguntas: any[] = [
         {
-            iTipoPregId: 1,
+            iTipoPregId: '1',
             cTipoPregunta: 'Texto',
             cIcon: 'pi-align-left',
             cCodeTipoPreg: 'TIP-PREG-TEXTO',
         },
         {
-            iTipoPregId: 2,
+            iTipoPregId: '2',
             cTipoPregunta: 'Varias opciones',
             cIcon: 'pi-stop-circle',
             cCodeTipoPreg: 'TIP-PREG-OPCIONES',
         },
         {
-            iTipoPregId: 4,
+            iTipoPregId: '4',
             cTipoPregunta: 'Casillas',
             cIcon: 'pi-stop-circle',
             cCodeTipoPreg: 'TIP-PREG-CASILLA',
         },
         {
-            iTipoPregId: 5,
+            iTipoPregId: '5',
             cTipoPregunta: 'Desplegable',
             cIcon: 'pi-chevron-circle-down',
             cCodeTipoPreg: 'TIP-PREG-DESPLEGABLE',
         },
         {
-            iTipoPregId: 7,
+            iTipoPregId: '7',
             cTipoPregunta: 'Escala lineal',
             cIcon: 'pi-ellipsis-h',
             cCodeTipoPreg: 'TIP-PREG-ESC-LINEAL',
         },
         {
-            iTipoPregId: 8,
+            iTipoPregId: '8',
             cTipoPregunta: 'Calificación',
             cIcon: 'pi-star',
             cCodeTipoPreg: 'TIP-PREG-CALIF',
         },
         {
-            iTipoPregId: 9,
+            iTipoPregId: '9',
             cTipoPregunta: 'Cuadrícula de varias opciones',
             cIcon: 'pi-th-large',
             cCodeTipoPreg: 'TIP-PREG-CUAD-OPCIONES',
         },
         {
-            iTipoPregId: 10,
+            iTipoPregId: '10',
             cTipoPregunta: 'Cuadrícula de casillas',
             cIcon: 'pi-table',
             cCodeTipoPreg: 'TIP-PREG-CUAD-CASILLA',
         },
     ]
-
+    // data: any
     data: any = [
         {
             id: 1,
@@ -167,15 +162,231 @@ export class CuestionarioPreguntasComponent {
             estado: 'Activo',
         },
     ]
-
+    guardarPregunta(data: any) {
+        const datos = {
+            iCuestionarioId: this.datosGenerales.iCuestionarioId,
+            iTipoPregId: data.iTipoPregId,
+            cPregunta: data.cPregunta,
+            jsonAlternativas: data.jsonAlternativas,
+            iCredId: this._constantesService.iCredId,
+        }
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'preguntas',
+            data: datos,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Acción exitosa',
+                        detail: response.message,
+                    })
+                    this.showModal = false
+                    this.obtenerCuestionario()
+                    // this.instructorForm.reset()
+                }
+                this.obtenerCuestionario()
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
+        })
+    }
+    actualizarPregunta(data: any) {
+        const datos = {
+            iCuestionarioId: this.datosGenerales.iCuestionarioId,
+            iTipoPregId: data.iTipoPregId,
+            cPregunta: data.cPregunta,
+            jsonAlternativas: data.jsonAlternativas,
+            iCredId: this._constantesService.iCredId,
+        }
+        const params = {
+            petition: 'put',
+            group: 'aula-virtual',
+            prefix: 'preguntas',
+            ruta: data.iPregId,
+            data: datos,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Acción exitosa',
+                        detail: response.message,
+                    })
+                    this.showModal = false
+                    this.obtenerCuestionario()
+                    // this.instructorForm.reset()
+                }
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
+        })
+    }
     accionBtnItem(elemento): void {
         const { accion } = elemento
-        //const { item } = elemento
+        const { item } = elemento
 
         switch (accion) {
             case 'close-modal':
                 this.showModal = false
                 break
+            case 'ACTUALIZAR':
+                this.titulo = 'Editar pregunta'
+                this.opcion = accion
+                this.params = item
+                console.log(item)
+                this.showModal = true
+                break
         }
+    }
+    formpreguntas: any
+    obtenerCuestionario() {
+        const params = {
+            petition: 'get',
+            group: 'aula-virtual',
+            prefix: 'preguntas',
+            ruta: `cuestionario/${this.datosGenerales.iCuestionarioId}`,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+            this.data = (Data as any)['data']
+            // Asegúrate de que jsonAlternativas esté en Data y no dentro de data
+            // const alternativas = Data['jsonAlternativas']
+            //     ? JSON.parse(Data['jsonAlternativas'])
+            //     : [];
+            // Convertimos jsonAlternativas a objeto en cada pregunta:
+            this.data = this.data.map((Data) => {
+                return {
+                    ...Data,
+                    jsonAlternativas: JSON.parse(Data.jsonAlternativas),
+                }
+            })
+            // const jsonAlternativas = JSON.parse(Data['jsonAlternativas']);
+            // Combina alternativas dentro de this.data
+            // this.data.alternativas = jsonAlternativas;
+            // const jsonAlternativas = JSON.parse(Data['jsonAlternativas']);
+            console.log('Datos preguntas:', this.data)
+        })
+    }
+
+    // editarPregunta(data: any) {
+    //     this.titulo = 'Editar pregunta'
+    //     this.opcion = 'ACTUALIZAR'
+    //     this.params = data
+    //     console.log(data)
+    //     this.showModal = true
+    // }
+    // Eliminar preguntas del formulario
+    eliminarPregunta(data: any) {
+        this._confirmService.openConfirm({
+            header: '¿Eliminar pregunta:  ' + data.cPregunta + '?',
+            accept: () => {
+                const params = {
+                    petition: 'delete',
+                    group: 'aula-virtual',
+                    prefix: 'preguntas',
+                    ruta: data.iPregId,
+                    params: {
+                        iCredId: this._constantesService.iCredId,
+                    },
+                }
+                // Servicio para obtener los instructores
+                this.GeneralService.getGralPrefixx(params).subscribe({
+                    next: (resp) => {
+                        if (resp.validated) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Acción exitosa',
+                                detail: resp.message,
+                            })
+                            this.obtenerCuestionario()
+                        }
+                    },
+                })
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
+    tipopregunta: any
+    obtenerTipoPreguntas() {
+        const params = {
+            petition: 'get',
+            group: 'enc',
+            prefix: 'tipo-preguntas',
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
+            this.tipoPreguntas = (Data as any)['data']
+        })
     }
 }

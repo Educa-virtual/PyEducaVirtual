@@ -4,7 +4,7 @@
             <span style="font-size: 18px">Total Preguntas:</span>
             <span>
                 <p-badge
-                    [value]="totalPregunta"
+                    [value]="data.length"
                     severity="primary"
                     styleClass="ml-2"
                     badgeSize="large"
@@ -55,9 +55,13 @@
                 <p-divider></p-divider>
             </div>
             <div class="col-12">
-                <div class="card col-12 mb-3 p-3" *ngFor="let item of data">
-                    <h5>{{ item.nombre }}</h5>
-                    @switch (item.tipoCuestionario) {
+                <div
+                    class="card col-12 mb-5 p-3 relative"
+                    *ngFor="let item of data; let i = index"
+                >
+                    <div class="tag ml-3 font-bold">Pregunta: #{{ i + 1 }}</div>
+                    <h5>{{ item.cPregunta }}</h5>
+                    @switch (item.cCodeTipoPreg) {
                         @case ('TIP-PREG-TEXTO') {
                             <div class="col-12">
                                 <input
@@ -71,35 +75,54 @@
                         }
 
                         @case ('TIP-PREG-OPCIONES') {
-                            <div class="align-content-center mb-2">
+                            <div class="mb-2">
                                 <div
-                                    *ngFor="let opcion of item.opciones"
-                                    class="mb-2"
+                                    *ngFor="let opcion of item.jsonAlternativas"
+                                    class="mb-3"
                                 >
-                                    <p-radioButton
-                                        id="opcion1"
-                                        name="grupoOpciones"
-                                        [value]="opcion.id"
-                                        [(ngModel)]="selectedOption"
-                                        class="mr-2"
-                                    ></p-radioButton>
-                                    <label for="opcion1">{{
-                                        opcion.label
-                                    }}</label>
+                                    <p-inputGroup class="mt-1">
+                                        <p-radioButton
+                                            id="opcion1"
+                                            name="grupoOpciones"
+                                            [value]="opcion.iPregAlterId"
+                                            [(ngModel)]="selectedOption"
+                                            class="mr-2"
+                                        ></p-radioButton>
+                                        <label for="opcion1">{{
+                                            opcion.cAlternativa
+                                        }}</label>
+                                    </p-inputGroup>
                                 </div>
                             </div>
                         }
 
                         @case ('TIP-PREG-CASILLA') {
-                            <i class="pi pi-pencil text-success mr-2"></i>
-                            <span>Respuesta Corta</span>
+                            <div class="align-content-center mb-2">
+                                <div
+                                    *ngFor="let opcion of item.jsonAlternativas"
+                                    class="mb-2"
+                                >
+                                    <p-checkbox
+                                        id="opcion1"
+                                        name="grupoOpciones"
+                                        [value]="opcion.iPregAlterId"
+                                        [(ngModel)]="selectedOption"
+                                        class="mr-2"
+                                    />
+
+                                    <label for="opcion1">{{
+                                        opcion.cAlternativa
+                                    }}</label>
+                                </div>
+                            </div>
                         }
 
                         @case ('TIP-PREG-DESPLEGABLE') {
                             <div class="col-6">
                                 <p-dropdown
-                                    [options]="item.opciones"
+                                    [options]="item.jsonAlternativas"
                                     [(ngModel)]="selectedDropdown"
+                                    optionLabel="cAlternativa"
                                     placeholder="Selecciona una opción"
                                     class="w-full custom-hover-input mb-2"
                                     styleClass="w-full"
@@ -112,14 +135,14 @@
                     <div
                         class="flex align-items-center justify-content-end gap-2"
                     >
-                        <p-button
+                        <!-- <p-button
                             icon="pi pi-clone"
                             [rounded]="true"
                             [text]="true"
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Clonar pregunta"
-                        />
+                        /> -->
                         <p-button
                             icon="pi pi-trash"
                             [rounded]="true"
@@ -127,6 +150,7 @@
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Eliminar pregunta"
+                            (click)="eliminarPregunta(item)"
                         />
                         <p-button
                             icon="pi pi-file-edit"
@@ -135,6 +159,12 @@
                             severity="secondary"
                             tooltipPosition="bottom"
                             pTooltip="Editar pregunta"
+                            (click)="
+                                accionBtnItem({
+                                    accion: 'ACTUALIZAR',
+                                    item: item,
+                                })
+                            "
                         />
                     </div>
                 </div>
@@ -144,10 +174,12 @@
 </div>
 <app-cuestionario-form-preguntas
     [showModal]="showModal"
-    [data]="[]"
+    [data]="params"
     [titulo]="titulo"
     [opcion]="opcion"
     [tipoPreguntas]="tipoPreguntas"
     (accionBtnItem)="accionBtnItem($event)"
+    (formpregunta)="guardarPregunta($event)"
+    (actualizarPregunta)="actualizarPregunta($event)"
 ></app-cuestionario-form-preguntas>
 <p-toast></p-toast>

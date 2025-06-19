@@ -63,6 +63,7 @@ export class FichaSaludComponent implements OnInit {
                 cDolFichaObs: [null],
                 controles_dolencias: this.fb.array([]),
                 jsonDolencias: [null],
+                jsonSeguros: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
@@ -166,6 +167,13 @@ export class FichaSaludComponent implements OnInit {
         this.formSalud
             .get('jsonDolencias')
             .setValue(JSON.stringify(this.controles_dolencias.value))
+
+        this.datosFichaBienestar.formControlJsonStringify(
+            this.formSalud,
+            'jsonSeguros',
+            'iSeguroSaludId'
+        )
+
         this.datosFichaBienestar
             .actualizarFichaSalud(this.formSalud.value)
             .subscribe({

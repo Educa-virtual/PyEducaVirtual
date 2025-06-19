@@ -3,13 +3,17 @@ import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { FormsModule } from '@angular/forms'
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 
 @Component({
     selector: 'app-llenado-preguntas-encuesta',
     standalone: true,
-    imports: [PrimengModule, FormsModule],
+    imports: [PrimengModule, FormsModule, EditorComponent],
     templateUrl: './llenado-preguntas-encuesta.component.html',
     styleUrl: './llenado-preguntas-encuesta.component.scss',
+    providers: [
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
 })
 export class LlenadoPreguntasEncuestaComponent implements OnInit {
     breadCrumbItems: MenuItem[] = []
@@ -17,23 +21,24 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     selectedItem: any
     totalPreguntas: number = 3
     nIndexAcordionTab: number = null
-    
-    // Configuración del editor
-    init: any = {
+
+    isDisabled: boolean = false
+
+    // EDITOR
+    initEnunciado: EditorComponent['init'] = {
         base_url: '/tinymce',
         suffix: '.min',
         menubar: false,
         selector: 'textarea',
-        placeholder: 'Escriba aquí...',
+        placeholder: 'Escribe aqui...',
+        height: 250,
         plugins: 'lists image table',
-        toolbar: 'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-                'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
-                'image table',
-        height: 200,
-        editable_root: true,
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
+            'image table',
     }
 
-    // Estructura simplificada: solo secciones con preguntas directas
     secciones = [
         {
             id: 1,
@@ -46,25 +51,74 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
                     cPregunta: '¿Cuál es su edad?',
                     expandida: false,
                     alternativas: [
-                        { iAlternativaId: 1, cAlternativaLetra: 'A', cAlternativaDescripcion: '18-25 años', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 2, cAlternativaLetra: 'B', cAlternativaDescripcion: '26-35 años', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 3, cAlternativaLetra: 'C', cAlternativaDescripcion: '36-45 años', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 4, cAlternativaLetra: 'D', cAlternativaDescripcion: 'Más de 45 años', bAlternativaCorrecta: false, cAlternativaExplicacion: '' }
-                    ]
+                        {
+                            iAlternativaId: 1,
+                            cAlternativaLetra: 'A',
+                            cAlternativaDescripcion: '18-25 años',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 2,
+                            cAlternativaLetra: 'B',
+                            cAlternativaDescripcion: '26-35 años',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 3,
+                            cAlternativaLetra: 'C',
+                            cAlternativaDescripcion: '36-45 años',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 4,
+                            cAlternativaLetra: 'D',
+                            cAlternativaDescripcion: 'Más de 45 años',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                    ],
                 },
                 {
                     id: 2,
                     title: 'Pregunta #2: ¿Cuál es su nivel educativo?',
-                    cPregunta: '¿Cuál es su nivel educativo más alto completado?',
+                    cPregunta:
+                        '¿Cuál es su nivel educativo más alto completado?',
                     expandida: false,
                     alternativas: [
-                        { iAlternativaId: 5, cAlternativaLetra: 'A', cAlternativaDescripcion: 'Secundaria', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 6, cAlternativaLetra: 'B', cAlternativaDescripcion: 'Técnico', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 7, cAlternativaLetra: 'C', cAlternativaDescripcion: 'Universitario', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 8, cAlternativaLetra: 'D', cAlternativaDescripcion: 'Postgrado', bAlternativaCorrecta: false, cAlternativaExplicacion: '' }
-                    ]
-                }
-            ]
+                        {
+                            iAlternativaId: 5,
+                            cAlternativaLetra: 'A',
+                            cAlternativaDescripcion: 'Secundaria',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 6,
+                            cAlternativaLetra: 'B',
+                            cAlternativaDescripcion: 'Técnico',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 7,
+                            cAlternativaLetra: 'C',
+                            cAlternativaDescripcion: 'Universitario',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 8,
+                            cAlternativaLetra: 'D',
+                            cAlternativaDescripcion: 'Postgrado',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                    ],
+                },
+            ],
         },
         {
             id: 2,
@@ -74,18 +128,38 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
                 {
                     id: 3,
                     title: 'Pregunta #3: ¿Con qué frecuencia realiza monitoreo?',
-                    cPregunta: '¿Con qué frecuencia realiza actividades de monitoreo?',
+                    cPregunta:
+                        '¿Con qué frecuencia realiza actividades de monitoreo?',
                     expandida: false,
                     alternativas: [
-                        { iAlternativaId: 9, cAlternativaLetra: 'A', cAlternativaDescripcion: 'Diariamente', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 10, cAlternativaLetra: 'B', cAlternativaDescripcion: 'Semanalmente', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                        { iAlternativaId: 11, cAlternativaLetra: 'C', cAlternativaDescripcion: 'Mensualmente', bAlternativaCorrecta: false, cAlternativaExplicacion: '' }
-                    ]
-                }
-            ]
-        }
+                        {
+                            iAlternativaId: 9,
+                            cAlternativaLetra: 'A',
+                            cAlternativaDescripcion: 'Diariamente',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 10,
+                            cAlternativaLetra: 'B',
+                            cAlternativaDescripcion: 'Semanalmente',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                        {
+                            iAlternativaId: 11,
+                            cAlternativaLetra: 'C',
+                            cAlternativaDescripcion: 'Mensualmente',
+                            bAlternativaCorrecta: false,
+                            cAlternativaExplicacion: '',
+                        },
+                    ],
+                },
+            ],
+        },
     ]
-pregunta: any
+
+    pregunta: any
 
     constructor(
         private messageService: MessageService,
@@ -97,9 +171,11 @@ pregunta: any
         this.calcularTotalPreguntas()
     }
 
-    // Calcular total de preguntas
     calcularTotalPreguntas() {
-        this.totalPreguntas = this.secciones.reduce((total, seccion) => total + seccion.preguntas.length, 0)
+        this.totalPreguntas = this.secciones.reduce(
+            (total, seccion) => total + seccion.preguntas.length,
+            0
+        )
     }
 
     // Métodos para gestionar secciones
@@ -111,17 +187,19 @@ pregunta: any
         this.confirmationModalService.openConfirm({
             header: `¿Está seguro de eliminar la sección "${seccion.titulo}"?`,
             accept: () => {
-                const index = this.secciones.findIndex(s => s.id === seccion.id)
+                const index = this.secciones.findIndex(
+                    (s) => s.id === seccion.id
+                )
                 if (index !== -1) {
                     this.secciones.splice(index, 1)
                     this.calcularTotalPreguntas()
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Sección eliminada',
-                        detail: 'La sección ha sido eliminada correctamente'
+                        detail: 'La sección ha sido eliminada correctamente',
                     })
                 }
-            }
+            },
         })
     }
 
@@ -130,18 +208,21 @@ pregunta: any
             ...seccion,
             id: this.secciones.length + 1,
             titulo: seccion.titulo + ' (Copia)',
-            preguntas: seccion.preguntas.map(p => ({
-                ...p, 
+            preguntas: seccion.preguntas.map((p) => ({
+                ...p,
                 id: Date.now() + Math.random(),
-                alternativas: p.alternativas.map(alt => ({...alt, iAlternativaId: Date.now() + Math.random()}))
-            }))
+                alternativas: p.alternativas.map((alt) => ({
+                    ...alt,
+                    iAlternativaId: Date.now() + Math.random(),
+                })),
+            })),
         }
         this.secciones.push(nuevaSeccion)
         this.calcularTotalPreguntas()
         this.messageService.add({
             severity: 'success',
             summary: 'Sección duplicada',
-            detail: 'La sección ha sido duplicada correctamente'
+            detail: 'La sección ha sido duplicada correctamente',
         })
     }
 
@@ -150,13 +231,13 @@ pregunta: any
             id: this.secciones.length + 1,
             titulo: `SECCIÓN ${this.secciones.length + 1}: NUEVA SECCIÓN`,
             expandida: true,
-            preguntas: []
+            preguntas: [],
         }
         this.secciones.push(nuevaSeccion)
         this.messageService.add({
             severity: 'success',
             summary: 'Sección agregada',
-            detail: 'Nueva sección creada correctamente'
+            detail: 'Nueva sección creada correctamente',
         })
     }
 
@@ -164,20 +245,22 @@ pregunta: any
         this.confirmationModalService.openConfirm({
             header: `¿Está seguro de eliminar "${pregunta.title}"?`,
             accept: () => {
-                const seccion = this.secciones.find(s => s.id === seccionId)
+                const seccion = this.secciones.find((s) => s.id === seccionId)
                 if (seccion) {
-                    const index = seccion.preguntas.findIndex(p => p.id === pregunta.id)
+                    const index = seccion.preguntas.findIndex(
+                        (p) => p.id === pregunta.id
+                    )
                     if (index !== -1) {
                         seccion.preguntas.splice(index, 1)
                         this.calcularTotalPreguntas()
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Pregunta eliminada',
-                            detail: 'La pregunta ha sido eliminada correctamente'
+                            detail: 'La pregunta ha sido eliminada correctamente',
                         })
                     }
                 }
-            }
+            },
         })
     }
 
@@ -189,31 +272,43 @@ pregunta: any
             cPregunta: 'Nueva pregunta',
             expandida: true,
             alternativas: [
-                { iAlternativaId: Date.now() + 1, cAlternativaLetra: 'A', cAlternativaDescripcion: 'Opción A', bAlternativaCorrecta: false, cAlternativaExplicacion: '' },
-                { iAlternativaId: Date.now() + 2, cAlternativaLetra: 'B', cAlternativaDescripcion: 'Opción B', bAlternativaCorrecta: false, cAlternativaExplicacion: '' }
-            ]
+                {
+                    iAlternativaId: Date.now() + 1,
+                    cAlternativaLetra: 'A',
+                    cAlternativaDescripcion: 'Opción A',
+                    bAlternativaCorrecta: false,
+                    cAlternativaExplicacion: '',
+                },
+                {
+                    iAlternativaId: Date.now() + 2,
+                    cAlternativaLetra: 'B',
+                    cAlternativaDescripcion: 'Opción B',
+                    bAlternativaCorrecta: false,
+                    cAlternativaExplicacion: '',
+                },
+            ],
         }
-        
+
         seccion.preguntas.push(nuevaPregunta)
         this.calcularTotalPreguntas()
         this.messageService.add({
             severity: 'success',
             summary: 'Pregunta agregada',
-            detail: 'Nueva pregunta creada correctamente'
+            detail: 'Nueva pregunta creada correctamente',
         })
     }
 
     agregarAlternativa(pregunta: any) {
         const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         const nuevaLetra = letras[pregunta.alternativas.length]
-        
+
         if (nuevaLetra) {
             pregunta.alternativas.push({
                 iAlternativaId: Date.now(),
                 cAlternativaLetra: nuevaLetra,
                 cAlternativaDescripcion: `Opción ${nuevaLetra}`,
                 bAlternativaCorrecta: false,
-                cAlternativaExplicacion: ''
+                cAlternativaExplicacion: '',
             })
         }
     }
@@ -221,7 +316,6 @@ pregunta: any
     eliminarAlternativa(pregunta: any, index: number) {
         if (pregunta.alternativas.length > 2) {
             pregunta.alternativas.splice(index, 1)
-            // Reordenar las letras
             const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
             pregunta.alternativas.forEach((alt: any, i: number) => {
                 alt.cAlternativaLetra = letras[i]
@@ -230,13 +324,12 @@ pregunta: any
             this.messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe tener al menos 2 alternativas'
+                detail: 'Debe tener al menos 2 alternativas',
             })
         }
     }
 
     cambiarEstadoCheckbox(iAlternativaId: any, alternativas: any[]) {
-        // Solo permitimos una opción seleccionada a la vez
         alternativas.forEach((alternativa) => {
             if (alternativa.iAlternativaId != iAlternativaId) {
                 alternativa.bAlternativaCorrecta = false
@@ -246,31 +339,34 @@ pregunta: any
     }
 
     guardarPregunta(pregunta: any) {
-        // Validaciones
         if (!pregunta.cPregunta || pregunta.cPregunta.trim() === '') {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'La pregunta no puede estar vacía'
+                detail: 'La pregunta no puede estar vacía',
             })
             return
         }
-
-        if (pregunta.alternativas.some((alt: any) => !alt.cAlternativaDescripcion || alt.cAlternativaDescripcion.trim() === '')) {
+        if (
+            pregunta.alternativas.some(
+                (alt: any) =>
+                    !alt.cAlternativaDescripcion ||
+                    alt.cAlternativaDescripcion.trim() === ''
+            )
+        ) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Todas las alternativas deben tener descripción'
+                detail: 'Todas las alternativas deben tener descripción',
             })
             return
         }
-
         this.messageService.add({
             severity: 'success',
             summary: 'Pregunta guardada',
-            detail: 'La pregunta ha sido guardada correctamente'
+            detail: 'La pregunta ha sido guardada correctamente',
         })
-        
+
         pregunta.expandida = false
     }
 
@@ -278,7 +374,7 @@ pregunta: any
         this.messageService.add({
             severity: 'info',
             summary: 'Vista previa',
-            detail: 'Cargando vista previa de la encuesta...'
+            detail: 'Cargando vista previa de la encuesta...',
         })
     }
 
@@ -286,7 +382,11 @@ pregunta: any
         this.messageService.add({
             severity: 'info',
             summary: 'Configuración',
-            detail: 'Abriendo configuración de la encuesta...'
+            detail: 'Abriendo configuración de la encuesta...',
         })
+    }
+
+    toggleEditorState() {
+        this.isDisabled = !this.isDisabled
     }
 }

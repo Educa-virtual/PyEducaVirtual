@@ -17,7 +17,9 @@
             />
         </div>
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Lugar de alimentación durante la semana">
+            <p-fieldset
+                legend="Lugar de alimentación del estudiante durante la semana"
+            >
                 <div class="grid mt-3">
                     <div class="col-12">
                         <app-dropdown-input
@@ -27,7 +29,7 @@
                                     'iLugarAlimIdDesayuno'
                                 ]
                             "
-                            addonLabel="¿Donde consume el desayuno?"
+                            addonLabel="¿Donde suele consumir el desayuno?"
                             dropdownPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(formAlimentacion).controls[
@@ -45,7 +47,7 @@
                                     'iLugarAlimIdAlmuerzo'
                                 ]
                             "
-                            addonLabel="¿Donde consume el almuerzo?"
+                            addonLabel="¿Donde suele consumir el almuerzo?"
                             dropdownPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(formAlimentacion).controls[
@@ -63,7 +65,7 @@
                                     'iLugarAlimIdCena'
                                 ]
                             "
-                            addonLabel="¿Donde consume la cena?"
+                            addonLabel="¿Donde suele consumir la cena?"
                             dropdownPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(formAlimentacion).controls[
@@ -78,13 +80,16 @@
         </div>
 
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Información alimenticia adicional">
+            <p-fieldset
+                legend="Información alimenticia adicional sobre el estudiante"
+            >
                 <div class="grid">
                     <div class="col-12">
                         <app-switch-input
                             addonLabel="¿Tiene una dieta especial?"
                             inputPlaceholder="Especifique *"
-                            inputType="text"
+                            inputType="textarea"
+                            [inputInitRows]="1"
                             [switchControl]="
                                 $any(formAlimentacion).controls[
                                     'bDietaEspecial'
@@ -101,7 +106,8 @@
                         <app-switch-input
                             addonLabel="¿Tiene alergias alimenticias?"
                             inputPlaceholder="Especifique *"
-                            inputType="text"
+                            inputType="textarea"
+                            [inputInitRows]="1"
                             [switchControl]="
                                 $any(formAlimentacion).controls[
                                     'bFichaDGAlergiaAlimentos'
@@ -118,7 +124,8 @@
                         <app-switch-input
                             addonLabel="¿Tiene intolerancias alimenticias?"
                             inputPlaceholder="Especifique *"
-                            inputType="text"
+                            inputType="textarea"
+                            [inputInitRows]="1"
                             [switchControl]="
                                 $any(formAlimentacion).controls[
                                     'bIntoleranciaAlim'
@@ -135,7 +142,8 @@
                         <app-switch-input
                             addonLabel="¿Consume suplementos alimenticios?"
                             inputPlaceholder="Especifique *"
-                            inputType="text"
+                            inputType="textarea"
+                            [inputInitRows]="1"
                             [switchControl]="
                                 $any(formAlimentacion).controls[
                                     'bSumplementosAlim'
@@ -151,8 +159,9 @@
                     <div class="col-12">
                         <app-switch-input
                             addonLabel="¿Tiene dificultades para conseguir alimentos?"
-                            inputPlaceholder="Especifique *"
-                            inputType="text"
+                            inputPlaceholder="Explique *"
+                            inputType="textarea"
+                            [inputInitRows]="1"
                             [switchControl]="
                                 $any(formAlimentacion).controls[
                                     'bDificultadAlim'
@@ -163,21 +172,24 @@
                                     'cDificultadAlimObs'
                                 ]
                             "
+                            [infoAdicional]="bDificultadAlim"
                         />
+                        <ng-template #bDificultadAlim>
+                            Marque esta opción si el estudiante suele tener
+                            dificultades para conseguir alimentos ya sea por
+                            falta de dinero, tiempo, transporte, etc. y explique
+                            brevemente el motivo.
+                        </ng-template>
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                Información adicional
-                            </p-inputGroupAddon>
-                            <input
-                                type="text"
-                                formControlName="cAlimObs"
-                                pInputText
-                                placeholder="Especifique"
-                                class="group-element"
-                            />
-                        </p-inputGroup>
+                        <app-input-simple
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [inputControl]="
+                                $any(formAlimentacion).controls['cAlimObs']
+                            "
+                            addonLabel="Información adicional"
+                        />
                     </div>
                 </div>
             </p-fieldset>

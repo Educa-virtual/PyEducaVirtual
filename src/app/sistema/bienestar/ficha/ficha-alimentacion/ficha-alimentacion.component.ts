@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api'
 import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
+import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
 
 @Component({
     selector: 'app-ficha-alimentacion',
@@ -17,6 +18,7 @@ import { SwitchInputComponent } from '../shared/switch-input/switch-input.compon
         MultiselectInputComponent,
         DropdownInputComponent,
         SwitchInputComponent,
+        InputSimpleComponent,
     ],
     templateUrl: './ficha-alimentacion.component.html',
     styleUrl: './ficha-alimentacion.component.scss',
@@ -67,11 +69,11 @@ export class FichaAlimentacionComponent implements OnInit {
                 iLugarAlimIdDesayuno: [null],
                 cLugarAlimDesayuno: [''],
                 iLugarAlimIdAlmuerzo: [null],
-                cLugarAlimAlmuerzo: [''],
+                cLugarAlimAlmuerzo: ['', Validators.maxLength(80)],
                 iLugarAlimIdCena: [null],
-                cLugarAlimCena: [''],
+                cLugarAlimCena: ['', Validators.maxLength(80)],
                 iProgAlimId: [null],
-                cProgAlimNombre: [''],
+                cProgAlimNombre: ['', Validators.maxLength(80)],
                 bDietaEspecial: [false],
                 cDietaEspecialObs: [''],
                 bFichaDGAlergiaAlimentos: [false],
@@ -94,7 +96,7 @@ export class FichaAlimentacionComponent implements OnInit {
         }
     }
 
-    async verFichaAlimentacion() {
+    verFichaAlimentacion() {
         this.datosFichaBienestar
             .verFichaAlimentacion({
                 iFichaDGId: this.iFichaDGId,
@@ -107,9 +109,7 @@ export class FichaAlimentacionComponent implements OnInit {
     }
 
     setFormAlimentacion(data: any) {
-        if (data.iAlimId) {
-            this.ficha_registrada = true
-        } else {
+        if (!data.iAlimId) {
             this.ficha_registrada = false
             return
         }
@@ -146,51 +146,6 @@ export class FichaAlimentacionComponent implements OnInit {
         )
     }
 
-    guardar() {
-        if (this.formAlimentacion.invalid) {
-            this._messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe completar los campos requeridos',
-            })
-            return
-        }
-
-        const programas = []
-        this.formAlimentacion.get('iProgAlimId').value.forEach((elemento) => {
-            programas.push({
-                iProgAlimId: elemento,
-            })
-        })
-        this.formAlimentacion
-            .get('jsonProgramas')
-            .setValue(JSON.stringify(programas))
-
-        this.datosFichaBienestar
-            .guardarFichaAlimentacion(this.formAlimentacion.value)
-            .subscribe({
-                next: () => {
-                    this.ficha_registrada = true
-                    this._messageService.add({
-                        severity: 'success',
-                        summary: 'Registro exitoso',
-                        detail: 'Se registraron los datos',
-                    })
-                },
-                error: (error) => {
-                    console.error('Error guardando ficha:', error)
-                    this._messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error.message,
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
     actualizar() {
         if (this.formAlimentacion.invalid) {
             this._messageService.add({
@@ -201,21 +156,11 @@ export class FichaAlimentacionComponent implements OnInit {
             return
         }
 
-        if (this.formAlimentacion.get('iProgAlimId').value !== null) {
-            const programas = []
-            this.formAlimentacion
-                .get('iProgAlimId')
-                .value.forEach((elemento) => {
-                    programas.push({
-                        iProgAlimId: elemento,
-                    })
-                })
-            this.formAlimentacion
-                .get('jsonProgramas')
-                .setValue(JSON.stringify(programas))
-        } else {
-            this.formAlimentacion.get('jsonProgramas').setValue(null)
-        }
+        this.datosFichaBienestar.formControlJsonStringify(
+            this.formAlimentacion,
+            'jsonProgramas',
+            'iProgAlimId'
+        )
 
         this.datosFichaBienestar
             .actualizarFichaAlimentacion(this.formAlimentacion.value)

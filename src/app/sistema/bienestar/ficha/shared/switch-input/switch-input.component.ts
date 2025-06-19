@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, Input, OnChanges, OnInit } from '@angular/core'
+import { Component, Input, OnChanges, OnInit, TemplateRef } from '@angular/core'
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { TextFieldModule } from '@angular/cdk/text-field'
 
@@ -37,6 +37,8 @@ export class SwitchInputComponent implements OnInit, OnChanges {
     @Input() inputInitRows: number = 3
     @Input() inputMinRows: number = 3
     @Input() inputMaxRows: number = 6
+
+    @Input() infoAdicional!: TemplateRef<any>
 
     inputMinRowsString: string
     inputMaxRowsString: string

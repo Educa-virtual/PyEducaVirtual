@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, TemplateRef } from '@angular/core'
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 @Component({
@@ -35,6 +35,8 @@ export class DropdownInputComponent implements OnInit {
     @Input() filter: boolean = true
     @Input() showClear: boolean = true
     @Input() showToggleAll: boolean = false
+
+    @Input() infoAdicional!: TemplateRef<any>
 
     onChange = () => {}
     onTouched = () => {}

@@ -43,7 +43,7 @@ export class FichaDeclaracionComponent implements OnInit {
 
     ngOnInit() {
         this.ficha = this.datosFichaBienestarService
-            .searchFicha({
+            .verFicha({
                 iPersId: this.iPersId,
                 iYAcadId: this.compartirFichaService.iYAcadId,
             })

@@ -53,7 +53,7 @@ export class FichaFamiliaComponent implements OnInit {
 
     ngOnInit(): void {
         if (this.iFichaDGId) {
-            this.searchFamiliares()
+            this.listarFamiliares()
         }
     }
 
@@ -65,7 +65,7 @@ export class FichaFamiliaComponent implements OnInit {
     visibleDialog(event: any) {
         this.visibleDialogFamiliar = event.value || false
         this.iFamiliarId = null
-        this.searchFamiliares()
+        this.listarFamiliares()
     }
 
     agregarFamiliar() {
@@ -74,9 +74,9 @@ export class FichaFamiliaComponent implements OnInit {
         this.dialogTitle = 'Registrar familiar'
     }
 
-    async searchFamiliares() {
+    listarFamiliares() {
         this.datosFichaBienestar
-            .searchFamiliares({
+            .listarFamiliares({
                 iFichaDGId: this.iFichaDGId,
             })
             .subscribe({

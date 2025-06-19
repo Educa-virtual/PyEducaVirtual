@@ -154,7 +154,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             console.log(error, 'error al inicializar formulario')
         }
 
-        this.showFamiliar()
+        this.verFamiliar()
 
         this.formFamiliar
             .get('iTipoIdentId')
@@ -233,7 +233,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges() {
-        this.showFamiliar()
+        this.verFamiliar()
     }
 
     filterProvincias(iDptoId: number) {
@@ -246,14 +246,14 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
         this.distritos = this.datosFichaBienestar.filterDistritos(iPrvnId)
     }
 
-    showFamiliar() {
+    verFamiliar() {
         this.formFamiliar?.reset()
         this.formFamiliar?.get('iFichaDGId')?.setValue(this.iFichaDGId)
 
         if (!this.iFamiliarId) return null
 
         this.datosFichaBienestar
-            .showFamiliar({
+            .verFamiliar({
                 iFamiliarId: this.iFamiliarId,
             })
             .subscribe((data: any) => {

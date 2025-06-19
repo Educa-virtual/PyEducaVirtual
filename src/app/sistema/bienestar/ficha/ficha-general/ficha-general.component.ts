@@ -96,16 +96,19 @@ export class FichaGeneralComponent implements OnInit {
                 )
             })
 
-        this.searchFichaGeneral()
+        this.verFichaGeneral()
     }
 
-    async searchFichaGeneral(): Promise<void> {
-        const data = await this.datosFichaBienestarService.searchFichaGeneral({
-            iFichaDGId: await this.iFichaDGId,
-        })
-        if (data) {
-            this.setFormGeneral(data)
-        }
+    verFichaGeneral() {
+        this.datosFichaBienestarService
+            .verFichaGeneral({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                if (data.data.length) {
+                    this.setFormGeneral(data.data[0])
+                }
+            })
     }
 
     setFormGeneral(data: FichaGeneral) {

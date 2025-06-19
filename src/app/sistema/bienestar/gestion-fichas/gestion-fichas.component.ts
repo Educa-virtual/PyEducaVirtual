@@ -74,12 +74,12 @@ export class GestionFichasComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.cargarFichas() //
+        this.listarFichas() //
     }
 
-    cargarFichas() {
+    listarFichas() {
         this.datosFichaBienestarService
-            .searchFichas(this.searchForm.value)
+            .listarFichas(this.searchForm.value)
             .subscribe({
                 next: (data: any) => {
                     this.fichas = data.data

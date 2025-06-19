@@ -97,7 +97,7 @@ export class DatosFichaBienestarService implements OnDestroy {
     formSalud: FichaSalud
     formDiscapacidad: FichaDiscapacidad
 
-    searchFichas(data: any) {
+    listarFichas(data: any) {
         return this.http.post(`${baseUrl}/bienestar/listarFichas`, data)
     }
 
@@ -116,20 +116,12 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/cancelarDeclaracion`, data)
     }
 
-    searchFicha(data: any) {
+    verFicha(data: any) {
         return this.http.post(`${baseUrl}/bienestar/verFicha`, data)
     }
 
-    searchFichaGeneral(data: any): Promise<any> {
-        return this.http
-            .post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
-            .pipe(
-                map((data: any) => {
-                    this.formGeneral = data.data[0]
-                    return this.formGeneral
-                })
-            )
-            .toPromise()
+    verFichaGeneral(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaGeneral`, data)
     }
 
     guardarFichaGeneral(data: any) {
@@ -143,16 +135,8 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchFichaEconomico(data: any): Promise<any> {
-        return this.http
-            .post(`${baseUrl}/bienestar/searchFichaEconomico`, data)
-            .pipe(
-                map((data: any) => {
-                    this.formEconomico = data.data[0]
-                    return this.formEconomico
-                })
-            )
-            .toPromise()
+    verFichaEconomico(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaEconomico`, data)
     }
 
     guardarFichaEconomico(data: any) {
@@ -184,13 +168,13 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/borrarFichaFamiliar`, data)
     }
 
-    showFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichaFamiliar`, data)
+    verFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaFamiliar`, data)
     }
 
-    searchFamiliares(data: any) {
+    listarFamiliares(data: any) {
         return this.http.post(
-            `${baseUrl}/bienestar/searchFichaFamiliares`,
+            `${baseUrl}/bienestar/listarFichaFamiliares`,
             data
         )
     }

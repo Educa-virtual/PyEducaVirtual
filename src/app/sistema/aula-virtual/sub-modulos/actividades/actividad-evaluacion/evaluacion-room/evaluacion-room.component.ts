@@ -269,6 +269,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy, OnChanges {
                             cTitle:
                                 'Evaluación Formativa: ' +
                                 (data.cEvaluacionTitulo || '-'),
+                            cHeader: data.cEvaluacionTitulo || '-',
                             dInicio: data.dtEvaluacionInicio,
                             dFin: data.dtEvaluacionFin,
                             iEstado: Number(data.iEstado || 0),

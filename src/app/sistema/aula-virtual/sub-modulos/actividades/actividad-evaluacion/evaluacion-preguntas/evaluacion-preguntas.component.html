@@ -27,7 +27,7 @@
                     type="button"
                 >
                     <i class="pi pi-plus"></i>
-                    <span>Agregar Preguntas</span>
+                    <span>Agregar</span>
                 </button>
 
                 <p-menu
@@ -39,20 +39,24 @@
                 ></p-menu>
             </ng-container>
         </div>
+        <!-- Mensaje sin preguntas -->
+        @if (!preguntas.length) {
+            <div
+                class="col-12 border-dashed border-2 border-300 surface-50 border-round text-center"
+            >
+                <app-no-data
+                    [showIcon]="'NO-DATA'"
+                    [mensaje]="'No se encontraron preguntas en esta evaluación'"
+                ></app-no-data>
+            </div>
+        }
     </div>
-
-    <!-- Mensaje sin preguntas -->
-    @if (!preguntas.length) {
-        <p-divider class="my-2"></p-divider>
-        <div
-            class="p-4 border-dashed border-2 border-300 surface-50 border-round text-center"
-        >
-            <app-no-data
-                [showIcon]="'NO-DATA'"
-                [mensaje]="'No se encontraron preguntas en esta evaluación'"
-            ></app-no-data>
-        </div>
-    }
 </p-card>
+
+<app-preguntas-form
+    [cEvaluacionTitulo]="data?.cHeader"
+    [showModalPreguntas]="showModalPreguntas"
+    [iEvaluacionId]="data?.iEvaluacionId"
+></app-preguntas-form>
 
 <!-- <app-evaluacion-agregar-preguntas></app-evaluacion-agregar-preguntas> -->

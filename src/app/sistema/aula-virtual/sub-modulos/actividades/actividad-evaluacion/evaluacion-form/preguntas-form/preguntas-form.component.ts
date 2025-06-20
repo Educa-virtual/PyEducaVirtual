@@ -13,11 +13,12 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
+import { EditorComponent } from '@tinymce/tinymce-angular'
 
 @Component({
     selector: 'app-preguntas-form',
     standalone: true,
-    imports: [PrimengModule, NgIf],
+    imports: [PrimengModule, NgIf, EditorComponent],
     templateUrl: './preguntas-form.component.html',
     styleUrl: './preguntas-form.component.scss',
 })
@@ -39,6 +40,19 @@ export class PreguntasFormComponent implements OnChanges {
     iBancoId
     opcion: string = 'GUARDAR'
 
+    init: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escriba aquí...',
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
+            'image table',
+        height: 400,
+    }
     ngOnChanges(changes) {
         if (changes.showModalPreguntas?.currentValue) {
             this.showModalPreguntas = changes.showModalPreguntas.currentValue
@@ -231,34 +245,32 @@ export class PreguntasFormComponent implements OnChanges {
     }
 
     agregarAlternativa() {
-        const letra = abecedario[this.alternativas.length]
+        // const letra = abecedario[this.alternativas.length]
 
-        if (!letra) {
-            console.error('No hay más letras disponibles para asignar.')
-            return
-        }
+        // if (!letra) {
+        //     console.error('No hay más letras disponibles para asignar.')
+        //     return
+        // }
 
         // Agregar una nueva alternativa
         this.alternativas.push({
-            iBancoAltId: null,
-            iBancoId: this.iBancoId,
-            cBancoAltLetra: letra.code,
-            cBancoAltDescripcion: this.cAlternativa,
-            bBancoAltRptaCorrecta: this.bRptaCorreta,
-            cBancoAltExplicacionRpta: this.cAlternativaExplicacion,
-            bImage: this.cAlternativa.includes('image') ? true : false,
+            bAlternativaCorrecta: false,
+            cAlternativaDescripcion: null,
+            cAlternativaExplicacion: null,
+            cAlternativaLetra: null,
+            iAlternativaId: null,
         })
 
-        // Reiniciar los valores del formulario
-        this.cAlternativa = null
-        this.cAlternativaExplicacion = null
-        this.bRptaCorreta = false
+        // // Reiniciar los valores del formulario
+        // this.cAlternativa = null
+        // this.cAlternativaExplicacion = null
+        // this.bRptaCorreta = false
 
-        // Actualizar las letras de todas las alternativas
-        this.alternativas.forEach((alternativa, i) => {
-            const letra = abecedario[i] // Obtiene la letra según el índice
-            alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
-        })
+        // // Actualizar las letras de todas las alternativas
+        // this.alternativas.forEach((alternativa, i) => {
+        //     const letra = abecedario[i] // Obtiene la letra según el índice
+        //     alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
+        // })
     }
 
     getInformation(params, accion) {

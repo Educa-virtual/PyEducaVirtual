@@ -248,17 +248,16 @@ function saveData(this: YearsComponent) {
                 switchMap(() => this.yearsService.insYears(data)),
                 tap((res: any) => {
                     const result = res.data[0]
-
                     const isSuccess = result.Message == 'true'
 
                     this.messageService.add({
                         severity: isSuccess ? 'success' : 'warn',
-                        summary: 'Distribución de bloque',
+                        summary: 'Año calendario',
                         detail: result.resultado,
                         life: 3000,
                     })
 
-                    this.dialogs.distribucionBloque.visible = !isSuccess
+                    this.dialogs.year.visible = !isSuccess
                 }),
                 switchMap(() => this.yearsService.getYears())
             )

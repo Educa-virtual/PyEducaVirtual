@@ -11,10 +11,10 @@ import { PrimengModule } from '@/app/primeng.module'
 import { DialogModule } from 'primeng/dialog'
 import { Usuario } from '../interfaces/usuario.interface'
 import { MessageService, SelectItem } from 'primeng/api'
-import { UsuariosService } from '../services/usuarios.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { PerfilAsignado } from '../interfaces/perfil-asignado.interface'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { GestionUsuariosService } from '../services/gestion-usuarios.service'
 
 interface Nivel {
     nombre: string
@@ -86,7 +86,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
 
     constructor(
         private messageService: MessageService,
-        private usuariosService: UsuariosService,
+        private usuariosService: GestionUsuariosService,
         private confirmationModalService: ConfirmationModalService,
         private fb: FormBuilder
     ) {}

@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { RecoverPasswordComponent } from '../recover-password/recover-password.component'
-import { SinRolAsignadoComponent } from '../../sistema/sin-rol-asignado/sin-rol-asignado.component'
+import { SinRolAsignadoComponent } from '../../sistema/usuarios/sin-rol-asignado/sin-rol-asignado.component'
 
 interface Data {
     accessToken: string

@@ -1,7 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component } from '@angular/core'
 import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api'
-import { UsuariosService } from '../services/usuarios.service'
 import { HttpParams } from '@angular/common/http'
 import { debounceTime, Subject } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
@@ -9,6 +8,7 @@ import { EditarPerfilComponent } from '../editar-perfil/editar-perfil.component'
 import { Usuario } from '../interfaces/usuario.interface'
 import { AgregarUsuarioComponent } from '../agregar-usuario/agregar-ususario.component'
 import { CambiarFechaCaducidadComponent } from '../cambiar-fecha-caducidad/cambiar-fecha-caducidad.component'
+import { GestionUsuariosService } from '../services/gestion-usuarios.service'
 
 @Component({
     selector: 'app-lista-usuarios',
@@ -51,7 +51,7 @@ export class ListaUsuariosComponent {
 
     constructor(
         private messageService: MessageService,
-        private usuariosService: UsuariosService,
+        private usuariosService: GestionUsuariosService,
         private confirmationModalService: ConfirmationModalService
     ) {
         this.breadCrumbItems = [

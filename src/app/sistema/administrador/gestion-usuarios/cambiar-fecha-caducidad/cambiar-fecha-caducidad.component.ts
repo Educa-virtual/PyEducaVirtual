@@ -11,7 +11,7 @@ import {
 import { Usuario } from '../interfaces/usuario.interface'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { UsuariosService } from '../services/usuarios.service'
+import { GestionUsuariosService } from '../services/gestion-usuarios.service'
 
 @Component({
     selector: 'app-cambiar-fecha-caducidad',
@@ -31,7 +31,7 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
     constructor(
         private fb: FormBuilder,
         private messageService: MessageService,
-        private usuariosService: UsuariosService
+        private usuariosService: GestionUsuariosService
     ) {}
 
     cerrarDialog() {

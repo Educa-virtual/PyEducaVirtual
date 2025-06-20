@@ -66,7 +66,7 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
 
         case 'ver':
             this.dialogs.distribucionBloque = {
-                title: 'Ver información del bloque',
+                title: 'Información del bloque',
                 visible: true,
             }
 

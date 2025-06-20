@@ -91,6 +91,12 @@
                                             [value]="opcion.iPregAlterId"
                                             [(ngModel)]="selectedOption"
                                             class="mr-2"
+                                            (ngModelChange)="
+                                                guardarRespuestaOpcion(
+                                                    item,
+                                                    $event
+                                                )
+                                            "
                                         ></p-radioButton>
                                         <label for="opcion1">{{
                                             opcion.cAlternativa

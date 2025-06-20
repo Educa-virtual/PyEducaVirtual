@@ -187,7 +187,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
     respuesta: string = ''
 
     guadarRespuesta(item: any): void {
-        console.log(item)
         const iPregAlterId = item.jsonAlternativas[0].iPregAlterId
         const iCuestionarioId = this.datosGenerales.iCuestionarioId
         const iEstudianteId = this.iPerfilId
@@ -239,6 +238,65 @@ export class CuestionarioPreguntasComponent implements OnInit {
                 },
             })
         // Aquí puedes enviar la variable o hacer lo que necesites
+    }
+    guardarRespuestaOpcion(pregunta: any, idAlternativa: string) {
+        const cRespuest = pregunta.jsonAlternativas.map(
+            (item) => item.iPregAlterId
+        )
+        console.log(' preguntas', this.data)
+        // console.log('Respuesta seleccionada:', {
+        //     idPregunta: pregunta.iPregId,
+        //     idAlternativa
+        // });
+        // const iCuestionarioId = this.datosGenerales.iCuestionarioId
+        // const iEstudianteId = this.iPerfilId
+        const data = {
+            iPregAlterId: idAlternativa,
+            cRespuest: cRespuest,
+            iCredId: this._constantesService.iCredId,
+        }
+        console.log(data)
+        // Servicio para obtener los instructores
+        // this._confirmServiceAula
+        //     .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
+        //     .subscribe({
+        //         next: (response) => {
+        //             if (response.validated) {
+        //                 this.messageService.add({
+        //                     severity: 'success',
+        //                     summary: 'Acción exitosa',
+        //                     detail: response.message,
+        //                 })
+        //                 this.showModal = false
+        //                 this.obtenerCuestionario()
+        //                 // this.instructorForm.reset()
+        //             }
+        //         },
+        //         error: (error) => {
+        //             const errores = error?.error?.errors
+        //             if (error.status === 422 && errores) {
+        //                 // Recorre y muestra cada mensaje de error
+        //                 Object.keys(errores).forEach((campo) => {
+        //                     errores[campo].forEach((mensaje: string) => {
+        //                         this.messageService.add({
+        //                             severity: 'error',
+        //                             summary: 'Error de validación',
+        //                             detail: mensaje,
+        //                         })
+        //                     })
+        //                 })
+        //             } else {
+        //                 // Error genérico si no hay errores específicos
+        //                 this.messageService.add({
+        //                     severity: 'error',
+        //                     summary: 'Error',
+        //                     detail:
+        //                         error?.error?.message ||
+        //                         'Ocurrió un error inesperado',
+        //                 })
+        //             }
+        //         },
+        //     })
     }
     guardarPregunta(data: any) {
         const datos = {

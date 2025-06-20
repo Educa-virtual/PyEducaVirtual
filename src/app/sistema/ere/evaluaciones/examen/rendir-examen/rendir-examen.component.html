@@ -116,12 +116,15 @@
                                                         opcion.iAlternativaId
                                                     "
                                                 >
-                                                    <div class="ml-2">
-                                                        <!-- {{ getLetra(i) }}.--->
-                                                        {{
+                                                    <div
+                                                        class="ml-2"
+                                                        [innerHTML]="
                                                             opcion.cAlternativaDescripcion
-                                                        }}
-                                                        <p-image
+                                                        "
+                                                    >
+                                                        <!-- {{ getLetra(i) }}.--->
+
+                                                        <!--<p-image
                                                             *ngIf="
                                                                 opcion.cAlternativaImagen
                                                             "
@@ -133,7 +136,7 @@
                                                             alt="Image"
                                                             width="75"
                                                             [preview]="true"
-                                                        />
+                                                        />-->
                                                     </div>
                                                 </label>
                                             </li>
@@ -206,15 +209,11 @@
                                         <label [for]="opcion.iAlternativaId">
                                             <div class="ml-2">
                                                 <div
-                                                    *ngIf="
-                                                        !opcion.cAlternativaImagen
-                                                    "
-                                                >
-                                                    {{
+                                                    [innerHTML]="
                                                         opcion.cAlternativaDescripcion
-                                                    }}
-                                                </div>
-                                                <p-image
+                                                    "
+                                                ></div>
+                                                <!--<p-image
                                                     *ngIf="
                                                         opcion.cAlternativaImagen
                                                     "
@@ -229,7 +228,7 @@
                                                     (onImageError)="
                                                         updateUrl(opcion)
                                                     "
-                                                />
+                                                />-->
                                             </div>
                                         </label>
                                     </li>

@@ -44,6 +44,7 @@ export class AreaCardComponent implements OnInit {
     @Input() iEvaluacionIdHashed: string = ''
     @Input() curso: ICurso
     backend = environment.backend
+
     selectedData = []
     acciones: MenuItem[] = []
     iPerfilId: number = this._ConstantesService.iPerfilId
@@ -96,18 +97,18 @@ export class AreaCardComponent implements OnInit {
                 },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
-            /*{
+            {
                 label: 'Exportar a Word',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     if (this.curso.iCantidadPreguntas == 0) {
                         alert('No hay preguntas para exportar')
                     } else {
-                        this.descargarArchivoPreguntasPorArea('word')
+                        this.descargarArchivoPreguntasWord()
                     }
                 },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
-            },*/
+            },
             {
                 label: 'Subir eval. en PDF',
                 icon: 'pi pi-angle-right',
@@ -167,6 +168,10 @@ export class AreaCardComponent implements OnInit {
         item.cCursoImagen = 'cursos/images/no-image.jpg'
     }
 
+    /**
+     * No se usará para descargar el archivo en Word porque está habiendo problemas con el cliente de Angular
+     * @param tipoArchivo
+     */
     descargarArchivoPreguntasPorArea(tipoArchivo: string) {
         const params = {
             iEvaluacionId: this.iEvaluacionIdHashed,
@@ -193,6 +198,13 @@ export class AreaCardComponent implements OnInit {
                     })
                 },
             })
+    }
+
+    descargarArchivoPreguntasWord() {
+        window.open(
+            `${environment.backendApi}/ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${this.curso.iCursosNivelGradId}/archivo-preguntas?tipo=word&token=${localStorage.getItem('dremoToken')}`,
+            '_blank'
+        )
     }
 
     descargarCartillaRespuestas() {

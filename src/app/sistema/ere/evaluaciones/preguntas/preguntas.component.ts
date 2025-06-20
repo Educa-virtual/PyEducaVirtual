@@ -36,6 +36,9 @@ import { PreguntasEreService } from '../services/preguntas-ere.service'
     ],
 })
 export class PreguntasComponent implements OnInit {
+    @Input() iEvaluacionId
+    @Input() iCursoNivelGradId
+
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private _preguntasService = inject(PreguntasEreService)
@@ -43,16 +46,13 @@ export class PreguntasComponent implements OnInit {
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private http = inject(HttpClient)
     private _ConstantesService = inject(ConstantesService)
-
+    private enunciadosCache = new Map<number, string>()
     private backendApi = environment.backendApi
+    indiceAcordionActivo: number = -1
+    cargaInicial: boolean = true
     backend = environment.backend
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
-
-    private enunciadosCache = new Map<number, string>()
-
-    @Input() iEvaluacionId
-    @Input() iCursoNivelGradId
     data
     matrizCompetencia = []
     matrizCapacidad = []
@@ -88,6 +88,7 @@ export class PreguntasComponent implements OnInit {
             'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
         height: 400,
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
     }
     initEnunciado: EditorComponent['init'] = {
@@ -102,6 +103,19 @@ export class PreguntasComponent implements OnInit {
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
             'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
+        editable_root: this.isDisabled,
+    }
+
+    initAlternativa: EditorComponent['init'] = {
+        base_url: '/tinymce',
+        suffix: '.min',
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escribe aqui...',
+        height: 100,
+        toolbar: false,
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
     }
     encabezado = ''
@@ -585,7 +599,6 @@ export class PreguntasComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
@@ -610,6 +623,7 @@ export class PreguntasComponent implements OnInit {
         const { item } = elemento
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradId':
+                this.totalPregunta = 0
                 this.breadCrumbItems = [
                     {
                         label: 'ERE',
@@ -641,6 +655,7 @@ export class PreguntasComponent implements OnInit {
                     : []
 
                 if (!evaluaciones) {
+                    this.cargaInicial = false
                     return
                 }
                 evaluaciones.forEach((evaluacion) => {
@@ -683,7 +698,6 @@ export class PreguntasComponent implements OnInit {
                         })
                     }
                 }
-
                 this.preguntas = this.preguntas.filter(
                     (value, index, self) =>
                         value.iEncabPregId === null ||
@@ -692,7 +706,7 @@ export class PreguntasComponent implements OnInit {
                                 (t) => t.iEncabPregId === value.iEncabPregId
                             )
                 )
-                this.totalPregunta = 0
+
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length) {
@@ -737,7 +751,6 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 })
-
                 this.preguntas.forEach((pregunta) => {
                     if (
                         pregunta.iEncabPregId &&
@@ -757,6 +770,11 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 })
+                if (this.cargaInicial) {
+                    this.cargaInicial = false
+                } else {
+                    this.indiceAcordionActivo = this.totalPregunta - 1
+                }
                 break
 
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':

@@ -193,14 +193,7 @@ export class RendirExamenComponent implements OnInit {
             }
         })
         alternativa.iMarcado = marcado
-        /*this.preguntas.forEach((pregunta) => {
-            pregunta.pregunta.forEach((i) => {
-                if (i.iPreguntaId === Number(alternativa.iPreguntaId)) {
-                    i.iMarcado = true
-                }
-            })
-        })*/
-        // alternativa.iMarcado = 1
+
         this.marcarPaginadorPregunta()
         const params = {
             petition: 'post',
@@ -219,6 +212,7 @@ export class RendirExamenComponent implements OnInit {
                 iCursoNivelGradId: this.iCursoNivelGradId,
                 iMarcado: alternativa.iMarcado,
             },
+            alternativa: alternativa,
         }
         this.getInformation(params, params.data.opcion)
     }
@@ -293,8 +287,15 @@ export class RendirExamenComponent implements OnInit {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Problema encontrado',
-                    detail: error,
+                    detail: error.error.message,
                 })
+                if (
+                    params.data.opcion ==
+                    'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante'
+                ) {
+                    //Si hubo un error al guardar la respuesta, revertimos el marcado
+                    params.alternativa.iMarcado = !params.alternativa.iMarcado
+                }
             },
         })
     }

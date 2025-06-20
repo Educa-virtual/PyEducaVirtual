@@ -505,32 +505,20 @@ html
                                                                                         "
                                                                                     />-->
                                                                                     <!--<editor [init]="initLimpio" [(ngModel)]="alternativa.cAlternativaDescripcion"/>-->
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        pInputText
+                                                                                    <editor
                                                                                         placeholder="Ingrese la alternativa"
+                                                                                        [init]="
+                                                                                            initAlternativa
+                                                                                        "
                                                                                         [(ngModel)]="
                                                                                             alternativa.cAlternativaDescripcion
                                                                                         "
-                                                                                        (paste)="
-                                                                                            onPasteImage(
-                                                                                                $event,
-                                                                                                alternativa
-                                                                                            )
-                                                                                        "
-                                                                                        (dragover)="
-                                                                                            onDragOver(
-                                                                                                $event
-                                                                                            )
-                                                                                        "
-                                                                                        (drop)="
-                                                                                            onDropImage(
-                                                                                                $event,
-                                                                                                alternativa
-                                                                                            )
+                                                                                        style="
+                                                                                            width: 100%;
                                                                                         "
                                                                                     />
-                                                                                    <div
+
+                                                                                    <!--<div
                                                                                         *ngIf="
                                                                                             isDisabled
                                                                                         "
@@ -553,10 +541,10 @@ html
                                                                                                 )
                                                                                             "
                                                                                         />
-                                                                                    </div>
+                                                                                    </div>-->
                                                                                 </p-inputGroup>
                                                                                 <div
-                                                                                    class="flex justify-content-end"
+                                                                                    class="flex justify-content-start"
                                                                                 >
                                                                                     <button
                                                                                         *ngIf="
@@ -874,7 +862,20 @@ html
                                                                 alternativa.cAlternativaLetra
                                                             }}
                                                         </p-inputGroupAddon>
-                                                        <input
+                                                        <editor
+                                                            placeholder="Ingrese la alternativa"
+                                                            [init]="
+                                                                initAlternativa
+                                                            "
+                                                            [disabled]="
+                                                                !isDisabled
+                                                            "
+                                                            [(ngModel)]="
+                                                                alternativa.cAlternativaDescripcion
+                                                            "
+                                                            style="width: 100%"
+                                                        />
+                                                        <!--<input
                                                             type="text"
                                                             pInputText
                                                             placeholder="Ingrese la alternativa"
@@ -901,9 +902,9 @@ html
                                                                     alternativa
                                                                 )
                                                             "
-                                                        />
+                                                        />-->
 
-                                                        <div
+                                                        <!--<div
                                                             class="align-content-center p-2 border-img"
                                                         >
                                                             <p-image
@@ -921,7 +922,7 @@ html
                                                                     )
                                                                 "
                                                             />
-                                                        </div>
+                                                        </div>-->
 
                                                         <button
                                                             *ngIf="isDisabled"

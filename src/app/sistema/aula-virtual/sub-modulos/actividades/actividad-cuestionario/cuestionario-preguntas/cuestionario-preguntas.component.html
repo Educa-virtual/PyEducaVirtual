@@ -72,6 +72,8 @@
                                     pInputText
                                     class="w-full custom-hover-input mb-2"
                                     placeholder="Tu respuesta...."
+                                    [(ngModel)]="respuesta"
+                                    (blur)="guadarRespuesta()"
                                 />
                             </div>
                         }

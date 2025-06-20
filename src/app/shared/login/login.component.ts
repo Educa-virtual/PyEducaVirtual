@@ -110,7 +110,7 @@ export class LoginComponent implements OnInit {
 
                 this.tokenStorage.setItem(
                     'dremoRefreshToken',
-                    response.refreshToken
+                    response.data.refreshToken
                 )
 
                 this.tokenStorage.setItem(
@@ -118,8 +118,8 @@ export class LoginComponent implements OnInit {
                     user.bCredVerificado == 1 ? true : false
                 )
 
-                this.tokenStorage.saveToken(response.accessToken)
-                this.tokenStorage.saveRefreshToken(response.refreshToken)
+                this.tokenStorage.saveToken(response.data.accessToken)
+                this.tokenStorage.saveRefreshToken(response.data.refreshToken)
                 this.tokenStorage.saveUser(user)
 
                 if (user.bCredVerificado == 1) {

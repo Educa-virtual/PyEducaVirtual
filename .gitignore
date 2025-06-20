@@ -38,7 +38,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-/src/environments/*.ts
+src/environments/*.ts
 !/src/environments/environment.template.ts
 
 Textos.md

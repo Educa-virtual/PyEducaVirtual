@@ -5,40 +5,19 @@
         </span>
     </ng-template>
 
-    <form [formGroup]="formSearch">
-        <div class="grid mb-3">
-            <div class="col-12 md:col-8">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Buscar </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cBuscar"
-                        (input)="filtrarTabla()"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-4">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-bell"></i>
-                        Recordatorio
-                    </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="periodos"
-                        formControlName="iPeriodoId"
-                        [filter]="false"
-                        [showClear]="false"
-                        [appendTo]="'body'"
-                        placeholder="¿Cuándo?"
-                        styleClass="group-element"
-                        [style]="{ flex: '1', width: '100%' }"
-                        (onChange)="actualizarConfiguracion()"
-                    />
-                </p-inputGroup>
-            </div>
+    <div class="grid mb-3">
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+                <input
+                    #filtro
+                    type="text"
+                    pInputText
+                    (input)="filtrarTabla()"
+                />
+            </p-inputGroup>
         </div>
-    </form>
+    </div>
 
     <app-table-primeng
         [columnas]="columnasTabla"
@@ -48,3 +27,47 @@
         [showCaption]="false"
     />
 </p-panel>
+
+<p-dialog
+    header="Editar Recordatorio de cumpleaños"
+    [(visible)]="visibleDialog"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onClose)="clearForm()"
+>
+    <ng-content>
+        <br />
+        <form [formGroup]="form">
+            <div class="grid p-fluid mt-3">
+                <div class="col-12">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Activar Recordatorio
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="periodos"
+                            formControlName="iRecorPeriodoId"
+                            filter="true"
+                            showClear="true"
+                            appendTo="body"
+                            placeholder="Seleccione"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+            </div>
+        </form>
+
+        <div class="flex justify-content-end">
+            <p-button
+                label="Actualizar"
+                (onClick)="actualizarConfRecordatorio()"
+                styleClass="p-button-success"
+            />
+        </div>
+    </ng-content>
+</p-dialog>
+
+<p-toast></p-toast>

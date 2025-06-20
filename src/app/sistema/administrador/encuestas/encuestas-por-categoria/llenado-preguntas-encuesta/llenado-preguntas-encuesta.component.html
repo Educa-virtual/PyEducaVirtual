@@ -14,7 +14,7 @@
             <p-button
                 icon="pi pi-eye"
                 label="Vista previa"
-                severity="secondary"
+                severity="warning"
                 size="small"
                 (onClick)="vistaPrevia()"
             >
@@ -35,8 +35,10 @@
                 label="Agregar sección"
                 severity="success"
                 size="small"
-                (onClick)="agregarSeccion()"
+                (click)="mostrarDialogoAgregarSeccionEncuesta = true"
+                onclick="onAgregarSeccion($event)"
             >
+                <!--(onClick)="agregarSeccion()"-->
             </p-button>
 
             <div class="flex align-items-center gap-2">
@@ -310,5 +312,11 @@
         }
     </p-accordion>
 </p-panel>
+<app-agregar-seccion-encuesta
+    [visible]="mostrarDialogoAgregarSeccionEncuesta"
+    (visibleChange)="mostrarDialogoAgregarSeccionEncuesta = $event"
+    (AgregarSeccionEncuesta)="onAgregarSeccion($event)"
+>
+</app-agregar-seccion-encuesta>
 
 <p-toast></p-toast>

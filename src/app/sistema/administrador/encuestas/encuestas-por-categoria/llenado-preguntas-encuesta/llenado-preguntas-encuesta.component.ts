@@ -4,11 +4,16 @@ import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { FormsModule } from '@angular/forms'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
-
+import { AgregarSeccionEncuestaComponent } from './agregar-seccion-encuesta/agregar-seccion-encuesta.component'
 @Component({
     selector: 'app-llenado-preguntas-encuesta',
     standalone: true,
-    imports: [PrimengModule, FormsModule, EditorComponent],
+    imports: [
+        PrimengModule,
+        FormsModule,
+        EditorComponent,
+        AgregarSeccionEncuestaComponent,
+    ],
     templateUrl: './llenado-preguntas-encuesta.component.html',
     styleUrl: './llenado-preguntas-encuesta.component.scss',
     providers: [
@@ -21,6 +26,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     selectedItem: any
     totalPreguntas: number = 3
     nIndexAcordionTab: number = null
+    mostrarDialogoAgregarSeccionEncuesta: boolean = false
 
     isDisabled: boolean = false
 
@@ -388,5 +394,29 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
 
     toggleEditorState() {
         this.isDisabled = !this.isDisabled
+    }
+
+    abrirDialgAgregarSeccionCategoria() {
+        this.mostrarDialogoAgregarSeccionEncuesta = true
+    }
+
+    cerrarDialogoSeccionCategoria() {
+        this.mostrarDialogoAgregarSeccionEncuesta = false
+    }
+    /*cancelarAgregarSeccionCategoria() {
+        this.cancelarAgregarSeccionCategoria()
+    }
+     */
+    onAgregarSeccion(nuevaSeccion: any) {
+        if (nuevaSeccion) {
+            this.secciones.push(nuevaSeccion)
+            this.calcularTotalPreguntas()
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Sección agregada',
+                detail: 'Nueva sección creada correctamente',
+            })
+        }
+        this.cerrarDialogoSeccionCategoria()
     }
 }

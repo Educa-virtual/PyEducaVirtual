@@ -91,7 +91,7 @@ export class EncuestasPorCategoriaComponent implements OnInit {
                 iCantidadEncuestas: 0,
             }
             this.categorias.push(categoria)
-            console.log('Nueva categoría creada:', categoria)
+            //console.log('Nueva categoría creada:', categoria)
             this.cerrarDialogNuevaCategoria()
         }
     }

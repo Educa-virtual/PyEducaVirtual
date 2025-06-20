@@ -89,15 +89,15 @@ export const routes: Routes = [
             },
             // lista de encuestas
             {
-                path: 'lista-encuestas',
+                path: 'lista-categoria',
                 component: ListaCategoriasComponent,
             },
             // llenado de preguntas de encuesta
-            { 
+            {
                 path: 'llenado-preguntas-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
             },
-                  ],
+        ],
     },
     {
         path: 'especialista-ugel',

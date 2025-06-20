@@ -60,6 +60,10 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
                 visible: true,
             }
 
+            this.forms.year.patchValue({
+                iYearEstado: true,
+            })
+
             break
         case 'ver':
             this.forms.year.disable()

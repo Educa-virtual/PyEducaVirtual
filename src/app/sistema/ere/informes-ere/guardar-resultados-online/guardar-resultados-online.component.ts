@@ -12,6 +12,7 @@ import {
 import { GeneralService } from '@/app/servicios/general.service'
 
 import { DatosInformesService } from '../../services/datos-informes.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 @Component({
     selector: 'app-guardar-resultados-online',
     standalone: true,
@@ -33,7 +34,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     iSemAcadId: number // ID del semestre académico
     mensaje: string = '' // Mensaje para mostrar en la tabla
 
-    // formulario guardar resultados online
+    // formulario guardar resultados onlinee
     public formCurso: FormGroup = this._formBuilder.group({
         cCursoNombre: ['', [Validators.required]],
         cGradoAbreviacion: ['', [Validators.required]],
@@ -52,7 +53,8 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     constructor(
         private store: LocalStoreService,
         private query: GeneralService,
-        private datosInformesService: DatosInformesService
+        private datosInformesService: DatosInformesService,
+        private dialogConfirm: ConfirmationModalService
     ) {}
 
     ngOnInit() {
@@ -81,7 +83,23 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             accion: 'guardar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado === 1
+            },
         },
+        // {
+        //     labelTooltip: 'guardar',
+        //     icon: 'pi pi-plus',
+        //     accion: 'guardar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-primary p-button-text',
+        //     isVisible: (rowData) => {
+        //         console.log('rowData');
+        //         console.log(rowData);
+
+        //         return rowData.sexo == "F"
+        //     }
+        // },
     ]
     columnas: IColumn[] = [
         // {
@@ -328,7 +346,8 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         // this.form.reset()
         this.curso = datos.curso
         console.log(datos, 'datos')
-
+        this.alumnosFiltrados = []
+        this.formCurso.get('iSeccionId').patchValue(null)
         this.getEstudiante()
     }
 
@@ -340,24 +359,100 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             iYAcadId: this.iYAcadId,
             iCursosNivelGradId: iCursosNivelGradId,
             iCredEntPerfId: this.perfil.iCredEntPerfId,
+            iEvaluacionId: this.curso.iEvaluacionIdHashed,
         }
 
         this.query.obtenerEstudiantesMatriculados(body).subscribe({
             next: (data: any) => {
                 console.log(data, 'estudiantes')
                 this.estudiantes = data.data
+
+                /* const respuestasMapeadas: any = {};
+
+                 for (let i = 1; i <= 6; i++) {
+                     respuestasMapeadas[`respuestas${i.toString().padStart(2, '0')}`] =
+                         respuestas.find(r => r.iPreguntaOrden === i)?.cAlternativaLetra ?? null;
+                 }   */
+                this.estudiantes = this.estudiantes.map((alumno) => {
+                    const respuestas = JSON.parse(alumno.respuestas ?? '[]')
+
+                    return {
+                        ...alumno,
+                        respuesta01:
+                            respuestas.find((r) => r.iPreguntaOrden === 1)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta02:
+                            respuestas.find((r) => r.iPreguntaOrden === 2)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta03:
+                            respuestas.find((r) => r.iPreguntaOrden === 3)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta04:
+                            respuestas.find((r) => r.iPreguntaOrden === 4)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta05:
+                            respuestas.find((r) => r.iPreguntaOrden === 5)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta06:
+                            respuestas.find((r) => r.iPreguntaOrden === 6)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta07:
+                            respuestas.find((r) => r.iPreguntaOrden === 7)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta08:
+                            respuestas.find((r) => r.iPreguntaOrden === 8)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta09:
+                            respuestas.find((r) => r.iPreguntaOrden === 9)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta10:
+                            respuestas.find((r) => r.iPreguntaOrden === 10)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta11:
+                            respuestas.find((r) => r.iPreguntaOrden === 11)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta12:
+                            respuestas.find((r) => r.iPreguntaOrden === 12)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta13:
+                            respuestas.find((r) => r.iPreguntaOrden === 13)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta14:
+                            respuestas.find((r) => r.iPreguntaOrden === 14)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta15:
+                            respuestas.find((r) => r.iPreguntaOrden === 15)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta16:
+                            respuestas.find((r) => r.iPreguntaOrden === 16)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta17:
+                            respuestas.find((r) => r.iPreguntaOrden === 17)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta18:
+                            respuestas.find((r) => r.iPreguntaOrden === 18)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta19:
+                            respuestas.find((r) => r.iPreguntaOrden === 19)
+                                ?.cAlternativaLetra ?? null,
+                        respuesta20:
+                            respuestas.find((r) => r.iPreguntaOrden === 20)
+                                ?.cAlternativaLetra ?? null,
+                    }
+                })
                 console.log(this.estudiantes, 'estudiantes')
             },
             error: (error) => {
                 console.error('Error subiendo archivo:', error)
                 this._messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: error,
+                    summary: 'Mensaje del sistema',
+                    detail:
+                        'No se encontraron estudiantes matriculados error:' +
+                        error,
                 })
             },
             complete: () => {
-                console.log('Request completed')
                 this.alumnos = this.estudiantes.map((est) => ({
                     seccion: est.cSeccionNombre,
                     tipo_documento: est.cPersTipoDocumento,
@@ -370,7 +465,34 @@ export class GuardarResultadosOnlineComponent implements OnInit {
                     icon: 'pi pi-fw pi-home',
                     routerLink:
                         '/sistema/ere/informes-ere/guardar-resultados-online',
+                    respuesta01: est.respuesta01,
+                    respuesta02: est.respuesta02,
+                    respuesta03: est.respuesta03,
+                    respuesta04: est.respuesta04,
+                    respuesta05: est.respuesta05,
+                    respuesta06: est.respuesta06,
+                    respuesta07: est.respuesta07,
+                    respuesta08: est.respuesta08,
+                    respuesta09: est.respuesta09,
+                    respuesta10: est.respuesta10,
+                    respuesta11: est.respuesta11,
+                    respuesta12: est.respuesta12,
+                    respuesta13: est.respuesta13,
+                    respuesta14: est.respuesta14,
+                    respuesta15: est.respuesta15,
+                    respuesta16: est.respuesta16,
+                    respuesta17: est.respuesta17,
+                    respuesta18: est.respuesta18,
+                    respuesta19: est.respuesta19,
+                    respuesta20: est.respuesta20,
+                    iEstado: est.num_respuestas > 0 ? 0 : 1, // Estado inicia
+                    bActive: est.num_respuestas > 0 ? 1 : 0, // Estado inicial
                 }))
+                this._messageService.add({
+                    severity: 'warn',
+                    summary: 'Mensaje del sistema',
+                    detail: 'Debe seleccionar la sección',
+                })
             },
         })
     }
@@ -418,9 +540,30 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     getCuestionarioNotas(event: any) {
         const item = event.item
         // console.log('Item recibido:', item)
-
         //this.subirArchivo(item) // Ahora item completo será enviado
-        this.subirArchivo([item])
+        this.dialogConfirm.openConfirm({
+            header: `Se va a guardar los resultados ingresados del estudiante: ${item.documento}`,
+            accept: () => {
+                /* this.alumnosFiltrados = this.alumnosFiltrados.map((alumno) => {
+                    if (alumno.documento == item.documento) {
+                
+                        return {
+                            ...alumno,
+                            iEstado: 0,
+                            bActive: 1, // Asignar un valor por defecto a bActive
+                          //  ...respuestasMapeadas
+                            
+                        }
+                    } else {
+                        return {
+                            ...alumno,
+                        }
+                    }
+                })*/
+                this.subirArchivo([item])
+                console.log(this.alumnosFiltrados, 'valores agregados')
+            },
+        })
     }
 
     getSeccion() {
@@ -505,6 +648,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.alumnosFiltrados = this.alumnos.filter(
             (alumno) => alumno.iSeccionId === Number(seccionIdSeleccionada)
         )
+        /*
+        this.alumnosFiltrados = this.alumnosFiltrados.map((item) => ({
+            ...item,
+            iEstado: 1,
+            bActive: 0, // Asignar un valor por defecto a bActive
+        })) */
 
         console.log(
             this.alumnosFiltrados,
@@ -531,28 +680,22 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         }
         console.log('subirArchivo', subirArchivo)
 
-        this.datosInformesService.importarOffLine(subirArchivo).subscribe({
-            next: (data: any) => {
-                console.log('Datos Subidas de Importar Resultados:', data)
-                this.mensaje = data.data[0].resultado_importado
-            },
-            error: (error) => {
-                console.error('Error subiendo archivo:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-            complete: () => {
-                this._messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: this.mensaje,
-                })
-                console.log('Request completed')
-            },
-        })
+        // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+        //     next: (data: any) => {
+        //         console.log('Datos Subidas de Importar Resultados:', data)
+        //     },
+        //     error: (error) => {
+        //         console.error('Error subiendo archivo:', error)
+        //         this._messageService.add({
+        //             severity: 'error',
+        //             summary: 'Error',
+        //             detail: error,
+        //         })
+        //     },
+        //     complete: () => {
+        //         console.log('Request completed')
+        //     },
+        // })
     }
     // Angular: componente donde se envía el JSON
     // async subirArchivo(datos_hojas: Array<object>) {

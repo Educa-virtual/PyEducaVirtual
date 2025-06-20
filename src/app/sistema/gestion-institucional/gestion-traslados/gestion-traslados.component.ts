@@ -96,6 +96,10 @@ export class GestionTrasladosComponent implements OnInit {
 
         try {
             this.form = this.fb.group({
+                //Declaracion de variables
+                cTipoConstancia: [0, Validators.required],
+                cEstadoConstancia: [0, Validators.required],
+                cAnioDestino: [0, Validators.required],
                 cTipoTraslado: [
                     { value: null, disabled: true },
                     Validators.required,

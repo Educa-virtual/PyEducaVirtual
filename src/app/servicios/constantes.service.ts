@@ -8,6 +8,7 @@ import {
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
     APODERADO,
+    AUXILIAR,
 } from './perfilesConstantes'
 import {
     ADMINISTRADOR_DREMO,
@@ -99,11 +100,17 @@ const docente = [
             //     icon: 'pi pi-fw pi-folder',
             //     routerLink: ['/comunicados/principal'],
             // },
-            // {
-            //     label: 'bienestar',
-            //     icon: 'pi pi-fw pi-folder',
-            //     routerLink: ['/bienestar/principal'],
-            // },
+            {
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Consultar Fichas Socioeconómicas',
+                        icon: 'pi pi-fw pi-user-edit',
+                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                    },
+                ],
+            },
         ],
     },
 ]
@@ -158,9 +165,9 @@ const administrador = [
             },
 
             {
-                label: 'Gestión de Usuario',
+                label: 'Gestión de usuarios',
                 icon: 'pi pi-fw pi-user',
-                routerLink: ['/administrador/gestion-usuario'],
+                routerLink: ['/administrador/gestion-usuarios'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -386,10 +393,41 @@ const administracion = [
                             '/gestion-institucional/gestion-traslados',
                         ],
                     },
+
                     {
-                        label: 'Informe de vacantes',
+                        label: 'Registro de vacantes',
                         icon: 'pi pi-file-import',
                         routerLink: ['/gestion-institucional/gestion-vacantes'],
+                    },
+                ],
+            },
+
+            {
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Consultar Fichas',
+                        icon: 'pi pi-fw pi-user-edit',
+                        routerLink: ['/bienestar/gestion-fichas'],
+                    },
+                    {
+                        label: 'Ficha Socioeconomica',
+                        icon: 'pi pi-fw pi-file-edit',
+                        routerLink: ['/bienestar/ficha'],
+                    },
+                    {
+                        label: 'Gestionar encuestas',
+                        icon: 'pi pi-fw pi-list-check',
+                        routerLink: ['/bienestar/gestionar-encuestas'],
+                    },
+                    {
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
+                    },
+                    {
+                        label: 'Reportes e informes',
+                        icon: 'pi pi-fw pi-chart-bar',
                     },
                 ],
             },
@@ -504,6 +542,41 @@ const apoderado = [
                 icon: 'pi pi-user-edit',
                 routerLink: ['apoderado/registro-apoderado'],
             },
+
+            {
+                label: 'Consulta Apoderado',
+                icon: 'pi pi-fw pi-users',
+                routerLink: ['/bienestar/gestion-fichas-apoderado'],
+            },
+
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
+        ],
+    },
+]
+
+const auxiliar = [
+    {
+        label: 'Auxiliar',
+        items: [
+            {
+                label: 'Asistencia',
+                icon: 'pi pi-qrcode',
+                routerLink: ['asistencia-auxiliar'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
             {
                 label: 'Notificaciones y anuncios',
                 icon: 'pi pi-megaphone',
@@ -561,9 +634,10 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
-
             case APODERADO:
                 return apoderado
+            case AUXILIAR:
+                return auxiliar
 
             default:
                 return first

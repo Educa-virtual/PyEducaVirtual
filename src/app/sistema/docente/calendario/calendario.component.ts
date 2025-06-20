@@ -16,6 +16,11 @@ export class CalendarioComponent {
     private GeneralService = inject(GeneralService)
     private ConstantesService = inject(ConstantesService)
 
+    iDocenteId: string
+    iYAcadId: string
+    iIieeId: string
+    iSedeId: string
+
     @Input() iCursoId: string
     @Input() iSeccionId: string
 
@@ -23,6 +28,13 @@ export class CalendarioComponent {
     festividades = []
     actividades = []
     events = [] // guarda los eventos para el calendario
+
+    constructor() {
+        this.iDocenteId = this.ConstantesService.iDocenteId
+        this.iYAcadId = this.ConstantesService.iYAcadId
+        this.iIieeId = this.ConstantesService.iIieeId
+        this.iSedeId = this.ConstantesService.iSedeId
+    }
 
     ngOnInit() {
         this.getObtenerCurriculas()
@@ -39,8 +51,10 @@ export class CalendarioComponent {
             prefix: 'buscar_curso',
             ruta: 'curricula',
             data: {
-                iDocenteId: 1,
-                iYAcadId: 3,
+                iDocenteId: this.iDocenteId,
+                iYAcadId: this.iYAcadId,
+                iIieeId: this.iIieeId,
+                iSedeId: this.iSedeId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -80,6 +94,8 @@ export class CalendarioComponent {
             data: {
                 iDocenteId: this.ConstantesService.iDocenteId,
                 iYAcadId: this.ConstantesService.iYAcadId,
+                iIieeId: this.iIieeId,
+                iSedeId: this.iSedeId,
             },
             params: { skipSuccessMessage: true },
         }

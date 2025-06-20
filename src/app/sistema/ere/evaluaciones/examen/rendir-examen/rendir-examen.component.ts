@@ -432,8 +432,17 @@ export class RendirExamenComponent implements OnInit {
                             })
                             pregunta.iMarcado = iMarcado
                         }
-
                         if (pregunta.pregunta.length > 1) {
+                            pregunta['iEncabPregId'] =
+                                pregunta.pregunta[0]['iEncabPregId']
+                            pregunta['cEncabPregContenido'] =
+                                pregunta.pregunta[0]['cEncabPregContenido']
+                            pregunta['cPregunta'] =
+                                pregunta.pregunta[0]['cPregunta']
+                        } else if (
+                            pregunta.pregunta.length === 1 &&
+                            pregunta.pregunta[0].iEncabPregId != null
+                        ) {
                             pregunta['iEncabPregId'] =
                                 pregunta.pregunta[0]['iEncabPregId']
                             pregunta['cEncabPregContenido'] =

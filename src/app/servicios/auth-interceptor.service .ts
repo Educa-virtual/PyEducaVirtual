@@ -51,7 +51,7 @@ export class AuthInterceptorService implements HttpInterceptor {
                         // Redirigir al usuario a la página de login
                         localStorage.clear()
                         this.tokenStorageService.signOut()
-                        this.router.navigate(['/login'])
+                        window.location.reload()
                     }
                 }
                 return throwError(() => err)

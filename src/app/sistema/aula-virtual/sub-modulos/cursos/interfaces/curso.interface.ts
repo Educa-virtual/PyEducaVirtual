@@ -16,6 +16,7 @@ export interface ICurso {
     idDocCursoId?: string
     iNivelCicloId?: any
     iCantidadPreguntas?: number
+    iCantidadMaximaPreguntas?: number
     iCursosNivelGradId?: string
     bTieneArchivo?: boolean
     dtExamenFechaInicio?: string

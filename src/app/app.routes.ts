@@ -11,6 +11,9 @@ import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-
 import { RecursosComponent } from './sistema/ere/informes-ere/recursos-ere/recursos.component'
 import { SimpleListaAreasComponent } from './sistema/ere/evaluaciones/areas/simple-lista-areas/simple-lista-areas.component'
 import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/areas/especialista-simple-area/especialista-simple-area.component'
+import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
+import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
+import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -57,7 +60,7 @@ export const routes: Routes = [
                 path: 'sin-rol-asignado',
                 loadChildren: () =>
                     import(
-                        './sistema/sin-rol-asignado/sin-rol-asignado.routes'
+                        './sistema/usuarios/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
             },
             {
@@ -79,6 +82,18 @@ export const routes: Routes = [
             {
                 path: 'especialista-simple-area',
                 component: EspecialistaSimpleAreaComponent,
+            },
+            {
+                path: 'asignar-rol-personal',
+                component: AsignarRolPersonalComponent,
+            },
+            {
+                path: 'agregar-personal-platafoma',
+                component: AgregarPersonalPlataformaComponent,
+            },
+            {
+                path: 'asistencia-auxiliar',
+                component: AuxiliarComponent,
             },
         ],
     },
@@ -118,6 +133,14 @@ export const routes: Routes = [
             import(
                 './sistema/gestion-institucional/horario/horario.module'
             ).then((m) => m.HorarioModule),
+    },
+    {
+        path: 'bienestar',
+
+        loadChildren: () =>
+            import('./sistema/bienestar/bienestar.module').then(
+                (m) => m.BienestarModule
+            ),
     },
     {
         path: 'apoderado',

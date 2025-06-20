@@ -2,7 +2,6 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { CommonModule } from '@angular/common'
 import {
     Component,
-    inject,
     OnInit,
     QueryList,
     ViewChild,
@@ -18,13 +17,12 @@ import { ActivatedRoute } from '@angular/router'
 import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services/api-evaluaciones-r.service'
 import { MessagesModule } from 'primeng/messages'
 import { MenuItem, Message } from 'primeng/api'
-import { ApiEspecialistasService } from '@/app/sistema/ere/services/api-especialistas.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { ConstantesService } from '@/app/servicios/constantes.service'
 import { SubirArchivoPreguntasComponent } from './subir-archivo-preguntas/subir-archivo-preguntas.component'
 import { AreaCardComponent } from './area-card/area-card.component'
 import { ConfigurarNivelLogroComponent } from './configurar-nivel-logro/configurar-nivel-logro.component'
 import { ImportarResultadosComponent } from '../../informes-ere/importar-resultados/importar-resultados.component'
+import { AreasService } from '../services/areas.service'
 import { GuardarResultadosOnlineComponent } from '../../informes-ere/guardar-resultados-online/guardar-resultados-online.component'
 import { SimpleListaAreasComponent } from './simple-lista-areas/simple-lista-areas.component'
 
@@ -49,10 +47,7 @@ export type Layout = 'list' | 'grid'
     styleUrl: './lista-areas.component.scss',
 })
 export class ListaAreasComponent implements OnInit {
-    private evaluacionesService = inject(ApiEvaluacionesRService)
-    private especialistasService = inject(ApiEspecialistasService)
     private store = new LocalStoreService()
-    private _ConstantesService = inject(ConstantesService)
     @ViewChild(SubirArchivoPreguntasComponent)
     dialogSubirArchivo!: SubirArchivoPreguntasComponent
 
@@ -85,7 +80,11 @@ export class ListaAreasComponent implements OnInit {
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
 
-    constructor(private route: ActivatedRoute) {}
+    constructor(
+        private route: ActivatedRoute,
+        private evaluacionesService: ApiEvaluacionesRService,
+        private areasService: AreasService
+    ) {}
 
     public onFilter(dv: DataView, event: Event) {
         //Elimina acentos (á, é, etc.) y convierte a minúsculas
@@ -168,7 +167,7 @@ export class ListaAreasComponent implements OnInit {
             this.iEvaluacionIdHashed = params['iEvaluacionId']
         })
         this.obtenerEvaluacion()
-        this.obtenerAreasPorEvaluacionyEspecialista()
+        this.obtenerAreasPorEvaluacion()
     }
 
     obtenerEvaluacion() {
@@ -204,13 +203,9 @@ export class ListaAreasComponent implements OnInit {
             })
     }
 
-    obtenerAreasPorEvaluacionyEspecialista() {
-        this.especialistasService
-            .obtenerAreasPorEvaluacionyEspecialista(
-                this.iEvaluacionIdHashed,
-                this.store.getItem('dremoUser').iPersId,
-                this.store.getItem('dremoPerfil').iCredEntPerfId
-            )
+    obtenerAreasPorEvaluacion() {
+        this.areasService
+            .obtenerAreasPorEvaluacion(this.iEvaluacionIdHashed)
             .subscribe({
                 next: (respuesta) => {
                     this.cursosInicial = respuesta.map((curso: ICurso) => ({

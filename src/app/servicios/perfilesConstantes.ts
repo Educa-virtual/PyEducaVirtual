@@ -29,3 +29,4 @@ export const ESTUDIANTE = 80
 export const APODERADO = 90
 export const ASISTENTE_SOCIAL = 100
 export const GENERAL = 210
+export const AUXILIAR = 252

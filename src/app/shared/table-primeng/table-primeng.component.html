@@ -196,7 +196,8 @@
         >
             <tr
                 [pSelectableRow]="rowData"
-                [ngClass]="getClass(rowData, 'class')"
+                [ngClass]="getRowClasses(rowData, rowIndex)"
+                (click)="trSelected = rowIndex"
             >
                 @for (
                     col of columnasSeleccionadas;
@@ -425,7 +426,13 @@
                                 @if (rowData[col.field].toString() === '1') {
                                     <i
                                         class="pi pi-check-circle"
-                                        style="color: green"
+                                        [style.color]="
+                                            getColorEstado(
+                                                rowData,
+                                                rowIndex,
+                                                'check'
+                                            )
+                                        "
                                         [pTooltip]="
                                             rowData[col.field] + ' - Habilitado'
                                         "
@@ -434,7 +441,13 @@
                                 } @else {
                                     <i
                                         class="pi pi-times-circle"
-                                        style="color: red"
+                                        [style.color]="
+                                            getColorEstado(
+                                                rowData,
+                                                rowIndex,
+                                                'times'
+                                            )
+                                        "
                                         [pTooltip]="
                                             rowData[col.field] +
                                             ' - Deshabilitado'

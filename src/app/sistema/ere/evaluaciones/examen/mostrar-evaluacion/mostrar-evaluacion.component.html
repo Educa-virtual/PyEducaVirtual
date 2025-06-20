@@ -51,26 +51,28 @@
                     {{ evaluacion?.dtExamenFechaFin | date: 'HH:mm' }}
                 </p>
             </div>
-
-            <div>
-                <span class="font-bold text-xl flex gap-2 mt-2">
-                    <app-icon
-                        name="matCalendarMonth"
-                        class="text-primary"
-                        size="sm"
-                    ></app-icon>
-                    Iniciar evaluación:
-                </span>
-                <p class="flex gap-2 flex-wrap ml-5">
-                    @if (evaluacion?.dtExamenFechaInicio) {
-                        <app-time
-                            [inicio]="evaluacion?.dtHoraActual"
-                            [fin]="evaluacion?.dtExamenFechaInicio"
-                            (accionTime)="accionBtnItem($event)"
-                        ></app-time>
-                    }
-                </p>
-            </div>
+            @if (bEstadoTiempo) {
+                <div>
+                    <span class="font-bold text-xl flex gap-2 mt-2">
+                        <app-icon
+                            name="matCalendarMonth"
+                            class="text-primary"
+                            size="sm"
+                        ></app-icon>
+                        Iniciar evaluación:
+                    </span>
+                    <p class="flex gap-2 flex-wrap ml-5">
+                        @if (evaluacion?.dtExamenFechaInicio) {
+                            <app-time
+                                [etiqueta]="'Empieza en'"
+                                [inicio]="evaluacion?.dtHoraActual"
+                                [fin]="evaluacion?.dtExamenFechaInicio"
+                                (accionTime)="accionBtnItem($event)"
+                            ></app-time>
+                        }
+                    </p>
+                </div>
+            }
         </div>
 
         <!-- tiempo de evaluación  -->

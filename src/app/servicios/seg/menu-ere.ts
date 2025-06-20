@@ -26,9 +26,9 @@ export const administradorDremo = [
                 routerLink: ['/gestion-institucional/fechas-nacionales'],
             },
             {
-                label: 'Gestión de semanas lectivas',
+                label: 'Gestión del año académico',
                 icon: 'pi pi-wrench',
-                routerLink: ['/gestion-institucional/semanas-lectivas'],
+                routerLink: ['/gestion-institucional/years-academicos'],
             },
             {
                 label: 'Gestión de ciclos',

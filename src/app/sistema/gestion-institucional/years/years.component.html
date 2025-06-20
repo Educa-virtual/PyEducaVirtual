@@ -1,0 +1,472 @@
+<app-container-page
+    title="Registro del año académico"
+    [actions]="years.container.actions"
+    (accionBtnItem)="years.accionBtnItem($event)"
+    ><p-toast />
+    <div class="card">
+        <app-table-primeng
+            [columnas]="years.table.columns"
+            [showCaption]="true"
+            [data]="years.table.data"
+            (accionBtnItem)="years.accionBtnItem($event)"
+            [showPaginator]="true"
+            [actions]="years.table.actions"
+        >
+            <!-- <ng-container slot="caption-content"> </ng-container> -->
+        </app-table-primeng>
+        <ng-container slot="caption-content"> </ng-container>
+    </div>
+</app-container-page>
+
+<!-- <p-dialog
+    header="{{ caption }}"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form [formGroup]="form" class="grid mt-2">
+        
+        <div class="col-12 grid">
+            <div class="col-10 flex flex-column gap-2">
+                <label for="dtFeriado">Fecha</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dtFechaImpFecha"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="dtFeriado"
+                />
+            </div>
+        </div>
+
+        <input
+            pInputText
+            type="hidden"
+            formControlName="iYearId"
+            class="p-inputtext-sm"
+            placeholder="Ingresar el año"
+        />
+        @if (showCaption === 'add' || showCaption === 'update') {
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-inputNumber
+                            min="1900"
+                            max="2050"
+                            [useGrouping]="false"
+                            mode="decimal"
+                            formControlName="cYearNombre"
+                            placeholder="Ingresar el año"
+                            aria-describedby="cYearNombre-help"
+                        />
+                        <label for="cYearNombre">Descripcion año:</label>
+                    </span>
+                </div>
+
+                <div class="field col-12 md:col-12">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            formControlName="cYearOficial"
+                            placeholder="Ingresar caracteres alfanuméricos"
+                            aria-describedby="cYearOficial-help"
+                        />
+                        <label for="cYearOficial">Año Oficial:</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-inputSwitch
+                            formControlName="iYearEstado"
+                            [trueValue]="1"
+                            [falseValue]="0"
+                        />
+                    </span>
+                    <span class="p-float-label"> Estado</span>
+                </div>
+
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        @if (showCaption === 'add') {
+                            <p-button
+                                label="Agregar nuevo Año "
+                                [disabled]="form.invalid"
+                                (onClick)="add()"
+                            />
+                        }
+                        @if (showCaption === 'update') {
+                            <p-button
+                                label="Editar Año "
+                                [disabled]="form.invalid"
+                                (onClick)="update()"
+                                styleClass="p-button-warning"
+                            />
+                        }
+                    </span>
+                </div>
+            </div>
+        }
+
+        @if (showCaption === 'delete') {
+            <h3>Desea ELIMINAR {{ mensaje }}</h3>
+            <h4>Año escolar {{ anio }}</h4>
+            <h4>Lema Oficial {{ lema }}</h4>
+
+            <p-button
+                label="Si, deseo eliminar"
+                (onClick)="delete()"
+                styleClass="p-button-danger"
+            />
+        }
+    </form>
+
+    @if (
+        showCaption === 'addCalendario' ||
+        showCaption === 'updateCalendario' ||
+        showCaption === 'deleteCalendario'
+    ) {
+        <form [formGroup]="formCalendario">
+            <input
+                pInputText
+                type="hidden"
+                formControlName="iYAcadId"
+                class="p-inputtext-sm"
+                placeholder="Ingresar el año calendario"
+            />
+            <input
+                pInputText
+                type="hidden"
+                formControlName="iYearId"
+                class="p-inputtext-sm"
+                placeholder="Ingresar el año"
+            />
+
+            <div class="card">
+                <br />
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <p-calendar
+                                formControlName="dtYAcadInicio"
+                                [iconDisplay]="'input'"
+                                [showIcon]="true"
+                                inputId="icondisplay"
+                                styleClass="small-calendar"
+                            />
+                            <label for="chips">Inicio de año escolar</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <p-calendar
+                                formControlName="dYAcadFin"
+                                [iconDisplay]="'input'"
+                                [showIcon]="true"
+                                inputId="icondisplay"
+                            />
+
+                            <label for="calendar">Fin de año escolar</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                [readonly]="true"
+                                formControlName="cYAcadNombre"
+                                placeholder="Ingresar caracteres alfanuméricos"
+                                aria-describedby="cYAcadNombre-help"
+                            />
+
+                            <label for="chips">Nombre del año Escolar</label>
+                        </span>
+                    </div>
+
+                    <div class="field col-12 md:col-12">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                formControlName="cYAcadDescripcion"
+                                aria-describedby="cYAcadDescripcion-help"
+                            />
+
+                            <label for="cYAcadDescripcion"
+                                >Descripción del año Escolar</label
+                            >
+                            <p-tag> {{ lema }}</p-tag>
+                        </span>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="iEstado">Estado:</label>
+                        <p-inputSwitch
+                            formControlName="iEstado"
+                            [trueValue]="1"
+                            [falseValue]="0"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-8">
+                        @if (showCaption === 'addCalendario') {
+                            <p-button
+                                label="Registrar Calendario "
+                                [disabled]="formCalendario.invalid"
+                                (onClick)="addCalendario()"
+                            />
+                        }
+                        @if (showCaption === 'updateCalendario') {
+                            <p-button
+                                label="Editar Calendario"
+                                [disabled]="formCalendario.invalid"
+                                (onClick)="updateCalendario()"
+                                styleClass="p-button-warning"
+                            />
+                        }
+                        @if (showCaption === 'deleteCalendario') {
+                            <p-button
+                                label="Si desea Eliminar Calendario "
+                                [disabled]="formCalendario.invalid"
+                                (onClick)="deleteCalendario()"
+                                styleClass="p-button-danger"
+                            />
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
+        <app-table-primeng
+            [showCaption]="false"
+            [data]="yearCalendarios"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="false"
+            [(selectedRowData)]="selectedItems"
+            [actions]="actionsCal"
+        >
+        </app-table-primeng>
+    }
+    <br />
+</p-dialog> -->
+
+<p-dialog
+    [header]="dialogs.year.title"
+    [(visible)]="dialogs.year.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form class="grid mt-2" [formGroup]="forms.year">
+        <div class="col grid">
+            <div class="col-10 flex flex-column gap-2">
+                <label for="cYearNombre">Nombre</label>
+                <input
+                    pInputText
+                    pStyleClass="w-full"
+                    id="cYearNombre"
+                    formControlName="cYearNombre"
+                />
+            </div>
+            <div class="col-2 flex flex-column gap-2">
+                <label for="iYearEstado">Estado</label>
+                <p-toggleButton
+                    formControlName="iYearEstado"
+                    styleClass="w-full"
+                    onLabel="On"
+                    offLabel="Off"
+                />
+            </div>
+        </div>
+
+        <div class="col-12 flex flex-column gap-2">
+            <label for="cYearOficial">Nombre oficial</label>
+            <input
+                pInputText
+                pStyleClass="w-full"
+                id="cYearOficial"
+                formControlName="cYearOficial"
+            />
+        </div>
+    </form>
+    <!-- 
+    <form class="grid mt-2" [formGroup]="forms.yearAcademico">
+        <div class="col grid">
+            <div class="col-6 flex flex-column gap-2">
+                <label for="dtYAcadInicio">Inicio</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dtYAcadInicio"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="dtYAcadInicio"
+                />
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="dYAcadFin">Fin</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dYAcadFin"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="dYAcadFin"
+                />
+            </div>
+        </div>
+    </form> -->
+
+    <ng-template pTemplate="footer">
+        @if (this.forms.year.enabled) {
+            <div class="flex justify-content-between gap-2">
+                <p-button
+                    label="Cancelar"
+                    [text]="true"
+                    severity="secondary"
+                    (onClick)="dialogs.year.visible = false"
+                />
+                <p-button
+                    label="Guardar"
+                    [outlined]="true"
+                    severity="secondary"
+                    (onClick)="years.saveData()"
+                />
+            </div>
+        }
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    #dialogSemanasLectivas
+    [header]="dialogs.distribucionBloques.title"
+    [(visible)]="dialogs.distribucionBloques.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    (onShow)="dialogSemanasLectivas.maximize()"
+>
+    <div class="grid mt-2">
+        <div class="col-12">
+            <p-button
+                styleClass="w-full"
+                icon="pi pi-plus"
+                label="Agregar bloque"
+                severity="primary"
+                (onClick)="
+                    distribucionBloques.accionBtnItem({
+                        accion: 'agregar',
+                        item: undefined,
+                    })
+                "
+            />
+        </div>
+
+        <div class="col-12">
+            <app-table-primeng
+                (accionBtnItem)="distribucionBloques.accionBtnItem($event)"
+                [actions]="distribucionBloques.table.actions"
+                [columnas]="distribucionBloques.table.columns"
+                [data]="distribucionBloques.table.data"
+            >
+            </app-table-primeng>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog
+    [header]="dialogs.distribucionBloque.title"
+    [(visible)]="dialogs.distribucionBloque.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form class="grid mt-2" [formGroup]="forms.distribucionBloque">
+        <div class="col-12 grid">
+            <div class="col-10 flex flex-column gap-2">
+                <label for="iTipoDistribucionId"
+                    >Tipo de distribución de bloque</label
+                >
+                <p-dropdown
+                    formControlName="iTipoDistribucionId"
+                    optionLabel="name"
+                    styleClass="w-full"
+                    placeholder="Seleccione un tipo de distribución de bloque"
+                    optionValue="code"
+                    [options]="distribucionBloques.types"
+                    optionLabel="name"
+                />
+            </div>
+
+            <div class="col flex flex-column gap-2">
+                <label for="iEstado">Estado</label>
+                <p-toggleButton
+                    formControlName="iEstado"
+                    styleClass="w-full"
+                    onLabel="Activo"
+                    offLabel="Inactivo"
+                />
+            </div>
+        </div>
+        <div class="col-12 grid">
+            <div class="col-6 flex flex-column gap-2">
+                <label for="dtInicioBloque">Inicio del bloque</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dtInicioBloque"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="dtInicioBloque"
+                />
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="dtFinBloque">Fin del bloque</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dtFinBloque"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="dtFinBloque"
+                />
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        @if (this.forms.distribucionBloque.enabled) {
+            <div class="flex justify-content-between gap-2">
+                <p-button
+                    label="Cancelar"
+                    [text]="true"
+                    severity="secondary"
+                    (onClick)="dialogs.distribucionBloque.visible = false"
+                />
+                <p-button
+                    label="Guardar"
+                    [outlined]="true"
+                    severity="secondary"
+                    (onClick)="distribucionBloques.saveData()"
+                />
+            </div>
+        }
+    </ng-template>
+</p-dialog>
+
+<!-- <p-dialog
+    [header]="dialogs.distribucionBloque.title"
+    [(visible)]="dialogs.distribucionBloque.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+
+<form class="grid mt-2">
+    
+</form>
+
+</p-dialog> -->

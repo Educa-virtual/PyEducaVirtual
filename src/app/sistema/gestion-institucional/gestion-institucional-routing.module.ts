@@ -28,8 +28,10 @@ import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.comp
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component'
+import { YearsComponent } from './years/years.component'
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
+    { path: 'years-academicos', component: YearsComponent },
     { path: 'configGradoSeccion', component: ConfigGradoSeccionComponent },
     { path: 'config', component: ConfigComponent },
     { path: 'ambiente', component: ConfigAmbienteComponent },
@@ -48,7 +50,6 @@ const routes: Routes = [
     { path: 'estadistica', component: EstadisticaComponent },
     { path: 'gestion-traslados', component: GestionTrasladosComponent },
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
-    { path: 'registro-vacantes', component: GestionVacantesComponent },
     { path: 'Informacion-ie', component: InformacionComponent },
     { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
     //{ path: 'mantenimiento-ciclo', component: SincronizarArchivoComponent },

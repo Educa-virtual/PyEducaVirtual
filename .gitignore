@@ -39,6 +39,6 @@ testem.log
 Thumbs.db
 
 /src/environments/*.ts
-!/src/environments/environment.ts
+!/src/environments/environment.template.ts
 
 Textos.md

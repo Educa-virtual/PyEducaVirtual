@@ -2,7 +2,14 @@ import { EvaluacionFinalizadaComponent } from './../evaluacion-finalizada/evalua
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core'
+import {
+    Component,
+    inject,
+    Input,
+    OnInit,
+    OnDestroy,
+    OnChanges,
+} from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import {
     matAccessTime,
@@ -23,7 +30,7 @@ import {
 import { ActivatedRoute } from '@angular/router'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { Subject, takeUntil } from 'rxjs'
+import { Subject } from 'rxjs'
 
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
@@ -38,10 +45,14 @@ import { ActividadListaComponent } from '../../components/actividad-lista/activi
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
-import { MenuItem } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { EvaluacionAgregarPreguntasComponent } from './evaluacion-agregar-preguntas/evaluacion-agregar-preguntas.component'
+import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component'
+import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
+import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion-preguntas.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -63,6 +74,9 @@ import { EvaluacionAgregarPreguntasComponent } from './evaluacion-agregar-pregun
         RubricaCalificarComponent,
         ToolbarPrimengComponent,
         EvaluacionAgregarPreguntasComponent,
+        TabsPrimengComponent,
+        TabDescripcionActividadesComponent,
+        EvaluacionPreguntasComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -77,7 +91,6 @@ import { EvaluacionAgregarPreguntasComponent } from './evaluacion-agregar-pregun
             matRule,
             matListAlt,
             matAccessTime,
-
             matFactCheck,
             matQuiz,
             matAssignment,
@@ -87,7 +100,7 @@ import { EvaluacionAgregarPreguntasComponent } from './evaluacion-agregar-pregun
         }),
     ],
 })
-export class EvaluacionRoomComponent implements OnInit, OnDestroy {
+export class EvaluacionRoomComponent implements OnInit, OnDestroy, OnChanges {
     items: MenuItem[] = []
     @Input() ixActivadadId: string
     @Input() iProgActId: string
@@ -99,6 +112,8 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private _ConstantesService = inject(ConstantesService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private _evalService = inject(ApiEvaluacionesService)
+    private _EvaluacionesService = inject(EvaluacionesService)
+    private _MessageService = inject(MessageService)
 
     actividad = {
         iContenidoSemId: 1,
@@ -132,13 +147,47 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         },
     ]
 
+    tabs = [
+        {
+            title: 'Descripción',
+            icon: 'pi pi-list',
+            tab: 'descripcion',
+            //tab:0
+        },
+        {
+            title: 'Preguntas',
+            icon: 'pi-pen-to-square',
+            tab: 'preguntas',
+            isVisible: !(this._ConstantesService.iPerfilId === DOCENTE),
+            //tab:1
+        },
+        {
+            title: 'Calificar',
+            icon: 'pi-list-check',
+            tab: 'calificar',
+            isVisible: !(this._ConstantesService.iPerfilId === DOCENTE),
+            //tab:2
+        },
+        {
+            title: 'Rendir Evaluación',
+            icon: 'pi-check-circle',
+            tab: 'rendir-examen',
+            isVisible: !(this._ConstantesService.iPerfilId === ESTUDIANTE),
+            //tab:3
+        },
+    ]
+
+    activeIndex: number = 0
     constructor(
         private _evaluacionService: ApiEvaluacionesService,
         private _constantesService: ConstantesService,
 
         private _activeRoute: ActivatedRoute
     ) {}
-
+    tabSeleccionado: string = 'descripcion'
+    obtenerIndex(event) {
+        this.tabSeleccionado = event.tab
+    }
     handleActions(action) {
         console.log(action)
     }
@@ -177,81 +226,153 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     public cEvaluacionInstrucciones
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
-
+    isDocente: boolean = this._ConstantesService.iPerfilId === DOCENTE
     ngOnInit() {
-        this.params.iDocenteId = this._constantesService.iDocenteId
+        console.log('')
+        // this.params.iDocenteId = this._constantesService.iDocenteId
 
-        this._activeRoute.queryParams.subscribe((params) => {
-            this.params.iCursoId = params['iCursoId'] ?? null
-            this.params.idDocCursoId = params['idDocCursoId'] ?? null
-            this.params.iEvaluacionId = params['iEvaluacionId'] ?? null
-        })
+        // this._activeRoute.queryParams.subscribe((params) => {
+        //     this.params.iCursoId = params['iCursoId'] ?? null
+        //     this.params.idDocCursoId = params['idDocCursoId'] ?? null
+        //     this.params.iEvaluacionId = params['iEvaluacionId'] ?? null
+        // })
 
-        console.log('params')
-        console.log(this.params)
+        // console.log('params')
+        // console.log(this.params)
 
-        this.obtenerEvaluacion()
-        this.iPerfilId = Number(this._ConstantesService.iPerfilId)
+        // this.obtenerEvaluacion()
+        // this.iPerfilId = Number(this._ConstantesService.iPerfilId)
     }
-
+    ngOnChanges(changes) {
+        if (changes.ixActivadadId?.currentValue) {
+            this.ixActivadadId = changes.ixActivadadId.currentValue
+            this.obtenerEvaluacion(this.ixActivadadId)
+        }
+    }
     // obtiene la evalución
-    obtenerEvaluacion() {
-        this._aulaService
-            .obtenerActividad({
-                iActTipoId: this.iActTopId,
-                ixActivadadId: this.ixActivadadId,
-            })
-            .pipe(takeUntil(this.unsbscribe$))
+    obtenerEvaluacion(iEvaluacionId: string | number) {
+        const params = {
+            iCredId: this._ConstantesService.iCredId,
+        }
+        this._EvaluacionesService
+            .obtenerEvaluacionesxiEvaluacionId(iEvaluacionId, params)
             .subscribe({
                 next: (resp) => {
-                    this.evaluacion = resp
-                    this.cEvaluacionInstrucciones =
-                        this.evaluacion.cEvaluacionDescripcion
-                    if (this.evaluacion?.iEstado === 1) {
-                        this.items = [
-                            {
-                                items: [
-                                    {
-                                        label: 'Editar',
-                                        icon: 'pi pi-pencil',
-                                    },
-                                    {
-                                        label: 'Eliminar',
-                                        icon: 'pi pi-trash',
-                                        command: () => {
-                                            this.eliminarEvaluacionxiEvaluacionId()
-                                        },
-                                    },
-
-                                    {
-                                        label: 'Publicar',
-                                        icon: 'pi pi-send',
-                                        command: () => {
-                                            this.actualizarEvaluacionxiEvaluacionId()
-                                        },
-                                    },
-                                ],
-                            },
-                        ]
+                    if (resp.validated) {
+                        let data = resp.data
+                        data = data.length ? data[0] : []
+                        data.cEvaluacionArchivoAdjunto =
+                            data.cEvaluacionArchivoAdjunto
+                                ? JSON.parse(data.cEvaluacionArchivoAdjunto)
+                                : []
+                        this.evaluacion = {
+                            cTitle:
+                                'Evaluación Formativa: ' +
+                                (data.cEvaluacionTitulo || '-'),
+                            dInicio: data.dtEvaluacionInicio,
+                            dFin: data.dtEvaluacionFin,
+                            iEstado: Number(data.iEstado || 0),
+                            cDescripcion: data.cEvaluacionDescripcion,
+                            cDocumentos: data.cEvaluacionArchivoAdjunto,
+                        }
+                        // data = data.length ? data[0] : []
+                        // data.cEvaluacionArchivoAdjunto =
+                        //     data.cEvaluacionArchivoAdjunto
+                        //         ? JSON.parse(data.cEvaluacionArchivoAdjunto)
+                        //         : []
+                        // this.filesUrl = data.cEvaluacionArchivoAdjunto
+                        // this.formEvaluacion.patchValue({
+                        //     ...data,
+                        //     dtEvaluacionInicio: new Date(
+                        //         data.dtEvaluacionInicio
+                        //     ),
+                        //     dtEvaluacionFin: new Date(data.dtEvaluacionFin),
+                        // })
                     }
-                    if (this.evaluacion?.iEstado === 2) {
-                        this.items = [
-                            {
-                                items: [
-                                    {
-                                        label: 'Anular Publicación',
-                                        icon: 'pi pi-times',
-                                        command: () => {
-                                            this.anularEvaluacionxiEvaluacionId()
-                                        },
-                                    },
-                                ],
-                            },
-                        ]
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
                     }
                 },
             })
     }
+    // obtenerEvaluacion() {
+    //     this._aulaService
+    //         .obtenerActividad({
+    //             iActTipoId: this.iActTopId,
+    //             ixActivadadId: this.ixActivadadId,
+    //         })
+    //         .pipe(takeUntil(this.unsbscribe$))
+    //         .subscribe({
+    //             next: (resp) => {
+    //                 this.evaluacion = resp
+    //                 this.cEvaluacionInstrucciones =
+    //                     this.evaluacion.cEvaluacionDescripcion
+    //                 if (this.evaluacion?.iEstado === 1) {
+    //                     this.items = [
+    //                         {
+    //                             items: [
+    //                                 {
+    //                                     label: 'Editar',
+    //                                     icon: 'pi pi-pencil',
+    //                                 },
+    //                                 {
+    //                                     label: 'Eliminar',
+    //                                     icon: 'pi pi-trash',
+    //                                     command: () => {
+    //                                         this.eliminarEvaluacionxiEvaluacionId()
+    //                                     },
+    //                                 },
+
+    //                                 {
+    //                                     label: 'Publicar',
+    //                                     icon: 'pi pi-send',
+    //                                     command: () => {
+    //                                         this.actualizarEvaluacionxiEvaluacionId()
+    //                                     },
+    //                                 },
+    //                             ],
+    //                         },
+    //                     ]
+    //                 }
+    //                 if (this.evaluacion?.iEstado === 2) {
+    //                     this.items = [
+    //                         {
+    //                             items: [
+    //                                 {
+    //                                     label: 'Anular Publicación',
+    //                                     icon: 'pi pi-times',
+    //                                     command: () => {
+    //                                         this.anularEvaluacionxiEvaluacionId()
+    //                                     },
+    //                                 },
+    //                             ],
+    //                         },
+    //                     ]
+    //                 }
+    //             },
+    //         })
+    // }
 
     // desuscribe los observables al eliminarse el componente
     ngOnDestroy() {
@@ -306,7 +427,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             }
             this._evalService.publicarEvaluacion(data).subscribe({
                 next: () => {
-                    this.obtenerEvaluacion()
+                    // this.obtenerEvaluacion()
                 },
             })
         }
@@ -327,8 +448,12 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             .anularPublicacionEvaluacion({ iEvaluacionId })
             .subscribe({
                 next: () => {
-                    this.obtenerEvaluacion()
+                    // this.obtenerEvaluacion()
                 },
             })
+    }
+
+    mostrarMensajeToast(message) {
+        this._MessageService.add(message)
     }
 }

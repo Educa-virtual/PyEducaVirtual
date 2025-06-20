@@ -1,0 +1,58 @@
+<app-toolbar-primeng [title]="'Gestionar preguntas de ' + (data?.cTitle || '')">
+</app-toolbar-primeng>
+<p-card>
+    <!-- Encabezado responsive -->
+    <div class="grid align-items-center mb-3">
+        <!-- Total de Preguntas -->
+        <div class="col-12 sm:col-6 flex align-items-center gap-2 mb-2 sm:mb-0">
+            <span class="font-semibold text-lg text-color"
+                >Total Preguntas:</span
+            >
+            <p-badge
+                [value]="totalPreguntas"
+                severity="primary"
+                size="large"
+            ></p-badge>
+        </div>
+
+        <!-- Botón Agregar -->
+        <div
+            class="col-12 sm:col-6 flex justify-content-start sm:justify-content-end"
+        >
+            <ng-container *ngIf="data?.iEstado === 1">
+                <button
+                    pButton
+                    class="p-button-sm p-button-primary flex align-items-center gap-2"
+                    (click)="menuAgregarPreguntas.toggle($event)"
+                    type="button"
+                >
+                    <i class="pi pi-plus"></i>
+                    <span>Agregar Preguntas</span>
+                </button>
+
+                <p-menu
+                    #menuAgregarPreguntas
+                    [popup]="true"
+                    [model]="tiposAgregarPregunta"
+                    appendTo="body"
+                    styleClass="w-20rem"
+                ></p-menu>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- Mensaje sin preguntas -->
+    @if (!preguntas.length) {
+        <p-divider class="my-2"></p-divider>
+        <div
+            class="p-4 border-dashed border-2 border-300 surface-50 border-round text-center"
+        >
+            <app-no-data
+                [showIcon]="'NO-DATA'"
+                [mensaje]="'No se encontraron preguntas en esta evaluación'"
+            ></app-no-data>
+        </div>
+    }
+</p-card>
+
+<!-- <app-evaluacion-agregar-preguntas></app-evaluacion-agregar-preguntas> -->

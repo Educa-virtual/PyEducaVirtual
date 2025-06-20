@@ -1,3 +1,23 @@
 ::ng-deep .p-tabview .p-tabview-panels {
     display: none;
 }
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li {
+    flex: 1;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li a {
+    text-align: center;
+    width: 100%;
+    display: block;
+    color: inherit;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
+    color: var(--primary-color);
+}

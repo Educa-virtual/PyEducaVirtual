@@ -104,30 +104,6 @@ export const actividadesConfig: Record<
                 class: '',
                 label: 'Ver',
             },
-            {
-                icon: {
-                    size: 'xs',
-                    color: '',
-                    name: 'matSendOutline',
-                },
-                accion: 'PUBLICAR',
-                class: '',
-                label: 'Publicar',
-                isVisible: (row, iPerfilId) =>
-                    [1].includes(row['iEstado']) && iPerfilId === DOCENTE,
-            },
-            {
-                icon: {
-                    size: 'xs',
-                    color: '',
-                    name: 'matCancelScheduleSendOutline',
-                },
-                accion: 'ANULAR_PUBLICACION',
-                class: '',
-                label: 'Anular Publicación',
-                isVisible: (row, iPerfilId) =>
-                    [2].includes(row['iEstado']) && iPerfilId === DOCENTE,
-            },
         ],
     },
     [VIDEO_CONFERENCIA]: {

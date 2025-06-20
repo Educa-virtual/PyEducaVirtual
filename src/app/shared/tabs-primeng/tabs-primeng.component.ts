@@ -1,17 +1,18 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { NgFor } from '@angular/common'
+import { NgFor, NgIf } from '@angular/common'
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 
 export interface TabsPrimeng {
     title: string
     icon?: string
     tab?: string
+    isVisible?: boolean
 }
 
 @Component({
     selector: 'app-tabs-primeng',
     standalone: true,
-    imports: [PrimengModule, NgFor],
+    imports: [PrimengModule, NgFor, NgIf],
     templateUrl: './tabs-primeng.component.html',
     styleUrl: './tabs-primeng.component.scss',
 })
@@ -20,6 +21,8 @@ export class TabsPrimengComponent {
 
     @Input() activeIndex: number = 0
     @Input() tabs: TabsPrimeng[]
+    @Input() classColumn: boolean = false
+    @Input() getIndex: boolean = true
 
     ngOnChange(changes) {
         if (changes.activeIndex?.currentValue) {
@@ -29,9 +32,24 @@ export class TabsPrimengComponent {
         if (changes.tabs?.currentValue) {
             this.tabs = changes.tabs.currentValue
         }
+
+        if (changes.classColumn?.currentValue) {
+            this.classColumn = changes.classColumn.currentValue
+        }
     }
-    onActiveIndexChange(event: number) {
-        this.activeIndex = event
-        this.updateTab.emit(this.activeIndex)
+    onActiveIndexChange(index: number): void {
+        const tabsVisibles = this.tabs.filter((tab) => !tab.isVisible)
+        const tabSeleccionado = tabsVisibles[index]
+        this.getIndex
+            ? this.updateTab.emit(this.activeIndex)
+            : this.updateTab.emit(tabSeleccionado)
+    }
+
+    className(vista: 'VIEW' | 'PANEL') {
+        return !this.classColumn
+            ? ''
+            : (this.classColumn && vista) === 'VIEW'
+              ? 'actividad-tabs'
+              : 'flex-column'
     }
 }

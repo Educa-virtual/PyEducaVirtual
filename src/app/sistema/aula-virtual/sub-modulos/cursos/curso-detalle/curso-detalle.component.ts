@@ -15,6 +15,8 @@ import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { TabsPrimengComponent } from '../../../../../shared/tabs-primeng/tabs-primeng.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -34,9 +36,14 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
     @Input() iSilaboId: string
     private _activatedRoute = inject(ActivatedRoute)
     private _ChangeDetectorRef = inject(ChangeDetectorRef)
+    private _constantesService = inject(ConstantesService)
+
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
 
     curso: ICurso | undefined
     selectTab: number = 0
+    iPerfilId: number
 
     tabs = [
         {
@@ -53,6 +60,7 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             title: 'Resultado',
             icon: 'pi pi-users',
             tab: 'resultados',
+            isVisible: (ctx) => ctx.perfil === DOCENTE,
         },
     ]
 
@@ -74,6 +82,7 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             }
         })
         this.listenParams()
+        this.iPerfilId = Number(this._constantesService.iPerfilId)
     }
 
     // obtiene el parametro y actualiza el tab
@@ -119,11 +128,22 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             cantidad,
         }
     }
+    //función para recorrer el tabs para que filtre segun el perfil
+    get tabsVisibles(): any[] {
+        return this.tabs.filter((tab) => {
+            if (typeof tab.isVisible === 'function') {
+                return tab.isVisible({ perfil: this.iPerfilId })
+            }
+            return true
+        })
+    }
     updateTab(tab): void {
+        console.log('hola', tab)
         this.router.navigate([], {
             queryParams: { tab: tab },
             queryParamsHandling: 'merge',
         })
+
         // this.selectTab = tab
         // localStorage.setItem('selectedTab', tab.toString()) // mostrar la misma pagina al recargar
     }

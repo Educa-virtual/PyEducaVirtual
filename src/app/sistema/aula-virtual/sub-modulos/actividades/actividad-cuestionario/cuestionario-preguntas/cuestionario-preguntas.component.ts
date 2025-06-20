@@ -8,6 +8,8 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-preguntas/cuestionario-form-preguntas.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+// import { group } from '@angular/animations'
 // import { aC } from '@fullcalendar/core/internal-common'
 
 @Component({
@@ -32,6 +34,9 @@ export class CuestionarioPreguntasComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
 
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
+
     backend = environment.backend
     totalPregunta: number = 0
     preguntas: any[] = []
@@ -45,6 +50,8 @@ export class CuestionarioPreguntasComponent implements OnInit {
     datosPreguntas: any
     datos: any
     params: any // variable para enviar datos para actualizar
+    iEstado: number
+    iPerfilId: number
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -73,6 +80,8 @@ export class CuestionarioPreguntasComponent implements OnInit {
         this.obtenerCuestionario()
         this.datos = this.datosGenerales
         this.obtenerTipoPreguntas()
+        this.iEstado = this.datosGenerales.iEstado
+        this.iPerfilId = this._constantesService.iPerfilId
     }
 
     tipoPreguntas: any[] = [
@@ -162,6 +171,71 @@ export class CuestionarioPreguntasComponent implements OnInit {
             estado: 'Activo',
         },
     ]
+    loading: boolean = false
+
+    load() {
+        this.loading = true
+
+        setTimeout(() => {
+            this.loading = false
+        }, 2000)
+    }
+
+    respuesta: string = ''
+
+    guadarRespuesta(): void {
+        const params = {
+            petition: 'get',
+            group: 'aula-virtual',
+            prefix: 'pregunta-alternativas-respuestas',
+            ruta: 'cuestionario',
+            data: this.respuesta,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Acción exitosa',
+                        detail: response.message,
+                    })
+                    this.showModal = false
+                    this.obtenerCuestionario()
+                    // this.instructorForm.reset()
+                }
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
+        })
+        console.log('Respuesta ingresada:', params)
+        // Aquí puedes enviar la variable o hacer lo que necesites
+    }
     guardarPregunta(data: any) {
         const datos = {
             iCuestionarioId: this.datosGenerales.iCuestionarioId,
@@ -192,7 +266,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
                     this.obtenerCuestionario()
                     // this.instructorForm.reset()
                 }
-                this.obtenerCuestionario()
             },
             error: (error) => {
                 const errores = error?.error?.errors
@@ -290,7 +363,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
                 this.titulo = 'Editar pregunta'
                 this.opcion = accion
                 this.params = item
-                console.log(item)
                 this.showModal = true
                 break
         }
@@ -310,33 +382,16 @@ export class CuestionarioPreguntasComponent implements OnInit {
         // Servicio para obtener los instructores
         this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
             this.data = (Data as any)['data']
-            // Asegúrate de que jsonAlternativas esté en Data y no dentro de data
-            // const alternativas = Data['jsonAlternativas']
-            //     ? JSON.parse(Data['jsonAlternativas'])
-            //     : [];
-            // Convertimos jsonAlternativas a objeto en cada pregunta:
             this.data = this.data.map((Data) => {
                 return {
                     ...Data,
                     jsonAlternativas: JSON.parse(Data.jsonAlternativas),
                 }
             })
-            // const jsonAlternativas = JSON.parse(Data['jsonAlternativas']);
-            // Combina alternativas dentro de this.data
-            // this.data.alternativas = jsonAlternativas;
-            // const jsonAlternativas = JSON.parse(Data['jsonAlternativas']);
-            console.log('Datos preguntas:', this.data)
+            // console.log('Datos preguntas:', this.data)
         })
     }
 
-    // editarPregunta(data: any) {
-    //     this.titulo = 'Editar pregunta'
-    //     this.opcion = 'ACTUALIZAR'
-    //     this.params = data
-    //     console.log(data)
-    //     this.showModal = true
-    // }
-    // Eliminar preguntas del formulario
     eliminarPregunta(data: any) {
         this._confirmService.openConfirm({
             header: '¿Eliminar pregunta:  ' + data.cPregunta + '?',

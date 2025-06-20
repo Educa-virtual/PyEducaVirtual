@@ -109,7 +109,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
                 this.iTipoPregId = this.data?.iTipoPregId
                 this.codigoTipoPregunta = this.data?.cCodeTipoPreg
                 this.opciones = this.data?.jsonAlternativas
-                console.log('datos de oppciones', this.iTipoPregId)
+                // console.log('datos de oppciones', this.iTipoPregId)
             }
         }
         if (this.opcion === 'GUARDAR') {
@@ -192,7 +192,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
             jsonAlternativas: this.jsonAlternativas,
         }
         this.actualizarPregunta.emit(data)
-        console.log('datos actualizados', this.data)
+        // console.log('datos actualizados', this.data)
     }
     onInput(event: Event) {
         const value = (event.target as HTMLElement).innerText

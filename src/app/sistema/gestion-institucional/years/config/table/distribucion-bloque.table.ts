@@ -152,8 +152,7 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
                             ),
                             switchMap(() =>
                                 this.distribucionBloquesService.getDistribucionBloques(
-                                    this.forms.distribucionBloque.value
-                                        .iDistribucionBloqueId
+                                    this.forms.year.value.iYearId
                                 )
                             )
                         )

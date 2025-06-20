@@ -1,14 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { PrimengModule } from '@/app/primeng.module'
-
+import { Component } from '@angular/core'
 @Component({
     selector: 'app-acceso-encuesta',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [],
     templateUrl: './acceso-encuesta.component.html',
     styleUrl: './acceso-encuesta.component.scss',
 })
-export class AccesoEncuestaComponent {
-    @Input() visible: boolean = false
-    @Output() visibleChange = new EventEmitter<boolean>()
-}
+export class AccesoEncuestaComponent {}

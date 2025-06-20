@@ -170,6 +170,15 @@ export class CuestionarioPreguntasComponent implements OnInit {
             estado: 'Activo',
         },
     ]
+    loading: boolean = false
+
+    load() {
+        this.loading = true
+
+        setTimeout(() => {
+            this.loading = false
+        }, 2000)
+    }
     guardarPregunta(data: any) {
         const datos = {
             iCuestionarioId: this.datosGenerales.iCuestionarioId,

@@ -83,7 +83,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
         this.obtenerCuestionario()
         this.datos = this.datosGenerales
         this.obtenerTipoPreguntas()
-        this.iEstado = this.datosGenerales.iEstado
+        this.iEstado = Number(this.datosGenerales.iEstado)
         this.iPerfilId = this._constantesService.iPerfilId
     }
 
@@ -186,6 +186,10 @@ export class CuestionarioPreguntasComponent implements OnInit {
 
     respuesta: string = ''
 
+    esBotonDeshabilitado(): boolean {
+        return this.iEstado === 10
+    }
+
     guadarRespuesta(item: any): void {
         const iPregAlterId = item.jsonAlternativas[0].iPregAlterId
         const iCuestionarioId = this.datosGenerales.iCuestionarioId
@@ -195,48 +199,57 @@ export class CuestionarioPreguntasComponent implements OnInit {
             cRespuest: this.respuesta,
             iCredId: this._constantesService.iCredId,
         }
-        console.log(data)
+        console.log('guardar respuesta del alumno', data)
         // Servicio para obtener los instructores
-        this._confirmServiceAula
-            .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
-            .subscribe({
-                next: (response) => {
-                    if (response.validated) {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Acción exitosa',
-                            detail: response.message,
-                        })
-                        this.showModal = false
-                        this.obtenerCuestionario()
-                        // this.instructorForm.reset()
-                    }
-                },
-                error: (error) => {
-                    const errores = error?.error?.errors
-                    if (error.status === 422 && errores) {
-                        // Recorre y muestra cada mensaje de error
-                        Object.keys(errores).forEach((campo) => {
-                            errores[campo].forEach((mensaje: string) => {
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: 'Error de validación',
-                                    detail: mensaje,
+        if (this.iPerfilId === ESTUDIANTE) {
+            this._confirmServiceAula
+                .guardarRespuestaEstudiante(
+                    iCuestionarioId,
+                    iEstudianteId,
+                    data
+                )
+                .subscribe({
+                    next: (response) => {
+                        if (response.validated) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Acción exitosa',
+                                detail: response.message,
+                            })
+                            this.showModal = false
+                            this.obtenerCuestionario()
+                            // this.instructorForm.reset()
+                        }
+                    },
+                    error: (error) => {
+                        const errores = error?.error?.errors
+                        if (error.status === 422 && errores) {
+                            // Recorre y muestra cada mensaje de error
+                            Object.keys(errores).forEach((campo) => {
+                                errores[campo].forEach((mensaje: string) => {
+                                    this.messageService.add({
+                                        severity: 'error',
+                                        summary: 'Error de validación',
+                                        detail: mensaje,
+                                    })
                                 })
                             })
-                        })
-                    } else {
-                        // Error genérico si no hay errores específicos
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail:
-                                error?.error?.message ||
-                                'Ocurrió un error inesperado',
-                        })
-                    }
-                },
-            })
+                        } else {
+                            // Error genérico si no hay errores específicos
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail:
+                                    error?.error?.message ||
+                                    'Ocurrió un error inesperado',
+                            })
+                        }
+                    },
+                })
+        } else {
+            console.log('eres docente no seas vivo')
+        }
+
         // Aquí puedes enviar la variable o hacer lo que necesites
     }
     guardarRespuestaOpcion(pregunta: any, idAlternativa: string) {

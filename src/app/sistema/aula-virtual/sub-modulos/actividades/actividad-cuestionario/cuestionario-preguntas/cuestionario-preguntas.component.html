@@ -22,12 +22,14 @@
                 severity="warning"
                 class="mr-3"
                 [hidden]="iPerfilId === ESTUDIANTE"
+                [disabled]="esBotonDeshabilitado()"
             />
             <p-button
                 icon="pi pi-plus"
                 label="Agregar"
                 (click)="menuAgregarPreguntas.toggle($event)"
                 [hidden]="iPerfilId === ESTUDIANTE"
+                [disabled]="esBotonDeshabilitado()"
             />
             <p-menu
                 #menuAgregarPreguntas
@@ -73,6 +75,7 @@
                                     class="w-full custom-hover-input mb-2"
                                     placeholder="Tu respuesta...."
                                     [(ngModel)]="respuesta"
+                                    [readonly]="iPerfilId === DOCENTE"
                                     (blur)="guadarRespuesta(item)"
                                 />
                             </div>
@@ -161,6 +164,7 @@
                                 tooltipPosition="bottom"
                                 pTooltip="Eliminar pregunta"
                                 (click)="eliminarPregunta(item)"
+                                [disabled]="esBotonDeshabilitado()"
                             />
                             <p-button
                                 icon="pi pi-file-edit"
@@ -176,6 +180,7 @@
                                         item: item,
                                     })
                                 "
+                                [disabled]="esBotonDeshabilitado()"
                             />
                         </div>
                     </div>

@@ -9,6 +9,7 @@ import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preg
 import { EvaluacionListPreguntasComponent } from '../evaluacion-room/components/evaluacion-list-preguntas/evaluacion-list-preguntas.component'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { FormEncabezadoComponent } from '../evaluacion-room/components/form-encabezado/form-encabezado.component'
+import { ImportarBancoPreguntasComponent } from '../importar-banco-preguntas/importar-banco-preguntas.component'
 export interface IEvaluacion {
     cTitle: string
     cHeader: string
@@ -32,6 +33,7 @@ export interface IEvaluacion {
         PreguntasFormComponent,
         EvaluacionListPreguntasComponent,
         FormEncabezadoComponent,
+        ImportarBancoPreguntasComponent,
     ],
     templateUrl: './evaluacion-preguntas.component.html',
     styleUrl: './evaluacion-preguntas.component.scss',
@@ -46,6 +48,7 @@ export class EvaluacionPreguntasComponent implements OnChanges {
 
     showModalPreguntas: boolean = false
     showModalEncabezado: boolean = false
+    showModalBancoPreguntas: boolean = false
 
     preguntas: any = []
     tiposAgregarPregunta: MenuItem[] = [
@@ -68,7 +71,7 @@ export class EvaluacionPreguntasComponent implements OnChanges {
             label: 'Agregar del banco de preguntas',
             icon: 'pi pi-plus',
             command: () => {
-                // this.showModalBancoPreguntas = true
+                this.showModalBancoPreguntas = true
             },
         },
     ]
@@ -79,6 +82,7 @@ export class EvaluacionPreguntasComponent implements OnChanges {
         }
         this.showModalPreguntas = !evento
         this.showModalEncabezado = !evento
+        this.showModalBancoPreguntas = !evento
         this.data.cFormulario = null
     }
 

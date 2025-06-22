@@ -116,13 +116,21 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response) => {
+                    const cursos = response.data
+
+                    const cursosUnicos = cursos.filter(
+                        (curso, index, self) =>
+                            index ===
+                            self.findIndex((c) => c.iCursoId === curso.iCursoId)
+                    )
                     this.cursos = [
                         {
                             iCursoId: 0,
                             cCursoNombre: 'Todos',
                         },
-                        ...response.data,
+                        ...cursosUnicos,
                     ]
+                    console.log(response.data)
                 },
                 complete: () => {},
                 error: (error) => {

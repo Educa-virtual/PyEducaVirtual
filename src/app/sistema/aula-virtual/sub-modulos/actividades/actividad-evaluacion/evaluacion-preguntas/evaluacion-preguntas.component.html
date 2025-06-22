@@ -84,5 +84,9 @@
         }
     </div>
 </p-card>
-
-<!-- <app-evaluacion-agregar-preguntas></app-evaluacion-agregar-preguntas> -->
+<app-importar-banco-preguntas
+    *ngIf="showModalBancoPreguntas"
+    [showModal]="showModalBancoPreguntas"
+    [data]="data"
+    (accionForm)="accionForm($event)"
+></app-importar-banco-preguntas>

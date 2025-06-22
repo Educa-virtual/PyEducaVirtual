@@ -2,15 +2,15 @@
 </app-toolbar-primeng>
 <p-card>
     <!-- Encabezado responsive -->
-    <div class="grid align-items-center mb-3">
+    <div class="grid align-items-center" style="margin-top: -2rem">
         <!-- Total de Preguntas -->
         <div class="col-12 sm:col-6 flex align-items-center gap-2 mb-2 sm:mb-0">
             <span class="font-semibold text-lg text-color"
                 >Total Preguntas:</span
             >
             <p-badge
-                [value]="totalPreguntas"
-                severity="primary"
+                [value]="preguntas.length"
+                severity="success"
                 size="large"
             ></p-badge>
         </div>
@@ -22,7 +22,17 @@
             <ng-container *ngIf="data?.iEstado === 1">
                 <button
                     pButton
-                    class="p-button-sm p-button-primary flex align-items-center gap-2"
+                    type="button"
+                    class="p-button p-button-danger gap-2"
+                    (click)="generarWordEvaluacion()"
+                >
+                    <i class="pi pi-upload"></i>
+                    <span class="text-md">Exportar Word</span>
+                </button>
+
+                <button
+                    pButton
+                    class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
                     (click)="menuAgregarPreguntas.toggle($event)"
                     type="button"
                 >
@@ -40,23 +50,38 @@
             </ng-container>
         </div>
         <!-- Mensaje sin preguntas -->
-        @if (!preguntas.length) {
-            <div
-                class="col-12 border-dashed border-2 border-300 surface-50 border-round text-center"
-            >
-                <app-no-data
-                    [showIcon]="'NO-DATA'"
-                    [mensaje]="'No se encontraron preguntas en esta evaluación'"
-                ></app-no-data>
-            </div>
+        @if (showModalPreguntas || showModalEncabezado) {
+            <app-preguntas-form
+                *ngIf="showModalPreguntas"
+                [data]="data"
+                (accionForm)="accionForm($event)"
+            ></app-preguntas-form>
+            <app-form-encabezado
+                *ngIf="showModalEncabezado"
+                [data]="data"
+                (accionForm)="accionForm($event)"
+            ></app-form-encabezado>
+        } @else {
+            @if (!preguntas.length) {
+                <div
+                    class="col-12 border-dashed border-2 border-300 surface-50 border-round text-center"
+                >
+                    <app-no-data
+                        [showIcon]="'NO-DATA'"
+                        [mensaje]="
+                            'No se encontraron preguntas en esta evaluación'
+                        "
+                    ></app-no-data>
+                </div>
+            } @else {
+                <app-evaluacion-list-preguntas
+                    class="col-12"
+                    [preguntas]="preguntas"
+                    (accionBtn)="accionBtn($event)"
+                ></app-evaluacion-list-preguntas>
+            }
         }
     </div>
 </p-card>
-
-<app-preguntas-form
-    [cEvaluacionTitulo]="data?.cHeader"
-    [showModalPreguntas]="showModalPreguntas"
-    [iEvaluacionId]="data?.iEvaluacionId"
-></app-preguntas-form>
 
 <!-- <app-evaluacion-agregar-preguntas></app-evaluacion-agregar-preguntas> -->

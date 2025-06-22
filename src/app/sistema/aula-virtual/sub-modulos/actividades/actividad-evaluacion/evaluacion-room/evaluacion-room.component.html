@@ -52,6 +52,14 @@
                     [data]="evaluacion"
                 ></app-evaluacion-preguntas>
             }
+            @case ('calificar') {
+                <app-evaluacion-room-calificacion
+                    [iEvaluacionId]="ixActivadadId"
+                    [evaluacion]="evaluacion"
+                    [iEstado]="evaluacion?.iEstado"
+                ></app-evaluacion-room-calificacion>
+            }
+            @case ('rendir-examen') {}
         }
     </div>
 </div>

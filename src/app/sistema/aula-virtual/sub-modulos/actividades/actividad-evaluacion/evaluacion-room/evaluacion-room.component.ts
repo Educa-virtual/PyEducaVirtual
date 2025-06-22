@@ -11,6 +11,7 @@ import { TabDescripcionActividadesComponent } from '../../components/tab-descrip
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion-preguntas.component'
 import { ActivatedRoute } from '@angular/router'
+import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -20,6 +21,7 @@ import { ActivatedRoute } from '@angular/router'
         TabsPrimengComponent,
         TabDescripcionActividadesComponent,
         EvaluacionPreguntasComponent,
+        EvaluacionRoomCalificacionComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -74,8 +76,8 @@ export class EvaluacionRoomComponent implements OnInit {
         },
     ]
 
-    activeIndex: number = 1
-    tabSeleccionado: string = 'preguntas'
+    activeIndex: number = 0
+    tabSeleccionado: string = 'descripcion'
     obtenerIndex(event) {
         this.tabSeleccionado = event.tab
     }

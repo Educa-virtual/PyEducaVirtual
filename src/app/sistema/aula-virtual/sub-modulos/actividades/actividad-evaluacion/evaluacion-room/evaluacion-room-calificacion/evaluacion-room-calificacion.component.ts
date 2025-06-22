@@ -25,6 +25,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 interface Leyenda {
     total: number
     text: string
@@ -160,6 +161,8 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     // injeccion de dependencias
     private _evaluacionesService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
+    private _ConstantesService = inject(ConstantesService)
+    private _ActivatedRoute = inject(ActivatedRoute)
     private _unsubscribe$ = new Subject<boolean>()
 
     private router = inject(Router)
@@ -194,30 +197,53 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     }
 
     obtenerEstudiantesEvaluacion() {
-        const params = { iEvaluacionId: this.iEvaluacionId }
-        this._evaluacionesService
-            .obtenerEstudiantesEvaluación(params)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: (estudiantes) => {
-                    this.estudianteMatriculadosxGrado = estudiantes.map(
-                        (item: any) => {
-                            return {
-                                ...item,
-                                cTitulo:
-                                    (item.cEstNombres || '') +
-                                    ' ' +
-                                    (item.cEstPaterno || '') +
-                                    ' ' +
-                                    (item.cEstMaterno || ''),
-                            }
+        // const params = { iEvaluacionId: this.iEvaluacionId }
+        // this._evaluacionesService
+        //     .obtenerEstudiantesEvaluación(params)
+        //     .pipe(takeUntil(this._unsubscribe$))
+        //     .subscribe({
+        //         next: (estudiantes) => {
+        //             this.estudianteMatriculadosxGrado = estudiantes.map(
+        //                 (item: any) => {
+        //                     return {
+        //                         ...item,
+        //                         cTitulo:
+        //                             (item.cEstNombres || '') +
+        //                             ' ' +
+        //                             (item.cEstPaterno || '') +
+        //                             ' ' +
+        //                             (item.cEstMaterno || ''),
+        //                     }
+        //                 }
+        //             )
+        //             this._state.update((current) => ({
+        //                 ...current,
+        //                 estudiantes,
+        //             }))
+        //         },
+        //     })
+
+        this._aulaService
+            .obtenerReporteFinalDeNotas({
+                iIeCursoId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iIeCursoId'),
+                iYAcadId: this._ConstantesService.iYAcadId,
+                iSedeId: this._ConstantesService.iSedeId,
+                iSeccionId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iSeccionId'),
+                iNivelGradoId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iNivelGradoId'),
+            })
+            .subscribe((Data) => {
+                this.estudianteMatriculadosxGrado = Data['data']
+                this.estudianteMatriculadosxGrado = Data['data'].map(
+                    (item: any, index) => {
+                        return {
+                            ...item,
+                            cTitulo: index + 1 + '.- ' + item.completoalumno,
                         }
-                    )
-                    this._state.update((current) => ({
-                        ...current,
-                        estudiantes,
-                    }))
-                },
+                    }
+                )
             })
     }
 

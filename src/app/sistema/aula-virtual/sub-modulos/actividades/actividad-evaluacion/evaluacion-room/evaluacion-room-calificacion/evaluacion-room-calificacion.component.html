@@ -4,17 +4,17 @@
         (evaluacion?.cEvaluacionTitulo || 'Título no disponible')
     "
 ></app-toolbar-primeng>
-<app-evaluacion-header
+<!-- <app-evaluacion-header
     [selectedEstudianteValue]="selectedEstudianteValue"
     [showListaEstudiantes]="showListaEstudiantes"
     (accionBtnItem)="accionBtnItem($event)"
-></app-evaluacion-header>
+></app-evaluacion-header> -->
 <div class="grid mt-3">
     <div
-        class="col-12 w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
+        class="col-12 w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch grid"
     >
         <!-- Panel Izquierdo -->
-        <div class="card col-4">
+        <div class="col-4">
             <app-card-orderlist
                 [data]="estudianteMatriculadosxGrado"
                 (datoSeleccionado)="updateSelectedEstudiante($event)"
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Panel Derecho -->
-        <div class="card col-8">
+        <div class="col">
             <div class="flex flex-column flex-1 gap-4 m-3">
                 <ng-container *ngIf="!!selectedEstudiante(); else emptySection">
                     <p-tabView>

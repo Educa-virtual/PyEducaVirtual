@@ -19,6 +19,8 @@ export interface IEvaluacion {
 
     idEncabPregId?: string | number
     cEncabPregTitulo?: string
+
+    cFormulario: any
 }
 @Component({
     selector: 'app-evaluacion-preguntas',
@@ -77,22 +79,38 @@ export class EvaluacionPreguntasComponent implements OnChanges {
         }
         this.showModalPreguntas = !evento
         this.showModalEncabezado = !evento
+        this.data.cFormulario = null
     }
 
     accionBtn(elemento: any) {
         const { accion, item } = elemento
+
         switch (accion) {
             case 'agregar-pregunta-encabezado':
                 this.data.idEncabPregId = item.idEncabPregId
                 this.data.cEncabPregTitulo = item.cEncabPregTitulo
+                this.data.cFormulario = null
+                this.showModalPreguntas = true
+                this.showModalEncabezado = false
                 break
             case 'agregar-pregunta':
                 this.data.idEncabPregId = null
                 this.data.cEncabPregTitulo = null
+                this.data.cFormulario = null
+                this.showModalPreguntas = true
+                this.showModalEncabezado = false
+                break
+            case 'actualizar-pregunta-encabezado':
+                this.data.cFormulario = item
+                this.showModalPreguntas = false
+                this.showModalEncabezado = true
+                break
+            case 'actualizar-pregunta':
+                this.data.cFormulario = item
+                this.showModalPreguntas = true
+                this.showModalEncabezado = false
                 break
         }
-        this.showModalPreguntas = true
-        this.showModalEncabezado = false
     }
 
     ngOnChanges(changes) {

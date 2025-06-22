@@ -31,8 +31,8 @@
         <div class="flex justify-content-center">
             <p-button
                 icon="pi pi-check"
-                severity="success"
-                [label]="opcion + ' ENCABEZADO'"
+                [severity]="opcion === 'GUARDAR' ? 'success' : 'warning'"
+                [label]="opcion + ' PREGUNTA MÚLTIPLE'"
                 (onClick)="enviarFormulario()"
                 [loading]="isLoading"
                 [disabled]="isLoading"

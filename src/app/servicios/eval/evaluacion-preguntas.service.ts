@@ -30,25 +30,25 @@ export class EvaluacionPreguntasService {
         )
     }
 
-    // actualizarEvaluacionesxiEvaluacionId(
-    //     iEvaluacionId: string | number,
-    //     params
-    // ): Observable<any> {
-    //     return this.http.put(
-    //         `${baseUrl}/evaluaciones/evaluaciones/${iEvaluacionId}`,
-    //         params
-    //     )
-    // }
+    actualizarEvaluacionPreguntasxiEvalPregId(
+        iEvalPregId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.put(
+            `${baseUrl}/evaluaciones/evaluacion-preguntas/${iEvalPregId}`,
+            params
+        )
+    }
 
-    // eliminarEvaluacionesxiEvaluacionId(
-    //     iEvaluacionId: string | number,
-    //     params
-    // ): Observable<any> {
-    //     return this.http.delete(
-    //         `${baseUrl}/evaluaciones/evaluaciones/${iEvaluacionId}`,
-    //         {
-    //             params,
-    //         }
-    //     )
-    // }
+    eliminarEvaluacionPreguntasxiEvalPregId(
+        iEvalPregId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.delete(
+            `${baseUrl}/evaluaciones/evaluacion-preguntas/${iEvalPregId}`,
+            {
+                params,
+            }
+        )
+    }
 }

@@ -18,25 +18,25 @@ export class EncabezadoPreguntasService {
         )
     }
 
-    // actualizarEvaluacionesxiEvaluacionId(
-    //     iEvaluacionId: string | number,
-    //     params
-    // ): Observable<any> {
-    //     return this.http.put(
-    //         `${baseUrl}/evaluaciones/evaluaciones/${iEvaluacionId}`,
-    //         params
-    //     )
-    // }
+    actualizarEncabezadoPreguntas(
+        idEncabPregId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.put(
+            `${baseUrl}/evaluaciones/encabezado-preguntas/${idEncabPregId}`,
+            params
+        )
+    }
 
-    // eliminarEvaluacionesxiEvaluacionId(
-    //     iEvaluacionId: string | number,
-    //     params
-    // ): Observable<any> {
-    //     return this.http.delete(
-    //         `${baseUrl}/evaluaciones/evaluaciones/${iEvaluacionId}`,
-    //         {
-    //             params,
-    //         }
-    //     )
-    // }
+    eliminarEncabezadoPreguntasxidEncabPregId(
+        idEncabPregId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.delete(
+            `${baseUrl}/evaluaciones/encabezado-preguntas/${idEncabPregId}`,
+            {
+                params,
+            }
+        )
+    }
 }

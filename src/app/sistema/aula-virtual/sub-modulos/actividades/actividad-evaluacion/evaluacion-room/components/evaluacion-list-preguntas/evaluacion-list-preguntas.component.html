@@ -121,6 +121,7 @@
                     tooltipPosition="bottom"
                     pTooltip="Eliminar pregunta"
                     label="Eliminar pregunta"
+                    (onClick)="eliminarPregunta(pregunta)"
                     styleClass="hide-label-on-mobile"
                 />
                 <p-button
@@ -131,6 +132,7 @@
                     tooltipPosition="bottom"
                     pTooltip="Editar pregunta"
                     label="Editar pregunta"
+                    (onClick)="editarPregunta(pregunta)"
                     styleClass="hide-label-on-mobile"
                 />
             </div>
@@ -244,6 +246,7 @@
                 pTooltip="Eliminar pregunta múltiple"
                 label="Eliminar pregunta múltiple"
                 styleClass="hide-label-on-mobile"
+                (onClick)="eliminarPregunta(item)"
             />
             <p-button
                 icon="pi pi-file-edit"
@@ -254,6 +257,7 @@
                 pTooltip="Editar pregunta múltiple"
                 label="Editar pregunta múltiple"
                 styleClass="hide-label-on-mobile"
+                (onClick)="editarPregunta(item)"
             />
         </ng-container>
         <ng-template #sinEncabezado>
@@ -266,6 +270,7 @@
                 pTooltip="Eliminar pregunta"
                 label="Eliminar pregunta"
                 styleClass="hide-label-on-mobile"
+                (onClick)="eliminarPregunta(item)"
             />
             <p-button
                 icon="pi pi-file-edit"
@@ -276,7 +281,10 @@
                 pTooltip="Editar pregunta"
                 label="Editar Pregunta"
                 styleClass="hide-label-on-mobile"
+                (onClick)="editarPregunta(item)"
             />
         </ng-template>
     </div>
 </div>
+
+<p-toast></p-toast>

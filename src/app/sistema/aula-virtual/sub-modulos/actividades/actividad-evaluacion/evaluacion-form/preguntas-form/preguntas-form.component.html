@@ -108,7 +108,7 @@
                         [binary]="true"
                         [trueValue]="1"
                         [falseValue]="0"
-                        [inputId]="alternativa.id"
+                        [inputId]="alternativa.iBancoAltId"
                         [value]="alternativa"
                         [class]="'ml-2'"
                         [label]="'Respuesta correcta'"
@@ -146,7 +146,7 @@
         <div class="flex justify-content-center">
             <p-button
                 icon="pi pi-check"
-                severity="success"
+                [severity]="opcion === 'GUARDAR' ? 'success' : 'warning'"
                 [label]="opcion + ' PREGUNTA'"
                 (onClick)="enviarFormulario()"
                 [loading]="isLoading"

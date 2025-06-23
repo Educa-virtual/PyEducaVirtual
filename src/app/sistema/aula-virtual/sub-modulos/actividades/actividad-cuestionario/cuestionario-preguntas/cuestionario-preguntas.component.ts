@@ -202,7 +202,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
             cRespuest: this.respuestasTexto[item],
             iCredId: this._constantesService.iCredId,
         }
-        console.log('guardar respuesta del alumno', data)
+        // console.log('guardar respuesta del alumno', data)
         // Servicio para obtener los instructores
         if (this.iPerfilId === ESTUDIANTE) {
             this._confirmServiceAula
@@ -255,7 +255,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
 
         // Aquí puedes enviar la variable o hacer lo que necesites
     }
-
     guardarRespuestaOpcion(
         iCuestionarioId: string,
         idAlternativa: string,
@@ -271,14 +270,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
             cRespuest: seleccionada.cAlternativa,
             iCredId: this._constantesService.iCredId,
         }
-        console.log(
-            'datos',
-            this.data,
-            '+',
-            iCuestionarioId,
-            iEstudianteId,
-            data
-        )
         // Servicio para obtener los instructores
         this._confirmServiceAula
             .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
@@ -348,14 +339,14 @@ export class CuestionarioPreguntasComponent implements OnInit {
                 cRespuest: cAlternativa,
                 iCredId: this._constantesService.iCredId,
             }
-            console.log(
-                'datos',
-                this.data,
-                '+',
-                iCuestionarioId,
-                iEstudianteId,
-                data
-            )
+            // console.log(
+            //     'datos',
+            //     this.data,
+            //     '+',
+            //     iCuestionarioId,
+            //     iEstudianteId,
+            //     data
+            // )
             this._confirmServiceAula
                 .guardarRespuestaEstudiante(
                     iCuestionarioId,
@@ -438,14 +429,14 @@ export class CuestionarioPreguntasComponent implements OnInit {
             cRespuest: seleccionada.cAlternativa,
             iCredId: this._constantesService.iCredId,
         }
-        console.log(
-            'datos',
-            this.data,
-            '+',
-            iCuestionarioId,
-            iEstudianteId,
-            data
-        )
+        // console.log(
+        //     'datos',
+        //     this.data,
+        //     '+',
+        //     iCuestionarioId,
+        //     iEstudianteId,
+        //     data
+        // )
         this._confirmServiceAula
             .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
             .subscribe({
@@ -634,6 +625,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
         // Servicio para obtener los instructores
         this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
             this.data = (Data as any)['data']
+            console.log(this.data)
             this.data = this.data.map((Data) => {
                 return {
                     ...Data,

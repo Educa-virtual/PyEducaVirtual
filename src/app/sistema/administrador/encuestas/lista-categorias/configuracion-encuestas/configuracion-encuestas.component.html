@@ -1,1 +1,16 @@
-<p>configuracion-encuestas works!</p>
+<app-container-page
+    [title]="title"
+    [actions]="actionsContainer"
+    (accionBtnItem)="handleActions($event)"
+>
+    <div class="flex flex-column gap-2">
+        <p-steps
+            [model]="items"
+            [readonly]="false"
+            [activeIndex]="activeIndex"
+            (activeIndexChange)="onActiveIndexChange($event)"
+        />
+
+        <router-outlet></router-outlet>
+    </div>
+</app-container-page>

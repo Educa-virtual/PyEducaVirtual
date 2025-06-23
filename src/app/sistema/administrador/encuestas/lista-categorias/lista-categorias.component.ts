@@ -3,11 +3,10 @@ import { PrimengModule } from '@/app/primeng.module'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { MessageService } from 'primeng/api'
-import { GestionarEncuestaComponent } from './gestionar-encuesta/gestionar-encuesta.component'
 @Component({
     selector: 'app-lista-categorias',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent, GestionarEncuestaComponent],
+    imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './lista-categorias.component.html',
     styleUrl: './lista-categorias.component.scss',
 })

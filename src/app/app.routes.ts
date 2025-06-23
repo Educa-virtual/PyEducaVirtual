@@ -14,7 +14,7 @@ import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.co
 import { EncuestasPorCategoriaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/encuestas-por-categoria.component'
 import { ListaCategoriasComponent } from './sistema/administrador/encuestas/lista-categorias/lista-categorias.component'
 import { LlenadoPreguntasEncuestaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
-import { GestionarEncuestaComponent } from './sistema/administrador/encuestas/lista-categorias/gestionar-encuesta/gestionar-encuesta.component'
+import { ConfiguracionEncuestasComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/configuracion-encuestas.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -98,10 +98,10 @@ export const routes: Routes = [
                 path: 'llenado-preguntas-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
             },
-            // gestionar encuestas
+            // configuracion-encuesta
             {
-                path: 'gestionar-encuesta',
-                component: GestionarEncuestaComponent,
+                path: 'configuracion-encuestas',
+                component: ConfiguracionEncuestasComponent,
             },
         ],
     },

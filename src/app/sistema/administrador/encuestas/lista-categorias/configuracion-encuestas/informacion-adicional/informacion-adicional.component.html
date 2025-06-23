@@ -1,0 +1,98 @@
+<form [formGroup]="form" class="flex flex-column gap-4">
+    <div class="flex flex-column gap-2">
+        <label for="username"
+            >Título:
+            <span class="text-red-500 text-xs">(*) Obligatorio</span>
+        </label>
+        <input pInputText id="username" />
+        <!-- <small id="username-help">
+            Enter your username to reset your password.
+        </small> -->
+    </div>
+    <div class="flex flex-column gap-2">
+        <label for="username"
+            >Subtítulo:
+            <span class="text-blue-500 text-xs">(Opcional)</span>
+        </label>
+        <input pInputText id="username" />
+    </div>
+
+    <div class="flex gap-3">
+        <p-inputGroup>
+            <p-inputGroupAddon>Fecha inicio</p-inputGroupAddon>
+            <p-calendar styleClass="w-full" view="date" dateFormat="dd/mm/yy" />
+        </p-inputGroup>
+        <p-inputGroup>
+            <p-inputGroupAddon>Fecha fin</p-inputGroupAddon>
+            <p-calendar styleClass="w-full" view="date" dateFormat="dd/mm/yy" />
+        </p-inputGroup>
+        <p-inputGroup>
+            <p-inputGroupAddon>Tiempo</p-inputGroupAddon>
+            <p-dropdown
+                styleClass="w-full"
+                [options]="tiempos"
+                optionLabel="label"
+                placeholder="Select a City"
+            />
+        </p-inputGroup>
+    </div>
+
+    <div class="">
+        <div>
+            <strong class="text-blue-700 text-2xl"
+                >Consideraciones al adjuntar archivos:</strong
+            >
+            <span class="text-red-500 text-xs">(*) Obligatorio</span>
+        </div>
+        <ul class="border-1 w-full py-4 flex flex-column gap-2">
+            <li>
+                Este formulario debe ser llenado por el Jefe(a) responsable de
+                Gestión Pedagógica, Coordinador pedagógico, especialista o
+                docente que haga sus veces, siempre y cuando tenga conocimiento
+                del tema.
+            </li>
+            <li>
+                La devolución del formulario del módulo X, debidamente llenado,
+                debe ser enviado al estadístico de su jurisdicción para su
+                registro en el Sistema de Gestión de Información Educativa –
+                SIGIED en el plazo indicado.
+            </li>
+            <li>Revise bien sus respuestas antes de enviarlas</li>
+            <li>
+                Utilice fuentes de información válidas: los planes de monitoreo
+                pedagógico 2023, 2024, el informe anual de visitas y
+                acompañamiento, entre otros documentos.
+            </li>
+        </ul>
+    </div>
+
+    <div class="flex gap-4">
+        <strong class="w-max flex-shrink-0 text-blue-700 text-2xl"
+            >Dirigido a:</strong
+        >
+        <div class="flex gap-8 row-gap-4 flex-wrap">
+            <p-checkbox label="Directores" name="pizza" value="Mushroom" />
+            <p-checkbox label="Docentes" name="pizza" value="Mushroom" />
+            <p-checkbox label="Estudiantes" name="pizza" value="Mushroom" />
+            <p-checkbox label="Apoderados" name="pizza" value="Mushroom" />
+            <p-checkbox
+                label="Especialistas DREMO"
+                name="pizza"
+                value="Mushroom"
+            />
+            <p-checkbox
+                label="Especialistas UGEL"
+                name="pizza"
+                value="Mushroom"
+            />
+        </div>
+    </div>
+    <p-button
+        class="align-self-end"
+        icon="pi pi-arrow-right"
+        label="Siguiente"
+        severity="success"
+        iconPos="right"
+        (onClick)="nextRoute()"
+    />
+</form>

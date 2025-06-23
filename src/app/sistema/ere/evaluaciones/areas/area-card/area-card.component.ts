@@ -131,14 +131,14 @@ export class AreaCardComponent implements OnInit {
                 },
             },
             {
-                label: 'Descargar cartilla de respuestas',
+                label: 'Descargar hoja de respuestas',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.descargarCartillaRespuestas()
                 },
             },
             {
-                label: 'Subir resultados',
+                label: 'Subir resultados por archivo Excel',
                 icon: 'pi pi-upload',
                 command: () => {
                     this.dialogImportarResultados.emit({
@@ -201,10 +201,34 @@ export class AreaCardComponent implements OnInit {
     }
 
     descargarArchivoPreguntasWord() {
-        window.open(
+        /*window.open(
             `${environment.backendApi}/ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${this.curso.iCursosNivelGradId}/archivo-preguntas?tipo=word&token=${localStorage.getItem('dremoToken')}`,
             '_blank'
-        )
+        )*/
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId,
+            tipoArchivo: 'word',
+        }
+        this.evaluacionesService
+            .descargarArchivoPreguntasPorArea(params)
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}.docx` //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al descargar el archivo',
+                        detail: error,
+                    })
+                },
+            })
     }
 
     descargarCartillaRespuestas() {
@@ -217,7 +241,7 @@ export class AreaCardComponent implements OnInit {
                 const url = window.URL.createObjectURL(response)
                 const a = document.createElement('a')
                 a.href = url
-                a.download = `Cartilla respuestas.docx` //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
+                a.download = `Hoja respuestas.docx` //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
                 a.click()
                 window.URL.revokeObjectURL(url)
             },

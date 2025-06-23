@@ -281,7 +281,7 @@ export class PreguntasComponent implements OnInit {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
             })
@@ -306,7 +306,7 @@ export class PreguntasComponent implements OnInit {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
             })
@@ -461,8 +461,7 @@ export class PreguntasComponent implements OnInit {
             })
             return
         }
-        //Se desactiva la validación de alternativas vacías porque a veces se suben imágenes
-        /*data.alternativas.forEach((alternativa) => {
+        data.alternativas.forEach((alternativa) => {
             {
                 if (
                     alternativa.cAlternativaDescripcion == '' ||
@@ -471,12 +470,12 @@ export class PreguntasComponent implements OnInit {
                     error = true
                 }
             }
-        })*/
+        })
         if (error) {
             this._MessageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Todas las alternativas debe tener una descripción y/o contenido',
+                detail: 'El texto de las alternativas no puede estar vacío.',
             })
             return
         }

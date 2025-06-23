@@ -285,7 +285,7 @@ html
                                                                         <label
                                                                             for="matriz"
                                                                             class="mt-1 font-bold"
-                                                                            >Matrizc
+                                                                            >Matriz
                                                                             <span
                                                                                 class="text-red-500 text-xs"
                                                                                 >(*)
@@ -398,6 +398,9 @@ html
                                                                                 optionValue="iPreguntaPesoId"
                                                                                 optionLabel="cPreguntaPesoNombre"
                                                                                 placeholder="Peso de la pregunta"
+                                                                                [showClear]="
+                                                                                    true
+                                                                                "
                                                                                 [style]="{
                                                                                     width: '100%',
                                                                                 }"
@@ -803,9 +806,8 @@ html
                                                     optionValue="iPreguntaPesoId"
                                                     optionLabel="cPreguntaPesoNombre"
                                                     placeholder="Peso de la pregunta"
-                                                    [style]="{
-                                                        width: '100%',
-                                                    }"
+                                                    [showClear]="true"
+                                                    [style]="{ width: '100%' }"
                                                 ></p-dropdown>
                                             </p-inputGroup>
                                         </div>

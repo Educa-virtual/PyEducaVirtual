@@ -9,9 +9,9 @@
             <button
                 size="small"
                 pButton
-                pTooltip="Registrar ficha"
+                pTooltip="Registrar encuesta"
                 tooltipPosition="top"
-                (click)="verEncuesta()"
+                (click)="agregarEncuesta()"
                 severity="success"
             >
                 <i class="pi pi-plus"></i>
@@ -20,40 +20,23 @@
         </div>
     </ng-template>
 
-    <form [formGroup]="searchForm">
-        <div class="grid mb-3">
-            <div class="col-12 md:col-4">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Categoría </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="categorias"
-                        formControlName="iCategoriaEncuestaId"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                        [style]="{ flex: '1', width: '100%' }"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-8">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Buscar </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cEncuestaNombre"
-                        (input)="filtrarEstudiantes()"
-                    />
-                </p-inputGroup>
-            </div>
+    <div class="grid mb-3">
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+                <input
+                    #filtro
+                    type="text"
+                    pInputText
+                    (input)="filtrarEncuestas()"
+                />
+            </p-inputGroup>
         </div>
-    </form>
+    </div>
 
     <app-table-primeng
         [columnas]="columnasTabla"
-        [data]="encuestas"
+        [data]="encuestas_filtradas"
         (accionBtnItem)="accionBnt($event)"
         [actions]="accionesTabla"
         [showCaption]="false"
@@ -74,3 +57,5 @@
         <app-encuesta (es_visible)="dialogVisible($event)" />
     </ng-content>
 </p-dialog>
+
+<p-toast></p-toast>

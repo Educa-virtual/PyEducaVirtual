@@ -5,13 +5,15 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnInit } from '@angular/core'
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext'
 import { PanelModule } from 'primeng/panel'
 import { EncuestaComponent } from '../encuesta/encuesta.component'
+import { DatosEncuestaService } from '../services/datos-encuesta.service'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-gestionar-encuestas',
@@ -30,42 +32,100 @@ import { EncuestaComponent } from '../encuesta/encuesta.component'
     styleUrl: './gestionar-encuestas.component.scss',
 })
 export class GestionarEncuestasComponent implements OnInit {
+    @ViewChild('filtro') filtro: ElementRef
     encuestas: Array<object> = []
+    encuestas_filtradas: Array<object> = []
     searchForm: FormGroup
     categorias: Array<object>
     dialog_visible: boolean = false
     dialog_header: string = 'Registrar encuesta'
+    perfil: any
+    iYAcadId: number
+
+    private _messageService = inject(MessageService)
 
     constructor(
         private fb: FormBuilder,
-        private store: LocalStoreService
-    ) {}
-
-    ngOnInit(): void {
-        this.searchForm = this.fb.group({
-            cEncuestaNombre: [''],
-            iCategoriaEncuestaId: [null],
-        })
-
-        this.categorias = [
-            { label: 'Socioeconómica', value: 1 },
-            { label: 'Psicosocial', value: 2 },
-            { label: 'Vocacional', value: 3 },
-            { label: 'Vida estudiantil', value: 4 },
-        ]
+        private store: LocalStoreService,
+        private datosEncuestas: DatosEncuestaService
+    ) {
+        this.perfil = this.store.getItem('dremoPerfil')
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
     }
 
-    verEncuesta() {
-        this.dialog_header = 'Registrar sugerencia'
+    ngOnInit(): void {
+        this.datosEncuestas.getEncuestaParametros().subscribe((data: any) => {
+            this.categorias = this.datosEncuestas.getCategorias(
+                data?.categorias
+            )
+        })
+
+        this.listarEncuestas()
+    }
+
+    agregarEncuesta() {
+        this.dialog_header = 'Registrar Encuesta'
         this.dialog_visible = true
     }
 
-    dialogVisible(event: any) {
-        return (this.dialog_visible = event.value)
+    listarEncuestas() {
+        this.datosEncuestas
+            .listarEncuestas({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iYAcadId: this.iYAcadId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.encuestas = data.data
+                    this.encuestas_filtradas = this.encuestas
+                },
+                error: (error) => {
+                    console.error('Error obteniendo encuestas:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
-    //---Filtrado de estudiantes--------------
-    filtrarEstudiantes() {}
+    dialogVisible(event: any) {
+        return this.dialog_visible == event.value
+    }
+
+    filtrarEncuestas() {
+        const filtro = this.filtro.nativeElement.value
+        this.encuestas_filtradas = this.encuestas.filter((encuesta: any) => {
+            if (
+                encuesta.cEncuNombre
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return encuesta
+            if (
+                encuesta.cEncuDescripcion
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return encuesta
+            if (
+                encuesta.cEncuCateNombre
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return encuesta
+            if (
+                encuesta.dEncuDesde.toLowerCase().includes(filtro.toLowerCase())
+            )
+                return encuesta
+            if (
+                encuesta.dEncuHasta.toLowerCase().includes(filtro.toLowerCase())
+            )
+                return encuesta
+            return null
+        })
+    }
 
     accionBnt(event: { accion: string }): void {
         switch (event.accion) {
@@ -85,40 +145,48 @@ export class GestionarEncuestasComponent implements OnInit {
 
     public columnasTabla: IColumn[] = [
         {
-            field: 'text',
-            type: 'text',
+            field: 'dEncuDesde',
+            type: 'date',
             width: '10%',
-            header: 'Fecha',
+            header: 'Desde',
             text_header: 'center',
             text: 'center',
         },
         {
-            field: 'cCategoriaNombre',
-            type: 'text',
-            width: '15%',
-            header: 'Categoría',
-            text_header: 'Nombres',
-            text: 'Nombres',
+            field: 'dEncuHasta',
+            type: 'date',
+            width: '10%',
+            header: 'Hasta',
+            text_header: 'center',
+            text: 'center',
         },
         {
-            field: 'cEncuestaNombre',
+            field: 'cEncuCateNombre',
             type: 'text',
-            width: '50%',
+            width: '20%',
+            header: 'Categoría',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            field: 'cEncuNombre',
+            type: 'text',
+            width: '30%',
             header: 'Encuesta',
             text_header: 'left',
             text: 'left',
         },
         {
-            field: 'iCantRespuestas',
+            field: 'iRptaCount',
             type: 'text',
-            width: '15%',
+            width: '10%',
             header: 'Respuestas',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'actions',
-            width: '10%',
+            width: '20%',
             field: '',
             header: 'Acciones',
             text_header: 'right',
@@ -129,21 +197,21 @@ export class GestionarEncuestasComponent implements OnInit {
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
-            icon: 'pi pi-print',
+            icon: 'pi pi-file-edit',
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
         },
         {
-            labelTooltip: 'Cambiar estado',
-            icon: 'pi pi-file-edit',
+            labelTooltip: 'Editar Preguntas',
+            icon: 'pi pi-list-check',
             accion: 'estado',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
             labelTooltip: 'Eliminar',
-            icon: 'pi pi-undo',
+            icon: 'pi pi-trash',
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',

@@ -7,6 +7,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-encuesta',
@@ -18,6 +19,9 @@ import {
 export class EncuestaComponent implements OnInit {
     @Output() es_visible = new EventEmitter<any>()
     active: number = 0
+    iYAcadId: number
+    perfil: any
+
     ultima_fecha_anio: Date = new Date(new Date().getFullYear(), 11, 31)
     fecha_actual: Date = new Date()
     es_especialista: boolean = false
@@ -51,11 +55,17 @@ export class EncuestaComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private datosEncuestas: DatosEncuestaService
-    ) {}
+        private datosEncuestas: DatosEncuestaService,
+        private store: LocalStoreService
+    ) {
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
+        this.perfil = this.store.getItem('dremoPerfil')
+    }
 
     ngOnInit(): void {
         this.formEncuesta = this.fb.group({
+            iYAcadId: [this.iYAcadId],
+            iCredEntPerfId: [this.perfil.iCredEntPerfId],
             iEncuId: [null],
             cEncuNombre: ['', Validators.required],
             cEncuDescripcion: ['', Validators.required],
@@ -63,9 +73,14 @@ export class EncuestaComponent implements OnInit {
             iEstado: [1, Validators.required],
             dEncuDesde: [null, Validators.required],
             dEncuHasta: [null, Validators.required],
+            poblacion: [null],
+            editores: [null],
+            jsonPoblacion: [null],
+            jsonEditores: [null],
         })
 
         this.formPoblacion = this.fb.group({
+            iEncuPobId: [null],
             iNivelTipoId: [null],
             iCursoId: [null],
             iTipoSectorId: [null],
@@ -80,6 +95,7 @@ export class EncuestaComponent implements OnInit {
         })
 
         this.formEditores = this.fb.group({
+            iEncuPobId: [null],
             iPerfilId: [null],
             cPerfilNomnre: [''],
             iEncuOpcId: [null],
@@ -264,7 +280,8 @@ export class EncuestaComponent implements OnInit {
         ]
         poblacion = poblacion.filter((item: any) => item != null)
         this.formPoblacion.get('poblacion')?.setValue(poblacion.join(', '))
-        this.datosEncuestas.getCantidadPoblacion(poblacion)
+        this.formEncuesta.get('poblacion')?.setValue(poblacion)
+        this.formPoblacion.get('iEncuPobId')?.setValue(new Date().getTime())
     }
 
     actualizarEditores() {
@@ -282,6 +299,42 @@ export class EncuestaComponent implements OnInit {
         this.formEditores
             .get('cEncuOpcNombre')
             ?.setValue(opcion ? opcion.label : '')
+        this.formPoblacion.get('iEncuPermId')?.setValue(new Date().getTime())
+    }
+
+    formControlJsonStringify(
+        form: FormGroup,
+        formJson: string,
+        formControlName: string | string[] | null,
+        groupControl: string | null = null
+    ): void {
+        form.get(formJson).setValue(null)
+        if (!formControlName) {
+            return null
+        }
+        const items = []
+        if (typeof formControlName === 'string') {
+            formControlName = [formControlName]
+        }
+        formControlName.forEach((control) => {
+            if (form.get(control).value === null) {
+                return null
+            }
+            form.get(control).value.forEach((item) => {
+                if (groupControl) {
+                    items.push({
+                        [groupControl]: item,
+                    })
+                } else if (groupControl == '') {
+                    items.push(item)
+                } else {
+                    items.push({
+                        [control]: item,
+                    })
+                }
+            })
+        })
+        form.get(formJson).setValue(JSON.stringify(items))
     }
 
     guardarEncuesta() {
@@ -289,8 +342,9 @@ export class EncuestaComponent implements OnInit {
             this._messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'Debe especificar los campos obligatorios',
+                detail: 'Debe llenar todos los campos de la primera sección: Información General',
             })
+            return
         }
 
         if (this.poblacion.length == 0) {
@@ -299,13 +353,48 @@ export class EncuestaComponent implements OnInit {
                 summary: 'Advertencia',
                 detail: 'Debe especificar al menos una población objetivo',
             })
+            return
         }
+
+        this.formControlJsonStringify(
+            this.formEncuesta,
+            'jsonPoblacion',
+            'poblacion',
+            ''
+        )
+        this.formControlJsonStringify(
+            this.formEncuesta,
+            'jsonEditores',
+            'editores',
+            ''
+        )
+        console.log(this.formEncuesta.value, 'form encuesta')
+        this.datosEncuestas.guardarEncuesta(this.formEncuesta.value).subscribe({
+            next: (data: any) => {
+                console.log(data, 'guardar encuesta')
+                this._messageService.add({
+                    severity: 'success',
+                    summary: 'Registro exitoso',
+                    detail: 'Se registraron los datos',
+                })
+                this.es_visible.emit(false)
+            },
+            error: (error) => {
+                console.error('Error guardando encuesta:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                })
+            },
+        })
     }
 
     agregarPoblacion() {
         this.actualizarPoblacion()
         const form: Array<object> = this.formPoblacion.value
         this.poblacion = [...this.poblacion, form]
+        this.formEncuesta.get('poblacion')?.setValue(this.poblacion)
         this.formPoblacion.reset()
     }
 
@@ -313,14 +402,45 @@ export class EncuestaComponent implements OnInit {
         this.actualizarEditores()
         const form = this.formEditores.value
         this.editores = [...this.editores, form]
+        this.formEncuesta.get('editores')?.setValue(this.editores)
         this.formEditores.reset()
     }
 
-    actions: IActionTable[] = []
+    accionBtnItemTablePoblacion({ accion, item }) {
+        if (accion == 'eliminar') {
+            this.poblacion = this.poblacion.filter(
+                (poblacion: any) => item.iEncuPobId != poblacion.iEncuPobId
+            )
+        }
+    }
 
-    actionsLista: IActionTable[]
+    accionBtnItemTableEditores({ accion, item }) {
+        if (accion == 'eliminar') {
+            this.editores = this.editores.filter(
+                (editor: any) => item.iEncuPobId != editor.iEncuPobId
+            )
+        }
+    }
 
-    columns = []
+    actions_poblacion: IActionTable[] = [
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
+
+    actions_editores: IActionTable[] = [
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
 
     columns_poblacion = [
         {

@@ -26,12 +26,10 @@
             class="p-0 m-0"
         >
             <form [formGroup]="formEncuesta">
-                <div
-                    class="grid p-fluid mt-3 border-round border-2 surface-border p-3"
-                >
+                <div class="grid mt-3">
                     <div class="col-12">
                         <p-inputGroup>
-                            <p-inputGroupAddon> Nombre * </p-inputGroupAddon>
+                            <p-inputGroupAddon>Nombre</p-inputGroupAddon>
                             <input
                                 type="text"
                                 pInputText
@@ -42,9 +40,7 @@
                     </div>
                     <div class="col-12">
                         <p-inputGroup>
-                            <p-inputGroupAddon>
-                                Descripción *
-                            </p-inputGroupAddon>
+                            <p-inputGroupAddon> Descripción </p-inputGroupAddon>
                             <textarea
                                 formControlName="cEncuDescripcion"
                                 class="w-full"
@@ -56,7 +52,7 @@
                     </div>
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
-                            <p-inputGroupAddon> Categoría * </p-inputGroupAddon>
+                            <p-inputGroupAddon> Categoría </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="categorias"
                                 formControlName="iEncuCateId"
@@ -71,7 +67,7 @@
                     </div>
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
-                            <p-inputGroupAddon> Estado * </p-inputGroupAddon>
+                            <p-inputGroupAddon> Estado </p-inputGroupAddon>
                             <p-dropdown
                                 [options]="estados"
                                 formControlName="iEstado"
@@ -87,7 +83,7 @@
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
                             <p-inputGroupAddon>
-                                Fecha de inicio *
+                                Fecha de inicio
                             </p-inputGroupAddon>
                             <p-calendar
                                 formControlName="dEncuDesde"
@@ -104,7 +100,7 @@
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
                             <p-inputGroupAddon>
-                                Fecha de cierre *
+                                Fecha de cierre
                             </p-inputGroupAddon>
                             <p-calendar
                                 formControlName="dEncuHasta"
@@ -159,9 +155,7 @@
             let-index="index"
         >
             <form [formGroup]="formPoblacion">
-                <div
-                    class="grid p-fluid mt-3 border-round border-2 surface-border p-3"
-                >
+                <div class="grid mt-3">
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
                             <p-inputGroupAddon>Nivel</p-inputGroupAddon>
@@ -305,17 +299,27 @@
                             (onClick)="agregarPoblacion()"
                         />
                     </div>
-                    <div class="col-12">
-                        <app-table-primeng
-                            [columnas]="columns_poblacion"
-                            [showCaption]="false"
-                            [data]="poblacion"
-                            [showPaginator]="false"
-                            [showSortIcon]="false"
-                            [actions]="actions"
-                        />
-                    </div>
                 </div>
+                <p-panel header="POBLACIÓN OBJETIVO">
+                    <ng-template pTemplate="icons">
+                        {{ cantidad_poblacion }}
+                    </ng-template>
+                    <div class="grid mt-3">
+                        <div class="col-12">
+                            <app-table-primeng
+                                [columnas]="columns_poblacion"
+                                [showCaption]="false"
+                                [data]="poblacion"
+                                (accionBtnItem)="
+                                    accionBtnItemTablePoblacion($event)
+                                "
+                                [showPaginator]="false"
+                                [showSortIcon]="false"
+                                [actions]="actions_poblacion"
+                            />
+                        </div>
+                    </div>
+                </p-panel>
                 <div class="flex pt-4 justify-content-between">
                     <p-button
                         label="Regresar"
@@ -360,7 +364,7 @@
             let-index="index"
         >
             <form [formGroup]="formEditores">
-                <div class="grid">
+                <div class="grid mt-3">
                     <div class="col-12 md:col-6">
                         <p-inputGroup>
                             <p-inputGroupAddon>Perfil</p-inputGroupAddon>
@@ -398,16 +402,23 @@
                         (onClick)="agregarEditor()"
                     />
                 </div>
-                <div class="col-12">
-                    <app-table-primeng
-                        [columnas]="columns_editores"
-                        [showCaption]="false"
-                        [data]="editores"
-                        [showPaginator]="false"
-                        [showSortIcon]="false"
-                        [actions]="actions"
-                    />
-                </div>
+                <p-panel header="PERMISOS DE EDICIÓN">
+                    <div class="grid mt-3">
+                        <div class="col-12">
+                            <app-table-primeng
+                                [columnas]="columns_editores"
+                                (accionBtnItem)="
+                                    accionBtnItemTableEditores($event)
+                                "
+                                [showCaption]="false"
+                                [data]="editores"
+                                [showPaginator]="false"
+                                [showSortIcon]="false"
+                                [actions]="actions_editores"
+                            />
+                        </div>
+                    </div>
+                </p-panel>
             </form>
             <div class="flex pt-4 justify-content-start">
                 <p-button

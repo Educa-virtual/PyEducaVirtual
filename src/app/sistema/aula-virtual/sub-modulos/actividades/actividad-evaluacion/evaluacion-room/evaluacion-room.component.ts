@@ -13,6 +13,9 @@ import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion
 import { ActivatedRoute } from '@angular/router'
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
+import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -24,6 +27,9 @@ import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evalua
         EvaluacionPreguntasComponent,
         EvaluacionRoomCalificacionComponent,
         EvaluacionEstudiantesComponent,
+        RubricaEvaluacionComponent,
+        RubricasComponent,
+        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -42,10 +48,10 @@ export class EvaluacionRoomComponent implements OnInit {
     private _ActivatedRoute = inject(ActivatedRoute)
 
     rubricas = [
-        {
-            iInstrumentoId: 0,
-            cInstrumentoNombre: 'Sin instrumento de evaluación',
-        },
+        // {
+        //     iInstrumentoId: 0,
+        //     cInstrumentoNombre: 'Sin instrumento de evaluación',
+        // },
     ]
 
     tabs = [
@@ -90,9 +96,11 @@ export class EvaluacionRoomComponent implements OnInit {
         }
         this._evaluacionService.obtenerRubricas(params).subscribe({
             next: (data) => {
-                data.forEach((element) => {
-                    this.rubricas.push(element)
-                })
+                console.log(data)
+                this.rubricas = data
+                // data.forEach((element) => {
+                //     this.rubricas.push(element)
+                // })
             },
         })
     }
@@ -123,6 +131,13 @@ export class EvaluacionRoomComponent implements OnInit {
     iNivelCicloId: string | number
     iCursoId: string | number
 
+    params = {
+        iCursoId: null,
+        iDocenteId: null,
+        idDocCursoId: null,
+        iEvaluacionId: null,
+    }
+
     ngOnInit() {
         this.iEvaluacionId =
             this._ActivatedRoute.snapshot.queryParamMap.get('iEvaluacionId')
@@ -131,6 +146,13 @@ export class EvaluacionRoomComponent implements OnInit {
         this.iCursoId =
             this._ActivatedRoute.snapshot.queryParamMap.get('iNivelCicloId')
         this.obtenerEvaluacion(this.iEvaluacionId)
+        this.params.iCursoId = this.iCursoId
+        this.params.iDocenteId = this._ConstantesService.iDocenteId
+        this.params.iEvaluacionId = this.iEvaluacionId
+        this.params.idDocCursoId =
+            this._ActivatedRoute.snapshot.queryParamMap.get('idDocCursoId')
+
+        //this.obtenerRubricas()
     }
     // obtiene la evalución
     obtenerEvaluacion(iEvaluacionId: string | number) {

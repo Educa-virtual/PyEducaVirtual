@@ -1,14 +1,14 @@
 <app-toolbar-primeng
     [title]="
         'Evaluación Formativa: ' +
-        (evaluacion?.cEvaluacionTitulo || 'Título no disponible')
+        (evaluacion?.cHeader || 'Título no disponible')
     "
 ></app-toolbar-primeng>
-<!-- <app-evaluacion-header
-    [selectedEstudianteValue]="selectedEstudianteValue"
+<app-evaluacion-header
+    [selectedEstudianteValue]="estudianteSeleccionado"
     [showListaEstudiantes]="showListaEstudiantes"
     (accionBtnItem)="accionBtnItem($event)"
-></app-evaluacion-header> -->
+></app-evaluacion-header>
 <div class="grid mt-3">
     <div
         class="col-12 w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch grid"

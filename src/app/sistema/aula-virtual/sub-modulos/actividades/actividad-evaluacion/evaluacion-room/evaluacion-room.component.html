@@ -46,6 +46,46 @@
                         }
                     </div>
                 </app-tab-descripcion-actividades>
+                <article class="card mt-2">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
+                        <app-rubricas
+                            [title]="'Rúbricas'"
+                            mode="SELECTION"
+                            [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"
+                        ></app-rubricas>
+                    </div>
+
+                    <div class="">
+                        <app-rubrica-evaluacion
+                            (clickNameRubrica)="showRubrica($event)"
+                            class="w-full"
+                        >
+                        </app-rubrica-evaluacion>
+                    </div>
+                    <div class="">
+                        <p-dialog
+                            [modal]="true"
+                            [header]="'Rubrica - ' + dialogRubricaInfo.header"
+                            [(visible)]="dialogRubricaInfo.visible"
+                            [style]="{ width: '75rem' }"
+                            [breakpoints]="{
+                                '1199px': '75vw',
+                                '575px': '90vw',
+                            }"
+                            [maximizable]="true"
+                        >
+                            <app-rubrica-calificar
+                                [enableCellSelection]="false"
+                                [showSortIcon]="false"
+                                class="w-full"
+                            >
+                            </app-rubrica-calificar>
+                        </p-dialog>
+                    </div>
+                </article>
             }
             @case ('preguntas') {
                 <app-evaluacion-preguntas

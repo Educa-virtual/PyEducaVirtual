@@ -75,18 +75,6 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 )
             }
             this.bloquearRespuestas = Number(this.evaluacion?.iEstado) === 10
-            //console.log(this.evaluacion)
-            // const totalPreguntas = this.evaluacion
-            //     ? this.evaluacion?.preguntas.length
-            //     : 0
-            // if (this.evaluacion && totalPreguntas > 0) {
-            //     this.evaluacion.preguntas.forEach((item, index) => {
-            //         this.preguntas.push({
-            //             id: index + 1,
-            //             preguntas: item,
-            //         })
-            //     })
-            // }
         }
     }
 
@@ -158,7 +146,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                                 }
                             }
 
-                            // Paso 4: Inicializar alternativas con campos auxiliares
+                            // Paso 4: Inicializar alternativas
                             const alternativas =
                                 pregunta.jsonPreguntas?.jsonAlternativas ||
                                 pregunta.jsonAlternativas ||
@@ -187,7 +175,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                                 }
                             }
 
-                            // Paso 6: Establecer cRptaRadio si es respuesta única
+                            // Paso 6: Establecer campos en pregunta principal
                             if (
                                 Number(pregunta.iTipoPregId) === 1 &&
                                 rpta?.rptaUnica
@@ -195,23 +183,126 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                                 pregunta.cRptaRadio = rpta.rptaUnica
                             }
 
-                            // Paso 7: Establecer cRptaCheck si es múltiple
                             if (
                                 Number(pregunta.iTipoPregId) === 2 &&
                                 Array.isArray(rpta?.rptaMultiple)
                             ) {
-                                // Guardar directamente como array central
                                 pregunta.cRptaCheck = rpta.rptaMultiple
+
+                                const alternativas =
+                                    pregunta.jsonPreguntas?.jsonAlternativas ||
+                                    pregunta.jsonAlternativas ||
+                                    []
+
+                                alternativas.forEach((alt) => {
+                                    alt.cRptaCheck = rpta.rptaMultiple.includes(
+                                        alt.cBancoAltLetra
+                                    )
+                                })
                             }
 
-                            // Paso 8: Establecer cRptaTexto si es libre
                             if (
                                 Number(pregunta.iTipoPregId) === 3 &&
                                 rpta?.rptaLibre
                             ) {
                                 pregunta.cRptaTexto = rpta.rptaLibre
                             }
+
+                            // PASO 7: Si jsonPreguntas es un array (caso de encabezado), iterar e inicializar campos
+                            if (Array.isArray(pregunta.jsonPreguntas)) {
+                                pregunta.jsonPreguntas.forEach(
+                                    (jsonPregunta) => {
+                                        // A. Parsear jsonAlternativas si es string
+                                        if (
+                                            typeof jsonPregunta.jsonAlternativas ===
+                                            'string'
+                                        ) {
+                                            try {
+                                                jsonPregunta.jsonAlternativas =
+                                                    JSON.parse(
+                                                        jsonPregunta.jsonAlternativas
+                                                    )
+                                            } catch (e) {
+                                                console.error(
+                                                    'Error en alternativas hijas:',
+                                                    e
+                                                )
+                                                jsonPregunta.jsonAlternativas =
+                                                    []
+                                            }
+                                        }
+
+                                        // B. Inicializar alternativas hijas
+                                        jsonPregunta.jsonAlternativas?.forEach(
+                                            (alt) => {
+                                                alt.cRptaCheck = false
+                                                alt.cRptaRadio = false
+                                                alt.cRptaTexto = null
+                                            }
+                                        )
+
+                                        // C. Parsear jEvalRptaEstudiante hija
+                                        let rptaHija =
+                                            jsonPregunta.jEvalRptaEstudiante
+                                        if (typeof rptaHija === 'string') {
+                                            try {
+                                                rptaHija = JSON.parse(rptaHija)
+                                            } catch (e) {
+                                                console.warn(
+                                                    'Error al parsear respuesta hija:',
+                                                    e,
+                                                    rptaHija
+                                                )
+                                                rptaHija = {}
+                                            }
+                                        }
+
+                                        // D. Respuesta única hija
+                                        if (
+                                            Number(jsonPregunta.iTipoPregId) ===
+                                                1 &&
+                                            rptaHija?.rptaUnica
+                                        ) {
+                                            jsonPregunta.cRptaRadio =
+                                                rptaHija.rptaUnica
+                                        }
+
+                                        // E. Respuesta múltiple hija
+                                        if (
+                                            Number(jsonPregunta.iTipoPregId) ===
+                                                2 &&
+                                            Array.isArray(
+                                                rptaHija?.rptaMultiple
+                                            )
+                                        ) {
+                                            jsonPregunta.cRptaCheck =
+                                                rptaHija.rptaMultiple
+
+                                            jsonPregunta.jsonAlternativas?.forEach(
+                                                (alt) => {
+                                                    alt.cRptaCheck =
+                                                        rptaHija.rptaMultiple.includes(
+                                                            alt.cBancoAltLetra
+                                                        )
+                                                }
+                                            )
+                                        }
+
+                                        // F. Respuesta libre hija
+                                        if (
+                                            Number(jsonPregunta.iTipoPregId) ===
+                                                3 &&
+                                            rptaHija?.rptaLibre
+                                        ) {
+                                            jsonPregunta.cRptaTexto =
+                                                rptaHija.rptaLibre
+                                        }
+                                    }
+                                )
+                            }
                         })
+
+                        console.log(this.preguntas)
                     }
                 },
                 error: (error) => {

@@ -133,12 +133,10 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     public estudianteMatriculadosxGrado = []
 
     showListaEstudiantes: boolean = true
-
+    estudianteSeleccionado
     updateSelectedEstudiante(value: any) {
-        console.log(value)
+        this.estudianteSeleccionado = value
         this._state.update((state) => {
-            console.log('selectedEstudiante')
-            console.log(value)
             this.router.navigate([], {
                 queryParams: {
                     // iEvalPromId: value.iEvalPromId ?? undefined,

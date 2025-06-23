@@ -452,6 +452,8 @@ export class ForoRoomComponent implements OnInit {
             .subscribe({
                 next: (resp) => {
                     this.foro = resp.length ? resp[0] : {}
+                    console.log('datos generales foro', this.foro)
+                    this.obtenerResptDocente()
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []
@@ -489,24 +491,22 @@ export class ForoRoomComponent implements OnInit {
                 },
             })
     }
+    respuestaDocente: string
     // obtener retroalimentacion de docente a estudiante x su comentario
     obtenerResptDocente() {
         const idEstudiante = Number(this.iEstudianteId)
         const idForoId = Number(this.foro.iForoId)
 
-        // const where = {
-        //     iEstudianteId: idEstudiante,
-        //     iForoId: idForoId
-        // }
-        // console.log(where)
+        // console.log('id foro',idForoId)
         this._aulaService
             .obtenerResptDocente({
                 iEstudianteId: idEstudiante,
                 iForoId: idForoId,
             })
             .subscribe((Data) => {
+                // cForoRptaDocente
                 this.resptDocente = Data['data']
-                // console.log(this.resptDocente)
+                console.log('respuesta docente', this.resptDocente)
             })
     }
     formatDateISO(date: string | number | Date): string {

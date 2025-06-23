@@ -16,14 +16,14 @@
             class="flex col-12 md:col-3 justify-content-end align-items-center"
         >
             <!-- *ngIf="isDisabled" -->
-            <p-button
+            <!-- <p-button
                 icon="pi pi-check"
                 label="Publicar"
                 severity="warning"
                 class="mr-3"
                 [hidden]="iPerfilId === ESTUDIANTE"
                 [disabled]="esBotonDeshabilitado()"
-            />
+            /> -->
             <p-button
                 icon="pi pi-plus"
                 label="Agregar"
@@ -74,7 +74,7 @@
                                     pInputText
                                     class="w-full custom-hover-input mb-2"
                                     placeholder="Tu respuesta...."
-                                    [(ngModel)]="respuesta"
+                                    [(ngModel)]="respuestasTexto[item.iPregId]"
                                     [readonly]="iPerfilId === DOCENTE"
                                     (blur)="guadarRespuesta(item)"
                                 />
@@ -92,12 +92,15 @@
                                             id="opcion1"
                                             name="grupoOpciones"
                                             [value]="opcion.iPregAlterId"
-                                            [(ngModel)]="selectedOption"
+                                            [(ngModel)]="
+                                                respuestasOpcion[item.iPregId]
+                                            "
                                             class="mr-2"
                                             (ngModelChange)="
                                                 guardarRespuestaOpcion(
-                                                    item,
-                                                    $event
+                                                    item.iPregId,
+                                                    $event,
+                                                    item.jsonAlternativas
                                                 )
                                             "
                                         ></p-radioButton>
@@ -116,10 +119,18 @@
                                     class="mb-2"
                                 >
                                     <p-checkbox
-                                        id="opcion1"
-                                        name="grupoOpciones"
                                         [value]="opcion.iPregAlterId"
-                                        [(ngModel)]="selectedOption"
+                                        [(ngModel)]="
+                                            respuestasCasilla[item.iPregId]
+                                        "
+                                        (onChange)="
+                                            guardarRespuestasCasilla(
+                                                item.iPregId,
+                                                opcion,
+                                                $event.checked
+                                            )
+                                        "
+                                        binary="false"
                                         class="mr-2"
                                     />
 
@@ -134,11 +145,21 @@
                             <div class="col-6 mb-5">
                                 <p-dropdown
                                     [options]="item.jsonAlternativas"
-                                    [(ngModel)]="selectedDropdown"
+                                    [(ngModel)]="
+                                        respuestasDropdown[item.iPregId]
+                                    "
                                     optionLabel="cAlternativa"
+                                    optionValue="iPregAlterId"
                                     placeholder="Selecciona una opción"
                                     class="w-full custom-hover-input mb-2"
                                     styleClass="w-full"
+                                    (onChange)="
+                                        guardarRespuestaDropdown(
+                                            item.iPregId,
+                                            $event.value,
+                                            item.jsonAlternativas
+                                        )
+                                    "
                                 ></p-dropdown>
                             </div>
                         }

@@ -17,7 +17,7 @@
             >
             </app-toolbar-primeng>
             @if (iPerfilId === DOCENTE) {
-                <div class="card">
+                <div class="card mt-2">
                     <div class="grid">
                         <div class="col-12 md:col-8">
                             <!-- Mostrar fecha y hora de inicio -->
@@ -75,9 +75,12 @@
                 </div>
             }
             @if (iPerfilId === ESTUDIANTE) {
-                <div clas="grid">
-                    <div class="col-12">
-                        <div class="card">
+                <div class="grid">
+                    <div
+                        class="col-12"
+                        [ngClass]="{ 'md:col-8': resptDocente?.length > 0 }"
+                    >
+                        <div class="card mt-2">
                             <div class="grid">
                                 <div class="col-12 md:col-8">
                                     <!-- Mostrar fecha y hora de inicio -->
@@ -146,33 +149,38 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div
+                        class="col-4"
+                        [ngClass]="{ 'md:col-4': resptDocente?.length > 0 }"
+                    >
                         <div
-                            class="card mt-4"
+                            class="card mt-2"
                             *ngFor="let respuesta of resptDocente"
                         >
                             <h4>Mi Retroalimentación descriptiva:</h4>
-                            <!-- <p-divider></p-divider> -->
-                            <!-- <p-inputGroup>
-                        <p-inputGroupAddon> Nota </p-inputGroupAddon>
-                        <input pInputText />
-                    </p-inputGroup> -->
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
                                     Comentario Docente:
                                 </p-inputGroupAddon>
-                                <textarea
+                                <!-- <textarea
                                     pInputText
                                     rows="1"
                                     id="comentarioDocente"
                                     pInputTextarea
                                     rows="5"
                                     [disabled]="isDisabled"
-                                    class="p-inputtextarea-lg"
+                                    class=""
                                     placeholder="Muestra Comentario Docente"
                                 >
-                            {{ respuesta?.cForoRptaDocente }} </textarea
-                                >
+                                {{ respuesta?.cForoRptaDocente }} </textarea
+                                > -->
+                                <!-- [(ngModel)]="respuestaDocente" -->
+                                <textarea rows="5" cols="30" pInputTextarea>
+                                    {{ respuesta?.cForoRptaDocente }}
+                                </textarea>
                             </p-inputGroup>
                         </div>
                     </div>

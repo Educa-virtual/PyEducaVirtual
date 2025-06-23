@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+import { CommonModule, NgFor } from '@angular/common'
 import {
     Component,
     computed,
@@ -78,6 +78,7 @@ const leyendas = {
         NoDataComponent,
         RubricaCalificarComponent,
         CardOrderListComponent,
+        NgFor,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
@@ -246,10 +247,10 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                 )
             })
     }
-
+    preguntasEstudiante: any = []
     private obtenerEvaluacionRespuestasEstudiante() {
         // if (!this._state().evaluacionEstudiante) return
-
+        this.preguntasEstudiante = []
         const params = {
             iEvaluacionId: this.iEvaluacionId,
             iEstudianteId: this.selectedEstudiante().iEstudianteId,
@@ -259,13 +260,16 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (preguntas) => {
-                    this._state.update((current) => ({
-                        ...current,
-                        selectedEstudiante: {
-                            ...current.selectedEstudiante,
-                            preguntas: this.mapPreguntas(preguntas),
-                        },
-                    }))
+                    console.log(preguntas)
+                    this.preguntasEstudiante = preguntas
+                    console.log(this.preguntasEstudiante)
+                    // this._state.update((current) => ({
+                    //     ...current,
+                    //     selectedEstudiante: {
+                    //         ...current.selectedEstudiante,
+                    //         preguntas: this.mapPreguntas(preguntas),
+                    //     },
+                    // }))
                 },
             })
     }

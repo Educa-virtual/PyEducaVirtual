@@ -59,7 +59,11 @@
                     [iEstado]="evaluacion?.iEstado"
                 ></app-evaluacion-room-calificacion>
             }
-            @case ('rendir-examen') {}
+            @case ('rendir-examen') {
+                <app-evaluacion-estudiantes
+                    [evaluacion]="evaluacion"
+                ></app-evaluacion-estudiantes>
+            }
         }
     </div>
 </div>

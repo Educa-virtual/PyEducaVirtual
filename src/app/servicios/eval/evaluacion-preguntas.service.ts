@@ -30,6 +30,19 @@ export class EvaluacionPreguntasService {
         )
     }
 
+    obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(
+        iEvaluacionId: string | number,
+        iEstudianteId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.get(
+            `${baseUrl}/evaluaciones/evaluacion-preguntas/${iEvaluacionId}/estudiante/${iEstudianteId}`,
+            {
+                params,
+            }
+        )
+    }
+
     actualizarEvaluacionPreguntasxiEvalPregId(
         iEvalPregId: string | number,
         params

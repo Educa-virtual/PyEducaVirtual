@@ -12,6 +12,7 @@ import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion-preguntas.component'
 import { ActivatedRoute } from '@angular/router'
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
+import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -22,6 +23,7 @@ import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificac
         TabDescripcionActividadesComponent,
         EvaluacionPreguntasComponent,
         EvaluacionRoomCalificacionComponent,
+        EvaluacionEstudiantesComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',

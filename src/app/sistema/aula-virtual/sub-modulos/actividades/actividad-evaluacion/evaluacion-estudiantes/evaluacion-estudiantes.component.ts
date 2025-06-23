@@ -17,6 +17,7 @@ import { AccordionModule } from 'primeng/accordion'
 import { RubricasModule } from '../../../../features/rubricas/rubricas.module'
 import { RubricaEvaluacionComponent } from '../../../../features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service'
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -44,12 +45,13 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     private _MessageService = inject(MessageService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private _ConfirmationService = inject(ConfirmationService)
+    private _EvaluacionPreguntasService = inject(EvaluacionPreguntasService)
 
     environment = environment.backend
     @Input() evaluacion
     evaluacion1: { iTiempo: number | null } = { iTiempo: 120 }
 
-    iPreguntaId: number = 0
+    iPreguntaId: number = 1
     preguntas = []
     itemPreguntas = []
     esUltimaPregunta: boolean = false
@@ -60,24 +62,184 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     toggleSection: any
     sections: any
     tabs: any
-
+    dInicio = new Date()
+    iEvaluacionId
+    bloquearRespuestas: boolean = false
     ngOnChanges(changes) {
         if (changes.evaluacion?.currentValue) {
             this.evaluacion = changes.evaluacion.currentValue
-            const totalPreguntas = this.evaluacion
-                ? this.evaluacion.preguntas.length
-                : 0
-            if (this.evaluacion && totalPreguntas > 0) {
-                this.evaluacion.preguntas.forEach((item, index) => {
-                    this.preguntas.push({
-                        id: index + 1,
-                        preguntas: item,
-                    })
-                })
+            if (this.evaluacion?.iEvaluacionId) {
+                this.iEvaluacionId = this.evaluacion?.iEvaluacionId
+                this.obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(
+                    this.evaluacion?.iEvaluacionId
+                )
             }
+            this.bloquearRespuestas = Number(this.evaluacion?.iEstado) === 10
+            //console.log(this.evaluacion)
+            // const totalPreguntas = this.evaluacion
+            //     ? this.evaluacion?.preguntas.length
+            //     : 0
+            // if (this.evaluacion && totalPreguntas > 0) {
+            //     this.evaluacion.preguntas.forEach((item, index) => {
+            //         this.preguntas.push({
+            //             id: index + 1,
+            //             preguntas: item,
+            //         })
+            //     })
+            // }
         }
     }
 
+    obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(iEvaluacionId) {
+        if (!iEvaluacionId) return
+        const iEstudianteId = this._ConstantesService.iEstudianteId
+        const params = {
+            iCredId: this._ConstantesService.iCredId,
+        }
+        this._EvaluacionPreguntasService
+            .obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(
+                iEvaluacionId,
+                iEstudianteId,
+                params
+            )
+            .subscribe({
+                next: (resp) => {
+                    if (resp.validated) {
+                        this.preguntas = resp.data
+                        this.preguntas.forEach((pregunta) => {
+                            // Paso 1: Parsear jsonPreguntas si es string
+                            if (typeof pregunta.jsonPreguntas === 'string') {
+                                try {
+                                    pregunta.jsonPreguntas = JSON.parse(
+                                        pregunta.jsonPreguntas
+                                    )
+                                } catch (e) {
+                                    console.error(
+                                        'Error al parsear jsonPreguntas:',
+                                        e
+                                    )
+                                    pregunta.jsonPreguntas = {}
+                                }
+                            }
+
+                            // Paso 2: Parsear jsonAlternativas dentro de jsonPreguntas
+                            if (
+                                pregunta.jsonPreguntas &&
+                                typeof pregunta.jsonPreguntas
+                                    .jsonAlternativas === 'string'
+                            ) {
+                                try {
+                                    pregunta.jsonPreguntas.jsonAlternativas =
+                                        JSON.parse(
+                                            pregunta.jsonPreguntas
+                                                .jsonAlternativas
+                                        )
+                                } catch (e) {
+                                    console.error(
+                                        'Error al parsear jsonAlternativas (en jsonPreguntas):',
+                                        e
+                                    )
+                                    pregunta.jsonPreguntas.jsonAlternativas = []
+                                }
+                            }
+
+                            // Paso 3: Parsear jsonAlternativas raíz si es string
+                            if (typeof pregunta.jsonAlternativas === 'string') {
+                                try {
+                                    pregunta.jsonAlternativas = JSON.parse(
+                                        pregunta.jsonAlternativas
+                                    )
+                                } catch (e) {
+                                    console.error(
+                                        'Error al parsear jsonAlternativas (raíz):',
+                                        e
+                                    )
+                                    pregunta.jsonAlternativas = []
+                                }
+                            }
+
+                            // Paso 4: Inicializar alternativas con campos auxiliares
+                            const alternativas =
+                                pregunta.jsonPreguntas?.jsonAlternativas ||
+                                pregunta.jsonAlternativas ||
+                                []
+
+                            if (Array.isArray(alternativas)) {
+                                alternativas.forEach((alt) => {
+                                    alt.cRptaRadio = false
+                                    alt.cRptaCheck = false
+                                    alt.cRptaTexto = null
+                                })
+                            }
+
+                            // Paso 5: Parsear jEvalRptaEstudiante si es string
+                            let rpta = pregunta.jEvalRptaEstudiante
+                            if (typeof rpta === 'string') {
+                                try {
+                                    rpta = JSON.parse(rpta)
+                                } catch (e) {
+                                    console.warn(
+                                        'Error al parsear jEvalRptaEstudiante:',
+                                        e,
+                                        rpta
+                                    )
+                                    rpta = {}
+                                }
+                            }
+
+                            // Paso 6: Establecer cRptaRadio si es respuesta única
+                            if (
+                                Number(pregunta.iTipoPregId) === 1 &&
+                                rpta?.rptaUnica
+                            ) {
+                                pregunta.cRptaRadio = rpta.rptaUnica
+                            }
+
+                            // Paso 7: Establecer cRptaCheck si es múltiple
+                            if (
+                                Number(pregunta.iTipoPregId) === 2 &&
+                                Array.isArray(rpta?.rptaMultiple)
+                            ) {
+                                // Guardar directamente como array central
+                                pregunta.cRptaCheck = rpta.rptaMultiple
+                            }
+
+                            // Paso 8: Establecer cRptaTexto si es libre
+                            if (
+                                Number(pregunta.iTipoPregId) === 3 &&
+                                rpta?.rptaLibre
+                            ) {
+                                pregunta.cRptaTexto = rpta.rptaLibre
+                            }
+                        })
+                    }
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                },
+            })
+    }
     iniciarEvaluacion() {
         this.iPreguntaId++
         this.itemPreguntas = this.preguntas.find(
@@ -158,7 +320,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         console.log(this.itemPreguntas)
     }
     //Enviando Respuesta unica,multiple,libre
-    enviarRpta(tipoRpta, pregunta) {
+    enviarRpta(tipoRpta, pregunta, item) {
         let params
         switch (tipoRpta) {
             case 'unica':
@@ -169,31 +331,20 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                     ruta: 'guardarRespuestaxiEstudianteId',
                     data: {
                         iEstudianteId: this._ConstantesService.iEstudianteId,
-                        iEvalPregId: pregunta.iEvalPregId,
-                        iEvaluacionId: pregunta.iEvaluacionId,
+                        iEvalPregId: item.iEvalPregId,
+                        iEvaluacionId: this.iEvaluacionId,
                         jEvalRptaEstudiante:
-                            '{"rptaUnica":"' + pregunta.cRptaRadio + '"}',
+                            '{"rptaUnica":"' + item.cRptaRadio + '"}',
                     },
                     params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, '')
                 break
             case 'multiple':
-                let respuestas = ''
-                pregunta.alternativas.forEach((item) => {
-                    const cMarcado = item.cRptaCheck
-                        ? item.cRptaCheck.length
-                            ? item.cRptaCheck[0]
-                            : null
-                        : null
-                    if (cMarcado) {
-                        respuestas = respuestas + '"' + item.cRptaCheck + '",'
-                    }
-                })
-                const letra_ultimo = respuestas.charAt(respuestas.length - 1)
-                if (letra_ultimo === ',') {
-                    respuestas = respuestas.substring(0, respuestas.length - 1)
-                }
+                const respuestasArray = item.cRptaCheck || []
+                const respuestas = respuestasArray
+                    .map((r) => `"${r}"`)
+                    .join(',')
 
                 params = {
                     petition: 'post',
@@ -202,10 +353,9 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                     ruta: 'guardarRespuestaxiEstudianteId',
                     data: {
                         iEstudianteId: this._ConstantesService.iEstudianteId,
-                        iEvalPregId: pregunta.iEvalPregId,
-                        iEvaluacionId: pregunta.iEvaluacionId,
-                        jEvalRptaEstudiante:
-                            '{"rptaMultiple": [' + respuestas + ']}',
+                        iEvalPregId: item.iEvalPregId,
+                        iEvaluacionId: this.iEvaluacionId,
+                        jEvalRptaEstudiante: `{"rptaMultiple":[${respuestas}]}`,
                     },
                     params: { skipSuccessMessage: true },
                 }
@@ -279,7 +429,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail: error?.error?.mensaje,
                     sticky: true, // Aplicar también si es necesario para errores
                 })
             },
@@ -348,5 +498,31 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         const horas = Math.floor(tiempoEnMinutos / 60)
         const minutos = tiempoEnMinutos % 60
         return `${horas} horas ${minutos} minutos`
+    }
+
+    finalizado: any
+    classTime = 'text-blue-500 font-bold'
+    timeEvent($event) {
+        if (this.evaluacion == null || $event) {
+            return
+        }
+        const { accion } = $event
+        switch (accion) {
+            case 'tiempo-finalizado':
+                this.classTime = 'text-green-500 font-bold'
+                this.finalizado = true
+                break
+            case 'tiempo-1-minuto-restante':
+                this.classTime = 'text-red-500 font-bold'
+                this._MessageService.add({
+                    severity: 'warn',
+                    detail: 'Queda 1 minuto para finalizar la evaluación',
+                })
+                break
+        }
+    }
+
+    mostrarMensajeToast(message) {
+        this._MessageService.add(message)
     }
 }

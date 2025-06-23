@@ -316,7 +316,13 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
-        const orden = this.totalPregunta + 1 // pregunta orden
+        const preguntasConEncabezado = this.preguntas.filter(
+            (p) => p.iEncabPregId === item.iEncabPregId
+        )
+        const preguntas = [...preguntasConEncabezado[0].pregunta].sort(
+            (a, b) => (b.iPreguntaOrden ?? 0) - (a.iPreguntaOrden ?? 0)
+        )
+        const orden = preguntas[0].iPreguntaOrden + 1
 
         if (item.iEncabPregId && item.cEncabPregContenido) {
             this.enunciadosCache.set(
@@ -336,7 +342,7 @@ export class PreguntasComponent implements OnInit {
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iEncabPregId: item.iEncabPregId,
                 cEncabPregContenido: item.iEncabPregContenido,
-                iPreguntaOrden: orden ?? null, // pregunta orden
+                iPreguntaOrden: orden ?? null,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -720,7 +726,10 @@ export class PreguntasComponent implements OnInit {
                                         )
                                     if (preguntaMultiple) {
                                         preguntaMultiple.title +=
-                                            ' #' + this.totalPregunta
+                                            ' #' +
+                                            this.totalPregunta +
+                                            ', Orden: ' +
+                                            item.iPreguntaOrden
                                     }
                                 }
                                 item.title =
@@ -728,7 +737,9 @@ export class PreguntasComponent implements OnInit {
                                     //'Probando ' +
                                     this.totalPregunta +
                                     ': ' +
-                                    (item.cPregunta || '')
+                                    (item.cPregunta || '') +
+                                    ', Orden: ' +
+                                    item.iPreguntaOrden
                             })
                         }
 

@@ -66,10 +66,6 @@ export class YearsComponent implements OnInit {
             title: '',
             visible: false,
         },
-        yearAcademico: {
-            title: '',
-            visible: false,
-        },
         distribucionBloques: {
             title: '',
             visible: false,
@@ -119,16 +115,6 @@ export class YearsComponent implements OnInit {
             iYearEstado: [''],
         })
 
-        // this.forms.yearAcademico = this.fb.group({
-        //     iYAcadId: [''],
-        //     iYearId: [''],
-        //     dtYAcadInicio: [''],
-        //     dYAcadFin: [''],
-        //     cYAcadNombre: [''],
-        //     cYAcadDescripcion: [''],
-        //     iEstado: [''],
-        // })
-
         this.forms.distribucionBloque = this.fb.group({
             iDistribucionBloqueId: [''],
             iYAcadId: [''],
@@ -156,151 +142,4 @@ export class YearsComponent implements OnInit {
             },
         })
     }
-
-    // getYearCalendarios(item: any) {
-    //     this.showCaption = 'addCalendario'
-    //     this.caption = 'Registrar Calendario Escolar'
-    //     this.query
-    //         .searchCalAcademico({
-    //             esquema: 'acad',
-    //             tabla: 'year_academicos',
-    //             campos: 'iYAcadId, iYearId,dtYAcadInicio, dYAcadFin, cYAcadNombre, cYAcadDescripcion, iEstado',
-    //             condicion: 'iYearId = ' + item.iYearId,
-    //         })
-    //         .subscribe({
-    //             next: (data: any) => {
-    //                 this.yearCalendarios = data.data
-
-    //                 console.log(this.yearCalendarios)
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error fetching Años Académicos:', error)
-    //                 this.messageService.add({
-    //                     severity: 'danger',
-    //                     summary: 'Mensaje',
-    //                     detail: 'Error en ejecución',
-    //                 })
-    //             },
-    //             complete: () => {
-    //                 console.log('Request completed')
-    //             },
-    //         })
-    // }
-
-    // addCalendario(): void {
-    //     if (this.formCalendario.valid) {
-    //         console.log(this.formCalendario.value)
-    //         //ALMACENAR LA INFORMACION
-    //         this.query
-    //             .addYear({
-    //                 json: JSON.stringify(this.formCalendario.value),
-    //                 _opcion: 'addYearCalendario',
-    //             })
-    //             .subscribe({
-    //                 next: (data: any) => {
-    //                     console.log(data)
-    //                 },
-    //                 error: (error) => {
-    //                     console.error('Error fetching turnos:', error)
-    //                     this.messageService.add({
-    //                         severity: 'danger',
-    //                         summary: 'Mensaje',
-    //                         detail: 'Error de ejecución',
-    //                     })
-    //                 },
-    //                 complete: () => {
-    //                     console.log('Request completed')
-
-    //                     this.getYearCalendarios(this.formCalendario.value)
-    //                     this.messageService.add({
-    //                         severity: 'success',
-    //                         summary: 'Mensaje',
-    //                         detail: 'Proceso exitoso',
-    //                     })
-    //                 },
-    //             })
-    //     } else {
-    //         this.messageService.add({
-    //             severity: 'warning',
-    //             summary: 'Mensaje',
-    //             detail: 'Formulario invalido',
-    //         })
-    //         console.log(
-    //             'Formulario no válido - Calendario',
-    //             this.formCalendario.invalid
-    //         )
-    //     }
-    // }
-    // updateCalendario(): void {
-    //     if (this.formCalendario.valid) {
-    //         console.log(this.formCalendario.value)
-    //         //ALMACENAR LA INFORMACION
-    //         this.query
-    //             .updateYear({
-    //                 json: JSON.stringify(this.formCalendario.value),
-    //                 _opcion: 'updateYearCalendario',
-    //             })
-    //             .subscribe({
-    //                 next: (data: any) => {
-    //                     console.log(data)
-    //                 },
-    //                 error: (error) => {
-    //                     console.error('Error fetching year calendario:', error)
-    //                     this.messageService.add({
-    //                         severity: 'danger',
-    //                         summary: 'Mensaje',
-    //                         detail: 'Error de ejecución',
-    //                     })
-    //                 },
-    //                 complete: () => {
-    //                     console.log('Request completed')
-    //                     this.messageService.add({
-    //                         severity: 'success',
-    //                         summary: 'Mensaje',
-    //                         detail: 'Proceso exitoso',
-    //                     })
-    //                     this.getYearCalendarios(this.formCalendario.value)
-    //                     this.lema =
-    //                         this.formCalendario.get('cYAcadDescripcion')?.value
-    //                 },
-    //             })
-    //     } else {
-    //         console.log(this.formCalendario.value)
-
-    //         this.messageService.add({
-    //             severity: 'warning',
-    //             summary: 'Mensaje',
-    //             detail: 'Formulario invalido',
-    //         })
-    //     }
-    // }
-    // deleteCalendario() {
-    //     this.query
-    //         .deleteYear({
-    //             json: JSON.stringify(this.formCalendario.value),
-    //             _opcion: 'deleteYearCalendario',
-    //         })
-    //         .subscribe({
-    //             next: (data: any) => {
-    //                 console.log(data)
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error fetching calendario:', error)
-    //                 this.messageService.add({
-    //                     severity: 'danger',
-    //                     summary: 'Mensaje',
-    //                     detail: 'Error de ejecución',
-    //                 })
-    //             },
-    //             complete: () => {
-    //                 console.log('Request completed')
-    //                 this.getYearCalendarios(this.formCalendario.value)
-    //                 this.messageService.add({
-    //                     severity: 'success',
-    //                     summary: 'Mensaje',
-    //                     detail: 'Proceso exitoso',
-    //                 })
-    //             },
-    //         })
-    // }
 }

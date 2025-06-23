@@ -52,6 +52,7 @@ export const columns: IColumn[] = [
 function accionBtnItem(this: YearsComponent, { accion, item }) {
     this.forms.year.reset()
     this.forms.year.enable()
+    this.distribucionBloques.table.data = []
 
     switch (accion) {
         case 'agregar':

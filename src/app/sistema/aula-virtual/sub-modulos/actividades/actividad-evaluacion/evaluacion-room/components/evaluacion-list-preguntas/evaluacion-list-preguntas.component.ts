@@ -24,6 +24,7 @@ import { EncabezadoPreguntasService } from '@/app/servicios/eval/encabezado-preg
 })
 export class EvaluacionListPreguntasComponent implements OnChanges {
     @Input() preguntas = []
+    @Input() bloquearButton: boolean = false
 
     @Output() accionBtn = new EventEmitter()
     @Output() accionForm = new EventEmitter()

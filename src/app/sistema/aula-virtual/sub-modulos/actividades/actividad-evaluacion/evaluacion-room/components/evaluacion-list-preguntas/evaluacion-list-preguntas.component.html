@@ -112,30 +112,34 @@
             </ng-container>
 
             <!-- Botones internos de pregunta de encabezado -->
-            <div class="flex align-items-center justify-content-end mt-2">
-                <p-button
-                    icon="pi pi-trash"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="danger"
-                    tooltipPosition="bottom"
-                    pTooltip="Eliminar pregunta"
-                    label="Eliminar pregunta"
-                    (onClick)="eliminarPregunta(pregunta)"
-                    styleClass="hide-label-on-mobile"
-                />
-                <p-button
-                    icon="pi pi-file-edit"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="warning"
-                    tooltipPosition="bottom"
-                    pTooltip="Editar pregunta"
-                    label="Editar pregunta"
-                    (onClick)="editarPregunta(pregunta)"
-                    styleClass="hide-label-on-mobile"
-                />
-            </div>
+            @if (!bloquearButton) {
+                <div class="flex align-items-center justify-content-end mt-2">
+                    <p-button
+                        icon="pi pi-trash"
+                        [rounded]="true"
+                        [text]="true"
+                        severity="danger"
+                        tooltipPosition="bottom"
+                        pTooltip="Eliminar pregunta"
+                        label="Eliminar pregunta"
+                        (onClick)="eliminarPregunta(pregunta)"
+                        styleClass="hide-label-on-mobile"
+                        [disabled]="bloquearButton"
+                    />
+                    <p-button
+                        icon="pi pi-file-edit"
+                        [rounded]="true"
+                        [text]="true"
+                        severity="warning"
+                        tooltipPosition="bottom"
+                        pTooltip="Editar pregunta"
+                        label="Editar pregunta"
+                        (onClick)="editarPregunta(pregunta)"
+                        styleClass="hide-label-on-mobile"
+                        [disabled]="bloquearButton"
+                    />
+                </div>
+            }
         </div>
     </ng-container>
 
@@ -219,72 +223,79 @@
     <p-divider />
 
     <!-- Botones finales -->
-    <div class="flex align-items-center justify-content-end">
-        <ng-container *ngIf="item.idEncabPregId; else sinEncabezado">
-            <p-button
-                icon="pi pi-plus"
-                [rounded]="true"
-                [text]="true"
-                severity="primary"
-                tooltipPosition="bottom"
-                pTooltip="Agregar pregunta"
-                label="Agregar pregunta"
-                styleClass="hide-label-on-mobile"
-                (onClick)="
-                    accionBtn.emit({
-                        accion: 'agregar-pregunta-encabezado',
-                        item,
-                    })
-                "
-            />
-            <p-button
-                icon="pi pi-trash"
-                [rounded]="true"
-                [text]="true"
-                severity="danger"
-                tooltipPosition="bottom"
-                pTooltip="Eliminar pregunta múltiple"
-                label="Eliminar pregunta múltiple"
-                styleClass="hide-label-on-mobile"
-                (onClick)="eliminarPregunta(item)"
-            />
-            <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                tooltipPosition="bottom"
-                pTooltip="Editar pregunta múltiple"
-                label="Editar pregunta múltiple"
-                styleClass="hide-label-on-mobile"
-                (onClick)="editarPregunta(item)"
-            />
-        </ng-container>
-        <ng-template #sinEncabezado>
-            <p-button
-                icon="pi pi-trash"
-                [rounded]="true"
-                [text]="true"
-                severity="danger"
-                tooltipPosition="bottom"
-                pTooltip="Eliminar pregunta"
-                label="Eliminar pregunta"
-                styleClass="hide-label-on-mobile"
-                (onClick)="eliminarPregunta(item)"
-            />
-            <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                tooltipPosition="bottom"
-                pTooltip="Editar pregunta"
-                label="Editar Pregunta"
-                styleClass="hide-label-on-mobile"
-                (onClick)="editarPregunta(item)"
-            />
-        </ng-template>
-    </div>
+    @if (!bloquearButton) {
+        <div class="flex align-items-center justify-content-end">
+            <ng-container *ngIf="item.idEncabPregId; else sinEncabezado">
+                <p-button
+                    icon="pi pi-plus"
+                    [rounded]="true"
+                    [disabled]="bloquearButton"
+                    [text]="true"
+                    severity="primary"
+                    tooltipPosition="bottom"
+                    pTooltip="Agregar pregunta"
+                    label="Agregar pregunta"
+                    styleClass="hide-label-on-mobile"
+                    (onClick)="
+                        accionBtn.emit({
+                            accion: 'agregar-pregunta-encabezado',
+                            item,
+                        })
+                    "
+                />
+                <p-button
+                    icon="pi pi-trash"
+                    [rounded]="true"
+                    [disabled]="bloquearButton"
+                    [text]="true"
+                    severity="danger"
+                    tooltipPosition="bottom"
+                    pTooltip="Eliminar pregunta múltiple"
+                    label="Eliminar pregunta múltiple"
+                    styleClass="hide-label-on-mobile"
+                    (onClick)="eliminarPregunta(item)"
+                />
+                <p-button
+                    icon="pi pi-file-edit"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="warning"
+                    tooltipPosition="bottom"
+                    pTooltip="Editar pregunta múltiple"
+                    label="Editar pregunta múltiple"
+                    styleClass="hide-label-on-mobile"
+                    (onClick)="editarPregunta(item)"
+                    [disabled]="bloquearButton"
+                />
+            </ng-container>
+            <ng-template #sinEncabezado>
+                <p-button
+                    icon="pi pi-trash"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="danger"
+                    tooltipPosition="bottom"
+                    pTooltip="Eliminar pregunta"
+                    label="Eliminar pregunta"
+                    styleClass="hide-label-on-mobile"
+                    (onClick)="eliminarPregunta(item)"
+                    [disabled]="bloquearButton"
+                />
+                <p-button
+                    icon="pi pi-file-edit"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="warning"
+                    tooltipPosition="bottom"
+                    pTooltip="Editar pregunta"
+                    label="Editar Pregunta"
+                    styleClass="hide-label-on-mobile"
+                    (onClick)="editarPregunta(item)"
+                    [disabled]="bloquearButton"
+                />
+            </ng-template>
+        </div>
+    }
 </div>
 
 <p-toast></p-toast>

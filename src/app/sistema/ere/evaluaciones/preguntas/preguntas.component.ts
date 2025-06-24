@@ -448,7 +448,29 @@ export class PreguntasComponent implements OnInit {
         if (!this.isSecundaria && encabezado) {
             pregunta.iPreguntaPeso = 1
         }*/
+        if (encabezado && (contenido == '' || contenido == null)) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ingrese un contenido en el enunciado',
+            })
+            return
+        }
+        let contenidoPregunta
+        if (encabezado) {
+            contenidoPregunta = pregunta.cPregunta
+        } else {
+            contenidoPregunta = pregunta.pregunta[0].cPregunta
+        }
 
+        if (contenidoPregunta == '' || contenidoPregunta == null) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ingrese un contenido en la pregunta',
+            })
+            return
+        }
         const data = !encabezado
             ? preguntas.length
                 ? preguntas[0]
@@ -470,6 +492,7 @@ export class PreguntasComponent implements OnInit {
             })
             return
         }
+
         data.alternativas.forEach((alternativa) => {
             {
                 if (

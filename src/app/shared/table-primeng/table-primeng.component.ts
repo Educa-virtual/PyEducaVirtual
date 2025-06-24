@@ -104,7 +104,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
 
     getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
-        console.log(rowData)
         return {
             ...this.getClass(rowData, 'class'),
             itemSelected: rowIndex === this.trSelected,

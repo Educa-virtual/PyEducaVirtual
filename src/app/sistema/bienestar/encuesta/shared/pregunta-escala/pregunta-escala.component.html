@@ -19,17 +19,25 @@
     </p-inputGroupAddon>
     <div class="text-panel">
         <div class="flex gap-2">
-            <div class="flex-1 flex align-items-center justify-content-end">
+            <div
+                class="flex-1 flex align-items-center justify-content-end text-red-500"
+            >
                 MUY MAL
             </div>
             <div class="flex-1 flex align-items-center justify-content-center">
-                <p-rating
-                    [formControl]="ratingControl ? ratingControl : null"
-                    [stars]="5"
-                    [cancel]="false"
-                />
+                @if (ratingControl) {
+                    <p-rating
+                        [formControl]="ratingControl"
+                        [stars]="5"
+                        [cancel]="false"
+                    />
+                } @else {
+                    <p-rating [stars]="5" [cancel]="false" />
+                }
             </div>
-            <div class="flex-1 flex align-items-center justify-content-start">
+            <div
+                class="flex-1 flex align-items-center justify-content-start text-blue-500"
+            >
                 EXCELENTE
             </div>
         </div>

@@ -8,6 +8,9 @@ const routes: Routes = [
     { path: 'encuesta', component: EncuestaComponent },
     { path: 'encuesta/:id', component: EncuestaComponent },
     { path: 'encuesta/:id/preguntas', component: EncuestaPreguntasComponent },
+    { path: 'encuesta/:id/respuestas', component: EncuestaPreguntasComponent },
+    { path: 'encuesta/:id/resumen', component: EncuestaPreguntasComponent },
+    { path: 'encuesta/:id/ver', component: EncuestaPreguntasComponent },
 ]
 
 export class AppRoutingModule {}

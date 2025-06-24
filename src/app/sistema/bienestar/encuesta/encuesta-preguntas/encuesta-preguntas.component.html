@@ -1,8 +1,10 @@
 <p-panel>
     <ng-template pTemplate="header">
         <span class="text-2xl text-uppercase">
-            Gestionar preguntas de encuesta
-            {{ cEncuNombre }}
+            <div class="flex flex-column">
+                <div class="flex text-xl">GESTIONAR PREGUNTAS DE ENCUESTA</div>
+                <div class="flex text-sm">{{ cEncuNombre }}</div>
+            </div>
         </span>
     </ng-template>
     <ng-template pTemplate="icons" class="flex justify-content-center">
@@ -16,7 +18,7 @@
                 severity="success"
             >
                 <i class="pi pi-plus"></i>
-                <span class="ml-2 hidden sm:block">Registrar encuesta</span>
+                <span class="ml-2 hidden sm:block">Agregar pregunta</span>
             </button>
         </div>
     </ng-template>
@@ -37,6 +39,28 @@
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
+                    <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2">
+                        <p-button
+                            label="Borrar"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            iconPos="left"
+                            size="small"
+                            pTooltip="Borrar pregunta"
+                            tooltipPosition="top"
+                            (click)="borrarPregunta(pregunta)"
+                        />
+                        <p-button
+                            label="Editar"
+                            icon="pi pi-file-edit"
+                            severity="success"
+                            iconPos="left"
+                            size="small"
+                            pTooltip="Editar pregunta"
+                            tooltipPosition="top"
+                            (click)="editarPregunta(pregunta)"
+                        />
+                    </div>
                 </div>
             }
             <!-- Pregunta de texto -->
@@ -51,6 +75,28 @@
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
+                    <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2">
+                        <p-button
+                            label="Borrar"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            iconPos="left"
+                            size="small"
+                            pTooltip="Borrar pregunta"
+                            tooltipPosition="top"
+                            (click)="borrarPregunta(pregunta)"
+                        />
+                        <p-button
+                            label="Editar"
+                            icon="pi pi-file-edit"
+                            severity="success"
+                            iconPos="left"
+                            size="small"
+                            pTooltip="Editar pregunta"
+                            tooltipPosition="top"
+                            (click)="editarPregunta(pregunta)"
+                        />
+                    </div>
                 </div>
             }
             <!-- Pregunta de escalas 1 a 5 -->
@@ -65,6 +111,28 @@
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
+                    <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2">
+                        <p-button
+                            label="Borrar"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            iconPos="left"
+                            size="small"
+                            pTooltip="Borrar pregunta"
+                            tooltipPosition="top"
+                            (click)="borrarPregunta(pregunta)"
+                        />
+                        <p-button
+                            label="Editar"
+                            icon="pi pi-file-edit"
+                            severity="success"
+                            iconPos="left"
+                            size="small"
+                            pTooltip="Editar pregunta"
+                            tooltipPosition="top"
+                            (click)="editarPregunta(pregunta)"
+                        />
+                    </div>
                 </div>
             }
         }
@@ -86,7 +154,7 @@
                 <div class="col-12 md:col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
-                            <span>Tipo de Preguntas</span>
+                            <span>Tipo de Pregunta</span>
                         </p-inputGroupAddon>
                         <p-dropdown
                             [options]="tipos_preguntas"

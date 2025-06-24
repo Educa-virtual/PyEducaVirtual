@@ -10,6 +10,7 @@ import { PreguntaCerradaComponent } from '../shared/pregunta-cerrada/pregunta-ce
 import { TextFieldModule } from '@angular/cdk/text-field'
 import { PreguntaAbiertaComponent } from '../shared/pregunta-abierta/pregunta-abierta.component'
 import { PreguntaEscalaComponent } from '../shared/pregunta-escala/pregunta-escala.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-encuesta-preguntas',
@@ -36,6 +37,7 @@ export class EncuestaPreguntasComponent implements OnInit {
     tipos_preguntas: Array<object>
 
     private _messageService = inject(MessageService)
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
@@ -56,6 +58,7 @@ export class EncuestaPreguntasComponent implements OnInit {
             this.formPregunta = this.fb.group({
                 iEncuId: [this.iEncuId, Validators.required],
                 iCredEntPerfId: [this.perfil.iCredEntPerfId],
+                iEncuPregId: [null],
                 iEncuPregTipoId: [null, Validators.required],
                 iEncuPregOrden: [null],
                 cEncuPregContenido: [null, Validators.required],
@@ -131,6 +134,57 @@ export class EncuestaPreguntasComponent implements OnInit {
         this.formPregunta.reset()
     }
 
+    verPregunta(item: any) {
+        this.datosEncuestas
+            .verPregunta({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEncuPregId: item.iEncuPregId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    if (data.data.length) {
+                        this.setFormPregunta(data.data[0])
+                    }
+                },
+                error: (error) => {
+                    console.error('Error obteniendo pregunta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
+    setFormPregunta(data: any) {
+        this.formPregunta.reset()
+        this.formPregunta.patchValue(data)
+        this.formPregunta
+            .get('iCredEntPerfId')
+            ?.setValue(this.perfil.iCredEntPerfId)
+        this.formPregunta.get('iEncuId')?.setValue(this.iEncuId)
+        this.funcionesBienestar.formatearFormControl(
+            this.formPregunta,
+            'iEncuPregId',
+            data.iEncuPregId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formPregunta,
+            'iEncuPregTipoId',
+            data.iEncuPregTipoId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formPregunta,
+            'iEncuPregOrden',
+            data.iEncuPregOrden,
+            'number'
+        )
+        this.pregunta_registrada = true
+    }
+
     guardarPregunta() {
         if (this.formPregunta.invalid) {
             this._messageService.add({
@@ -142,13 +196,13 @@ export class EncuestaPreguntasComponent implements OnInit {
         }
         this.datosEncuestas.guardarPregunta(this.formPregunta.value).subscribe({
             next: () => {
+                this.listarPreguntas()
                 this._messageService.add({
                     severity: 'success',
                     summary: 'Registro exitoso',
                     detail: 'Se registraron los datos',
                 })
                 this.dialog_visible = false
-                // this.listarPreguntas()
             },
             error: (error) => {
                 console.error('Error guardando pregunta:', error)
@@ -192,11 +246,53 @@ export class EncuestaPreguntasComponent implements OnInit {
     }
 
     agregarPregunta() {
+        this.pregunta_registrada = false
         this.dialog_visible = true
         this.dialog_header = 'Registrar pregunta'
         this.formPregunta.get('iEncuId')?.setValue(this.iEncuId)
         this.formPregunta
             .get('iCredEntPerfId')
             ?.setValue(this.perfil.iCredEntPerfId)
+    }
+
+    editarPregunta(item: any) {
+        this.dialog_visible = true
+        this.dialog_header = 'Actualizar pregunta'
+        this.verPregunta(item)
+    }
+
+    borrarPregunta(item: any) {
+        console.log(item, 'item')
+        this._confirmService.openConfirm({
+            message: '¿Está seguro de eliminar la pregunta?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.datosEncuestas
+                    .borrarPregunta({
+                        iCredEntPerfId: this.perfil.iCredEntPerfId,
+                        iEncuPregId: item.iEncuPregId,
+                    })
+                    .subscribe({
+                        next: () => {
+                            this._messageService.add({
+                                severity: 'success',
+                                summary: 'Eliminación exitosa',
+                                detail: 'Se eliminó la pregunta',
+                            })
+                            this.listarPreguntas()
+                        },
+                        error: (error) => {
+                            console.error('Error eliminando pregunta:', error)
+                            this._messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: error.error.message,
+                            })
+                        },
+                    })
+            },
+            reject: () => {},
+        })
     }
 }

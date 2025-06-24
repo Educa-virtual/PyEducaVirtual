@@ -90,6 +90,7 @@ export class PreguntasComponent implements OnInit {
         height: 400,
         content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
+        paste_as_text: true,
     }
     initEnunciado: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -105,6 +106,7 @@ export class PreguntasComponent implements OnInit {
             'image table',
         content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
+        paste_as_text: true,
     }
 
     initAlternativa: EditorComponent['init'] = {
@@ -117,6 +119,7 @@ export class PreguntasComponent implements OnInit {
         toolbar: false,
         content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
+        paste_as_text: true,
     }
     encabezado = ''
     preguntas = []
@@ -726,20 +729,14 @@ export class PreguntasComponent implements OnInit {
                                         )
                                     if (preguntaMultiple) {
                                         preguntaMultiple.title +=
-                                            ' #' +
-                                            this.totalPregunta +
-                                            ', Orden: ' +
-                                            item.iPreguntaOrden
+                                            ' #' + this.totalPregunta
                                     }
                                 }
                                 item.title =
                                     'Pregunta #' +
-                                    //'Probando ' +
                                     this.totalPregunta +
                                     ': ' +
-                                    (item.cPregunta || '') +
-                                    ', Orden: ' +
-                                    item.iPreguntaOrden
+                                    (item.cPregunta || '')
                             })
                         }
 

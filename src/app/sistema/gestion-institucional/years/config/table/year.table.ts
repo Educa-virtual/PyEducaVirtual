@@ -188,6 +188,24 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
                 })
 
             break
+        case 'procesarPeriodos':
+            this.dialogs.procesarPeriodo = {
+                title: `Generar periodos del calendario académico para el año: ${item.iYearId}`,
+                visible: true,
+            }
+
+            this.forms.year.patchValue({
+                iYearId: item.iYearId,
+                cYearNombre: item.cYearNombre,
+                cYearOficial: item.cYearOficial,
+                iYearEstado: item.iYearEstado,
+                iYAcadId: item.iYAcadId,
+            })
+
+            console.log('this.forms.year')
+            console.log(this.forms.year.value)
+
+            break
         case 'verSemanasLectivas':
             this.dialogs.distribucionBloques = {
                 title: `Semanas lectivas del año: ${item.iYearId}`,

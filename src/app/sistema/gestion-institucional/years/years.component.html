@@ -218,3 +218,47 @@
         }
     </ng-template>
 </p-dialog>
+
+<p-dialog
+    [header]="dialogs.procesarPeriodo.title"
+    [(visible)]="dialogs.procesarPeriodo.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form [formGroup]="forms.procesarPeriodos" class="grid mt-2">
+        <div class="col-12 flex flex-column gap-2">
+            <label for="iTipoDistribucionId"
+                >Tipo de periodo de evaluación</label
+            >
+            <p-dropdown
+                formControlName="iPeriodoEvalId"
+                optionLabel="name"
+                appendTo="body"
+                styleClass="w-full"
+                placeholder="Seleccione un tipo de distribución de bloque"
+                optionValue="code"
+                [options]="periodoEvaluaciones.types"
+                optionLabel="name"
+            />
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        @if (this.forms.procesarPeriodos.enabled) {
+            <div class="flex justify-content-between gap-2">
+                <p-button
+                    label="Cancelar"
+                    [text]="true"
+                    severity="secondary"
+                    (onClick)="dialogs.procesarPeriodo.visible = false"
+                />
+                <p-button
+                    label="Iniciar"
+                    [outlined]="true"
+                    severity="secondary"
+                    (onClick)="periodoEvaluaciones.processData()"
+                />
+            </div>
+        }
+    </ng-template>
+</p-dialog>

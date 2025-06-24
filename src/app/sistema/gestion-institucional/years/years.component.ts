@@ -24,6 +24,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { distribucionBloques } from './config/table/distribucion-bloque.table'
 import { DistribucionBloquesService } from './config/service/distribucion-bloques.service'
 import { DatePipe } from '@angular/common'
+import { PeriodoEvaluacionesService } from './config/service/periodoEvaluaciones.service'
 
 @Component({
     selector: 'app-years',
@@ -56,9 +57,11 @@ export class YearsComponent implements OnInit {
     forms: {
         year: FormGroup
         distribucionBloque: FormGroup
+        procesarPeriodos: FormGroup
     } = {
         year: new FormGroup({}),
         distribucionBloque: new FormGroup({}),
+        procesarPeriodos: new FormGroup({}),
     }
 
     dialogs = {
@@ -73,6 +76,56 @@ export class YearsComponent implements OnInit {
         distribucionBloque: {
             title: '',
             visible: false,
+        },
+        procesarPeriodo: {
+            title: '',
+            visible: false,
+        },
+    }
+
+    periodoEvaluaciones = {
+        types: [],
+        processData: () => {
+            const iPeriodoEvalId =
+                this.forms.procesarPeriodos.get('iPeriodoEvalId').value
+            const iYAcadId = this.forms.year.get('iYAcadId').value
+
+            console.log('iYAcadId')
+            console.log(iYAcadId)
+            console.log('iPeriodoEvalId')
+            console.log(iPeriodoEvalId)
+
+            if (!iPeriodoEvalId || !iYAcadId) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Calendario académico',
+                    detail: 'Falta información para procesar el calendario',
+                    life: 3000,
+                })
+
+                return
+            }
+
+            this.periodoEvaluacionesService
+                .processConfigCalendario({
+                    iPerioEvalId: iPeriodoEvalId,
+                    iYAcadId: iYAcadId,
+                })
+                .subscribe({
+                    next: (res: any) => {
+                        const result = res.data[0]
+                        const isSuccess = result.Message === 'true'
+
+                        this.messageService.add({
+                            severity: isSuccess ? 'success' : 'warn',
+                            summary: 'Calendario académico',
+                            detail: result.resultado,
+                            life: 3000,
+                        })
+
+                        this.dialogs.procesarPeriodo.visible = !isSuccess
+                    },
+                })
         },
     }
 
@@ -106,13 +159,15 @@ export class YearsComponent implements OnInit {
         public distribucionBloquesService: DistribucionBloquesService,
         private msg: StepConfirmationService,
         public dialogConfirm: ConfirmationModalService,
-        public datePipe: DatePipe
+        public datePipe: DatePipe,
+        public periodoEvaluacionesService: PeriodoEvaluacionesService
     ) {
         this.forms.year = this.fb.group({
             iYearId: [''],
             cYearNombre: [''],
             cYearOficial: [''],
             iYearEstado: [''],
+            iYAcadId: [''],
         })
 
         this.forms.distribucionBloque = this.fb.group({
@@ -123,6 +178,10 @@ export class YearsComponent implements OnInit {
             dtInicioBloque: [''],
             dtFinBloque: [''],
             iEstado: [''],
+        })
+
+        this.forms.procesarPeriodos = this.fb.group({
+            iPeriodoEvalId: [''],
         })
     }
 
@@ -138,6 +197,15 @@ export class YearsComponent implements OnInit {
                 this.distribucionBloques.types = res.data.map((item) => ({
                     code: item.iTipoDistribucionId,
                     name: item.cBloqueNombre,
+                }))
+            },
+        })
+
+        this.periodoEvaluacionesService.getPeriodosEvaluaciones().subscribe({
+            next: (res: any) => {
+                this.periodoEvaluaciones.types = res.data.map((item) => ({
+                    code: item.iPeriodoEvalId,
+                    name: item.cPeriodoEvalNombre,
                 }))
             },
         })

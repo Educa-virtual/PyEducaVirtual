@@ -9,22 +9,14 @@ export const actions = [
         class: 'p-button-rounded p-button-info p-button-text',
         isVisible: (rowData) => rowData.iYearEstado == '1',
     },
-    // {
-    //     labelTooltip: 'Procesar calendario',
-    //     icon: 'pi pi-sync',
-    //     accion: 'procesarCalendario',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-secondary p-button-text',
-    //     isVisible: (rowData) => rowData.iYearEstado == '1'
-    // },
-    // {
-    //     labelTooltip: 'Procesar periodos',
-    //     icon: 'pi pi-sync',
-    //     accion: 'procesarPeriodos',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-info p-button-text',
-    //     isVisible: (rowData) => rowData.iYearEstado == '1'
-    // },
+    {
+        labelTooltip: 'Procesar periodos',
+        icon: 'pi pi-sync',
+        accion: 'procesarPeriodos',
+        type: 'item',
+        class: 'p-button-rounded p-button-info p-button-text',
+        isVisible: (rowData) => rowData.iYearEstado == '1',
+    },
     {
         ...ver,
         isVisible: (rowData) => rowData.iYearEstado == '0',

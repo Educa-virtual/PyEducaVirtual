@@ -457,10 +457,13 @@ export class PreguntasComponent implements OnInit {
             return
         }
         let contenidoPregunta
+        let preguntaPeso
         if (encabezado) {
             contenidoPregunta = pregunta.cPregunta
+            preguntaPeso = pregunta.iPreguntaPeso
         } else {
             contenidoPregunta = pregunta.pregunta[0].cPregunta
+            preguntaPeso = pregunta.pregunta[0].iPreguntaPeso
         }
 
         if (contenidoPregunta == '' || contenidoPregunta == null) {
@@ -468,6 +471,15 @@ export class PreguntasComponent implements OnInit {
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Ingrese un contenido en la pregunta',
+            })
+            return
+        }
+
+        if (preguntaPeso == '' || preguntaPeso == null) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ingrese un peso a la pregunta',
             })
             return
         }

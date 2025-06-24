@@ -13,7 +13,8 @@ import { InputTextModule } from 'primeng/inputtext'
 import { PanelModule } from 'primeng/panel'
 import { EncuestaComponent } from '../encuesta/encuesta.component'
 import { DatosEncuestaService } from '../services/datos-encuesta.service'
-import { MessageService } from 'primeng/api'
+import { ConfirmationService, MessageService } from 'primeng/api'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-gestionar-encuestas',
@@ -43,11 +44,13 @@ export class GestionarEncuestasComponent implements OnInit {
     iYAcadId: number
 
     private _messageService = inject(MessageService)
+    private _confirmService = inject(ConfirmationService)
 
     constructor(
         private fb: FormBuilder,
         private store: LocalStoreService,
-        private datosEncuestas: DatosEncuestaService
+        private datosEncuestas: DatosEncuestaService,
+        private router: Router
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
@@ -64,8 +67,7 @@ export class GestionarEncuestasComponent implements OnInit {
     }
 
     agregarEncuesta() {
-        this.dialog_header = 'Registrar Encuesta'
-        this.dialog_visible = true
+        this.router.navigate(['/bienestar/encuesta'])
     }
 
     listarEncuestas() {
@@ -127,19 +129,57 @@ export class GestionarEncuestasComponent implements OnInit {
         })
     }
 
-    accionBnt(event: { accion: string }): void {
-        switch (event.accion) {
+    borrarEncuesta(item) {
+        this.datosEncuestas
+            .borrarEncuesta({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEncuId: item.iEncuId,
+            })
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Eliminación exitosa',
+                        detail: 'Se eliminó la encuesta',
+                    })
+                    this.encuestas_filtradas = this.encuestas_filtradas.filter(
+                        (encuesta: any) => item.iEncuId != encuesta.iEncuId
+                    )
+                },
+                error: (error) => {
+                    console.error('Error eliminando encuesta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
+    accionBnt({ accion, item }) {
+        switch (accion) {
             case 'editar':
-                console.log('Editar seleccionado')
+                this.router.navigate([`/bienestar/encuesta/${item.iEncuId}`])
+                break
+            case 'preguntas':
+                this.router.navigate([
+                    `/bienestar/encuesta/${item.iEncuId}/'encuesta-preguntas`,
+                ])
                 break
             case 'eliminar':
-                console.log('Eliminar seleccionado')
-                break
-            case 'estado':
-                console.log('Cambiar estado seleccionado')
+                this._confirmService.confirm({
+                    message: '¿Está seguro de eliminar la encuesta?',
+                    header: 'Confirmación',
+                    icon: 'pi pi-exclamation-triangle',
+                    accept: () => {
+                        this.borrarEncuesta(item)
+                    },
+                    reject: () => {},
+                })
                 break
             default:
-                console.warn('Acción no reconocida:', event.accion)
+                console.warn('Acción no reconocida:', accion)
         }
     }
 
@@ -177,10 +217,10 @@ export class GestionarEncuestasComponent implements OnInit {
             text: 'left',
         },
         {
-            field: 'iRptaCount',
+            field: 'cEstadoNombre',
             type: 'text',
             width: '10%',
-            header: 'Respuestas',
+            header: 'Estado',
             text_header: 'center',
             text: 'center',
         },
@@ -201,13 +241,19 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
+            isVisible: function (rowData: any) {
+                return rowData.iEstado == 1
+            },
         },
         {
             labelTooltip: 'Editar Preguntas',
             icon: 'pi pi-list-check',
-            accion: 'estado',
+            accion: 'preguntas',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: function (rowData: any) {
+                return rowData.iEstado == 1
+            },
         },
         {
             labelTooltip: 'Eliminar',
@@ -215,6 +261,29 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: function (rowData: any) {
+                return rowData.iEstado == 1
+            },
+        },
+        {
+            labelTooltip: 'Ver respuestas',
+            icon: 'pi pi-list',
+            accion: 'respuestas',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: function (rowData: any) {
+                return rowData.iEstado == 2
+            },
+        },
+        {
+            labelTooltip: 'Ver resumen',
+            icon: 'pi pi-chart-bar',
+            accion: 'resumen',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: function (rowData: any) {
+                return rowData.iEstado == 2
+            },
         },
     ]
 }

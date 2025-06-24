@@ -8,6 +8,8 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ActivatedRoute, Router } from '@angular/router'
+import { FuncionesBienestarService } from '../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-encuesta',
@@ -21,6 +23,7 @@ export class EncuestaComponent implements OnInit {
     active: number = 0
     iYAcadId: number
     perfil: any
+    iEncuId: number
 
     ultima_fecha_anio: Date = new Date(new Date().getFullYear(), 11, 31)
     fecha_actual: Date = new Date()
@@ -56,10 +59,16 @@ export class EncuestaComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private datosEncuestas: DatosEncuestaService,
-        private store: LocalStoreService
+        private funcionesBienestar: FuncionesBienestarService,
+        private store: LocalStoreService,
+        private route: ActivatedRoute,
+        private router: Router
     ) {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.perfil = this.store.getItem('dremoPerfil')
+        this.route.paramMap.subscribe((params: any) => {
+            this.iEncuId = params.params.id || 0
+        })
     }
 
     ngOnInit(): void {
@@ -97,7 +106,7 @@ export class EncuestaComponent implements OnInit {
         this.formEditores = this.fb.group({
             iEncuPobId: [null],
             iPerfilId: [null],
-            cPerfilNomnre: [''],
+            cPerfilNombre: [''],
             iEncuOpcId: [null],
             cEncuOpcNombre: [''],
             cantidad: [0],
@@ -122,6 +131,7 @@ export class EncuestaComponent implements OnInit {
             this.ies = this.datosEncuestas.getInstitucionesEducativas(
                 data?.instituciones_educativas
             )
+            this.distritos = this.datosEncuestas.getDistritos(data?.distritos)
             this.sexos = this.datosEncuestas.getSexos()
             this.estados = this.datosEncuestas.getEstados()
             this.datosEncuestas.getNivelesGrados(data?.nivel_grados)
@@ -166,6 +176,10 @@ export class EncuestaComponent implements OnInit {
             this.filterInstitucionesEducativas()
             this.filterDistritos(value)
         })
+
+        if (this.iEncuId) {
+            this.verEncuesta()
+        }
     }
 
     filterNivelesTipos() {
@@ -197,6 +211,70 @@ export class EncuestaComponent implements OnInit {
             iZonaId,
             iTipoSectorId,
             iUgelId
+        )
+    }
+
+    verEncuesta() {
+        this.datosEncuestas
+            .verEncuesta({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEncuId: this.iEncuId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    if (data.data.length) {
+                        this.setFormEncuesta(data.data[0])
+                    }
+                },
+                error: (error) => {
+                    console.error('Error obteniendo encuesta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
+    setFormEncuesta(data: any) {
+        this.formEncuesta.reset()
+        this.formEncuesta.patchValue(data)
+        this.funcionesBienestar.formatearFormControl(
+            this.formEncuesta,
+            'iEncuCateId',
+            data.iEncuCateId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formEncuesta,
+            'iEstado',
+            data.iEstado,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formEncuesta,
+            'dEncuDesde',
+            data.dEncuDesde,
+            'date'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formEncuesta,
+            'dEncuHasta',
+            data.dEncuHasta,
+            'date'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formEncuesta,
+            'poblacion',
+            this.poblacion,
+            'json'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formEncuesta,
+            'editores',
+            this.editores,
+            'json'
         )
     }
 
@@ -291,7 +369,7 @@ export class EncuestaComponent implements OnInit {
         )
         const opcion: any = this.opciones.find(
             (opcion: any) =>
-                opcion.value == this.formEditores.get('iOpcionId')?.value
+                opcion.value == this.formEditores.get('iEncuOpcId')?.value
         )
         this.formEditores
             .get('cPerfilNombre')
@@ -299,42 +377,7 @@ export class EncuestaComponent implements OnInit {
         this.formEditores
             .get('cEncuOpcNombre')
             ?.setValue(opcion ? opcion.label : '')
-        this.formPoblacion.get('iEncuPermId')?.setValue(new Date().getTime())
-    }
-
-    formControlJsonStringify(
-        form: FormGroup,
-        formJson: string,
-        formControlName: string | string[] | null,
-        groupControl: string | null = null
-    ): void {
-        form.get(formJson).setValue(null)
-        if (!formControlName) {
-            return null
-        }
-        const items = []
-        if (typeof formControlName === 'string') {
-            formControlName = [formControlName]
-        }
-        formControlName.forEach((control) => {
-            if (form.get(control).value === null) {
-                return null
-            }
-            form.get(control).value.forEach((item) => {
-                if (groupControl) {
-                    items.push({
-                        [groupControl]: item,
-                    })
-                } else if (groupControl == '') {
-                    items.push(item)
-                } else {
-                    items.push({
-                        [control]: item,
-                    })
-                }
-            })
-        })
-        form.get(formJson).setValue(JSON.stringify(items))
+        this.formEditores.get('iEncuPermId')?.setValue(new Date().getTime())
     }
 
     guardarEncuesta() {
@@ -356,28 +399,29 @@ export class EncuestaComponent implements OnInit {
             return
         }
 
-        this.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formEncuesta,
             'jsonPoblacion',
             'poblacion',
             ''
         )
-        this.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formEncuesta,
             'jsonEditores',
             'editores',
             ''
         )
-        console.log(this.formEncuesta.value, 'form encuesta')
         this.datosEncuestas.guardarEncuesta(this.formEncuesta.value).subscribe({
             next: (data: any) => {
-                console.log(data, 'guardar encuesta')
                 this._messageService.add({
                     severity: 'success',
                     summary: 'Registro exitoso',
                     detail: 'Se registraron los datos',
                 })
-                this.es_visible.emit(false)
+                const iEncuId = data.data[0].iEncuId
+                this.router.navigate([
+                    `/bienestar/encuesta/${iEncuId}/preguntas`,
+                ])
             },
             error: (error) => {
                 console.error('Error guardando encuesta:', error)

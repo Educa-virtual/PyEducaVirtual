@@ -50,10 +50,13 @@ export class DatosEncuestaService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/actualizarEncuesta`, data)
     }
 
-    getCantidadPoblacion(data: any) {
+    obtenerCantidadPoblacion(data: any) {
         return this.http.post(`${baseUrl}/bienestar/getCantidadPoblacion`, data)
     }
 
+    borrarEncuesta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/borrarEncuesta`, data)
+    }
     /*
      * Funciones para popular parametros de formularios de ficha
      */
@@ -106,7 +109,7 @@ export class DatosEncuestaService implements OnDestroy {
     }
 
     filterDistritos(iUgelId: any) {
-        if (!iUgelId) return null
+        if (!iUgelId) return this.distritos
         return this.distritos.filter((distrito: any) => {
             const pertenece_ugel = distrito.ugeles.find(
                 (ugel: any) => ugel.iUgelId === iUgelId

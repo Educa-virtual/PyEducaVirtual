@@ -104,10 +104,10 @@ export class AccesosComponent implements OnInit {
         if (curr.filtroFecha[0] != null && curr.filtroFecha[1] != null) {
             this.auditoria
                 .getData({
-                    filtroFechaInicio: this.utils.convertToSQLDateTime(
+                    filtroFechaInicio: this.utils.convertirAFechaSegura(
                         this.form.value.filtroFecha[0]
                     ),
-                    filtroFechaFin: this.utils.convertToSQLDateTime(
+                    filtroFechaFin: this.utils.convertirAFechaSegura(
                         this.form.value.filtroFecha[1]
                     ),
                 })
@@ -118,10 +118,6 @@ export class AccesosComponent implements OnInit {
 
                     complete: () => {
                         this.columns = option.columns
-
-                        console.log('this.columns')
-                        console.log(this.columns)
-                        console.log(this.data)
                     },
                 })
         }

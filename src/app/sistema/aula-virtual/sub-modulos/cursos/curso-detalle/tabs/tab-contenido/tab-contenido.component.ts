@@ -736,6 +736,7 @@ export class TabContenidoComponent implements OnInit {
                             iEstudianteId:
                                 this._constantesService.iEstudianteId ??
                                 undefined,
+                            iNivelCicloId: this.curso.iNivelCicloId,
                         },
                         relativeTo: this._activatedRoute,
                     }

@@ -1,3 +1,4 @@
+<!-- TIPO 3: PREGUNTA ABIERTA -->
 @if (pregunta.iTipoPregId === 3) {
     <p-editor
         appEditorOnlyView
@@ -7,18 +8,18 @@
     <div
         class="flex gap-2 flex-wrap w-full p-1 border-round-xs"
         [ngClass]="{
-            'bg-yellow-100':
-                pregunta.alternativaCorrecta &&
-                pregunta.alternativaCorrecta.includes(
-                    alternativa.cAlternativaLetra
-                ),
+            'bg-yellow-100': esCorrecta(
+                pregunta,
+                alternativa.cAlternativaLetra
+            ),
         }"
     >
-        <!-- AlternativaLetra  -->
-        <span>{{ alternativa?.cAlternativaLetra }} )</span>
-        <!-- input o checkbox dependiendo del tipo pregunta -->
+        <!-- Letra -->
+        <span>{{ alternativa?.cAlternativaLetra }})</span>
+
+        <!-- Selector -->
         <div class="flex gap-2">
-            <!-- input o checkbox dependiendo del tipo pregunta -->
+            <!-- OPCIÓN ÚNICA -->
             @if (pregunta.iTipoPregId === 1) {
                 <p-radioButton
                     [name]="pregunta.iEvalRptaId"
@@ -27,31 +28,40 @@
                     disabled="true"
                 ></p-radioButton>
             }
+
+            <!-- OPCIÓN MÚLTIPLE -->
             @if (pregunta.iTipoPregId === 2) {
                 <p-checkbox
-                    disabled="true"
-                    [name]="pregunta.iEvalRptaId"
                     [value]="alternativa.cAlternativaLetra"
                     [(ngModel)]="pregunta.respuestaEstudiante"
-                />
+                    disabled="true"
+                ></p-checkbox>
             }
         </div>
-        <!-- AlternativaContenido -->
+
+        <!-- Descripción -->
         <div [innerHTML]="alternativa?.cAlternativaDescripcion"></div>
 
-        @if (
-            pregunta.iTipoPregId === 1 &&
-            alternativa.cAlternativaLetra === pregunta.alternativaCorrecta
-        ) {
+        <!-- ÍCONOS DE CORRECCIÓN -->
+        @if (pregunta.iTipoPregId === 1) {
+            <!-- Correcta seleccionada -->
             @if (
-                pregunta.alternativaCorrecta === pregunta.respuestaEstudiante
+                alternativa.cAlternativaLetra ===
+                    pregunta.alternativaCorrecta &&
+                pregunta.respuestaEstudiante === alternativa.cAlternativaLetra
             ) {
                 <app-icon
                     name="matCheckOutline"
                     size="xs"
                     color="text-green-500"
                 />
-            } @else {
+            }
+            <!-- Correcta no seleccionada -->
+            @else if (
+                alternativa.cAlternativaLetra ===
+                    pregunta.respuestaEstudiante &&
+                pregunta.alternativaCorrecta !== alternativa.cAlternativaLetra
+            ) {
                 <app-icon
                     name="matCloseOutline"
                     size="xs"
@@ -61,23 +71,35 @@
         }
 
         @if (pregunta.iTipoPregId === 2) {
-            @if (
-                pregunta.respuestaEstudiante.includes(
-                    alternativa.cAlternativaLetra
-                )
-            ) {
-                <app-icon
-                    name="matCheckOutline"
-                    size="xs"
-                    color="text-green-500"
-                />
-            } @else {
-                <app-icon
-                    name="matCloseOutline"
-                    size="xs"
-                    color="text-red-500"
-                />
-            }
+            <!-- Múltiple: correcta y marcada -->
+            <app-icon
+                *ngIf="
+                    pregunta.alternativaCorrecta.includes(
+                        alternativa.cAlternativaLetra
+                    ) &&
+                    pregunta.respuestaEstudiante.includes(
+                        alternativa.cAlternativaLetra
+                    )
+                "
+                name="matCheckOutline"
+                size="xs"
+                color="text-green-500"
+            />
+
+            <!-- Múltiple: incorrecta y marcada -->
+            <app-icon
+                *ngIf="
+                    !pregunta.alternativaCorrecta.includes(
+                        alternativa.cAlternativaLetra
+                    ) &&
+                    pregunta.respuestaEstudiante.includes(
+                        alternativa.cAlternativaLetra
+                    )
+                "
+                name="matCloseOutline"
+                size="xs"
+                color="text-red-500"
+            />
         }
     </div>
 }

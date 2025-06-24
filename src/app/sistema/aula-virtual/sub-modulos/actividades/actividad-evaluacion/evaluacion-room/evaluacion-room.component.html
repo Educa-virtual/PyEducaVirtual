@@ -46,222 +46,64 @@
                         }
                     </div>
                 </app-tab-descripcion-actividades>
+                <article class="card mt-2">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
+                        <app-rubricas
+                            [title]="'Rúbricas'"
+                            mode="SELECTION"
+                            [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"
+                        ></app-rubricas>
+                    </div>
+
+                    <div class="">
+                        <app-rubrica-evaluacion
+                            (clickNameRubrica)="showRubrica($event)"
+                            class="w-full"
+                        >
+                        </app-rubrica-evaluacion>
+                    </div>
+                    <div class="">
+                        <p-dialog
+                            [modal]="true"
+                            [header]="'Rubrica - ' + dialogRubricaInfo.header"
+                            [(visible)]="dialogRubricaInfo.visible"
+                            [style]="{ width: '75rem' }"
+                            [breakpoints]="{
+                                '1199px': '75vw',
+                                '575px': '90vw',
+                            }"
+                            [maximizable]="true"
+                        >
+                            <app-rubrica-calificar
+                                [enableCellSelection]="false"
+                                [showSortIcon]="false"
+                                class="w-full"
+                            >
+                            </app-rubrica-calificar>
+                        </p-dialog>
+                    </div>
+                </article>
             }
             @case ('preguntas') {
                 <app-evaluacion-preguntas
                     [data]="evaluacion"
                 ></app-evaluacion-preguntas>
             }
-            <!-- @case (0) {}
-        @case (0) {} -->
+            @case ('calificar') {
+                <app-evaluacion-room-calificacion
+                    [iEvaluacionId]="ixActivadadId"
+                    [evaluacion]="evaluacion"
+                    [iEstado]="evaluacion?.iEstado"
+                ></app-evaluacion-room-calificacion>
+            }
+            @case ('rendir-examen') {
+                <app-evaluacion-estudiantes
+                    [evaluacion]="evaluacion"
+                ></app-evaluacion-estudiantes>
+            }
         }
     </div>
 </div>
-<!--    
-    @if (iPerfilId === DOCENTE) {
-    <section class="flex flex-column gap-4">
-        <p-tabView styleClass="actividad-tabs">
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matListAlt"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Evaluación
-                        </span>
-                    </div>
-                </ng-template>
-                <app-toolbar-primeng [title]="
-                        'Evaluación Formativa: ' +
-                        (evaluacion?.cEvaluacionTitulo || '')
-                    ">
-                    <button [ngClass]="{
-                            'border-none': true,
-                            'cursor-pointer': true,
-                        }" class="p-1 mx-1 p-button-rounded p-button-primary p-button-text" pButton
-                        (click)="$event.stopPropagation(); menu.toggle($event)">
-                        <i class="pi pi-ellipsis-h text-white hover:text-blue-300"></i>
-                    </button>
-                </app-toolbar-primeng>
-                <div class="card">
-                    <div class="grid">
-                        <div class="col-12 md:col-4">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
-                                Inicio de evaluación
-                            </span>
-                            <p>
-                                {{
-                                evaluacion?.dtEvaluacionInicio
-                                | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
-                                {{
-                                evaluacion?.dtEvaluacionInicio
-                                | date: 'h:mm a'
-                                }}
-                            </p>
-                            <span class="font-bold text-xl flex gap-2 mt-3">
-                                <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
-                                Cierre de Evaluación Formativa
-                            </span>
-                            <p>
-                                {{
-                                evaluacion?.dtEvaluacionFin
-                                | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
-                                {{
-                                evaluacion?.dtEvaluacionFin | date: 'h:mm a'
-                                }}
-                            </p>
-                            @if (evaluacion?.iEstado === 1) {
-                            <span class="mt-2 ml-1 font-bold text-3xl text-orange-500">BORRADOR</span>
-                            }
-                            @if (evaluacion?.iEstado === 2) {
-                            <span class="mt-2 ml-1 font-bold text-3xl text-green-500">PUBLICADO</span>
-                            }
-                        </div>
-                        <div class="col-12 md:col-4">
-                            <span class="font-bold text-xl flex gap-2">
-                                Tipo de evaluación
-                            </span>
-                            <p>
-                                {{ evaluacion?.cTipoEvalNombre }}
-                            </p>
-                            <span class="font-bold text-xl flex gap-2 mt-3">
-                                Total de Preguntas
-                            </span>
-                            <p>
-                                {{ evaluacion?.iEvaluacionNroPreguntas ?? 0 }}
-                            </p>
-                        </div>
-                        <div class="col-12 md:col-4">
-                            <h3 class="text-lg m-0">Instrucciones</h3>
-                            <div class="bg-blue-100 p-3 border-round min-h-10rem">
-                                <p-editor appEditorOnlyView class="quill-only-view"
-                                    [(ngModel)]="cEvaluacionInstrucciones">
-                                </p-editor>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-column my-4 gap-4">
-                    <article class="card">
-                        <div class="col-12 md:col-6 flex flex-column gap-2 align-items-start">
-                            <app-rubricas [title]="'Rúbricas'" mode="SELECTION" [params]="params"
-                                (rubricaSelectedChange)="accionRubrica($event)"></app-rubricas>
-                        </div>
-
-                        <div class="">
-                            <app-rubrica-evaluacion (clickNameRubrica)="showRubrica($event)" class="w-full">
-                            </app-rubrica-evaluacion>
-                        </div>
-                        <div class="">
-                            <p-dialog [modal]="true" [header]="
-                                    'Rubrica - ' + dialogRubricaInfo.header
-                                " [(visible)]="dialogRubricaInfo.visible" [style]="{ width: '75rem' }" [breakpoints]="{
-                                    '1199px': '75vw',
-                                    '575px': '90vw',
-                                }" [maximizable]="true">
-                                <app-rubrica-calificar [enableCellSelection]="false" [showSortIcon]="false"
-                                    class="w-full">
-                                </app-rubrica-calificar>
-                            </p-dialog>
-                        </div>
-                    </article>
-
-                    <article class="card">
-                        <h2>Recursos</h2>
-                        <p-accordion>
-                            <p-accordionTab header="Recursos Adjuntos">
-                               
-                                <ng-container *ngIf="
-                                        evaluacion?.cEvaluacionArchivoAdjunto
-                                            .length === 0;
-                                        else resourcesList
-                                    ">
-                                    <app-empty-section class="w-full"
-                                        [message]="'Sin recursos asignados'"></app-empty-section>
-                                </ng-container>
-
-                               
-                                <ng-template #resourcesList>
-                                    <app-recursos-lista [files]="
-                                            evaluacion?.cEvaluacionArchivoAdjunto ??
-                                            []
-                                        "></app-recursos-lista>
-                                </ng-template>
-                            </p-accordionTab>
-                        </p-accordion>
-                    </article>
-                    <article class="card flex flex-column gap-4">
-                        <p-accordion *ngIf="
-                                evaluacion?.preguntas &&
-                                evaluacion?.preguntas.length > 0
-                            ">
-                            <p-accordionTab header="Preguntas">
-                                <app-evaluacion-form-preguntas [mode]="
-                                        evaluacion.iEstado === 1
-                                            ? 'EDIT'
-                                            : 'VIEW'
-                                    " [tituloEvaluacion]="''" [preguntas]="evaluacion?.preguntas ?? []"
-                                    [iEvaluacionId]="evaluacion.iEvaluacionId"
-                                    [iCursoId]="evaluacion.iCursoId"></app-evaluacion-form-preguntas>
-                            </p-accordionTab>
-                        </p-accordion>
-                        <div *ngIf="
-                                evaluacion?.preguntas === null ||
-                                evaluacion?.preguntas === undefined ||
-                                evaluacion?.preguntas.length === 0
-                            "
-                            class="bg-indigo-200 p-2 border-round h-10rem flex justify-content-center align-items-center gap-2 flex-column">
-                            <app-icon name="matHideSource" size="xl"></app-icon>
-                            <p class="text-2xl">
-                                No se Encontraron Preguntas en esta Evaluacion
-                            </p>
-                        </div>
-                    </article>
-                </div>
-            </p-tabPanel>
-
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matListAlt"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Preguntas
-                        </span>
-                    </div>
-                </ng-template>
-                <app-toolbar-primeng [title]="
-                        'Gestionar preguntas de: ' +
-                        (evaluacion?.cEvaluacionTitulo || '')
-                    ">
-                    <button [ngClass]="{
-                            'border-none': true,
-                            'cursor-pointer': true,
-                        }" class="p-1 mx-1 p-button-rounded p-button-primary p-button-text" pButton
-                        (click)="$event.stopPropagation(); menu.toggle($event)">
-                        <i class="pi pi-ellipsis-h text-white hover:text-blue-300"></i>
-                    </button>
-                </app-toolbar-primeng>
-                <app-evaluacion-agregar-preguntas></app-evaluacion-agregar-preguntas>
-            </p-tabPanel>
-            <p-tabPanel [disabled]="evaluacion?.iEstado === 1">
-                <ng-template pTemplate="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matRule"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Calificar
-                        </span>
-                    </div>
-                </ng-template>
-                <app-evaluacion-room-calificacion [iEvaluacionId]="ixActivadadId" [evaluacion]="evaluacion"
-                    [iEstado]="evaluacion?.iEstado"></app-evaluacion-room-calificacion>
-            </p-tabPanel>
-        </p-tabView>
-    </section>
-    }
-    @if (iPerfilId === ESTUDIANTE) {
-    <app-evaluacion-estudiantes [evaluacion]="evaluacion"></app-evaluacion-estudiantes>
-    }
-    <app-evaluacion-finalizada *ngIf="iPerfilId === 0"> </app-evaluacion-finalizada>
-    <p-menu #menu [model]="items" [popup]="true" styleClass="w-20rem" /> -->

@@ -3,193 +3,61 @@ import {
     EventEmitter,
     Input,
     Output,
-    OnChanges,
     inject,
+    OnChanges,
 } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
-import { NgIf } from '@angular/common'
-import { FormBuilder } from '@angular/forms'
-import { GeneralService } from '@/app/servicios/general.service'
-import { MessageService } from 'primeng/api'
-import { ConstantesService } from '@/app/servicios/constantes.service'
+import { FormBuilder, Validators } from '@angular/forms'
 import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
+import { MessageService } from 'primeng/api'
+import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service'
+import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+
+export interface IBancoAlternativas {
+    id: string
+    iBancoAltId: string
+    cBancoAltLetra: string
+    cBancoAltDescripcion: string
+    bBancoAltRptaCorrecta: number | boolean
+    cBancoAltExplicacionRpta: string
+    cAlternativaImagen: string
+}
 
 @Component({
     selector: 'app-preguntas-form',
     standalone: true,
-    imports: [PrimengModule, NgIf],
+    imports: [PrimengModule],
     templateUrl: './preguntas-form.component.html',
     styleUrl: './preguntas-form.component.scss',
 })
 export class PreguntasFormComponent implements OnChanges {
-    private _FormBuilder = inject(FormBuilder)
-    private _GeneralService = inject(GeneralService)
-    private _MessageService = inject(MessageService)
-    private _ConstantesService = inject(ConstantesService)
+    @Output() accionForm = new EventEmitter()
 
-    @Output() accionBtnItem = new EventEmitter()
-
-    @Input() showModalPreguntas: boolean = false
-    @Input() cEvaluacionTitulo: string
-    @Input() curso
-    @Input() iEvaluacionId
-    @Input() idEncabPregId
     @Input() data
 
-    iBancoId
-    opcion: string = 'GUARDAR'
+    private _FormBuilder = inject(FormBuilder)
+    private _MessageService = inject(MessageService)
+    private _ValidacionFormulariosService = inject(ValidacionFormulariosService)
+    private _EvaluacionPreguntasService = inject(EvaluacionPreguntasService)
+    private _ConstantesService = inject(ConstantesService)
 
-    ngOnChanges(changes) {
-        if (changes.showModalPreguntas?.currentValue) {
-            this.showModalPreguntas = changes.showModalPreguntas.currentValue
-            if (this.formBancoPreguntas) {
-                this.formBancoPreguntas.reset()
-                this.formBancoPreguntas.controls.iTipoPregId.setValue(1)
-                this.cAlternativa = ''
-                this.cAlternativaExplicacion = ''
-                this.bRptaCorreta = false
-                this.alternativas = []
-            }
-        }
-        if (changes.curso?.currentValue) {
-            this.curso = changes.curso.currentValue
-        }
-        if (changes.iEvaluacionId?.currentValue) {
-            this.iEvaluacionId = changes.iEvaluacionId.currentValue
-        }
-        if (changes.data?.currentValue) {
-            this.data = changes.data.currentValue
-            const data = this.data.length ? this.data[0] : null
-            this.opcion = this.data.length ? 'ACTUALIZAR' : 'GUARDAR'
-            this.formBancoPreguntas.patchValue(data)
-            if (data) {
-                this.alternativas = data['alternativas']
-                    ? JSON.parse(data['alternativas'])
-                    : []
-                this.formBancoPreguntas.controls.iTipoPregId.setValue(
-                    Number(data['iTipoPregId'])
-                )
-            }
-        }
-    }
+    opcion: 'GUARDAR' | 'ACTUALIZAR' = 'GUARDAR'
+    isLoading: boolean = false
+    iEvalPregId: string | number
 
-    formBancoPreguntas = this._FormBuilder.group({
-        opcion: [''],
-        valorBusqueda: [''],
-
-        iBancoId: [''],
-        iDocenteId: [''],
-        iTipoPregId: [1],
-        iCurrContId: [''],
-        dtBancoCreacion: [''],
-        cBancoPregunta: [''],
-        dtBancoTiempo: [''],
-        cBancoTextoAyuda: [''],
-        nBancoPuntaje: [''],
-        idEncabPregId: [''],
-        iCursoId: [''],
-        iNivelCicloId: [''],
-
-        //TABLA: EVALUACION_PREGUNTAS
-        iEvalPregId: [''],
-        iEvaluacionId: [''],
-        cEvalPregPregunta: [''],
-        dtEvalPregTiempo: [''],
-        cEvalPregTextoAyuda: [''],
-        nEvalPregPuntaje: [''],
-
-        //
-        alternativas: [],
+    formEvaluacionPreguntas = this._FormBuilder.group({
+        iEvaluacionId: ['', Validators.required],
+        iDocenteId: ['', Validators.required],
+        iTipoPregId: [1, Validators.required],
+        iCursoId: ['', Validators.required],
+        iNivelCicloId: ['', Validators.required],
+        idEncabPregId: [],
+        cEvalPregPregunta: ['', Validators.required],
+        cEvalPregTextoAyuda: [],
+        jsonAlternativas: [],
+        iCredId: ['', Validators.required],
     })
-
-    accionBtn(elemento): void {
-        const { accion } = elemento
-        const { item } = elemento
-
-        switch (accion) {
-            case 'close-modal':
-                this.accionBtnItem.emit({
-                    accion: 'close-modal-preguntas-form',
-                    item,
-                })
-                break
-            case 'guardar-pregunta':
-                const iRptaCorrecta = this.alternativas.filter(
-                    (i) => i.bBancoAltRptaCorrecta
-                ).length
-                const iAlternativas = this.alternativas.length
-                switch (this.formBancoPreguntas.value.iTipoPregId) {
-                    case 1:
-                        if (iRptaCorrecta !== 1 || iAlternativas <= 2) {
-                            this._MessageService.add({
-                                severity: 'error',
-                                summary: 'Error',
-                                detail: 'Debe haber solo una alternativa correcta y más de 2 alternativas. ',
-                            })
-                            return
-                        }
-                        break
-                    case 2:
-                        if (iRptaCorrecta < 2 || iAlternativas <= 3) {
-                            this._MessageService.add({
-                                severity: 'error',
-                                summary: 'Error',
-                                detail: 'Debe haber más de una alternativa correcta y más de 3 alternativas. ',
-                            })
-                            return
-                        }
-                        break
-                }
-                this.formBancoPreguntas.controls.opcion.setValue(
-                    this.opcion + 'xBancoPreguntas'
-                )
-                this.formBancoPreguntas.controls.iDocenteId.setValue(
-                    this._ConstantesService.iDocenteId
-                )
-                this.formBancoPreguntas.controls.iNivelCicloId.setValue(
-                    this.curso?.iNivelCicloId
-                )
-                this.formBancoPreguntas.controls.iCursoId.setValue(
-                    this.curso?.iCursoId
-                )
-                this.formBancoPreguntas.controls.iCurrContId.setValue(
-                    this._ConstantesService.iCurrContId
-                )
-
-                this.formBancoPreguntas.controls.iEvaluacionId.setValue(
-                    this.iEvaluacionId
-                )
-                this.formBancoPreguntas.controls.cEvalPregPregunta.setValue(
-                    this.formBancoPreguntas.value.cBancoPregunta
-                )
-                this.formBancoPreguntas.controls.cEvalPregTextoAyuda.setValue(
-                    this.formBancoPreguntas.value.cBancoTextoAyuda
-                )
-
-                this.formBancoPreguntas.controls.alternativas.setValue(
-                    this.alternativas
-                )
-                this.formBancoPreguntas.controls.idEncabPregId.setValue(
-                    this.idEncabPregId
-                )
-
-                const params = {
-                    petition: 'post',
-                    group: 'evaluaciones',
-                    prefix: 'banco-preguntas',
-                    ruta: 'handleCrudOperation',
-                    data: this.formBancoPreguntas.value,
-                }
-                this.getInformation(
-                    params,
-                    this.formBancoPreguntas.value.opcion
-                )
-                break
-            case this.opcion + 'xBancoPreguntas':
-                this.accionBtn({ accion: 'close-modal', item: [] })
-                break
-        }
-    }
 
     tipoPreguntas = [
         {
@@ -204,26 +72,38 @@ export class PreguntasFormComponent implements OnChanges {
             iTipoPregId: 3,
             cTipoPregunta: 'Opción libre',
         },
+        {
+            iTipoPregId: 4,
+            cTipoPregunta: 'Opción Condicional',
+        },
     ]
 
-    //TABLA: BANCO_ALTERNATIVAS
-    // iBancoAltId
-    // iBancoId
-    // cBancoAltLetra
-    // cBancoAltDescripcion
-    // bBancoAltRptaCorrecta
-    // cBancoAltExplicacionRpta
+    alternativas: IBancoAlternativas[] = []
 
-    alternativas = []
-    cAlternativa: string = null
-    cAlternativaExplicacion: string = null
-    bRptaCorreta: boolean = false
+    ngOnChanges(changes) {
+        if (changes.data.currentValue) {
+            this.data = changes.data.currentValue
+            const formulario = this.data.cFormulario
+            this.iEvalPregId = formulario?.iEvalPregId
+            this.opcion = this.iEvalPregId ? 'ACTUALIZAR' : 'GUARDAR'
+            this.formEvaluacionPreguntas.patchValue({
+                iTipoPregId: Number(formulario?.iTipoPregId),
+                cEvalPregPregunta: formulario?.cEvalPregPregunta,
+                cEvalPregTextoAyuda: formulario?.cEvalPregTextoAyuda,
+            })
+            this.alternativas = formulario?.jsonAlternativas || []
+            this.alternativas = this.alternativas.map((alt, index) => ({
+                ...alt,
+                id: index.toString(),
+                iBancoAltId:
+                    alt.iBancoAltId != null ? String(alt.iBancoAltId) : null,
+                bBancoAltRptaCorrecta: alt.bBancoAltRptaCorrecta ? 1 : 0,
+            }))
+        }
+    }
+
     eliminarAlternativa(index: number) {
-        // Eliminar la alternativa en la posición indicada por index
         this.alternativas.splice(index, 1)
-
-        console.log(this.alternativas)
-
         this.alternativas.forEach((alternativa, i) => {
             const letra = abecedario[i] // Obtiene la letra según el índice
             alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
@@ -231,50 +111,257 @@ export class PreguntasFormComponent implements OnChanges {
     }
 
     agregarAlternativa() {
-        const letra = abecedario[this.alternativas.length]
-
-        if (!letra) {
-            console.error('No hay más letras disponibles para asignar.')
+        this.alternativas.push({
+            id: this.alternativas.length.toString(),
+            iBancoAltId: null,
+            cBancoAltLetra: null,
+            cBancoAltDescripcion: null,
+            bBancoAltRptaCorrecta: null,
+            cBancoAltExplicacionRpta: null,
+            cAlternativaImagen: null,
+        })
+        this.ordenarAlternativaLetra(this.alternativas)
+    }
+    ordenarAlternativaLetra(alternativas) {
+        if (!alternativas) {
             return
         }
-
-        // Agregar una nueva alternativa
-        this.alternativas.push({
-            iBancoAltId: null,
-            iBancoId: this.iBancoId,
-            cBancoAltLetra: letra.code,
-            cBancoAltDescripcion: this.cAlternativa,
-            bBancoAltRptaCorrecta: this.bRptaCorreta,
-            cBancoAltExplicacionRpta: this.cAlternativaExplicacion,
-            bImage: this.cAlternativa.includes('image') ? true : false,
-        })
-
-        // Reiniciar los valores del formulario
-        this.cAlternativa = null
-        this.cAlternativaExplicacion = null
-        this.bRptaCorreta = false
-
-        // Actualizar las letras de todas las alternativas
-        this.alternativas.forEach((alternativa, i) => {
+        alternativas.forEach((alternativa, i) => {
             const letra = abecedario[i] // Obtiene la letra según el índice
             alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
         })
     }
 
-    getInformation(params, accion) {
-        this._GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.accionBtn({ accion, item: response?.data })
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
+    enviarFormulario() {
+        const tipo = this.formEvaluacionPreguntas.value.iTipoPregId
+        const validacion = this.validarAlternativas(tipo)
+        if (!validacion.esValido) {
+            this.mostrarMensajeToast({
+                severity: 'error',
+                summary: 'Error',
+                detail: validacion.mensaje || 'Ocurrió un error inesperado',
+            })
+            return
+        }
+
+        if (this.opcion === 'GUARDAR') {
+            this.guardarEvaluacionPreguntas()
+        }
+
+        if (this.opcion === 'ACTUALIZAR') {
+            if (!this.iEvalPregId) return
+            this.actualizarEvaluacionPreguntas()
+        }
+    }
+
+    validarAlternativas(tipo: number): { esValido: boolean; mensaje: string } {
+        if (!this.alternativas || this.alternativas.length < 3) {
+            return {
+                esValido: false,
+                mensaje: 'Debe haber al menos 3 alternativas.',
+            }
+        }
+
+        const alternativasSinDescripcion = this.alternativas.filter(
+            (alt) =>
+                !alt.cBancoAltDescripcion ||
+                alt.cBancoAltDescripcion.trim() === ''
+        )
+
+        if (alternativasSinDescripcion.length > 0) {
+            return {
+                esValido: false,
+                mensaje: 'Todas las alternativas deben tener una descripción.',
+            }
+        }
+
+        const respuestasCorrectas = this.alternativas.filter(
+            (alt) => alt.bBancoAltRptaCorrecta
+        )
+        if (tipo === 1 && respuestasCorrectas.length !== 1) {
+            return {
+                esValido: false,
+                mensaje: 'Debe haber exactamente una respuesta correcta.',
+            }
+        }
+
+        if (tipo === 2 && respuestasCorrectas.length < 2) {
+            return {
+                esValido: false,
+                mensaje: 'Debe haber más de una respuesta correcta.',
+            }
+        }
+
+        const todasConExplicacion = respuestasCorrectas.every((alt) =>
+            alt.cBancoAltExplicacionRpta?.trim()
+        )
+        if (!todasConExplicacion) {
+            return {
+                esValido: false,
+                mensaje: 'Cada respuesta correcta debe tener una explicación.',
+            }
+        }
+
+        return { esValido: true, mensaje: '' }
+    }
+
+    guardarEvaluacionPreguntas() {
+        if (this.isLoading) return // evitar doble clic
+        this.isLoading = true
+
+        this.formEvaluacionPreguntas.patchValue({
+            iEvaluacionId: this.data?.iEvaluacionId,
+            iDocenteId: this._ConstantesService.iDocenteId,
+            iCursoId: this.data?.iCursoId,
+            iNivelCicloId: this.data?.iNivelCicloId,
+            idEncabPregId: this.data?.idEncabPregId,
+            iCredId: this._ConstantesService.iCredId,
+            jsonAlternativas: JSON.stringify(this.alternativas),
         })
+
+        const nombresCampos: Record<string, string> = {
+            iEvaluacionId: 'Evaluación',
+            iDocenteId: 'Docente',
+            iTipoPregId: 'Tipo de Pregunta',
+            iCursoId: 'Curso',
+            iNivelCicloId: 'Nivel Ciclo',
+            cEvalPregPregunta: 'Enunciado de la pregunta',
+            iCredId: 'Credencial',
+        }
+        const { valid, message } =
+            this._ValidacionFormulariosService.validarFormulario(
+                this.formEvaluacionPreguntas,
+                nombresCampos
+            )
+
+        if (!valid && message) {
+            this.mostrarMensajeToast(message)
+            this.isLoading = false
+            return
+        }
+
+        this._EvaluacionPreguntasService
+            .guardarEvaluacionPreguntas(this.formEvaluacionPreguntas.value)
+            .subscribe({
+                next: (resp) => {
+                    if (resp.validated) {
+                        this.mostrarMensajeToast({
+                            severity: 'success',
+                            summary: 'Genial!',
+                            detail: resp.message,
+                        })
+                        this.accionForm.emit(true)
+                    }
+                    this.isLoading = false
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                    this.isLoading = false
+                },
+            })
+    }
+
+    actualizarEvaluacionPreguntas() {
+        if (this.isLoading) return // evitar doble clic
+        this.isLoading = true
+
+        this.formEvaluacionPreguntas.patchValue({
+            iEvaluacionId: this.data?.iEvaluacionId,
+            iDocenteId: this._ConstantesService.iDocenteId,
+            iCursoId: this.data?.iCursoId,
+            iNivelCicloId: this.data?.iNivelCicloId,
+            idEncabPregId: this.data?.idEncabPregId,
+            iCredId: this._ConstantesService.iCredId,
+            jsonAlternativas: JSON.stringify(this.alternativas),
+        })
+
+        const nombresCampos: Record<string, string> = {
+            iEvaluacionId: 'Evaluación',
+            iDocenteId: 'Docente',
+            iTipoPregId: 'Tipo de Pregunta',
+            iCursoId: 'Curso',
+            iNivelCicloId: 'Nivel Ciclo',
+            cEvalPregPregunta: 'Enunciado de la pregunta',
+            iCredId: 'Credencial',
+        }
+        const { valid, message } =
+            this._ValidacionFormulariosService.validarFormulario(
+                this.formEvaluacionPreguntas,
+                nombresCampos
+            )
+
+        if (!valid && message) {
+            this.mostrarMensajeToast(message)
+            this.isLoading = false
+            return
+        }
+        const params = {
+            ...this.formEvaluacionPreguntas.value,
+        }
+
+        this._EvaluacionPreguntasService
+            .actualizarEvaluacionPreguntasxiEvalPregId(this.iEvalPregId, params)
+            .subscribe({
+                next: (resp) => {
+                    if (resp.validated) {
+                        this.mostrarMensajeToast({
+                            severity: 'success',
+                            summary: 'Genial!',
+                            detail: resp.message,
+                        })
+                        this.accionForm.emit(true)
+                    }
+                    this.isLoading = false
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                    this.isLoading = false
+                },
+            })
+    }
+    mostrarMensajeToast(message) {
+        this._MessageService.add(message)
     }
 }

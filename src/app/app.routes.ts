@@ -14,9 +14,6 @@ import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.co
 import { EncuestasPorCategoriaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/encuestas-por-categoria.component'
 import { ListaCategoriasComponent } from './sistema/administrador/encuestas/lista-categorias/lista-categorias.component'
 import { LlenadoPreguntasEncuestaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
-import { ConfiguracionEncuestasComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/configuracion-encuestas.component'
-import { InformacionAdicionalComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/gestion-encuestas/informacion-adicional/informacion-adicional.component'
-import { PoblacionObjetivoComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/gestion-encuestas/poblacion-objetivo/poblacion-objetivo.component'
 import { GestionEncuestaConfiguracionComponent } from './sistema/administrador/encuestas/lista-categorias/gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -101,22 +98,6 @@ export const routes: Routes = [
                 path: 'llenado-preguntas-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
             },
-            // configuracion-encuesta
-            {
-                path: 'configuracion-encuestas',
-                component: ConfiguracionEncuestasComponent,
-            },
-            // informacion-adicional
-            {
-                path: 'informacion-adicional',
-                component: InformacionAdicionalComponent,
-            },
-            // poblacion-objetivo
-            {
-                path: 'poblacion-objetivo',
-                component: PoblacionObjetivoComponent,
-            },
-            //
             {
                 path: 'gestion-encuesta-configuacion',
                 component: GestionEncuestaConfiguracionComponent,

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router'
 import { GestionarEncuestasComponent } from './gestionar-encuestas/gestionar-encuestas.component'
 import { EncuestaComponent } from './encuesta/encuesta.component'
-import { EncuestaPreguntasComponent } from './encuesta-preguntas/encuesta-preguntas.component'
+import { EncuestaPreguntasComponent } from './encuesta/encuesta-preguntas/encuesta-preguntas.component'
 
 const routes: Routes = [
     { path: 'gestionar-encuestas', component: GestionarEncuestasComponent },

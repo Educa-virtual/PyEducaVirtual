@@ -164,7 +164,7 @@ export class GestionarEncuestasComponent implements OnInit {
                 break
             case 'preguntas':
                 this.router.navigate([
-                    `/bienestar/encuesta/${item.iEncuId}/'encuesta-preguntas`,
+                    `/bienestar/encuesta/${item.iEncuId}/'preguntas`,
                 ])
                 break
             case 'eliminar':

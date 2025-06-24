@@ -57,6 +57,27 @@ export class DatosEncuestaService implements OnDestroy {
     borrarEncuesta(data: any) {
         return this.http.post(`${baseUrl}/bienestar/borrarEncuesta`, data)
     }
+
+    listarPreguntas(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/listarPreguntas`, data)
+    }
+
+    guardarPregunta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarPregunta`, data)
+    }
+
+    verPregunta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verPregunta`, data)
+    }
+
+    actualizarPregunta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarPregunta`, data)
+    }
+
+    borrarPregunta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/borrarPregunta`, data)
+    }
+
     /*
      * Funciones para popular parametros de formularios de ficha
      */
@@ -71,6 +92,14 @@ export class DatosEncuestaService implements OnDestroy {
             )
         }
         return of(this.parametros)
+    }
+
+    getTiposPreguntas() {
+        return [
+            { label: 'PREGUNTA CERRADA (SI/NO)', value: 1 },
+            { label: 'PREGUNTA ABIERTA (TEXTO)', value: 2 },
+            { label: 'PREGUNTA DE ESCALA (1 A 5)', value: 3 },
+        ]
     }
 
     getCategorias(data: any) {

@@ -1,0 +1,179 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            Gestionar preguntas de encuesta
+            {{ cEncuNombre }}
+        </span>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex justify-content-center">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                pButton
+                pTooltip="Registrar encuesta"
+                tooltipPosition="top"
+                (click)="agregarPregunta()"
+                severity="success"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="ml-2 hidden sm:block">Registrar encuesta</span>
+            </button>
+        </div>
+    </ng-template>
+    <div
+        class="grid p-fluid mt-3"
+        *ngFor="let pregunta of preguntas; let i = index"
+    >
+        @switch (+pregunta.iEncuPregTipoId) {
+            <!-- Pregunta cerrada Si/No -->
+            @case (1) {
+                <div class="col-12">
+                    <app-pregunta-cerrada
+                        [addonLabel]="pregunta.cEncuPregContenido"
+                        [infoAdicional]="
+                            pregunta.cEncuPregAdicional ? infoAdicional : null
+                        "
+                    ></app-pregunta-cerrada>
+                    <ng-template #infoAdicional>
+                        {{ pregunta.cEncuPregAdicional }}
+                    </ng-template>
+                </div>
+            }
+            <!-- Pregunta de texto -->
+            @case (2) {
+                <div class="col-12">
+                    <app-pregunta-abierta
+                        [addonLabel]="pregunta.cEncuPregContenido"
+                        [infoAdicional]="
+                            pregunta.cEncuPregAdicional ? infoAdicional : null
+                        "
+                    />
+                    <ng-template #infoAdicional>
+                        {{ pregunta.cEncuPregAdicional }}
+                    </ng-template>
+                </div>
+            }
+            <!-- Pregunta de escalas 1 a 5 -->
+            @case (3) {
+                <div class="col-12">
+                    <app-pregunta-escala
+                        [addonLabel]="pregunta.cEncuPregContenido"
+                        [infoAdicional]="
+                            pregunta.cEncuPregAdicional ? infoAdicional : null
+                        "
+                    />
+                    <ng-template #infoAdicional>
+                        {{ pregunta.cEncuPregAdicional }}
+                    </ng-template>
+                </div>
+            }
+        }
+    </div>
+</p-panel>
+
+<p-dialog
+    header="{{ dialog_header }}"
+    [(visible)]="dialog_visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onClose)="clearForm()"
+>
+    <ng-content>
+        <br />
+        <form [formGroup]="formPregunta">
+            <div class="grid p-fluid mt-3">
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Tipo de Preguntas</span>
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="tipos_preguntas"
+                            formControlName="iEncuPregTipoId"
+                            [filter]="true"
+                            [showClear]="false"
+                            appendTo="body"
+                            placeholder="Seleccione"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Orden de pregunta</span>
+                        </p-inputGroupAddon>
+                        <p-inputNumber
+                            formControlName="iEncuPregOrden"
+                            [min]="1"
+                            [step]="1"
+                            placeholder="Indique"
+                            [useGrouping]="false"
+                            [showButtons]="true"
+                            class="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Contenido de pregunta</span>
+                        </p-inputGroupAddon>
+                        <textarea
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            formControlName="cEncuPregContenido"
+                            pInputTextarea
+                            placeholder="Escriba"
+                            [rows]="3"
+                            class="group-element"
+                            [style.minHeight]="3"
+                            [style.maxHeight]="6"
+                            [cdkAutosizeMinRows]="3 + 1.5"
+                            [cdkAutosizeMaxRows]="6"
+                        ></textarea>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Información Adicional</span>
+                        </p-inputGroupAddon>
+                        <textarea
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            formControlName="cEncuPregAdicional"
+                            pInputTextarea
+                            placeholder="Escriba"
+                            [rows]="3"
+                            class="group-element"
+                            [style.minHeight]="3"
+                            [style.maxHeight]="6"
+                            [cdkAutosizeMinRows]="3 + 1.5"
+                            [cdkAutosizeMaxRows]="6"
+                        ></textarea>
+                    </p-inputGroup>
+                </div>
+            </div>
+        </form>
+
+        <div class="flex justify-content-end">
+            <p-button
+                label="Guardar"
+                (onClick)="guardarPregunta()"
+                styleClass="p-button-success"
+                [hidden]="pregunta_registrada"
+            />
+            <p-button
+                label="Actualizar"
+                (onClick)="actualizarPregunta()"
+                styleClass="p-button-success"
+                [hidden]="!pregunta_registrada"
+            />
+        </div>
+    </ng-content>
+</p-dialog>
+
+<p-toast></p-toast>

@@ -9,8 +9,9 @@ export const steps: MenuItem[] = [
         label: 'Población objetivo',
         routerLink: 'poblacion-objetivo',
     },
-    {
+    /*{
         label: 'Resumen',
         routerLink: 'resumen',
     },
+    */
 ]

@@ -1,26 +1,40 @@
 <p-panel class="lista-categoria">
-<ng-template pTemplate="header">
-    <div class="flex justify-content-between align-items-center w-full">
-        <span class="text-xl font-bold text-primary">{{titleListaCategoria}}</span>
-        <button pButton pRipple label="Nueva" icon="pi pi-plus" class="p-button-success"></button>
-    </div>
-</ng-template>
+    <ng-template pTemplate="header">
+        <div class="flex justify-content-between align-items-center w-full">
+            <span class="text-xl font-bold text-primary">{{
+                titleListaCategoria
+            }}</span>
+            <button
+                pButton
+                pRipple
+                label="Nueva"
+                icon="pi pi-plus"
+                class="p-button-success"
+            ></button>
+        </div>
+    </ng-template>
 
-<app-table-primeng 
-    [columnas]="columns"
-    [showCaption]="true"
-    [data]="dataCategorias"
-    (accionBtnItem)="accionBtnItemTable($event)"
-    [showPaginator]="true"
-    sortMode="single"
-    sortField="dtFechaInicio"
-    [sortOrder]="-1"
-    [(selectedRowData)]="selectedItem"
-    [actions]="actions"
-    [showAdvancedFilter]="true"
-    [indiceColumnaBuscar]="1"
-    [showAdvancedFilter]="false"
-    [searchPlaceholder]="'Buscar por título de encuesta...'">
-</app-table-primeng>
-
+    <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="dataCategorias"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        sortMode="single"
+        sortField="dtFechaInicio"
+        [sortOrder]="-1"
+        [(selectedRowData)]="selectedItem"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+        [indiceColumnaBuscar]="1"
+        [showAdvancedFilter]="false"
+        [searchPlaceholder]="'Buscar por título de encuesta...'"
+    >
+    </app-table-primeng>
 </p-panel>
+
+<app-configuracion-encuestas
+    [visible]="mostrarDiaalogConfiguracionEncuestas"
+    (visibleChange)="mostrarDiaalogConfiguracionEncuestas = $event"
+>
+</app-configuracion-encuestas>

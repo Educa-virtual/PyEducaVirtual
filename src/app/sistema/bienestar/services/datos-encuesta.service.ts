@@ -50,6 +50,13 @@ export class DatosEncuestaService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/actualizarEncuesta`, data)
     }
 
+    actualizarEncuestaEstado(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarEncuestaEstado`,
+            data
+        )
+    }
+
     obtenerCantidadPoblacion(data: any) {
         return this.http.post(`${baseUrl}/bienestar/getCantidadPoblacion`, data)
     }
@@ -76,6 +83,14 @@ export class DatosEncuestaService implements OnDestroy {
 
     borrarPregunta(data: any) {
         return this.http.post(`${baseUrl}/bienestar/borrarPregunta`, data)
+    }
+
+    listarRespuestas(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/listarRespuestas`, data)
+    }
+
+    verRespuesta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verRespuesta`, data)
     }
 
     /*
@@ -357,8 +372,8 @@ export class DatosEncuestaService implements OnDestroy {
     getEstados() {
         if (!this.estados) {
             this.estados = [
-                { label: 'ACTIVO', value: 1 },
-                { label: 'INACTIVO', value: 2 },
+                { label: 'BORRADOR', value: 1 },
+                { label: 'TERMINADA', value: 2 },
             ]
         }
         return this.estados

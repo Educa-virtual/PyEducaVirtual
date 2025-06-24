@@ -13,8 +13,9 @@ import { InputTextModule } from 'primeng/inputtext'
 import { PanelModule } from 'primeng/panel'
 import { EncuestaComponent } from '../encuesta/encuesta.component'
 import { DatosEncuestaService } from '../services/datos-encuesta.service'
-import { ConfirmationService, MessageService } from 'primeng/api'
+import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-gestionar-encuestas',
@@ -44,7 +45,7 @@ export class GestionarEncuestasComponent implements OnInit {
     iYAcadId: number
 
     private _messageService = inject(MessageService)
-    private _confirmService = inject(ConfirmationService)
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
@@ -157,6 +158,33 @@ export class GestionarEncuestasComponent implements OnInit {
             })
     }
 
+    actualizarEncuestaEstado(item) {
+        this.datosEncuestas
+            .actualizarEncuestaEstado({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEncuId: item.iEncuId,
+                iEstado: 3,
+            })
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizó la encuesta',
+                    })
+                    this.listarEncuestas()
+                },
+                error: (error) => {
+                    console.error('Error actualizando encuesta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
     accionBnt({ accion, item }) {
         switch (accion) {
             case 'editar':
@@ -164,11 +192,11 @@ export class GestionarEncuestasComponent implements OnInit {
                 break
             case 'preguntas':
                 this.router.navigate([
-                    `/bienestar/encuesta/${item.iEncuId}/'preguntas`,
+                    `/bienestar/encuesta/${item.iEncuId}/preguntas`,
                 ])
                 break
             case 'eliminar':
-                this._confirmService.confirm({
+                this._confirmService.openConfirm({
                     message: '¿Está seguro de eliminar la encuesta?',
                     header: 'Confirmación',
                     icon: 'pi pi-exclamation-triangle',
@@ -177,6 +205,27 @@ export class GestionarEncuestasComponent implements OnInit {
                     },
                     reject: () => {},
                 })
+                break
+            case 'aprobar':
+                this._confirmService.openConfirm({
+                    message: '¿Está seguro de aprobar la encuesta?',
+                    header: 'Confirmación',
+                    icon: 'pi pi-exclamation-triangle',
+                    accept: () => {
+                        this.actualizarEncuestaEstado(item)
+                    },
+                    reject: () => {},
+                })
+                break
+            case 'respuestas':
+                this.router.navigate([
+                    `/bienestar/encuesta/${item.iEncuId}/respuestas`,
+                ])
+                break
+            case 'resumen':
+                this.router.navigate([
+                    `/bienestar/encuesta/${item.iEncuId}/resumen`,
+                ])
                 break
             default:
                 console.warn('Acción no reconocida:', accion)
@@ -257,6 +306,16 @@ export class GestionarEncuestasComponent implements OnInit {
         },
         {
             labelTooltip: 'Eliminar',
+            icon: 'pi pi-check',
+            accion: 'aprobar',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: function (rowData: any) {
+                return rowData.iEstado == 2
+            },
+        },
+        {
+            labelTooltip: 'Aprobar',
             icon: 'pi pi-trash',
             accion: 'eliminar',
             type: 'item',
@@ -272,7 +331,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 2
+                return rowData.iEstado == 3
             },
         },
         {
@@ -282,7 +341,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 2
+                return rowData.iEstado == 3
             },
         },
     ]

@@ -15,6 +15,7 @@ import { EncuestasPorCategoriaComponent } from './sistema/administrador/encuesta
 import { ListaCategoriasComponent } from './sistema/administrador/encuestas/lista-categorias/lista-categorias.component'
 import { LlenadoPreguntasEncuestaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
 import { GestionEncuestaConfiguracionComponent } from './sistema/administrador/encuestas/lista-categorias/gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+import { InformacionGeneralComponent } from './sistema/administrador/encuestas/lista-categorias/gestion-encuesta-configuracion/informacion-general/informacion-general.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -98,9 +99,15 @@ export const routes: Routes = [
                 path: 'llenado-preguntas-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
             },
+            // Gestion-encuesta-configuacion
             {
                 path: 'gestion-encuesta-configuacion',
                 component: GestionEncuestaConfiguracionComponent,
+            },
+            // informacion general
+            {
+                path: 'informacion-general',
+                component: InformacionGeneralComponent,
             },
         ],
     },

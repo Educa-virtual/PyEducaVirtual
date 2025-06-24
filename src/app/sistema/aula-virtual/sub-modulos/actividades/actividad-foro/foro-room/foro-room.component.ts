@@ -35,7 +35,9 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ForoRoomDetalleComponent } from '../foro-room-detalle/foro-room-detalle.component'
+
 //import { Toast } from 'primeng/toast';
+
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -126,6 +128,7 @@ export class ForoRoomComponent implements OnInit {
     selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
     selectedComentario: number | null = null
     respuestaInput: string = '' // Para almacenar la respuesta temporal
+    isDocente: boolean = this._constantesService.iPerfilId === DOCENTE
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -183,30 +186,14 @@ export class ForoRoomComponent implements OnInit {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
-        this.obtenerIdPerfil()
+        // this.obtenerIdPerfil()
         // this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
-        this.getEstudiantesMatricula()
+        // this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }
-    accionRubrica(elemento): void {
-        if (!elemento) return
-        this.obtenerRubricas()
-    }
-    obtenerRubricas() {
-        const params = {
-            iDocenteId: this._constantesService.iDocenteId,
-        }
-        console.log(params)
-        // this._evaluacionService.obtenerRubricas(params).subscribe({
-        //     next: (data) => {
-        //         data.forEach((element) => {
-        //             this.rubricas.push(element)
-        //         })
-        //     },
-        // })
-    }
+
     itemRespuesta: any[] = []
     // menu para editar y eliminar el comentario del foro
     menuItems = [
@@ -438,11 +425,6 @@ export class ForoRoomComponent implements OnInit {
     foroRespaldo = []
     // obtener informacion general de foro
     obtenerForo() {
-        console.log(
-            'datos para obtener foro',
-            this.iActTopId,
-            this.ixActivadadId
-        )
         this._aulaService
             .obtenerForo({
                 iActTipoId: this.iActTopId,
@@ -453,41 +435,11 @@ export class ForoRoomComponent implements OnInit {
                 next: (resp) => {
                     this.foro = resp.length ? resp[0] : {}
                     console.log('datos generales foro', this.foro)
-                    this.obtenerResptDocente()
+                    this.obtenerResptDocente() // función para obtener la retroalimentan al estudiante
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []
-                    this.messages = [
-                        {
-                            severity: 'info',
-                            detail: resp?.cForoDescripcion,
-                        },
-                    ]
-
-                    // if (Array.isArray(resp) && resp.length > 0) {
-                    //     this.foro = resp[0] // Tomar el primer objeto del array
-                    // } else {
-                    //     this.foro = null // Evitar errores si no hay datos
-                    // }
-                    // // console.log('datos de foro',this.foro)
-                    // this.obtenerResptDocente()
-                    // // console.log('obtener datos de foro01', resp)
-                    // this.FilesTareas = this.foro?.cForoUrl
-                    //     ? JSON.parse(this.foro?.cForoUrl)
-                    //     : []
-                    // // Formatear fechas (si existen)
-                    // // Formatear fechas (si existen)
-                    // if (this.foro?.dtForoInicio) {
-                    //     this.foro.dtForoInicio = this.formatDateISO(
-                    //         this.foro.dtForoInicio
-                    //     )
-                    // }
-
-                    // if (this.foro?.dtForoFin) {
-                    //     this.foro.dtForoFin = this.formatDateISO(
-                    //         this.foro.dtForoFin
-                    //     )
-                    // }
+                    // console.log(this.FilesTareas)
                 },
             })
     }

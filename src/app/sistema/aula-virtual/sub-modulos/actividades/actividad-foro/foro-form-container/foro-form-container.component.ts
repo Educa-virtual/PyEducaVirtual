@@ -135,7 +135,7 @@ export class ForoFormContainerComponent implements OnInit {
                 : null,
             iForoId: data.iForoId,
         }
-        console.log('foro a guardar', dataForo)
+        // console.log('foro a guardar', dataForo)
         if (this.foroForm.invalid) {
             this.messageService.add({
                 severity: 'error',

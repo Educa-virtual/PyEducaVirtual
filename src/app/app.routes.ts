@@ -17,6 +17,7 @@ import { LlenadoPreguntasEncuestaComponent } from './sistema/administrador/encue
 import { ConfiguracionEncuestasComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/configuracion-encuestas.component'
 import { InformacionAdicionalComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/gestion-encuestas/informacion-adicional/informacion-adicional.component'
 import { PoblacionObjetivoComponent } from './sistema/administrador/encuestas/lista-categorias/configuracion-encuestas/gestion-encuestas/poblacion-objetivo/poblacion-objetivo.component'
+import { GestionEncuestaConfiguracionComponent } from './sistema/administrador/encuestas/lista-categorias/gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -114,6 +115,11 @@ export const routes: Routes = [
             {
                 path: 'poblacion-objetivo',
                 component: PoblacionObjetivoComponent,
+            },
+            //
+            {
+                path: 'gestion-encuesta-configuacion',
+                component: GestionEncuestaConfiguracionComponent,
             },
         ],
     },

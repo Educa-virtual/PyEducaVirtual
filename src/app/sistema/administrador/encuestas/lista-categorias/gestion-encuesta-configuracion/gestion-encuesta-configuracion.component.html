@@ -1,0 +1,187 @@
+<!-- gestion-encuesta-configuracion.component.html -->
+<div class="mt-4">
+    <p-scrollPanel [style]="{ width: '100%', height: '550px' }">
+        <form [formGroup]="encuestaFormGroup">
+            <p-stepper #stepper [linear]="true" [(activeStep)]="activeStep">
+                <p-stepperPanel header="Información de la Encuesta">
+                    <ng-template
+                        pTemplate="content"
+                        let-nextCallback="nextCallback"
+                    >
+                    </ng-template>
+                </p-stepperPanel>
+
+                <p-stepperPanel header="Configuración de Preguntas">
+                    <ng-template
+                        pTemplate="content"
+                        let-prevCallback="prevCallback"
+                    >
+                    </ng-template>
+                </p-stepperPanel>
+            </p-stepper>
+
+            <div class="stepper-content-container mt-4">
+                <!-- Contenido del Paso 1 -->
+                <div [style.display]="activeStep === 0 ? 'block' : 'none'">
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="nombreEncuesta" class="mt-1">
+                                Nombre de la Encuesta
+                                <span class="text-red-500 text-xs"
+                                    >(*) Obligatorio</span
+                                >
+                            </label>
+                            <div class="mt-2">
+                                <input
+                                    pInputText
+                                    class="w-full"
+                                    formControlName="nombreEncuesta"
+                                    placeholder="Ingrese el nombre de la encuesta"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="descripcion" class="mt-1">
+                                Descripción
+                                <span class="text-red-500 text-xs"
+                                    >(*) Obligatorio</span
+                                >
+                            </label>
+                            <div class="mt-2">
+                                <textarea
+                                    class="w-full"
+                                    rows="4"
+                                    placeholder="Escribe una descripción"
+                                    pInputText
+                                    formControlName="descripcionEncuesta"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formgrid grid flex">
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Fecha de inicio
+                                </p-inputGroupAddon>
+                                <p-calendar
+                                    formControlName="fechaInicio"
+                                    [iconDisplay]="'input'"
+                                    dateFormat="dd/mm/yy"
+                                    styleClass="w-full"
+                                    [showIcon]="true"
+                                    type="date"
+                                    inputId="fechaInicio"
+                                    appendTo="body"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Fecha fin
+                                </p-inputGroupAddon>
+                                <p-calendar
+                                    formControlName="fechaFin"
+                                    [iconDisplay]="'input'"
+                                    dateFormat="dd/mm/yy"
+                                    styleClass="w-full"
+                                    [showIcon]="true"
+                                    type="date"
+                                    inputId="fechaFin"
+                                    appendTo="body"
+                                />
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenido del Paso 2 -->
+                <div [style.display]="activeStep === 1 ? 'block' : 'none'">
+                    <div class="formgrid grid">
+                        <div class="field flex flex-column col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Tipo de Encuesta
+                                </p-inputGroupAddon>
+                                <p-dropdown
+                                    styleClass="w-full"
+                                    placeholder="Seleccionar"
+                                    formControlName="tipoEncuesta"
+                                    [options]="tiposEncuesta"
+                                    optionLabel="nombre"
+                                    optionValue="id"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="field flex flex-column col-12 md:col-6">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Configuración
+                                </p-inputGroupAddon>
+                                <p-dropdown
+                                    styleClass="w-full"
+                                    placeholder="Seleccionar"
+                                    formControlName="configuracion"
+                                    [options]="configuraciones"
+                                    optionLabel="nombre"
+                                    optionValue="id"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="observaciones" class="mt-1">
+                                Observaciones
+                            </label>
+                            <div class="mt-2">
+                                <textarea
+                                    class="w-full"
+                                    rows="4"
+                                    placeholder="Observaciones adicionales"
+                                    pInputText
+                                    formControlName="observaciones"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </p-scrollPanel>
+
+    <!-- Botones de Navegación -->
+    <div
+        class="flex pt-4"
+        [class.justify-content-end]="activeStep === 0"
+        [class.justify-content-between]="activeStep !== 0"
+    >
+        <p-button
+            label="Atrás"
+            (click)="handlePrevious()"
+            [className]="activeStep === 0 ? 'hidden' : ''"
+            [disabled]="activeStep === 0"
+        ></p-button>
+
+        <p-button
+            *ngIf="!isLastStep"
+            label="Siguiente"
+            (click)="handleNext()"
+        ></p-button>
+
+        <p-button
+            *ngIf="isLastStep"
+            label="Finalizar"
+            icon="pi pi-check"
+            (click)="finalizarEncuesta()"
+        ></p-button>
+    </div>
+</div>
+<p-toast></p-toast>

@@ -3,22 +3,17 @@ import { PrimengModule } from '@/app/primeng.module'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { MessageService } from 'primeng/api'
-import { ConfiguracionEncuestasComponent } from './configuracion-encuestas/configuracion-encuestas.component'
+import { Router } from '@angular/router'
 @Component({
     selector: 'app-lista-categorias',
     standalone: true,
-    imports: [
-        PrimengModule,
-        TablePrimengComponent,
-        ConfiguracionEncuestasComponent,
-    ],
+    imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './lista-categorias.component.html',
     styleUrl: './lista-categorias.component.scss',
 })
 export class ListaCategoriasComponent implements OnInit {
     titleListaCategoria: string = 'Censo DRE/UGEL'
     selectedItem: any
-    mostrarDiaalogConfiguracionEncuestas: boolean = false
     dataCategorias = [
         {
             item: 1,
@@ -105,8 +100,6 @@ export class ListaCategoriasComponent implements OnInit {
         },
     ]
 
-    constructor(private messageService: MessageService) {}
-
     ngOnInit() {
         console.log('Inicializando lista de categorías')
     }
@@ -154,5 +147,19 @@ export class ListaCategoriasComponent implements OnInit {
             summary: 'Eliminar encuesta',
             detail: `Eliminando encuesta: ${this.selectedItem.cTituloEncuesta}`,
         })
+    }
+
+    /*constructor{
+        private messageService: MessageService,
+        private router:  Router
+    } {}*/
+
+    constructor(
+        private messageService: MessageService,
+        private router: Router // ← Agregar si no lo tienes
+    ) {}
+
+    navegarAConfiguracion() {
+        this.router.navigate(['/configuracion-encuestas'])
     }
 }

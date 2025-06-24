@@ -4,12 +4,21 @@
             <span class="text-xl font-bold text-primary">{{
                 titleListaCategoria
             }}</span>
+            <!--<button
+                pButton
+                pRipple
+                label="Nueva"
+                icon="pi pi-plus"
+                class="p-button-success"
+            ></button>
+        -->
             <button
                 pButton
                 pRipple
                 label="Nueva"
                 icon="pi pi-plus"
                 class="p-button-success"
+                (click)="navegarAConfiguracion()"
             ></button>
         </div>
     </ng-template>
@@ -32,9 +41,3 @@
     >
     </app-table-primeng>
 </p-panel>
-
-<app-configuracion-encuestas
-    [visible]="mostrarDiaalogConfiguracionEncuestas"
-    (visibleChange)="mostrarDiaalogConfiguracionEncuestas = $event"
->
-</app-configuracion-encuestas>

@@ -16,6 +16,12 @@ import { DatosEncuestaService } from '../services/datos-encuesta.service'
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import {
+    DIRECTOR_IE,
+    SUBDIRECTOR_IE,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-gestionar-encuestas',
@@ -35,14 +41,27 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 })
 export class GestionarEncuestasComponent implements OnInit {
     @ViewChild('filtro') filtro: ElementRef
-    encuestas: Array<object> = []
+    encuestas: Array<any> = []
     encuestas_filtradas: Array<object> = []
     searchForm: FormGroup
     categorias: Array<object>
     dialog_visible: boolean = false
     dialog_header: string = 'Registrar encuesta'
+
     perfil: any
     iYAcadId: number
+
+    puede_editar: boolean = false
+    puede_ver_respuestas: boolean = false
+    puede_ver_resumen: boolean = false
+
+    perfil_permitido: boolean = false
+    perfiles_permitido: Array<number> = [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+    ]
 
     private _messageService = inject(MessageService)
     private _confirmService = inject(ConfirmationModalService)
@@ -64,6 +83,9 @@ export class GestionarEncuestasComponent implements OnInit {
             )
         })
 
+        this.perfil_permitido = this.perfiles_permitido.includes(
+            +this.perfil.iPerfilId
+        )
         this.listarEncuestas()
     }
 
@@ -185,6 +207,10 @@ export class GestionarEncuestasComponent implements OnInit {
             })
     }
 
+    responderEncuesta(item) {
+        this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/ver`])
+    }
+
     accionBnt({ accion, item }) {
         switch (accion) {
             case 'editar':
@@ -291,7 +317,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 1
+                return rowData.iEstado == 1 && rowData.puede_editar
             },
         },
         {
@@ -301,7 +327,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 1
+                return rowData.iEstado == 1 && rowData.puede_editar
             },
         },
         {
@@ -311,7 +337,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 2
+                return rowData.iEstado == 2 && rowData.puede_aprobar
             },
         },
         {
@@ -321,7 +347,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 1
+                return rowData.iEstado == 1 && rowData.puede_editar
             },
         },
         {
@@ -331,7 +357,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 3
+                return rowData.iEstado == 3 && rowData.puede_ver_respuestas
             },
         },
         {
@@ -341,7 +367,7 @@ export class GestionarEncuestasComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: function (rowData: any) {
-                return rowData.iEstado == 3
+                return rowData.iEstado == 3 && rowData.puede_ver_resumen
             },
         },
     ]

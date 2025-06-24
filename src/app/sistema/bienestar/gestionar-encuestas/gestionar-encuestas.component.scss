@@ -56,3 +56,19 @@
     border-top-right-radius: 0.5rem !important;
     border-bottom-right-radius: 0.5rem !important;
 }
+
+.card {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    padding: 1.25rem;
+    box-shadow: var(--card-shadow);
+    border-radius: 12px;
+}
+
+.card-regular {
+    border-left: 15px solid var(--green-500);
+}
+
+.card-alerta {
+    border-left: 15px solid var(--red-500);
+}

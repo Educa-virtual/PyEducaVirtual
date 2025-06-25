@@ -5,3 +5,57 @@
     border: solid 1px #e1e1e1;
     border-radius: 5px;
 }
+.barraComentario {
+    border: solid 1px #e1e1e1;
+    border-radius: 5px;
+    // background-color: black;
+}
+// <!-- Component CSS (comment-bar.component.css) -->
+
+.comment-bar-container {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: red($color: #000000);
+}
+
+.action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.send-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.send-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.placeholder-text::placeholder {
+    color: #b0b3b8;
+    opacity: 1;
+}
+
+input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Estilos para diferentes tamaños de pantalla */
+@media (max-width: 768px) {
+    .comment-bar-container {
+        margin: 0 1rem;
+    }
+
+    .action-btn {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+
+    .action-btn i {
+        font-size: 14px !important;
+    }
+}

@@ -124,7 +124,7 @@
                                 <div
                                     class="col-12 mt-2"
                                     [ngClass]="{
-                                        'md:col-7': resptDocente?.length > 0,
+                                        'md:col-7': comentarioDocente !== null,
                                     }"
                                 >
                                     <div
@@ -142,49 +142,55 @@
                                         ></div>
                                     </div>
                                 </div>
-                                <div
-                                    class="col-5 mt-5"
-                                    [ngClass]="{
-                                        'md:col-5': resptDocente?.length > 0,
-                                    }"
-                                >
+                                @if (comentarioDocente) {
                                     <div
-                                        class="card mt-2"
-                                        *ngFor="let respuesta of resptDocente"
+                                        class="col-5 mt-5"
+                                        [ngClass]="{
+                                            'md:col-5':
+                                                resptDocente?.length > 0,
+                                        }"
                                     >
-                                        <h4>
-                                            Mi Retroalimentación descriptiva:
-                                        </h4>
-                                        <p-divider></p-divider>
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                Comentario Docente:
-                                            </p-inputGroupAddon>
-                                            <!-- <textarea
-                                                pInputText
-                                                rows="1"
-                                                id="comentarioDocente"
-                                                pInputTextarea
-                                                rows="5"
-                                                [disabled]="isDisabled"
-                                                class=""
-                                                placeholder="Muestra Comentario Docente"
-                                            >
-                                            {{ respuesta?.cForoRptaDocente }} </textarea
-                                            > -->
-                                            <!-- [(ngModel)]="respuestaDocente" -->
-                                            <textarea
-                                                rows="5"
-                                                cols="30"
-                                                pInputTextarea
-                                            >
-                                                {{
-                                                    respuesta?.cForoRptaDocente
-                                                }}
-                                            </textarea>
-                                        </p-inputGroup>
+                                        <div
+                                            class="card mt-2"
+                                            *ngFor="
+                                                let respuesta of resptDocente
+                                            "
+                                        >
+                                            <h4>
+                                                Mi Retroalimentación
+                                                descriptiva:
+                                            </h4>
+                                            <p-divider></p-divider>
+                                            <p-inputGroup>
+                                                <p-inputGroupAddon>
+                                                    Comentario Docente:
+                                                </p-inputGroupAddon>
+                                                <!-- <textarea
+                                                    pInputText
+                                                    rows="1"
+                                                    id="comentarioDocente"
+                                                    pInputTextarea
+                                                    rows="5"
+                                                    [disabled]="isDisabled"
+                                                    class=""
+                                                    placeholder="Muestra Comentario Docente"
+                                                >
+                                                {{ respuesta?.cForoRptaDocente }} </textarea
+                                                > -->
+                                                <!-- [(ngModel)]="respuestaDocente" -->
+                                                <textarea
+                                                    rows="5"
+                                                    cols="30"
+                                                    pInputTextarea
+                                                >
+                                                    {{
+                                                        respuesta?.cForoRptaDocente
+                                                    }}
+                                                </textarea>
+                                            </p-inputGroup>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         }
                     </div>
@@ -312,7 +318,7 @@
                                 [class]="
                                     iPerfilId === DOCENTE
                                         ? 'col-12 md:col-8'
-                                        : 'col-12'
+                                        : 'col-8'
                                 "
                             >
                                 <div class="pb-2">
@@ -688,7 +694,7 @@
                             <!-- lista de participantes... -->
                             <div
                                 class="col-12 md:col-4"
-                                [hidden]="iPerfilId !== DOCENTE"
+                                [hidden]="iPerfilId === DOCENTE"
                             >
                                 <div class="pb-2">
                                     <label
@@ -786,6 +792,9 @@
                 [dataForo]="foro"
                 [ixActivadadId]="ixActivadadId"
                 [iActTopId]="iActTopId"
+                [iIeCursoId]="iIeCursoId"
+                [iSeccionId]="iSeccionId"
+                [iNivelGradoId]="iNivelGradoId"
             ></app-foro-room-detalle>
         </p-tabPanel>
     </p-tabView>

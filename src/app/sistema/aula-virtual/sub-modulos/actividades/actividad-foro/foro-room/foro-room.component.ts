@@ -186,12 +186,13 @@ export class ForoRoomComponent implements OnInit {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
-        // this.obtenerIdPerfil()
+        this.obtenerIdPerfil()
         // this.mostrarCalificacion()
+
         this.obtenerForo()
         this.getRespuestaF()
-        // this.getEstudiantesMatricula()
-        // this.obtenerResptDocente()
+        this.getEstudiantesMatricula()
+        this.obtenerResptDocente()
     }
 
     itemRespuesta: any[] = []
@@ -334,21 +335,21 @@ export class ForoRoomComponent implements OnInit {
         this.foroFormComntAl.controls['iForoRptaId'].setValue(
             respuestas.iForoRptaId
         )
-        //console.log('rptaPadre', this.foroFormComntAl)
-        this._aulaService
-            .guardarComentarioRespuesta(this.foroFormComntAl.value)
-            .subscribe({
-                next: (resp: any) => {
-                    // para refrescar la pagina
-                    if (resp?.validated) {
-                        this.getRespuestaF()
-                        this.foroFormComntAl.get('cForoRptaPadre')?.reset()
-                    }
-                },
-                error: (error) => {
-                    console.error('Comentario:', error)
-                },
-            })
+        console.log('rptaPadre', this.foroFormComntAl.value)
+        // this._aulaService
+        //     .guardarComentarioRespuesta(this.foroFormComntAl.value)
+        //     .subscribe({
+        //         next: (resp: any) => {
+        //             // para refrescar la pagina
+        //             if (resp?.validated) {
+        //                 this.getRespuestaF()
+        //                 this.foroFormComntAl.get('cForoRptaPadre')?.reset()
+        //             }
+        //         },
+        //         error: (error) => {
+        //             console.error('Comentario:', error)
+        //         },
+        //     })
     }
     // guardar comentario de estudiante foro
     sendComment() {
@@ -444,6 +445,7 @@ export class ForoRoomComponent implements OnInit {
             })
     }
     respuestaDocente: string
+    comentarioDocente: string
     // obtener retroalimentacion de docente a estudiante x su comentario
     obtenerResptDocente() {
         const idEstudiante = Number(this.iEstudianteId)
@@ -458,7 +460,9 @@ export class ForoRoomComponent implements OnInit {
             .subscribe((Data) => {
                 // cForoRptaDocente
                 this.resptDocente = Data['data']
-                console.log('respuesta docente', this.resptDocente)
+                this.comentarioDocente =
+                    this.resptDocente?.[0]?.cForoRptaDocente
+                console.log('respuesta docente', this.comentarioDocente)
             })
     }
     formatDateISO(date: string | number | Date): string {

@@ -21,6 +21,9 @@ export class ForoRoomDetalleComponent implements OnInit {
     @Input() dataForo: any[]
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() iIeCursoId
+    @Input() iSeccionId
+    @Input() iNivelGradoId
 
     foro: any // variable con datos generales de foro
     idForo: number // variable para enviar el idForo a otro componente

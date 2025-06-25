@@ -6,18 +6,22 @@ import { Component, inject, Input, OnInit } from '@angular/core'
 import { Subject, takeUntil } from 'rxjs'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ForoEstudiantesComponent } from '../foro-estudiantes/foro-estudiantes.component'
 
 @Component({
     selector: 'app-foro-comentarios',
     standalone: true,
     templateUrl: './foro-comentarios.component.html',
     styleUrls: ['./foro-comentarios.component.scss'],
-    imports: [PrimengModule, RemoveHTMLPipe],
+    imports: [PrimengModule, RemoveHTMLPipe, ForoEstudiantesComponent],
 })
 export class ForoComentariosComponent implements OnInit {
     @Input() id: number // id de foro se cambiara x string mas adelante
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() iIeCursoId
+    @Input() iSeccionId
+    @Input() iNivelGradoId
 
     private _aulaService = inject(ApiAulaService)
     private unsbscribe$ = new Subject<boolean>()
@@ -54,6 +58,10 @@ export class ForoComentariosComponent implements OnInit {
         this.iPerfilId = this._constantesService.iPerfilId
         console.log('id de foro', this.id, this.ixActivadadId, this.iActTopId)
         this.getRespuestaF()
+    }
+    // para ocultar los subconjuntos:
+    cancelarEdicion() {
+        this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
     }
     // obtener datos de las respuesta de los foros
     getRespuestaF() {
@@ -99,11 +107,37 @@ export class ForoComentariosComponent implements OnInit {
         this.selectedCommentIndex = data.iForoRptaId
         console.log(data)
     }
-    colocarCursorAlFinal(textarea: HTMLTextAreaElement): void {
-        const valor = textarea.value
-        textarea.focus()
-        setTimeout(() => {
-            textarea.setSelectionRange(valor.length, valor.length)
+    respuestaComentario: { [idPregunta: string]: string } = {} // variable para almacenar de respuesta unica
+    sendCommentPadre(id: string) {
+        // guardar el comentario
+        const iDocenteId = this._constantesService.iDocenteId
+        const iEstudianteId = this._constantesService.iEstudianteId
+        const data = {
+            iDocenteId: iDocenteId,
+            iEstudianteId: iEstudianteId,
+            cForoRptaPadre: this.respuestaComentario[id],
+            iForoRptaId: id,
+        }
+        console.log('rptaPadre', data)
+        this._aulaService.guardarComentarioRespuesta(data).subscribe({
+            next: (resp: any) => {
+                // para refrescar la pagina
+                if (resp?.validated) {
+                    this.getRespuestaF()
+                    this.respuestaComentario = {}
+                    // this.foroFormComntAl.get('cForoRptaPadre')?.reset()
+                }
+            },
+            error: (error) => {
+                console.error('Comentario:', error)
+            },
         })
     }
+    // colocarCursorAlFinal(textarea: HTMLTextAreaElement): void {
+    //     const valor = textarea.value
+    //     textarea.focus()
+    //     setTimeout(() => {
+    //         textarea.setSelectionRange(valor.length, valor.length)
+    //     })
+    // }
 }

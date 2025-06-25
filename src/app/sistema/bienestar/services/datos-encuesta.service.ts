@@ -57,8 +57,11 @@ export class DatosEncuestaService implements OnDestroy {
         )
     }
 
-    obtenerCantidadPoblacion(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/getCantidadPoblacion`, data)
+    obtenerPoblacionObjetivo(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/obtenerPoblacionObjetivo`,
+            data
+        )
     }
 
     borrarEncuesta(data: any) {

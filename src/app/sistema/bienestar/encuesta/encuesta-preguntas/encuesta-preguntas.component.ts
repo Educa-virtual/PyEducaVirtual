@@ -244,28 +244,31 @@ export class EncuestaPreguntasComponent implements OnInit {
             })
             return
         }
-        this.datosEncuestas.guardarPregunta(this.formPregunta.value).subscribe({
-            next: () => {
-                this._messageService.add({
-                    severity: 'success',
-                    summary: 'Actualización exitosa',
-                    detail: 'Se actualizaron los datos',
-                })
-                this.dialog_visible = false
-                // this.listarPreguntas()
-            },
-            error: (error) => {
-                console.error('Error actualizando prgunta:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.error.message,
-                })
-            },
-        })
+        this.datosEncuestas
+            .actualizarPregunta(this.formPregunta.value)
+            .subscribe({
+                next: () => {
+                    this.listarPreguntas()
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                    this.dialog_visible = false
+                },
+                error: (error) => {
+                    console.error('Error actualizando prgunta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     agregarPregunta() {
+        this.formPregunta.reset()
         this.pregunta_registrada = false
         this.dialog_visible = true
         this.dialog_header = 'Registrar pregunta'
@@ -276,6 +279,7 @@ export class EncuestaPreguntasComponent implements OnInit {
     }
 
     editarPregunta(item: any) {
+        this.formPregunta.reset()
         this.dialog_visible = true
         this.dialog_header = 'Actualizar pregunta'
         this.verPregunta(item)

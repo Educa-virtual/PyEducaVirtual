@@ -350,12 +350,12 @@ export class EncuestaComponent implements OnInit {
             nivel_tipo?.label,
             tipo_sector?.label,
             tipo_zona?.label,
-            ugel?.label,
-            distrito?.label,
+            ugel ? 'UGEL ' + ugel.label : null,
+            distrito ? 'DISTRITO ' + distrito.label : null,
             ie?.label,
             nivel_grado?.label,
-            seccion?.label,
-            sexo?.label,
+            seccion ? 'SECCIÓN ' + seccion.label : null,
+            sexo ? 'GENERO ' + sexo.label : null,
         ]
         poblacion = poblacion.filter((item: any) => item != null)
         console.log(poblacion.join(', '), 'poblacion')
@@ -508,6 +508,8 @@ export class EncuestaComponent implements OnInit {
         this.poblacion = [...this.poblacion, form]
         this.formEncuesta.get('poblacion')?.setValue(this.poblacion)
         this.formPoblacion.reset()
+
+        this.obtenerPoblacionObjetivo()
     }
 
     agregarPermiso(item: any = null) {
@@ -519,6 +521,40 @@ export class EncuestaComponent implements OnInit {
         this.permisos = [...this.permisos, form]
         this.formEncuesta.get('permisos')?.setValue(this.permisos)
         this.formPermisos.reset()
+    }
+
+    obtenerPoblacionObjetivo() {
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formEncuesta,
+            'jsonPoblacion',
+            'poblacion',
+            ''
+        )
+
+        this.datosEncuestas
+            .obtenerPoblacionObjetivo({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iYAcadId: this.iYAcadId,
+                jsonPoblacion: this.formEncuesta.get('jsonPoblacion')?.value,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    if (data.data.length) {
+                        this.cantidad_poblacion =
+                            data.data[0].iPoblacionObjetivo
+                    } else {
+                        this.cantidad_poblacion = 0
+                    }
+                },
+                error: (error) => {
+                    console.error('Error obteniendo cantidad poblacion:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     salir() {
@@ -536,6 +572,8 @@ export class EncuestaComponent implements OnInit {
             this.poblacion = this.poblacion.filter(
                 (poblacion: any) => item.iEncuPobId != poblacion.iEncuPobId
             )
+            this.formEncuesta.get('poblacion')?.setValue(this.poblacion)
+            this.obtenerPoblacionObjetivo()
         }
     }
 

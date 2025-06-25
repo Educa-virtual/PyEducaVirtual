@@ -11,7 +11,7 @@ import {
     EventEmitter,
 } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
-import { ConfirmationService, MenuItem } from 'primeng/api'
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api'
 import { DialogGenerarCuadernilloComponent } from '../dialog-generar-cuadernillo/dialog-generar-cuadernillo.component'
 import { ConfigurarNivelLogroComponent } from '../configurar-nivel-logro/configurar-nivel-logro.component'
 import { Router, RouterModule } from '@angular/router'
@@ -47,6 +47,7 @@ interface Column {
 })
 export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     @Input() iEvaluacionIdHashed: string = ''
+    @Input() curso: ICurso
     @Input() cursosFromParent: ICurso[] = []
 
     @Output() dialogSubirArchivoEvent = new EventEmitter<{ curso: ICurso }>()
@@ -86,7 +87,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     cursosAgrupados: { [key: string]: ICurso[] } = {}
     gradosFiltrados: string[] = []
     gradosOrdenados: string[]
-
+    constructor(private messageService: MessageService) {}
     ngOnInit(): void {
         this.initializeBreadcrumb()
         this.initializeColumns()
@@ -252,7 +253,8 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 }
                 break
             case 'Hoja de respuestas':
-                this.descargarArchivoPreguntasPorArea('hoja_respuestas')
+                //this.descargarArchivoPreguntasPorArea('hoja_respuestas')
+                this.descargarCartillaRespuestas(curso)
                 break
             case 'Matriz':
                 this.descargarMatrizPorEvaluacionArea()
@@ -408,5 +410,32 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
         // Reagrupar cursos
         this.agruparCursosPorGrado()
+    }
+
+    // Descargar hoja de respuestas
+    descargarCartillaRespuestas(curso: ICurso) {
+        this.cursoSeleccionado = curso
+
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+        }
+        this.evaluacionesService.descargarCartillaRespuestas(params).subscribe({
+            next: (response: Blob) => {
+                const url = window.URL.createObjectURL(response)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = `Hoja respuestas.docx` //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al descargar el archivo',
+                    detail: error,
+                })
+            },
+        })
     }
 }

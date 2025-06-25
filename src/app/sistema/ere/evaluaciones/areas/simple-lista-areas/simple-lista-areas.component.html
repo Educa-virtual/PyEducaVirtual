@@ -58,14 +58,21 @@
                                 icon="pi pi-download"
                                 severity="danger"
                                 size="small"
+                                (click)="descargarCartillaRespuestas(curso)"
+                            ></p-button>
+                            <!--<p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
                                 [disabled]="!curso.bTieneArchivo"
-                                (click)="descargarPDF('Cuadernillo', curso)"
+                                (click)="descargarCartillaRespuestas(curso)"
                                 pTooltip="{{
                                     curso.bTieneArchivo
                                         ? 'Descargar cuadernillo'
                                         : 'No disponible'
                                 }}"
-                            ></p-button>
+                            ></p-button>-->
                         </td>
 
                         <td style="text-align: center">

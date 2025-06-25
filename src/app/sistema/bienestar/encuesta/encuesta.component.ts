@@ -16,7 +16,7 @@ import { FuncionesBienestarService } from '../services/funciones-bienestar.servi
     standalone: true,
     imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './encuesta.component.html',
-    styleUrl: './encuesta.component.scss',
+    styleUrl: './../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class EncuestaComponent implements OnInit {
     @Output() es_visible = new EventEmitter<any>()
@@ -31,7 +31,7 @@ export class EncuestaComponent implements OnInit {
 
     formEncuesta: FormGroup
     formPoblacion: FormGroup
-    formEditores: FormGroup
+    formPermisos: FormGroup
 
     categorias: Array<object>
     opciones: Array<object>
@@ -43,19 +43,21 @@ export class EncuestaComponent implements OnInit {
     zonas: Array<object>
     tipo_sectores: Array<object>
     ugeles: Array<object>
-    cursos: Array<object>
     ies: Array<object>
     sexos: Array<object>
     estados: Array<object>
     perfiles: Array<object>
 
     poblacion: Array<object> = []
-    editores: Array<object> = []
+    permisos: Array<object> = []
 
-    cantidad_poblacion: number = 0
+    cantidad_poblacion: any = 0
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
+
+    puede_editar: boolean = true
+    encuesta_registrada: boolean = false
 
     private _messageService = inject(MessageService)
 
@@ -70,7 +72,7 @@ export class EncuestaComponent implements OnInit {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.perfil = this.store.getItem('dremoPerfil')
         this.route.paramMap.subscribe((params: any) => {
-            this.iEncuId = params.params.id || 0
+            this.iEncuId = params.params.id || null
         })
         this.breadCrumbItems = [
             {
@@ -99,15 +101,14 @@ export class EncuestaComponent implements OnInit {
             dEncuDesde: [null, Validators.required],
             dEncuHasta: [null, Validators.required],
             poblacion: [null],
-            editores: [null],
+            permisos: [null],
             jsonPoblacion: [null],
-            jsonEditores: [null],
+            jsonPermisos: [null],
         })
 
         this.formPoblacion = this.fb.group({
             iEncuPobId: [null],
             iNivelTipoId: [null],
-            iCursoId: [null],
             iTipoSectorId: [null],
             iZonaId: [null],
             iUgelId: [null],
@@ -119,8 +120,8 @@ export class EncuestaComponent implements OnInit {
             poblacion: [''],
         })
 
-        this.formEditores = this.fb.group({
-            iEncuPobId: [null],
+        this.formPermisos = this.fb.group({
+            iEncuPermId: [null],
             iPerfilId: [null],
             cPerfilNombre: [''],
             iEncuOpcId: [null],
@@ -160,10 +161,6 @@ export class EncuestaComponent implements OnInit {
                 this.formPoblacion.get('iNivelGradoId')?.setValue(null)
                 this.nivel_grados = null
                 this.filterNivelesGrados(value)
-
-                this.formPoblacion.get('iCursoId')?.setValue(null)
-                this.areas = null
-                this.filterAreas(value)
 
                 this.formPoblacion.get('iIieeId')?.setValue(null)
                 this.ies = null
@@ -239,7 +236,10 @@ export class EncuestaComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     if (data.data.length) {
+                        this.encuesta_registrada = true
                         this.setFormEncuesta(data.data[0])
+                    } else {
+                        this.router.navigate(['/bienestar/gestionar-encuestas'])
                     }
                 },
                 error: (error) => {
@@ -249,11 +249,18 @@ export class EncuestaComponent implements OnInit {
                         summary: 'Error',
                         detail: error.error.message,
                     })
+                    this.router.navigate(['/bienestar/gestionar-encuestas'])
                 },
             })
     }
 
     setFormEncuesta(data: any) {
+        if (Number(data.iEstado) === 3) {
+            data.iEstado = 2
+            this.formEncuesta.disable()
+            this.puede_editar = false
+        }
+
         this.formEncuesta.reset()
         this.formEncuesta.patchValue(data)
         this.funcionesBienestar.formatearFormControl(
@@ -280,84 +287,63 @@ export class EncuestaComponent implements OnInit {
             data.dEncuHasta,
             'date'
         )
-        this.funcionesBienestar.formatearFormControl(
-            this.formEncuesta,
-            'poblacion',
-            this.poblacion,
-            'json'
-        )
-        this.funcionesBienestar.formatearFormControl(
-            this.formEncuesta,
-            'editores',
-            this.editores,
-            'json'
-        )
+
+        const poblacion = JSON.parse(data.poblacion)
+        if (poblacion.length) {
+            for (let i = 0; i < poblacion.length; i++) {
+                this.agregarPoblacion(poblacion[i])
+            }
+        }
+
+        const permisos = JSON.parse(data.permisos)
+        if (permisos.length) {
+            for (let i = 0; i < permisos.length; i++) {
+                this.agregarPermiso(permisos[i])
+            }
+        }
+        this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId)
+        this.formEncuesta
+            .get('iCredEntPerfId')
+            ?.setValue(this.perfil.iCredEntPerfId)
     }
 
-    actualizarPoblacion() {
+    actualizarPoblacion(item: any) {
         const nivel_tipo: any = this.nivel_tipos
             ? this.nivel_tipos.find(
-                  (nivel: any) =>
-                      nivel.value ==
-                      this.formPoblacion.get('iNivelTipoId')?.value
+                  (nivel: any) => nivel.value == item.iNivelTipoId
               )
             : null
         const tipo_sector: any = this.tipo_sectores
             ? this.tipo_sectores.find(
-                  (sector: any) =>
-                      sector.value ==
-                      this.formPoblacion.get('iTipoSectorId')?.value
+                  (sector: any) => sector.value == item.iTipoSectorId
               )
             : null
         const tipo_zona: any = this.zonas
-            ? this.zonas.find(
-                  (zona: any) =>
-                      zona.value == this.formPoblacion.get('iZonaId')?.value
-              )
+            ? this.zonas.find((zona: any) => zona.value == item.iZonaId)
             : null
         const ugel: any = this.ugeles
-            ? this.ugeles.find(
-                  (ugel: any) =>
-                      ugel.value == this.formPoblacion.get('iUgelId')?.value
-              )
+            ? this.ugeles.find((ugel: any) => ugel.value == item.iUgelId)
             : null
         const distrito: any = this.distritos
             ? this.distritos.find(
-                  (distrito: any) =>
-                      distrito.value == this.formPoblacion.get('iDsttId')?.value
+                  (distrito: any) => distrito.value == item.iDsttId
               )
             : null
         const ie: any = this.ies
-            ? this.ies.find(
-                  (ie: any) =>
-                      ie.value == this.formPoblacion.get('iIieeId')?.value
-              )
-            : null
-        const area: any = this.areas
-            ? this.areas.find(
-                  (area: any) =>
-                      area.value == this.formPoblacion.get('iCursoId')?.value
-              )
+            ? this.ies.find((ie: any) => ie.value == item.iIieeId)
             : null
         const nivel_grado: any = this.nivel_grados
             ? this.nivel_grados.find(
-                  (nivel: any) =>
-                      nivel.value ==
-                      this.formPoblacion.get('iNivelGradoId')?.value
+                  (nivel: any) => nivel.value == item.iNivelGradoId
               )
             : null
         const seccion: any = this.secciones
             ? this.secciones.find(
-                  (seccion: any) =>
-                      seccion.value ==
-                      this.formPoblacion.get('iSeccionId')?.value
+                  (seccion: any) => seccion.value == item.iSeccionId
               )
             : null
         const sexo: any = this.sexos
-            ? this.sexos.find(
-                  (sexo: any) =>
-                      sexo.value == this.formPoblacion.get('cPersSexo')?.value
-              )
+            ? this.sexos.find((sexo: any) => sexo.value == item.cPersSexo)
             : null
 
         let poblacion: any = [
@@ -367,36 +353,39 @@ export class EncuestaComponent implements OnInit {
             ugel?.label,
             distrito?.label,
             ie?.label,
-            area?.label,
             nivel_grado?.label,
             seccion?.label,
             sexo?.label,
         ]
         poblacion = poblacion.filter((item: any) => item != null)
+        console.log(poblacion.join(', '), 'poblacion')
         this.formPoblacion.get('poblacion')?.setValue(poblacion.join(', '))
         this.formEncuesta.get('poblacion')?.setValue(poblacion)
         this.formPoblacion.get('iEncuPobId')?.setValue(new Date().getTime())
     }
 
-    actualizarEditores() {
+    actualizarPermisos(item: any) {
         const perfil: any = this.perfiles.find(
-            (perfil: any) =>
-                perfil.value == this.formEditores.get('iPerfilId')?.value
+            (perfil: any) => perfil.value == item.iPerfilId
         )
         const opcion: any = this.opciones.find(
-            (opcion: any) =>
-                opcion.value == this.formEditores.get('iEncuOpcId')?.value
+            (opcion: any) => opcion.value == item.iEncuOpcId
         )
-        this.formEditores
+        this.formPermisos
             .get('cPerfilNombre')
             ?.setValue(perfil ? perfil.label : '')
-        this.formEditores
+        this.formPermisos
             .get('cEncuOpcNombre')
             ?.setValue(opcion ? opcion.label : '')
-        this.formEditores.get('iEncuPermId')?.setValue(new Date().getTime())
+        this.formPermisos.get('iEncuPermId')?.setValue(new Date().getTime())
     }
 
     guardarEncuesta() {
+        this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId)
+        this.formEncuesta
+            .get('iCredEntPerfId')
+            ?.setValue(this.perfil.iCredEntPerfId)
+
         if (this.formEncuesta.invalid) {
             this._messageService.add({
                 severity: 'warn',
@@ -423,8 +412,8 @@ export class EncuestaComponent implements OnInit {
         )
         this.funcionesBienestar.formControlJsonStringify(
             this.formEncuesta,
-            'jsonEditores',
-            'editores',
+            'jsonPermisos',
+            'permisos',
             ''
         )
         this.datosEncuestas.guardarEncuesta(this.formEncuesta.value).subscribe({
@@ -450,20 +439,96 @@ export class EncuestaComponent implements OnInit {
         })
     }
 
-    agregarPoblacion() {
-        this.actualizarPoblacion()
+    actualizarEncuesta() {
+        this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId)
+        this.formEncuesta
+            .get('iCredEntPerfId')
+            ?.setValue(this.perfil.iCredEntPerfId)
+
+        if (this.formEncuesta.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe llenar todos los campos de la primera sección: Información General',
+            })
+            return
+        }
+
+        if (this.poblacion.length == 0) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe especificar al menos una población objetivo',
+            })
+            return
+        }
+
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formEncuesta,
+            'jsonPoblacion',
+            'poblacion',
+            ''
+        )
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formEncuesta,
+            'jsonPermisos',
+            'permisos',
+            ''
+        )
+        this.datosEncuestas
+            .actualizarEncuesta(this.formEncuesta.value)
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
+                    this.router.navigate([
+                        `/bienestar/encuesta/${this.iEncuId}/preguntas`,
+                    ])
+                },
+                error: (error) => {
+                    console.error('Error guardando encuesta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
+    agregarPoblacion(item: any = null) {
+        if (item) {
+            this.formPoblacion.patchValue(item)
+        }
+        this.actualizarPoblacion(this.formPoblacion.value)
         const form: Array<object> = this.formPoblacion.value
         this.poblacion = [...this.poblacion, form]
         this.formEncuesta.get('poblacion')?.setValue(this.poblacion)
         this.formPoblacion.reset()
     }
 
-    agregarEditor() {
-        this.actualizarEditores()
-        const form = this.formEditores.value
-        this.editores = [...this.editores, form]
-        this.formEncuesta.get('editores')?.setValue(this.editores)
-        this.formEditores.reset()
+    agregarPermiso(item: any = null) {
+        if (item) {
+            this.formPermisos.patchValue(item)
+        }
+        this.actualizarPermisos(this.formPermisos.value)
+        const form: Array<object> = this.formPermisos.value
+        this.permisos = [...this.permisos, form]
+        this.formEncuesta.get('permisos')?.setValue(this.permisos)
+        this.formPermisos.reset()
+    }
+
+    salir() {
+        this.router.navigate(['/bienestar/gestionar-encuestas'])
+    }
+
+    verPreguntas() {
+        this.router.navigate([
+            '/bienestar/encuesta/' + this.iEncuId + '/preguntas',
+        ])
     }
 
     accionBtnItemTablePoblacion({ accion, item }) {
@@ -474,10 +539,10 @@ export class EncuestaComponent implements OnInit {
         }
     }
 
-    accionBtnItemTableEditores({ accion, item }) {
+    accionBtnItemTablePermisos({ accion, item }) {
         if (accion == 'eliminar') {
-            this.editores = this.editores.filter(
-                (editor: any) => item.iEncuPobId != editor.iEncuPobId
+            this.permisos = this.permisos.filter(
+                (permiso: any) => item.iEncuPobId != permiso.iEncuPobId
             )
         }
     }
@@ -492,7 +557,7 @@ export class EncuestaComponent implements OnInit {
         },
     ]
 
-    actions_editores: IActionTable[] = [
+    actions_permisos: IActionTable[] = [
         {
             labelTooltip: 'Eliminar',
             icon: 'pi pi-trash',
@@ -508,8 +573,8 @@ export class EncuestaComponent implements OnInit {
             width: '10%',
             field: '',
             header: 'N°',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'center',
+            text: 'center',
         },
         {
             type: 'text',
@@ -524,25 +589,25 @@ export class EncuestaComponent implements OnInit {
             width: '20%',
             field: '',
             header: 'Acciones',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'right',
+            text: 'right',
         },
     ]
 
-    columns_editores = [
+    columns_permisos = [
         {
             type: 'item',
             width: '5%',
             field: 'item',
             header: '#',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'center',
+            text: 'center',
         },
         {
             type: 'text',
             width: '20%',
             field: 'cPerfilNombre',
-            header: 'Editor',
+            header: 'Perfil',
             text_header: 'left',
             text: 'left',
         },
@@ -550,7 +615,7 @@ export class EncuestaComponent implements OnInit {
             type: 'text',
             width: '10%',
             field: 'cEncuOpcNombre',
-            header: 'Opción',
+            header: 'Permiso',
             text_header: 'left',
             text: 'left',
         },
@@ -559,8 +624,8 @@ export class EncuestaComponent implements OnInit {
             width: '20%',
             field: '',
             header: 'Acciones',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'right',
+            text: 'right',
         },
     ]
 }

@@ -1,1 +1,16 @@
-<p>PENDIENTE</p>
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            <div class="flex flex-column">
+                <div class="flex text-xl">RESUMEN DE ENCUESTA</div>
+                <div class="flex text-sm">{{ cEncuNombre }}</div>
+            </div>
+        </span>
+    </ng-template>
+</p-panel>

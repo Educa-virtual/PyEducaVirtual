@@ -1,3 +1,9 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
 <p-panel>
     <ng-template pTemplate="header">
         <span class="text-2xl text-uppercase">
@@ -7,6 +13,18 @@
             </div>
         </span>
     </ng-template>
+    <ng-template pTemplate="icons" class="flex justify-content-center">
+        <span>Hasta: {{ dEncuHasta | date: 'dd/MM/yyyy' }}</span>
+    </ng-template>
+    <div class="grid p-fluid">
+        <div class="col-12">
+            <p-messages severity="info">
+                <ng-template pTemplate>
+                    {{ cEncuDescripcion }}
+                </ng-template>
+            </p-messages>
+        </div>
+    </div>
     <div
         class="grid p-fluid mt-3"
         *ngFor="let pregunta of preguntas; let i = index"
@@ -17,6 +35,13 @@
                 <div class="col-12">
                     <app-pregunta-cerrada
                         [addonLabel]="pregunta.cEncuPregContenido"
+                        [switchControl]="
+                            $any(
+                                preguntasFormArray
+                                    .at(i)
+                                    .get('cEncuRptaContenido')
+                            )
+                        "
                         [infoAdicional]="
                             pregunta.cEncuPregAdicional ? infoAdicional : null
                         "
@@ -31,6 +56,13 @@
                 <div class="col-12">
                     <app-pregunta-abierta
                         [addonLabel]="pregunta.cEncuPregContenido"
+                        [inputControl]="
+                            $any(
+                                preguntasFormArray
+                                    .at(i)
+                                    .get('cEncuRptaContenido')
+                            )
+                        "
                         [infoAdicional]="
                             pregunta.cEncuPregAdicional ? infoAdicional : null
                         "
@@ -45,6 +77,13 @@
                 <div class="col-12">
                     <app-pregunta-escala
                         [addonLabel]="pregunta.cEncuPregContenido"
+                        [ratingControl]="
+                            $any(
+                                preguntasFormArray
+                                    .at(i)
+                                    .get('cEncuRptaContenido')
+                            )
+                        "
                         [infoAdicional]="
                             pregunta.cEncuPregAdicional ? infoAdicional : null
                         "
@@ -66,8 +105,9 @@
         />
         <p-button
             label="Guardar"
-            (onClick)="guardarPreguntas()"
+            (onClick)="guardarRespuesta()"
             styleClass="p-button-success"
+            icon="pi pi-save"
         />
     </div>
 </p-panel>

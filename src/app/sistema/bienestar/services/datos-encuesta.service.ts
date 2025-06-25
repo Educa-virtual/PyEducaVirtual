@@ -89,6 +89,14 @@ export class DatosEncuestaService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/listarRespuestas`, data)
     }
 
+    guardarRespuesta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarRespuesta`, data)
+    }
+
+    actualizarRespuesta(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarRespuesta`, data)
+    }
+
     verRespuesta(data: any) {
         return this.http.post(`${baseUrl}/bienestar/verRespuesta`, data)
     }

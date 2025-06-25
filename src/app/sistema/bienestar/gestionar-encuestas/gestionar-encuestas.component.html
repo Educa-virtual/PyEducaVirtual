@@ -1,3 +1,9 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
 <p-panel>
     <ng-template pTemplate="header">
         <span class="text-2xl text-uppercase">
@@ -47,6 +53,12 @@
         />
     </div>
     <div *ngIf="!perfil_permitido">
+        @if (encuestas.length === 0) {
+            <app-no-data
+                [showIcon]="'NO-DATA'"
+                mensaje="No hay encuestas disponibles"
+            />
+        }
         <div
             *ngFor="let encuesta of encuestas"
             class="card mb-5 relative overflow-visible {{
@@ -68,6 +80,10 @@
                                     : encuesta?.cEncuNombre
                             }}
                         </span>
+                        <p-tag
+                            [value]="encuesta.cEncuCateNombre"
+                            severity="warning"
+                        />
                         <div
                             class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
                         >
@@ -77,7 +93,6 @@
                                 <span>{{
                                     encuesta.dEncuDesde | date: 'dd/MM/yyyy'
                                 }}</span>
-                                <i class="pi pi-calendar text-primary ml-2"></i>
                                 <span
                                     >Al:
                                     {{

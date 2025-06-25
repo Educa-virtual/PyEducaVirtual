@@ -9,7 +9,7 @@ import { DatosEncuestaService } from '../../services/datos-encuesta.service'
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
@@ -26,6 +26,9 @@ export class EncuestaRespuestasComponent implements OnInit {
     respuestas: Array<object>
     respuestas_filtradas: Array<object>
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     private _messageService = inject(MessageService)
     private _confirmService = inject(ConfirmationModalService)
 
@@ -40,6 +43,23 @@ export class EncuestaRespuestasComponent implements OnInit {
         this.route.paramMap.subscribe((params: any) => {
             this.iEncuId = params.params.id || 0
         })
+        this.breadCrumbItems = [
+            {
+                label: 'Gestionar encuestas',
+                routerLink: '/bienestar/gestionar-encuestas',
+            },
+            {
+                label: 'Encuesta',
+                routerLink: `/bienestar/encuesta/${this.iEncuId}`,
+            },
+            {
+                label: 'Respuestas',
+            },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
+        }
     }
 
     ngOnInit(): void {

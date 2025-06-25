@@ -1,7 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { DatosEncuestaService } from '../services/datos-encuesta.service'
 import {
     IActionTable,
@@ -54,6 +54,9 @@ export class EncuestaComponent implements OnInit {
 
     cantidad_poblacion: number = 0
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     private _messageService = inject(MessageService)
 
     constructor(
@@ -69,6 +72,19 @@ export class EncuestaComponent implements OnInit {
         this.route.paramMap.subscribe((params: any) => {
             this.iEncuId = params.params.id || 0
         })
+        this.breadCrumbItems = [
+            {
+                label: 'Gestionar encuestas',
+                routerLink: '/bienestar/gestionar-encuestas',
+            },
+            {
+                label: 'Encuesta',
+            },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
+        }
     }
 
     ngOnInit(): void {

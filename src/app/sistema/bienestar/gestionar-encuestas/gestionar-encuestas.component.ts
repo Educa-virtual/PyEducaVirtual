@@ -13,7 +13,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { PanelModule } from 'primeng/panel'
 import { EncuestaComponent } from '../encuesta/encuesta.component'
 import { DatosEncuestaService } from '../services/datos-encuesta.service'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import {
@@ -22,6 +22,7 @@ import {
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
 } from '@/app/servicios/perfilesConstantes'
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 
 @Component({
     selector: 'app-gestionar-encuestas',
@@ -35,6 +36,7 @@ import {
         InputGroupModule,
         PrimengModule,
         EncuestaComponent,
+        NoDataComponent,
     ],
     templateUrl: './gestionar-encuestas.component.html',
     styleUrl: './gestionar-encuestas.component.scss',
@@ -55,6 +57,9 @@ export class GestionarEncuestasComponent implements OnInit {
     puede_ver_respuestas: boolean = false
     puede_ver_resumen: boolean = false
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     perfil_permitido: boolean = false
     perfiles_permitido: Array<number> = [
         DIRECTOR_IE,
@@ -74,6 +79,15 @@ export class GestionarEncuestasComponent implements OnInit {
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
+        this.breadCrumbItems = [
+            {
+                label: 'Gestionar encuestas',
+            },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
+        }
     }
 
     ngOnInit(): void {

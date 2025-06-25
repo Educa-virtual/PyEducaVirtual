@@ -1,14 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject } from '@angular/core'
 import { DatosEncuestaService } from '../../services/datos-encuesta.service'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { PreguntaCerradaComponent } from '../shared/pregunta-cerrada/pregunta-cerrada.component'
 import { PreguntaAbiertaComponent } from '../shared/pregunta-abierta/pregunta-abierta.component'
 import { PreguntaEscalaComponent } from '../shared/pregunta-escala/pregunta-escala.component'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 
 @Component({
     selector: 'app-encuesta-ver',
@@ -25,9 +25,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 export class EncuestaVerComponent {
     iEncuId: number
     cEncuNombre: string
+    cEncuDescripcion: string
+    dEncuHasta: Date
     perfil: any
     preguntas: Array<any>
     formPreguntas: FormGroup
+
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
+    get preguntasFormArray() {
+        return this.formPreguntas.get('preguntas') as FormArray
+    }
 
     private _messageService = inject(MessageService)
 
@@ -51,6 +60,7 @@ export class EncuestaVerComponent {
                 iEncuId: [this.iEncuId, Validators.required],
                 iCredEntPerfId: [this.perfil.iCredEntPerfId],
                 preguntas: this.fb.array([]),
+                jsonPreguntas: [null],
             })
         } catch (error) {
             console.error('Error creando formulario:', error)
@@ -58,6 +68,19 @@ export class EncuestaVerComponent {
         if (this.iEncuId) {
             this.verEncuesta()
             this.listarPreguntas()
+        }
+        this.breadCrumbItems = [
+            {
+                label: 'Gestionar encuestas',
+                routerLink: '/bienestar/gestionar-encuestas',
+            },
+            {
+                label: 'Responder encuesta',
+            },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
         }
     }
 
@@ -71,6 +94,8 @@ export class EncuestaVerComponent {
                 next: (data: any) => {
                     if (data.data.length) {
                         this.cEncuNombre = data.data[0].cEncuNombre
+                        this.cEncuDescripcion = data.data[0].cEncuDescripcion
+                        this.dEncuHasta = data.data[0].dEncuHasta
                     }
                 },
                 error: (error) => {
@@ -94,8 +119,10 @@ export class EncuestaVerComponent {
                 next: (data: any) => {
                     if (data.data.length) {
                         this.preguntas = data.data
+                        this.setPreguntasFormArray(this.preguntas)
                     } else {
                         this.preguntas = null
+                        this.preguntasFormArray.clear()
                     }
                 },
                 error: (error) => {
@@ -109,17 +136,28 @@ export class EncuestaVerComponent {
             })
     }
 
-    guardarPreguntas() {
-        if (this.formPreguntas.invalid) {
-            this._messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe completar los campos requeridos',
+    setPreguntasFormArray(preguntas: any[]) {
+        const preguntasFGs = preguntas.map((p) =>
+            this.fb.group({
+                iEncuPregId: [p.iEncuPregId],
+                iEncuPregTipoId: [p.iEncuPregTipoId],
+                cEncuRptaContenido: [null, Validators.required],
             })
-            return
-        }
+        )
+        const formArray = this.fb.array(preguntasFGs)
+        this.formPreguntas.setControl('preguntas', formArray)
+    }
+
+    guardarRespuesta() {
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formPreguntas,
+            'jsonPreguntas',
+            'preguntas',
+            ''
+        )
+
         this.datosEncuestas
-            .guardarPregunta(this.formPreguntas.value)
+            .guardarRespuesta(this.formPreguntas.value)
             .subscribe({
                 next: () => {
                     this.listarPreguntas()

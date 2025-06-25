@@ -5,7 +5,7 @@ import { FuncionesBienestarService } from '../../services/funciones-bienestar.se
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { PrimengModule } from '@/app/primeng.module'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { PreguntaCerradaComponent } from '../shared/pregunta-cerrada/pregunta-cerrada.component'
 import { TextFieldModule } from '@angular/cdk/text-field'
 import { PreguntaAbiertaComponent } from '../shared/pregunta-abierta/pregunta-abierta.component'
@@ -36,6 +36,9 @@ export class EncuestaPreguntasComponent implements OnInit {
     preguntas: Array<any>
     tipos_preguntas: Array<object>
 
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
+
     private _messageService = inject(MessageService)
     private _confirmService = inject(ConfirmationModalService)
 
@@ -51,6 +54,23 @@ export class EncuestaPreguntasComponent implements OnInit {
         this.route.paramMap.subscribe((params: any) => {
             this.iEncuId = params.params.id || 0
         })
+        this.breadCrumbItems = [
+            {
+                label: 'Gestionar encuestas',
+                routerLink: '/bienestar/gestionar-encuestas',
+            },
+            {
+                label: 'Encuesta',
+                routerLink: `/bienestar/encuesta/${this.iEncuId}`,
+            },
+            {
+                label: 'Preguntas',
+            },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
+        }
     }
 
     ngOnInit(): void {

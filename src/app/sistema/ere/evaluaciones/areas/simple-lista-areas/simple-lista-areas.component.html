@@ -51,43 +51,35 @@
                                 </div>
                             </div>
                         </td>
-
+                        <!-- descargar cuadernillo-->
                         <td style="text-align: center">
                             <p-button
-                                label="Descargar"
-                                icon="pi pi-download"
-                                severity="danger"
-                                size="small"
-                                (click)="descargarCartillaRespuestas(curso)"
-                            ></p-button>
-                            <!--<p-button
                                 label="Descargar"
                                 icon="pi pi-download"
                                 severity="danger"
                                 size="small"
                                 [disabled]="!curso.bTieneArchivo"
-                                (click)="descargarCartillaRespuestas(curso)"
+                                (click)="descargarPDF('Cuadernillo', curso)"
                                 pTooltip="{{
                                     curso.bTieneArchivo
                                         ? 'Descargar cuadernillo'
                                         : 'No disponible'
                                 }}"
-                            ></p-button>-->
+                            ></p-button>
                         </td>
 
+                        <!-- descargar hoja de respuestas-->
                         <td style="text-align: center">
                             <p-button
                                 label="Descargar"
                                 icon="pi pi-download"
                                 severity="danger"
                                 size="small"
-                                (click)="
-                                    descargarPDF('Hoja de respuestas', curso)
-                                "
+                                (click)="descargarCartillaRespuestas(curso)"
                                 pTooltip="Descargar hoja de respuestas"
                             ></p-button>
                         </td>
-
+                        <!-- descargar matriz-->
                         <td style="text-align: center">
                             <p-button
                                 label="Descargar"
@@ -98,7 +90,7 @@
                                 pTooltip="Descargar matriz"
                             ></p-button>
                         </td>
-
+                        <!-- ver resultados-->
                         <td style="text-align: center">
                             <p-button
                                 label="Ver Resultados"

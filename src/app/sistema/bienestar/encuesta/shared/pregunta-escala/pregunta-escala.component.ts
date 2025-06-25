@@ -29,6 +29,14 @@ export class PreguntaEscalaComponent {
     touched = false
     disabled = false
 
+    alternativas: Array<any> = [
+        { label: 'MUY EN DESACUERDO / NUNCA', value: '1' },
+        { label: 'ALGO EN DESACUERDO / CASI NUNCA', value: '2' },
+        { label: 'NEUTRAL', value: '3' },
+        { label: 'ALGO DE ACUERDO / CASI SIEMPRE', value: '4' },
+        { label: 'MUY DE ACUERDO / SIEMPRE', value: '5' },
+    ]
+
     writeValue(value: any) {
         if (value) {
             this.ratingControl.setValue(value) // Assign the values to the Switch

@@ -17,12 +17,12 @@
         </p-overlayPanel>
         <span>{{ addonLabel }}</span>
     </p-inputGroupAddon>
-    <div class="text-panel">
+    <!-- <div class="text-panel">
         <div class="flex gap-2">
             <div
-                class="flex-1 flex align-items-center justify-content-end text-red-500"
+                class="flex-1 flex align-items-center justify-content-end"
             >
-                <strong>MUY MAL</strong>
+                <strong><span class="hidden md:inline">MUY EN DESACUERDO / </span>NUNCA</strong>
             </div>
             <div class="flex-1 flex align-items-center justify-content-center">
                 @if (ratingControl) {
@@ -36,10 +36,25 @@
                 }
             </div>
             <div
-                class="flex-1 flex align-items-center justify-content-start text-blue-500"
+                class="flex-1 flex align-items-center justify-content-start"
             >
-                <strong>EXCELENTE</strong>
+                <strong><span class="hidden md:inline">MUY DE ACUERDO / </span>SIEMPRE</strong>
             </div>
+        </div>
+    </div> -->
+    <div class="text-panel">
+        <div
+            *ngFor="let alternativa of alternativas"
+            class="field-checkbox mt-3 px-3"
+        >
+            <p-radioButton
+                [inputId]="alternativa.value"
+                [value]="alternativa"
+                [formControl]="ratingControl"
+            />
+            <label [for]="alternativa.value" class="ml-2">
+                {{ alternativa.label }}
+            </label>
         </div>
     </div>
 </p-inputGroup>

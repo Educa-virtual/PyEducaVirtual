@@ -29,6 +29,11 @@ export class PreguntaCerradaComponent {
     touched = false
     disabled = false
 
+    alternativas: Array<any> = [
+        { label: 'SI', value: '1' },
+        { label: 'NO', value: '0' },
+    ]
+
     writeValue(value: any) {
         if (value) {
             this.switchControl.setValue(value) // Assign the values to the Switch

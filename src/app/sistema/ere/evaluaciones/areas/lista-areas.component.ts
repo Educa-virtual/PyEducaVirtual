@@ -101,7 +101,6 @@ export class ListaAreasComponent implements OnInit {
             )
         }
     }
-
     recibirDatosParaSubirArchivo(datos: { curso: ICurso }) {
         this.dialogSubirArchivo.mostrarDialog(datos)
     }
@@ -227,5 +226,21 @@ export class ListaAreasComponent implements OnInit {
     cambiarVista(): void {
         this.modoCard = !this.modoCard
         console.log('Vista cambiada a:', this.modoCard ? 'Cards' : 'Tabla')
+    }
+
+    // busqueda de simple-lista-araas
+    public onFilterTable(event: Event) {
+        const normalizeText = (str: string) =>
+            str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+        const text = normalizeText((event.target as HTMLInputElement).value)
+        this.cursos = this.cursosInicial
+        if (text.length > 1) {
+            this.cursos = this.cursos.filter((curso) =>
+                normalizeText(curso.cCursoNombre).includes(text)
+            )
+        }
     }
 }

@@ -11,7 +11,7 @@ import { MenuItem } from 'primeng/api'
     standalone: true,
     imports: [PrimengModule],
     templateUrl: './encuesta-resumen.component.html',
-    styleUrl: './encuesta-resumen.component.scss',
+    styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class EncuestaResumenComponent {
     perfil: any

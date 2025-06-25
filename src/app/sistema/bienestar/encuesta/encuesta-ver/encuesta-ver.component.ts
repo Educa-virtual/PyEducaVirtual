@@ -20,7 +20,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
         PreguntaEscalaComponent,
     ],
     templateUrl: './encuesta-ver.component.html',
-    styleUrl: './encuesta-ver.component.scss',
+    styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class EncuestaVerComponent {
     iEncuId: number

@@ -17,7 +17,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     standalone: true,
     imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './encuesta-respuestas.component.html',
-    styleUrl: './encuesta-respuestas.component.scss',
+    styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class EncuestaRespuestasComponent implements OnInit {
     iEncuId: number

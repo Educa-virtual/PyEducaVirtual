@@ -117,6 +117,9 @@ export class ListaAreasComponent implements OnInit {
     guardarResultadosOnline(datos: { curso: ICurso }) {
         this.dialogGuardarResultadosOnline.mostrarDialog(datos)
     }
+    obtenerAreasPorEvaluacionyEspecialista() {
+        this.obtenerAreasPorEvaluacion()
+    }
 
     /*actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
         this.gestionarPreguntasCard.forEach((card) => {

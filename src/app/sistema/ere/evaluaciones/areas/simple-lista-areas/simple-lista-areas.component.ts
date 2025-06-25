@@ -11,7 +11,7 @@ import {
     EventEmitter,
 } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
-import { MenuItem } from 'primeng/api'
+import { ConfirmationService, MenuItem } from 'primeng/api'
 import { DialogGenerarCuadernilloComponent } from '../dialog-generar-cuadernillo/dialog-generar-cuadernillo.component'
 import { ConfigurarNivelLogroComponent } from '../configurar-nivel-logro/configurar-nivel-logro.component'
 import { Router, RouterModule } from '@angular/router'
@@ -66,6 +66,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     private route = inject(ActivatedRoute)
     private store = inject(LocalStoreService)
     private destroy$ = new Subject<void>()
+    confirmationService = inject(ConfirmationService)
 
     backend = environment.backend
     iPerfilId: number = this._ConstantesService.iPerfilId
@@ -150,7 +151,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             { field: 'acciones', header: 'Acciones' },
         ]
     }
-
     descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
         if (!this.cursoSeleccionado) {
             alert('No hay curso seleccionado')
@@ -162,10 +162,68 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
             tipoArchivo: tipoArchivo,
         }
-        this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
-    }
 
+        this.evaluacionesService
+            .descargarArchivoPreguntasPorArea(params)
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `Evaluacion ${this.cursoSeleccionado.cCursoNombre} ${this.cursoSeleccionado.cGradoAbreviacion} ${this.cursoSeleccionado.cNivelTipoNombre.replace('Educación', '')}.pdf`
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    console.error('Error al descargar:', error)
+                    alert('Error al descargar el archivo')
+                },
+            })
+    }
+    /*descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
+        if (!this.cursoSeleccionado) {
+            alert('No hay curso seleccionado')
+            return
+        }
+
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
+            tipoArchivo: tipoArchivo,
+        }
+        this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
+    }*/
     descargarMatrizPorEvaluacionArea(): void {
+        if (!this.cursoSeleccionado) {
+            alert('No hay curso seleccionado')
+            return
+        }
+
+        const user = this.store.getItem('dremoUser')
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
+            iDocenteId: user.iDocenteId,
+        }
+
+        this.evaluacionesService
+            .descargarMatrizPorEvaluacionArea(params)
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `Matriz ${this.cursoSeleccionado.cCursoNombre} ${this.cursoSeleccionado.cGradoAbreviacion} ${this.cursoSeleccionado.cNivelTipoNombre.replace('Educación', '')}.pdf`
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    console.error('Error al descargar matriz:', error)
+                    alert('Error al descargar la matriz')
+                },
+            })
+    }
+    /*descargarMatrizPorEvaluacionArea(): void {
         if (!this.cursoSeleccionado) {
             alert('No hay curso seleccionado')
             return
@@ -179,7 +237,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         }
         this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
     }
-
+    */
     descargarPDF(tipo: string, curso: ICurso): void {
         this.cursoSeleccionado = curso
 
@@ -250,6 +308,30 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     eliminarArchivoCuadernillo(curso: ICurso): void {
         this.cursoSeleccionado = curso
 
+        this.confirmationService.confirm({
+            message: `¿Está seguro de eliminar el archivo de cuadernillo para ${curso.cCursoNombre}? Esto le permitirá subir un nuevo archivo.`,
+            header: '',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Eliminar',
+            rejectLabel: 'Cancelar',
+            acceptButtonStyleClass:
+                'p-button-success p-button-sm custom-accept',
+            rejectButtonStyleClass: 'p-button-danger p-button-sm custom-reject',
+            accept: () => {
+                console.log(
+                    'Eliminando archivo de cuadernillo para:',
+                    curso.cCursoNombre
+                )
+                curso.bTieneArchivo = false
+                console.log(
+                    'Archivo eliminado. Ahora puede subir un nuevo archivo.'
+                )
+            },
+        })
+    }
+    /*eliminarArchivoCuadernillo(curso: ICurso): void {
+        this.cursoSeleccionado = curso
+
         if (
             confirm(
                 `¿Está seguro de eliminar el archivo de cuadernillo para ${curso.cCursoNombre}?\n\nEsto le permitirá subir un nuevo archivo.`
@@ -266,7 +348,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 'Archivo eliminado. Ahora puede subir un nuevo archivo.'
             )
         }
-    }
+    }*/
 
     obtenerNombreArchivo(curso: ICurso): string {
         return `${curso.cCursoNombre?.toLowerCase().replace(/\s+/g, '_')}_eval.pdf`

@@ -101,13 +101,32 @@ export interface IActionTable {
 export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
+    trSelected
+
     getClass(rowData: any, classes: string): { [key: string]: boolean } {
         const fieldValue = rowData?.[classes]
-        if (classes) {
-            return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
-        } else {
-            return undefined
+        return fieldValue ? { [String(fieldValue)]: true } : {}
+    }
+
+    getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
+        return {
+            ...this.getClass(rowData, 'class'),
+            itemSelected: rowIndex === this.trSelected,
+            itemActive: Number(rowData.bActive) ? true : false,
         }
+    }
+
+    getColorEstado(
+        rowData: any,
+        rowIndex: number,
+        tipo: 'check' | 'times'
+    ): string {
+        const isActiveOrSelected =
+            !!Number(rowData.bActive) || this.trSelected === rowIndex
+
+        if (isActiveOrSelected) return 'white'
+
+        return tipo === 'check' ? 'green' : 'red'
     }
 
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
@@ -121,6 +140,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() dataKey: string
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
+    @Input() width: string = '100%'
 
     //placeholder search
     @Input() searchPlaceholder: string = 'Buscar por nombre....'
@@ -600,5 +620,19 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             'secondary',
         ].includes(col.styles[row[col.field]])
         return severity ? col.styles[row[col.field]] : 'secondary'
+    }
+
+    @Input() soloUnaLetra: boolean = false
+    validarUnaLetra(event: any, rowData: any, field: string) {
+        const valor = event.target.value
+        // Solo se permite una letra (a-zA-Z)
+        const letra = valor.match(/^[a-zA-Z]?$/)
+        if (letra) {
+            rowData[field] = valor
+        } else {
+            // Elimina caracteres no válidos
+            event.target.value = valor.charAt(0).replace(/[^a-zA-Z]/g, '')
+            rowData[field] = event.target.value
+        }
     }
 }

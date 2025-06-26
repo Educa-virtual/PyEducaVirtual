@@ -196,7 +196,8 @@
         >
             <tr
                 [pSelectableRow]="rowData"
-                [ngClass]="getClass(rowData, 'class')"
+                [ngClass]="getRowClasses(rowData, rowIndex)"
+                (click)="trSelected = rowIndex"
             >
                 @for (
                     col of columnasSeleccionadas;
@@ -208,6 +209,7 @@
                             enableCellSelection &&
                                 selectCell(col, col.field, rowData)
                         "
+                        class="text-center"
                         [ngClass]="{
                             'SELECTED-CELL':
                                 (enableViewSelections || enableCellSelection) &&
@@ -280,14 +282,27 @@
                                                 appendTo="body"
                                                 [(ngModel)]="rowData[col.field]"
                                                 [placeholder]="col.placeholder"
-                                                [style]="{ width: '100%' }"
+                                                [style]="{
+                                                    width: '100%',
+                                                }"
                                             />
                                         }
+                                        <!-- Cambio de tamaño del input -->
                                         @default {
                                             <input
+                                                [ngStyle]="{ width: width }"
                                                 pInputText
                                                 [type]="col.inputType ?? 'text'"
                                                 [(ngModel)]="rowData[col.field]"
+                                                (input)="
+                                                    soloUnaLetra
+                                                        ? validarUnaLetra(
+                                                              $event,
+                                                              rowData,
+                                                              col.field
+                                                          )
+                                                        : null
+                                                "
                                             />
                                         }
                                     }
@@ -433,7 +448,13 @@
                                 @if (rowData[col.field]?.toString() === '1') {
                                     <i
                                         class="pi pi-check-circle"
-                                        style="color: green"
+                                        [style.color]="
+                                            getColorEstado(
+                                                rowData,
+                                                rowIndex,
+                                                'check'
+                                            )
+                                        "
                                         [pTooltip]="
                                             rowData[col.field] + ' - Habilitado'
                                         "
@@ -442,7 +463,13 @@
                                 } @else {
                                     <i
                                         class="pi pi-times-circle"
-                                        style="color: red"
+                                        [style.color]="
+                                            getColorEstado(
+                                                rowData,
+                                                rowIndex,
+                                                'times'
+                                            )
+                                        "
                                         [pTooltip]="
                                             rowData[col.field] +
                                             ' - Deshabilitado'

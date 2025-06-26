@@ -556,7 +556,7 @@ export class EvaluacionPracticaComponent implements OnInit {
         /*const cantidadPreguntas =
             this.preguntas[this.activeIndex].pregunta.length
         let cantidadPreguntasMarcadas = 0
-    
+
         this.preguntas[this.activeIndex].pregunta.forEach((item) => {
             item.alternativas.forEach((alter) => {
                 if (alter.iMarcado == 1) {
@@ -564,7 +564,7 @@ export class EvaluacionPracticaComponent implements OnInit {
                 }
             })
         })
-    
+
         if (cantidadPreguntas == cantidadPreguntasMarcadas) {
             this.preguntas[this.activeIndex].iMarcado = 1
         } else {
@@ -707,17 +707,9 @@ export class EvaluacionPracticaComponent implements OnInit {
         const { accion } = $event
         switch (accion) {
             case 'tiempo-finalizado':
-                console.log('El tiempo de la evaluación ha finalizado')
-                /*this._MessageService.add({
-                    severity: 'warn',
-                    detail: 'El tiempo de la evaluación ha finalizado.',
-                })*/
                 this.finalizado = true
-                /*this.accionBtnItem({accion: "terminarExamenxiEstudianteId"})*/
                 break
             case 'tiempo-1-minuto-restante':
-                console.log('Queda 1 minuto para finalizar la evaluación')
-                //console.log('Queda 1 minuto para finalizar la evaluación')
                 this._MessageService.add({
                     severity: 'warn',
                     detail: 'Queda 1 minuto para finalizar la evaluación',

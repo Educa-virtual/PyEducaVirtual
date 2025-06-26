@@ -17,7 +17,7 @@ import {
 })
 export class TimeComponent implements OnChanges, OnDestroy {
     @Output() accionTime = new EventEmitter()
-
+    @Input() etiqueta: string = 'Tiempo restante'
     @Input() inicio // Fecha y hora de inicio
     @Input() fin // Fecha y hora de fin
 
@@ -62,7 +62,7 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     detenerContador(): void {
-        console.log('Deteniendo contador')
+        //console.log('Deteniendo contador')
         if (this.intervalo) {
             clearInterval(this.intervalo)
             this.intervalo = null
@@ -88,8 +88,8 @@ export class TimeComponent implements OnChanges, OnDestroy {
         /*else {
            data.accion = 'tiempo-espera'
        }*/
-        console.log('Emitiendo evento:', data.accion)
-        console.log('Tiempo restante:', this.hours, this.minutos, this.segundos)
+        //x console.log('Emitiendo evento:', data.accion)
+        //console.log('Tiempo restante:', this.hours, this.minutos, this.segundos)
         this.accionTime.emit(data)
     }
 

@@ -193,14 +193,7 @@ export class RendirExamenComponent implements OnInit {
             }
         })
         alternativa.iMarcado = marcado
-        /*this.preguntas.forEach((pregunta) => {
-            pregunta.pregunta.forEach((i) => {
-                if (i.iPreguntaId === Number(alternativa.iPreguntaId)) {
-                    i.iMarcado = true
-                }
-            })
-        })*/
-        // alternativa.iMarcado = 1
+
         this.marcarPaginadorPregunta()
         const params = {
             petition: 'post',
@@ -219,6 +212,7 @@ export class RendirExamenComponent implements OnInit {
                 iCursoNivelGradId: this.iCursoNivelGradId,
                 iMarcado: alternativa.iMarcado,
             },
+            alternativa: alternativa,
         }
         this.getInformation(params, params.data.opcion)
     }
@@ -268,18 +262,20 @@ export class RendirExamenComponent implements OnInit {
     }
 
     getInformation(params, accion) {
+        if (!params) {
+            console.error(
+                'Params is null or undefined when calling getInformation'
+            )
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Parámetros requeridos no encontrados',
+            })
+            return
+        }
+
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                /*if (
-                    response.validated &&
-                    accion ==
-                        'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante'
-                ) {
-                    this._MessageService.add({
-                        severity: 'success',
-                        detail: response.message,
-                    })
-                }*/
                 this.accionBtnItem({
                     accion,
                     item: response?.data,
@@ -288,12 +284,18 @@ export class RendirExamenComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                //console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Problema encontrado',
-                    detail: error,
+                    detail: error.error.message,
                 })
+                if (
+                    params.data.opcion ==
+                    'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante'
+                ) {
+                    //Si hubo un error al guardar la respuesta, revertimos el marcado
+                    params.alternativa.iMarcado = !params.alternativa.iMarcado
+                }
             },
         })
     }
@@ -318,47 +320,81 @@ export class RendirExamenComponent implements OnInit {
 
     finalizado: boolean = false
     accionBtnItem(elemento): void {
+        if (!elemento) {
+            console.error('Elemento is null or undefined')
+            return
+        }
+
         const { accion } = elemento
         const { item } = elemento
         const { message } = elemento
-        //this.cGradoNombre = this.cGradoNombre.toLowerCase()
+
+        if (!accion) {
+            console.error('Accion is required')
+            return
+        }
+
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId':
-                this.evaluacion = item.length ? item[0] : null
-                this.tiempoActual = new Date(this.evaluacion.dtHoraActual)
-                this.tiempoFin = new Date(this.evaluacion.dtExamenFechaFin)
-                this.breadCrumbItems = [
-                    {
-                        label: 'Evaluación ERE',
-                        routerLink: '/ere/evaluacion/areas',
-                    },
-                    {
-                        label: this.evaluacion.cEvaluacionNombre,
-                    },
-                    {
-                        label:
-                            this.evaluacion.cGradoAbreviacion +
-                            ' ' +
-                            this.evaluacion.cCursoNombre +
-                            ' ' +
-                            this.evaluacion.cNivelTipoNombre,
-                    },
-                    {
-                        label: 'Rendir',
-                        routerLink: `/ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
-                    },
-                    { label: 'Iniciar evaluación' },
-                ]
-                this.breadCrumbHome = {
-                    icon: 'pi pi-home',
-                    routerLink: '/',
+                if (item && Array.isArray(item)) {
+                    this.evaluacion = item.length ? item[0] : null
+
+                    if (this.evaluacion) {
+                        this.tiempoActual = new Date(
+                            this.evaluacion.dtHoraActual
+                        )
+                        this.tiempoFin = new Date(
+                            this.evaluacion.dtExamenFechaFin
+                        )
+                        this.breadCrumbItems = [
+                            {
+                                label: 'Evaluación ERE',
+                                routerLink: '/ere/evaluacion/areas',
+                            },
+                            {
+                                label:
+                                    this.evaluacion.cEvaluacionNombre ||
+                                    'Sin nombre',
+                            },
+                            {
+                                label:
+                                    (this.evaluacion.cGradoAbreviacion || '') +
+                                    ' ' +
+                                    (this.evaluacion.cCursoNombre || '') +
+                                    ' ' +
+                                    (this.evaluacion.cNivelTipoNombre || ''),
+                            },
+                            {
+                                label: 'Rendir',
+                                routerLink: `/ere/evaluaciones/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/rendir`,
+                            },
+                            { label: 'Iniciar evaluación' },
+                        ]
+                        this.breadCrumbHome = {
+                            icon: 'pi pi-home',
+                            routerLink: '/',
+                        }
+                    }
+                } else {
+                    console.warn(
+                        'Item is not a valid array for CONSULTARxiEvaluacionIdxiCursoNivelGradIdxiIieeId'
+                    )
                 }
-                //this.obtenerPreguntaxiEvaluacionId()
                 break
+
             case 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId':
                 this.finalizado = false
+
+                if (!item || !Array.isArray(item)) {
+                    console.warn(
+                        'Item is not a valid array for ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId'
+                    )
+                    return
+                }
+
                 if (
                     item.length &&
+                    item[item.length - 1] &&
                     item[item.length - 1]['iFinalizado'] === '0'
                 ) {
                     this.finalizado = true
@@ -366,106 +402,197 @@ export class RendirExamenComponent implements OnInit {
                 }
 
                 const evaluaciones = item
-                for (const key in evaluaciones) {
-                    const itemSinEncabezado = evaluaciones.filter(
-                        (i) =>
-                            !i.iEncabPregId &&
-                            i.iPreguntaId === evaluaciones[key]['iPreguntaId']
-                    )
-                    if (itemSinEncabezado.length) {
-                        this.preguntas.push({
-                            pregunta: itemSinEncabezado,
-                            iEncabPregId: null,
-                        })
-                    }
-                    const itemConEncabezado = evaluaciones.filter(
-                        (i) =>
-                            i.iEncabPregId &&
-                            i.iEncabPregId === evaluaciones[key]['iEncabPregId']
-                    )
-                    if (itemConEncabezado.length) {
-                        this.preguntas.push({
-                            pregunta: itemConEncabezado,
-                            title: 'Pregunta múltiple',
-                            iEncabPregId: evaluaciones[key]['iEncabPregId'],
-                        })
-                    }
+
+                if (!this.preguntas) {
+                    this.preguntas = []
+                } else {
+                    this.preguntas = []
                 }
-                //Agrupar los encabezados
-                this.preguntas = this.preguntas.filter(
-                    (value, index, self) =>
-                        value.iEncabPregId === null ||
-                        index ===
-                            self.findIndex(
-                                (t) => t.iEncabPregId === value.iEncabPregId
-                            )
-                )
-                this.totalPregunta = 0
-                // //console.log(this.preguntas)
-                this.preguntas.forEach((pregunta) => {
-                    {
-                        if (pregunta.pregunta.length) {
-                            let iMarcado = 0
-                            pregunta.pregunta.forEach((item) => {
-                                this.totalPregunta = this.totalPregunta + 1
-                                item.title = 'Pregunta #' + this.totalPregunta
-                                item.alternativas = item.alternativas
-                                    ? JSON.parse(item.alternativas)
-                                    : item.alternativas
-                                item.cPregunta =
-                                    this._DomSanitizer.bypassSecurityTrustHtml(
-                                        item.cPregunta
-                                    )
-                                item.cEncabPregContenido =
-                                    this._DomSanitizer.bypassSecurityTrustHtml(
-                                        item.cEncabPregContenido
-                                    )
-                                iMarcado = item.alternativas.find(
-                                    (alternativa) =>
-                                        Number(alternativa.iMarcado) === 1
-                                )
-                                    ? 1
-                                    : 0
-                                // item.alternativas.forEach(alternativa => {
-                                //         alternativa.iMarcado = alternativa.iMarcado ? true : false
-                                // });
+
+                for (const key in evaluaciones) {
+                    if (evaluaciones[key]) {
+                        const itemSinEncabezado = evaluaciones.filter(
+                            (i) =>
+                                i &&
+                                !i.iEncabPregId &&
+                                i.iPreguntaId ===
+                                    evaluaciones[key]['iPreguntaId']
+                        )
+
+                        if (itemSinEncabezado && itemSinEncabezado.length) {
+                            this.preguntas.push({
+                                pregunta: itemSinEncabezado,
+                                iEncabPregId: null,
                             })
-                            pregunta.iMarcado = iMarcado
                         }
 
-                        if (pregunta.pregunta.length > 1) {
-                            pregunta['iEncabPregId'] =
-                                pregunta.pregunta[0]['iEncabPregId']
-                            pregunta['cEncabPregContenido'] =
-                                pregunta.pregunta[0]['cEncabPregContenido']
-                            pregunta['cPregunta'] =
-                                pregunta.pregunta[0]['cPregunta']
-                        } else {
-                            pregunta.title = pregunta.pregunta[0]?.title || ''
+                        const itemConEncabezado = evaluaciones.filter(
+                            (i) =>
+                                i &&
+                                i.iEncabPregId &&
+                                i.iEncabPregId ===
+                                    evaluaciones[key]['iEncabPregId']
+                        )
+
+                        if (itemConEncabezado && itemConEncabezado.length) {
+                            this.preguntas.push({
+                                pregunta: itemConEncabezado,
+                                title: 'Pregunta múltiple',
+                                iEncabPregId: evaluaciones[key]['iEncabPregId'],
+                            })
                         }
                     }
-                })
-                //console.log(this.preguntas)
+                }
+
+                if (this.preguntas && Array.isArray(this.preguntas)) {
+                    this.preguntas = this.preguntas.filter(
+                        (value, index, self) => {
+                            if (!value) return false
+                            return (
+                                value.iEncabPregId === null ||
+                                index ===
+                                    self.findIndex(
+                                        (t) =>
+                                            t &&
+                                            t.iEncabPregId ===
+                                                value.iEncabPregId
+                                    )
+                            )
+                        }
+                    )
+                }
+
+                this.totalPregunta = 0
+
+                if (this.preguntas && Array.isArray(this.preguntas)) {
+                    this.preguntas.forEach((pregunta) => {
+                        if (
+                            pregunta &&
+                            pregunta.pregunta &&
+                            Array.isArray(pregunta.pregunta)
+                        ) {
+                            if (pregunta.pregunta.length) {
+                                let iMarcado = 0
+                                pregunta.pregunta.forEach((item) => {
+                                    if (item) {
+                                        this.totalPregunta =
+                                            this.totalPregunta + 1
+                                        item.title =
+                                            'Pregunta #' + this.totalPregunta
+
+                                        if (item.alternativas) {
+                                            try {
+                                                item.alternativas =
+                                                    typeof item.alternativas ===
+                                                    'string'
+                                                        ? JSON.parse(
+                                                              item.alternativas
+                                                          )
+                                                        : item.alternativas
+                                            } catch (e) {
+                                                console.error(
+                                                    'Error parsing alternativas:',
+                                                    e
+                                                )
+                                                item.alternativas = []
+                                            }
+                                        } else {
+                                            item.alternativas = []
+                                        }
+
+                                        if (this._DomSanitizer) {
+                                            item.cPregunta = item.cPregunta
+                                                ? this._DomSanitizer.bypassSecurityTrustHtml(
+                                                      item.cPregunta
+                                                  )
+                                                : ''
+                                            item.cEncabPregContenido =
+                                                item.cEncabPregContenido
+                                                    ? this._DomSanitizer.bypassSecurityTrustHtml(
+                                                          item.cEncabPregContenido
+                                                      )
+                                                    : ''
+                                        }
+
+                                        if (
+                                            item.alternativas &&
+                                            Array.isArray(item.alternativas)
+                                        ) {
+                                            const alternativaMarcada =
+                                                item.alternativas.find(
+                                                    (alternativa) =>
+                                                        alternativa &&
+                                                        Number(
+                                                            alternativa.iMarcado
+                                                        ) === 1
+                                                )
+                                            iMarcado = alternativaMarcada
+                                                ? 1
+                                                : 0
+                                        }
+                                    }
+                                })
+                                pregunta.iMarcado = iMarcado
+                            }
+
+                            if (pregunta.pregunta.length > 1) {
+                                const primeraPregunta = pregunta.pregunta[0]
+                                if (primeraPregunta) {
+                                    pregunta['iEncabPregId'] =
+                                        primeraPregunta['iEncabPregId']
+                                    pregunta['cEncabPregContenido'] =
+                                        primeraPregunta['cEncabPregContenido']
+                                    pregunta['cPregunta'] =
+                                        primeraPregunta['cPregunta']
+                                }
+                            } else if (
+                                pregunta.pregunta.length === 1 &&
+                                pregunta.pregunta[0] &&
+                                pregunta.pregunta[0].iEncabPregId != null
+                            ) {
+                                pregunta['iEncabPregId'] =
+                                    pregunta.pregunta[0]['iEncabPregId']
+                                pregunta['cEncabPregContenido'] =
+                                    pregunta.pregunta[0]['cEncabPregContenido']
+                                pregunta['cPregunta'] =
+                                    pregunta.pregunta[0]['cPregunta']
+                            } else if (pregunta.pregunta[0]) {
+                                pregunta.title =
+                                    pregunta.pregunta[0]?.title || ''
+                            }
+                        }
+                    })
+                }
                 break
+
             case 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante':
-                this._MessageService.add({
-                    severity: 'success',
-                    detail: message,
-                })
+                if (this._MessageService && message) {
+                    this._MessageService.add({
+                        severity: 'success',
+                        detail: message,
+                    })
+                }
                 break
+
             case 'terminarExamenxiEstudianteId':
                 this.finalizado = false
                 if (
+                    item &&
+                    Array.isArray(item) &&
                     item.length &&
+                    item[item.length - 1] &&
                     item[item.length - 1]['iFinalizado'] === '0'
                 ) {
                     this.finalizado = true
-                    //window.location.reload()
                 }
-
                 break
+
             case 'close-modal':
                 this.showModalPreview = false
+                break
+
+            default:
+                console.warn(`Acción no reconocida: ${accion}`)
                 break
         }
     }

@@ -119,6 +119,13 @@ const routes: Routes = [
                 (c) => c.InformesEreComponent
             ),
     },
+    {
+        path: 'informes-comparar-ere',
+        loadComponent: () =>
+            import(
+                './informes-ere/informes-comparar-ere/informes-comparar-ere.component'
+            ).then((c) => c.InformesCompararEreComponent),
+    },
 
     {
         path: 'evaluacion-practica',

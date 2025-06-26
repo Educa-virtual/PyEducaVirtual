@@ -6,7 +6,7 @@
 .hoverTable tr th {
     background-color: #e6e6ee;
 }
-.hoverTable tr:hover {
+.hoverTable tr:hover:not(.itemSelected, .itemActive) {
     background-color: var(--highlight-bg);
 }
 tr {
@@ -55,6 +55,18 @@ tr {
     background-color: #bee5ff;
 }
 
-.text-innerHtml {
-    font-size: 12px;
+.itemSelected {
+    background: var(--blue-500);
+    color: white;
+    i {
+        color: white;
+    }
+}
+
+.itemActive {
+    background: var(--green-500);
+    color: white;
+    i {
+        color: white;
+    }
 }

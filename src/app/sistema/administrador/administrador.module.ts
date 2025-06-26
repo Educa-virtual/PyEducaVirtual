@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { CurriculasComponent } from './mantenimiento/curriculas/curriculas.component'
 
 const routes: Routes = [
     {
@@ -28,22 +27,21 @@ const routes: Routes = [
                 (module) => module.BackupBdComponent
             ),*/
     },
+    //REACTIVAR PORQUE ES EL NUEVO MODULO DE GESTION DE USUARIOS
     {
-        path: 'gestion-usuario',
+        path: 'gestion-usuarios',
+        loadComponent: () =>
+            import(
+                './gestion-usuarios/lista-usuarios/lista-usuarios.component'
+            ).then((m) => m.ListaUsuariosComponent),
+    },
+    /*{
+        path: 'gestion-usuarios',
         loadComponent: () =>
             import('./usuario/usuario.component').then(
                 (m) => m.UsuarioComponent
             ),
-    },
-    {
-        path: 'mantenimiento',
-        children: [
-            {
-                path: 'curriculas',
-                component: CurriculasComponent,
-            },
-        ],
-    },
+    },*/
 ]
 
 @NgModule({

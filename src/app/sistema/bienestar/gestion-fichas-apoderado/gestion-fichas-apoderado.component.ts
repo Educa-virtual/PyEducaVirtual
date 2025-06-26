@@ -192,8 +192,8 @@ export class GestionFichasApoderadoComponent implements OnInit {
             class: 'table-cell md:hidden',
         },
         {
-            field: 'dtFichaDGFormateada',
-            header: 'Creación',
+            field: 'cEstadoNombre',
+            header: 'Estado',
             type: 'text',
             width: '10%',
             text_header: 'center',

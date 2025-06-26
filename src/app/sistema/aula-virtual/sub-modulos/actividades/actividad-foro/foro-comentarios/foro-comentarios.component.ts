@@ -7,13 +7,19 @@ import { Subject, takeUntil } from 'rxjs'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ForoEstudiantesComponent } from '../foro-estudiantes/foro-estudiantes.component'
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 
 @Component({
     selector: 'app-foro-comentarios',
     standalone: true,
     templateUrl: './foro-comentarios.component.html',
     styleUrls: ['./foro-comentarios.component.scss'],
-    imports: [PrimengModule, RemoveHTMLPipe, ForoEstudiantesComponent],
+    imports: [
+        PrimengModule,
+        RemoveHTMLPipe,
+        ForoEstudiantesComponent,
+        NoDataComponent,
+    ],
 })
 export class ForoComentariosComponent implements OnInit {
     @Input() id: number // id de foro se cambiara x string mas adelante
@@ -33,7 +39,11 @@ export class ForoComentariosComponent implements OnInit {
     respuestasForo: any
     totalComentarios: number
     iPerfilId: number
+    iEstudianteId: number
+    iDocenteId: number
     selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
+    comentarioPrincipal: string
+    respuestaComentario: { [idPregunta: string]: string } = {} // variable para almacenar de respuesta unica
 
     constructor() {}
 
@@ -56,7 +66,9 @@ export class ForoComentariosComponent implements OnInit {
             },
         ]
         this.iPerfilId = this._constantesService.iPerfilId
-        console.log('id de foro', this.id, this.ixActivadadId, this.iActTopId)
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.iDocenteId = this._constantesService.iDocenteId
+        // console.log('id de foro', this.id, this.ixActivadadId, this.iActTopId)
         this.getRespuestaF()
     }
     // para ocultar los subconjuntos:
@@ -93,21 +105,22 @@ export class ForoComentariosComponent implements OnInit {
                             respuesta.json_respuestas_comentarios.length
                     })
 
-                    console.log(
-                        'Respuesta Comentarios de los Foros',
-                        this.respuestasForo
-                    )
+                    // console.log(
+                    //     'Respuesta Comentarios de los Foros',
+                    //     this.respuestasForo
+                    // )
                 },
                 error: (err) => {
                     console.error('Error al obtener respuestas del foro', err)
                 },
             })
     }
+    //Mostrar subComentarios
     responderComentario(data: any) {
         this.selectedCommentIndex = data.iForoRptaId
-        console.log(data)
+        // console.log(data)
     }
-    respuestaComentario: { [idPregunta: string]: string } = {} // variable para almacenar de respuesta unica
+    // función para responder al comentario principal
     sendCommentPadre(id: string) {
         // guardar el comentario
         const iDocenteId = this._constantesService.iDocenteId
@@ -132,6 +145,50 @@ export class ForoComentariosComponent implements OnInit {
                 console.error('Comentario:', error)
             },
         })
+    }
+    // guardar comentario de estudiante o Docente foro
+    guardarComentario() {
+        if (this.iPerfilId === ESTUDIANTE) {
+            const data = {
+                iForoId: this.ixActivadadId,
+                iEstudianteId: this.iEstudianteId,
+                cForoRptaRespuesta: this.comentarioPrincipal,
+            }
+            // console.log('comentarios: ', data)
+
+            this._aulaService.guardarRespuesta(data).subscribe({
+                next: (resp: any) => {
+                    console.log('respuesta completa', resp)
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.comentarioPrincipal = ''
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
+            // this.foroFormComntAl.reset()
+        } else {
+            const data = {
+                iForoId: this.ixActivadadId,
+                iDocenteId: this.iDocenteId,
+                cForoRptaRespuesta: this.comentarioPrincipal,
+            }
+            this._aulaService.guardarRespuesta(data).subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.comentarioPrincipal = ''
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
+        }
     }
     // colocarCursorAlFinal(textarea: HTMLTextAreaElement): void {
     //     const valor = textarea.value

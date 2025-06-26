@@ -211,7 +211,7 @@ export class ForoRoomComponent implements OnInit {
         this.obtenerForo()
         this.getRespuestaF()
         this.getEstudiantesMatricula()
-        this.obtenerResptDocente()
+        // this.obtenerResptDocente()
     }
     goBack() {
         this.location.back()
@@ -467,7 +467,7 @@ export class ForoRoomComponent implements OnInit {
                                   : [],
                           }
                         : {}
-                    console.log('datos generales foro', this.foro)
+                    // console.log('datos generales foro', this.foro)
                     this.obtenerResptDocente() // función para obtener la retroalimentan al estudiante
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
@@ -481,7 +481,7 @@ export class ForoRoomComponent implements OnInit {
     // obtener retroalimentacion de docente a estudiante x su comentario
     obtenerResptDocente() {
         const idEstudiante = Number(this.iEstudianteId)
-        const idForoId = Number(this.foro.iForoId)
+        const idForoId = Number(this.foro?.iForoId)
 
         // console.log('id foro',idForoId)
         this._aulaService
@@ -492,9 +492,10 @@ export class ForoRoomComponent implements OnInit {
             .subscribe((Data) => {
                 // cForoRptaDocente
                 this.resptDocente = Data['data']
+                // console.log(this.resptDocente)
                 this.comentarioDocente =
                     this.resptDocente?.[0]?.cForoRptaDocente
-                console.log('respuesta docente', this.comentarioDocente)
+                // console.log('respuesta docente', this.comentarioDocente)
             })
     }
     formatDateISO(date: string | number | Date): string {
@@ -547,10 +548,10 @@ export class ForoRoomComponent implements OnInit {
                             respuesta.json_respuestas_comentarios.length
                     })
 
-                    console.log(
-                        'Respuesta Comentarios de los Foros',
-                        this.respuestasForo
-                    )
+                    // console.log(
+                    //     'Respuesta Comentarios de los Foros',
+                    //     this.respuestasForo
+                    // )
                 },
                 error: (err) => {
                     console.error('Error al obtener respuestas del foro', err)

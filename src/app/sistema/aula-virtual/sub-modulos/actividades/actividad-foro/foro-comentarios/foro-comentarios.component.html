@@ -60,7 +60,7 @@
                         </span>
                     </div>
                 </ng-template>
-                <ng-template pTemplate="icons">
+                <!-- <ng-template pTemplate="icons">
                     <button
                         class="p-panel-header-icon p-link mr-2"
                         (click)="menu.toggle($event)"
@@ -73,7 +73,7 @@
                         [model]="items"
                         [popup]="true"
                     />
-                </ng-template>
+                </ng-template> -->
                 <p class="m-0 text-justify">
                     {{ comentario?.cForoRptaRespuesta | removeHTML }}
                 </p>
@@ -152,7 +152,7 @@
                             respuestaComentario[comentario.iForoRptaId]
                         "
                         rows="1"
-                        class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-sm border-none outline-none"
+                        class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
                         placeholder="Escribe tu comentario a {{
                             comentario.cNombres
                         }}"
@@ -177,6 +177,20 @@
                 </div>
             </div>
         </div>
+        <!-- mostrar sms cuando aun no ningun comentario  -->
+        <ng-container *ngIf="!respuestasForo">
+            <app-no-data
+                [showIcon]="'NO-DATA'"
+                [mensaje]="
+                    'Aún no hay comentarios sobre este tema. ¡Sé el primero en opinar!'
+                "
+            ></app-no-data>
+            <!-- "Aún no hay comentarios sobre este tema. ¡Sé el primero en opinar!"
+                "Todavía no se ha iniciado ninguna conversación aquí. ¿Qué piensas tú?"
+                "Sin comentarios por el momento. Tu opinión puede abrir el diálogo."
+                "Esperando las primeras ideas... ¿te animas a compartir la tuya?"
+                "Nadie ha comentado aún. Esta es tu oportunidad de empezar la conversación." -->
+        </ng-container>
         <div class="mt-3">
             <!-- <div class="flex justify-content-end flex-wrap">
                 <div class="flex justify-content-end mx-5">
@@ -197,23 +211,21 @@
                     <img
                         src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face"
                         alt="Avatar"
-                        class="w-2rem h-2rem border-circle flex-shrink-0"
+                        class="w-3rem h-3rem border-circle flex-shrink-0"
                     />
 
                     <!-- Input Area -->
-                    <div
-                        class="flex-1 flex align-items-center bg-gray-700 border-round-3xl px-3 py-2"
-                        style="background-color: #4e4f50"
+                    <textarea
+                        #textareaRef
+                        pInputTextarea
+                        autoResize
+                        [(ngModel)]="comentarioPrincipal"
+                        rows="1"
+                        [style]="{ minHeight: '3rem' }"
+                        class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
+                        placeholder="Escribe tu comentario...."
                     >
-                        <input
-                            type="text"
-                            placeholder="Comentar como"
-                            class="flex-1 bg-transparent border-none outline-none text-white placeholder-text"
-                            style="color: #e4e6ea; font-size: 15px"
-                        />
-                        <!-- [(ngModel)]="commentText"
-                            (keyup.enter)="submitComment()" -->
-                    </div>
+                    </textarea>
 
                     <!-- Action Buttons -->
                     <div class="flex align-items-center gap-2">
@@ -267,6 +279,7 @@
                     <button
                         class="send-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer ml-2"
                         style="background: transparent; border: none"
+                        (click)="guardarComentario()"
                     >
                         <i class="pi pi-send text-lg"></i>
                     </button>
@@ -277,6 +290,7 @@
     @if (iPerfilId === DOCENTE) {
         <div class="col-4">
             <app-foro-estudiantes
+                [id]="id"
                 [iIeCursoId]="iIeCursoId"
                 [iSeccionId]="iSeccionId"
                 [iNivelGradoId]="iNivelGradoId"

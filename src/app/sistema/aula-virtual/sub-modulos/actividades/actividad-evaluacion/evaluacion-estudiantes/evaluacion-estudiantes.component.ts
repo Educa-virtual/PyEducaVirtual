@@ -1,6 +1,5 @@
 import { Component, inject, Input, OnChanges } from '@angular/core'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { CommonModule } from '@angular/common'
 import { TimeComponent } from '@/app/shared/time/time.component'
 import { PrimengModule } from '@/app/primeng.module'
@@ -10,13 +9,8 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { NgxDocViewerModule } from 'ngx-doc-viewer'
 import { environment } from '@/environments/environment'
-import { EmptySectionComponent } from '../../../../../../shared/components/empty-section/empty-section.component'
-import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
-//import { interval, Subscription } from 'rxjs';
 import { AccordionModule } from 'primeng/accordion'
 import { RubricasModule } from '../../../../features/rubricas/rubricas.module'
-import { RubricaEvaluacionComponent } from '../../../../features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
-import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service'
 
 @Component({
@@ -24,17 +18,12 @@ import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preg
     standalone: true,
     imports: [
         ToolbarPrimengComponent,
-        IconComponent,
         CommonModule,
         TimeComponent,
         PrimengModule,
         NgxDocViewerModule,
-        EmptySectionComponent,
-        RecursosListaComponent,
         AccordionModule,
         RubricasModule,
-        RubricaEvaluacionComponent,
-        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-estudiantes.component.html',
     styleUrl: './evaluacion-estudiantes.component.scss',

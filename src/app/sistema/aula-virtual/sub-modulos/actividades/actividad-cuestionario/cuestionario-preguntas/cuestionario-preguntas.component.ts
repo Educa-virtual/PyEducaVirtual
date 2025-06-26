@@ -9,9 +9,7 @@ import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-pregunt
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
-import { AulaVirtualService } from '@/app/servicios/aula/aula-virtual.service'
-// import { group } from '@angular/animations'
-// import { aC } from '@fullcalendar/core/internal-common'
+import { PreguntaAlternativasRespuestasService } from '@/app/servicios/aula/pregunta-alternativas-respuestas.service'
 
 @Component({
     selector: 'app-cuestionario-preguntas',
@@ -35,7 +33,9 @@ export class CuestionarioPreguntasComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
 
-    private _confirmServiceAula = inject(AulaVirtualService)
+    private _PreguntaAlternativasRespuestasService = inject(
+        PreguntaAlternativasRespuestasService
+    )
 
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
@@ -205,7 +205,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
         // console.log('guardar respuesta del alumno', data)
         // Servicio para obtener los instructores
         if (this.iPerfilId === ESTUDIANTE) {
-            this._confirmServiceAula
+            this._PreguntaAlternativasRespuestasService
                 .guardarRespuestaEstudiante(
                     iCuestionarioId,
                     iEstudianteId,
@@ -271,7 +271,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
             iCredId: this._constantesService.iCredId,
         }
         // Servicio para obtener los instructores
-        this._confirmServiceAula
+        this._PreguntaAlternativasRespuestasService
             .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
             .subscribe({
                 next: (response) => {
@@ -347,7 +347,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
             //     iEstudianteId,
             //     data
             // )
-            this._confirmServiceAula
+            this._PreguntaAlternativasRespuestasService
                 .guardarRespuestaEstudiante(
                     iCuestionarioId,
                     iEstudianteId,
@@ -437,7 +437,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
         //     iEstudianteId,
         //     data
         // )
-        this._confirmServiceAula
+        this._PreguntaAlternativasRespuestasService
             .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
             .subscribe({
                 next: (response) => {
@@ -697,7 +697,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
         }
         console.log(iCuestionarioId, data)
         // Servicio para obtener los instructores
-        this._confirmServiceAula
+        this._PreguntaAlternativasRespuestasService
             .obtenerRespuestas(iCuestionarioId, iEstudianteId, data)
             .subscribe({
                 next: (response) => {
@@ -708,8 +708,38 @@ export class CuestionarioPreguntasComponent implements OnInit {
                             detail: response.message,
                         })
                         this.showModal = false
-                        this.obtenerCuestionario()
-                        console.log('respuestas', response)
+                        this.data = response.data
+                        this.data.forEach((pregunta) => {
+                            // Paso 1: Parsear jsonAlternativas raíz si es string
+                            if (typeof pregunta.jsonAlternativas === 'string') {
+                                try {
+                                    pregunta.jsonAlternativas = JSON.parse(
+                                        pregunta.jsonAlternativas
+                                    )
+                                } catch (e) {
+                                    console.error(
+                                        'Error al parsear jsonAlternativas (raíz):',
+                                        e
+                                    )
+                                    pregunta.jsonAlternativas = []
+                                }
+                            }
+                        })
+                        this.data.forEach((item) => {
+                            if (item.cCodeTipoPreg === 'TIP-PREG-OPCIONES') {
+                                const respuestaSeleccionada =
+                                    item.jsonAlternativas.find(
+                                        (alt) => alt.iPrgAltRptaId !== null
+                                    )
+                                if (respuestaSeleccionada) {
+                                    this.respuestasOpcion[item.iPregId] =
+                                        respuestaSeleccionada.iPregAlterId
+                                }
+                            }
+                        })
+                        console.log(this.data)
+                        //this.obtenerCuestionario()
+                        //console.log('respuestas', response)
                         // this.instructorForm.reset()
                     }
                 },

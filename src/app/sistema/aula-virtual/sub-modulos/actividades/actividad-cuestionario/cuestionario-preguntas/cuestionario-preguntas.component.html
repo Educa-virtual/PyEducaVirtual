@@ -90,7 +90,9 @@
                                     <p-inputGroup class="mt-1">
                                         <p-radioButton
                                             id="opcion1"
-                                            name="grupoOpciones"
+                                            [name]="
+                                                'grupoOpciones' + item.iPregId
+                                            "
                                             [value]="opcion.iPregAlterId"
                                             [(ngModel)]="
                                                 respuestasOpcion[item.iPregId]

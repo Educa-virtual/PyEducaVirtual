@@ -2,7 +2,11 @@ import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { Location } from '@angular/common'
-import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
+import {
+    matAutoGraph,
+    matListAlt,
+    matPeople,
+} from '@ng-icons/material-icons/baseline'
 import { DialogService } from 'primeng/dynamicdialog'
 import { provideIcons } from '@ng-icons/core'
 import { IconComponent } from '@/app/shared/icon/icon.component'
@@ -12,6 +16,9 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CuestionarioPreguntasComponent } from '../cuestionario-preguntas/cuestionario-preguntas.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { CuestionarioResultadosComponent } from '../cuestionario-resultados/cuestionario-resultados.component'
+import { CuestionarioEstudianteComponent } from '../cuestionario-estudiante/cuestionario-estudiante.component'
+import { matQuestionAnswerOutline } from '@ng-icons/material-icons/outline'
 @Component({
     selector: 'app-cuestionario-room',
     standalone: true,
@@ -23,8 +30,18 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
         ToolbarPrimengComponent,
         RemoveHTMLPipe,
         CuestionarioPreguntasComponent,
+        CuestionarioResultadosComponent,
+        CuestionarioEstudianteComponent,
     ],
-    providers: [provideIcons({ matListAlt, matPeople }), DialogService],
+    providers: [
+        provideIcons({
+            matListAlt,
+            matPeople,
+            matAutoGraph,
+            matQuestionAnswerOutline,
+        }),
+        DialogService,
+    ],
 })
 export class CuestionarioRoomComponent implements OnInit {
     @Input() ixActivadadId: string

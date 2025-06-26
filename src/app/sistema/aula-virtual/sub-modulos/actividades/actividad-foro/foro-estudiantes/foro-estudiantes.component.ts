@@ -11,6 +11,7 @@ import { Component, inject, Input, OnInit } from '@angular/core'
     imports: [PrimengModule],
 })
 export class ForoEstudiantesComponent implements OnInit {
+    @Input() id: number
     @Input() iIeCursoId
     @Input() iSeccionId
     @Input() iNivelGradoId
@@ -20,6 +21,11 @@ export class ForoEstudiantesComponent implements OnInit {
 
     estudiantes: any
     modelaCalificacionComen: boolean = false
+    descripcionContrctva: string
+    estudianteSelect: string
+    estudianteSelectData: any
+    resptDocente: any
+    comentarioDocente: string
 
     constructor() {}
 
@@ -47,12 +53,58 @@ export class ForoEstudiantesComponent implements OnInit {
                         cTitulo: item.completoalumno,
                     }
                 })
-                console.log('matriculados', this.estudiantes)
+                // console.log('matriculados', this.estudiantes)
             })
     }
-    estudianteSelect: string
+    // funcion para mostrar el modal para agregar un conclución descriptiva
     openModalCalificacion(data: any) {
         this.estudianteSelect = data.completoalumno
+        this.estudianteSelectData = data
+        console.log(this.estudianteSelectData)
         this.modelaCalificacionComen = true
+        this.obtenerResptDocente()
     }
+    // función para guardar calificación
+    calificarComntEstudiante() {
+        console.log(this.estudianteSelectData)
+        const data = {
+            iEstudianteId: this.estudianteSelectData.iEstudianteId,
+            iForoId: this.id,
+            cForoRptDocente: this.descripcionContrctva,
+        }
+        console.log(data)
+        this._aulaService.calificarForoDocente(data).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modelaCalificacionComen = false
+                // this.getRespuestaF()
+                console.log(resp)
+            }
+        })
+    }
+
+    // obtener retroalimentacion de docente a estudiante x su comentario
+    obtenerResptDocente() {
+        const data = {
+            iEstudianteId: this.estudianteSelectData.iEstudianteId,
+            iForoId: this.id,
+        }
+
+        this._aulaService.obtenerResptDocente(data).subscribe((Data) => {
+            // cForoRptaDocente
+            this.resptDocente = Data['data']
+            // console.log(this.resptDocente)
+            this.comentarioDocente = this.resptDocente?.[0]?.cForoRptaDocente
+
+            this.descripcionContrctva = this.comentarioDocente
+            // console.log('respuesta docente', this.comentarioDocente)
+        })
+    }
+    // calificacion: any
+    // mostrarCalificacion() {
+    //     const userId = 1
+    //     this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
+    //         this.calificacion = Data['data']
+    //         console.log('Mostrar escala',this.calificacion)
+    //     })
+    // }
 }

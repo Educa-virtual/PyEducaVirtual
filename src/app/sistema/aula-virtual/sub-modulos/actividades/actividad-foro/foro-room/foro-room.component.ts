@@ -26,7 +26,7 @@ import { NgFor, NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
-import { Message } from 'primeng/api'
+import { MenuItem, Message } from 'primeng/api'
 // import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
@@ -35,7 +35,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ForoRoomDetalleComponent } from '../foro-room-detalle/foro-room-detalle.component'
-
+import { Location } from '@angular/common'
 //import { Toast } from 'primeng/toast';
 
 @Component({
@@ -129,6 +129,8 @@ export class ForoRoomComponent implements OnInit {
     selectedComentario: number | null = null
     respuestaInput: string = '' // Para almacenar la respuesta temporal
     isDocente: boolean = this._constantesService.iPerfilId === DOCENTE
+    items: MenuItem[] | undefined
+    home: MenuItem | undefined
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -165,6 +167,7 @@ export class ForoRoomComponent implements OnInit {
     })
     perfil: any[] = []
     constructor(
+        private location: Location,
         // private websocketService: WebsocketService,
         private store: LocalStoreService
         //private _activatedRoute: ActivatedRoute,
@@ -176,6 +179,20 @@ export class ForoRoomComponent implements OnInit {
     params: any = {}
     selectedItems = []
     ngOnInit(): void {
+        this.items = [
+            {
+                label: 'Mis Áreas Curriculares',
+                routerLink: '/aula-virtual/areas-curriculares',
+            },
+            {
+                label: 'Contenido',
+                command: () => this.goBack(),
+                routerLink: '/',
+            },
+            { label: 'Foro' },
+        ]
+
+        this.home = { icon: 'pi pi-home', routerLink: '/' }
         this.params = {
             ejemplo: 'Este es un parámetro',
         }
@@ -193,6 +210,9 @@ export class ForoRoomComponent implements OnInit {
         this.getRespuestaF()
         this.getEstudiantesMatricula()
         this.obtenerResptDocente()
+    }
+    goBack() {
+        this.location.back()
     }
 
     itemRespuesta: any[] = []

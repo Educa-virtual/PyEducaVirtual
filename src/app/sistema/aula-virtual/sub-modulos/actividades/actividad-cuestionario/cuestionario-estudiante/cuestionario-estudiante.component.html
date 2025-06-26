@@ -1,0 +1,171 @@
+<app-toolbar-primeng [title]="'Cuestionario: ' + (cuestionario?.cTitulo || '')">
+</app-toolbar-primeng>
+<div class="card">
+    <div class="grid">
+        @if (!bCuestionarioFinalizado) {
+            @if (!preguntas.length) {
+                <div class="col-12">
+                    <div class="p-4 rounded">
+                        <div class="m-4 text-center border-dashed rounded p-4">
+                            <app-no-data
+                                [showIcon]="'NO-DATA'"
+                                [mensaje]="
+                                    'No se encontraron preguntas en este cuestionario'
+                                "
+                            ></app-no-data>
+                        </div>
+                    </div>
+                </div>
+            } @else {
+                <div class="col-12">
+                    <div
+                        class="text-right text-md text-primary-500 mb-3 font-bold"
+                    >
+                        Preguntas respondidas:
+                        {{ getCantidadRespuestas().respondidas }} de
+                        {{ getCantidadRespuestas().total }}
+                    </div>
+                    <p-divider></p-divider>
+                </div>
+                <div class="col-12">
+                    <div
+                        class="card col-12 mb-5 p-3 relative"
+                        *ngFor="let item of preguntas; let i = index"
+                    >
+                        <div class="tag ml-3 font-bold">
+                            Pregunta: #{{ i + 1 }}
+                        </div>
+                        <h5>{{ item.cPregunta }}</h5>
+                        @switch (item.cCodeTipoPreg) {
+                            @case ('TIP-PREG-TEXTO') {
+                                <div class="mb-2 col-12">
+                                    <input
+                                        class="ml-2"
+                                        type="text"
+                                        pInputText
+                                        class="w-full custom-hover-input mb-2"
+                                        placeholder="Tu respuesta...."
+                                        [(ngModel)]="
+                                            respuestasTexto[item.iPregId]
+                                        "
+                                        (blur)="
+                                            guardarRespuesta(item, null, null)
+                                        "
+                                    />
+                                </div>
+                            }
+                            @case ('TIP-PREG-OPCIONES') {
+                                <div class="mb-5">
+                                    <div
+                                        *ngFor="
+                                            let opcion of item.jsonAlternativas
+                                        "
+                                        class="mb-3"
+                                    >
+                                        <p-inputGroup class="mt-1">
+                                            <p-radioButton
+                                                id="opcion1"
+                                                [name]="
+                                                    'grupoOpciones' +
+                                                    item.iPregId
+                                                "
+                                                [value]="opcion.iPregAlterId"
+                                                [(ngModel)]="
+                                                    respuestasOpcion[
+                                                        item.iPregId
+                                                    ]
+                                                "
+                                                (ngModelChange)="
+                                                    guardarRespuesta(
+                                                        item,
+                                                        $event,
+                                                        null
+                                                    )
+                                                "
+                                                [label]="opcion.cAlternativa"
+                                                class="ml-2"
+                                            ></p-radioButton>
+                                        </p-inputGroup>
+                                    </div>
+                                </div>
+                            }
+
+                            @case ('TIP-PREG-CASILLA') {
+                                <div class="align-content-center mb-5">
+                                    <div
+                                        *ngFor="
+                                            let opcion of item.jsonAlternativas
+                                        "
+                                        class="mb-2"
+                                    >
+                                        <p-checkbox
+                                            [value]="opcion.iPregAlterId"
+                                            [(ngModel)]="
+                                                respuestasMultiple[item.iPregId]
+                                            "
+                                            [label]="opcion.cAlternativa"
+                                            [binary]="false"
+                                            class="ml-2"
+                                            (ngModelChange)="
+                                                guardarRespuesta(
+                                                    item,
+                                                    $event,
+                                                    opcion.iPregAlterId
+                                                )
+                                            "
+                                        ></p-checkbox>
+                                    </div>
+                                </div>
+                            }
+
+                            @case ('TIP-PREG-DESPLEGABLE') {
+                                <div class="col-6 mb-5">
+                                    <p-dropdown
+                                        [options]="item.jsonAlternativas"
+                                        optionLabel="cAlternativa"
+                                        optionValue="iPregAlterId"
+                                        placeholder="Selecciona una opción"
+                                        class="w-full custom-hover-input mb-2"
+                                        styleClass="w-full"
+                                        [(ngModel)]="
+                                            respuestasDropdown[item.iPregId]
+                                        "
+                                        (onChange)="
+                                            guardarRespuesta(
+                                                item,
+                                                $event.value,
+                                                null
+                                            )
+                                        "
+                                    ></p-dropdown>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+            <div class="col-12 flex justify-content-center gap-3">
+                <p-button
+                    label="Finalizar cuestionario"
+                    icon="pi pi-check"
+                    (onClick)="finalizarCuestionario()"
+                    [disabled]="getCantidadRespuestas().respondidas <= 1"
+                />
+            </div>
+        } @else {
+            <div class="col-12">
+                <div class="p-4">
+                    <div class="m-4 text-center rounded p-4">
+                        <app-no-data
+                            [showIcon]="'SUCCESSFUL'"
+                            [mensaje]="
+                                'Gracias por su participación, el cuestionario ya ha finalizado.'
+                            "
+                        ></app-no-data>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<p-toast></p-toast>

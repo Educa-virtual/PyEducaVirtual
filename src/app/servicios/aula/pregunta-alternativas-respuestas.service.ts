@@ -8,7 +8,7 @@ const baseUrl = environment.backendApi
 @Injectable({
     providedIn: 'root',
 })
-export class AulaVirtualService {
+export class PreguntaAlternativasRespuestasService {
     constructor(private http: HttpClient) {}
 
     guardarRespuestaEstudiante(
@@ -16,12 +16,12 @@ export class AulaVirtualService {
         iEstudianteId: string | number,
         params
     ): Observable<any> {
-        // http://127.0.0.1:8000/api/aula-virtual/pregunta-alternativas-respuestas/cuestionario/{{iCuestionarioId}}/estudiante/{{iEstudianteId}}
         return this.http.put(
             `${baseUrl}/aula-virtual/pregunta-alternativas-respuestas/cuestionario/${iCuestionarioId}/estudiante/${iEstudianteId}`,
             params
         )
     }
+
     obtenerRespuestas(
         iCuestionarioId: string | number,
         iEstudianteId: string | number,
@@ -30,6 +30,17 @@ export class AulaVirtualService {
         return this.http.get(
             `${baseUrl}/aula-virtual/pregunta-alternativas-respuestas/cuestionario/${iCuestionarioId}/estudiante/${iEstudianteId}`,
             { params }
+        )
+    }
+
+    finalizarPreguntaAlternativasRespuestas(
+        iCuestionarioId: string | number,
+        iEstudianteId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.put(
+            `${baseUrl}/aula-virtual/pregunta-alternativas-respuestas/cuestionario/${iCuestionarioId}/estudiante/${iEstudianteId}/finalizado`,
+            params
         )
     }
 }

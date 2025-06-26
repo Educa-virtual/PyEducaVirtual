@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, Input, TemplateRef } from '@angular/core'
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { FormControl } from '@angular/forms'
 import { TextFieldModule } from '@angular/cdk/text-field'
 
 @Component({
@@ -9,55 +9,18 @@ import { TextFieldModule } from '@angular/cdk/text-field'
     imports: [PrimengModule, TextFieldModule],
     templateUrl: './pregunta-cerrada.component.html',
     styleUrl: './pregunta-cerrada.component.scss',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: PreguntaCerradaComponent,
-        },
-    ],
 })
 export class PreguntaCerradaComponent {
-    @Input() switchControl: FormControl
+    @Input() switchControl: FormControl = new FormControl()
 
     @Input() addonLabel: string = 'Campo'
 
     @Input() infoAdicional!: TemplateRef<any>
 
-    onChange = () => {}
-    onTouched = () => {}
-    touched = false
-    disabled = false
+    @Input() iEncuPregId!: number
 
     alternativas: Array<any> = [
-        { label: 'SI', value: '1' },
-        { label: 'NO', value: '0' },
+        { label: 'SI', value: 1 },
+        { label: 'NO', value: 0 },
     ]
-
-    writeValue(value: any) {
-        if (value) {
-            this.switchControl.setValue(value) // Assign the values to the Switch
-        } else {
-            this.switchControl.setValue(null) // Reset if value is null or undefined
-        }
-    }
-
-    registerOnChange(onChange: any) {
-        this.onChange = onChange
-    }
-
-    registerOnTouched(onTouched: any) {
-        this.onTouched = onTouched
-    }
-
-    markAsTouched() {
-        if (!this.touched) {
-            this.onTouched()
-            this.touched = true
-        }
-    }
-
-    setDisabledState(disabled: boolean) {
-        this.disabled = disabled
-    }
 }

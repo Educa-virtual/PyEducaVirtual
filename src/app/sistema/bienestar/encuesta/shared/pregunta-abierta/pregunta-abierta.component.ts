@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, Input, OnInit, TemplateRef } from '@angular/core'
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { FormControl } from '@angular/forms'
 import { TextFieldModule } from '@angular/cdk/text-field'
 
 @Component({
@@ -9,13 +9,7 @@ import { TextFieldModule } from '@angular/cdk/text-field'
     imports: [PrimengModule, TextFieldModule],
     templateUrl: './pregunta-abierta.component.html',
     styleUrl: './pregunta-abierta.component.scss',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: PreguntaAbiertaComponent,
-        },
-    ],
+    providers: [],
 })
 export class PreguntaAbiertaComponent implements OnInit {
     @Input() inputControl: FormControl

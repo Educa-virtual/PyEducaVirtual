@@ -28,8 +28,9 @@
             class="field-checkbox mt-3 px-3"
         >
             <p-radioButton
-                [inputId]="alternativa.value"
-                [value]="alternativa"
+                [inputId]="'pregunta-' + iEncuPregId + '-' + alternativa.value"
+                [value]="alternativa.value"
+                [name]="'pregunta-' + iEncuPregId"
                 [formControl]="switchControl"
             />
             <label [for]="alternativa.value" class="ml-2">

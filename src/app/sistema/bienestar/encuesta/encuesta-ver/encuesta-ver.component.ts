@@ -24,12 +24,10 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 })
 export class EncuestaVerComponent {
     iEncuId: number
-    cEncuNombre: string
-    cEncuDescripcion: string
-    dEncuHasta: Date
     perfil: any
     preguntas: Array<any>
     formPreguntas: FormGroup
+    encuesta: any
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -93,9 +91,7 @@ export class EncuestaVerComponent {
             .subscribe({
                 next: (data: any) => {
                     if (data.data.length) {
-                        this.cEncuNombre = data.data[0].cEncuNombre
-                        this.cEncuDescripcion = data.data[0].cEncuDescripcion
-                        this.dEncuHasta = data.data[0].dEncuHasta
+                        this.encuesta = data.data[0]
                     }
                 },
                 error: (error) => {

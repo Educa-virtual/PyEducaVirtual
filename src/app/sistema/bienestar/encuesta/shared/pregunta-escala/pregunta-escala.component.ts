@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, Input, TemplateRef } from '@angular/core'
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { FormControl } from '@angular/forms'
 import { TextFieldModule } from '@angular/cdk/text-field'
 
 @Component({
@@ -9,58 +9,21 @@ import { TextFieldModule } from '@angular/cdk/text-field'
     imports: [PrimengModule, TextFieldModule],
     templateUrl: './pregunta-escala.component.html',
     styleUrl: './pregunta-escala.component.scss',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: PreguntaEscalaComponent,
-        },
-    ],
 })
 export class PreguntaEscalaComponent {
-    @Input() ratingControl: FormControl
+    @Input() ratingControl: FormControl = new FormControl()
 
     @Input() addonLabel: string = 'Campo'
 
     @Input() infoAdicional!: TemplateRef<any>
 
-    onChange = () => {}
-    onTouched = () => {}
-    touched = false
-    disabled = false
+    @Input() iEncuPregId!: number
 
     alternativas: Array<any> = [
-        { label: 'MUY EN DESACUERDO / NUNCA', value: '1' },
-        { label: 'ALGO EN DESACUERDO / CASI NUNCA', value: '2' },
-        { label: 'NEUTRAL', value: '3' },
-        { label: 'ALGO DE ACUERDO / CASI SIEMPRE', value: '4' },
-        { label: 'MUY DE ACUERDO / SIEMPRE', value: '5' },
+        { label: 'MUY EN DESACUERDO / NUNCA', value: 1 },
+        { label: 'ALGO EN DESACUERDO / CASI NUNCA', value: 2 },
+        { label: 'NEUTRAL', value: 3 },
+        { label: 'ALGO DE ACUERDO / CASI SIEMPRE', value: 4 },
+        { label: 'MUY DE ACUERDO / SIEMPRE', value: 5 },
     ]
-
-    writeValue(value: any) {
-        if (value) {
-            this.ratingControl.setValue(value) // Assign the values to the Switch
-        } else {
-            this.ratingControl.setValue(null) // Reset if value is null or undefined
-        }
-    }
-
-    registerOnChange(onChange: any) {
-        this.onChange = onChange
-    }
-
-    registerOnTouched(onTouched: any) {
-        this.onTouched = onTouched
-    }
-
-    markAsTouched() {
-        if (!this.touched) {
-            this.onTouched()
-            this.touched = true
-        }
-    }
-
-    setDisabledState(disabled: boolean) {
-        this.disabled = disabled
-    }
 }

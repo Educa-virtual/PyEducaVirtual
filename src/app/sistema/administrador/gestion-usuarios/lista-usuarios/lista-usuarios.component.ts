@@ -1,6 +1,11 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component } from '@angular/core'
-import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api'
+import {
+    LazyLoadEvent,
+    MenuItem,
+    MessageService,
+    SelectItem,
+} from 'primeng/api'
 import { HttpParams } from '@angular/common/http'
 import { debounceTime, Subject } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
@@ -9,6 +14,7 @@ import { Usuario } from '../interfaces/usuario.interface'
 import { AgregarUsuarioComponent } from '../agregar-usuario/agregar-ususario.component'
 import { CambiarFechaCaducidadComponent } from '../cambiar-fecha-caducidad/cambiar-fecha-caducidad.component'
 import { GestionUsuariosService } from '../services/gestion-usuarios.service'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
 @Component({
     selector: 'app-lista-usuarios',
@@ -25,6 +31,7 @@ import { GestionUsuariosService } from '../services/gestion-usuarios.service'
 export class ListaUsuariosComponent {
     private searchChanged: Subject<void> = new Subject<void>()
     private lastLazyEvent: LazyLoadEvent | undefined
+    formCriteriosBusqueda: FormGroup
     dataUsuarios: Usuario[] = []
     totalDataUsuarios: number = 0
 
@@ -44,15 +51,24 @@ export class ListaUsuariosComponent {
     //selectedPersonal: Usuario | null = null
     opcionesBusqueda: any[] = []
     opcionBusquedaSeleccionada: any
-    filtrosInstituciones: any[] = []
-    filtroInstitucionSeleccionada: any
-    filtrosRoles: any[] = []
-    filtroPerfilSeleccionado: any
+
+    dataInstituciones: SelectItem[] = []
+    dataPerfiles: SelectItem[] = []
+    dataIeSedes: SelectItem[] = []
+    dataCursos: SelectItem[] = []
+    dataModulosAdministrativos: SelectItem[] = []
+    dataInstitucionesEducativas: SelectItem[] = []
+    dataPerfilesUsuario: any[] = []
+    dataUgeles: any[] = []
+    //filtroInstitucionSeleccionada: any
+    //filtrosRoles: any[] = []
+    //filtroPerfilSeleccionado: any
 
     constructor(
         private messageService: MessageService,
         private usuariosService: GestionUsuariosService,
-        private confirmationModalService: ConfirmationModalService
+        private confirmationModalService: ConfirmationModalService,
+        private fb: FormBuilder
     ) {
         this.breadCrumbItems = [
             {
@@ -65,23 +81,24 @@ export class ListaUsuariosComponent {
         }
 
         this.opcionesBusqueda = [
-            { name: 'Documento', code: 'documento' },
-            { name: 'Apellidos', code: 'apellidos' },
-            { name: 'Nombres', code: 'nombres' },
+            { label: 'Documento', value: 'documento' },
+            { label: 'Apellidos', value: 'apellidos' },
+            { label: 'Nombres', value: 'nombres' },
+            { label: 'Perfil', value: 'perfil' },
         ]
-        this.opcionBusquedaSeleccionada = this.opcionesBusqueda[0]
-        this.filtrosInstituciones = [
-            { name: 'Dremo', code: 'dremo' },
-            { name: 'UGEL', code: 'ugel' },
-            { name: 'Institución', code: 'institucion' },
+        this.opcionBusquedaSeleccionada = this.opcionesBusqueda[0].value
+        this.dataInstituciones = [
+            { label: 'DREMO', value: 1 },
+            { label: 'UGEL', value: 2 },
+            { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
         ]
-        this.filtroInstitucionSeleccionada = this.filtrosInstituciones[0]
-        this.filtrosRoles = [
+        //this.dataInstitucionSeleccionada = this.filtrosInstituciones[0]
+        /*this.filtrosRoles = [
             { name: 'Todos', code: 'todos' },
             { name: 'Activos', code: 'activos' },
             { name: 'Inactivos', code: 'inactivos' },
-        ]
-        this.filtroPerfilSeleccionado = this.filtrosRoles[0]
+        ]*/
+        //this.filtroPerfilSeleccionado = this.filtrosRoles[0]
 
         this.listaBotones = [
             {
@@ -97,12 +114,217 @@ export class ListaUsuariosComponent {
                 this.loadUsuariosLazy(this.lastLazyEvent) // reutiliza último evento
             }
         })
+
+        this.formCriteriosBusqueda = this.fb.group({
+            opcionSeleccionada: ['', [Validators.required]],
+            criterioBusqueda: [''],
+            institucionSeleccionada: [''],
+            ieSeleccionada: [''],
+            iModuloSeleccionado: [''],
+            iUgelSeleccionada: [''],
+            ieSedeSeleccionada: [''],
+            iCursoSeleccionado: [''],
+            perfilSeleccionado: [''],
+        })
+
+        this.inicializarDatos()
+    }
+
+    inicializarDatos() {
+        this.obtenerInstitucionesEducativas()
+        this.obtenerUgeles()
+        this.obtenerCursos()
+        this.obtenerModulosAdministrativos()
+        /*this.opciones = [
+            { label: 'DREMO', value: 1 },
+            { label: 'UGEL', value: 2 },
+            { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
+        ]*/
+        //this.iniciarFormulario()
+    }
+
+    obtenerPerfilesPorTipo(tipo: string) {
+        this.usuariosService.obtenerPerfilesPorTipo(tipo).subscribe({
+            next: (respuesta: any) => {
+                this.dataPerfiles = respuesta.data.map((perfil) => ({
+                    value: perfil.iPerfilId,
+                    label: perfil.cPerfilNombre,
+                }))
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener perfiles',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    obtenerModulosAdministrativos() {
+        this.usuariosService.obtenerModulosAdministrativos().subscribe({
+            next: (respuesta: any) => {
+                this.dataModulosAdministrativos = respuesta.data.map((mod) => ({
+                    value: mod.iModuloId,
+                    label: mod.cModuloNombre,
+                }))
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener instituciones educativas',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    obtenerCursos() {
+        this.usuariosService.obtenerCursos().subscribe({
+            next: (respuesta: any) => {
+                this.dataCursos = respuesta.data.map((curso) => ({
+                    value: curso.iCursosNivelGradId,
+                    label: curso.curso_grado,
+                }))
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'danger',
+                    summary: 'Mensaje',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    obtenerUgeles() {
+        this.usuariosService.obtenerUgeles().subscribe({
+            next: (respuesta: any) => {
+                this.dataUgeles = respuesta.data.map((ugel) => ({
+                    value: ugel.iUgelId,
+                    label: ugel.cUgelNombre,
+                }))
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'danger',
+                    summary: 'Mensaje',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    obtenerInstitucionesEducativas() {
+        this.usuariosService.obtenerInstitucionesEducativas().subscribe({
+            next: (respuesta: any) => {
+                this.dataInstitucionesEducativas = respuesta.data.map((ie) => ({
+                    value: ie.iIieeId,
+                    label: (
+                        ie.cIieeCodigoModular +
+                        ' - ' +
+                        ie.cIieeNombre +
+                        ' - ' +
+                        (ie.iNivelTipoId == 3 ? 'PRIMARIA' : 'SECUNDARIA')
+                    ).trim(),
+                }))
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener instituciones educativas',
+                    detail: error,
+                })
+            },
+        })
+    }
+
+    reiniciarFiltrosPerfil() {
+        const fields = [
+            'ieSeleccionada',
+            'iUgelSeleccionada',
+            'ieSedeSeleccionada',
+            'iCursoSeleccionado',
+            'iModuloSeleccionado',
+        ]
+
+        // Limpiar valores y validadores
+        fields.forEach((field) => {
+            this.formCriteriosBusqueda.get(field)?.setValue('')
+            this.formCriteriosBusqueda.get(field)?.clearValidators()
+        })
+
+        const opcion = this.formCriteriosBusqueda.get(
+            'institucionSeleccionada'
+        )?.value
+        switch (opcion) {
+            case 1:
+                this.obtenerPerfilesPorTipo('dremo')
+                if (
+                    +this.formCriteriosBusqueda.get('perfilSeleccionado')
+                        ?.value == 2
+                ) {
+                    this.formCriteriosBusqueda
+                        .get('iCursoSeleccionado')
+                        ?.setValidators([Validators.required])
+                } else {
+                    this.formCriteriosBusqueda
+                        .get('iModuloSeleccionado')
+                        ?.setValidators([Validators.required])
+                }
+                break
+            case 2:
+                this.obtenerPerfilesPorTipo('ugel')
+                this.formCriteriosBusqueda
+                    .get('iUgelSeleccionada')
+                    ?.setValidators([Validators.required])
+                this.formCriteriosBusqueda
+                    .get('iCursoSeleccionado')
+                    ?.setValidators([Validators.required])
+                break
+            case 3:
+                this.obtenerPerfilesPorTipo('ie')
+                this.formCriteriosBusqueda
+                    .get('ieSeleccionada')
+                    ?.setValidators([Validators.required])
+                this.formCriteriosBusqueda
+                    .get('ieSedeSeleccionada')
+                    ?.setValidators([Validators.required])
+                break
+        }
+
+        // Actualizar validadores
+        fields.forEach((field) => {
+            this.formCriteriosBusqueda.get(field)?.updateValueAndValidity()
+        })
     }
 
     cambioOpcionBusqueda() {
         if (this.criterioBusqueda != '') {
             this.loadUsuariosLazy(this.lastLazyEvent)
         }
+    }
+
+    obtenerSedesIe() {
+        this.usuariosService
+            .obtenerSedesInstitucionEducativa(
+                this.formCriteriosBusqueda.get('ieSeleccionada')?.value
+            )
+            .subscribe({
+                next: (respuesta: any) => {
+                    this.dataIeSedes = respuesta.data.map((sede) => ({
+                        value: sede.iSedeId,
+                        label: sede.cSedeNombre,
+                    }))
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al obtener sedes',
+                        detail: error,
+                    })
+                },
+            })
     }
 
     cambioCriterioBusqueda() {
@@ -148,14 +370,14 @@ export class ListaUsuariosComponent {
             .set('limit', event.rows)
             .set(
                 'opcionBusquedaSeleccionada',
-                this.opcionBusquedaSeleccionada.code
+                this.opcionBusquedaSeleccionada.value
             )
             .set('criterioBusqueda', this.criterioBusqueda)
-            .set(
-                'filtroInstitucionSeleccionada',
-                this.filtroInstitucionSeleccionada.code
-            )
-            .set('filtroPerfilSeleccionado', this.filtroPerfilSeleccionado.code)
+        /*.set(
+            'filtroInstitucionSeleccionada',
+            this.filtroInstitucionSeleccionada.value
+        )*/
+        //.set('filtroPerfilSeleccionado', this.filtroPerfilSeleccionado.value)
         this.obtenerListaUsuarios(params)
     }
 

@@ -61,7 +61,7 @@ export class ConfigAmbienteComponent implements OnInit {
     anio: []
     tipo_ambiente: []
     tipo_ubicacion: []
-    uso_ambiente: []
+    uso_ambientes: []
     piso_ambiente: []
     condicion_ambiente: []
     configuracion: any[]
@@ -129,14 +129,24 @@ export class ConfigAmbienteComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.ambientes = data.data
-                    this.stepService.ambientes = this.ambientes
                 },
                 error: (error) => {
-                    console.error('Error procedimiento BD:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error en lista de configuraciones:' +
+                            error.message,
+                    })
                 },
                 complete: () => {
                     console.log('Request completed')
-
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Lista de ambientes obtenida correctamente',
+                    })
+                    this.stepService.ambientes = this.ambientes //SE ACTUALIZA EL ARRAY DE AMBIENTES
                     // this.getYearCalendarios(this.formCalendario.value)
                 },
             })
@@ -156,10 +166,17 @@ export class ConfigAmbienteComponent implements OnInit {
                     console.log(this.tipo_ambiente)
                 },
                 error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error en lista de tipos de ambientes:' +
+                            error.message,
+                    })
+                    // Manejo de error
                 },
                 complete: () => {
-                    console.log('Request completed')
+                    this.stepService.tipo_ambiente = this.tipo_ambiente
                 },
             })
     }
@@ -179,10 +196,16 @@ export class ConfigAmbienteComponent implements OnInit {
                     console.log(this.tipo_ubicacion)
                 },
                 error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error en lista de ubicaciones de ambientes:' +
+                            error.message,
+                    })
                 },
                 complete: () => {
-                    console.log('Request completed')
+                    this.stepService.tipo_ubicacion = this.tipo_ubicacion
                 },
             })
     }
@@ -197,15 +220,19 @@ export class ConfigAmbienteComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    this.uso_ambiente = data.data
-
-                    console.log(this.uso_ambiente)
+                    this.uso_ambientes = data.data
                 },
                 error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error en lista de usos de ambientes:' +
+                            error.message,
+                    })
                 },
                 complete: () => {
-                    console.log('Request completed')
+                    this.stepService.uso_ambientes = this.uso_ambientes
                 },
             })
     }
@@ -228,10 +255,17 @@ export class ConfigAmbienteComponent implements OnInit {
                     )
                 },
                 error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error en lista de condiciones de ambientes:' +
+                            error.message,
+                    })
                 },
                 complete: () => {
-                    console.log('Request completed')
+                    this.stepService.condicion_ambiente =
+                        this.condicion_ambiente
                 },
             })
     }
@@ -251,10 +285,16 @@ export class ConfigAmbienteComponent implements OnInit {
                     console.log(this.piso_ambiente)
                 },
                 error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error en lista de pisos de ambientes:' +
+                            error.message,
+                    })
                 },
                 complete: () => {
-                    console.log('Request completed')
+                    this.stepService.piso_ambiente = this.piso_ambiente
                 },
             })
     }
@@ -330,6 +370,13 @@ export class ConfigAmbienteComponent implements OnInit {
                             console.log(data.data)
                         },
                         error: (error) => {
+                            this.messageService.add({
+                                severity: 'danger',
+                                summary: 'Mensaje de sistema',
+                                detail:
+                                    'Error en el proceso de eliminar: ' +
+                                    error.message,
+                            })
                             console.error('Error fetching ambiente:', error)
                         },
                         complete: () => {
@@ -355,9 +402,26 @@ export class ConfigAmbienteComponent implements OnInit {
                 },
             })
         }
+
         if (accion === 'retornar') {
-            alert('Desea retornar')
-            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate(['/gestion-institucional/config'])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
         }
     }
 
@@ -380,7 +444,11 @@ export class ConfigAmbienteComponent implements OnInit {
                             console.log(data.data)
                         },
                         error: (error) => {
-                            console.error('Error fetching ambiente:', error)
+                            this.messageService.add({
+                                severity: 'danger',
+                                summary: 'Mensaje de sistema',
+                                detail: 'Error en el proceso: ' + error.message,
+                            })
                         },
                         complete: () => {
                             this.messageService.add({
@@ -434,7 +502,14 @@ export class ConfigAmbienteComponent implements OnInit {
                         console.log(data.data)
                     },
                     error: (error) => {
-                        console.log(error, 'error al actualizar')
+                        this.messageService.add({
+                            severity: 'danger',
+                            summary: 'Mensaje de sistema',
+                            detail:
+                                'Error en el proceso de actualizar: ' +
+                                error.message,
+                        })
+
                         // if(error && error.message){
                         //   //  console.error(error?.message || 'Error en la respuesta del servicio');
                         // }

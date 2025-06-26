@@ -95,10 +95,21 @@ export class ConfigComponent implements OnInit {
         this.configTipo = this.stepService.configTipo
     }
     ngOnInit(): void {
-        const url = this.query.baseUrlPublic()
         console.log(this.configuracion, 'this.configuracion')
-        this.mensajeInformativo()
 
+        if (!this.configuracion) {
+            console.warn('Configuración no encontrada, redirigiendo...')
+            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+            return
+        }
+
+        // Si llegas aquí, `configuracion` sí existe
+        this.mensajeInformativo()
+        this.inicializarFormulario()
+    }
+
+    inicializarFormulario() {
+        const url = this.query.baseUrlPublic()
         try {
             this.form = this.fb.group({
                 iConfigId: [this.configuracion[0].iConfigId], // tabla acad.configuraciones
@@ -110,6 +121,7 @@ export class ConfigComponent implements OnInit {
                     Validators.required,
                 ], //(*) tabla acad.configuraciones (FK) acad.calendario_academicos
 
+                cServEdNombre: [this.configuracion[0].cServEdNombre],
                 cConfigDescripcion: [
                     this.configuracion[0].cConfigDescripcion,
                     Validators.required,
@@ -146,7 +158,7 @@ export class ConfigComponent implements OnInit {
                 url + '/' + this.configuracion[0].cConfigUrlRslAprobacion
         }
 
-        this.getServicioAtencion()
+        // this.getServicioAtencion()
     }
 
     mensajeInformativo() {
@@ -228,11 +240,28 @@ export class ConfigComponent implements OnInit {
     accionBtnItemTable({ accion, item }) {
         this.event = item
         if (accion === 'retornar') {
-            alert('Desea retornar')
-            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+            this._confirmService.openConfiSave({
+                message: '¿Estás seguro de que deseas guardar y continuar?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate([
+                        '/gestion-institucional/configGradoSeccion',
+                    ])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
         }
     }
-    getServicioAtencion() {
+    /* getServicioAtencion() {
         //alert(this.configuracion[0].iNivelTipoId)
         if (Number(this.configuracion[0].iNivelTipoId) > 0) {
             const where = 'iNivelTipoId =' + this.configuracion[0].iNivelTipoId
@@ -269,7 +298,7 @@ export class ConfigComponent implements OnInit {
             )
         }
     }
-
+*/
     confirmar() {
         this._confirmService.openConfiSave({
             message: '¿Está seguro de que desea eliminar este elemento?',

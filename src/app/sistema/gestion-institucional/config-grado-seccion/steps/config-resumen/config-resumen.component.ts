@@ -218,12 +218,42 @@ export class ConfigResumenComponent implements OnInit {
     }
 
     accionBtnItemTable({ accion, item }) {
+        if (accion === 'retornar') {
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate([
+                        '/gestion-institucional/asignar-grado',
+                    ])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+
         if (accion === 'reporte') {
             this.reportePDFResumenAmbientes()
             console.log(item, 'btnTable')
         }
     }
     accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
         {
             labelTooltip: 'generar resumen',
             text: 'Generar resumen',

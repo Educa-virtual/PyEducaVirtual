@@ -88,8 +88,26 @@ export class ConfigHoraDocenteComponent implements OnInit {
             console.log(item, 'btnTable')
         }
         if (accion === 'retornar') {
-            alert('Desea retornar')
-            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate([
+                        '/gestion-institucional/plan-estudio',
+                    ])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
         }
     }
     accionBtnItem(accion) {

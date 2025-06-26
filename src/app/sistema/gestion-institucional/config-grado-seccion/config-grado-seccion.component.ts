@@ -99,9 +99,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
         this.iSedeId = perfil.iSedeId
         this.stepService.iSedeId = this.iSedeId
         this.stepService.iNivelTipoId = perfil.iNivelTipoId
-
         this.stepService.perfil = perfil
-
         this.dremoYear = this.store.getItem('dremoYear')
         this.dremoiYAcadId = this.store.getItem('dremoiYAcadId')
     }
@@ -112,22 +110,22 @@ export class ConfigGradoSeccionComponent implements OnInit {
         console.log(this.store.getItem('dremoPerfil'), 'dremo perfil')
         this.form = this.fb.group({
             iConfigId: [''],
+            iYAcadId: [''],
             iEstadoConfigId: [null, Validators.required], // Control para estado
+
             cConfigDescripcion: ['', Validators.required], // Control para descripción"
             cConfigNroRslAprobacion: [''],
             cConfigUrlRslAprobacion: [''],
             cEstadoConfigNombre: [''],
-            cSedeNombre: [''],
-            iSedeId: [''],
-            iYAcadId: [''],
+
             cYAcadNombre: [''],
-            iNivelId: [0],
+            cServEdNombre: [''],
+            //iNivelId: [0],
         })
         this.items = this.stepService.itemsStep // router del step
-        console.log(this.form, 'datso form')
         this.estadoConfiguraciones()
         this.searchConfiguraciones()
-        this.getSede()
+        // this.getSede()
 
         // this.searchAnio()
     }
@@ -282,29 +280,35 @@ export class ConfigGradoSeccionComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    this.stepService.setListaConfig(data)
-                    this.configuracion_lista = this.stepService.getListaConfig()
-                    console.log(
-                        this.stepService.getListaConfig(),
-                        'prueba interna'
-                    )
+                    //this.stepService.setListaConfig(data)
+                    //this.configuracion_lista = this.stepService.getListaConfig()
+                    this.configuracion_lista = data.data
+                    // console.log(this.configuracion_lista,'valor de data')
                 },
                 error: (error) => {
-                    console.error('Error procedimiento BD:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Peticion rechazada error:' + error,
+                    })
                 },
                 complete: () => {
                     console.log('Request completed')
                     this.opcion = 'inicio'
-
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Lista de configuraciones obtenida correctamente',
+                    })
                     // this.getYearCalendarios(this.formCalendario.value)
                 },
             })
-        setTimeout(() => {
+        /*   setTimeout(() => {
             console.log(
                 this.stepService.getListaConfig(),
                 'prueba después del subscribe'
             )
-        }, 1000) // Ajusta el tiempo de espera según la duración estimada de la llamada
+        }, 1000)*/ // Ajusta el tiempo de espera según la duración estimada de la llamada
     }
 
     // this.step.setEstadoConfig(data.data)
@@ -320,6 +324,27 @@ export class ConfigGradoSeccionComponent implements OnInit {
         this.router.navigate(['gestion-institucional/plan-estudio'])
     }
     accionBtnItemTable({ accion, item }) {
+        if (accion === 'retornar') {
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate(['/gestion-institucional/ambiente'])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+
         if (accion === 'agregar') {
             // this.selectedItems = []
             // this.selectedItems = [item]
@@ -353,6 +378,8 @@ export class ConfigGradoSeccionComponent implements OnInit {
             }
         }
         if (accion === 'editar') {
+            //    this.stepService.setListaConfig(item)
+
             const registro = [
                 {
                     iConfigId: item.iConfigId,
@@ -365,21 +392,27 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     cConfigUrlRslAprobacion: item.cConfigUrlRslAprobacion,
                     cConfigDescripcion: item.cConfigDescripcion,
                     bConfigEsBilingue: item.bConfigEsBilingue,
+                    cServEdNombre: item.cServEdNombre,
+                    cSedeNombre: item.cSedeNombre,
+                    iEstado: item.iEstado,
+                    cEstadoConfigNombre: item.cEstadoConfigNombre, // existente
+                    iTurnoId: item.iTurnoId, // existente
+                    iCalAcadId: item.iCalAcadId, // existente
+                    cTurnoNombre: item.cTurnoNombre, // existente
 
                     cNivelTipoNombre:
                         this.stepService.perfil['cNivelTipoNombre'],
-                    cEstadoConfigNombre: '',
-                    cSedeNombre: '',
                     cModalServId: this.stepService.perfil['cNivelNombre'],
                     cYAcadNombre: <number>item.cYAcadNombre,
                     iProgId: this.stepService.perfil['iProgId'],
-                    iEstado: 1, // existente
+                    // existente
+                    // existente
                 },
             ]
 
             this.stepService.configuracion = registro
 
-            console.log(registro, 'configuracion constante')
+            //console.log(registro, 'configuracion constante')
 
             setTimeout(() => {
                 this.router.navigate(['/gestion-institucional/config'])
@@ -414,6 +447,13 @@ export class ConfigGradoSeccionComponent implements OnInit {
         console.log(actions)
     }
     accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
         {
             labelTooltip: 'Crear registro',
             text: 'Configuración',

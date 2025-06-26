@@ -16,6 +16,7 @@ import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evalua
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { Location } from '@angular/common'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -37,6 +38,8 @@ import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/r
 })
 export class EvaluacionRoomComponent implements OnInit {
     items: MenuItem[] = []
+    home: MenuItem | undefined
+
     @Input() ixActivadadId: string
     @Input() iProgActId: string
     @Input() iActTopId: tipoActividadesKeys
@@ -137,8 +140,24 @@ export class EvaluacionRoomComponent implements OnInit {
         idDocCursoId: null,
         iEvaluacionId: null,
     }
+    constructor(private location: Location) {}
 
     ngOnInit() {
+        this.items = [
+            {
+                label: 'Mis Áreas Curriculares',
+                routerLink: '/aula-virtual/areas-curriculares',
+            },
+            {
+                label: 'Contenido',
+                command: () => this.goBack(),
+                routerLink: '/',
+            },
+            { label: 'Evaluaciones' },
+        ]
+
+        this.home = { icon: 'pi pi-home', routerLink: '/' }
+
         this.iEvaluacionId =
             this._ActivatedRoute.snapshot.queryParamMap.get('iEvaluacionId')
         this.iNivelCicloId =
@@ -153,6 +172,9 @@ export class EvaluacionRoomComponent implements OnInit {
             this._ActivatedRoute.snapshot.queryParamMap.get('idDocCursoId')
 
         //this.obtenerRubricas()
+    }
+    goBack() {
+        this.location.back()
     }
     // obtiene la evalución
     obtenerEvaluacion(iEvaluacionId: string | number) {

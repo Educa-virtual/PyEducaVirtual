@@ -17,7 +17,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-transferir-grupo.component'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { ConfirmationService, MessageService } from 'primeng/api'
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api'
 import { Table } from 'primeng/table'
 import { ScrollerModule } from 'primeng/scroller'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
@@ -28,7 +28,7 @@ import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderLi
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
-
+import { Location } from '@angular/common'
 @Component({
     selector: 'app-tarea-room',
     standalone: true,
@@ -80,8 +80,12 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     public ESTUDIANTE = ESTUDIANTE
 
     formTareas: any
+    items: MenuItem[] | undefined
+    home: MenuItem | undefined
+
     constructor(
         private messageService: MessageService,
+        private location: Location,
         private fb: FormBuilder
     ) {
         this.form = this.fb.group({
@@ -94,6 +98,21 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     })
 
     ngOnInit() {
+        this.items = [
+            {
+                label: 'Mis Áreas Curriculares',
+                routerLink: '/aula-virtual/areas-curriculares',
+            },
+            {
+                label: 'Contenido',
+                command: () => this.goBack(),
+                routerLink: '/',
+            },
+            { label: 'Tarea' },
+        ]
+
+        this.home = { icon: 'pi pi-home', routerLink: '/' }
+
         this.iPerfilId = this._constantesService.iPerfilId
         if (Number(this.iPerfilId) == ESTUDIANTE) {
             this.obtenerTareaxiTareaidxiEstudianteId()
@@ -102,6 +121,9 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         }
 
         this.form.get('editor').disable()
+    }
+    goBack() {
+        this.location.back()
     }
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {

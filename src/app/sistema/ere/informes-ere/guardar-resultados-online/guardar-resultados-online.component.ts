@@ -32,7 +32,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     cabecera: string = ''
     alumnosFiltrados: any[] = []
     iSemAcadId: number // ID del semestre académico
-    //mensaje: string = '' // Mensaje para mostrar en la tabla
+    mensaje: string = '' // Mensaje para mostrar en la tabla
 
     // formulario guardar resultados onlinee
     public formCurso: FormGroup = this._formBuilder.group({
@@ -663,27 +663,11 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
     async subirArchivo(datos_hojas: Array<object>) {
         const subirArchivo = {
-            iSedeId: Number(this.iSedeId), // Number()
-            iSemAcadId: Number(this.iSemAcadId), // Number()
-            iYAcadId: Number(this.iYAcadId), // Number()
-            iCredId: Number(this.store.getItem('dremoPerfil').iCredId), // Number()
-            iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
-            iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
-            codigo_modular: this.perfil.cIieeCodigoModular,
-            curso: this.curso.cCursoNombre ?? null,
-            //curso: cursoNormalizado,
-            nivel: this.curso.cNivelTipoNombre ?? null,
-            grado: this.curso.cGradoAbreviacion ?? null,
-            tipo: 'resultados',
-            json_resultados: JSON.stringify(datos_hojas),
-        }
-        //retorna sin number
-        /*const subirArchivo = {
             // datos_hojas: datos_hojas,
-            iSedeId: this.iSedeId,
-            iSemAcadId: this.iSemAcadId,
-            iYAcadId: this.iYAcadId,
-            iCredId: this.store.getItem('dremoPerfil').iCredId,
+            iSedeId: Number(this.iSedeId),
+            iSemAcadId: Number(this.iSemAcadId),
+            iYAcadId: Number(this.iYAcadId),
+            iCredId: Number(this.store.getItem('dremoPerfil').iCredId),
             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
             iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null, //curso_nivel_grado
             codigo_modular: this.perfil.cIieeCodigoModular,
@@ -694,7 +678,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             tipo: 'resultados',
             json_resultados: JSON.stringify(datos_hojas), //  aquí lo envías como JSON string
         }
-        */
         console.log('subirArchivo', subirArchivo)
 
         // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
@@ -713,34 +696,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         //         console.log('Request completed')
         //     },
         // })
-        this.datosInformesService.importarOffLine(subirArchivo).subscribe({
-            next: (data: any) => {
-                const documento =
-                    datos_hojas.length > 0 ? datos_hojas[0]['documento'] : null
-                this.alumnosFiltrados.map((alumno) => {
-                    if (alumno.documento === documento) {
-                        alumno.bActive = 1
-                        alumno.iEstado = 0
-                    }
-                })
-                console.log('Datos Subidas de Importar Resultados:', data)
-            },
-            error: (error) => {
-                console.error('Error subiendo archivo:', error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-            complete: () => {
-                this._messageService.add({
-                    severity: 'success',
-                    summary: 'Mensaje del sistema',
-                    detail: 'Se aactualizo la tabla de resultados',
-                })
-            },
-        })
     }
     // Angular: componente donde se envía el JSON
     // async subirArchivo(datos_hojas: Array<object>) {

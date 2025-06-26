@@ -335,14 +335,11 @@ export class GestionarEncuestasComponent implements OnInit {
             },
         },
         {
-            labelTooltip: 'Editar Preguntas',
+            labelTooltip: 'Ver Preguntas',
             icon: 'pi pi-list-check',
             accion: 'preguntas',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
-            isVisible: function (rowData: any) {
-                return rowData.iEstado == 1 && rowData.puede_editar
-            },
         },
         {
             labelTooltip: 'Eliminar',

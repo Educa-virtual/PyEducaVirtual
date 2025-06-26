@@ -15,79 +15,13 @@
             </ng-template>
             <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo">
             </app-toolbar-primeng>
-            <div class="card">
-                <div class="grid">
-                    <div class="col-12 md:col-8">
-                        <!-- Mostrar fecha y hora de inicio -->
-                        <span class="font-bold text-xl flex gap-2">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            ></app-icon>
-                            Fecha de Inicio:
-                        </span>
-                        <p class="pl-5 mt-1">
-                            <i class="pi pi-calendar text-primary"></i>
-                            {{
-                                cuestionario?.dtInicio
-                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                            }}
-                            <i class="pi pi-clock text-primary"></i>
-                            {{ cuestionario?.dtInicio | date: 'h:mm a' }}
-                        </p>
-
-                        <!-- Mostrar fecha y hora de fin -->
-                        <span class="font-bold text-xl flex gap-2 mt-4">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            ></app-icon>
-                            Fecha Fin:
-                        </span>
-                        <p class="pl-5 mt-1">
-                            <i class="pi pi-calendar text-primary"></i>
-                            {{
-                                cuestionario?.dtFin
-                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                            }}
-                            <i class="pi pi-clock text-primary"></i>
-                            {{ cuestionario?.dtFin | date: 'h:mm a' }}
-                        </p>
-                        @if (cuestionario?.iEstado === '2') {
-                            <span
-                                class="mt-2 ml-1 font-bold text-3xl text-green-500"
-                                >PUBLICADO</span
-                            >
-                        }
-                        @if (cuestionario?.iEstado === '1') {
-                            <span
-                                class="mt-2 ml-1 font-bold text-3xl text-orange-500"
-                                >BORRADOR</span
-                            >
-                        }
-                    </div>
-
-                    <div class="col-12 md:col-4">
-                        <h3 class="text-lg m-0">Instrucciones:</h3>
-                        <div
-                            class="bg-blue-100 p-3 border-round text-center text-justify"
-                        >
-                            <!-- <p-editor
-                                appEditorOnlyView
-                                class="quill-only-view"
-                                [(ngModel)]="cEvaluacionInstrucciones"
-                            >
-                            
-                            </p-editor> -->
-                            {{ cuestionario?.cDescripcion | removeHTML }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <app-descripcion-actividades
+                [data]="cuestionario"
+                [isDocente]="isDocente"
+            >
+            </app-descripcion-actividades>
         </p-tabPanel>
-        <p-tabPanel>
+        <p-tabPanel *ngIf="iPerfilId === DOCENTE">
             <ng-template pTemplate="header" class="header-fixed">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
@@ -104,7 +38,7 @@
                 [datosGenerales]="cuestionario"
             ></app-cuestionario-preguntas>
         </p-tabPanel>
-        <p-tabPanel *ngIf="iPerfilId !== ESTUDIANTE">
+        <p-tabPanel *ngIf="iPerfilId === DOCENTE">
             <ng-template pTemplate="header" class="header-fixed">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matAutoGraph"></app-icon>

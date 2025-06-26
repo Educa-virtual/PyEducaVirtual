@@ -19,6 +19,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { CuestionarioResultadosComponent } from '../cuestionario-resultados/cuestionario-resultados.component'
 import { CuestionarioEstudianteComponent } from '../cuestionario-estudiante/cuestionario-estudiante.component'
 import { matQuestionAnswerOutline } from '@ng-icons/material-icons/outline'
+import { DescripcionActividadesComponent } from '../../components/descripcion-actividades/descripcion-actividades.component'
 @Component({
     selector: 'app-cuestionario-room',
     standalone: true,
@@ -32,6 +33,7 @@ import { matQuestionAnswerOutline } from '@ng-icons/material-icons/outline'
         CuestionarioPreguntasComponent,
         CuestionarioResultadosComponent,
         CuestionarioEstudianteComponent,
+        DescripcionActividadesComponent,
     ],
     providers: [
         provideIcons({
@@ -59,6 +61,7 @@ export class CuestionarioRoomComponent implements OnInit {
     home: MenuItem | undefined
     cuestionario: any
     iPerfilId: number
+    isDocente: boolean = this._constantesService.iPerfilId === DOCENTE
 
     constructor(private location: Location) {}
 
@@ -99,8 +102,17 @@ export class CuestionarioRoomComponent implements OnInit {
         }
         this.GeneralService.getGralPrefixx(data).subscribe({
             next: (resp) => {
-                this.cuestionario = resp.data.length ? resp.data[0] : {}
-                console.log('infomación general', this.cuestionario)
+                // this.cuestionario = resp.data.length ? resp.data[0] : {}
+                this.cuestionario = resp.data.length
+                    ? {
+                          ...resp.data[0], //spret
+                          dInicio: resp.data[0]?.dtInicio,
+                          dFin: resp.data[0]?.dtFin,
+                          cDocumentos: resp.data[0]?.cArchivoAdjunto
+                              ? JSON.parse(resp.data[0]?.cArchivoAdjunto)
+                              : [],
+                      }
+                    : {}
             },
             error: (err) => {
                 console.error('Error obteniendo cuestionario:', err)

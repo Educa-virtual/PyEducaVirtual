@@ -7,7 +7,7 @@ import {
     SelectItem,
 } from 'primeng/api'
 import { HttpParams } from '@angular/common/http'
-import { debounceTime, Subject } from 'rxjs'
+import { Subject } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { EditarPerfilComponent } from '../editar-perfil/editar-perfil.component'
 import { Usuario } from '../interfaces/usuario.interface'
@@ -109,21 +109,24 @@ export class ListaUsuariosComponent {
             },
         ]
         // Configurar debounce para el input
-        this.searchChanged.pipe(debounceTime(400)).subscribe(() => {
+        /*this.searchChanged.pipe(debounceTime(400)).subscribe(() => {
             if (this.lastLazyEvent) {
                 this.loadUsuariosLazy(this.lastLazyEvent) // reutiliza último evento
             }
-        })
+        })*/
 
         this.formCriteriosBusqueda = this.fb.group({
-            opcionSeleccionada: ['', [Validators.required]],
+            opcionSeleccionada: [
+                this.opcionesBusqueda[0].value,
+                [Validators.required],
+            ],
             criterioBusqueda: [''],
             institucionSeleccionada: [''],
             ieSeleccionada: [''],
             iModuloSeleccionado: [''],
             iUgelSeleccionada: [''],
             ieSedeSeleccionada: [''],
-            iCursoSeleccionado: [''],
+            //iCursoSeleccionado: [''],
             perfilSeleccionado: [''],
         })
 
@@ -133,7 +136,7 @@ export class ListaUsuariosComponent {
     inicializarDatos() {
         this.obtenerInstitucionesEducativas()
         this.obtenerUgeles()
-        this.obtenerCursos()
+        //this.obtenerCursos()
         this.obtenerModulosAdministrativos()
         /*this.opciones = [
             { label: 'DREMO', value: 1 },
@@ -179,7 +182,7 @@ export class ListaUsuariosComponent {
         })
     }
 
-    obtenerCursos() {
+    /*obtenerCursos() {
         this.usuariosService.obtenerCursos().subscribe({
             next: (respuesta: any) => {
                 this.dataCursos = respuesta.data.map((curso) => ({
@@ -195,7 +198,7 @@ export class ListaUsuariosComponent {
                 })
             },
         })
-    }
+    }*/
 
     obtenerUgeles() {
         this.usuariosService.obtenerUgeles().subscribe({
@@ -244,7 +247,7 @@ export class ListaUsuariosComponent {
             'ieSeleccionada',
             'iUgelSeleccionada',
             'ieSedeSeleccionada',
-            'iCursoSeleccionado',
+            //'iCursoSeleccionado',
             'iModuloSeleccionado',
         ]
 
@@ -264,9 +267,9 @@ export class ListaUsuariosComponent {
                     +this.formCriteriosBusqueda.get('perfilSeleccionado')
                         ?.value == 2
                 ) {
-                    this.formCriteriosBusqueda
+                    /*this.formCriteriosBusqueda
                         .get('iCursoSeleccionado')
-                        ?.setValidators([Validators.required])
+                        ?.setValidators([Validators.required])*/
                 } else {
                     this.formCriteriosBusqueda
                         .get('iModuloSeleccionado')
@@ -278,9 +281,9 @@ export class ListaUsuariosComponent {
                 this.formCriteriosBusqueda
                     .get('iUgelSeleccionada')
                     ?.setValidators([Validators.required])
-                this.formCriteriosBusqueda
+                /*this.formCriteriosBusqueda
                     .get('iCursoSeleccionado')
-                    ?.setValidators([Validators.required])
+                    ?.setValidators([Validators.required])*/
                 break
             case 3:
                 this.obtenerPerfilesPorTipo('ie')
@@ -299,11 +302,11 @@ export class ListaUsuariosComponent {
         })
     }
 
-    cambioOpcionBusqueda() {
+    /*cambioOpcionBusqueda() {
         if (this.criterioBusqueda != '') {
             this.loadUsuariosLazy(this.lastLazyEvent)
         }
-    }
+    }*/
 
     obtenerSedesIe() {
         this.usuariosService
@@ -327,11 +330,11 @@ export class ListaUsuariosComponent {
             })
     }
 
-    cambioCriterioBusqueda() {
+    /*cambioCriterioBusqueda() {
         this.searchChanged.next() // activa debounce
-    }
+    }*/
 
-    usuarioExpirado(fechaCaducidadString: string) {
+    esUsuarioExpirado(fechaCaducidadString: string) {
         const fechaCaducidad = new Date(fechaCaducidadString)
         return fechaCaducidad < this.fechaServidor
     }
@@ -352,6 +355,11 @@ export class ListaUsuariosComponent {
                 })
             },
         })
+    }
+
+    realizarBusqueda() {
+        this.lastLazyEvent.first = 0
+        this.loadUsuariosLazy(this.lastLazyEvent)
     }
 
     usuarioRegistrado(data) {

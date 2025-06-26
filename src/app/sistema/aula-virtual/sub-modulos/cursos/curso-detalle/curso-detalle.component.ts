@@ -60,7 +60,6 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             title: 'Resultado',
             icon: 'pi pi-users',
             tab: 'resultados',
-            isVisible: (ctx) => ctx.perfil === DOCENTE,
         },
     ]
 
@@ -129,14 +128,6 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
         }
     }
     //función para recorrer el tabs para que filtre segun el perfil
-    get tabsVisibles(): any[] {
-        return this.tabs.filter((tab) => {
-            if (typeof tab.isVisible === 'function') {
-                return tab.isVisible({ perfil: this.iPerfilId })
-            }
-            return true
-        })
-    }
     updateTab(tab): void {
         console.log('hola', tab)
         this.router.navigate([], {

@@ -289,14 +289,13 @@ export class EncuestaComponent implements OnInit {
         )
 
         const poblacion = JSON.parse(data.poblacion)
-        if (poblacion.length) {
+        if (poblacion && poblacion.length) {
             for (let i = 0; i < poblacion.length; i++) {
                 this.agregarPoblacion(poblacion[i])
             }
         }
-
         const permisos = JSON.parse(data.permisos)
-        if (permisos.length) {
+        if (permisos && permisos.length) {
             for (let i = 0; i < permisos.length; i++) {
                 this.agregarPermiso(permisos[i])
             }
@@ -358,7 +357,6 @@ export class EncuestaComponent implements OnInit {
             sexo ? 'GENERO ' + sexo.label : null,
         ]
         poblacion = poblacion.filter((item: any) => item != null)
-        console.log(poblacion.join(', '), 'poblacion')
         this.formPoblacion.get('poblacion')?.setValue(poblacion.join(', '))
         this.formEncuesta.get('poblacion')?.setValue(poblacion)
         this.formPoblacion.get('iEncuPobId')?.setValue(new Date().getTime())

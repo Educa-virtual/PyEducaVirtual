@@ -236,14 +236,12 @@ export class CuestionarioPreguntasComponent implements OnInit {
         // Servicio para obtener los instructores
         this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
             this.data = (Data as any)['data']
-            console.log(this.data)
             this.data = this.data.map((Data) => {
                 return {
                     ...Data,
                     jsonAlternativas: JSON.parse(Data.jsonAlternativas),
                 }
             })
-            // console.log('Datos preguntas:', this.data)
         })
     }
 

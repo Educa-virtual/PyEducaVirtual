@@ -115,7 +115,7 @@ export class ForoFormContainerComponent implements OnInit {
         const data = this.foroForm.value
         const dataForo = {
             iForoCatId: data.iForoCatId,
-            iDocenteId: this.perfil.iPerfilId,
+            iDocenteId: this._constantesService.iDocenteId,
             cForoTitulo: data.cForoTitulo,
             cForoDescripcion: data.cForoDescripcion,
             dtForoInicio: this.pipe.transform(
@@ -219,9 +219,9 @@ export class ForoFormContainerComponent implements OnInit {
                 this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
-                    name: item,
+                    name: item.name,
                     size: '',
-                    ruta: item,
+                    ruta: item.ruta,
                 })
                 this.showModal = false
                 this.nameEnlace = ''
@@ -230,9 +230,9 @@ export class ForoFormContainerComponent implements OnInit {
                 this.filesUrl.push({
                     type: 3, //3->youtube
                     nameType: 'youtube',
-                    name: item,
+                    name: item.name,
                     size: '',
-                    ruta: item,
+                    ruta: item.ruta,
                 })
                 this.showModal = false
                 this.nameEnlace = ''
@@ -241,9 +241,9 @@ export class ForoFormContainerComponent implements OnInit {
                 this.filesUrl.push({
                     type: 4, //4->image
                     nameType: 'youtube',
-                    name: item,
-                    size: '',
-                    ruta: item,
+                    name: item.file.name,
+                    size: item.file.size,
+                    ruta: item.name,
                 })
                 this.showModal = false
                 this.nameEnlace = ''

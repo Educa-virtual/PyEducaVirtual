@@ -82,11 +82,10 @@ export class GestionFichasApoderadoComponent implements OnInit {
             })
     }
 
-    descargarFicha(id: number, anio: number): void {
+    descargarFicha(item: any): void {
         this.datosFichaBienestar
             .descargarFicha({
-                id: id,
-                anio: anio,
+                iFichaDGId: item.iFichaDGId,
             })
             .subscribe({
                 next: (response) => {
@@ -113,10 +112,7 @@ export class GestionFichasApoderadoComponent implements OnInit {
     accionBnt({ accion, item }) {
         switch (accion) {
             case 'imprimir':
-                this.datosFichaBienestar.descargarFicha({
-                    id: item.iFichaDGId,
-                    anio: this.iYAcadId,
-                })
+                this.descargarFicha(item)
                 break
             case 'editar':
                 this.router.navigate([

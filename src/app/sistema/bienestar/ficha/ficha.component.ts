@@ -127,25 +127,29 @@ export class FichaComponent implements OnInit, AfterViewInit {
     }
 
     descargarFicha() {
-        this.datosFichaBienestar.descargarFicha(this.iFichaDGId).subscribe({
-            next: (response) => {
-                const blob = new Blob([response], {
-                    type: 'application/pdf',
-                })
-                const url = window.URL.createObjectURL(blob)
-                const link = document.createElement('a')
-                link.href = url
-                link.target = '_blank'
-                link.click()
-            },
-            error: (error) => {
-                console.log(error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.error.message,
-                })
-            },
-        })
+        this.datosFichaBienestar
+            .descargarFicha({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe({
+                next: (response) => {
+                    const blob = new Blob([response], {
+                        type: 'application/pdf',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.target = '_blank'
+                    link.click()
+                },
+                error: (error) => {
+                    console.log(error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 }

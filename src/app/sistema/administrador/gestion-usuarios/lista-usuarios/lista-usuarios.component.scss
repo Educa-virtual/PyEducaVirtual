@@ -204,3 +204,159 @@
 .p-inputgroup-addon {
     padding: 0px;
 }
+
+// cambiar fecha
+.search-content {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    .filtros-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 15px;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+
+    .filtro-item {
+        flex: 0 0 auto;
+        min-width: 150px;
+        max-width: 220px;
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #495057;
+            white-space: nowrap;
+        }
+
+        // Para el input de búsqueda
+        .p-input-icon-right {
+            width: 100%;
+        }
+    }
+
+    .agregar-btn-container {
+        display: flex;
+        align-items: flex-end;
+        margin-left: auto;
+        padding-bottom: 1px;
+    }
+}
+
+// Estilos globales mejorados
+:host ::ng-deep {
+    .dropdown-field {
+        width: 100% !important;
+        font-size: 0.9rem;
+
+        .p-inputtext {
+            border: 1px solid #ced4da !important;
+            border-radius: 4px !important;
+            background-color: #ffffff !important;
+            color: #495057 !important;
+            padding: 0.5rem 0.75rem !important;
+            height: 38px !important;
+
+            &:hover {
+                border-color: #bfc8d0 !important;
+            }
+
+            &:focus {
+                border-color: #80bdff !important;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+                outline: none !important;
+            }
+        }
+
+        .p-dropdown {
+            height: 38px !important;
+        }
+
+        .p-dropdown-trigger {
+            height: 38px !important;
+        }
+    }
+
+    // Input de búsqueda
+    .p-inputtext {
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+        background-color: #ffffff !important;
+        color: #495057 !important;
+        padding: 0.5rem 0.75rem !important;
+        height: 38px !important;
+
+        &:hover {
+            border-color: #bfc8d0 !important;
+        }
+
+        &:focus {
+            border-color: #80bdff !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+            outline: none !important;
+        }
+    }
+
+    .p-button-success {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+        border-radius: 4px !important;
+        font-size: 0.9rem !important;
+        padding: 0.5rem 1rem !important;
+        height: 38px !important;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background-color: #218838 !important;
+            border-color: #1e7e34 !important;
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5) !important;
+        }
+    }
+}
+
+// Responsivo
+@media screen and (max-width: 992px) {
+    .search-content {
+        .filtro-item {
+            min-width: 140px;
+            max-width: 180px;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .search-content {
+        .filtros-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+
+            .filtro-item,
+            .agregar-btn-container {
+                width: 100%;
+                max-width: none;
+                margin-bottom: 0.75rem;
+            }
+        }
+
+        .agregar-btn-container {
+            margin-left: 0;
+
+            .p-button-success {
+                width: 100%;
+            }
+        }
+    }
+}

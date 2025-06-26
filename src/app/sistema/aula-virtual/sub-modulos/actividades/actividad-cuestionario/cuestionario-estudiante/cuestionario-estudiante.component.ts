@@ -3,14 +3,13 @@ import { PreguntaAlternativasRespuestasService } from '@/app/servicios/aula/preg
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
-import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { Component, inject, Input, OnChanges } from '@angular/core'
 import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-cuestionario-estudiante',
     standalone: true,
-    imports: [PrimengModule, ToolbarPrimengComponent, NoDataComponent],
+    imports: [PrimengModule, NoDataComponent],
     templateUrl: './cuestionario-estudiante.component.html',
     styleUrl: './cuestionario-estudiante.component.scss',
 })

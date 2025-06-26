@@ -2,7 +2,6 @@ import { PrimengModule } from '@/app/primeng.module'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { MenuItem, MessageService } from 'primeng/api'
-import { environment } from '@/environments/environment'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
 import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-preguntas/cuestionario-form-preguntas.component'
@@ -28,10 +27,10 @@ import { PreguntaAlternativasRespuestasService } from '@/app/servicios/aula/preg
 export class CuestionarioPreguntasComponent implements OnInit {
     @Input() datosGenerales: any
 
-    // private _ConstantesService = inject(ConstantesService)
     private _constantesService = inject(ConstantesService)
     private GeneralService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
+    private messageService = inject(MessageService)
 
     private _PreguntaAlternativasRespuestasService = inject(
         PreguntaAlternativasRespuestasService
@@ -40,8 +39,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
 
-    backend = environment.backend
-    totalPregunta: number = 0
     preguntas: any[] = []
     showModal: boolean = false
     titulo: string = ''
@@ -55,10 +52,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
     params: any // variable para enviar datos para actualizar
     iEstado: number
     iPerfilId: number
-    respuestasTexto: { [idPregunta: string]: string } = {} // variable para almacenar de respuesta unica
-    respuestasOpcion: { [idPregunta: string]: string } = {} // variable para almacenar de opción unica
-    respuestasDropdown: { [pregId: string]: string } = {} // variable para almacenar lo del select o Dropdon
-    respuestasCasilla: { [idPregunta: string]: string[] } = {} // variable para almacenar varias opciones
 
     tiposAgregarPregunta: MenuItem[] = [
         {
@@ -78,10 +71,6 @@ export class CuestionarioPreguntasComponent implements OnInit {
         //     },
         // },
     ]
-    constructor(
-        // private dialogConfig: DynamicDialogConfig,
-        private messageService: MessageService
-    ) {}
 
     ngOnInit(): void {
         this.obtenerCuestionario()
@@ -89,395 +78,17 @@ export class CuestionarioPreguntasComponent implements OnInit {
         this.obtenerTipoPreguntas()
         this.iEstado = Number(this.datosGenerales.iEstado)
         this.iPerfilId = this._constantesService.iPerfilId
-        this.obtenerRespuestas()
     }
 
-    tipoPreguntas: any[] = [
-        {
-            iTipoPregId: '1',
-            cTipoPregunta: 'Texto',
-            cIcon: 'pi-align-left',
-            cCodeTipoPreg: 'TIP-PREG-TEXTO',
-        },
-        {
-            iTipoPregId: '2',
-            cTipoPregunta: 'Varias opciones',
-            cIcon: 'pi-stop-circle',
-            cCodeTipoPreg: 'TIP-PREG-OPCIONES',
-        },
-        {
-            iTipoPregId: '4',
-            cTipoPregunta: 'Casillas',
-            cIcon: 'pi-stop-circle',
-            cCodeTipoPreg: 'TIP-PREG-CASILLA',
-        },
-        {
-            iTipoPregId: '5',
-            cTipoPregunta: 'Desplegable',
-            cIcon: 'pi-chevron-circle-down',
-            cCodeTipoPreg: 'TIP-PREG-DESPLEGABLE',
-        },
-        {
-            iTipoPregId: '7',
-            cTipoPregunta: 'Escala lineal',
-            cIcon: 'pi-ellipsis-h',
-            cCodeTipoPreg: 'TIP-PREG-ESC-LINEAL',
-        },
-        {
-            iTipoPregId: '8',
-            cTipoPregunta: 'Calificación',
-            cIcon: 'pi-star',
-            cCodeTipoPreg: 'TIP-PREG-CALIF',
-        },
-        {
-            iTipoPregId: '9',
-            cTipoPregunta: 'Cuadrícula de varias opciones',
-            cIcon: 'pi-th-large',
-            cCodeTipoPreg: 'TIP-PREG-CUAD-OPCIONES',
-        },
-        {
-            iTipoPregId: '10',
-            cTipoPregunta: 'Cuadrícula de casillas',
-            cIcon: 'pi-table',
-            cCodeTipoPreg: 'TIP-PREG-CUAD-CASILLA',
-        },
-    ]
-    // data: any
-    data: any = [
-        {
-            id: 1,
-            nombre: 'Pregunta 1',
-            tipoCuestionario: 'TIP-PREG-TEXTO',
-            estado: 'Activo',
-        },
-        {
-            id: 2,
-            nombre: 'Pregunta 2 Opciones',
-            tipoCuestionario: 'TIP-PREG-OPCIONES',
-            opciones: [
-                { id: 1, label: 'Si son opciones' },
-                { id: 2, label: 'No son opciones' },
-                { id: 3, label: 'Quizás son opciones' },
-            ],
-            estado: 'Activo',
-        },
-        {
-            id: 3,
-            nombre: 'Pregunta 3',
-            tipoCuestionario: 'TIP-PREG-CASILLA',
-            estado: 'Activo',
-        },
-        {
-            id: 4,
-            nombre: 'Pregunta 4',
-            tipoCuestionario: 'TIP-PREG-DESPLEGABLE',
-            opciones: [
-                { id: 1, label: 'Si son opciones' },
-                { id: 2, label: 'No son opciones' },
-                { id: 3, label: 'Quizás son opciones' },
-            ],
-            estado: 'Activo',
-        },
-    ]
+    tipoPreguntas: any[] = []
+    data: any[] = []
+
     loading: boolean = false
 
-    load() {
-        this.loading = true
-
-        setTimeout(() => {
-            this.loading = false
-        }, 2000)
-    }
-
     esBotonDeshabilitado(): boolean {
-        return this.iEstado === 10
+        return this.iEstado === 10 || this.iEstado === 2
     }
 
-    guadarRespuesta(item: any): void {
-        const iPregAlterId = item.jsonAlternativas[0].iPregAlterId
-        const iCuestionarioId = this.datosGenerales.iCuestionarioId
-        const iEstudianteId = this.iPerfilId
-        const data = {
-            iPregAlterId: iPregAlterId,
-            cRespuest: this.respuestasTexto[item],
-            iCredId: this._constantesService.iCredId,
-        }
-        // console.log('guardar respuesta del alumno', data)
-        // Servicio para obtener los instructores
-        if (this.iPerfilId === ESTUDIANTE) {
-            this._PreguntaAlternativasRespuestasService
-                .guardarRespuestaEstudiante(
-                    iCuestionarioId,
-                    iEstudianteId,
-                    data
-                )
-                .subscribe({
-                    next: (response) => {
-                        if (response.validated) {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Acción exitosa',
-                                detail: response.message,
-                            })
-                            this.showModal = false
-                            this.obtenerCuestionario()
-                            // this.instructorForm.reset()
-                        }
-                    },
-                    error: (error) => {
-                        const errores = error?.error?.errors
-                        if (error.status === 422 && errores) {
-                            // Recorre y muestra cada mensaje de error
-                            Object.keys(errores).forEach((campo) => {
-                                errores[campo].forEach((mensaje: string) => {
-                                    this.messageService.add({
-                                        severity: 'error',
-                                        summary: 'Error de validación',
-                                        detail: mensaje,
-                                    })
-                                })
-                            })
-                        } else {
-                            // Error genérico si no hay errores específicos
-                            this.messageService.add({
-                                severity: 'error',
-                                summary: 'Error',
-                                detail:
-                                    error?.error?.message ||
-                                    'Ocurrió un error inesperado',
-                            })
-                        }
-                    },
-                })
-        } else {
-            console.log('eres docente no seas vivo')
-        }
-
-        // Aquí puedes enviar la variable o hacer lo que necesites
-    }
-    guardarRespuestaOpcion(
-        iCuestionarioId: string,
-        idAlternativa: string,
-        alternativas: any[]
-    ) {
-        const iEstudianteId = this.iPerfilId
-        const seleccionada = alternativas.find(
-            (alt) => alt.iPregAlterId === idAlternativa
-        )
-
-        const data = {
-            iPregAlterId: idAlternativa,
-            cRespuest: seleccionada.cAlternativa,
-            iCredId: this._constantesService.iCredId,
-        }
-        // Servicio para obtener los instructores
-        this._PreguntaAlternativasRespuestasService
-            .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
-            .subscribe({
-                next: (response) => {
-                    if (response.validated) {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Acción exitosa',
-                            detail: response.message,
-                        })
-                        this.showModal = false
-                        this.obtenerCuestionario()
-                        // this.instructorForm.reset()
-                    }
-                },
-                error: (error) => {
-                    const errores = error?.error?.errors
-                    if (error.status === 422 && errores) {
-                        // Recorre y muestra cada mensaje de error
-                        Object.keys(errores).forEach((campo) => {
-                            errores[campo].forEach((mensaje: string) => {
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: 'Error de validación',
-                                    detail: mensaje,
-                                })
-                            })
-                        })
-                    } else {
-                        // Error genérico si no hay errores específicos
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail:
-                                error?.error?.message ||
-                                'Ocurrió un error inesperado',
-                        })
-                    }
-                },
-            })
-    }
-    guardarRespuestasCasilla(
-        iCuestionarioId: string,
-        opcion: any,
-        isChecked: boolean
-    ): void {
-        console.log(isChecked)
-
-        const iEstudianteId = this.iPerfilId
-        const { iPregAlterId, cAlternativa } = opcion
-
-        if (isChecked) {
-            // Agregar si no existe
-            if (!this.respuestasCasilla[iCuestionarioId]) {
-                this.respuestasCasilla[iCuestionarioId] = []
-            }
-
-            if (
-                !this.respuestasCasilla[iCuestionarioId].includes(iPregAlterId)
-            ) {
-                this.respuestasCasilla[iCuestionarioId].push(iPregAlterId)
-            }
-
-            const data = {
-                iPregAlterId: iPregAlterId,
-                cRespuest: cAlternativa,
-                iCredId: this._constantesService.iCredId,
-            }
-            // console.log(
-            //     'datos',
-            //     this.data,
-            //     '+',
-            //     iCuestionarioId,
-            //     iEstudianteId,
-            //     data
-            // )
-            this._PreguntaAlternativasRespuestasService
-                .guardarRespuestaEstudiante(
-                    iCuestionarioId,
-                    iEstudianteId,
-                    data
-                )
-                .subscribe({
-                    next: (response) => {
-                        if (response.validated) {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Acción exitosa',
-                                detail: response.message,
-                            })
-                            this.showModal = false
-                            this.obtenerCuestionario()
-                            // this.instructorForm.reset()
-                        }
-                    },
-                    error: (error) => {
-                        const errores = error?.error?.errors
-                        if (error.status === 422 && errores) {
-                            // Recorre y muestra cada mensaje de error
-                            Object.keys(errores).forEach((campo) => {
-                                errores[campo].forEach((mensaje: string) => {
-                                    this.messageService.add({
-                                        severity: 'error',
-                                        summary: 'Error de validación',
-                                        detail: mensaje,
-                                    })
-                                })
-                            })
-                        } else {
-                            // Error genérico si no hay errores específicos
-                            this.messageService.add({
-                                severity: 'error',
-                                summary: 'Error',
-                                detail:
-                                    error?.error?.message ||
-                                    'Ocurrió un error inesperado',
-                            })
-                        }
-                    },
-                })
-        } else {
-            // Quitar si fue desmarcado
-            this.respuestasCasilla[iCuestionarioId] = this.respuestasCasilla[
-                iCuestionarioId
-            ].filter((id) => id !== iPregAlterId)
-
-            console.log('❌ UNCHECKED:', {
-                iPregId: iCuestionarioId,
-                iPregAlterId,
-                cAlternativa,
-            })
-        }
-    }
-    guardarRespuestaDropdown(
-        iCuestionarioId: string,
-        idAlternativa: string,
-        alternativas: any[]
-    ) {
-        const iEstudianteId = this.iPerfilId
-        const seleccionada = alternativas.find(
-            (alt) => alt.iPregAlterId === idAlternativa
-        )
-
-        // if (seleccionada) {
-        //     console.log('📦 Respuesta desplegable seleccionada:', {
-        //     iCuestionarioId: iCuestionarioId,
-        //     iPregAlterId: seleccionada.iPregAlterId,
-        //     cAlternativa: seleccionada.cAlternativa
-        //     });
-
-        //     // Guarda si lo necesitas luego
-        //     this.respuestasDropdown[iCuestionarioId] = seleccionada.iPregAlterId;
-        // }
-        const data = {
-            iPregAlterId: idAlternativa,
-            cRespuest: seleccionada.cAlternativa,
-            iCredId: this._constantesService.iCredId,
-        }
-        // console.log(
-        //     'datos',
-        //     this.data,
-        //     '+',
-        //     iCuestionarioId,
-        //     iEstudianteId,
-        //     data
-        // )
-        this._PreguntaAlternativasRespuestasService
-            .guardarRespuestaEstudiante(iCuestionarioId, iEstudianteId, data)
-            .subscribe({
-                next: (response) => {
-                    if (response.validated) {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Acción exitosa',
-                            detail: response.message,
-                        })
-                        this.showModal = false
-                        this.obtenerCuestionario()
-                        // this.instructorForm.reset()
-                    }
-                },
-                error: (error) => {
-                    const errores = error?.error?.errors
-                    if (error.status === 422 && errores) {
-                        // Recorre y muestra cada mensaje de error
-                        Object.keys(errores).forEach((campo) => {
-                            errores[campo].forEach((mensaje: string) => {
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: 'Error de validación',
-                                    detail: mensaje,
-                                })
-                            })
-                        })
-                    } else {
-                        // Error genérico si no hay errores específicos
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail:
-                                error?.error?.message ||
-                                'Ocurrió un error inesperado',
-                        })
-                    }
-                },
-            })
-    }
     guardarPregunta(data: any) {
         const datos = {
             iCuestionarioId: this.datosGenerales.iCuestionarioId,
@@ -687,86 +298,5 @@ export class CuestionarioPreguntasComponent implements OnInit {
         this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
             this.tipoPreguntas = (Data as any)['data']
         })
-    }
-    obtenerRespuestas() {
-        const iCuestionarioId = this.datosGenerales.iCuestionarioId
-        const iEstudianteId = this.iPerfilId
-
-        const data = {
-            iCredId: this._constantesService.iCredId,
-        }
-        console.log(iCuestionarioId, data)
-        // Servicio para obtener los instructores
-        this._PreguntaAlternativasRespuestasService
-            .obtenerRespuestas(iCuestionarioId, iEstudianteId, data)
-            .subscribe({
-                next: (response) => {
-                    if (response.validated) {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Acción exitosa',
-                            detail: response.message,
-                        })
-                        this.showModal = false
-                        this.data = response.data
-                        this.data.forEach((pregunta) => {
-                            // Paso 1: Parsear jsonAlternativas raíz si es string
-                            if (typeof pregunta.jsonAlternativas === 'string') {
-                                try {
-                                    pregunta.jsonAlternativas = JSON.parse(
-                                        pregunta.jsonAlternativas
-                                    )
-                                } catch (e) {
-                                    console.error(
-                                        'Error al parsear jsonAlternativas (raíz):',
-                                        e
-                                    )
-                                    pregunta.jsonAlternativas = []
-                                }
-                            }
-                        })
-                        this.data.forEach((item) => {
-                            if (item.cCodeTipoPreg === 'TIP-PREG-OPCIONES') {
-                                const respuestaSeleccionada =
-                                    item.jsonAlternativas.find(
-                                        (alt) => alt.iPrgAltRptaId !== null
-                                    )
-                                if (respuestaSeleccionada) {
-                                    this.respuestasOpcion[item.iPregId] =
-                                        respuestaSeleccionada.iPregAlterId
-                                }
-                            }
-                        })
-                        console.log(this.data)
-                        //this.obtenerCuestionario()
-                        //console.log('respuestas', response)
-                        // this.instructorForm.reset()
-                    }
-                },
-                error: (error) => {
-                    const errores = error?.error?.errors
-                    if (error.status === 422 && errores) {
-                        // Recorre y muestra cada mensaje de error
-                        Object.keys(errores).forEach((campo) => {
-                            errores[campo].forEach((mensaje: string) => {
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: 'Error de validación',
-                                    detail: mensaje,
-                                })
-                            })
-                        })
-                    } else {
-                        // Error genérico si no hay errores específicos
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail:
-                                error?.error?.message ||
-                                'Ocurrió un error inesperado',
-                        })
-                    }
-                },
-            })
     }
 }

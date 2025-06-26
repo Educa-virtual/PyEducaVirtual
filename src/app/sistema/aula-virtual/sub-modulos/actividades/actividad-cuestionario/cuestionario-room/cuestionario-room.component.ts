@@ -13,7 +13,6 @@ import { IconComponent } from '@/app/shared/icon/icon.component'
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
-import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CuestionarioPreguntasComponent } from '../cuestionario-preguntas/cuestionario-preguntas.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { CuestionarioResultadosComponent } from '../cuestionario-resultados/cuestionario-resultados.component'
@@ -29,7 +28,6 @@ import { DescripcionActividadesComponent } from '../../components/descripcion-ac
         PrimengModule,
         IconComponent,
         ToolbarPrimengComponent,
-        RemoveHTMLPipe,
         CuestionarioPreguntasComponent,
         CuestionarioResultadosComponent,
         CuestionarioEstudianteComponent,

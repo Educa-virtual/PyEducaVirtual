@@ -12,6 +12,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CuestionarioPreguntasComponent } from '../cuestionario-preguntas/cuestionario-preguntas.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { DescripcionActividadesComponent } from '../../components/descripcion-actividades/descripcion-actividades.component'
 @Component({
     selector: 'app-cuestionario-room',
     standalone: true,
@@ -23,6 +24,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
         ToolbarPrimengComponent,
         RemoveHTMLPipe,
         CuestionarioPreguntasComponent,
+        DescripcionActividadesComponent,
     ],
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
@@ -42,6 +44,7 @@ export class CuestionarioRoomComponent implements OnInit {
     home: MenuItem | undefined
     cuestionario: any
     iPerfilId: number
+    isDocente: boolean = this._constantesService.iPerfilId === DOCENTE
 
     constructor(private location: Location) {}
 
@@ -82,7 +85,17 @@ export class CuestionarioRoomComponent implements OnInit {
         }
         this.GeneralService.getGralPrefixx(data).subscribe({
             next: (resp) => {
-                this.cuestionario = resp.data.length ? resp.data[0] : {}
+                // this.cuestionario = resp.data.length ? resp.data[0] : {}
+                this.cuestionario = resp.data.length
+                    ? {
+                          ...resp.data[0], //spret
+                          dInicio: resp.data[0].dtInicio,
+                          dFin: resp.data[0].dtFin,
+                          cDocumentos: resp.data[0].cArchivoAdjunto
+                              ? JSON.parse(resp.data[0].cArchivoAdjunto)
+                              : [],
+                      }
+                    : {}
                 console.log('infomación general', this.cuestionario)
             },
             error: (err) => {

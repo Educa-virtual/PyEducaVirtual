@@ -36,6 +36,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ForoRoomDetalleComponent } from '../foro-room-detalle/foro-room-detalle.component'
 import { Location } from '@angular/common'
+import { DescripcionActividadesComponent } from '../../components/descripcion-actividades/descripcion-actividades.component'
 //import { Toast } from 'primeng/toast';
 
 @Component({
@@ -59,6 +60,7 @@ import { Location } from '@angular/common'
         ToolbarPrimengComponent,
         RubricasComponent,
         ForoRoomDetalleComponent,
+        DescripcionActividadesComponent,
     ],
     providers: [
         provideIcons({
@@ -454,7 +456,17 @@ export class ForoRoomComponent implements OnInit {
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.foro = resp.length ? resp[0] : {}
+                    this.foro = resp.length
+                        ? {
+                              ...resp[0],
+                              dInicio: resp[0].dtForoInicio,
+                              dFin: resp[0].dtForoFin,
+                              cDescripcion: resp[0].cForoDescripcion,
+                              cDocumentos: resp[0].cForoUrl
+                                  ? JSON.parse(resp[0].cForoUrl)
+                                  : [],
+                          }
+                        : {}
                     console.log('datos generales foro', this.foro)
                     this.obtenerResptDocente() // función para obtener la retroalimentan al estudiante
                     this.FilesTareas = this.foro?.cForoUrl

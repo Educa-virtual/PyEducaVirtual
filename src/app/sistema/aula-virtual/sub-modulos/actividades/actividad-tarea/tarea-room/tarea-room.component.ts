@@ -29,6 +29,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { Location } from '@angular/common'
+import { DescripcionActividadesComponent } from '../../components/descripcion-actividades/descripcion-actividades.component'
 @Component({
     selector: 'app-tarea-room',
     standalone: true,
@@ -44,6 +45,7 @@ import { Location } from '@angular/common'
         ToolbarPrimengComponent,
         EmptySectionComponent,
         RecursosListaComponent,
+        DescripcionActividadesComponent,
     ],
 
     templateUrl: './tarea-room.component.html',
@@ -82,6 +84,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     formTareas: any
     items: MenuItem[] | undefined
     home: MenuItem | undefined
+    isDocente: boolean = this._constantesService.iPerfilId === DOCENTE
 
     constructor(
         private messageService: MessageService,
@@ -349,7 +352,22 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                     : this.getTareaCabeceraGrupos()
                 break
             case 'get-tareas':
-                this.data = item.length ? item[0] : []
+                // this.data = item.length ? item[0] : []
+                // this.data = item.length? {
+                //     ...item.item[0]
+                // }:{}
+                this.data = item.length
+                    ? {
+                          ...item[0],
+                          dInicio: item[0].dtTareaInicio,
+                          dFin: item[0].dtTareaFin,
+                          cDescripcion: item[0].cTareaDescripcion,
+                          cDocumentos: item[0].cTareaArchivoAdjunto
+                              ? JSON.parse(item[0].cTareaArchivoAdjunto)
+                              : [],
+                      }
+                    : {}
+                // console.log('datos generales de tarea',this.data)
                 this.cTareaTitulo = this.data?.cTareaTitulo
                 this.cTareaDescripcion = this.data?.cTareaDescripcion
                 this.FilesTareas = this.data?.cTareaArchivoAdjunto

@@ -13,11 +13,11 @@ import {
 } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienestar.service'
-import { ConstantesService } from '@/app/servicios/constantes.service'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-simple.component'
 import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component'
+import { FuncionesBienestarService } from '../../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-gestion-pandemia-dosis',
@@ -49,7 +49,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private datosFichaBienestar: DatosFichaBienestarService,
-        private constantesService: ConstantesService
+        private funcionesBienestar: FuncionesBienestarService
     ) {}
 
     ngOnInit(): void {
@@ -134,19 +134,19 @@ export class GestionPandemiaDosisComponent implements OnInit {
         this.formDosis.reset()
         if (data) {
             this.formDosis.patchValue(data)
-            this.datosFichaBienestar.formatearFormControl(
+            this.funcionesBienestar.formatearFormControl(
                 this.formDosis,
                 'iPandemiaId',
                 data.iPandemiaId,
                 'number'
             )
-            this.datosFichaBienestar.formatearFormControl(
+            this.funcionesBienestar.formatearFormControl(
                 this.formDosis,
                 'iPanDFichaNroDosis',
                 data.iPanDFichaNroDosis,
                 'number'
             )
-            this.datosFichaBienestar.formatearFormControl(
+            this.funcionesBienestar.formatearFormControl(
                 this.formDosis,
                 'dtPanDFichaDosis',
                 data.dtPanDFichaDosis,

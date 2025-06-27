@@ -60,6 +60,8 @@ export class MultiselectInputComponent implements OnInit {
         if (Array.isArray(event.value)) {
             if (event.value.includes(this.inputTrigger)) {
                 this.visibleInput = true
+                this.inputControl.markAsTouched()
+                this.inputControl.markAsDirty()
             } else {
                 this.visibleInput = false
                 this.inputControl.setValue(null)
@@ -67,6 +69,8 @@ export class MultiselectInputComponent implements OnInit {
         } else {
             if (event.value == this.inputTrigger) {
                 this.visibleInput = true
+                this.inputControl.markAsTouched()
+                this.inputControl.markAsDirty()
             } else {
                 this.visibleInput = false
                 this.inputControl.setValue(null)

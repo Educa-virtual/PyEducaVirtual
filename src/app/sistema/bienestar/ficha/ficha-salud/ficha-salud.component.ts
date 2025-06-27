@@ -8,6 +8,7 @@ import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar
 import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { MessageService } from 'primeng/api'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-salud',
@@ -38,7 +39,8 @@ export class FichaSaludComponent implements OnInit {
         private compartirFicha: CompartirFichaService,
         private datosFichaBienestar: DatosFichaBienestarService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
         this.compartirFicha.setActiveIndex(6)
         this.route.parent?.paramMap.subscribe((params) => {
@@ -57,7 +59,7 @@ export class FichaSaludComponent implements OnInit {
                 cFichaDGAlergiaMedicamentos: [null],
                 bFichaDGAlergiaOtros: [false],
                 cFichaDGAlergiaOtros: [null],
-                iSeguroSaludId: [null],
+                iSeguroSaludId: [null, Validators.required],
                 cSeguroSaludObs: [null],
                 iDolenciaId: [null],
                 cDolFichaObs: [null],
@@ -84,6 +86,8 @@ export class FichaSaludComponent implements OnInit {
         if (this.iFichaDGId) {
             this.verFichaSalud()
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formSalud)
     }
 
     verFichaSalud() {
@@ -100,13 +104,13 @@ export class FichaSaludComponent implements OnInit {
 
     setFormSalud(data: any) {
         this.formSalud.patchValue(data)
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formSalud,
             'bFichaDGAlergiaMedicamentos',
             data.bFichaDGAlergiaMedicamentos,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formSalud,
             'bFichaDGAlergiaOtros',
             data.bFichaDGAlergiaOtros,
@@ -124,6 +128,8 @@ export class FichaSaludComponent implements OnInit {
             )
             this.crearControlesDolencias(dolencias)
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formSalud)
     }
 
     crearControlesDolencias(dolencias: Array<object>) {
@@ -168,7 +174,7 @@ export class FichaSaludComponent implements OnInit {
             .get('jsonDolencias')
             .setValue(JSON.stringify(this.controles_dolencias.value))
 
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formSalud,
             'jsonSeguros',
             'iSeguroSaludId'

@@ -14,6 +14,7 @@ import { SwitchInputComponent } from '../shared/switch-input/switch-input.compon
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
 import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -45,12 +46,13 @@ export class FichaGeneralComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private compartirFicha: CompartirFichaService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
-        this.compartirFichaService.setActiveIndex(0)
+        this.compartirFicha.setActiveIndex(0)
         this.route.parent?.paramMap.subscribe((params) => {
             this.iFichaDGId = params.get('id')
         })
@@ -85,22 +87,21 @@ export class FichaGeneralComponent implements OnInit {
             iFichaDGNroHijos: [null],
         })
 
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
-                    data?.tipos_vias
-                )
-                this.religiones = this.datosFichaBienestarService.getReligiones(
-                    data?.religiones
-                )
-            })
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.tipos_vias = this.datosFichaBienestar.getTiposVias(
+                data?.tipos_vias
+            )
+            this.religiones = this.datosFichaBienestar.getReligiones(
+                data?.religiones
+            )
+        })
 
         this.verFichaGeneral()
+        this.funcionesBienestar.formMarkAsDirty(this.formGeneral)
     }
 
     verFichaGeneral() {
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .verFichaGeneral({
                 iFichaDGId: this.iFichaDGId,
             })
@@ -114,54 +115,55 @@ export class FichaGeneralComponent implements OnInit {
     setFormGeneral(data: FichaGeneral) {
         this.ficha_registrada = true
         this.formGeneral.patchValue(data)
-        this.datosFichaBienestarService.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formGeneral,
             'iTipoViaId',
             data.iTipoViaId,
             'number'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formGeneral,
             'iReligionId',
             data.iReligionId,
             'number'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formGeneral,
             'bFamiliarPadreVive',
             data.bFamiliarPadreVive,
             'boolean'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formGeneral,
             'bFamiliarMadreVive',
             data.bFamiliarMadreVive,
             'boolean'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formGeneral,
             'bFamiliarPadresVivenJuntos',
             data.bFamiliarPadresVivenJuntos,
             'boolean'
         )
-        this.datosFichaBienestarService.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formGeneral,
             'bFichaDGTieneHijos',
             data.bFichaDGTieneHijos,
             'boolean'
         )
+        this.funcionesBienestar.formMarkAsDirty(this.formGeneral)
     }
 
     actualizar() {
         if (this.formGeneral.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe completar los campos requeridos',
             })
             return
         }
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFichaGeneral(this.formGeneral.value)
             .subscribe({
                 next: () => {
@@ -171,6 +173,11 @@ export class FichaGeneralComponent implements OnInit {
                         summary: 'Actualización exitosa',
                         detail: 'Se actualizaron los datos',
                     })
+                    setTimeout(() => {
+                        this.router.navigate([
+                            `/bienestar/ficha/${this.iFichaDGId}/familia`,
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

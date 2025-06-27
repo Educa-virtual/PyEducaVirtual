@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-vivienda',
@@ -47,7 +48,8 @@ export class FichaViviendaComponent implements OnInit {
         private datosFichaBienestar: DatosFichaBienestarService,
         private compartirFicha: CompartirFichaService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
         this.compartirFicha.setActiveIndex(3)
         this.route.parent?.paramMap.subscribe((params) => {
@@ -107,7 +109,7 @@ export class FichaViviendaComponent implements OnInit {
                 iViendaCarId: [null],
                 iFichaDGId: [this.iFichaDGId, Validators.required],
                 iTipoOcupaVivId: [null],
-                iMatPreId: [null],
+                iMatPreId: [null, Validators.required],
                 iTipoVivId: [null],
                 iViviendaCarNroPisos: [null],
                 iViviendaCarNroAmbientes: [null],
@@ -115,9 +117,9 @@ export class FichaViviendaComponent implements OnInit {
                 iEstadoVivId: [null],
                 iMatPisoVivId: [null],
                 iMatTecVivId: [null],
-                iTiposSsHhId: [null],
-                iTipoSumAId: [null],
-                iTipoAlumId: [null],
+                iTiposSsHhId: [null, Validators.required],
+                iTipoSumAId: [null, Validators.required],
+                iTipoAlumId: [null, Validators.required],
                 iEleParaVivId: [null],
                 jsonAlumbrados: [null],
                 jsonElementos: [null],
@@ -135,6 +137,8 @@ export class FichaViviendaComponent implements OnInit {
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formVivienda)
     }
 
     verFichaVivienda() {
@@ -152,84 +156,86 @@ export class FichaViviendaComponent implements OnInit {
     setFormVivienda(data: any) {
         this.ficha_registrada = true
         this.formVivienda.patchValue(data)
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iTipoOcupaVivId',
             data.iTipoOcupaVivId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iMatPreId',
             data.iMatPreId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iTipoVivId',
             data.iTipoVivId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iViviendaCarNroPisos',
             data.iViviendaCarNroPisos,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iViviendaCarNroAmbientes',
             data.iViviendaCarNroAmbientes,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iViviendaCarNroHabitaciones',
             data.iViviendaCarNroHabitaciones,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iEstadoVivId',
             data.iEstadoVivId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iMatPisoVivId',
             data.iMatPisoVivId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iMatTecVivId',
             data.iMatTecVivId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iTiposSsHhId',
             data.iTiposSsHhId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iTipoSumAId',
             data.iTipoSumAId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iTipoAlumId',
             data.alumbrados,
             'json'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formVivienda,
             'iEleParaVivId',
             data.elementos,
             'json'
         )
+
+        this.funcionesBienestar.formMarkAsDirty(this.formVivienda)
     }
 
     actualizar() {
@@ -242,12 +248,12 @@ export class FichaViviendaComponent implements OnInit {
             return
         }
 
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formVivienda,
             'jsonElementos',
             'iEleParaVivId'
         )
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formVivienda,
             'jsonAlumbrados',
             'iTipoAlumId'

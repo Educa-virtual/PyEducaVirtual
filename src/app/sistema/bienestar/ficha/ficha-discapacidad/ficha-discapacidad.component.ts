@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-discapacidad',
@@ -34,7 +35,8 @@ export class FichaDiscapacidadComponent implements OnInit {
         private compartirFicha: CompartirFichaService,
         private datosFichaBienestar: DatosFichaBienestarService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
         this.compartirFicha.setActiveIndex(5)
         this.route.parent?.paramMap.subscribe((params) => {
@@ -74,6 +76,8 @@ export class FichaDiscapacidadComponent implements OnInit {
         if (this.iFichaDGId) {
             this.verFichaDiscapacidad()
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formDiscapacidad)
     }
 
     verFichaDiscapacidad() {
@@ -90,19 +94,19 @@ export class FichaDiscapacidadComponent implements OnInit {
 
     setFormDiscapacidad(data: any) {
         this.formDiscapacidad.patchValue(data)
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formDiscapacidad,
             'bFichaDGEstaEnCONADIS',
             data.bFichaDGEstaEnCONADIS,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formDiscapacidad,
             'bFichaDGEstaEnOMAPED',
             data.bFichaDGEstaEnOMAPED,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formDiscapacidad,
             'bOtroProgramaDiscapacidad',
             data.bOtroProgramaDiscapacidad,
@@ -120,6 +124,8 @@ export class FichaDiscapacidadComponent implements OnInit {
             )
             this.crearControlesDiscapacidades(discapacidades)
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formDiscapacidad)
     }
 
     crearControlesDiscapacidades(discapacidades: Array<object>) {

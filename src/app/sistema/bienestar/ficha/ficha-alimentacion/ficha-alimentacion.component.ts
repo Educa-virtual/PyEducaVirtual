@@ -9,6 +9,7 @@ import { MultiselectInputComponent } from '../shared/multiselect-input/multisele
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-alimentacion',
@@ -39,7 +40,8 @@ export class FichaAlimentacionComponent implements OnInit {
         private compartirFicha: CompartirFichaService,
         private datosFichaBienestar: DatosFichaBienestarService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
         this.compartirFicha.setActiveIndex(4)
         this.route.parent?.paramMap.subscribe((params) => {
@@ -94,6 +96,8 @@ export class FichaAlimentacionComponent implements OnInit {
         if (this.iFichaDGId) {
             this.verFichaAlimentacion()
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formAlimentacion)
     }
 
     verFichaAlimentacion() {
@@ -114,36 +118,37 @@ export class FichaAlimentacionComponent implements OnInit {
             return
         }
         this.formAlimentacion.patchValue(data)
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formAlimentacion,
             'bFichaDGAlergiaAlimentos',
             data.bFichaDGAlergiaAlimentos,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formAlimentacion,
             'iLugarAlimIdDesayuno',
             data.iLugarAlimIdDesayuno,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formAlimentacion,
             'iLugarAlimIdAlmuerzo',
             data.iLugarAlimIdAlmuerzo,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formAlimentacion,
             'iLugarAlimIdCena',
             data.iLugarAlimIdCena,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formAlimentacion,
             'iProgAlimId',
             data.programas,
             'json'
         )
+        this.funcionesBienestar.formMarkAsDirty(this.formAlimentacion)
     }
 
     actualizar() {
@@ -156,7 +161,7 @@ export class FichaAlimentacionComponent implements OnInit {
             return
         }
 
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formAlimentacion,
             'jsonProgramas',
             'iProgAlimId'

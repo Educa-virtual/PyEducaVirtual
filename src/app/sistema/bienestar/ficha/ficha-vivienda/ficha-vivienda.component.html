@@ -67,8 +67,8 @@
             />
             <ng-template #iViviendaCarNroHabitaciones>
                 Aquí puede indicar el número de dormitorios que tiene en la
-                vivienda, un ambiente se considera dormitorio si contiene al
-                menos una cama.
+                vivienda, un cuarto se considera dormitorio si contiene al menos
+                una cama.
             </ng-template>
         </div>
         <div class="col-12 md:col-6">
@@ -95,7 +95,7 @@
             <app-dropdown-input
                 [dropdownItems]="materiales_paredes_vivienda"
                 [dropdownControl]="$any(formVivienda).controls['iMatPreId']"
-                addonLabel="Material de las paredes"
+                addonLabel="Material de las paredes *"
                 dropdownPlaceholder="Seleccione"
                 [inputControl]="$any(formVivienda).controls['cMatPreOtro']"
                 inputPlaceholder="Especifique otro"
@@ -105,7 +105,7 @@
             <app-dropdown-input
                 [dropdownItems]="suministros_agua"
                 [dropdownControl]="$any(formVivienda).controls['iTipoSumAId']"
-                addonLabel="Suministro de agua"
+                addonLabel="Suministro de agua *"
                 dropdownPlaceholder="Seleccione"
                 [inputControl]="$any(formVivienda).controls['cTipoSumAOtro']"
                 inputPlaceholder="Especifique otro"
@@ -125,7 +125,7 @@
             <app-dropdown-input
                 [dropdownItems]="tipos_sshh"
                 [dropdownControl]="$any(formVivienda).controls['iTiposSsHhId']"
-                addonLabel="Tipo de servicio higiénico"
+                addonLabel="Tipo de servicio higiénico *"
                 dropdownPlaceholder="Seleccione"
                 [inputControl]="$any(formVivienda).controls['cTipoSsHhOtro']"
                 inputPlaceholder="Especifique otro"
@@ -138,7 +138,7 @@
                 [multiselectControl]="
                     $any(formVivienda).controls['iTipoAlumId']
                 "
-                addonLabel="Tipo de alumbrado"
+                addonLabel="Tipo de alumbrado *"
                 multiselectPlaceholder="Seleccione"
                 [inputControl]="$any(formVivienda).controls['cTipoAlumOtro']"
                 inputPlaceholder="Especifique otro"

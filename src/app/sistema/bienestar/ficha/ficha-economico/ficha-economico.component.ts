@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api'
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
 import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component'
 import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-economico',
@@ -40,7 +41,8 @@ export class FichaEconomicoComponent implements OnInit {
         private router: Router,
         private compartirFicha: CompartirFichaService,
         private route: ActivatedRoute,
-        private datosFichaBienestar: DatosFichaBienestarService
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
         this.compartirFicha.setActiveIndex(2)
         this.route.parent?.paramMap.subscribe((params) => {
@@ -84,7 +86,7 @@ export class FichaEconomicoComponent implements OnInit {
                 bIngresoEcoTrabaja: [null],
                 bApoderadoTrabaja: [null],
                 cIngresoEcoDependeDe: [null, Validators.maxLength(100)],
-                iRangoSueldoId: [null],
+                iRangoSueldoId: [null, Validators.required],
                 iRangoSueldoIdPersona: [null],
                 iDepEcoId: [null],
                 iTipoAEcoId: [null],
@@ -93,6 +95,8 @@ export class FichaEconomicoComponent implements OnInit {
         } catch (error) {
             console.log(error, 'error inicializando formulario')
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formEconomico)
     }
 
     verFichaEconomico() {
@@ -112,78 +116,79 @@ export class FichaEconomicoComponent implements OnInit {
             this.ficha_registrada = true
         }
         this.formEconomico.patchValue(data)
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iIngresoEcoId',
             data.iIngresoEcoId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iIngresoEcoFamiliar',
             data.iIngresoEcoFamiliar,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iIngresoEcoEstudiante',
             data.iIngresoEcoEstudiante,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iIngresoEcoTrabajoHoras',
             data.iIngresoEcoTrabajoHoras,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'bIngresoEcoTrabaja',
             data.bIngresoEcoTrabaja,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iRangoSueldoId',
             data.iRangoSueldoId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iRangoSueldoIdPersona',
             data.iRangoSueldoIdPersona,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iDepEcoId',
             data.iDepEcoId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iTipoAEcoId',
             data.iTipoAEcoId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'iJorTrabId',
             data.iJorTrabId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formEconomico,
             'bIngresoEcoTrabaja',
             data.bIngresoEcoTrabaja,
             'boolean'
         )
+        this.funcionesBienestar.formMarkAsDirty(this.formEconomico)
     }
 
     actualizar() {
         if (this.formEconomico.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe completar los campos requeridos',
             })

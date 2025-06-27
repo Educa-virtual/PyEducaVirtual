@@ -12,13 +12,13 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienestar.service'
-import { CompartirFichaService } from '../../../services/compartir-ficha.service'
 import { FichaFamiliar } from '../../../interfaces/fichaFamiliar'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DropdownInputComponent } from '../../shared/dropdown-input/dropdown-input.component'
 import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-simple.component'
 import { SwitchSimpleComponent } from '../../shared/switch-simple/switch-simple.component'
 import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component'
+import { FuncionesBienestarService } from '../../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-familia-registro',
@@ -68,7 +68,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     constructor(
         private fb: FormBuilder,
         private datosFichaBienestar: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService,
+        private funcionesBienestar: FuncionesBienestarService,
         private route: ActivatedRoute,
         private router: Router
     ) {
@@ -135,9 +135,12 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                 iPrvnId: [null],
                 iDsttId: [null],
                 cPersDomicilio: [''],
-                iTipoViaId: [null],
+                iTipoViaId: [null, Validators.required],
                 cTipoViaOtro: ['', Validators.maxLength(100)],
-                cFamiliarDireccionNombreVia: ['', Validators.maxLength(150)],
+                cFamiliarDireccionNombreVia: [
+                    '',
+                    [Validators.required, Validators.maxLength(150)],
+                ],
                 cFamiliarDireccionNroPuerta: ['', Validators.maxLength(10)],
                 cFamiliarDireccionBlock: ['', Validators.maxLength(3)],
                 cFamiliarDireccionInterior: ['', Validators.maxLength(3)],
@@ -320,79 +323,79 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
         }
         this.formFamiliar.patchValue(item)
         this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId)
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'bFamiliarVivoConEl',
             item.bFamiliarVivoConEl,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iTipoIdentId',
             item.iTipoIdentId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iTipoFamiliarId',
             item.iTipoFamiliarId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iTipoEstCivId',
             item.iTipoEstCivId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iNacionId',
             item.iNacionId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iDptoId',
             item.iDptoId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iPrvnId',
             item.iPrvnId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iDsttId',
             item.iDsttId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iTipoViaId',
             item.iTipoViaId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iOcupacionId',
             item.iOcupacionId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iGradoInstId',
             item.iGradoInstId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'iTipoIeEstId',
             item.iTipoIeEstId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formFamiliar,
             'dPersNacimiento',
             item.dPersNacimiento,

@@ -9,6 +9,7 @@ import { MultiselectInputComponent } from '../shared/multiselect-input/multisele
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-recreacion',
@@ -45,7 +46,8 @@ export class FichaRecreacionComponent implements OnInit {
         private compartirFicha: CompartirFichaService,
         private datosFichaBienestar: DatosFichaBienestarService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
         this.compartirFicha.setActiveIndex(7)
         this.route.parent?.paramMap.subscribe((params) => {
@@ -108,6 +110,8 @@ export class FichaRecreacionComponent implements OnInit {
         if (this.iFichaDGId) {
             this.verFichaRecreacion()
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formRecreacion)
     }
 
     verFichaRecreacion() {
@@ -126,67 +130,69 @@ export class FichaRecreacionComponent implements OnInit {
         this.ficha_registrada = true
         this.formRecreacion.patchValue(data)
 
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iDeporteId',
             data.deportes,
             'json'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iPasaTiempoId',
             data.pasatiempos,
             'json'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iActArtisticaId',
             data.actividades,
             'json',
             'iPasaTiempoId'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iTipoFamiliarId',
             data.problemas_emocionales,
             'json'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iTransporteId',
             data.transportes,
             'json'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iEstadoRelFamiliar',
             data.iEstadoRelFamiliar,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'iReligionId',
             data.iReligionId,
             'number'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'bFichaDGPerteneceLigaDeportiva',
             data.bFichaDGPerteneceLigaDeportiva,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'bFichaDGPerteneceCentroArtistico',
             data.bFichaDGPerteneceCentroArtistico,
             'boolean'
         )
-        this.datosFichaBienestar.formatearFormControl(
+        this.funcionesBienestar.formatearFormControl(
             this.formRecreacion,
             'bFichaDGAsistioConsultaPsicologica',
             data.bFichaDGAsistioConsultaPsicologica,
             'boolean'
         )
+
+        this.funcionesBienestar.formMarkAsDirty(this.formRecreacion)
     }
 
     actualizar() {
@@ -199,23 +205,23 @@ export class FichaRecreacionComponent implements OnInit {
             return
         }
 
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonDeportes',
             'iDeporteId'
         )
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonPasatiempos',
             ['iPasaTiempoId', 'iActArtisticaId'],
             'iPasaTiempoId'
         )
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonProblemas',
             'iTipoFamiliarId'
         )
-        this.datosFichaBienestar.formControlJsonStringify(
+        this.funcionesBienestar.formControlJsonStringify(
             this.formRecreacion,
             'jsonTransportes',
             'iTransporteId'

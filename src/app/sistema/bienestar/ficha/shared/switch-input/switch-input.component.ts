@@ -70,6 +70,8 @@ export class SwitchInputComponent implements OnInit, OnChanges {
         }
         if (event.checked == true) {
             this.visibleInput = true
+            this.inputControl.markAsTouched()
+            this.inputControl.markAsDirty()
         } else {
             this.visibleInput = false
             this.inputControl.setValue(null)

@@ -59,6 +59,8 @@ export class DropdownInputComponent implements OnInit {
         }
         if (event.value == this.inputTrigger) {
             this.visibleInput = true
+            this.inputControl.markAsTouched()
+            this.inputControl.markAsDirty()
         } else {
             this.visibleInput = false
             this.inputControl.setValue(null)

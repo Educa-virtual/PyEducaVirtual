@@ -1,5 +1,12 @@
-// gestion-encuesta-configuracion.component.ts
-import { Component, inject, ViewChild } from '@angular/core'
+import {
+    Component,
+    inject,
+    ViewChild,
+    EventEmitter,
+    Input,
+    Output,
+    OnInit,
+} from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { StepperModule } from 'primeng/stepper'
 import {
@@ -29,10 +36,13 @@ import { ScrollPanelModule } from 'primeng/scrollpanel'
     styleUrl: './gestion-encuesta-configuracion.component.scss',
     providers: [MessageService],
 })
-export class GestionEncuestaConfiguracionComponent {
+export class GestionEncuestaConfiguracionComponent implements OnInit {
     // Propiedades del stepper
     activeStep: number = 0
     totalSteps = 2
+    @Input() visible: boolean = false
+    @Output() visibleChange = new EventEmitter<boolean>()
+    @Output() mostrarDialogoConfiguracion = new EventEmitter<any>()
 
     // FormGroup para la encuesta
     encuestaFormGroup: FormGroup
@@ -57,6 +67,10 @@ export class GestionEncuestaConfiguracionComponent {
 
     constructor() {
         this.initializeForm()
+    }
+
+    ngOnInit(): void {
+        console.log('ngOnInit')
     }
 
     initializeForm() {
@@ -165,17 +179,13 @@ export class GestionEncuestaConfiguracionComponent {
         const datosEncuesta = this.encuestaFormGroup.value
 
         console.log('Datos de la encuesta:', datosEncuesta)
-
-        // Aquí iría tu lógica para guardar en el backend
-        // this._apiEncuesta.guardarEncuesta(datosEncuesta).subscribe(...)
-
         this._messageService.add({
             severity: 'success',
             summary: 'Encuesta guardada',
             detail: 'La encuesta se ha guardado exitosamente',
         })
 
-        // Opcional: resetear formulario
+        // resetear formulario
         // this.resetFormulario()
     }
 
@@ -184,17 +194,8 @@ export class GestionEncuestaConfiguracionComponent {
         this.activeStep = 0
         this.encuestaFormGroup.reset()
     }
+    onHide() {
+        this.visible = false
+        this.visibleChange.emit(this.visible)
+    }
 }
-/*import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-gestion-encuesta-configuracion',
-  standalone: true,
-  imports: [],
-  templateUrl: './gestion-encuesta-configuracion.component.html',
-  styleUrl: './gestion-encuesta-configuracion.component.scss'
-})
-export class GestionEncuestaConfiguracionComponent {
-
-}
-*/

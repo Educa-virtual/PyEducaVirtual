@@ -41,18 +41,6 @@ export class AgregarSeccionEncuestaComponent implements OnInit {
         }
     }*/
     finalizar() {
-        if (this.nuevaSeccion && this.nuevaSeccion.trim()) {
-            this.AgregarSeccionEncuesta.emit({
-                cSeccionNombre: this.nuevaSeccion.trim(),
-                iSeccionEncuestaId: Date.now(), // ID temporal
-                iOrden: 1, // Orden por defecto
-                bActivo: true,
-                preguntas: [],
-            })
-
-            this.nuevaSeccion = ''
-
-            this.onHide()
-        }
+        this.onHide()
     }
 }

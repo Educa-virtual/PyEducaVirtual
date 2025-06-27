@@ -4,16 +4,22 @@ import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
+import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 @Component({
     selector: 'app-lista-categorias',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        GestionEncuestaConfiguracionComponent,
+    ],
     templateUrl: './lista-categorias.component.html',
     styleUrl: './lista-categorias.component.scss',
 })
 export class ListaCategoriasComponent implements OnInit {
     titleListaCategoria: string = 'Censo DRE/UGEL'
     selectedItem: any
+    mostrarDialogoConfiguracion: boolean = false
     dataCategorias = [
         {
             item: 1,
@@ -149,17 +155,16 @@ export class ListaCategoriasComponent implements OnInit {
         })
     }
 
-    /*constructor{
-        private messageService: MessageService,
-        private router:  Router
-    } {}*/
-
     constructor(
         private messageService: MessageService,
-        private router: Router // ← Agregar si no lo tienes
+        private router: Router
     ) {}
 
-    navegarAConfiguracion() {
-        this.router.navigate(['/configuracion-encuestas'])
+    abrirDialogoConfiguracion() {
+        this.mostrarDialogoConfiguracion = true
+    }
+
+    cerrarDialogoConfiguracion() {
+        this.mostrarDialogoConfiguracion = false
     }
 }

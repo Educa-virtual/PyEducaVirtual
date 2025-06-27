@@ -18,7 +18,7 @@
                 label="Nueva"
                 icon="pi pi-plus"
                 class="p-button-success"
-                (click)="navegarAConfiguracion()"
+                (click)="abrirDialogoConfiguracion()"
             ></button>
         </div>
     </ng-template>
@@ -41,3 +41,8 @@
     >
     </app-table-primeng>
 </p-panel>
+<app-gestion-encuesta-configuracion
+    [visible]="mostrarDialogoConfiguracion"
+    (visibleChange)="(mostrarDialogoConfiguracion)"
+>
+</app-gestion-encuesta-configuracion>

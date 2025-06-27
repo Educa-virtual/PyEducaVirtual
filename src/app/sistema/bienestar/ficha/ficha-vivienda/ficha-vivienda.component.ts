@@ -266,6 +266,11 @@ export class FichaViviendaComponent implements OnInit {
                         summary: 'Actualización exitosa',
                         detail: 'Se actualizaron los datos',
                     })
+                    setTimeout(() => {
+                        this.router.navigate([
+                            `/bienestar/ficha/${this.iFichaDGId}/alimentacion`,
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

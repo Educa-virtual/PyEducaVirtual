@@ -148,6 +148,10 @@ export class FichaFamiliaComponent implements OnInit {
         })
     }
 
+    continuar() {
+        this.router.navigate([`/bienestar/ficha/${this.iFichaDGId}/economico`])
+    }
+
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
             this.iFamiliarId = item.iFamiliarId

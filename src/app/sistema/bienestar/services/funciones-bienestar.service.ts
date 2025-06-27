@@ -39,8 +39,8 @@ export class FuncionesBienestarService implements OnDestroy {
             if (!value) value = null
             form.get(formControl)?.patchValue(value)
         } else if (tipo === 'date') {
-            if (!value) value = null
-            const fecha = new Date(value)
+            let fecha = new Date(value)
+            if (!value) fecha = null
             form.get(formControl)?.patchValue(fecha)
         } else if (tipo === 'json') {
             if (!value) {

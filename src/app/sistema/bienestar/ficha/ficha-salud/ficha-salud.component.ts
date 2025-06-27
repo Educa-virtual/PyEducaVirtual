@@ -5,10 +5,10 @@ import { GestionPandemiaDosisComponent } from './gestion-pandemia-dosis/gestion-
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
-import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { MessageService } from 'primeng/api'
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
+import { MultiselectSimpleComponent } from '../shared/multiselect-simple/multiselect-simple.component'
 
 @Component({
     selector: 'app-ficha-salud',
@@ -16,8 +16,8 @@ import { FuncionesBienestarService } from '../../services/funciones-bienestar.se
     imports: [
         PrimengModule,
         GestionPandemiaDosisComponent,
-        MultiselectInputComponent,
         SwitchInputComponent,
+        MultiselectSimpleComponent,
     ],
     templateUrl: './ficha-salud.component.html',
     styleUrl: './ficha-salud.component.scss',
@@ -59,8 +59,7 @@ export class FichaSaludComponent implements OnInit {
                 cFichaDGAlergiaMedicamentos: [null],
                 bFichaDGAlergiaOtros: [false],
                 cFichaDGAlergiaOtros: [null],
-                iSeguroSaludId: [null, Validators.required],
-                cSeguroSaludObs: [null],
+                iSegSaludId: [null, Validators.required],
                 iDolenciaId: [null],
                 cDolFichaObs: [null],
                 controles_dolencias: this.fb.array([]),
@@ -115,6 +114,12 @@ export class FichaSaludComponent implements OnInit {
             'bFichaDGAlergiaOtros',
             data.bFichaDGAlergiaOtros,
             'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formSalud,
+            'iSegSaludId',
+            data.seguros,
+            'json'
         )
         if (data.dolencias) {
             const dolencias = JSON.parse(data.dolencias).map(
@@ -177,7 +182,7 @@ export class FichaSaludComponent implements OnInit {
         this.funcionesBienestar.formControlJsonStringify(
             this.formSalud,
             'jsonSeguros',
-            'iSeguroSaludId'
+            'iSegSaludId'
         )
 
         this.datosFichaBienestar

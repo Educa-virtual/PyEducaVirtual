@@ -2,7 +2,7 @@
     <br />
 
     <p-fieldset legend="Identidad">
-        <div class="pt-2 grid p-fluid mt-3">
+        <div class="grid p-fluid">
             <div class="col-12 sm:col-6">
                 <app-dropdown-simple
                     addonLabel="Tipo de Documento *"
@@ -40,7 +40,7 @@
 
             <div class="col-12 sm:col-6">
                 <app-dropdown-simple
-                    addonLabel="Relación familiar *"
+                    addonLabel="Tipo de familiar *"
                     [dropdownItems]="tipos_familiares"
                     [dropdownControl]="
                         $any(formFamiliar.controls['iTipoFamiliarId'])
@@ -88,7 +88,14 @@
                     [inputControl]="$any(formFamiliar.controls['cPersNombre'])"
                     addonLabel="Nombres *"
                     [inputMaxlength]="50"
+                    [inputReadonly]="true"
+                    [infoAdicional]="cPersNombre"
                 />
+                <ng-template #cPersNombre>
+                    Este campo se llena automáticamente al ingresar el tipo y
+                    número de documento de identidad y presionar el botón
+                    "Validar".
+                </ng-template>
             </div>
 
             <div class="col-12 sm:col-6">
@@ -97,7 +104,14 @@
                     [inputControl]="$any(formFamiliar.controls['cPersPaterno'])"
                     addonLabel="Primer Apellido *"
                     [inputMaxlength]="50"
+                    [inputReadonly]="true"
+                    [infoAdicional]="cPersPaterno"
                 />
+                <ng-template #cPersPaterno>
+                    Este campo se llena automáticamente al ingresar el tipo y
+                    número de documento de identidad y presionar el botón
+                    "Validar".
+                </ng-template>
             </div>
             <div class="col-12 sm:col-6">
                 <app-input-simple
@@ -105,7 +119,14 @@
                     [inputControl]="$any(formFamiliar.controls['cPersMaterno'])"
                     addonLabel="Segundo Apellido"
                     [inputMaxlength]="50"
+                    [inputReadonly]="true"
+                    [infoAdicional]="cPersMaterno"
                 />
+                <ng-template #cPersMaterno>
+                    Este campo se llena automáticamente al ingresar el tipo y
+                    número de documento de identidad y presionar el botón
+                    "Validar".
+                </ng-template>
             </div>
         </div>
     </p-fieldset>
@@ -113,7 +134,7 @@
     <br />
 
     <p-fieldset legend="Nacimiento">
-        <div class="grid p-fluid mt-3">
+        <div class="grid p-fluid">
             <div class="col-12 sm:col-6">
                 <app-dropdown-simple
                     addonLabel="Nacionalidad"
@@ -140,7 +161,7 @@
     <br />
 
     <p-fieldset legend="Dirección del familiar" *ngIf="ver_controles_direccion">
-        <div class="grid p-fluid mt-3">
+        <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
                 <app-dropdown-input
                     [dropdownControl]="
@@ -302,7 +323,7 @@
     <br />
 
     <p-fieldset legend="Ubigeo" [toggleable]="true">
-        <div class="grid p-fluid mt-3">
+        <div class="grid p-fluid">
             <div class="col-12 sm:col-6">
                 <app-dropdown-simple
                     addonLabel="Departamento"
@@ -349,7 +370,7 @@
     <br />
 
     <p-fieldset legend="Adicionales" [toggleable]="true">
-        <div class="grid p-fluid mt-3">
+        <div class="grid p-fluid">
             <div class="col-12">
                 <app-dropdown-simple
                     addonLabel="Ocupación"

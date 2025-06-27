@@ -40,7 +40,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
     dosis_filtradas: any[]
     dosis_registrada: boolean = false
     visible: boolean = false
-    caption: string = ''
+    caption: string = 'Registrar dosis'
     fecha_actual: Date = new Date()
 
     private _messageService = inject(MessageService)
@@ -74,6 +74,8 @@ export class GestionPandemiaDosisComponent implements OnInit {
         if (this.iFichaDGId) {
             this.listarDosis()
         }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formDosis)
     }
 
     filtrarTabla() {
@@ -154,18 +156,21 @@ export class GestionPandemiaDosisComponent implements OnInit {
             )
             this.dosis_registrada = true
         }
+        this.funcionesBienestar.formMarkAsDirty(this.formDosis)
     }
 
     agregarDosis() {
+        this.caption = 'Registrar dosis'
         this.setFormDosis({
             iFichaDGId: this.iFichaDGId,
             iPandemiaId: null,
             iPanDFichaId: null,
             iPanDFichaNroDosis: null,
-            dtPanDFichaDosis: new Date(),
+            dtPanDFichaDosis: null,
         })
         this.dosis_registrada = false
         this.visible = true
+        this.funcionesBienestar.formMarkAsDirty(this.formDosis)
     }
 
     borrarDosis(iPanDFichaId: any) {
@@ -261,6 +266,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
             this.visible = true
+            this.caption = 'Editar dosis'
             this.verDosis(item?.iPanDFichaId)
         }
         if (accion === 'anular') {

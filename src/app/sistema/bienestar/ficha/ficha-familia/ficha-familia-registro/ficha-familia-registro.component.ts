@@ -127,7 +127,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                 cPersNombre: ['', Validators.required],
                 cPersPaterno: ['', Validators.required],
                 cPersMaterno: [''],
-                dPersNacimiento: [Validators.required],
+                dPersNacimiento: [null, Validators.required],
                 cPersSexo: [null, Validators.required],
                 iTipoEstCivId: [null],
                 iNacionId: [null],
@@ -233,6 +233,8 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                         ?.setValue(null)
                 }
             })
+
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
     }
 
     ngOnChanges() {
@@ -292,12 +294,23 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             })
             .subscribe({
                 next: (data: any) => {
-                    this.setFormFamiliar(data.data)
-                    this._messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: data.message,
-                    })
+                    if (data.data) {
+                        this.setFormFamiliarValidado(data.data)
+                        this._messageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: data.message,
+                        })
+                    } else {
+                        this._messageService.add({
+                            severity: 'danger',
+                            summary: 'Error',
+                            detail: 'No se pudo encontrar el documento',
+                        })
+                        this.formFamiliar.get('cPersNombre').setValue(null)
+                        this.formFamiliar.get('cPersPaterno').setValue(null)
+                        this.formFamiliar.get('cPersMaterno').setValue(null)
+                    }
                 },
                 error: (error) => {
                     console.error('Error validando persona:', error)
@@ -307,6 +320,9 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                         detail:
                             error.error.message || 'Error al validar persona',
                     })
+                    this.formFamiliar.get('cPersNombre').setValue(null)
+                    this.formFamiliar.get('cPersPaterno').setValue(null)
+                    this.formFamiliar.get('cPersMaterno').setValue(null)
                 },
             })
     }
@@ -401,6 +417,63 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             item.dPersNacimiento,
             'date'
         )
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
+    }
+
+    /**
+     * Setea los datos de un familiar según servicio de validación
+     * @param item datos del familiar seleccionado
+     */
+    setFormFamiliarValidado(item: FichaFamiliar) {
+        if (!item) {
+            this.formFamiliar.get('iPersId')?.setValue(null)
+            this.familiar_registrado = false
+            return
+        }
+        this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId)
+        this.formFamiliar.get('cPersNombre').setValue(item.cPersNombre)
+        this.formFamiliar.get('cPersPaterno').setValue(item.cPersPaterno)
+        this.formFamiliar.get('cPersMaterno').setValue(item.cPersMaterno)
+        this.formFamiliar.get('cPersSexo').setValue(item.cPersSexo)
+        this.formFamiliar.get('cPersDomicilio').setValue(item.cPersDomicilio)
+
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoEstCivId',
+            item.iTipoEstCivId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iNacionId',
+            item.iNacionId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iDptoId',
+            item.iDptoId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iPrvnId',
+            item.iPrvnId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iDsttId',
+            item.iDsttId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'dPersNacimiento',
+            item.dPersNacimiento,
+            'date'
+        )
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
     }
 
     guardarFamiliar() {

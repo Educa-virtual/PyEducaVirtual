@@ -1,20 +1,14 @@
 <br />
 
 <form [formGroup]="formSalud">
-    <div class="grid p-fluid mt-3">
+    <div class="grid p-fluid p-2">
         <div class="col-12">
-            <app-multiselect-input
+            <app-multiselect-simple
                 [multiselectItems]="seguros_salud"
-                [multiselectControl]="
-                    $any(formSalud).controls['iSeguroSaludId']
-                "
+                [multiselectControl]="$any(formSalud).controls['iSegSaludId']"
                 [addonLabel]="
                     'Seguros de salud con los que cuenta el estudiante *'
                 "
-                [inputControl]="$any(formSalud).controls['cSeguroSaludObs']"
-                inputType="text"
-                inputPlaceholder="Seleccione"
-                [inputMaxlength]="80"
             />
         </div>
         <div class="col-12 lg:col-6">

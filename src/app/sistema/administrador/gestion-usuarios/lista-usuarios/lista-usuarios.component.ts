@@ -7,7 +7,6 @@ import {
     SelectItem,
 } from 'primeng/api'
 import { HttpParams } from '@angular/common/http'
-import { Subject } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { EditarPerfilComponent } from '../editar-perfil/editar-perfil.component'
 import { Usuario } from '../interfaces/usuario.interface'
@@ -29,7 +28,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
     styleUrl: './lista-usuarios.component.scss',
 })
 export class ListaUsuariosComponent {
-    private searchChanged: Subject<void> = new Subject<void>()
+    //private searchChanged: Subject<void> = new Subject<void>()
     private lastLazyEvent: LazyLoadEvent | undefined
     formCriteriosBusqueda: FormGroup
     dataUsuarios: Usuario[] = []
@@ -47,16 +46,16 @@ export class ListaUsuariosComponent {
     modalAgregarUsuariolVisible: boolean = false
     modalCambiarFechaCaducidadVisible: boolean = false
     modalPersonalVisible: boolean = false
-    criterioBusqueda: string = ''
+    //criterioBusqueda: string = ''
     //selectedPersonal: Usuario | null = null
     opcionesBusqueda: any[] = []
-    opcionBusquedaSeleccionada: any
+    //opcionBusquedaSeleccionada: any
 
     dataInstituciones: SelectItem[] = []
     dataPerfiles: SelectItem[] = []
     dataIeSedes: SelectItem[] = []
     dataCursos: SelectItem[] = []
-    dataModulosAdministrativos: SelectItem[] = []
+    //dataModulosAdministrativos: SelectItem[] = []
     dataInstitucionesEducativas: SelectItem[] = []
     dataPerfilesUsuario: any[] = []
     dataUgeles: any[] = []
@@ -86,7 +85,7 @@ export class ListaUsuariosComponent {
             { label: 'Nombres', value: 'nombres' },
             { label: 'Perfil', value: 'perfil' },
         ]
-        this.opcionBusquedaSeleccionada = this.opcionesBusqueda[0].value
+        //this.opcionBusquedaSeleccionada = this.opcionesBusqueda[0].value
         this.dataInstituciones = [
             { label: 'DREMO', value: 1 },
             { label: 'UGEL', value: 2 },
@@ -123,7 +122,7 @@ export class ListaUsuariosComponent {
             criterioBusqueda: [''],
             institucionSeleccionada: [''],
             ieSeleccionada: [''],
-            iModuloSeleccionado: [''],
+            //iModuloSeleccionado: [''],
             iUgelSeleccionada: [''],
             ieSedeSeleccionada: [''],
             //iCursoSeleccionado: [''],
@@ -137,7 +136,7 @@ export class ListaUsuariosComponent {
         this.obtenerInstitucionesEducativas()
         this.obtenerUgeles()
         //this.obtenerCursos()
-        this.obtenerModulosAdministrativos()
+        //this.obtenerModulosAdministrativos()
         /*this.opciones = [
             { label: 'DREMO', value: 1 },
             { label: 'UGEL', value: 2 },
@@ -164,7 +163,7 @@ export class ListaUsuariosComponent {
         })
     }
 
-    obtenerModulosAdministrativos() {
+    /*obtenerModulosAdministrativos() {
         this.usuariosService.obtenerModulosAdministrativos().subscribe({
             next: (respuesta: any) => {
                 this.dataModulosAdministrativos = respuesta.data.map((mod) => ({
@@ -180,7 +179,7 @@ export class ListaUsuariosComponent {
                 })
             },
         })
-    }
+    }*/
 
     /*obtenerCursos() {
         this.usuariosService.obtenerCursos().subscribe({
@@ -242,16 +241,39 @@ export class ListaUsuariosComponent {
         })
     }
 
+    actualizarOpcionBusqueda() {
+        if (
+            this.formCriteriosBusqueda.get('opcionSeleccionada')?.value ==
+            'perfil'
+        ) {
+            this.formCriteriosBusqueda
+                .get('institucionSeleccionada')
+                ?.setValidators([Validators.required])
+            this.formCriteriosBusqueda
+                .get('perfilSeleccionado')
+                ?.setValidators([Validators.required])
+        } else {
+            this.formCriteriosBusqueda
+                .get('institucionSeleccionada')
+                ?.clearValidators()
+            this.formCriteriosBusqueda
+                .get('perfilSeleccionado')
+                ?.clearValidators()
+        }
+        this.formCriteriosBusqueda
+            .get('institucionSeleccionada')
+            ?.updateValueAndValidity()
+        this.formCriteriosBusqueda
+            .get('perfilSeleccionado')
+            ?.updateValueAndValidity()
+    }
+
     reiniciarFiltrosPerfil() {
         const fields = [
             'ieSeleccionada',
             'iUgelSeleccionada',
             'ieSedeSeleccionada',
-            //'iCursoSeleccionado',
-            'iModuloSeleccionado',
         ]
-
-        // Limpiar valores y validadores
         fields.forEach((field) => {
             this.formCriteriosBusqueda.get(field)?.setValue('')
             this.formCriteriosBusqueda.get(field)?.clearValidators()
@@ -263,27 +285,12 @@ export class ListaUsuariosComponent {
         switch (opcion) {
             case 1:
                 this.obtenerPerfilesPorTipo('dremo')
-                if (
-                    +this.formCriteriosBusqueda.get('perfilSeleccionado')
-                        ?.value == 2
-                ) {
-                    /*this.formCriteriosBusqueda
-                        .get('iCursoSeleccionado')
-                        ?.setValidators([Validators.required])*/
-                } else {
-                    this.formCriteriosBusqueda
-                        .get('iModuloSeleccionado')
-                        ?.setValidators([Validators.required])
-                }
                 break
             case 2:
                 this.obtenerPerfilesPorTipo('ugel')
                 this.formCriteriosBusqueda
                     .get('iUgelSeleccionada')
                     ?.setValidators([Validators.required])
-                /*this.formCriteriosBusqueda
-                    .get('iCursoSeleccionado')
-                    ?.setValidators([Validators.required])*/
                 break
             case 3:
                 this.obtenerPerfilesPorTipo('ie')
@@ -301,12 +308,6 @@ export class ListaUsuariosComponent {
             this.formCriteriosBusqueda.get(field)?.updateValueAndValidity()
         })
     }
-
-    /*cambioOpcionBusqueda() {
-        if (this.criterioBusqueda != '') {
-            this.loadUsuariosLazy(this.lastLazyEvent)
-        }
-    }*/
 
     obtenerSedesIe() {
         this.usuariosService
@@ -363,7 +364,6 @@ export class ListaUsuariosComponent {
     }
 
     usuarioRegistrado(data) {
-        console.log('Usuario registrado:', data)
         this.modalAgregarUsuariolVisible = false
         this.modalAsignarRolVisible = true
         this.usuarioSeleccionado = data
@@ -377,15 +377,30 @@ export class ListaUsuariosComponent {
             .set('offset', event.first)
             .set('limit', event.rows)
             .set(
-                'opcionBusquedaSeleccionada',
-                this.opcionBusquedaSeleccionada.value
+                'opcionSeleccionada',
+                this.formCriteriosBusqueda.get('opcionSeleccionada')?.value
             )
-            .set('criterioBusqueda', this.criterioBusqueda)
-        /*.set(
-            'filtroInstitucionSeleccionada',
-            this.filtroInstitucionSeleccionada.value
-        )*/
-        //.set('filtroPerfilSeleccionado', this.filtroPerfilSeleccionado.value)
+            .set(
+                'criterioBusqueda',
+                this.formCriteriosBusqueda.get('criterioBusqueda')?.value
+            )
+            .set(
+                'institucionSeleccionada',
+                this.formCriteriosBusqueda.get('institucionSeleccionada')?.value
+            )
+            .set(
+                'perfilSeleccionado',
+                this.formCriteriosBusqueda.get('perfilSeleccionado')?.value
+            )
+            .set(
+                'iUgelSeleccionada',
+                this.formCriteriosBusqueda.get('iUgelSeleccionada')?.value
+            )
+            //.set('ieSeleccionada', this.formCriteriosBusqueda.get('ieSeleccionada')?.value)
+            .set(
+                'ieSedeSeleccionada',
+                this.formCriteriosBusqueda.get('ieSedeSeleccionada')?.value
+            )
         this.obtenerListaUsuarios(params)
     }
 

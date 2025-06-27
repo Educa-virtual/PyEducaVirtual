@@ -29,11 +29,12 @@
             <form [formGroup]="formCriteriosBusqueda">
                 <div class="filter-row flex flex-wrap align-items-center">
                     <div class="filtro-item">
-                        <label for="modulos">Buscar por:</label>
+                        <label for="opcion">Buscar por:</label>
                         <p-dropdown
                             [options]="opcionesBusqueda"
                             formControlName="opcionSeleccionada"
                             styleClass="w-full"
+                            (onChange)="actualizarOpcionBusqueda()"
                         >
                         </p-dropdown>
                     </div>
@@ -43,6 +44,7 @@
                             ?.value !== 'perfil'
                     ) {
                         <div class="search-input-container flex-grow-1 mr-3">
+                            <label for="modulos">Criterio de búsqueda:</label>
                             <span class="p-input-icon-right w-full">
                                 <i class="pi pi-search"></i>
                                 <input
@@ -58,7 +60,7 @@
                     <!--Filtros por select para instituciones (Dremo, Ugel, IE)-->
                     @else {
                         <div class="filtro-item">
-                            <label for="modulos">Instituciones:</label>
+                            <label for="instituciones">Instituciones:</label>
                             <p-dropdown
                                 [options]="dataInstituciones"
                                 formControlName="institucionSeleccionada"
@@ -69,7 +71,7 @@
                             </p-dropdown>
                         </div>
                         <div class="filtro-item">
-                            <label for="modulos">Perfil:</label>
+                            <label for="perfil">Perfil:</label>
                             <p-dropdown
                                 appendTo="body"
                                 [options]="dataPerfiles"
@@ -77,104 +79,75 @@
                                 styleClass="dropdown-field"
                                 formControlName="perfilSeleccionado"
                                 [filter]="true"
-                                (onChange)="reiniciarFiltrosPerfil()"
                             >
                             </p-dropdown>
                         </div>
-                    }
-                    @if (
-                        +formCriteriosBusqueda.get('institucionSeleccionada')
-                            ?.value === 1 &&
-                        +formCriteriosBusqueda.get('perfilSeleccionado')
-                            ?.value > 0 &&
-                        +formCriteriosBusqueda.get('perfilSeleccionado')
-                            ?.value !== 2
-                    ) {
-                        <div class="filtro-item">
-                            <label for="ugeles">Módulo administrativo:</label>
-                            <p-dropdown
-                                appendTo="body"
-                                [options]="dataModulosAdministrativos"
-                                formControlName="iModuloSeleccionado"
-                                placeholder="Seleccione opción"
-                                styleClass="dropdown-field"
-                            >
-                            </p-dropdown>
-                        </div>
-                    }
-                    @if (
-                        +formCriteriosBusqueda.get('institucionSeleccionada')
-                            ?.value === 2
-                    ) {
-                        <div class="filtro-item">
-                            <label for="ugeles">UGEL:</label>
-                            <p-dropdown
-                                appendTo="body"
-                                [options]="dataUgeles"
-                                formControlName="iUgelSeleccionada"
-                                placeholder="Seleccione opción"
-                                styleClass="dropdown-field"
-                            >
-                            </p-dropdown>
-                        </div>
-                    }
-                    @if (
-                        +formCriteriosBusqueda.get('institucionSeleccionada')
-                            ?.value === 3
-                    ) {
-                        <div class="filtro-item">
-                            <label for="instituciones"
-                                >Institución educativa:</label
-                            >
-                            <p-dropdown
-                                appendTo="body"
-                                [options]="dataInstitucionesEducativas"
-                                formControlName="ieSeleccionada"
-                                (onChange)="obtenerSedesIe()"
-                                placeholder="Seleccione opción"
-                                [filter]="true"
-                                styleClass="dropdown-field"
-                            >
-                            </p-dropdown>
-                        </div>
-                    }
 
-                    @if (
-                        +formCriteriosBusqueda.get('ieSeleccionada')?.value > 0
-                    ) {
-                        <div class="filtro-item">
-                            <label for="sedes">Sede:</label>
-                            <p-dropdown
-                                appendTo="body"
-                                [options]="dataIeSedes"
-                                formControlName="ieSedeSeleccionada"
-                                placeholder="Seleccione opción"
-                                styleClass="dropdown-field"
-                            >
-                            </p-dropdown>
-                        </div>
+                        @if (
+                            +formCriteriosBusqueda.get(
+                                'institucionSeleccionada'
+                            )?.value === 2
+                        ) {
+                            <div class="filtro-item">
+                                <label for="ugeles">UGEL:</label>
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataUgeles"
+                                    formControlName="iUgelSeleccionada"
+                                    placeholder="Seleccione opción"
+                                    styleClass="dropdown-field"
+                                >
+                                </p-dropdown>
+                            </div>
+                        }
+                        @if (
+                            +formCriteriosBusqueda.get(
+                                'institucionSeleccionada'
+                            )?.value === 3
+                        ) {
+                            <div class="filtro-item">
+                                <label for="instituciones"
+                                    >Institución educativa:</label
+                                >
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataInstitucionesEducativas"
+                                    formControlName="ieSeleccionada"
+                                    (onChange)="obtenerSedesIe()"
+                                    placeholder="Seleccione opción"
+                                    [filter]="true"
+                                    styleClass="dropdown-field"
+                                >
+                                </p-dropdown>
+                            </div>
+                        }
+
+                        @if (
+                            +formCriteriosBusqueda.get('ieSeleccionada')
+                                ?.value > 0
+                        ) {
+                            <div class="filtro-item">
+                                <label for="sedes">Sede:</label>
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataIeSedes"
+                                    formControlName="ieSedeSeleccionada"
+                                    placeholder="Seleccione opción"
+                                    styleClass="dropdown-field"
+                                >
+                                </p-dropdown>
+                            </div>
+                        }
                     }
-                    <div class="ml-auto">
+                    <div class="ml-auto boton-buscar">
                         <button
                             pButton
                             pRipple
                             label="Buscar"
                             (click)="realizarBusqueda()"
+                            [disabled]="!formCriteriosBusqueda.valid"
                         ></button>
                     </div>
-
-                    <!--<div class="filter-item mr-1">
-                    <label for="modulos">Filtrar por:</label>
-                    <p-dropdown [options]="filtrosInstituciones" [(ngModel)]="filtroInstitucionSeleccionada"
-                        optionLabel="name" styleClass="w-full">
-                    </p-dropdown>
-                </div>
-
-                <div class="filter-item mr-3">
-                    <p-dropdown [options]="filtrosRoles" [(ngModel)]="filtroPerfilSeleccionado" optionLabel="name"
-                        styleClass="w-full">
-                    </p-dropdown>
-                </div>-->
                 </div>
             </form>
         </div>
@@ -188,9 +161,11 @@
             [paginator]="true"
             [rows]="20"
             [totalRecords]="totalDataUsuarios"
+            [showCurrentPageReport]="true"
             [loading]="loading"
             (onLazyLoad)="loadUsuariosLazy($event)"
             [scrollable]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
         >
             <ng-template pTemplate="header">
                 <tr class="bg-gray-200">

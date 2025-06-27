@@ -50,7 +50,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
     datosPreguntas: any
     datos: any
     params: any // variable para enviar datos para actualizar
-    iEstado: number
+    iEstado: number | string
     iPerfilId: number
 
     tiposAgregarPregunta: MenuItem[] = [
@@ -86,7 +86,7 @@ export class CuestionarioPreguntasComponent implements OnInit {
     loading: boolean = false
 
     esBotonDeshabilitado(): boolean {
-        return this.iEstado === 10 || this.iEstado === 2
+        return this.iEstado! == 10 || this.iEstado === '2'
     }
 
     guardarPregunta(data: any) {

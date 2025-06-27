@@ -136,7 +136,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
     @Input() width: string = '100%'
-
+    @Input() showSearchTable: boolean = false
     //placeholder search
     @Input() searchPlaceholder: string = 'Buscar por nombre....'
     debug(d) {

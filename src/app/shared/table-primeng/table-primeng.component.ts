@@ -109,7 +109,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
 
     getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
-        console.log(rowData)
         return {
             ...this.getClass(rowData, 'class'),
             itemSelected: rowIndex === this.trSelected,
@@ -142,7 +141,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
     @Input() width: string = '100%'
-
+    @Input() showSearchTable: boolean = false
     //placeholder search
     @Input() searchPlaceholder: string = 'Buscar por nombre....'
     debug(d) {

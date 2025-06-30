@@ -29,7 +29,14 @@
             </div>
         </div>
         <div class="col-12 md:col-4 mb-4">
-            <ng-content></ng-content>
+            <ng-content select="[estado-actividad]"></ng-content>
+            <!-- contenido por defecto -->
+        </div>
+        <div class="col-12">
+            <section>
+                <ng-content></ng-content>
+                <!-- contenido por defecto -->
+            </section>
         </div>
 
         <!-- Descripción -->

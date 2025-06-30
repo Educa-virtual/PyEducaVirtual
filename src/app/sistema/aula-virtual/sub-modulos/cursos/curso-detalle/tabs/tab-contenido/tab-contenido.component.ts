@@ -437,59 +437,7 @@ export class TabContenidoComponent implements OnInit {
                 })
                 .onClose.subscribe((result) => {
                     if (result) {
-                        // console.log('datos para editar foro', result)
-                        const data = {
-                            // ...result,
-                            iForoId: result.iForoId,
-                            iForoCatId: result.iForoCatId,
-                            iDocenteId: result.iDocenteId,
-                            cForoTitulo: result.cForoTitulo,
-                            cForoDescripcion: result.cForoDescripcion,
-                            dtForoPublicacion: result.dtForoInicio,
-                            dtForoInicio: result.dtForoInicio,
-                            dtForoFin: result.dtForoFin,
-                        }
-                        // console.log('datos para el backend', data)
-                        this._aulaService.actualizarForo(data).subscribe({
-                            next: (resp) => {
-                                this.messageService.add({
-                                    severity: 'success',
-                                    summary: 'Acción exitosa',
-                                    detail: 'Se guardo correctamente',
-                                })
-                                console.log(resp)
-                                this.obtenerContenidoSemanas(
-                                    this.semanaSeleccionada
-                                )
-                            },
-                            error: (error) => {
-                                const errores = error?.error?.errors
-                                if (error.status === 422 && errores) {
-                                    // Recorre y muestra cada mensaje de error
-                                    Object.keys(errores).forEach((campo) => {
-                                        errores[campo].forEach(
-                                            (mensaje: string) => {
-                                                this.messageService.add({
-                                                    severity: 'error',
-                                                    summary:
-                                                        'Error de validación',
-                                                    detail: mensaje,
-                                                })
-                                            }
-                                        )
-                                    })
-                                } else {
-                                    // Error genérico si no hay errores específicos
-                                    this.messageService.add({
-                                        severity: 'error',
-                                        summary: 'Error',
-                                        detail:
-                                            error?.error?.message ||
-                                            'Ocurrió un error inesperado',
-                                    })
-                                }
-                            },
-                        })
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                     } else {
                         console.log('Formulario cancelado')
                     }
@@ -510,55 +458,7 @@ export class TabContenidoComponent implements OnInit {
                 })
                 .onClose.subscribe((result) => {
                     if (result) {
-                        const data = {
-                            ...result,
-                            iContenidoSemId:
-                                this.semanaSeleccionada.iContenidoSemId,
-                        }
-                        const params = {
-                            petition: 'post',
-                            group: 'aula-virtual',
-                            prefix: 'foros',
-                            data: data,
-                            params: {
-                                iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
-                            },
-                        }
-                        this.GeneralService.getGralPrefixx(params).subscribe({
-                            next: (resp) => {
-                                console.log(resp)
-                                this.obtenerContenidoSemanas(
-                                    this.semanaSeleccionada
-                                )
-                            },
-                            error: (error) => {
-                                const errores = error?.error?.errors
-                                if (error.status === 422 && errores) {
-                                    // Recorre y muestra cada mensaje de error
-                                    Object.keys(errores).forEach((campo) => {
-                                        errores[campo].forEach(
-                                            (mensaje: string) => {
-                                                this.messageService.add({
-                                                    severity: 'error',
-                                                    summary:
-                                                        'Error de validación',
-                                                    detail: mensaje,
-                                                })
-                                            }
-                                        )
-                                    })
-                                } else {
-                                    // Error genérico si no hay errores específicos
-                                    this.messageService.add({
-                                        severity: 'error',
-                                        summary: 'Error',
-                                        detail:
-                                            error?.error?.message ||
-                                            'Ocurrió un error inesperado',
-                                    })
-                                }
-                            },
-                        })
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                     } else {
                         console.log('Formulario cancelado')
                     }

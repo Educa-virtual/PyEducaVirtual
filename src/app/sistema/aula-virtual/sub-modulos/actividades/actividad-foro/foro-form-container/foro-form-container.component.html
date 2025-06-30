@@ -115,13 +115,15 @@
     <button
         pButton
         pRipple
-        [label]="action === 'ACTUALIZAR' ? 'Editar Foro' : 'Crear Foro'"
+        [label]="action === 'ACTUALIZAR' ? 'ACTUALIZAR' : 'GUARDAR'"
         icon="pi pi-check"
         size="small"
         [class]="
             action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'
         "
         (click)="submit()"
+        [loading]="isLoading"
+        [disabled]="isLoading"
     ></button>
 </div>
 

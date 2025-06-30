@@ -46,7 +46,9 @@
                         icon="pi pi-book"
                         [rounded]="true"
                         [severity]="
-                            estudiante?.cEstado === '0' ? 'danger' : 'success'
+                            estudiante?.iEstadoRpta === '0'
+                                ? 'danger'
+                                : 'success'
                         "
                         tooltipPosition="bottom"
                         pTooltip="Calificar"

@@ -11,33 +11,27 @@ import {
     matStar,
 } from '@ng-icons/material-icons/baseline'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { provideIcons } from '@ng-icons/core'
-import { TabViewModule } from 'primeng/tabview'
-import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-import { NgFor, NgIf } from '@angular/common'
+import { NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { MenuItem, Message } from 'primeng/api'
 // import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
-import { TimeComponent } from '@/app/shared/time/time.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
-import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ForoRoomDetalleComponent } from '../foro-room-detalle/foro-room-detalle.component'
 import { Location } from '@angular/common'
-import { DescripcionActividadesComponent } from '../../components/descripcion-actividades/descripcion-actividades.component'
-//import { Toast } from 'primeng/toast';
+import { ForosService } from '@/app/servicios/aula/foros.service'
+import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component'
 
 @Component({
     selector: 'app-foro-room',
@@ -46,21 +40,14 @@ import { DescripcionActividadesComponent } from '../../components/descripcion-ac
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
-        TimeComponent,
         EmptySectionComponent,
         RecursosListaComponent,
         RemoveHTMLPipe,
-        CommonInputComponent,
-        TablePrimengComponent,
-        TabViewModule,
-        OrderListModule,
         PrimengModule,
-        NgFor,
         NgIf,
         ToolbarPrimengComponent,
-        RubricasComponent,
         ForoRoomDetalleComponent,
-        DescripcionActividadesComponent,
+        TabDescripcionActividadesComponent,
     ],
     providers: [
         provideIcons({
@@ -89,6 +76,7 @@ export class ForoRoomComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    private _ForosService = inject(ForosService)
     // variables
     showEditor = false // variable          para ocultar el p-editor
     public data = []
@@ -210,7 +198,7 @@ export class ForoRoomComponent implements OnInit {
 
         this.obtenerForo()
         this.getRespuestaF()
-        this.getEstudiantesMatricula()
+        //this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }
     goBack() {
@@ -346,98 +334,7 @@ export class ForoRoomComponent implements OnInit {
     cancelarEdicion() {
         this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
     }
-    sendCommentPadre(respuestas) {
-        // guardar el comentario
-        const iDocenteId = this._constantesService.iDocenteId
-        this.iEstudianteId = this._constantesService.iEstudianteId
-        this.foroFormComntAl.controls['iDocenteId'].setValue(iDocenteId)
-        this.foroFormComntAl.controls['iEstudianteId'].setValue(
-            this.iEstudianteId
-        )
-        this.foroFormComntAl.controls['iForoRptaId'].setValue(
-            respuestas.iForoRptaId
-        )
-        console.log('rptaPadre', this.foroFormComntAl.value)
-        // this._aulaService
-        //     .guardarComentarioRespuesta(this.foroFormComntAl.value)
-        //     .subscribe({
-        //         next: (resp: any) => {
-        //             // para refrescar la pagina
-        //             if (resp?.validated) {
-        //                 this.getRespuestaF()
-        //                 this.foroFormComntAl.get('cForoRptaPadre')?.reset()
-        //             }
-        //         },
-        //         error: (error) => {
-        //             console.error('Comentario:', error)
-        //         },
-        //     })
-    }
-    // guardar comentario de estudiante foro
-    sendComment() {
-        const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
-        // const idPerfil = this.iEstudianteId
-        // console.log('hola', idPerfil);
-        if (perfil == 80) {
-            this.iEstudianteId = Number(this._constantesService.iEstudianteId)
-            const value = this.foroFormComntAl.value
-            const comentarioEstudiante = value.cForoRptaRespuesta
-            const comentarioEstudianteLimpio =
-                this.limpiarHTML(comentarioEstudiante)
-            value.cForoRptaRespuesta = comentarioEstudianteLimpio
-            const comment = {
-                ...this.foroFormComntAl.value,
-                iForoId: this.ixActivadadId,
-                iEstudianteId: this.iEstudianteId,
-            }
-            console.log('comentarios: ', comment)
 
-            this._aulaService.guardarRespuesta(comment).subscribe({
-                next: (resp: any) => {
-                    console.log('respuesta completa', resp)
-                    // para refrescar la pagina
-                    if (resp?.validated) {
-                        this.getRespuestaF()
-                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
-                        // Enviar comentario a través de WebSocket
-                        // this.websocketService.sendMessage({
-                        //     type: 'newComment',
-                        //     data: comment?.cForoRptaRespuesta,
-                        // })
-                        console.log('que envias', comment?.cForoRptaRespuesta)
-                    }
-                },
-                error: (error) => {
-                    console.error('Comentario:', error)
-                },
-            })
-            this.foroFormComntAl.reset()
-        } else {
-            this.iDocenteId = this._constantesService.iDocenteId
-            const comment = {
-                ...this.foroFormComntAl.value,
-                iForoId: this.ixActivadadId,
-                iDocenteId: this.iDocenteId,
-            }
-            this._aulaService.guardarRespuesta(comment).subscribe({
-                next: (resp: any) => {
-                    // para refrescar la pagina
-                    if (resp?.validated) {
-                        this.getRespuestaF()
-                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
-                        // Enviar comentario a través de WebSocket
-                        // this.websocketService.sendMessage({
-                        //     type: 'newComment',
-                        //     data: comment?.cForoRptaRespuesta,
-                        // })
-                    }
-                },
-                error: (error) => {
-                    console.error('Comentario:', error)
-                },
-            })
-        }
-    }
     mostrarCalificacion() {
         const userId = 1
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
@@ -465,6 +362,11 @@ export class ForoRoomComponent implements OnInit {
                               cDocumentos: resp[0].cForoUrl
                                   ? JSON.parse(resp[0].cForoUrl)
                                   : [],
+                              cTitle:
+                                  'Foro: ' +
+                                  (resp[0]?.cForoTitulo ||
+                                      'Título no disponible'),
+                              iEstado: Number(resp[0].iEstado),
                           }
                         : {}
                     // console.log('datos generales foro', this.foro)
@@ -575,23 +477,25 @@ export class ForoRoomComponent implements OnInit {
         })
     }
     // consulta para obtener los estudiantes
-    getEstudiantesMatricula() {
-        this._aulaService
-            .obtenerReporteFinalDeNotas({
-                iIeCursoId: this.iIeCursoId,
-                iYAcadId: this._constantesService.iYAcadId,
-                iSedeId: this._constantesService.iSedeId,
-                iSeccionId: this.iSeccionId,
-                iNivelGradoId: this.iNivelGradoId,
-            })
-            .subscribe((Data) => {
-                this.estudiantes = Data['data']
-                this.estudiantes = Data['data'].map((item: any) => {
-                    return {
-                        ...item,
-                        cTitulo: item.completoalumno,
-                    }
-                })
-            })
-    }
+    // getEstudiantesMatricula() {
+    //     if(this.iPerfilId === ESTUDIANTE) return
+    //     this._ForosService
+    //         .obtenerReporteEstudiantesRetroalimentacion({
+    //             iIeCursoId: this.iIeCursoId,
+    //             iYAcadId: this._constantesService.iYAcadId,
+    //             iSedeId: this._constantesService.iSedeId,
+    //             iSeccionId: this.iSeccionId,
+    //             iNivelGradoId: this.iNivelGradoId,
+    //             iForoId:Number(this.foro.iForoId)
+    //         })
+    //         .subscribe((Data) => {
+    //             this.estudiantes = Data['data']
+    //             this.estudiantes = Data['data'].map((item: any) => {
+    //                 return {
+    //                     ...item,
+    //                     cTitulo: item.completoalumno,
+    //                 }
+    //             })
+    //         })
+    // }
 }

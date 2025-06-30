@@ -118,4 +118,16 @@ export class UtilService {
         if (!text) return ''
         return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
     }
+
+    /**
+     * Convierte a una fecha segura, sin guiones, que no tendrá problemas incluso si SQL Server está configurado en un idioma diferente a español
+     */
+    convertirAFechaSegura(objFecha: Date) {
+        const fecha = objFecha
+        const year = fecha.getFullYear()
+        const month = (fecha.getMonth() + 1).toString().padStart(2, '0')
+        const day = fecha.getDate().toString().padStart(2, '0')
+        const fechaFormateada = `${year}${month}${day}`
+        return fechaFormateada
+    }
 }

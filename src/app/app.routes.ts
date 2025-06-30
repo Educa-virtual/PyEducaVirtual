@@ -11,6 +11,7 @@ import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
+import { NivelPobrezaComponent } from './sistema/bienestar/informe-estadistico/nivel-pobreza/nivel-pobreza.component'
 import { InformeEstadisticoComponent } from './sistema/bienestar/informe-estadistico/informe-estadistico.component'
 
 export const routes: Routes = [
@@ -85,6 +86,11 @@ export const routes: Routes = [
             {
                 path: 'informe-estadistico',
                 component: InformeEstadisticoComponent,
+            },
+            // nivel-pobreza
+            {
+                path: 'nivel-pobreza',
+                component: NivelPobrezaComponent,
             },
         ],
     },

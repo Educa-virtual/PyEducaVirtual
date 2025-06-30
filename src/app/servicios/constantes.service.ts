@@ -429,6 +429,11 @@ const administracion = [
                         label: 'Reportes e informes',
                         icon: 'pi pi-fw pi-chart-bar',
                     },
+                    {
+                        label: 'Informes y estadístico',
+                        icon: 'pi pi-fw pi-file-edit',
+                        routerLink: ['/bienestar/informe-estadistico'],
+                    },
                 ],
             },
 

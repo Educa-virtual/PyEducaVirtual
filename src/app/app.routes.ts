@@ -11,6 +11,7 @@ import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
+import { InformeEstadisticoComponent } from './sistema/bienestar/informe-estadistico/informe-estadistico.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -79,6 +80,11 @@ export const routes: Routes = [
             {
                 path: 'asistencia-auxiliar',
                 component: AuxiliarComponent,
+            },
+            // informes-estadistico
+            {
+                path: 'informe-estadistico',
+                component: InformeEstadisticoComponent,
             },
         ],
     },

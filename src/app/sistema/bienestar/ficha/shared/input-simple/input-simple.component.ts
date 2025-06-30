@@ -52,16 +52,6 @@ export class InputSimpleComponent implements OnInit {
     disabled = false
 
     ngOnInit() {
-        this.inputControl.statusChanges.subscribe((status) => {
-            if (this.inputType == 'date') {
-                console.log(status, 'status')
-            }
-        })
-        this.inputControl.valueChanges.subscribe((value) => {
-            if (this.inputType == 'date') {
-                console.log(value, 'value')
-            }
-        })
         this.inputMinRowsString = `${this.inputMinRows}lh`
         this.inputMaxRowsString = `${this.inputMaxRows}lh`
     }

@@ -5,7 +5,7 @@ import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
-import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
+import { MultiselectSimpleComponent } from '../shared/multiselect-simple/multiselect-simple.component'
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
@@ -16,7 +16,7 @@ import { FuncionesBienestarService } from '../../services/funciones-bienestar.se
     standalone: true,
     imports: [
         PrimengModule,
-        MultiselectInputComponent,
+        MultiselectSimpleComponent,
         DropdownInputComponent,
         SwitchInputComponent,
         InputSimpleComponent,
@@ -68,14 +68,14 @@ export class FichaAlimentacionComponent implements OnInit {
             this.formAlimentacion = this.fb.group({
                 iAlimId: [null],
                 iFichaDGId: [this.iFichaDGId, Validators.required],
-                iLugarAlimIdDesayuno: [null],
-                cLugarAlimDesayuno: [''],
-                iLugarAlimIdAlmuerzo: [null],
+                iLugarAlimIdDesayuno: [null, Validators.required],
+                cLugarAlimDesayuno: ['', Validators.maxLength(80)],
+                iLugarAlimIdAlmuerzo: [null, Validators.required],
                 cLugarAlimAlmuerzo: ['', Validators.maxLength(80)],
-                iLugarAlimIdCena: [null],
+                iLugarAlimIdCena: [null, Validators.required],
                 cLugarAlimCena: ['', Validators.maxLength(80)],
                 iProgAlimId: [null],
-                cProgAlimNombre: ['', Validators.maxLength(80)],
+                cProgAlimNombre: [''],
                 bDietaEspecial: [false],
                 cDietaEspecialObs: [''],
                 bFichaDGAlergiaAlimentos: [false],

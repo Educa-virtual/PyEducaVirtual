@@ -59,7 +59,7 @@ export class FichaFamiliaComponent implements OnInit {
 
     hideDialog() {
         this.iFamiliarId = null
-        this.fichaFamiliaRegistro.salirResetearForm()
+        // this.fichaFamiliaRegistro.salirResetearForm()
     }
 
     visibleDialog(event: any) {

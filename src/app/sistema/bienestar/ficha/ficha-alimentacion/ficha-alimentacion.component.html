@@ -3,17 +3,13 @@
 <form [formGroup]="formAlimentacion">
     <div class="grid p-fluid p-2">
         <div class="col-12">
-            <app-multiselect-input
+            <app-multiselect-simple
                 [multiselectItems]="programas_alimentarios"
                 [multiselectControl]="
                     $any(formAlimentacion).controls['iProgAlimId']
                 "
                 addonLabel="Programas de alimentación"
                 multiselectPlaceholder="Seleccione"
-                [inputControl]="
-                    $any(formAlimentacion).controls['cProgAlimNombre']
-                "
-                inputPlaceholder="Especifique otro"
             />
         </div>
         <div class="col-12 lg:col-6">
@@ -29,7 +25,7 @@
                                     'iLugarAlimIdDesayuno'
                                 ]
                             "
-                            addonLabel="¿Donde suele consumir el desayuno?"
+                            addonLabel="¿Donde suele consumir el desayuno? *"
                             dropdownPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(formAlimentacion).controls[
@@ -47,7 +43,7 @@
                                     'iLugarAlimIdAlmuerzo'
                                 ]
                             "
-                            addonLabel="¿Donde suele consumir el almuerzo?"
+                            addonLabel="¿Donde suele consumir el almuerzo? *"
                             dropdownPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(formAlimentacion).controls[
@@ -65,7 +61,7 @@
                                     'iLugarAlimIdCena'
                                 ]
                             "
-                            addonLabel="¿Donde suele consumir la cena?"
+                            addonLabel="¿Donde suele consumir la cena? *"
                             dropdownPlaceholder="Seleccione"
                             [inputControl]="
                                 $any(formAlimentacion).controls[

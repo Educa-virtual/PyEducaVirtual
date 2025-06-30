@@ -84,10 +84,11 @@ export class ConfigurarNivelLogroComponent implements OnInit {
                     this.visible = false
                 },
                 error: (respuesta) => {
+                    console.log(respuesta)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: respuesta,
+                        detail: respuesta.error.message,
                     })
                 },
             })

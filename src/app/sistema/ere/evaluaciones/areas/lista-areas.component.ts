@@ -64,7 +64,7 @@ export class ListaAreasComponent implements OnInit {
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
 
-    modoCard: boolean = true
+    modoCard: boolean = false
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
     sortOrder: number = 0

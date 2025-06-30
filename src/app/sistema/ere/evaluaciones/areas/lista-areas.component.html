@@ -56,6 +56,7 @@
                                 pTooltip="Vista tabla"
                                 tooltipPosition="top"
                                 aria-label="Vista tabla"
+                                [disabled]="!modoCard"
                                 (click)="cambiarVista()"
                             ></button>
 
@@ -68,6 +69,7 @@
                                 pTooltip="Vista cards"
                                 tooltipPosition="top"
                                 aria-label="Vista cards"
+                                [disabled]="modoCard"
                                 (click)="cambiarVista()"
                             ></button>
                         </div>
@@ -121,6 +123,7 @@
                         [class.p-button-outlined]="!modoCard"
                         pTooltip="Vista tabla"
                         tooltipPosition="top"
+                        [disabled]="!modoCard"
                         aria-label="Vista tabla"
                         (click)="cambiarVista()"
                     ></button>
@@ -132,6 +135,7 @@
                         [class.p-button-outlined]="modoCard"
                         pTooltip="Vista cards"
                         tooltipPosition="top"
+                        [disabled]="modoCard"
                         aria-label="Vista cards"
                         (click)="cambiarVista()"
                     ></button>

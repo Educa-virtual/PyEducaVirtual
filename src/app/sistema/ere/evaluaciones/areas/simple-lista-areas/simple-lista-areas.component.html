@@ -20,6 +20,7 @@
                     <tr>
                         <th
                             *ngFor="let col of colsDirector"
+                            [style.width]="col.width"
                             style="text-align: center"
                         >
                             {{ col.header }}
@@ -29,11 +30,11 @@
 
                 <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
                     <tr>
-                        <td style="text-align: center">
+                        <td style="text-align: center; width: 5%">
                             {{ obtenerIndiceGlobal(curso) }}
                         </td>
 
-                        <td>
+                        <td style="width: 10%">
                             <div class="flex align-items-center gap-2">
                                 <img
                                     [src]="backend + '/' + curso.cCursoImagen"
@@ -52,7 +53,7 @@
                             </div>
                         </td>
                         <!-- descargar cuadernillo-->
-                        <td style="text-align: center">
+                        <td style="text-align: center; width: 10%">
                             <p-button
                                 label="Descargar"
                                 icon="pi pi-download"
@@ -146,6 +147,7 @@
                     <tr>
                         <th
                             *ngFor="let col of colsEspecialista"
+                            [style.width]="col.width"
                             style="text-align: center"
                         >
                             {{ col.header }}
@@ -156,9 +158,8 @@
                 <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
                     <tr>
                         <td style="text-align: center">
-                            {{ obtenerIndiceGlobal(curso) }}
+                            {{ rowIndex + 1 }}
                         </td>
-
                         <td>
                             <div class="flex align-items-center gap-2">
                                 <img
@@ -280,6 +281,15 @@
                                         onDialogConfigurarNivelLogro(curso)
                                     "
                                 ></p-button>
+                                <p-button
+                                    icon="pi pi-file-word"
+                                    size="small"
+                                    [text]="true"
+                                    pTooltip="Exportar a Word"
+                                    (click)="
+                                        descargarArchivoPreguntasWord(curso)
+                                    "
+                                ></p-button>
                             </div>
                         </td>
                     </tr>
@@ -322,8 +332,7 @@
     <i class="pi pi-exclamation-triangle text-6xl text-red-500 mb-4"></i>
     <h4 class="text-red-700">Perfil no autorizado</h4>
     <p class="text-red-600 m-0">
-        Su perfil (ID: {{ iPerfilId }}) no tiene permisos para acceder a esta
-        funcionalidad.
+        Su perfil no tiene permisos para acceder a esta funcionalidad.
     </p>
 </div>
 

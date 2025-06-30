@@ -29,6 +29,7 @@ import { environment } from '@/environments/environment'
 interface Column {
     field: string
     header: string
+    width?: string
 }
 
 @Component({
@@ -115,8 +116,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             this.cursosFromParent = changes['cursosFromParent'].currentValue
             this.cursos = [...this.cursosFromParent]
             this.agruparCursosPorGrado()
-            console.log('Cursos recibidos del padre:', this.cursos)
-            console.log('Cursos agrupados:', this.cursosAgrupados)
         }
     }
 
@@ -135,21 +134,37 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
     private initializeColumns(): void {
         this.colsDirector = [
-            { field: 'id', header: 'Nº' },
-            { field: 'area', header: 'Área' },
-            { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
-            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
-            { field: 'matriz', header: 'Matriz de Evaluación' },
-            { field: 'resultados', header: 'Resultados' },
+            { field: 'id', header: 'Nº', width: '5%' },
+            { field: 'area', header: 'Área', width: '15%' },
+            {
+                field: 'cuadernillo',
+                header: 'Cuadernillo de Evaluación',
+                width: '10%',
+            },
+            {
+                field: 'hojaRespuestas',
+                header: 'Hoja de respuestas',
+                width: '10%',
+            },
+            { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+            { field: 'acciones', header: 'Acciones', width: '10%' },
         ]
 
         this.colsEspecialista = [
-            { field: 'id', header: 'Nº' },
-            { field: 'area', header: 'Área' },
-            { field: 'cuadernillo', header: 'Cuadernillo de Evaluación' },
-            { field: 'hojaRespuestas', header: 'Hoja de respuestas' },
-            { field: 'matriz', header: 'Matriz de Evaluación' },
-            { field: 'acciones', header: 'Acciones' },
+            { field: 'id', header: 'Nº', width: '5%' },
+            { field: 'area', header: 'Área', width: '15%' },
+            {
+                field: 'cuadernillo',
+                header: 'Cuadernillo de Evaluación',
+                width: '10%',
+            },
+            {
+                field: 'hojaRespuestas',
+                header: 'Hoja de respuestas',
+                width: '10%',
+            },
+            { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+            { field: 'acciones', header: 'Acciones', width: '10%' },
         ]
     }
     descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
@@ -382,15 +397,8 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
             this.cursosAgrupados[claveGrado].push(curso)
         })
-
         // Ordenar las claves de grados
-        this.gradosOrdenados = Object.keys(this.cursosAgrupados).sort(
-            (a, b) => {
-                const gradoA = parseInt(a.charAt(0))
-                const gradoB = parseInt(b.charAt(0))
-                return gradoA - gradoB
-            }
-        )
+        this.gradosOrdenados = Object.keys(this.cursosAgrupados)
     }
 
     obtenerIndiceGlobal(curso: ICurso): number {
@@ -437,5 +445,32 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 })
             },
         })
+    }
+
+    descargarArchivoPreguntasWord(curso: any) {
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+            tipoArchivo: 'word',
+        }
+        this.evaluacionesService
+            .descargarArchivoPreguntasPorArea(params)
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `${curso.cCursoNombre} ${curso.cGradoAbreviacion} ${curso.cNivelTipoNombre.replace('Educación', '')}.docx` //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al descargar el archivo',
+                        detail: error,
+                    })
+                },
+            })
     }
 }

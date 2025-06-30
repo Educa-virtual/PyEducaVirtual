@@ -58,7 +58,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log('AQUI ngOnInit')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.iSedeId = this.store.getItem('dremoPerfil').iSedeId
         this.perfil = this.store.getItem('dremoPerfil')
@@ -71,9 +70,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             ? Number(semestreSeleccionado.iSemAcadId)
             : null
         this.cabecera = localStorage.getItem('cEvaluacionNombre')
-
-        console.log(this.iSemAcadId, 'this.iSemAcadId')
-
         this.getSeccion()
     }
     botonesTabla: IActionTable[] = [
@@ -546,13 +542,13 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             accept: () => {
                 /* this.alumnosFiltrados = this.alumnosFiltrados.map((alumno) => {
                     if (alumno.documento == item.documento) {
-                
+
                         return {
                             ...alumno,
                             iEstado: 0,
                             bActive: 1, // Asignar un valor por defecto a bActive
                           //  ...respuestasMapeadas
-                            
+
                         }
                     } else {
                         return {

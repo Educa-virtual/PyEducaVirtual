@@ -99,8 +99,7 @@ export class GestionFichasComponent implements OnInit {
             if (ficha.cGradoNombre.toLowerCase().includes(filtro)) return ficha
             if (ficha.cSeccionNombre.toLowerCase().includes(filtro))
                 return ficha
-            if (ficha.dtFichaDGFormateada.toLowerCase().includes(filtro))
-                return ficha
+            if (ficha.cEstadoNombre.toLowerCase().includes(filtro)) return ficha
             if (ficha.cGradoSeccion.toLowerCase().includes(filtro)) return ficha
             if (ficha.cIieeNombre.toLowerCase().includes(filtro)) return ficha
             if (ficha.cPersNombreApellidos.toLowerCase().includes(filtro))
@@ -252,8 +251,8 @@ export class GestionFichasComponent implements OnInit {
             class: 'table-cell md:hidden',
         },
         {
-            field: 'dtFichaDGFormateada',
-            header: 'Creación',
+            field: 'cEstadoNombre',
+            header: 'Estado',
             type: 'text',
             width: '10%',
             text_header: 'center',
@@ -343,8 +342,8 @@ export class GestionFichasComponent implements OnInit {
             class: 'table-cell md:hidden',
         },
         {
-            field: 'dtFichaDGFormateada',
-            header: 'Creación',
+            field: 'cEstadoNombre',
+            header: 'Estado',
             type: 'text',
             width: '10%',
             text_header: 'center',

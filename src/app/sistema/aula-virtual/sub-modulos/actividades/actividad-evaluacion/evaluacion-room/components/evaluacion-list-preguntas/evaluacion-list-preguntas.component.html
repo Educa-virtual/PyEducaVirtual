@@ -10,7 +10,7 @@
     </div>
 
     <div
-        class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2"
+        class="p-3 border-1 border-blue-200 border-round bg-blue-50 mt-2 overflow-auto break-words"
     >
         <div
             [innerHTML]="
@@ -22,11 +22,10 @@
     </div>
 
     <ng-container *ngIf="item.idEncabPregId">
+        <span class="text-primary font-bold my-1">Lista de Preguntas</span>
         <div class="mt-2" *ngFor="let pregunta of item.jsonPreguntas">
-            <span class="text-primary font-bold">Lista de Preguntas</span>
-
             <div
-                class="p-3 border-1 border-orange-200 border-round bg-orange-50 min-h-10rem mt-2 mb-2"
+                class="p-3 border-1 border-orange-200 border-round bg-orange-50 min-h-10rem mt-2 mb-2 overflow-auto break-words"
             >
                 <span class="font-bold">Pregunta:&nbsp;</span>
                 <div [innerHTML]="pregunta.cEvalPregPregunta"></div>

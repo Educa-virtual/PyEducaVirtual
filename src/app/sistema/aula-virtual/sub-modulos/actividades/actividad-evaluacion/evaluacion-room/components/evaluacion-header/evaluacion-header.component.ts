@@ -48,6 +48,7 @@ export class EvaluacionHeaderComponent implements OnChanges {
         switch (accion) {
             case 'close-modal-preguntas-form':
                 this.showFormCalificarEvaluacion = false
+                this.accionEvntBtn('recargar-lista-estudiantes', null)
                 break
             case 'abrir-form-calificar-evaluacion':
                 this.name =

@@ -26,6 +26,8 @@ import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderLi
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 interface Leyenda {
     total: number
     text: string
@@ -130,12 +132,14 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     perfil: any
     idDocCursoId: any[] = []
     private _aulaService = inject(ApiAulaService)
+    private _EvaluacionesService = inject(EvaluacionesService)
     public estudianteMatriculadosxGrado = []
 
     showListaEstudiantes: boolean = true
     estudianteSeleccionado
     updateSelectedEstudiante(value: any) {
         this.estudianteSeleccionado = value
+        this.estudianteSeleccionado.iEvaluacionId = this.iEvaluacionId
         this._state.update((state) => {
             this.router.navigate([], {
                 queryParams: {
@@ -196,34 +200,10 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     }
 
     obtenerEstudiantesEvaluacion() {
-        // const params = { iEvaluacionId: this.iEvaluacionId }
-        // this._evaluacionesService
-        //     .obtenerEstudiantesEvaluación(params)
-        //     .pipe(takeUntil(this._unsubscribe$))
-        //     .subscribe({
-        //         next: (estudiantes) => {
-        //             this.estudianteMatriculadosxGrado = estudiantes.map(
-        //                 (item: any) => {
-        //                     return {
-        //                         ...item,
-        //                         cTitulo:
-        //                             (item.cEstNombres || '') +
-        //                             ' ' +
-        //                             (item.cEstPaterno || '') +
-        //                             ' ' +
-        //                             (item.cEstMaterno || ''),
-        //                     }
-        //                 }
-        //             )
-        //             this._state.update((current) => ({
-        //                 ...current,
-        //                 estudiantes,
-        //             }))
-        //         },
-        //     })
-
-        this._aulaService
-            .obtenerReporteFinalDeNotas({
+        if (!this.iEvaluacionId) return
+        if (this._ConstantesService.iPerfilId === ESTUDIANTE) return
+        this._EvaluacionesService
+            .obtenerReporteEstudiantesRetroalimentacion({
                 iIeCursoId:
                     this._ActivatedRoute.snapshot.paramMap.get('iIeCursoId'),
                 iYAcadId: this._ConstantesService.iYAcadId,
@@ -232,6 +212,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                     this._ActivatedRoute.snapshot.paramMap.get('iSeccionId'),
                 iNivelGradoId:
                     this._ActivatedRoute.snapshot.paramMap.get('iNivelGradoId'),
+                iEvaluacionId: this.iEvaluacionId,
             })
             .subscribe((Data) => {
                 this.estudianteMatriculadosxGrado = Data['data']
@@ -358,6 +339,9 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
         switch (accion) {
             case 'abrir-lista-estudiantes':
                 this.showListaEstudiantes = true
+                break
+            case 'recargar-lista-estudiantes':
+                this.obtenerEstudiantesEvaluacion()
                 break
         }
     }

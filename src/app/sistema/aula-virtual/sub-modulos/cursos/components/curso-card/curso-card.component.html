@@ -27,7 +27,10 @@
     <div class="mx-4 mt-3 col-12 grid">
         <div class="col-12 grid column-gap-1 align-items-center">
             <i class="pi pi-bookmark mr-2"></i>
-            <span>{{ curso.cGradoAbreviacion }} Grado</span>
+            <span
+                >{{ curso.cGradoAbreviacion }} Grado
+                {{ curso.cSeccionNombre || curso.cSeccion }}</span
+            >
         </div>
         <div class="col-12 grid column-gap-1 align-items-center">
             <i class="pi pi-info-circle mr-2"></i>
@@ -45,7 +48,7 @@
                 cCursoNombre: curso.cCursoNombre,
                 cNivelTipoNombre: curso.cNivelTipoNombre,
                 cGradoAbreviacion: curso.cGradoAbreviacion,
-                cSeccionNombre: curso.cSeccionNombre,
+                cSeccionNombre: curso.cSeccionNombre || curso.cSeccion,
                 cCicloRomanos: curso.cCicloRomanos,
                 cNivelNombreCursos: curso.cNivelNombreCursos,
                 iCursoId: curso.iCursoId,

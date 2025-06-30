@@ -263,6 +263,7 @@ export class ApiAulaService {
         iSedeId
         iSeccionId
         iNivelGradoId
+        iEstudianteId
     }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,

@@ -48,4 +48,18 @@ export class EvaluacionesService {
             }
         )
     }
+
+    obtenerReporteEstudiantesRetroalimentacion(params: {
+        iIeCursoId
+        iYAcadId
+        iSedeId
+        iSeccionId
+        iNivelGradoId
+        iEvaluacionId
+    }) {
+        return this.http.post(
+            `${baseUrl}/evaluaciones/evaluaciones/obtenerReporteEstudiantesRetroalimentacion`,
+            params
+        )
+    }
 }

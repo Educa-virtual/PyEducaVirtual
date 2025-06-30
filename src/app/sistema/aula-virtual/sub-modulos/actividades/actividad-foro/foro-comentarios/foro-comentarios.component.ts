@@ -8,6 +8,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ForoEstudiantesComponent } from '../foro-estudiantes/foro-estudiantes.component'
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-foro-comentarios',
@@ -34,6 +35,7 @@ export class ForoComentariosComponent implements OnInit {
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
     private _constantesService = inject(ConstantesService)
+    private messageService = inject(MessageService)
 
     items: { label?: string; icon?: string; separator?: boolean }[] = []
     respuestasForo: any
@@ -143,6 +145,28 @@ export class ForoComentariosComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Comentario:', error)
+                const errores = error?.error?.errors
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
             },
         })
     }
@@ -167,6 +191,28 @@ export class ForoComentariosComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Comentario:', error)
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
                 },
             })
             // this.foroFormComntAl.reset()
@@ -186,6 +232,28 @@ export class ForoComentariosComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Comentario:', error)
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
                 },
             })
         }

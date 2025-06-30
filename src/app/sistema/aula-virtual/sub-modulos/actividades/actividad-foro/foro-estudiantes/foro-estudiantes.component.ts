@@ -1,5 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { ForosService } from '@/app/servicios/aula/foros.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Component, inject, Input, OnInit } from '@angular/core'
 
@@ -15,9 +17,11 @@ export class ForoEstudiantesComponent implements OnInit {
     @Input() iIeCursoId
     @Input() iSeccionId
     @Input() iNivelGradoId
+    @Input() iForoId
 
     private _aulaService = inject(ApiAulaService)
     private _constantesService = inject(ConstantesService)
+    private _ForosService = inject(ForosService)
 
     estudiantes: any
     modelaCalificacionComen: boolean = false
@@ -37,13 +41,15 @@ export class ForoEstudiantesComponent implements OnInit {
     }
     // consulta para obtener los estudiantes
     getEstudiantesMatricula() {
-        this._aulaService
-            .obtenerReporteFinalDeNotas({
+        if (this._constantesService.iPerfilId === ESTUDIANTE) return
+        this._ForosService
+            .obtenerReporteEstudiantesRetroalimentacion({
                 iIeCursoId: this.iIeCursoId,
                 iYAcadId: this._constantesService.iYAcadId,
                 iSedeId: this._constantesService.iSedeId,
                 iSeccionId: this.iSeccionId,
                 iNivelGradoId: this.iNivelGradoId,
+                iForoId: this.iForoId,
             })
             .subscribe((Data) => {
                 this.estudiantes = Data['data']
@@ -53,7 +59,6 @@ export class ForoEstudiantesComponent implements OnInit {
                         cTitulo: item.completoalumno,
                     }
                 })
-                // console.log('matriculados', this.estudiantes)
             })
     }
     // funcion para mostrar el modal para agregar un conclución descriptiva

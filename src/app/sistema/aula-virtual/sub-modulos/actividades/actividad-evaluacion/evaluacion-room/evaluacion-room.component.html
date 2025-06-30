@@ -15,41 +15,68 @@
         @switch (tabSeleccionado) {
             @case ('descripcion') {
                 <app-tab-descripcion-actividades [data]="evaluacion">
-                    <div class="flex justify-content-center align-items-center">
-                        @if (isDocente) {
-                            @if (evaluacion?.iEstado === 1) {
+                    <div estado-actividad>
+                        <div
+                            class="flex justify-content-center align-items-center"
+                        >
+                            @if (isDocente) {
+                                @if (evaluacion?.iEstado === 1) {
+                                    <div
+                                        class="border-1 border-orange-200 border-round bg-orange-50 p-3 text-center"
+                                    >
+                                        <span
+                                            class="font-bold text-3xl text-orange-600"
+                                            >BORRADOR</span
+                                        >
+                                    </div>
+                                }
+                                @if (evaluacion?.iEstado === 2) {
+                                    <div
+                                        class="border-1 border-green-200 border-round bg-green-50 p-3 text-center"
+                                    >
+                                        <span
+                                            class="font-bold text-3xl text-green-600"
+                                            >PUBLICADO</span
+                                        >
+                                    </div>
+                                }
+                            }
+                            @if (evaluacion?.iEstado === 10) {
                                 <div
-                                    class="border-1 border-orange-200 border-round bg-orange-50 p-3 text-center"
+                                    class="border-1 border-red-200 border-round bg-red-50 p-3 text-center"
                                 >
                                     <span
-                                        class="font-bold text-3xl text-orange-600"
-                                        >BORRADOR</span
+                                        class="font-bold text-3xl text-red-600"
+                                        >FINALIZADO</span
                                     >
                                 </div>
                             }
-                            @if (evaluacion?.iEstado === 2) {
-                                <div
-                                    class="border-1 border-green-200 border-round bg-green-50 p-3 text-center"
-                                >
-                                    <span
-                                        class="font-bold text-3xl text-green-600"
-                                        >PUBLICADO</span
+                        </div>
+                    </div>
+                    <div section>
+                        @if (comentarioDocente && iPerfilId === ESTUDIANTE) {
+                            <div class="col-12 mt-2">
+                                <div class="text-xl font-medium text-900 mb-2">
+                                    <span class="text-green-500"
+                                        >👍✨ Mi Retroalimentación
+                                        Descriptiva</span
                                     >
                                 </div>
-                            }
-                        }
-                        @if (evaluacion?.iEstado === 10) {
-                            <div
-                                class="border-1 border-red-200 border-round bg-red-50 p-3 text-center"
-                            >
-                                <span class="font-bold text-3xl text-red-600"
-                                    >FINALIZADO</span
+                                <div
+                                    class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
                                 >
+                                    <p class="text-gray-700 font-medium mb-2">
+                                        🗣 Comentario del docente:
+                                    </p>
+                                    <div
+                                        [innerHTML]="comentarioDocente || '-'"
+                                    ></div>
+                                </div>
                             </div>
                         }
                     </div>
                 </app-tab-descripcion-actividades>
-                <article class="card mt-2">
+                <article class="card mt-2" *ngIf="iPerfilId === DOCENTE">
                     <div
                         class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                     >

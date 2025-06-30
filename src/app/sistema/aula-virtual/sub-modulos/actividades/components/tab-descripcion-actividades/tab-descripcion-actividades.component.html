@@ -29,7 +29,14 @@
             </div>
         </div>
         <div class="col-12 md:col-4 mb-4">
-            <ng-content></ng-content>
+            <ng-content select="[estado-actividad]"></ng-content>
+            <!-- contenido por defecto -->
+        </div>
+        <div class="col-12">
+            <section>
+                <ng-content></ng-content>
+                <!-- contenido por defecto -->
+            </section>
         </div>
 
         <!-- Descripción -->
@@ -38,7 +45,7 @@
                 Descripción de la Actividad
             </div>
             <div
-                class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem"
+                class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem overflow-auto break-words"
             >
                 <div [innerHTML]="data?.cDescripcion || '-'"></div>
             </div>

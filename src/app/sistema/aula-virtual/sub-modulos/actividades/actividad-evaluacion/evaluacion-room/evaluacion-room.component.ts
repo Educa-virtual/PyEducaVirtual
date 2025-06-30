@@ -141,6 +141,8 @@ export class EvaluacionRoomComponent implements OnInit {
     }
     constructor(private location: Location) {}
 
+    comentarioDocente: string
+
     ngOnInit() {
         this.items = [
             {
@@ -179,6 +181,10 @@ export class EvaluacionRoomComponent implements OnInit {
     obtenerEvaluacion(iEvaluacionId: string | number) {
         const params = {
             iCredId: this._ConstantesService.iCredId,
+            iEstudiante:
+                this.iPerfilId === ESTUDIANTE
+                    ? this._ConstantesService.iEstudianteId
+                    : null,
         }
         this._EvaluacionesService
             .obtenerEvaluacionesxiEvaluacionId(iEvaluacionId, params)
@@ -204,6 +210,46 @@ export class EvaluacionRoomComponent implements OnInit {
                             iEvaluacionId: this.iEvaluacionId,
                             iNivelCicloId: this.iNivelCicloId,
                             iCursoId: this.iCursoId,
+                        }
+
+                        this.comentarioDocente =
+                            data.cConclusionDescriptiva || null
+                        if (this.comentarioDocente) {
+                            this.tabs = [
+                                {
+                                    title: 'Descripción',
+                                    icon: 'pi pi-list',
+                                    tab: 'descripcion',
+                                    //tab:0
+                                },
+                                {
+                                    title: 'Preguntas',
+                                    icon: 'pi-pen-to-square',
+                                    tab: 'preguntas',
+                                    isVisible: !(
+                                        this._ConstantesService.iPerfilId ===
+                                        DOCENTE
+                                    ),
+                                    //tab:1
+                                },
+                                {
+                                    title: 'Calificar',
+                                    icon: 'pi-list-check',
+                                    tab: 'calificar',
+                                    isVisible: !(
+                                        this._ConstantesService.iPerfilId ===
+                                        DOCENTE
+                                    ),
+                                    //tab:2
+                                },
+                                // {
+                                //     title: 'Rendir Evaluación',
+                                //     icon: 'pi-check-circle',
+                                //     tab: 'rendir-examen',
+                                //     isVisible: !(this._ConstantesService.iPerfilId === ESTUDIANTE),
+                                //     //tab:3
+                                // },
+                            ]
                         }
                     }
                 },

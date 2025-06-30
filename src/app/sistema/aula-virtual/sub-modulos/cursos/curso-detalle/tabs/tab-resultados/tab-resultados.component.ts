@@ -221,6 +221,7 @@ export class TabResultadosComponent implements OnInit {
             accion: 'agregarConclusion',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: () => this.iPerfilId === this.DOCENTE,
         },
     ]
     // Inicializamos
@@ -367,6 +368,10 @@ export class TabResultadosComponent implements OnInit {
                 iSedeId: this._constantesService.iSedeId,
                 iSeccionId: this.curso.iSeccionId,
                 iNivelGradoId: this.curso.iNivelGradoId,
+                iEstudianteId:
+                    this.iPerfilId === this.ESTUDIANTE
+                        ? this._constantesService.iEstudianteId
+                        : null,
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']

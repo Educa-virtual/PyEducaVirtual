@@ -149,6 +149,7 @@ const estudiante = [
                     {
                         label: 'Recordatorios de cumpleaños',
                         icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/bienestar/recordario-fechas'],
                     },
                 ],
             },
@@ -433,6 +434,11 @@ const administracion = [
                         label: 'Gestionar encuestas',
                         icon: 'pi pi-fw pi-list-check',
                         routerLink: ['/bienestar/gestionar-encuestas'],
+                    },
+                    {
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/bienestar/recordario-fechas'],
                     },
                     {
                         label: 'Reportes e informes',

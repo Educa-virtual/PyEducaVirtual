@@ -10,6 +10,7 @@ import { NewMantenimientoUsuarioComponent } from './sistema/gestion-instituciona
 import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component'
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
+import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -56,7 +57,7 @@ export const routes: Routes = [
                 path: 'sin-rol-asignado',
                 loadChildren: () =>
                     import(
-                        './sistema/sin-rol-asignado/sin-rol-asignado.routes'
+                        './sistema/usuarios/sin-rol-asignado/sin-rol-asignado.routes'
                     ),
             },
             {
@@ -74,6 +75,10 @@ export const routes: Routes = [
             {
                 path: 'agregar-personal-platafoma',
                 component: AgregarPersonalPlataformaComponent,
+            },
+            {
+                path: 'asistencia-auxiliar',
+                component: AuxiliarComponent,
             },
         ],
     },

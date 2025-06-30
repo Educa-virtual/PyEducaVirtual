@@ -32,6 +32,12 @@ export class ApiEvaluacionesRService {
             )
     }
 
+    obtenerCantidadMaximaPreguntas(iEvaluacionId, iCursosNivelGradId) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/cantidad-maxima-preguntas`
+        )
+    }
+
     /*obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
         return this.http
             .get(
@@ -484,7 +490,7 @@ export class ApiEvaluacionesRService {
 
     descargarMatrizPorEvaluacionArea(params) {
         return this.http.get(
-            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`,
+            `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias`,
             {
                 responseType: 'blob',
             }

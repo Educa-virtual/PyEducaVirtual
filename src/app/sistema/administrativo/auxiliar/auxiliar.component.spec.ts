@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { BackupBdComponent } from './backup-bd.component'
+import { AuxiliarComponent } from './auxiliar.component'
 
-describe('BackupBdComponent', () => {
-    let component: BackupBdComponent
-    let fixture: ComponentFixture<BackupBdComponent>
+describe('AuxiliarComponent', () => {
+    let component: AuxiliarComponent
+    let fixture: ComponentFixture<AuxiliarComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [BackupBdComponent],
+            imports: [AuxiliarComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(BackupBdComponent)
+        fixture = TestBed.createComponent(AuxiliarComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

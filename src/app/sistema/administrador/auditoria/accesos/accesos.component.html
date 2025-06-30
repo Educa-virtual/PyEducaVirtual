@@ -1,34 +1,50 @@
-<form [formGroup]="form" class="flex justify-content-between">
-    <p-inputGroup class="mt-1">
-        <p-inputGroupAddon>Tipo de auditoria</p-inputGroupAddon>
-        <p-dropdown
-            class="max-w-max"
-            formControlName="selectedTable"
-            [options]="options"
-            optionLabel="label"
-            placeholder="Selecciona un tipo de acceso"
-        />
-    </p-inputGroup>
-    <p-inputGroup class="mt-1">
-        <p-inputGroupAddon>Filtro de fecha</p-inputGroupAddon>
-        <p-calendar
-            formControlName="filtroFecha"
-            selectionMode="range"
-            [iconDisplay]="'input'"
-            [showIcon]="true"
-            placeholder="Ingrese un rango de fechas"
-        ></p-calendar>
-    </p-inputGroup>
-    <button
-        style="flex: 1 0 9rem; display: flex; gap: 1rem"
-        [rounded]="true"
-        pButton
-        class="p-button-success"
-        (click)="generarExcel()"
-    >
-        <i class="pi pi-download"></i>
-        <div>Exportar</div>
-    </button>
+<form [formGroup]="form">
+    <div class="grid">
+        <div class="col-4">
+            <p-inputGroup class="mt-1">
+                <p-inputGroupAddon>Tipo de auditoría</p-inputGroupAddon>
+                <p-dropdown
+                    formControlName="selectedTable"
+                    [options]="options"
+                    optionLabel="label"
+                    placeholder="Selecciona un tipo de acceso"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-4">
+            <p-inputGroup class="mt-1">
+                <p-inputGroupAddon>Filtro de fecha</p-inputGroupAddon>
+                <p-calendar
+                    formControlName="filtroFecha"
+                    selectionMode="range"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    placeholder="Ingrese un rango de fechas"
+                ></p-calendar>
+            </p-inputGroup>
+        </div>
+        <div class="col">
+            <button
+                pButton
+                pRipple
+                [rounded]="true"
+                label="Refrescar"
+                icon="pi pi-refresh"
+                (click)="refrescar()"
+            ></button>
+        </div>
+        <div class="col">
+            <button
+                pButton
+                pRipple
+                [rounded]="true"
+                label="Exportar"
+                icon="pi pi-download"
+                class="p-button-success"
+                (click)="generarExcel()"
+            ></button>
+        </div>
+    </div>
 </form>
 
 <section class="flex gap-3">
@@ -47,6 +63,7 @@
             [showCaption]="false"
             [showPaginator]="true"
             selectionMode="single"
+            [sortField]="'dtFecha'"
             (selectedRowDataChange)="selectRow($event)"
         >
         </app-table-primeng>

@@ -54,20 +54,22 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
 
     //Funcion de oncoruseSelect
-    onCursoSelect(curso: any): void {
+    onCursoSelect(item: any, curso: any): void {
         if (this.accion === 'ver') {
             return
         }
-        if (curso.isSelected) {
-            this.insertarCursos([curso])
+        if (item.isSelected) {
+            item.dtExamenFechaInicio = curso.dtExamenFechaInicio
+            item.iExamenCantidadPreguntas = curso.iExamenCantidadPreguntas
+            this.insertarCursos([item])
         } else {
-            this.eliminarCursos([curso])
+            this.eliminarCursos([item])
         }
     }
 
     insertarCursos(cursos: any[]): void {
         // Validar si se proporcionó un `iEvaluacionId` válido
-        if (!this._iEvaluacionId) {
+        /*if (!this._iEvaluacionId) {
             console.error('No se ha proporcionado un iEvaluacionId válido')
             this._MessageService.add({
                 severity: 'error',
@@ -75,13 +77,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 detail: 'No se ha proporcionado un iEvaluacionId válido.',
             })
             return
-        }
+        }*/
 
         // Validar si los cursos contienen el campo `iCursoNivelGradId`
         if (!cursos.every((curso) => curso.iCursoNivelGradId)) {
-            console.error(
-                'Error: Algunos cursos no contienen iCursoNivelGradId'
-            )
             this._MessageService.add({
                 severity: 'error',
                 summary: 'Error',
@@ -89,7 +88,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
             return
         }
-
         // Llamar a la API para insertar los cursos
         this._apiEre
             .insertarCursos({
@@ -239,11 +237,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                             })
                         })
 
-                        console.log(
-                            'imprimiendo actualizacion de lista',
-                            this.lista
-                        )
-
                         resolve(cursosSeleccionados)
                     },
                     error: (err) => {
@@ -272,10 +265,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             }),
         }).subscribe({
             next: (data: any) => {
-                // Combinamos los datos
-
-                console.log('probando data ', data)
-
                 this.lista = [
                     ...this.extraerAsignatura(data.primaria.data),
                     ...this.extraerAsignatura(data.secundaria.data),

@@ -89,7 +89,8 @@ export class BackupBdComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.obtenerHistorialBackups()
+        console.log('ok')
+        //this.obtenerHistorialBackups()
     }
 
     obtenerHistorialBackups() {
@@ -104,28 +105,22 @@ export class BackupBdComponent implements OnInit {
     }
 
     crearCopia() {
-        this.backupBdService
-            .realizarCopiaSeguridad(this.store.getItem('dremoUser').iPersId)
-            .subscribe({
-                next: (data: any) => {
-                    this.messageService.add({
-                        severity: data.status.toLowerCase(),
-                        summary: 'Mensaje',
-                        detail: data.message,
-                        life: 5000,
-                    })
-                    if (data.status == 'Success') {
-                        this.obtenerHistorialBackups()
-                    }
-                },
-                error: (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                        life: 5000,
-                    })
-                },
-            })
+        this.backupBdService.realizarCopiaSeguridad().subscribe({
+            next: (data: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Mensaje',
+                    detail: data.message,
+                })
+                //this.obtenerHistorialBackups()
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
     }
 }

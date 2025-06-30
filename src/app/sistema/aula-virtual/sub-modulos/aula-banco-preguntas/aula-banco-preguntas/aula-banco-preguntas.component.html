@@ -1,10 +1,8 @@
 <app-banco-pregunta-lista
     [columnas]="columnas"
     [data]="bancoPreguntas"
-    [expandedRowKeys]="expandedRowKeys"
     [accionesTabla]="actionsTable"
     (accionBtnItemTable)="handleAcciones($event)"
-    (selectedRowDataChange)="selectedRowDataChange.emit($event)"
 />
 
 <app-view-preguntas

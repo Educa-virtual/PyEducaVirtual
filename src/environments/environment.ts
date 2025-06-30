@@ -3,11 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 //Se comenta porque el environment real usa la misma variable, lo que puede generar conflictos
-/*export const environment  = {
+export const environment = {
     production: false,
     backend: 'http://localhost:8000',
     backendApi: 'http://localhost:8000/api',
-}*/
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

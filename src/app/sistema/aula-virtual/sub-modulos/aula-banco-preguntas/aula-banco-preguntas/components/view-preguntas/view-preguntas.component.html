@@ -31,7 +31,13 @@
                     <div
                         class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2"
                     >
-                        <div [innerHTML]="pregunta.cEvalPregPregunta"></div>
+                        <div
+                            [innerHTML]="
+                                pregunta.cEvalPregPregunta ||
+                                pregunta.cNombre ||
+                                pregunta.cBancoPregunta
+                            "
+                        ></div>
                     </div>
                     <p-message
                         *ngIf="pregunta.cEvalPregTextoAyuda"
@@ -109,7 +115,10 @@
                         class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2"
                     >
                         <div
-                            [innerHTML]="detallePreguntas.cEvalPregPregunta"
+                            [innerHTML]="
+                                detallePreguntas.cEvalPregPregunta ||
+                                detallePreguntas.cNombre
+                            "
                         ></div>
                     </div>
                     <p-message

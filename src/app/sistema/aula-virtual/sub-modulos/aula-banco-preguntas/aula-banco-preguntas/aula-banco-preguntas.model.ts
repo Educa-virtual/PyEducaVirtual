@@ -5,53 +5,29 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 
 export const columns: IColumn[] = [
-    // {
-    //     field: '',
-    //     header: '',
-    //     type: 'expansion',
-    //     width: '1rem',
-    //     text: 'left',
-    //     text_header: 'left',
-    // },
     {
-        field: 'iEncabezado',
-        header: 'Enunciado',
-        type: 'text',
+        field: 'item',
+        header: '#',
+        type: 'item',
         width: '1rem',
         text: 'center',
         text_header: 'center',
     },
     {
-        field: 'cPreguntaNoHTML',
-        header: 'Pregunta',
-        type: 'trim',
+        field: 'cTipo',
+        header: 'Tipo',
+        type: 'text',
+        width: '5rem',
+        text: 'center',
+        text_header: 'center',
+    },
+    {
+        field: 'cNombre',
+        header: 'Nombre',
+        type: 'item-innerHtml',
         width: '15rem',
         text: 'left',
         text_header: 'left',
-    },
-    // {
-    //     type: 'text',
-    //     width: '1rem',
-    //     field: 'iPreguntaPeso',
-    //     header: 'Peso',
-    //     text_header: 'center',
-    //     text: 'center',
-    // },
-    {
-        type: 'text',
-        width: '2rem',
-        field: 'cTipoPregDescripcion',
-        header: 'Tipo de Pregunta',
-        text_header: 'center',
-        text: 'center',
-    },
-    {
-        type: 'text',
-        width: '2rem',
-        field: 'iTotalPreguntas',
-        header: '# Preguntas',
-        text_header: 'center',
-        text: 'center',
     },
     {
         type: 'actions',
@@ -149,11 +125,24 @@ export const actionsTable: IActionTable[] = [
         class: 'p-button-rounded p-button-info p-button-text',
     },
     {
+        labelTooltip: 'Editar Pregunta Múltiple',
+        icon: 'pi pi-pencil',
+        accion: 'editar-multiple',
+        type: 'item',
+        class: 'p-button-rounded p-button-warning p-button-text',
+        isVisible(row) {
+            return row.idEncabPregId
+        },
+    },
+    {
         labelTooltip: 'Editar',
         icon: 'pi pi-pencil',
         accion: 'editar',
         type: 'item',
         class: 'p-button-rounded p-button-warning p-button-text',
+        isVisible(row) {
+            return !row.idEncabPregId
+        },
     },
     {
         labelTooltip: 'Eliminar',
@@ -161,6 +150,29 @@ export const actionsTable: IActionTable[] = [
         accion: 'eliminar',
         type: 'item',
         class: 'p-button-rounded p-button-danger p-button-text',
+        isVisible(row) {
+            return !row.idEncabPregId
+        },
+    },
+    {
+        labelTooltip: 'Eliminar Pregunta Múltiple',
+        icon: 'pi pi-trash',
+        accion: 'eliminar-multiple',
+        type: 'item',
+        class: 'p-button-rounded p-button-danger p-button-text',
+        isVisible(row) {
+            return row.idEncabPregId
+        },
+    },
+    {
+        labelTooltip: 'Agregar Pregunta',
+        icon: 'pi pi-plus',
+        accion: 'agregar-pregunta-multiple',
+        type: 'item',
+        class: 'p-button-rounded p-button-success p-button-text',
+        isVisible(row) {
+            return row.idEncabPregId
+        },
     },
 ]
 

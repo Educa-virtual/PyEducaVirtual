@@ -39,4 +39,33 @@ export class EncabezadoPreguntasService {
             }
         )
     }
+
+    guardarBancoEncabezadoPreguntas(data): Observable<any> {
+        return this.http.post(
+            `${baseUrl}/evaluaciones/encabezado-preguntas/banco`,
+            data
+        )
+    }
+
+    actualizarBancoEncabezadoPreguntas(
+        idEncabPregId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.put(
+            `${baseUrl}/evaluaciones/encabezado-preguntas/banco/${idEncabPregId}`,
+            params
+        )
+    }
+
+    eliminarBancoEncabezadoPreguntasxidEncabPregId(
+        idEncabPregId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.delete(
+            `${baseUrl}/evaluaciones/encabezado-preguntas/banco/${idEncabPregId}`,
+            {
+                params,
+            }
+        )
+    }
 }

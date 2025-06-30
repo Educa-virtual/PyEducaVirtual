@@ -1,0 +1,166 @@
+<app-modal-primeng
+    [title]="opcion + ' PREGUNTA'"
+    [showModal]="showModal"
+    [width]="'55rem'"
+    (accionBtnItem)="accionBtnItem.emit({ accion: 'close-modal', item: [] })"
+    *ngIf="formPreguntas"
+>
+    <form [formGroup]="formPreguntas" class="grid mt-4">
+        @if (curso.idEncabPregId) {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Título</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        [value]="curso.cEncabPregTitulo"
+                        disabled
+                    />
+                </p-inputGroup>
+            </div>
+        }
+        <div class="col-12 md:col-12 lg:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
+                <p-dropdown
+                    styleClass="w-full"
+                    formControlName="iTipoPregId"
+                    placeholder="Seleccione Tipo"
+                    optionValue="iTipoPregId"
+                    [options]="tipoPreguntas"
+                    optionLabel="cTipoPregunta"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col">
+            <p-inputGroup>
+                <p-inputGroupAddon>Texto de ayuda</p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese el texto de ayuda"
+                    formControlName="cBancoTextoAyuda"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                ><span class="font-bold">Pregunta</span>
+                <span class="text-red-500 text-xs"
+                    >&nbsp;(*) Obligatorio</span
+                ></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    [style]="{ height: 'auto' }"
+                    placeholder="Ingrese enunciado de la pregunta"
+                    formControlName="cBancoPregunta"
+                />
+            </div>
+        </div>
+    </form>
+    <div class="grid" *ngIf="[1, 2].includes(formPreguntas.value.iTipoPregId)">
+        <div class="col-12 mt-2" *ngIf="alternativas.length">
+            <div class="flex font-bold text-center">
+                <div class="flex font-bold align-items-center text-primary">
+                    Lista de Alternativas
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            @for (alternativa of alternativas; track ida; let ida = $index) {
+                <div
+                    class="p-2"
+                    [ngStyle]="{
+                        'border-left': alternativa.bBancoAltRptaCorrecta
+                            ? '4px solid #22c55e'
+                            : 'inherit',
+                        background: alternativa.bBancoAltRptaCorrecta
+                            ? 'rgb(227 253 237)'
+                            : 'transparent',
+                    }"
+                >
+                    <p-inputGroup class="mt-1">
+                        <p-inputGroupAddon>{{
+                            alternativa.cBancoAltLetra
+                        }}</p-inputGroupAddon>
+                        <input
+                            type="text"
+                            pInputText
+                            placeholder="Ingrese la alternativa"
+                            [(ngModel)]="alternativa.cBancoAltDescripcion"
+                        />
+                        <!-- <div class="align-content-center p-2 border-img">
+                    <p-image [src]="alternativa.cAlternativaImagen" alt="Image" width="25" [preview]="true" />
+                </div> -->
+
+                        <button
+                            type="button"
+                            pButton
+                            [text]="true"
+                            icon="pi pi-trash"
+                            class="p-button-danger"
+                            size="small"
+                            (click)="eliminarAlternativa(ida)"
+                        >
+                            &nbsp;
+                        </button>
+                        <!-- <button pButton type="button" [text]="true" class="p-button-primary btn-file-image" size="small">
+                    <i class="pi pi-image"></i><input type="file" accept="image/*" />
+                </button> -->
+                        <p-checkbox
+                            [binary]="true"
+                            [trueValue]="1"
+                            [falseValue]="0"
+                            [inputId]="alternativa.iBancoAltId"
+                            [value]="alternativa"
+                            [class]="'ml-2'"
+                            [label]="'Respuesta correcta'"
+                            [(ngModel)]="alternativa.bBancoAltRptaCorrecta"
+                        />
+                    </p-inputGroup>
+                    @if (alternativa.bBancoAltRptaCorrecta) {
+                        <p-inputGroup class="mt-1">
+                            <p-inputGroupAddon> Explicación </p-inputGroupAddon>
+                            <input
+                                type="text"
+                                pInputText
+                                placeholder="Explicación de por qué la respuesta es correcta"
+                                [(ngModel)]="
+                                    alternativa.cBancoAltExplicacionRpta
+                                "
+                            />
+                        </p-inputGroup>
+                    }
+                </div>
+            }
+        </div>
+        <div class="col-12">
+            <div class="flex justify-content-center">
+                <p-button
+                    icon="pi pi-plus"
+                    severity="info"
+                    [label]="'Añadir alternativa'"
+                    (onClick)="agregarAlternativa()"
+                    [disabled]="!formPreguntas.value.iTipoPregId"
+                />
+            </div>
+        </div>
+    </div>
+    <div footer class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtnItem.emit({ accion: 'close-modal', item: [] })"
+        />
+        <p-button
+            icon="pi pi-check"
+            [severity]="opcion === 'GUARDAR' ? 'success' : 'warning'"
+            [label]="opcion + ' PREGUNTA'"
+            (onClick)="enviarFormulario()"
+            [loading]="isLoading"
+            [disabled]="isLoading || !formPreguntas.value.iTipoPregId"
+        />
+    </div>
+</app-modal-primeng>
+<p-toast></p-toast>

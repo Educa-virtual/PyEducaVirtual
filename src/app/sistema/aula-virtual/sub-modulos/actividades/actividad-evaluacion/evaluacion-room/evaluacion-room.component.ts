@@ -99,7 +99,6 @@ export class EvaluacionRoomComponent implements OnInit {
         }
         this._evaluacionService.obtenerRubricas(params).subscribe({
             next: (data) => {
-                console.log(data)
                 this.rubricas = data
                 // data.forEach((element) => {
                 //     this.rubricas.push(element)
@@ -163,7 +162,7 @@ export class EvaluacionRoomComponent implements OnInit {
         this.iNivelCicloId =
             this._ActivatedRoute.snapshot.queryParamMap.get('iNivelCicloId')
         this.iCursoId =
-            this._ActivatedRoute.snapshot.queryParamMap.get('iNivelCicloId')
+            this._ActivatedRoute.snapshot.queryParamMap.get('iCursoId')
         this.obtenerEvaluacion(this.iEvaluacionId)
         this.params.iCursoId = this.iCursoId
         this.params.iDocenteId = this._ConstantesService.iDocenteId

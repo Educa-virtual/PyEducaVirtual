@@ -34,4 +34,30 @@ export class BancoPreguntasService {
             data
         )
     }
+
+    guardarBancoPreguntas(data): Observable<any> {
+        return this.http.post(`${baseUrl}/evaluaciones/banco-preguntas`, data)
+    }
+
+    actualizarBancoPreguntasxiBancoId(
+        iBancoId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.put(
+            `${baseUrl}/evaluaciones/banco-preguntas/${iBancoId}`,
+            params
+        )
+    }
+
+    eliminarBancoPreguntasxiBancoId(
+        iBancoId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.delete(
+            `${baseUrl}/evaluaciones/banco-preguntas/${iBancoId}`,
+            {
+                params,
+            }
+        )
+    }
 }

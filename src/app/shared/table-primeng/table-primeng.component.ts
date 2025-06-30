@@ -139,6 +139,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showSearchTable: boolean = false
     //placeholder search
     @Input() searchPlaceholder: string = 'Buscar por nombre....'
+    @Input() width: string = '100%'
+
     debug(d) {
         console.log('d')
         console.log(d)

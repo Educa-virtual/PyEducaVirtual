@@ -53,8 +53,30 @@
                             }
                         </div>
                     </div>
+                    <div section>
+                        @if (comentarioDocente && iPerfilId === ESTUDIANTE) {
+                            <div class="col-12 mt-2">
+                                <div class="text-xl font-medium text-900 mb-2">
+                                    <span class="text-green-500"
+                                        >👍✨ Mi Retroalimentación
+                                        Descriptiva</span
+                                    >
+                                </div>
+                                <div
+                                    class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                                >
+                                    <p class="text-gray-700 font-medium mb-2">
+                                        🗣 Comentario del docente:
+                                    </p>
+                                    <div
+                                        [innerHTML]="comentarioDocente || '-'"
+                                    ></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </app-tab-descripcion-actividades>
-                <article class="card mt-2">
+                <article class="card mt-2" *ngIf="iPerfilId === DOCENTE">
                     <div
                         class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                     >

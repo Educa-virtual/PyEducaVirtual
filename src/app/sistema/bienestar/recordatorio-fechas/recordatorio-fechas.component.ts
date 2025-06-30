@@ -208,6 +208,7 @@ export class RecordatorioFechasComponent implements OnInit {
             header: 'Días restantes',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:table-cell',
         },
         {
             field: 'cCumpleaniosFormateado',
@@ -232,6 +233,7 @@ export class RecordatorioFechasComponent implements OnInit {
             header: 'Relación',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:table-cell',
         },
         {
             field: 'cRecorPeriodoNombre',

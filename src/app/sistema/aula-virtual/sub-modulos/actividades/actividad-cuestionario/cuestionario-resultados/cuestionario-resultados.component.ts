@@ -1,5 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component } from '@angular/core'
+import { PreguntaAlternativasRespuestasService } from '@/app/servicios/aula/pregunta-alternativas-respuestas.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { Component, inject, Input, OnChanges } from '@angular/core'
+import { ChartData, ChartOptions } from 'chart.js'
 
 @Component({
     selector: 'app-cuestionario-resultados',
@@ -8,80 +11,73 @@ import { Component } from '@angular/core'
     templateUrl: './cuestionario-resultados.component.html',
     styleUrl: './cuestionario-resultados.component.scss',
 })
-export class CuestionarioResultadosComponent {
-    chartType: 'bar' | 'line' | 'pie' | 'doughnut' | 'polarArea' | 'radar' =
-        'bar'
+export class CuestionarioResultadosComponent implements OnChanges {
+    private _ConstantesService = inject(ConstantesService)
+    private _PreguntaAlternativasRespuestasService = inject(
+        PreguntaAlternativasRespuestasService
+    )
 
-    chartData: any
-    chartOptions: any
-    showLegend: boolean = true
+    @Input() iCuestionarioId: string | number
 
-    constructor() {
-        this.updateChartData()
-        this.updateChartOptions()
+    chartData: { pregunta: string; chartData: ChartData<'bar'> }[] = []
+    chartOptions: ChartOptions = {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Respuestas por pregunta' },
+        },
     }
 
-    updateChartData() {
-        this.chartData = {
-            labels: ['A', 'B', 'C', 'D', 'E'],
-            datasets: [
-                {
-                    label: 'Dataset 1',
-                    backgroundColor: this.getRandomColors(5),
-                    borderColor: this.getRandomColors(5),
-                    data: this.getRandomData(5),
-                },
-            ],
+    ngOnChanges(changes) {
+        if (changes.iCuestionarioId?.currentValue) {
+            this.iCuestionarioId = changes.iCuestionarioId?.currentValue
+            if (!this.iCuestionarioId) return
+            const params = {
+                iCredId: this._ConstantesService.iCredId,
+            }
+            this._PreguntaAlternativasRespuestasService
+                .obtenerResultadosxiCuestionarioId(this.iCuestionarioId, params)
+                .subscribe((data) => {
+                    this.chartData = this.armarGraficosPorPregunta(data.data)
+                })
         }
     }
 
-    updateChartOptions() {
-        this.chartOptions = {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: this.showLegend,
-                    position: 'top',
-                    labels: {
-                        color: '#fff',
-                    },
-                },
-                tooltip: {
-                    enabled: true,
-                },
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#fff',
-                    },
-                },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: '#fff',
-                    },
-                },
-            },
-            backgroundColor: '#444',
-        }
-    }
+    armarGraficosPorPregunta(
+        data: any[]
+    ): { pregunta: string; chartData: ChartData<'bar'> }[] {
+        const agrupado = new Map<
+            number,
+            { pregunta: string; labels: string[]; data: number[] }
+        >()
 
-    getRandomData(num: number): number[] {
-        return Array.from({ length: num }, () =>
-            Math.floor(Math.random() * 100 + 1)
+        data.filter((item) => Number(item.iTipoPregId) !== 1).forEach(
+            (item) => {
+                if (!agrupado.has(item.iPregId)) {
+                    agrupado.set(item.iPregId, {
+                        pregunta: item.cPregunta,
+                        labels: [],
+                        data: [],
+                    })
+                }
+
+                agrupado.get(item.iPregId)!.labels.push(item.cAlternativa)
+                agrupado.get(item.iPregId)!.data.push(item.cantidad)
+            }
         )
-    }
 
-    getRandomColors(num: number): string[] {
-        const colors = []
-        for (let i = 0; i < num; i++) {
-            colors.push(
-                `#${Math.floor(Math.random() * 16777215)
-                    .toString(16)
-                    .padStart(6, '0')}`
-            )
-        }
-        return colors
+        return Array.from(agrupado.values()).map((g) => ({
+            pregunta: g.pregunta,
+            chartData: {
+                labels: g.labels,
+                datasets: [
+                    {
+                        label: 'Cantidad de respuestas',
+                        data: g.data,
+                        backgroundColor: '#42A5F5',
+                    },
+                ],
+            },
+        }))
     }
 }

@@ -49,7 +49,9 @@
             </ng-template>
             <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo">
             </app-toolbar-primeng>
-            <app-cuestionario-resultados></app-cuestionario-resultados>
+            <app-cuestionario-resultados
+                [iCuestionarioId]="cuestionario?.iCuestionarioId"
+            ></app-cuestionario-resultados>
         </p-tabPanel>
         <p-tabPanel *ngIf="iPerfilId === ESTUDIANTE">
             <ng-template pTemplate="header" class="header-fixed">

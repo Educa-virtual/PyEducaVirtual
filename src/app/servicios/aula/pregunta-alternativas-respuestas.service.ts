@@ -43,4 +43,14 @@ export class PreguntaAlternativasRespuestasService {
             params
         )
     }
+
+    obtenerResultadosxiCuestionarioId(
+        iCuestionarioId: string | number,
+        params
+    ): Observable<any> {
+        return this.http.get(
+            `${baseUrl}/aula-virtual/pregunta-alternativas-respuestas/cuestionario/${iCuestionarioId}/resultados`,
+            { params }
+        )
+    }
 }

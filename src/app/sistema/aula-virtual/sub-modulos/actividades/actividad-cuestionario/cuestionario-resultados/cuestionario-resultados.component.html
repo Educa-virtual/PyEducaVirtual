@@ -1,9 +1,11 @@
 <div class="container">
-    <div class="chart-container">
+    <div *ngFor="let g of chartData" class="mb-5">
+        <h3 class="mb-3">{{ g.pregunta }}</h3>
         <p-chart
-            [type]="chartType"
-            [data]="chartData"
+            type="bar"
+            [data]="g.chartData"
             [options]="chartOptions"
+            styleClass="w-full h-25rem"
         ></p-chart>
     </div>
 </div>

@@ -162,10 +162,10 @@ const administrador = [
             inicio,
             {
                 label: 'Auditoria',
-                icon: 'pi pi-fw pi-folder',
+                icon: 'pi pi-fw pi-book',
                 routerLink: ['/administrador/auditoria'],
             },
-            {
+            /*{
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
@@ -174,7 +174,7 @@ const administrador = [
                 label: 'Registro de fechas especiales',
                 icon: 'pi pi-calendar',
                 routerLink: ['/gestion-institucional/fechas'],
-            },
+            },*/
             {
                 label: 'Backup de BD',
                 icon: 'pi pi-fw pi-database',

@@ -6,7 +6,16 @@
 
 <div class="user-management-container">
     <div class="header bg-primary text-white p-3">
-        <h1 class="m-0">Gestión de usuarios</h1>
+        <div class="flex w-full" style="align-items: center">
+            <h1 class="m-0 flex-grow">Gestión de usuarios</h1>
+            <button
+                pButton
+                pRipple
+                label="+ Agregar"
+                class="p-button-success ml-auto"
+                (click)="agregarUsuario()"
+            ></button>
+        </div>
     </div>
 
     <div class="search-section p-3">
@@ -17,56 +26,130 @@
         <div
             class="search-content p-3 border border-top-0 bg-white rounded-bottom"
         >
-            <div class="filter-row flex flex-wrap align-items-center">
-                <div class="filter-item mr-3">
-                    <label for="modulos">Buscar por:</label>
-                    <p-dropdown
-                        [options]="opcionesBusqueda"
-                        [(ngModel)]="opcionBusquedaSeleccionada"
-                        optionLabel="name"
-                        styleClass="w-full"
-                        (onChange)="cambioOpcionBusqueda()"
-                    >
-                    </p-dropdown>
-                </div>
+            <form [formGroup]="formCriteriosBusqueda">
+                <div class="filter-row flex flex-wrap align-items-center">
+                    <div class="filtro-item">
+                        <label for="opcion">Buscar por:</label>
+                        <p-dropdown
+                            [options]="opcionesBusqueda"
+                            formControlName="opcionSeleccionada"
+                            styleClass="w-full"
+                            (onChange)="actualizarOpcionBusqueda()"
+                        >
+                        </p-dropdown>
+                    </div>
+                    <!--Criterio de búsqueda por campo de texto-->
+                    @if (
+                        formCriteriosBusqueda.get('opcionSeleccionada')
+                            ?.value !== 'perfil'
+                    ) {
+                        <div class="search-input-container flex-grow-1 mr-3">
+                            <label for="modulos">Criterio de búsqueda:</label>
+                            <span class="p-input-icon-right w-full">
+                                <i class="pi pi-search"></i>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    formControlName="criterioBusqueda"
+                                    placeholder="Escriba su búsqueda"
+                                    class="w-full"
+                                />
+                            </span>
+                        </div>
+                    }
+                    <!--Filtros por select para instituciones (Dremo, Ugel, IE)-->
+                    @else {
+                        <div class="filtro-item">
+                            <label for="instituciones">Instituciones:</label>
+                            <p-dropdown
+                                [options]="dataInstituciones"
+                                formControlName="institucionSeleccionada"
+                                placeholder="Seleccione opción"
+                                styleClass="dropdown-field"
+                                (onChange)="reiniciarFiltrosPerfil()"
+                            >
+                            </p-dropdown>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="perfil">Perfil:</label>
+                            <p-dropdown
+                                appendTo="body"
+                                [options]="dataPerfiles"
+                                placeholder="Seleccione opción"
+                                styleClass="dropdown-field"
+                                formControlName="perfilSeleccionado"
+                                [filter]="true"
+                            >
+                            </p-dropdown>
+                        </div>
 
-                <div class="search-input-container flex-grow-1 mr-3">
-                    <span class="p-input-icon-right w-full">
-                        <i class="pi pi-search"></i>
-                        <input
-                            type="text"
-                            pInputText
-                            [(ngModel)]="criterioBusqueda"
-                            (ngModelChange)="cambioCriterioBusqueda()"
-                            placeholder="Escriba su búsqueda"
-                            class="w-full"
-                        />
-                    </span>
-                </div>
+                        @if (
+                            +formCriteriosBusqueda.get(
+                                'institucionSeleccionada'
+                            )?.value === 2
+                        ) {
+                            <div class="filtro-item">
+                                <label for="ugeles">UGEL:</label>
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataUgeles"
+                                    formControlName="iUgelSeleccionada"
+                                    placeholder="Seleccione opción"
+                                    styleClass="dropdown-field"
+                                >
+                                </p-dropdown>
+                            </div>
+                        }
+                        @if (
+                            +formCriteriosBusqueda.get(
+                                'institucionSeleccionada'
+                            )?.value === 3
+                        ) {
+                            <div class="filtro-item">
+                                <label for="instituciones"
+                                    >Institución educativa:</label
+                                >
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataInstitucionesEducativas"
+                                    formControlName="ieSeleccionada"
+                                    (onChange)="obtenerSedesIe()"
+                                    placeholder="Seleccione opción"
+                                    [filter]="true"
+                                    styleClass="dropdown-field"
+                                >
+                                </p-dropdown>
+                            </div>
+                        }
 
-                <!--<div class="filter-item mr-1">
-                    <label for="modulos">Filtrar por:</label>
-                    <p-dropdown [options]="filtrosInstituciones" [(ngModel)]="filtroInstitucionSeleccionada"
-                        optionLabel="name" styleClass="w-full">
-                    </p-dropdown>
+                        @if (
+                            +formCriteriosBusqueda.get('ieSeleccionada')
+                                ?.value > 0
+                        ) {
+                            <div class="filtro-item">
+                                <label for="sedes">Sede:</label>
+                                <p-dropdown
+                                    appendTo="body"
+                                    [options]="dataIeSedes"
+                                    formControlName="ieSedeSeleccionada"
+                                    placeholder="Seleccione opción"
+                                    styleClass="dropdown-field"
+                                >
+                                </p-dropdown>
+                            </div>
+                        }
+                    }
+                    <div class="ml-auto boton-buscar">
+                        <button
+                            pButton
+                            pRipple
+                            label="Buscar"
+                            (click)="realizarBusqueda()"
+                            [disabled]="!formCriteriosBusqueda.valid"
+                        ></button>
+                    </div>
                 </div>
-
-                <div class="filter-item mr-3">
-                    <p-dropdown [options]="filtrosRoles" [(ngModel)]="filtroPerfilSeleccionado" optionLabel="name"
-                        styleClass="w-full">
-                    </p-dropdown>
-                </div>-->
-
-                <div class="ml-auto">
-                    <button
-                        pButton
-                        pRipple
-                        label="+ Agregar"
-                        class="p-button-success"
-                        (click)="agregarUsuario()"
-                    ></button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -78,9 +161,11 @@
             [paginator]="true"
             [rows]="20"
             [totalRecords]="totalDataUsuarios"
+            [showCurrentPageReport]="true"
             [loading]="loading"
             (onLazyLoad)="loadUsuariosLazy($event)"
             [scrollable]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
         >
             <ng-template pTemplate="header">
                 <tr class="bg-gray-200">
@@ -127,7 +212,7 @@
                     </td>
                     <td class="text-center">
                         {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
-                        @if (usuarioExpirado(user.dtCredCaduca)) {
+                        @if (esUsuarioExpirado(user.dtCredCaduca)) {
                             <p class="text-red-600">Caducado</p>
                         }
                     </td>
@@ -187,27 +272,27 @@
             [showCurrentPageReport]="true">
         </p-paginator>
     </div>-->
-
-    <app-editar-perfil
-        [visible]="modalAsignarRolVisible"
-        (visibleChange)="modalAsignarRolVisible = $event"
-        [usuario]="usuarioSeleccionado"
-    >
-    </app-editar-perfil>
-
-    <app-cambiar-fecha-caducidad
-        [visible]="modalCambiarFechaCaducidadVisible"
-        (visibleChange)="modalCambiarFechaCaducidadVisible = $event"
-        [usuario]="usuarioSeleccionado"
-    >
-    </app-cambiar-fecha-caducidad>
-
-    <app-agregar-usuario
-        [visible]="modalAgregarUsuariolVisible"
-        (visibleChange)="modalAgregarUsuariolVisible = $event"
-        (usuarioRegistradoEvent)="usuarioRegistrado($event)"
-    >
-    </app-agregar-usuario>
 </div>
+
+<app-editar-perfil
+    [visible]="modalAsignarRolVisible"
+    (visibleChange)="modalAsignarRolVisible = $event"
+    [usuario]="usuarioSeleccionado"
+>
+</app-editar-perfil>
+
+<app-cambiar-fecha-caducidad
+    [visible]="modalCambiarFechaCaducidadVisible"
+    (visibleChange)="modalCambiarFechaCaducidadVisible = $event"
+    [usuario]="usuarioSeleccionado"
+>
+</app-cambiar-fecha-caducidad>
+
+<app-agregar-usuario
+    [visible]="modalAgregarUsuariolVisible"
+    (visibleChange)="modalAgregarUsuariolVisible = $event"
+    (usuarioRegistradoEvent)="usuarioRegistrado($event)"
+>
+</app-agregar-usuario>
 
 <p-toast></p-toast>

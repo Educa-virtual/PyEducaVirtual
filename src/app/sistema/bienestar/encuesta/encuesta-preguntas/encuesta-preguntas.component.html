@@ -14,7 +14,10 @@
         </span>
     </ng-template>
     <ng-template pTemplate="icons" class="flex justify-content-center">
-        <div class="flex flex-wrap gap-2 justify-content-end">
+        <div
+            class="flex flex-wrap gap-2 justify-content-end"
+            *ngIf="!encuesta_bloqueada"
+        >
             <button
                 size="small"
                 pButton
@@ -45,7 +48,10 @@
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
-                    <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2">
+                    <div
+                        class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2"
+                        *ngIf="!encuesta_bloqueada"
+                    >
                         <p-button
                             label="Borrar"
                             icon="pi pi-trash"
@@ -81,7 +87,10 @@
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
-                    <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2">
+                    <div
+                        class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2"
+                        *ngIf="!encuesta_bloqueada"
+                    >
                         <p-button
                             label="Borrar"
                             icon="pi pi-trash"
@@ -117,7 +126,10 @@
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
-                    <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2">
+                    <div
+                        class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2"
+                        *ngIf="!encuesta_bloqueada"
+                    >
                         <p-button
                             label="Borrar"
                             icon="pi pi-trash"
@@ -152,6 +164,7 @@
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
     (onClose)="clearForm()"
+    *ngIf="!encuesta_bloqueada"
 >
     <ng-content>
         <br />

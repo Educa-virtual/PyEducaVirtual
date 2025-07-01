@@ -24,6 +24,7 @@ export class EncuestaComponent implements OnInit {
     iYAcadId: number
     perfil: any
     iEncuId: number
+    encuesta: any
 
     ultima_fecha_anio: Date = new Date(new Date().getFullYear(), 11, 31)
     fecha_actual: Date = new Date()
@@ -304,6 +305,8 @@ export class EncuestaComponent implements OnInit {
         this.formEncuesta
             .get('iCredEntPerfId')
             ?.setValue(this.perfil.iCredEntPerfId)
+
+        this.encuesta = data
     }
 
     actualizarPoblacion(item: any) {

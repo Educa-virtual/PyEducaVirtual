@@ -35,6 +35,7 @@ export class EncuestaPreguntasComponent implements OnInit {
     pregunta_registrada: boolean = false
     preguntas: Array<any>
     tipos_preguntas: Array<object>
+    encuesta_bloqueada: boolean = true
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -105,6 +106,8 @@ export class EncuestaPreguntasComponent implements OnInit {
                 next: (data: any) => {
                     if (data.data.length) {
                         this.cEncuNombre = data.data[0].cEncuNombre
+                        this.encuesta_bloqueada =
+                            Number(data.data[0].iEstado) === 3
                         this.listarPreguntas()
                     } else {
                         this._messageService.add({

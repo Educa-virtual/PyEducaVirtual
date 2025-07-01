@@ -143,13 +143,13 @@ export class GestionarEncuestasComponent implements OnInit {
             )
                 return encuesta
             if (
-                encuesta.cEncuDescripcion
+                encuesta.cEncuCateNombre
                     .toLowerCase()
                     .includes(filtro.toLowerCase())
             )
                 return encuesta
             if (
-                encuesta.cEncuCateNombre
+                encuesta.cEstadoNombre
                     .toLowerCase()
                     .includes(filtro.toLowerCase())
             )

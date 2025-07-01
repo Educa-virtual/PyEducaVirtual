@@ -12,6 +12,9 @@ import { GestionFichasComponent } from './gestion-fichas/gestion-fichas.componen
 import { GestionFichasApoderadoComponent } from './gestion-fichas-apoderado/gestion-fichas-apoderado.component'
 import { FichaRecreacionComponent } from './ficha/ficha-recreacion/ficha-recreacion.component'
 import { GestionarEncuestasComponent } from './gestionar-encuestas/gestionar-encuestas.component'
+import { InformeEstadisticoComponent } from './informe-estadistico/informe-estadistico.component'
+import { NivelPobrezaComponent } from './informe-estadistico/nivel-pobreza/nivel-pobreza.component'
+import { SaludComponent } from './informe-estadistico/salud/salud.component'
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
     {
@@ -48,6 +51,14 @@ const routes: Routes = [
         ],
     },
     { path: 'gestionar-encuestas', component: GestionarEncuestasComponent },
+    {
+        path: 'informe-estadistico',
+        component: InformeEstadisticoComponent,
+        children: [
+            { path: 'nivel-pobreza', component: NivelPobrezaComponent },
+            { path: 'salud', component: SaludComponent },
+        ],
+    },
 ]
 
 @NgModule({

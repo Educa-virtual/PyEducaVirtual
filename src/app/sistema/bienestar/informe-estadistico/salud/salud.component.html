@@ -1,1 +1,30 @@
-<p>salud works!</p>
+<br />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+    <div>
+        <p-panel>
+            <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
+            >
+                <div>test</div>
+                <div>
+                    <p-chart
+                        type="doughnut"
+                        [data]="data"
+                        [options]="options"
+                    />
+                </div>
+            </div>
+        </p-panel>
+    </div>
+
+    <div>
+        <p-panel>
+            <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
+            >
+                <div>test</div>
+                <div>test</div>
+            </div>
+        </p-panel>
+    </div>
+</div>

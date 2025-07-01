@@ -23,7 +23,7 @@ export class InformeEstadisticoComponent implements OnInit {
         {
             label: 'Salud',
             icon: 'pi pi-fw pi-users',
-            //route: '/bienestar/ficha/familia',
+            //route: '/bienestar/informe-estadistico/salud',
         },
         {
             label: 'Vivienda',
@@ -46,9 +46,7 @@ export class InformeEstadisticoComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('ngOnInit')
-        //this.activeItem = this.items[0]
         //Redireccionar
-        //this.router.navigate(['/bienestar/informe-estadistico/nivel-pobreza'])
         this.activeItem = this.items[0]
     }
 

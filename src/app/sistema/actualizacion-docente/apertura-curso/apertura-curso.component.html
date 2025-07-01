@@ -409,6 +409,9 @@
         </div>
     </div>
 </section>
+<!-- <app-asignar-horario-capacitacion>
+
+</app-asignar-horario-capacitacion> -->
 <!-- modal de agregar horario al curso -->
 <p-dialog
     header="Configuración de Horarios"
@@ -416,40 +419,45 @@
     [modal]="true"
     [style]="{ width: '60rem' }"
 >
-    <form
-        [formGroup]="formNuevaCapacitacion"
-        class="flex flex-column gap-3 w-full"
-    >
-        <!-- agregar de inicio y fin de fechas -->
-        <div class="col-12 mt-3 grid">
-            <div class="col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
-                    <p-calendar
-                        formControlName="dFechaInicio"
-                        styleClass="w-full"
-                        dateFormat="dd/mm/yy"
-                        [iconDisplay]="'input'"
-                        [showIcon]="true"
-                        appendTo="body"
-                    ></p-calendar>
-                </p-inputGroup>
+    <!-- agregar de inicio y fin de fechas -->
+    <div class="col-12 mt-3 grid">
+        <div class="col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
+                <p-calendar
+                    [(ngModel)]="dFechaInicio"
+                    styleClass="w-full"
+                    dateFormat="dd/mm/yy"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    [disabled]="true"
+                ></p-calendar>
+            </p-inputGroup>
+        </div>
+        <div class="col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
+                <p-calendar
+                    [(ngModel)]="dFechaFin"
+                    styleClass="w-full"
+                    dateFormat="dd/mm/yy"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    [disabled]="true"
+                ></p-calendar>
+            </p-inputGroup>
+        </div>
+        <div class="col-2">
+            <div class="flex justify-content-center">
+                <span class="text-2xl font-bold text-primary">
+                    {{ iTotalHrs }}
+                </span>
             </div>
-            <div class="col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
-                    <p-calendar
-                        formControlName="dFechaFin"
-                        styleClass="w-full"
-                        dateFormat="dd/mm/yy"
-                        [iconDisplay]="'input'"
-                        [showIcon]="true"
-                        appendTo="body"
-                    ></p-calendar>
-                </p-inputGroup>
+            <div class="flex justify-content-center">
+                <span class="text-base text-gray-600 mt-2">Horas</span>
             </div>
         </div>
-    </form>
+    </div>
 
     <!-- Seleccionar días -->
     <div class="card relative mt-4">
@@ -468,9 +476,11 @@
     <!-- Asignar horario -->
     <div class="card mt-4 relative">
         <samp class="btnh">Horario</samp>
-        <samp>El horario es el mismo todos los días seleccionados?</samp>
+        <div class="my-3">
+            <samp>El horario es el mismo todos los días seleccionados?</samp>
+        </div>
 
-        <div class="grid col" *ngIf="diaSeleccionado">
+        <!-- <div class="grid col" *ngIf="diaSeleccionado">
             <div class="col-12">
                 <samp
                     >Horario para:
@@ -527,14 +537,76 @@
                 </p-inputGroup>
             </div>
 
-            <div class="col flex justify-content-end">
-                <p-button
-                    label="Guardar"
-                    icon="pi pi-check"
-                    severity="success"
-                    (click)="guardarDatos()"
-                />
+            
+        </div> -->
+
+        <!-- Acción para guardar horario -->
+        <div class="grid">
+            <div
+                class="p-3 border-round-left w-3rem h-6rem bg-primary font-bold flex align-items-center justify-content-center vertical-text-container"
+            >
+                <label for="">{{ nombredia }}</label>
             </div>
+            <div>
+                <div class="mb-1">
+                    <p-calendar
+                        [iconDisplay]="'input'"
+                        styleClass="w-14rem"
+                        [hourFormat]="'12'"
+                        [showIcon]="true"
+                        [timeOnly]="true"
+                        inputId="templatedisplay"
+                        placeholder="Ingrese hora de inicio"
+                        [(ngModel)]="horaSeleccionadaInicio"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-clock"
+                                (onclick)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+                <div>
+                    <p-calendar
+                        [iconDisplay]="'input'"
+                        styleClass="w-14rem"
+                        [hourFormat]="'12'"
+                        [showIcon]="true"
+                        [timeOnly]="true"
+                        inputId="templatedisplay"
+                        placeholder="Ingrese hora fin"
+                        [(ngModel)]="horaSeleccionadaFin"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-clock"
+                                (onclick)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+            </div>
+            <div class="mx-5 flex align-items-center justify-content-center">
+                <i class="pi pi-arrow-right"></i>
+            </div>
+        </div>
+        <!-- <div class="" *ngFor="let horario of datosTemporales">
+            {{horario.dia}}: {{horario.horaInicio}} - {{horario.horaFin}}
+        </div> -->
+        <div class="col flex justify-content-end">
+            <p-button
+                label="Agregar Horario"
+                icon="pi pi-check"
+                severity="success"
+                (click)="guardarDatos()"
+            />
         </div>
     </div>
     <div class="flex justify-content-center py-5">

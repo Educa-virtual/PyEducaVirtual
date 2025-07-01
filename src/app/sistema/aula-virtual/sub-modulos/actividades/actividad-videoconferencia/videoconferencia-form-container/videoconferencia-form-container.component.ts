@@ -2,7 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { Component, OnInit, Input, inject, OnChanges } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { InputTextModule } from 'primeng/inputtext'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
@@ -45,10 +45,11 @@ export class VideoconferenciaFormContainerComponent
 
     semana: Message[] = []
     idDocCursoId: any
+
     public formConferencia = this._formBuilder.group({
         iRVirtualId: [''],
         cRVirtualTema: ['', [Validators.required, Validators.maxLength(250)]],
-        dtRVirtualInicio: [new Date(), [Validators.required]],
+        dtRVirtualInicio: [this.obtenerHoraInicio(), [Validators.required]],
         dtRVirtualFin: [new Date(), [Validators.required]],
         // cForoDescripcion: ['', [Validators.required]],
         cRVirtualUrlJoin: ['', [Validators.required]],
@@ -57,7 +58,8 @@ export class VideoconferenciaFormContainerComponent
     constructor(
         private dialogConfig: DynamicDialogConfig,
         private apiAulaService: ApiAulaService,
-        private _constantesService: ConstantesService
+        private _constantesService: ConstantesService,
+        private messageService: MessageService
     ) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
@@ -116,6 +118,12 @@ export class VideoconferenciaFormContainerComponent
         // }
     }
 
+    // Métodos para definir horas
+    private obtenerHoraInicio(): Date {
+        const ahora = new Date()
+        ahora.setMinutes(ahora.getMinutes() + 5) // Agrega 5 minutos
+        return ahora
+    }
     obtenerReunionVirtualPorId(ixActivadadId) {
         console.log('obtenerCuestionarioPorId', ixActivadadId)
         const data = {
@@ -162,9 +170,14 @@ export class VideoconferenciaFormContainerComponent
         console.log('this.action')
         console.log(this.action)
 
-        if (!this.formConferencia.invalid) {
-            console.log('Formulario válido', this.formConferencia.value)
-
+        if (this.formConferencia.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Campos vacios!',
+            })
+            // console.log('Formulario válido', this.formConferencia.value)
+        } else {
             const data = {
                 opcion: 'GUARDARxProgActxiRVirtualId',
                 iContenidoSemId: this.contenidoSemana.iContenidoSemId,
@@ -210,20 +223,77 @@ export class VideoconferenciaFormContainerComponent
                                 console.log(response)
                                 this.closeModal(response.validated)
                             },
+                            error: (error) => {
+                                const errores = error?.error?.errors
+                                if (error.status === 422 && errores) {
+                                    // Recorre y muestra cada mensaje de error
+                                    Object.keys(errores).forEach((campo) => {
+                                        errores[campo].forEach(
+                                            (mensaje: string) => {
+                                                this.messageService.add({
+                                                    severity: 'error',
+                                                    summary:
+                                                        'Error de validación',
+                                                    detail: mensaje,
+                                                })
+                                            }
+                                        )
+                                    })
+                                } else {
+                                    // Error genérico si no hay errores específicos
+                                    this.messageService.add({
+                                        severity: 'error',
+                                        summary: 'Error',
+                                        detail:
+                                            error?.error?.message ||
+                                            'Ocurrió un error inesperado',
+                                    })
+                                }
+                            },
                         })
+
                     break
                 case 'GUARDAR':
+                    console.log('datos de guardar', data)
                     this.apiAulaService.guardarReunionVirtual(data).subscribe({
                         next: (response: any) => {
                             console.log('response')
                             console.log(response)
                             this.closeModal(response.validated)
                         },
+                        error: (error) => {
+                            const errores = error?.error?.errors
+                            if (error.status === 422 && errores) {
+                                // Recorre y muestra cada mensaje de error
+                                Object.keys(errores).forEach((campo) => {
+                                    errores[campo].forEach(
+                                        (mensaje: string) => {
+                                            this.messageService.add({
+                                                severity: 'error',
+                                                summary: 'Error de validación',
+                                                detail: mensaje,
+                                            })
+                                        }
+                                    )
+                                })
+                            } else {
+                                // Error genérico si no hay errores específicos
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error',
+                                    detail:
+                                        error?.error?.message ||
+                                        'Ocurrió un error inesperado',
+                                })
+                            }
+                        },
                     })
                     break
             }
-        } else {
-            console.log('Formulario inválido')
         }
+        // }
+        // else {
+        //     console.log('Formulario inválido')
+        // }
     }
 }

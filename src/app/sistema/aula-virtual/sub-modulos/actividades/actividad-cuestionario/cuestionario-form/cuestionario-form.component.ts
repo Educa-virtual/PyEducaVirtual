@@ -7,7 +7,7 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { DatePipe } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 
 @Component({
@@ -43,7 +43,11 @@ export class CuestionarioFormComponent implements OnInit {
     action: string
     opcion: string = 'GUARDAR'
     idDocCursoId: any
-    constructor(private dialogConfig: DynamicDialogConfig) {
+
+    constructor(
+        private dialogConfig: DynamicDialogConfig,
+        private messageService: MessageService
+    ) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
         this.actividad = this.dialogConfig.data.actividad
@@ -58,10 +62,7 @@ export class CuestionarioFormComponent implements OnInit {
         this.semana = [
             {
                 severity: 'info',
-                detail:
-                    this.contenidoSemana?.cContenidoSemNumero +
-                    ' SEMANA - ' +
-                    this.contenidoSemana?.cContenidoSemTitulo,
+                detail: this.contenidoSemana?.cContenidoSemTitulo,
             },
         ]
     }
@@ -145,15 +146,45 @@ export class CuestionarioFormComponent implements OnInit {
 
             idDocCursoId: this.idDocCursoId,
         }
-        this._aulaService.guardarCuestionario(data).subscribe({
-            next: (response) => {
-                console.log('Cuestionario guardado con éxito', response)
-                this.ref.close(true)
-            },
-            error: (error) => {
-                console.error('Error al guardar el cuestionario', error)
-            },
-        })
+        if (!this.formCuestionario.invalid) {
+            this._aulaService.guardarCuestionario(data).subscribe({
+                next: (response) => {
+                    console.log('Cuestionario guardado con éxito', response)
+                    this.ref.close(true)
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                },
+            })
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Campos vacios!',
+            })
+        }
+
         console.log('datos del formulario', data)
     }
     cuestionario: any
@@ -233,16 +264,45 @@ export class CuestionarioFormComponent implements OnInit {
                 iCredId: this._constantesService.iCredId,
             },
         }
-        // console.log('Datos a enviar para actualizar:', data);
-        this.GeneralService.getGralPrefixx(data).subscribe({
-            next: (response) => {
-                console.log('Cuestionario actualizado:', response)
-                this.ref.close(true)
-            },
-            error: (error) => {
-                console.error('Error al actualizar cuestionario:', error)
-            },
-        })
+        if (!this.formCuestionario.invalid) {
+            // console.log('Datos a enviar para actualizar:', data);
+            this.GeneralService.getGralPrefixx(data).subscribe({
+                next: (response) => {
+                    console.log('Cuestionario actualizado:', response)
+                    this.ref.close(true)
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        // Error genérico si no hay errores específicos
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
+                },
+            })
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Campos vacios!',
+            })
+        }
     }
 
     // metodo para ajustar la fecha a la hora más cercana de media hora

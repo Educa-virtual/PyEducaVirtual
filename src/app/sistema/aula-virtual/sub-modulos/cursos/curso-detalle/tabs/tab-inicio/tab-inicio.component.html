@@ -162,24 +162,24 @@
                                         <div
                                             class="grid flex flex-row-reverse md:flex-row gap-2"
                                         >
+                                            <p-button
+                                                icon="pi pi-thumbtack"
+                                                [rounded]="true"
+                                                [text]="true"
+                                                severity="secondary"
+                                                (click)="
+                                                    fijarAnuncio(
+                                                        card.iAnuncioId,
+                                                        card.iFijado
+                                                    )
+                                                "
+                                                [severity]="
+                                                    card.iFijado === '0'
+                                                        ? 'secondary'
+                                                        : 'success'
+                                                "
+                                            />
                                             @if (iPerfilId === DOCENTE) {
-                                                <p-button
-                                                    icon="pi pi-thumbtack"
-                                                    [rounded]="true"
-                                                    [text]="true"
-                                                    severity="secondary"
-                                                    (click)="
-                                                        fijarAnuncio(
-                                                            card.iAnuncioId,
-                                                            card.iFijado
-                                                        )
-                                                    "
-                                                    [severity]="
-                                                        card.iFijado === '0'
-                                                            ? 'secondary'
-                                                            : 'success'
-                                                    "
-                                                />
                                                 <p-button
                                                     icon="pi pi-times"
                                                     [rounded]="true"
@@ -202,9 +202,16 @@
                                     {{ card.cTitulo }}
                                 </p>
                             </ng-template>
-                            <p class="cnt m-0 text-justify">
-                                {{ card.cContenido }}
-                            </p>
+                            <textarea
+                                #textareaRef
+                                pInputTextarea
+                                autoResize
+                                [(ngModel)]="card.cContenido"
+                                rows="1"
+                                class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
+                                readonly
+                            >
+                            </textarea>
                             <div class="flex text-xs justify-content-end mt-5">
                                 {{ card.dtCreado | date: 'HH:mm:ss' }} Hrs
                                 {{ card.dtCreado | date: 'dd/MM/yyyy' }}

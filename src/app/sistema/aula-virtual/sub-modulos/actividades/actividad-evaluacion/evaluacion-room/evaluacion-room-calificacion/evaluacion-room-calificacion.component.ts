@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+import { CommonModule, NgFor } from '@angular/common'
 import {
     Component,
     computed,
@@ -25,6 +25,9 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 interface Leyenda {
     total: number
     text: string
@@ -77,6 +80,7 @@ const leyendas = {
         NoDataComponent,
         RubricaCalificarComponent,
         CardOrderListComponent,
+        NgFor,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
@@ -128,15 +132,15 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     perfil: any
     idDocCursoId: any[] = []
     private _aulaService = inject(ApiAulaService)
+    private _EvaluacionesService = inject(EvaluacionesService)
     public estudianteMatriculadosxGrado = []
 
     showListaEstudiantes: boolean = true
-
+    estudianteSeleccionado
     updateSelectedEstudiante(value: any) {
-        console.log(value)
+        this.estudianteSeleccionado = value
+        this.estudianteSeleccionado.iEvaluacionId = this.iEvaluacionId
         this._state.update((state) => {
-            console.log('selectedEstudiante')
-            console.log(value)
             this.router.navigate([], {
                 queryParams: {
                     // iEvalPromId: value.iEvalPromId ?? undefined,
@@ -160,6 +164,8 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     // injeccion de dependencias
     private _evaluacionesService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
+    private _ConstantesService = inject(ConstantesService)
+    private _ActivatedRoute = inject(ActivatedRoute)
     private _unsubscribe$ = new Subject<boolean>()
 
     private router = inject(Router)
@@ -194,36 +200,36 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     }
 
     obtenerEstudiantesEvaluacion() {
-        const params = { iEvaluacionId: this.iEvaluacionId }
-        this._evaluacionesService
-            .obtenerEstudiantesEvaluación(params)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: (estudiantes) => {
-                    this.estudianteMatriculadosxGrado = estudiantes.map(
-                        (item: any) => {
-                            return {
-                                ...item,
-                                cTitulo:
-                                    (item.cEstNombres || '') +
-                                    ' ' +
-                                    (item.cEstPaterno || '') +
-                                    ' ' +
-                                    (item.cEstMaterno || ''),
-                            }
+        if (!this.iEvaluacionId) return
+        if (this._ConstantesService.iPerfilId === ESTUDIANTE) return
+        this._EvaluacionesService
+            .obtenerReporteEstudiantesRetroalimentacion({
+                iIeCursoId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iIeCursoId'),
+                iYAcadId: this._ConstantesService.iYAcadId,
+                iSedeId: this._ConstantesService.iSedeId,
+                iSeccionId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iSeccionId'),
+                iNivelGradoId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iNivelGradoId'),
+                iEvaluacionId: this.iEvaluacionId,
+            })
+            .subscribe((Data) => {
+                this.estudianteMatriculadosxGrado = Data['data']
+                this.estudianteMatriculadosxGrado = Data['data'].map(
+                    (item: any, index) => {
+                        return {
+                            ...item,
+                            cTitulo: index + 1 + '.- ' + item.completoalumno,
                         }
-                    )
-                    this._state.update((current) => ({
-                        ...current,
-                        estudiantes,
-                    }))
-                },
+                    }
+                )
             })
     }
-
+    preguntasEstudiante: any = []
     private obtenerEvaluacionRespuestasEstudiante() {
         // if (!this._state().evaluacionEstudiante) return
-
+        this.preguntasEstudiante = []
         const params = {
             iEvaluacionId: this.iEvaluacionId,
             iEstudianteId: this.selectedEstudiante().iEstudianteId,
@@ -233,13 +239,16 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (preguntas) => {
-                    this._state.update((current) => ({
-                        ...current,
-                        selectedEstudiante: {
-                            ...current.selectedEstudiante,
-                            preguntas: this.mapPreguntas(preguntas),
-                        },
-                    }))
+                    console.log(preguntas)
+                    this.preguntasEstudiante = preguntas
+                    console.log(this.preguntasEstudiante)
+                    // this._state.update((current) => ({
+                    //     ...current,
+                    //     selectedEstudiante: {
+                    //         ...current.selectedEstudiante,
+                    //         preguntas: this.mapPreguntas(preguntas),
+                    //     },
+                    // }))
                 },
             })
     }
@@ -330,6 +339,9 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
         switch (accion) {
             case 'abrir-lista-estudiantes':
                 this.showListaEstudiantes = true
+                break
+            case 'recargar-lista-estudiantes':
+                this.obtenerEstudiantesEvaluacion()
                 break
         }
     }

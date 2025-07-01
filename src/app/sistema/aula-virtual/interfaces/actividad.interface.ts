@@ -21,7 +21,9 @@ export interface IActionContenido extends Omit<MenuItem, 'icon'> {
     icon: string | IIcon
     accion: string
     class: string
-    isVisible?: (row) => boolean
+    isVisible?:
+        | ((row: IActividad) => boolean)
+        | ((row: IActividad, perfilId: number) => boolean)
 }
 
 export type tipoActividadesKeys = keyof typeof TIPO_ACTIVIDADES

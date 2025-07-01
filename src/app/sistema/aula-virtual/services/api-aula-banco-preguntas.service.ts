@@ -6,7 +6,6 @@ import {
     mapData,
     mapItemsBancoToEre,
 } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
-import { iPreguntaAula } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-aula.model'
 
 @Injectable({
     providedIn: 'root',
@@ -26,21 +25,14 @@ export class ApiAulaBancoPreguntasService {
             .pipe(map((resp) => resp['data']))
     }
 
-    obtenerBancoPreguntas(params): Observable<iPreguntaAula[]> {
-        return this._http
-            .get(
-                `${this.baseUrlApi}/evaluaciones/banco-preguntas/obtenerBancoPreguntas`,
-                { params }
-            )
-            .pipe(
-                map((resp) => resp['data']),
-                // map((data) => {
-                //     return mapItemsBancoToEre(data)
-                // }),
-                map((data) => mapData(data))
-            )
+    obtenerBancoPreguntas(params): Observable<any> {
+        return this._http.get(
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/obtenerBancoPreguntas`,
+            {
+                params,
+            }
+        )
     }
-
     // encabezados
     obtenerEncabezadosPreguntas(params) {
         return this._http

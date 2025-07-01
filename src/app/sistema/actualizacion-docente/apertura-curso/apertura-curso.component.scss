@@ -156,3 +156,17 @@ i {
     // opacity: 0.5;
     display: none;
 }
+
+.vertical-text-container {
+    background-color: #3e67a9;
+}
+.vertical-text-container label {
+    writing-mode: vertical-rl;
+    transform: rotate(
+        180deg
+    ); /* Opcional, si lo quieres de abajo hacia arriba */
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    //   background-color: rgb(79, 79, 255);
+}

@@ -9,7 +9,7 @@ import {
     CUESTIONARIO,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
-import { MenuItem } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { provideIcons } from '@ng-icons/core'
 import {
@@ -42,6 +42,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
 import { CuestionarioFormComponent } from '../../../../actividades/actividad-cuestionario/cuestionario-form/cuestionario-form.component'
 import { DropdownChangeEvent } from 'primeng/dropdown'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -87,6 +88,9 @@ export class TabContenidoComponent implements OnInit {
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
     private _evalService = inject(ApiEvaluacionesService)
+    private GeneralService = inject(GeneralService)
+    private _EvaluacionesService = inject(EvaluacionesService)
+    private _MessageService = inject(MessageService)
 
     // para mostrar las actividades de la semana
     // private semanaSeleccionadaS
@@ -115,7 +119,8 @@ export class TabContenidoComponent implements OnInit {
     constructor(
         private _dialogService: DialogService,
         private router: Router,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private messageService: MessageService
     ) {}
 
     iPerfilId: number = null
@@ -131,7 +136,6 @@ export class TabContenidoComponent implements OnInit {
         this.rangeDates = [today, nextWeek]
 
         this.getData()
-        this.obtenerTipoActivadad()
     }
 
     // maneja el evento de seleccion de semana
@@ -426,21 +430,14 @@ export class TabContenidoComponent implements OnInit {
                         contenidoSemana: this.semanaSeleccionada,
                         iActTipoId: actividad.iActTipoId,
                         actividad: actividad,
-                        action: 'editar',
+                        action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                         idDocCursoId: this.idDocCursoId,
                     },
-                    header: 'Editar Foro',
+                    header: action === 'EDITAR' ? 'Editar Foro' : 'Crear Foro',
                 })
                 .onClose.subscribe((result) => {
                     if (result) {
-                        const data = {
-                            ...result,
-                        }
-                        this._aulaService.actualizarForo(data).subscribe(() => {
-                            this.obtenerContenidoSemanas(
-                                this.semanaSeleccionada
-                            )
-                        })
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                     } else {
                         console.log('Formulario cancelado')
                     }
@@ -461,16 +458,7 @@ export class TabContenidoComponent implements OnInit {
                 })
                 .onClose.subscribe((result) => {
                     if (result) {
-                        const data = {
-                            ...result,
-                            iContenidoSemId:
-                                this.semanaSeleccionada.iContenidoSemId,
-                        }
-                        this._aulaService.guardarForo(data).subscribe(() => {
-                            this.obtenerContenidoSemanas(
-                                this.semanaSeleccionada
-                            )
-                        })
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
                     } else {
                         console.log('Formulario cancelado')
                     }
@@ -606,6 +594,7 @@ export class TabContenidoComponent implements OnInit {
     opcionEvaluacion: string
     semanaEvaluacion
     dataActividad
+    iEvaluacionId: string | number
     handleEvaluacionAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
@@ -616,39 +605,13 @@ export class TabContenidoComponent implements OnInit {
                 this.opcionEvaluacion =
                     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
                 this.semanaEvaluacion = this.semanaSeleccionada
-                this.dataActividad = actividad
-                // const ref = this._dialogService.open(
-                //     EvaluacionFormContainerComponent,
-                //     {
-                //         ...MODAL_CONFIG,
-                //         maximizable: true,
-                //         header: !actividad['iEvaluacionId']
-                //             ? 'Crear Evaluación'
-                //             : 'Editar Evaluación',
-                //         data: {
-                //             actividad,
-                //             semana: this.semanaSeleccionada,
-                //         },
-                //     }
-                // )
-                // this._dialogService.getInstance(ref).maximize()
-                // ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
-                //     next: () => {
-                //         // todo validar solo cuando sea necesario
-                //         this.obtenerContenidoSemanas()
-                //     },
-                // })
-
+                this.iEvaluacionId = actividad.ixActivadadId
                 break
             case 'ELIMINAR':
                 this._confirmService.openConfirm({
                     header: '¿Esta seguro de eliminar la evaluación?',
                     accept: () => {
-                        this.eliminarActividad(
-                            actividad.iProgActId,
-                            actividad.iActTipoId,
-                            actividad.ixActivadadId
-                        )
+                        this.eliminarEvaluacion(actividad.ixActivadadId)
                     },
                 })
                 break
@@ -673,6 +636,7 @@ export class TabContenidoComponent implements OnInit {
                             iEstudianteId:
                                 this._constantesService.iEstudianteId ??
                                 undefined,
+                            iNivelCicloId: this.curso.iNivelCicloId,
                         },
                         relativeTo: this._activatedRoute,
                     }
@@ -723,36 +687,48 @@ export class TabContenidoComponent implements OnInit {
     }
 
     publicarEvaluacion(actividad: IActividad) {
-        const data = {
-            iEvaluacionId: actividad.ixActivadadId,
-            iCursoId: this.semanaSeleccionada.iCursoId,
-            // obtener iseccionId
-            iSeccionId: this.semanaSeleccionada.iSeccionId,
-            iGradoId: this.semanaSeleccionada.iGradoId,
-            iYAcadId: this._constantesService.iYAcadId,
-            iSemAcadId: this.semanaSeleccionada.iSemAcadId,
-            iNivelGradoId: this.semanaSeleccionada.iNivelGradoId,
-            iCurrId: this.semanaSeleccionada.iCurrId,
-            iEstado: 2,
-        }
-
-        this._evalService
-            .publicarEvaluacion(data)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: () => {
-                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
-                },
-            })
+        console.log(actividad)
     }
 
-    private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {
-        this._aulaService
-            .eliminarActividad({ iProgActId, iActTipoId, ixActivadadId })
-            .pipe(takeUntil(this._unsubscribe$))
+    private eliminarEvaluacion(iEvaluacionId) {
+        const params = {
+            iCredId: this._constantesService.iCredId,
+        }
+        this._EvaluacionesService
+            .eliminarEvaluacionesxiEvaluacionId(iEvaluacionId, params)
             .subscribe({
-                next: () => {
-                    this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                next: (resp) => {
+                    if (resp.validated) {
+                        this.mostrarMensajeToast({
+                            severity: 'success',
+                            summary: 'Genial!',
+                            detail: resp.message,
+                        })
+                        this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                    }
+                },
+                error: (error) => {
+                    const errores = error?.error?.errors
+                    if (error.status === 422 && errores) {
+                        // Recorre y muestra cada mensaje de error
+                        Object.keys(errores).forEach((campo) => {
+                            errores[campo].forEach((mensaje: string) => {
+                                this.mostrarMensajeToast({
+                                    severity: 'error',
+                                    summary: 'Error de validación',
+                                    detail: mensaje,
+                                })
+                            })
+                        })
+                    } else {
+                        this.mostrarMensajeToast({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail:
+                                error?.error?.message ||
+                                'Ocurrió un error inesperado',
+                        })
+                    }
                 },
             })
     }
@@ -844,9 +820,14 @@ export class TabContenidoComponent implements OnInit {
         const { accion } = elemento
         //const { item } = elemento
         switch (accion) {
-            case 'close-modal':
+            case 'close-modal-validated':
                 this.showModalEvaluacion = false
-                this.getData()
+                this.iEvaluacionId = null
+                this.obtenerContenidoSemanas(this.semanaSeleccionada)
+                break
+            case 'close-modal':
+                this.iEvaluacionId = null
+                this.showModalEvaluacion = false
                 break
         }
     }
@@ -877,5 +858,9 @@ export class TabContenidoComponent implements OnInit {
             .filter((fecha: any) => fecha !== null)
 
         this.semanaSeleccionada.fechas = fechasFiltradas
+    }
+
+    mostrarMensajeToast(message) {
+        this._MessageService.add(message)
     }
 }

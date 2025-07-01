@@ -134,8 +134,9 @@ export class EvaluacionAgregarPreguntasComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.obtenerMatrizCompetencias()
-        this.obtenerMatrizCapacidad()
+        console.log('dasd')
+        // this.obtenerMatrizCompetencias()
+        // this.obtenerMatrizCapacidad()
     }
 
     obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId() {

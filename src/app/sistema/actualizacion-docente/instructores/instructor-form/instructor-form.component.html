@@ -1,5 +1,5 @@
 <app-modal-primeng
-    [title]="'Nuevo Instructor'"
+    [title]="accion"
     [showModal]="showModal"
     (accionBtnItem)="accionBtn($event)"
     width="35rem"
@@ -15,12 +15,16 @@
                     optionLabel="cTipoIdentSigla"
                     [appendTo]="'body'"
                     styleClass="w-full"
+                    [readonly]="action === 'editar'"
                     formControlName="iTipoIdentId"
+                    tabindex="-1"
                 ></p-dropdown>
                 <input
                     id="dni"
                     type="text"
-                    formControlName="dni"
+                    re
+                    formControlName="cPersDocumento"
+                    [readonly]="action === 'editar'"
                     pInputText
                     class="flex-input"
                     placeholder="Ingresar número"
@@ -30,6 +34,7 @@
                     type="button"
                     icon="pi pi-search"
                     label="Buscar"
+                    [disabled]="action === 'editar'"
                     (click)="buscarDni()"
                 ></button>
             </div>
@@ -47,6 +52,7 @@
                     pInputText
                     placeholder="Nombre del Instructor"
                     formControlName="cPersNombre"
+                    readonly
                 />
             </p-inputGroup>
         </div>
@@ -61,6 +67,7 @@
                     pInputText
                     placeholder="Apellido Paterno"
                     formControlName="cPersPaterno"
+                    readonly
                 />
             </p-inputGroup>
         </div>
@@ -75,6 +82,7 @@
                     pInputText
                     placeholder="Apellido Materno"
                     formControlName="cPersMaterno"
+                    readonly
                 />
             </p-inputGroup>
         </div>
@@ -88,7 +96,7 @@
                     type="text"
                     pInputText
                     placeholder="Dirección"
-                    formControlName="cPersDomicilio"
+                    formControlName="cPersDireccion"
                 />
             </p-inputGroup>
         </div>
@@ -102,7 +110,7 @@
                     type="text"
                     pInputText
                     placeholder="Correo Electrónico"
-                    formControlName="cInscripCorreo"
+                    formControlName="cPersCorreo"
                 />
             </p-inputGroup>
         </div>
@@ -116,7 +124,7 @@
                     type="text"
                     pInputText
                     placeholder="Celular"
-                    formControlName="cInscripCel"
+                    formControlName="cPersCelular"
                 />
             </p-inputGroup>
         </div>
@@ -129,10 +137,20 @@
         />
         <button
             type="submit"
+            icon="pi pi-check"
+            size="small"
             pButton
-            label="Guardar Instructor"
-            class="p-button-success"
-            (click)="guardarInstructor()"
+            [label]="
+                action === 'editar' ? 'Editar Instructor' : 'Guardar Instructor'
+            "
+            [class]="
+                action === 'editar' ? 'p-button-warning' : 'p-button-success'
+            "
+            (click)="
+                action === 'editar'
+                    ? actualizarInstructor()
+                    : guardarInstructor()
+            "
         ></button>
     </div>
 </app-modal-primeng>

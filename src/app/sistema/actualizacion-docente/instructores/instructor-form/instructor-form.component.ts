@@ -2,6 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
+import { GestionUsuariosService } from '@/app/sistema/administrador/gestion-usuarios/services/gestion-usuarios.service'
 import {
     Component,
     EventEmitter,
@@ -27,13 +28,16 @@ export class InstructorFormComponent implements OnChanges {
     @Input() instructor: any = {}
     @Input() tiposIdentificaciones: any[] = []
     @Input() showModal: boolean = false
+    @Input() action: string
 
     private _constantesService = inject(ConstantesService)
     private GeneralService = inject(GeneralService)
+    private _GestionUsuariosService = inject(GestionUsuariosService)
 
     dropdownStyle: boolean = false
     loading: boolean = false
     persona: any // variable para guardar al buscar dni
+    accion: string
 
     constructor(private messageService: MessageService) {}
 
@@ -54,17 +58,24 @@ export class InstructorFormComponent implements OnChanges {
         if (changes['showModal']) {
             this.instructorForm.patchValue(changes['showModal'].currentValue)
         }
+        if (this.action === 'editar') {
+            this.accion = 'Editar Instructor'
+        } else {
+            this.accion = 'Nuevo Instructor'
+            this.instructorForm.reset()
+        }
     }
+
     instructorForm: FormGroup = new FormGroup({
         iTipoIdentId: new FormControl(null, Validators.required),
         iInstructorId: new FormControl(null),
-        dni: new FormControl(null),
+        cPersDocumento: new FormControl(null),
         cPersNombre: new FormControl(null, Validators.required),
         cPersPaterno: new FormControl(null, Validators.required),
         cPersMaterno: new FormControl(null, Validators.required),
-        cPersDomicilio: new FormControl(null, Validators.required),
-        cInscripCorreo: new FormControl(null, Validators.required),
-        cInscripCel: new FormControl(null, Validators.required),
+        cPersDireccion: new FormControl(null, Validators.required),
+        cPersCorreo: new FormControl(null, Validators.required),
+        cPersCelular: new FormControl(null, Validators.required),
     })
 
     accionBtn(elemento): void {
@@ -82,7 +93,7 @@ export class InstructorFormComponent implements OnChanges {
         const idtipoDocumento = Number(
             this.instructorForm.get('iTipoIdentId')?.value
         )
-        const dni = this.instructorForm.get('dni')?.value
+        const dni = this.instructorForm.get('cPersDocumento')?.value
 
         if (!idtipoDocumento) {
             this.messageService.add({
@@ -116,46 +127,82 @@ export class InstructorFormComponent implements OnChanges {
                         })
                         return
                     } else {
-                        // const iCapacitacionId = this.id
-                        // Obtner datos para buscar la persona
-                        const data = {
-                            iTipoIdentId: idtipoDocumento,
-                            // iCapacitacionId: iCapacitacionId,
-                            iPersId: '',
-                            cPersDocumento: dni,
-                        }
-                        const params = {
-                            petition: 'post',
-                            group: 'cap',
-                            prefix: 'inscripciones',
-                            ruta: 'persona-inscripcion',
-                            data: data,
-                            params: {
-                                iCredId: this._constantesService.iCredId,
-                            },
-                        }
-                        console.log('datos a guardar', params)
-                        // Servicio para buscar la persona
-                        this.GeneralService.getGralPrefixx(params).subscribe(
-                            (Data) => {
-                                this.persona = (Data as any)['data']
-                                console.log('Datos persona', this.persona)
+                        this._GestionUsuariosService
+                            .buscarPersonaPorDocumento(idtipoDocumento, dni)
+                            .subscribe({
+                                next: (data: any) => {
+                                    console.log(data.data)
+                                    this.persona = data.data
+                                    this.instructorForm.patchValue({
+                                        cPersNombre: this.persona.cPersNombre,
+                                        cPersPaterno: this.persona.cPersMaterno,
+                                        cPersMaterno: this.persona.cPersPaterno,
+                                        cPersDireccion:
+                                            this.persona.cPersDomicilio,
+                                    })
+                                    this.messageService.add({
+                                        severity: 'success',
+                                        summary: 'Datos encontrados',
+                                        detail: 'Se obtuvo la información de la persona',
+                                    })
+                                },
+                                error: (error) => {
+                                    this.messageService.add({
+                                        severity: 'error',
+                                        summary: 'Problema al obtener datos',
+                                        detail: 'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
+                                    })
+                                    console.error(
+                                        'Error obteniendo datos:',
+                                        error
+                                    )
+                                },
+                            })
+                        // const data = {
+                        //     iTipoIdentId: idtipoDocumento,
+                        //     iPersId: '',
+                        //     cPersDocumento: dni,
+                        // }
+                        // const params = {
+                        //     petition: 'get',
+                        //     group: 'cap',
+                        //     prefix: 'instructores',
+                        //     ruta: idtipoDocumento + '/' + dni,
+                        //     data: data,
+                        //     params: {
+                        //         iCredId: this._constantesService.iCredId,
+                        //     },
+                        // }
+                        // this.GeneralService.getGralPrefixx(params).subscribe(
+                        //     (Data) => {
+                        //         this.persona = (Data as any)['data']
+                        //         console.log('Datos persona', this.persona)
 
-                                // Aquí actualizas el nombre en el formulario
-                                this.instructorForm.patchValue({
-                                    cPersNombre: this.persona.cPersNombre,
-                                    cPersPaterno: this.persona.cPersMaterno,
-                                    cPersMaterno: this.persona.cPersPaterno,
-                                    cPersDomicilio: this.persona.cPersDomicilio,
-                                    // nombreLargo: `${this.persona.cPersPaterno} ${this.persona.cPersMaterno} ${this.persona.cPersNombre}`,
-                                })
-                            }
-                        )
+                        //         this.instructorForm.patchValue({
+                        //             cPersNombre: this.persona.cPersNombre,
+                        //             cPersPaterno: this.persona.cPersMaterno,
+                        //             cPersMaterno: this.persona.cPersPaterno,
+                        //             cPersDireccion: this.persona.cPersDomicilio,
+
+                        //         })
+                        //     }
+                        // )
                     }
 
                     break
                 case 2: // RUC
-                    console.log('RUC')
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Ruc no disponible',
+                    })
+                    break
+                default:
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No disponible',
+                    })
                     break
             }
         }
@@ -166,13 +213,13 @@ export class InstructorFormComponent implements OnChanges {
         const data = {
             iPersId: this.persona?.iPersId || null,
             iTipoIdentId: this.instructorForm.get('iTipoIdentId')?.value,
-            cPersDocumento: this.instructorForm.get('dni')?.value,
+            cPersDocumento: this.instructorForm.get('cPersDocumento')?.value,
             cPersNombre: this.instructorForm.get('cPersNombre')?.value,
             cPersPaterno: this.instructorForm.get('cPersPaterno')?.value,
             cPersMaterno: this.instructorForm.get('cPersMaterno')?.value,
-            cPersCel: this.instructorForm.get('cInscripCel')?.value,
-            cPersCorreo: this.instructorForm.get('cInscripCorreo')?.value,
-            cPersDireccion: this.instructorForm.get('cPersDomicilio')?.value,
+            cPersCelular: this.instructorForm.get('cPersCelular')?.value,
+            cPersCorreo: this.instructorForm.get('cPersCorreo')?.value,
+            cPersDireccion: this.instructorForm.get('cPersDireccion')?.value,
             iCredId: this._constantesService.iCredId,
         }
         const params = {
@@ -185,12 +232,107 @@ export class InstructorFormComponent implements OnChanges {
             },
         }
         // Servicio para obtener los instructores
-        this.GeneralService.getGralPrefixx(params).subscribe((Data) => {
-            this.data = (Data as any)['data']
-            this.instructorForm.reset()
-            this.showModal = false
-            // console.log('Datos persona:', this.data);
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Acción exitosa',
+                        detail: resp.message,
+                    })
+                    this.showModal = false
+                    this.instructorForm.reset()
+                }
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
         })
         console.log('datos a guardar', data)
+    }
+    // Metodo para actualizar instructor
+    actualizarInstructor() {
+        const id = this.instructor
+        const docn = this.instructorForm.value
+
+        const data = {
+            cOpcion: 'ACTUALIZAR',
+            cPersCelular: docn.cPersCelular,
+            cPersCorreo: docn.cPersCorreo,
+            cPersDireccion: docn.cPersDireccion,
+            iCredId: this._constantesService.iCredId,
+        }
+        const params = {
+            petition: 'put',
+            group: 'cap',
+            prefix: 'instructores',
+            ruta: id.iInstId,
+            data: data,
+            params: {
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        // console.log(params)
+        // Servicio para obtener los instructores
+        this.GeneralService.getGralPrefixx(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Acción exitosa',
+                        detail: resp.message,
+                    })
+                    this.showModal = false
+                }
+            },
+            error: (error) => {
+                const errores = error?.error?.errors
+
+                if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach((campo) => {
+                        errores[campo].forEach((mensaje: string) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error de validación',
+                                detail: mensaje,
+                            })
+                        })
+                    })
+                } else {
+                    // Error genérico si no hay errores específicos
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail:
+                            error?.error?.message ||
+                            'Ocurrió un error inesperado',
+                    })
+                }
+            },
+            // console.log('Datos persona:', this.data);
+        })
     }
 }

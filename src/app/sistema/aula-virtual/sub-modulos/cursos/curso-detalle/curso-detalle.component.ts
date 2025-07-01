@@ -6,7 +6,7 @@ import {
     OnInit,
     AfterViewChecked,
 } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { ICurso } from '../interfaces/curso.interface'
 import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.interface'
 import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
@@ -15,6 +15,8 @@ import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { TabsPrimengComponent } from '../../../../../shared/tabs-primeng/tabs-primeng.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -34,7 +36,15 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
     @Input() iSilaboId: string
     private _activatedRoute = inject(ActivatedRoute)
     private _ChangeDetectorRef = inject(ChangeDetectorRef)
+    private _constantesService = inject(ConstantesService)
+
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
+
     curso: ICurso | undefined
+    selectTab: number = 0
+    iPerfilId: number
+
     tabs = [
         {
             title: 'Inicio',
@@ -52,12 +62,26 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             tab: 'resultados',
         },
     ]
-    selectTab: number = 0
 
     public estudiantes: IEstudiante[] = []
 
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router
+    ) {}
+
     ngOnInit() {
+        // const storedTab = localStorage.getItem('selectedTab')
+        // if (storedTab !== null) {
+        //     this.selectTab = Number(storedTab)
+        // }
+        this.route.queryParams.subscribe((params) => {
+            if (params['tab'] !== undefined) {
+                this.selectTab = Number(params['tab'])
+            }
+        })
         this.listenParams()
+        this.iPerfilId = Number(this._constantesService.iPerfilId)
     }
 
     // obtiene el parametro y actualiza el tab
@@ -103,8 +127,16 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
             cantidad,
         }
     }
+    //función para recorrer el tabs para que filtre segun el perfil
     updateTab(tab): void {
-        this.selectTab = tab
+        console.log('hola', tab)
+        this.router.navigate([], {
+            queryParams: { tab: tab },
+            queryParamsHandling: 'merge',
+        })
+
+        // this.selectTab = tab
+        // localStorage.setItem('selectedTab', tab.toString()) // mostrar la misma pagina al recargar
     }
 
     ngAfterViewChecked() {

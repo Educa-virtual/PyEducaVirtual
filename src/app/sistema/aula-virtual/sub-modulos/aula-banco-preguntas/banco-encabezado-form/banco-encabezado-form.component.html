@@ -1,0 +1,52 @@
+<app-modal-primeng
+    [title]="opcion + ' PREGUNTA'"
+    [showModal]="showModal"
+    [width]="'55rem'"
+    (accionBtnItem)="accionBtnItem.emit({ accion: 'close-modal', item: [] })"
+    *ngIf="formEncabezadoPreguntas"
+>
+    <form [formGroup]="formEncabezadoPreguntas" class="grid mt-4">
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>Título</p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese el título"
+                    formControlName="cEncabPregTitulo"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                ><span class="font-bold">Descripción</span>
+                <span class="text-red-500 text-xs"
+                    >&nbsp;(*) Obligatorio</span
+                ></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    [style]="{ height: 'auto' }"
+                    placeholder="Ingrese la Descripción"
+                    formControlName="cEncabPregContenido"
+                />
+            </div>
+        </div>
+    </form>
+    <div footer class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtnItem.emit({ accion: 'close-modal', item: [] })"
+        />
+        <p-button
+            icon="pi pi-check"
+            [severity]="opcion === 'GUARDAR' ? 'success' : 'warning'"
+            [label]="opcion + ' PREGUNTA MÚLTIPLE'"
+            (onClick)="enviarFormulario()"
+            [loading]="isLoading"
+            [disabled]="isLoading"
+        />
+    </div>
+</app-modal-primeng>
+<p-toast></p-toast>

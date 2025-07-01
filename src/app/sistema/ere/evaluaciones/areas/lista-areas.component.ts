@@ -23,8 +23,8 @@ import { AreaCardComponent } from './area-card/area-card.component'
 import { ConfigurarNivelLogroComponent } from './configurar-nivel-logro/configurar-nivel-logro.component'
 import { ImportarResultadosComponent } from '../../informes-ere/importar-resultados/importar-resultados.component'
 import { AreasService } from '../services/areas.service'
-
 import { GuardarResultadosOnlineComponent } from '../../informes-ere/guardar-resultados-online/guardar-resultados-online.component'
+import { SimpleListaAreasComponent } from './simple-lista-areas/simple-lista-areas.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -41,6 +41,7 @@ export type Layout = 'list' | 'grid'
         ConfigurarNivelLogroComponent,
         ImportarResultadosComponent,
         GuardarResultadosOnlineComponent,
+        SimpleListaAreasComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -63,6 +64,7 @@ export class ListaAreasComponent implements OnInit {
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
 
+    modoCard: boolean = false
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
     sortOrder: number = 0
@@ -99,7 +101,6 @@ export class ListaAreasComponent implements OnInit {
             )
         }
     }
-
     recibirDatosParaSubirArchivo(datos: { curso: ICurso }) {
         this.dialogSubirArchivo.mostrarDialog(datos)
     }
@@ -115,8 +116,11 @@ export class ListaAreasComponent implements OnInit {
     guardarResultadosOnline(datos: { curso: ICurso }) {
         this.dialogGuardarResultadosOnline.mostrarDialog(datos)
     }
+    obtenerAreasPorEvaluacionyEspecialista() {
+        this.obtenerAreasPorEvaluacion()
+    }
 
-    actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
+    /*actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
         this.gestionarPreguntasCard.forEach((card) => {
             if (
                 card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
@@ -125,7 +129,26 @@ export class ListaAreasComponent implements OnInit {
             }
         })
     }
+    */
 
+    actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
+        const cursoIndex = this.cursos.findIndex(
+            (c) => c.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+        )
+
+        if (cursoIndex !== -1) {
+            this.cursos[cursoIndex].bTieneArchivo = true
+            this.cursos = [...this.cursos]
+        }
+
+        this.gestionarPreguntasCard?.forEach((card) => {
+            if (
+                card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+            ) {
+                card.curso.bTieneArchivo = true
+            }
+        })
+    }
     actualizarEstadoResultadosImportados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }
@@ -198,5 +221,26 @@ export class ListaAreasComponent implements OnInit {
                     console.error('Error obteniendo datos', error)
                 },
             })
+    }
+
+    cambiarVista(): void {
+        this.modoCard = !this.modoCard
+        console.log('Vista cambiada a:', this.modoCard ? 'Cards' : 'Tabla')
+    }
+
+    // busqueda de simple-lista-araas
+    public onFilterTable(event: Event) {
+        const normalizeText = (str: string) =>
+            str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+        const text = normalizeText((event.target as HTMLInputElement).value)
+        this.cursos = this.cursosInicial
+        if (text.length > 1) {
+            this.cursos = this.cursos.filter((curso) =>
+                normalizeText(curso.cCursoNombre).includes(text)
+            )
+        }
     }
 }

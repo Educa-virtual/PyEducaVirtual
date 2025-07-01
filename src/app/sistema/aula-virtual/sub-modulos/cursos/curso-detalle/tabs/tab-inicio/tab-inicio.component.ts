@@ -33,8 +33,8 @@ export class TabInicioComponent implements OnInit {
     anunciosDocente: any[] = []
     data: any[]
     contadorAnuncios: number = 0
-    remainingText: number = 500
-    tituloremainingText: number = 100
+    remainingText: number = 0
+    tituloremainingText: number = 0
     cNombres: string = ''
     //form para obtener la variable
     public guardarComunicado: FormGroup = this._formBuilder.group({
@@ -48,28 +48,29 @@ export class TabInicioComponent implements OnInit {
     //Inicializamos
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
+        console.log(this.iPerfilId)
         this.obtenerAnuncios()
 
         // contador de caracteres de descripcion
         this.guardarComunicado
             .get('descripcion')
             ?.valueChanges.subscribe((value: string) => {
-                this.remainingText = 500 - (value?.length || 0)
+                this.remainingText = value?.length || 0
             })
         // contador de caracteres de título
         this.guardarComunicado
             .get('titulo')
             ?.valueChanges.subscribe((value: string) => {
-                this.tituloremainingText = 100 - (value?.length || 0)
+                this.tituloremainingText = value?.length || 0
             })
         this.cNombres = this._constantesService.nombres
     }
 
     // asignar el color de los caracteres restantes
     getColorClass(): string {
-        if (this.remainingText < 20) {
+        if (this.remainingText > 480) {
             return 'text-danger'
-        } else if (this.remainingText < 100) {
+        } else if (this.remainingText > 400) {
             return 'text-warning'
         } else {
             return 'text-normal'
@@ -78,7 +79,7 @@ export class TabInicioComponent implements OnInit {
 
     // asignar el color de los caracteres del titulo
     asignarColorTitulo(): string {
-        if (this.tituloremainingText < 20) {
+        if (this.tituloremainingText > 80) {
             return 'text-danger'
         } else {
             return 'text-normal'
@@ -193,6 +194,7 @@ export class TabInicioComponent implements OnInit {
 
     // metodo para fijar el anuncio
     fijarAnuncio(id: string, iFijado: number): void {
+        if (this.iPerfilId !== this.DOCENTE) return
         const iCredId = this._constantesService.iCredId
         const params = {
             iAnuncioId: id,
@@ -221,7 +223,6 @@ export class TabInicioComponent implements OnInit {
             },
         })
     }
-
     // obtener anunciados de curso:
     obtenerAnuncios() {
         const iCursosNivelGradId = 1

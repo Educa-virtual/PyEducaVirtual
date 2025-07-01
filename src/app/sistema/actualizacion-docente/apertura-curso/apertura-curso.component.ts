@@ -17,6 +17,7 @@ import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones
 import { environment } from '@/environments/environment'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import { AsignarHorarioCapacitacionComponent } from '../asignar-horario-capacitacion/asignar-horario-capacitacion.component'
 
 interface Image {
     id: number
@@ -34,6 +35,7 @@ interface Image {
         ToolbarPrimengComponent,
         TablePrimengComponent,
         GalleriaModule,
+        AsignarHorarioCapacitacionComponent,
     ],
     providers: [
         MessageService,
@@ -242,9 +244,23 @@ export class AperturaCursoComponent implements OnInit {
             isVisible: (row) => row.iEstado === '1',
         },
     ]
-    //
+    dFechaInicio: Date = new Date()
+    dFechaFin: Date = new Date()
+    iTotalHrs: number | string
+    //Mostrar modal de horarios
     showHorarios() {
         this.showModalHorarios = true
+        this.dFechaFin =
+            this.formNuevaCapacitacion.get('dFechaFin')?.value || new Date()
+        this.dFechaInicio =
+            this.formNuevaCapacitacion.get('dFechaInicio')?.value || new Date()
+        this.iTotalHrs = this.formNuevaCapacitacion.get('iTotalHrs')?.value || 0
+        const restar = (this.iTotalHrs as number) - 1
+        console.log(
+            'mostrar datos del crear creado',
+            this.formNuevaCapacitacion.value,
+            restar
+        )
     }
     datosprevios: any
     // mostrar modal de visualizacion de una vista previa del curso creado
@@ -565,7 +581,7 @@ export class AperturaCursoComponent implements OnInit {
 
     // obtener las capacitaciones
     obtenerCapacitaciones() {
-        const iEstado = 1
+        const iEstado = null
         const iCredId = this._ConstantesService.iCredId
         const data = {
             iEstado: iEstado,

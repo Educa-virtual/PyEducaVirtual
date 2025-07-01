@@ -2,7 +2,6 @@ import { PrimengModule } from '@/app/primeng.module'
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { AulaBancoPreguntasService } from '../../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-.preguntas.service'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { AulaBancoPreguntasComponent } from '../../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
 
 @Component({
@@ -75,7 +74,7 @@ export class EvaluacionButtonAgregarPreguntasComponent {
     mapLocalPregunta(pregunta) {
         if (pregunta.iEncabPregId == -1) {
             pregunta.isLocal = true
-            pregunta.iEvalPregId = generarIdAleatorio()
+            pregunta.iEvalPregId = 0
         } else {
             pregunta.preguntas = this.addLocalPreguntas(pregunta.preguntas)
         }
@@ -85,7 +84,7 @@ export class EvaluacionButtonAgregarPreguntasComponent {
     addLocalPreguntas = (preguntas) => {
         return preguntas.map((item) => {
             item.isLocal = true
-            item.iEvalPregId = generarIdAleatorio()
+            item.iEvalPregId = 0
             return item
         })
     }

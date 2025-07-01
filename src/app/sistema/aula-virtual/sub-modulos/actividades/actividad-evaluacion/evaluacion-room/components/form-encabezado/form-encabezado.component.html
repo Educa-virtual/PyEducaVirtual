@@ -1,0 +1,43 @@
+<form [formGroup]="formEncabezadoPreguntas" class="grid mt-4">
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Título</p-inputGroupAddon>
+            <input
+                type="text"
+                pInputText
+                placeholder="Ingrese el título"
+                formControlName="cEncabPregTitulo"
+            />
+        </p-inputGroup>
+    </div>
+    <div class="col-12">
+        <label for="descripcion" class="mt-1"
+            ><span class="font-bold">Descripción</span>
+            <span class="text-red-500 text-xs"
+                >&nbsp;(*) Obligatorio</span
+            ></label
+        >
+        <div class="mt-2">
+            <p-editor
+                [style]="{ height: 'auto' }"
+                placeholder="Ingrese la Descripción"
+                formControlName="cEncabPregContenido"
+            />
+        </div>
+    </div>
+</form>
+<div class="grid">
+    <div class="col-12 m-2">
+        <div class="flex justify-content-center">
+            <p-button
+                icon="pi pi-check"
+                [severity]="opcion === 'GUARDAR' ? 'success' : 'warning'"
+                [label]="opcion + ' PREGUNTA MÚLTIPLE'"
+                (onClick)="enviarFormulario()"
+                [loading]="isLoading"
+                [disabled]="isLoading"
+            />
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>

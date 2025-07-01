@@ -32,6 +32,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     cabecera: string = ''
     alumnosFiltrados: any[] = []
     iSemAcadId: number // ID del semestre académico
+    mensaje: string = '' // Mensaje para mostrar en la tabla
 
     // formulario guardar resultados onlinee
     public formCurso: FormGroup = this._formBuilder.group({
@@ -57,7 +58,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log('AQUI ngOnInit')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.iSedeId = this.store.getItem('dremoPerfil').iSedeId
         this.perfil = this.store.getItem('dremoPerfil')
@@ -70,9 +70,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             ? Number(semestreSeleccionado.iSemAcadId)
             : null
         this.cabecera = localStorage.getItem('cEvaluacionNombre')
-
-        console.log(this.iSemAcadId, 'this.iSemAcadId')
-
         this.getSeccion()
     }
     botonesTabla: IActionTable[] = [
@@ -545,13 +542,13 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             accept: () => {
                 /* this.alumnosFiltrados = this.alumnosFiltrados.map((alumno) => {
                     if (alumno.documento == item.documento) {
-                
+
                         return {
                             ...alumno,
                             iEstado: 0,
                             bActive: 1, // Asignar un valor por defecto a bActive
                           //  ...respuestasMapeadas
-                            
+
                         }
                     } else {
                         return {
@@ -662,11 +659,26 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
     async subirArchivo(datos_hojas: Array<object>) {
         const subirArchivo = {
+            iSedeId: Number(this.iSedeId), // Number()
+            iSemAcadId: Number(this.iSemAcadId), // Number()
+            iYAcadId: Number(this.iYAcadId), // Number()
+            iCredId: Number(this.store.getItem('dremoPerfil').iCredId), // Number()
+            iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
+            codigo_modular: this.perfil.cIieeCodigoModular,
+            curso: this.curso.cCursoNombre ?? null,
+            //curso: cursoNormalizado,
+            nivel: this.curso.cNivelTipoNombre ?? null,
+            grado: this.curso.cGradoAbreviacion ?? null,
+            tipo: 'resultados',
+            json_resultados: JSON.stringify(datos_hojas),
+        }
+        /*const subirArchivo = {
             // datos_hojas: datos_hojas,
-            iSedeId: this.iSedeId,
-            iSemAcadId: this.iSemAcadId,
-            iYAcadId: this.iYAcadId,
-            iCredId: this.store.getItem('dremoPerfil').iCredId,
+            iSedeId: Number(this.iSedeId),
+            iSemAcadId: Number(this.iSemAcadId),
+            iYAcadId: Number(this.iYAcadId),
+            iCredId: Number(this.store.getItem('dremoPerfil').iCredId),
             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
             iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null, //curso_nivel_grado
             codigo_modular: this.perfil.cIieeCodigoModular,
@@ -676,9 +688,25 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
             tipo: 'resultados',
             json_resultados: JSON.stringify(datos_hojas), //  aquí lo envías como JSON string
-        }
+        }*/
         console.log('subirArchivo', subirArchivo)
 
+        // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
+        //     next: (data: any) => {
+        //         console.log('Datos Subidas de Importar Resultados:', data)
+        //     },
+        //     error: (error) => {
+        //         console.error('Error subiendo archivo:', error)
+        //         this._messageService.add({
+        //             severity: 'error',
+        //             summary: 'Error',
+        //             detail: error,
+        //         })
+        //     },
+        //     complete: () => {
+        //         console.log('Request completed')
+        //     },
+        // })
         this.datosInformesService.importarOffLine(subirArchivo).subscribe({
             next: (data: any) => {
                 const documento =

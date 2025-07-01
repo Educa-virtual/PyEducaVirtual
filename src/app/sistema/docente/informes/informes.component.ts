@@ -52,6 +52,8 @@ import { Message, MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { MessagesModule } from 'primeng/messages'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+
 @Component({
     selector: 'app-informes',
     standalone: true,
@@ -59,6 +61,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     styleUrls: ['./informes.component.scss'],
     imports: [
         ContainerPageComponent,
+        CardOrderListComponent,
         MessagesModule,
         ToastModule,
         CommonModule,

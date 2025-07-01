@@ -29,3 +29,89 @@
 .detalle-actividad:hover {
     background: var(--green-100) !important;
 }
+
+// para que la etiqueta de comunicado sobresalga del card
+.tag {
+    position: absolute;
+    top: -15px;
+    left: 0; // Alinear exactamente desde el borde izquierdo
+    background-color: #fa8f45;
+    padding: 5px 10px; /* Aumentar padding lateral para aire */
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    color: white;
+    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+    width: fit-content; /* Para que no ocupe más de lo necesario */
+}
+// colores de fondo para las actividades:
+.background-evaluacion {
+    // color: #6c757d; /* Gris */
+    background-color: #3e67a9;
+    width: auto;
+}
+
+.background-foro {
+    // color: #ffc107; /* Amarillo */
+    background-color: #077d38;
+    width: auto;
+}
+
+.background-tarea {
+    // color: #dc3545; /* Rojo */
+    background-color: #b51f32;
+    width: auto;
+}
+.background-cuestionario {
+    // color: #28a745; /* Verde */
+    background-color: #f0ad4e;
+    width: auto;
+}
+
+.pulse {
+    animation: pulse-black 1s infinite;
+}
+@keyframes pulse-black {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+.tag-right-borrador {
+    position: absolute;
+    top: -15px;
+    right: 0; /* Cambiado de left: 0 a right: 0 */
+    background-color: var(--orange-500);
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    color: white;
+    text-align: right;
+    width: fit-content;
+}
+
+.tag-right-publicado {
+    position: absolute;
+    top: -15px;
+    right: 0; /* Cambiado de left: 0 a right: 0 */
+    background-color: var(--green-500);
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    color: white;
+    text-align: right;
+    width: fit-content;
+}

@@ -78,6 +78,11 @@ export class ApiService {
         )
     }
 
+    getDataObs(queryPayload: IGetTableService | IGetTableService[]) {
+        // Realizar la solicitud HTTP y obtener los datos.
+        return this.http.getDataObs('virtual/getData', queryPayload)
+    }
+
     /**
      * Realiza una solicitud HTTP POST para insertar nuevos datos en el
      * servidor.
@@ -111,6 +116,22 @@ export class ApiService {
         return await this.formatData(
             this.http.postData('virtual/insertData', queryPayload)
         )
+    }
+
+    insertDataObs(queryPayload: IInsertTableService | IInsertTableService[]) {
+        if (Array.isArray(queryPayload)) {
+            queryPayload.forEach((item) => {
+                if (typeof item['campos'] === 'object') {
+                    item['campos'] = JSON.stringify(item['campos'])
+                }
+            })
+        }
+
+        if (typeof queryPayload['campos'] === 'object') {
+            queryPayload['campos'] = JSON.stringify(queryPayload['campos'])
+        }
+
+        return this.http.postDataObs('virtual/insertData', queryPayload)
     }
 
     /**

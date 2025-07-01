@@ -33,6 +33,11 @@ type TColumnType =
     | 'estado'
     | string
 
+export interface TableColumn {
+    inTableColumnsGroup?: IColumn[][]
+    inTableColumns: IColumn[]
+}
+
 export interface IColumn {
     rowspan?: number
     colspan?: number
@@ -140,6 +145,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showSearchTable: boolean = false
     //placeholder search
     @Input() searchPlaceholder: string = 'Buscar por nombre....'
+
     debug(d) {
         console.log('d')
         console.log(d)

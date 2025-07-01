@@ -1,6 +1,5 @@
 import { FormBuilder } from '@angular/forms'
 import { sinEncabezadoObj } from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 
 export function crearFormularioBaseEncabezado(fb: FormBuilder) {
     return fb.group({
@@ -16,7 +15,7 @@ export function crearFormularioBaseInformacionPregunta(
     withoutAditional = true
 ) {
     const baseForm = fb.group({
-        iPreguntaId: [generarIdAleatorio()],
+        iPreguntaId: [],
         iTipoPregId: [null],
         cPregunta: [null],
         cPreguntaTextoAyuda: [''],

@@ -1,0 +1,59 @@
+<app-toolbar-primeng
+    [title]="'Foro: ' + (foro?.cForoTitulo || 'Título no disponible')"
+></app-toolbar-primeng>
+<div class="card">
+    <!-- <div class="TituloCurso">Nombre de curso:</div> -->
+    <div class="grid">
+        <div class="col-12 md:col-6 flex flex-column gap-2">
+            <p class="flex gap-2 flex-wrap">
+                <app-icon
+                    name="matCalendarMonth"
+                    class="text-primary"
+                    size="sm"
+                ></app-icon>
+                {{ foro?.dtForoInicio | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
+                <app-icon
+                    name="matAccessTime"
+                    class="text-primary"
+                    size="sm"
+                ></app-icon>
+                <span class="font-bold">Hora Limite:</span>
+                <span class="flex gap-2">
+                    {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                </span>
+            </p>
+        </div>
+        <div class="col-12 md:col-6 flex flex-column gap-2">
+            <p class="flex gap-2 flex-wrap">
+                <app-icon
+                    name="matCalendarMonth"
+                    class="text-primary"
+                    size="sm"
+                ></app-icon>
+                {{ foro?.dtForoFin | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
+
+                <span class="flex gap-2">
+                    <app-icon
+                        name="matAccessTime"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    <span class="font-bold">Hora Limite:</span>
+                    {{ foro?.dtForoFin | date: 'h:mm a' }}
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="mt-3 col-12">
+    <!-- <div class=" mt- 5 flex flex-column gap-4"> -->
+    <app-foro-comentarios
+        [id]="idForo"
+        [ixActivadadId]="ixActivadadId"
+        [iActTopId]="iActTopId"
+        [iIeCursoId]="iIeCursoId"
+        [iSeccionId]="iSeccionId"
+        [iNivelGradoId]="iNivelGradoId"
+    ></app-foro-comentarios>
+    <!-- </div> -->
+</div>

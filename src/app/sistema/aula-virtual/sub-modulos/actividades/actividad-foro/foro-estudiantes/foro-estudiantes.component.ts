@@ -83,6 +83,7 @@ export class ForoEstudiantesComponent implements OnInit {
                 this.modelaCalificacionComen = false
                 // this.getRespuestaF()
                 console.log(resp)
+                this.getEstudiantesMatricula()
             }
         })
     }

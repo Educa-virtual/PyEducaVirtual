@@ -117,3 +117,10 @@
     text-align: left; /* Asegura que el texto esté alineado a la izquierda */
     width: fit-content; /* Para que no ocupe más de lo necesario */
 }
+
+:host ::ng-deep .p-inputtextarea,
+:host ::ng-deep .p-inputtextarea:focus {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}

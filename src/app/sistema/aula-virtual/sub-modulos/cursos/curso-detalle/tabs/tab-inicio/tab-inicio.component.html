@@ -154,13 +154,35 @@
                             class="pt-20 relative overflow-visible"
                         >
                             <ng-template pTemplate="header">
-                                <div class="flex justify-content-end">
+                                <div class="">
                                     <div class="tag ml-3 font-bold">
                                         Anuncio: #{{ data.length - i }}
                                     </div>
-                                    <div>
+                                    <div
+                                        class="flex justify-content-between flex-wrap"
+                                    >
                                         <div
-                                            class="grid flex flex-row-reverse md:flex-row gap-2"
+                                            class="col-10 flex justify-content-start mt-2"
+                                        >
+                                            <!-- <p
+                                                class="ml-4 font-bold text-2xl"
+                                                
+                                            >
+                                                {{ card.cTitulo }}
+                                            </p> -->
+                                            <textarea
+                                                #textareaRef
+                                                pInputTextarea
+                                                autoResize
+                                                [(ngModel)]="card.cTitulo"
+                                                rows="1"
+                                                class="w-full ml-4 text-justify flex-1 border-round-lg px-3 py-3 text-2xl border-none font-bold"
+                                                readonly
+                                            >
+                                            </textarea>
+                                        </div>
+                                        <div
+                                            class="grid mr-2 mt-1 flex flex-row-reverse md:flex-row gap-2"
                                         >
                                             <p-button
                                                 icon="pi pi-thumbtack"
@@ -193,14 +215,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p
-                                    class="ml-4 font-bold text-2xl"
-                                    [class]="
-                                        iPerfilId !== DOCENTE ? 'mt-4' : ''
-                                    "
-                                >
-                                    {{ card.cTitulo }}
-                                </p>
                             </ng-template>
                             <textarea
                                 #textareaRef

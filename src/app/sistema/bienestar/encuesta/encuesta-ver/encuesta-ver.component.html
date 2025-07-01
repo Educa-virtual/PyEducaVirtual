@@ -76,6 +76,7 @@
                                         : null
                                 "
                                 [iEncuPregId]="pregunta.iEncuPregId"
+                                [controlDisabled]="!puede_editar"
                             ></app-pregunta-cerrada>
                             <ng-template #infoAdicional>
                                 {{ pregunta.cEncuPregAdicional }}
@@ -99,6 +100,7 @@
                                         ? infoAdicional
                                         : null
                                 "
+                                [controlDisabled]="!puede_editar"
                             />
                             <ng-template #infoAdicional>
                                 {{ pregunta.cEncuPregAdicional }}
@@ -123,6 +125,7 @@
                                         : null
                                 "
                                 [iEncuPregId]="pregunta.iEncuPregId"
+                                [controlDisabled]="!puede_editar"
                             />
                             <ng-template #infoAdicional>
                                 {{ pregunta.cEncuPregAdicional }}
@@ -146,14 +149,14 @@
             (onClick)="guardarRespuesta()"
             styleClass="p-button-success"
             icon="pi pi-save"
-            *ngIf="!respuesta_registrada"
+            *ngIf="!respuesta_registrada && puede_editar"
         />
         <p-button
             label="Actualizar"
             (onClick)="actualizarRespuesta()"
             styleClass="p-button-success"
             icon="pi pi-save"
-            *ngIf="respuesta_registrada"
+            *ngIf="respuesta_registrada && puede_editar"
         />
     </div>
 </p-panel>

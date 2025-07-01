@@ -120,7 +120,7 @@ export class EncuestaRespuestasComponent implements OnInit {
         switch (accion) {
             case 'ver':
                 this.router.navigate([
-                    `/bienestar/encuesta/${item.iEncuId}/respuesta/${item.iMatId}`,
+                    `/bienestar/encuesta/${this.iEncuId}/ver/${item.iMatrId}`,
                 ])
                 break
             default:
@@ -136,22 +136,24 @@ export class EncuestaRespuestasComponent implements OnInit {
             header: 'N°',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:table-cell',
         },
         {
             field: 'dRptaUltimaFecha',
-            type: 'text',
+            type: 'date',
             width: '15%',
             header: 'Fecha',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:table-cell',
         },
         {
             field: 'cPersNombreApellidos',
             type: 'text',
             width: '45%',
             header: 'Estudiante',
-            text_header: 'center',
-            text: 'center',
+            text_header: 'left',
+            text: 'left',
         },
         {
             field: 'cGradoNombre',
@@ -176,6 +178,14 @@ export class EncuestaRespuestasComponent implements OnInit {
             header: 'I.E.',
             text_header: 'center',
             text: 'center',
+        },
+        {
+            field: '',
+            type: 'actions',
+            width: '10%',
+            header: 'Acciones',
+            text_header: 'right',
+            text: 'right',
         },
     ]
 

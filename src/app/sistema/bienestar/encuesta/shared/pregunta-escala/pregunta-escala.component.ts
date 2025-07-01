@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, Input, TemplateRef } from '@angular/core'
+import { Component, Input, OnInit, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { TextFieldModule } from '@angular/cdk/text-field'
 
@@ -10,7 +10,7 @@ import { TextFieldModule } from '@angular/cdk/text-field'
     templateUrl: './pregunta-escala.component.html',
     styleUrl: './pregunta-escala.component.scss',
 })
-export class PreguntaEscalaComponent {
+export class PreguntaEscalaComponent implements OnInit {
     @Input() ratingControl: FormControl = new FormControl()
 
     @Input() addonLabel: string = 'Campo'
@@ -19,6 +19,8 @@ export class PreguntaEscalaComponent {
 
     @Input() iEncuPregId!: number
 
+    @Input() controlDisabled: boolean = false
+
     alternativas: Array<any> = [
         { label: 'MUY EN DESACUERDO / NUNCA', value: 1 },
         { label: 'ALGO EN DESACUERDO / CASI NUNCA', value: 2 },
@@ -26,4 +28,10 @@ export class PreguntaEscalaComponent {
         { label: 'ALGO DE ACUERDO / CASI SIEMPRE', value: 4 },
         { label: 'MUY DE ACUERDO / SIEMPRE', value: 5 },
     ]
+
+    ngOnInit(): void {
+        if (this.controlDisabled) {
+            this.ratingControl.disable()
+        }
+    }
 }

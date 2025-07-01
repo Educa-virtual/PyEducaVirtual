@@ -342,7 +342,7 @@ export class GestionarEncuestasComponent implements OnInit {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
-            labelTooltip: 'Eliminar',
+            labelTooltip: 'Aprobar',
             icon: 'pi pi-check',
             accion: 'aprobar',
             type: 'item',
@@ -352,7 +352,7 @@ export class GestionarEncuestasComponent implements OnInit {
             },
         },
         {
-            labelTooltip: 'Aprobar',
+            labelTooltip: 'Eliminar',
             icon: 'pi pi-trash',
             accion: 'eliminar',
             type: 'item',

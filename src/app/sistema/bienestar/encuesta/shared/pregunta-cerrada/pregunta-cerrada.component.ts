@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, Input, TemplateRef } from '@angular/core'
+import { Component, Input, OnInit, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { TextFieldModule } from '@angular/cdk/text-field'
 
@@ -10,7 +10,7 @@ import { TextFieldModule } from '@angular/cdk/text-field'
     templateUrl: './pregunta-cerrada.component.html',
     styleUrl: './pregunta-cerrada.component.scss',
 })
-export class PreguntaCerradaComponent {
+export class PreguntaCerradaComponent implements OnInit {
     @Input() switchControl: FormControl = new FormControl()
 
     @Input() addonLabel: string = 'Campo'
@@ -19,8 +19,16 @@ export class PreguntaCerradaComponent {
 
     @Input() iEncuPregId!: number
 
+    @Input() controlDisabled: boolean = false
+
     alternativas: Array<any> = [
         { label: 'SI', value: 1 },
         { label: 'NO', value: 0 },
     ]
+
+    ngOnInit() {
+        if (this.controlDisabled) {
+            this.switchControl.disable()
+        }
+    }
 }

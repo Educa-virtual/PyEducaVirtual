@@ -24,11 +24,13 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 })
 export class EncuestaVerComponent {
     iEncuId: number
+    iMatrId: number
     perfil: any
     preguntas: Array<any>
     formPreguntas: FormGroup
     encuesta: any
     respuesta_registrada: boolean = false
+    puede_editar: boolean = false
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -50,7 +52,9 @@ export class EncuestaVerComponent {
         this.perfil = this.store.getItem('dremoPerfil')
         this.route.paramMap.subscribe((params: any) => {
             this.iEncuId = params.params.id || 0
+            this.iMatrId = params.params.matricula || 0
         })
+        this.puede_editar = Number(this.perfil.iPerfilId) === 80
     }
 
     ngOnInit(): void {
@@ -72,6 +76,17 @@ export class EncuestaVerComponent {
             {
                 label: 'Gestionar encuestas',
                 routerLink: '/bienestar/gestionar-encuestas',
+            },
+            {
+                label: 'Encuesta',
+                routerLink: '/bienestar/encuesta/' + this.iEncuId,
+                visible: !this.puede_editar,
+            },
+            {
+                label: 'Respuestas',
+                routerLink:
+                    '/bienestar/encuesta/' + this.iEncuId + '/respuestas',
+                visible: !this.puede_editar,
             },
             {
                 label: 'Responder encuesta',
@@ -135,18 +150,24 @@ export class EncuestaVerComponent {
     }
 
     verRespuestas() {
-        this.datosEncuestas.verRespuesta(this.formPreguntas.value).subscribe({
-            next: (data: any) => {
-                if (data.data.length) {
-                    this.respuesta_registrada = true
-                    const respuestas = JSON.parse(data.data[0].respuestas)
-                    this.setRespuestasFormArray(respuestas)
-                }
-            },
-            error: (error) => {
-                console.error('Error obteniendo respuestas:', error)
-            },
-        })
+        this.datosEncuestas
+            .verRespuesta({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEncuId: this.iEncuId,
+                iMatrId: this.iMatrId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    if (data.data.length) {
+                        this.respuesta_registrada = true
+                        const respuestas = JSON.parse(data.data[0].respuestas)
+                        this.setRespuestasFormArray(respuestas)
+                    }
+                },
+                error: (error) => {
+                    console.error('Error obteniendo respuestas:', error)
+                },
+            })
     }
 
     setPreguntasFormArray(preguntas: any[]) {
@@ -189,7 +210,6 @@ export class EncuestaVerComponent {
             .guardarRespuesta(this.formPreguntas.value)
             .subscribe({
                 next: () => {
-                    this.listarPreguntas()
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Registro exitoso',
@@ -219,7 +239,6 @@ export class EncuestaVerComponent {
             .actualizarRespuesta(this.formPreguntas.value)
             .subscribe({
                 next: () => {
-                    this.listarPreguntas()
                     this._messageService.add({
                         severity: 'success',
                         summary: 'Actualización exitosa',
@@ -238,6 +257,12 @@ export class EncuestaVerComponent {
     }
 
     salir() {
-        this.router.navigate(['/bienestar/gestionar-encuestas'])
+        if (!this.puede_editar) {
+            this.router.navigate([
+                '/bienestar/encuesta/' + this.iEncuId + '/respuestas',
+            ])
+        } else {
+            this.router.navigate(['/bienestar/gestionar-encuestas'])
+        }
     }
 }

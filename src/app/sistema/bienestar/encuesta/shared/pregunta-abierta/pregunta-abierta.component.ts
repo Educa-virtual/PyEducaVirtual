@@ -24,6 +24,8 @@ export class PreguntaAbiertaComponent implements OnInit {
 
     @Input() infoAdicional!: TemplateRef<any>
 
+    @Input() controlDisabled: boolean = false
+
     inputMinRowsString: string
     inputMaxRowsString: string
 
@@ -35,6 +37,9 @@ export class PreguntaAbiertaComponent implements OnInit {
     ngOnInit() {
         this.inputMinRowsString = `${this.inputMinRows}lh`
         this.inputMaxRowsString = `${this.inputMaxRows}lh`
+        if (this.controlDisabled) {
+            this.inputControl.disable()
+        }
     }
 
     writeValue(value: any) {

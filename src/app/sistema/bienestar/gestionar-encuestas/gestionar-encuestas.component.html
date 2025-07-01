@@ -107,7 +107,9 @@
                     class="flex flex-column align-items-end justify-content-center gap-2"
                 >
                     <p-button
-                        label="Responder encuesta"
+                        label="Responder ({{ encuesta.count_respuestas }}/{{
+                            encuesta.count_preguntas
+                        }})"
                         icon="pi pi-check"
                         iconPos="left"
                         (onClick)="responderEncuesta(encuesta)"

@@ -1,1 +1,58 @@
-<p>economica works!</p>
+<br />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+    <div>
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    style="
+                        display: flex;
+                        width: 100%;
+                        color: white;
+                        padding: 8px 12px;
+                        margin: -1rem -1rem 0 -1rem;
+                    "
+                >
+                    <div>
+                        <span> Nivel de ingreso familiar mensual </span>
+                    </div>
+                </div>
+            </ng-template>
+            <div>
+                <div>
+                    <p-chart
+                        type="bar"
+                        [data]="dataIngresoFamiliar"
+                        [options]="optionsIngresoFamiliar"
+                    />
+                </div>
+            </div>
+        </p-panel>
+    </div>
+
+    <div>
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    style="
+                        display: flex;
+                        width: 100%;
+                        color: white;
+                        padding: 8px 12px;
+                        margin: -1rem -1rem 0 -1rem;
+                    "
+                >
+                    <div>
+                        <span> Dependientes Económicas </span>
+                    </div>
+                </div>
+            </ng-template>
+            <div>
+                <p-chart
+                    type="bar"
+                    [data]="basicData"
+                    [options]="basicOptions"
+                />
+            </div>
+        </p-panel>
+    </div>
+</div>

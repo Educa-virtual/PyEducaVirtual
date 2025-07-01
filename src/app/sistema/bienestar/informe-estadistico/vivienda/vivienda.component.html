@@ -1,1 +1,345 @@
-<p>vivienda works!</p>
+<br />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+    <!-- PANEL IZQUIERDO - MATERIAL PREDOMINANTE -->
+    <div>
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    style="
+                        display: flex;
+                        width: 100%;
+                        color: white;
+                        padding: 12px;
+                        margin: -1rem -1rem 0 -1rem;
+                        border-radius: 8px 8px 0 0;
+                    "
+                >
+                    <div style="font-weight: bold">
+                        Material predominante de la vivienda
+                    </div>
+                </div>
+            </ng-template>
+
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares Registrados
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        23
+                    </div>
+                </div>
+
+                <!-- BARRA HORIZONTAL -->
+                <div>
+                    <p-chart
+                        type="doughnut"
+                        [data]="data"
+                        [options]="options"
+                    />
+                </div>
+                <!-- LEYENDA -->
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        "
+                    >
+                        <div
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <span
+                                style="
+                                    width: 12px;
+                                    height: 12px;
+                                    background: #b794f6;
+                                    border-radius: 50%;
+                                "
+                            ></span>
+                            <span>Concreto</span>
+                        </div>
+                        <div style="display: flex; gap: 20px">
+                            <span style="font-weight: bold">2</span>
+                            <span
+                                style="
+                                    color: #666;
+                                    width: 40px;
+                                    text-align: right;
+                                "
+                                >5%</span
+                            >
+                        </div>
+                    </div>
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        "
+                    >
+                        <div
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <span
+                                style="
+                                    width: 12px;
+                                    height: 12px;
+                                    background: #4299e1;
+                                    border-radius: 50%;
+                                "
+                            ></span>
+                            <span>Madera</span>
+                        </div>
+                        <div style="display: flex; gap: 20px">
+                            <span style="font-weight: bold">17</span>
+                            <span
+                                style="
+                                    color: #666;
+                                    width: 40px;
+                                    text-align: right;
+                                "
+                                >68%</span
+                            >
+                        </div>
+                    </div>
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        "
+                    >
+                        <div
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <span
+                                style="
+                                    width: 12px;
+                                    height: 12px;
+                                    background: #f6ad55;
+                                    border-radius: 50%;
+                                "
+                            ></span>
+                            <span>Adobe</span>
+                        </div>
+                        <div style="display: flex; gap: 20px">
+                            <span style="font-weight: bold">4</span>
+                            <span
+                                style="
+                                    color: #666;
+                                    width: 40px;
+                                    text-align: right;
+                                "
+                                >8%</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+
+    <!-- PANEL DERECHO - ACCESO A SERVICIOS -->
+    <div>
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    style="
+                        display: flex;
+                        width: 100%;
+                        color: white;
+                        padding: 12px;
+                        margin: -1rem -1rem 0 -1rem;
+                        border-radius: 8px 8px 0 0;
+                    "
+                >
+                    <div style="font-weight: bold">
+                        Acceso a Servicios Básicos
+                    </div>
+                </div>
+            </ng-template>
+
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        30
+                    </div>
+                </div>
+
+                <!-- CONTENEDOR DEL GRÁFICO Y LEYENDA -->
+                <div style="display: flex; gap: 20px; margin-bottom: 20px">
+                    <!-- GRÁFICO -->
+                    <div style="flex: 2; height: 250px">
+                        <p-chart
+                            type="bar"
+                            [data]="basicData"
+                            [options]="basicOptions"
+                        />
+                    </div>
+
+                    <!-- LEYENDA LATERAL -->
+                    <div
+                        style="
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            gap: 12px;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #b794f6;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span style="font-size: 0.9em"
+                                    >Agua Potable</span
+                                >
+                            </div>
+                            <div style="display: flex; gap: 10px">
+                                <span style="font-weight: bold">2</span>
+                                <span style="color: #666">03%</span>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #4299e1;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span style="font-size: 0.9em">Desague</span>
+                            </div>
+                            <div style="display: flex; gap: 10px">
+                                <span style="font-weight: bold">13</span>
+                                <span style="color: #666">41%</span>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #f6ad55;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span style="font-size: 0.9em"
+                                    >Electricidad</span
+                                >
+                            </div>
+                            <div style="display: flex; gap: 10px">
+                                <span style="font-weight: bold">4</span>
+                                <span style="color: #666">06%</span>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #48bb78;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span style="font-size: 0.9em">Internet</span>
+                            </div>
+                            <div style="display: flex; gap: 10px">
+                                <span style="font-weight: bold">10</span>
+                                <span style="color: #666">30%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>

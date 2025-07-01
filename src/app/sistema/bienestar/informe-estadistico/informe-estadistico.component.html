@@ -190,7 +190,16 @@
             scrollable="true"
             [activeItem]="activeItem"
             (activeItemChange)="handleTabChange($event)"
-        ></p-tabMenu>
+        >
+            <ng-template pTemplate="item" let-item>
+                <ng-container *ngIf="item.route">
+                    <a [routerLink]="item.route" class="p-menuitem-link">
+                        <span [class]="item.icon"></span>
+                        <span class="ml-2">{{ item.label }}</span>
+                    </a>
+                </ng-container>
+            </ng-template>
+        </p-tabMenu>
     </div>
 
     <router-outlet></router-outlet>

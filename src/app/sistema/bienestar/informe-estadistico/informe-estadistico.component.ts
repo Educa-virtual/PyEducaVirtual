@@ -30,17 +30,17 @@ export class InformeEstadisticoComponent implements OnInit {
         {
             label: 'Vivienda',
             icon: 'pi pi-fw pi-wallet',
-            //route: '/bienestar/ficha/economico',
+            route: '/bienestar/informe-estadistico/vivienda',
         },
         {
             label: 'Económica',
             icon: 'pi pi-fw pi-wallet',
-            //route: '/bienestar/ficha/economico',
+            route: '/bienestar/informe-estadistico/economica',
         },
         {
             label: 'Demográfica',
             icon: 'pi pi-fw pi-wallet',
-            //route: '/bienestar/ficha/economico',
+            route: '/bienestar/informe-estadistico/demografica',
         },
     ]
 

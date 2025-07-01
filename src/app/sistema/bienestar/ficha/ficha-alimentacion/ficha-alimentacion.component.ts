@@ -126,6 +126,30 @@ export class FichaAlimentacionComponent implements OnInit {
         )
         this.funcionesBienestar.formatearFormControl(
             this.formAlimentacion,
+            'bDietaEspecial',
+            data.bDietaEspecial,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formAlimentacion,
+            'bIntoleranciaAlim',
+            data.bIntoleranciaAlim,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formAlimentacion,
+            'bSumplementosAlim',
+            data.bSumplementosAlim,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formAlimentacion,
+            'bDificultadAlim',
+            data.bDificultadAlim,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formAlimentacion,
             'iLugarAlimIdDesayuno',
             data.iLugarAlimIdDesayuno,
             'number'

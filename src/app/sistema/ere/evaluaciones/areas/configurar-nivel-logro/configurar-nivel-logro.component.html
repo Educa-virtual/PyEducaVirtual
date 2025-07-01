@@ -3,6 +3,7 @@
     [modal]="true"
     [(visible)]="visible"
     [style]="{ width: '40rem' }"
+    (onHide)="onDialogHide()"
 >
     <br />
     <p><strong>Área: </strong> {{ titulo }}</p>

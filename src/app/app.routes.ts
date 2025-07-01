@@ -8,6 +8,9 @@ import { RecoverPasswordComponent } from './shared/recover-password/recover-pass
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component'
 import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component'
+import { RecursosComponent } from './sistema/ere/informes-ere/recursos-ere/recursos.component'
+import { SimpleListaAreasComponent } from './sistema/ere/evaluaciones/areas/simple-lista-areas/simple-lista-areas.component'
+import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/areas/especialista-simple-area/especialista-simple-area.component'
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
@@ -74,6 +77,18 @@ export const routes: Routes = [
             {
                 path: 'buzon-director',
                 component: BuzonDirectorComponent,
+            },
+            {
+                path: 'recursos',
+                component: RecursosComponent,
+            },
+            {
+                path: 'simple-lista-areas',
+                component: SimpleListaAreasComponent,
+            },
+            {
+                path: 'especialista-simple-area',
+                component: EspecialistaSimpleAreaComponent,
             },
             {
                 path: 'asignar-rol-personal',

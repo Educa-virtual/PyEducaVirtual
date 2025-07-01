@@ -90,7 +90,8 @@ export class SubirArchivoPreguntasComponent implements OnInit {
                 next: (data: any) => {
                     if (data.status.toLowerCase() == 'success') {
                         this.visible = false
-                        this.curso.bTieneArchivo == true
+                        //this.curso.bTieneArchivo == true // se comenta por fallos de subida de archivo
+                        this.curso.bTieneArchivo = true
                         this.archivoSubidoEvent.emit({
                             curso: this.curso,
                         })

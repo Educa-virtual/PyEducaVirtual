@@ -1,1 +1,79 @@
-<p>encuestas-por-categoria works!</p>
+<div class="categorias-container">
+    <p-panel class="categoria-panel">
+        <ng-template pTemplate="header">
+            <div class="flex justify-content-between align-items-center w-full">
+                <span class="text-xl font-bold text-primary"
+                    >{{titleEncuestasPorCategoria}}</span
+                >
+                <button
+                    pButton
+                    pRipple
+                    label="Nueva"
+                    icon="pi pi-plus"
+                    class="p-button-success"
+                    (click)="mostrarDialogNuevaCategoria = true"
+                ></button>
+            </div>
+        </ng-template>
+
+        <!-- Search Bar -->
+        <div class="search-container mb-4">
+            <span class="p-input-icon-left w-full">
+                <i class="pi pi-search"></i>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Buscar categorías..."
+                    class="w-full"
+                />
+            </span>
+        </div>
+        <div class="categorias-grid">
+            <div *ngFor="let categoria of categorias" class="categoria-item">
+                <article
+                    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
+                >
+                    <div class="curso__image-container img-transition">
+                        <img
+                            [src]="
+                                backend +
+                                '/' +
+                                categoria.cCategoriaEncuestaImagen
+                            "
+                            [alt]="categoria.cCategoriaEncuestaNombre"
+                            class="w-full h-full"
+                            (error)="updateUrl(categoria)"
+                        />
+                    </div>
+                    <div class="p-3 mb-auto">
+                        <h3 class="text-xl">
+                            {{
+                                categoria.cCategoriaEncuestaNombre | stringCase
+                            }}
+                        </h3>
+                    </div>
+                    <footer
+                        class="p-3 pt-0 flex align-items-center justify-content-between"
+                    >
+                        <p class="">
+                            {{ categoria.iCantidadEncuestas }} encuestas
+                        </p>
+                        <button
+                            [size]="'small'"
+                            [rounded]="true"
+                            pButton
+                            pRipple
+                            ngClass="p-button-primary"
+                        > Acceder
+                        </button>
+                    </footer>
+                </article>
+            </div>
+        </div>
+    </p-panel>
+</div>
+
+<app-nueva-categoria
+    [(visible)]="mostrarDialogNuevaCategoria"
+    (categoriaCreada)="onCategoriaCreada($event)"
+></app-nueva-categoria>

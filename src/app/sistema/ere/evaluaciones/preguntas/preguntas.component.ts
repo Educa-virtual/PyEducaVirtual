@@ -77,8 +77,8 @@ export class PreguntasComponent implements OnInit {
         },
     ]
     init: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
+        base_url: '/tinymce',
+        suffix: '.min',
         menubar: false,
         selector: 'textarea',
         placeholder: 'Escriba aquí...',

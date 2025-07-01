@@ -146,6 +146,14 @@
             (onClick)="guardarRespuesta()"
             styleClass="p-button-success"
             icon="pi pi-save"
+            *ngIf="!respuesta_registrada"
+        />
+        <p-button
+            label="Actualizar"
+            (onClick)="actualizarRespuesta()"
+            styleClass="p-button-success"
+            icon="pi pi-save"
+            *ngIf="respuesta_registrada"
         />
     </div>
 </p-panel>

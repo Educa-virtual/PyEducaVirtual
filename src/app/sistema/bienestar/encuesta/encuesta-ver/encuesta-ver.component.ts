@@ -28,6 +28,7 @@ export class EncuestaVerComponent {
     preguntas: Array<any>
     formPreguntas: FormGroup
     encuesta: any
+    respuesta_registrada: boolean = false
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -116,6 +117,7 @@ export class EncuestaVerComponent {
                     if (data.data.length) {
                         this.preguntas = data.data
                         this.setPreguntasFormArray(this.preguntas)
+                        this.verRespuestas()
                     } else {
                         this.preguntas = null
                         this.preguntasFormArray.clear()
@@ -132,6 +134,21 @@ export class EncuestaVerComponent {
             })
     }
 
+    verRespuestas() {
+        this.datosEncuestas.verRespuesta(this.formPreguntas.value).subscribe({
+            next: (data: any) => {
+                if (data.data.length) {
+                    this.respuesta_registrada = true
+                    const respuestas = JSON.parse(data.data[0].respuestas)
+                    this.setRespuestasFormArray(respuestas)
+                }
+            },
+            error: (error) => {
+                console.error('Error obteniendo respuestas:', error)
+            },
+        })
+    }
+
     setPreguntasFormArray(preguntas: any[]) {
         const preguntasFGs = preguntas.map((p) =>
             this.fb.group({
@@ -142,6 +159,22 @@ export class EncuestaVerComponent {
         )
         const formArray = this.fb.array(preguntasFGs)
         this.formPreguntas.setControl('preguntas', formArray)
+    }
+
+    setRespuestasFormArray(respuestas: any[]) {
+        const preguntasFA = this.formPreguntas.get('preguntas') as FormArray
+        preguntasFA.controls.forEach((preguntaFG: FormGroup) => {
+            const respuesta = respuestas.find(
+                (respuesta: any) =>
+                    respuesta.iEncuPregId ==
+                    preguntaFG.get('iEncuPregId')?.value
+            )
+            if (respuesta) {
+                preguntaFG.patchValue({
+                    cEncuRptaContenido: respuesta.cEncuRptaContenido,
+                })
+            }
+        })
     }
 
     guardarRespuesta() {
@@ -165,6 +198,36 @@ export class EncuestaVerComponent {
                 },
                 error: (error) => {
                     console.error('Error guardando pregunta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
+    actualizarRespuesta() {
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formPreguntas,
+            'jsonPreguntas',
+            'preguntas',
+            ''
+        )
+
+        this.datosEncuestas
+            .actualizarRespuesta(this.formPreguntas.value)
+            .subscribe({
+                next: () => {
+                    this.listarPreguntas()
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error actualizando pregunta:', error)
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',

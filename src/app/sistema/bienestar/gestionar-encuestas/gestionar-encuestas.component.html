@@ -1,17 +1,27 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
 <p-panel>
     <ng-template pTemplate="header">
         <span class="text-2xl text-uppercase">
             Gestionar encuestas de bienestar
         </span>
     </ng-template>
-    <ng-template pTemplate="icons" class="flex justify-content-center">
+    <ng-template
+        pTemplate="icons"
+        class="flex justify-content-center"
+        *ngIf="perfil_permitido"
+    >
         <div class="flex flex-wrap gap-2 justify-content-end">
             <button
                 size="small"
                 pButton
-                pTooltip="Registrar ficha"
+                pTooltip="Registrar encuesta"
                 tooltipPosition="top"
-                (click)="verEncuesta()"
+                (click)="agregarEncuesta()"
                 severity="success"
             >
                 <i class="pi pi-plus"></i>
@@ -19,45 +29,93 @@
             </button>
         </div>
     </ng-template>
-
-    <form [formGroup]="searchForm">
+    <div *ngIf="perfil_permitido">
         <div class="grid mb-3">
-            <div class="col-12 md:col-4">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Categoría </p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="categorias"
-                        formControlName="iCategoriaEncuestaId"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                        placeholder="Seleccione"
-                        styleClass="group-element"
-                        [style]="{ flex: '1', width: '100%' }"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-8">
+            <div class="col-12">
                 <p-inputGroup>
                     <p-inputGroupAddon> Buscar </p-inputGroupAddon>
                     <input
+                        #filtro
                         type="text"
                         pInputText
-                        formControlName="cEncuestaNombre"
-                        (input)="filtrarEstudiantes()"
+                        (input)="filtrarEncuestas()"
                     />
                 </p-inputGroup>
             </div>
         </div>
-    </form>
 
-    <app-table-primeng
-        [columnas]="columnasTabla"
-        [data]="encuestas"
-        (accionBtnItem)="accionBnt($event)"
-        [actions]="accionesTabla"
-        [showCaption]="false"
-    />
+        <app-table-primeng
+            [columnas]="columnasTabla"
+            [data]="encuestas_filtradas"
+            (accionBtnItem)="accionBnt($event)"
+            [actions]="accionesTabla"
+            [showCaption]="false"
+        />
+    </div>
+    <div *ngIf="!perfil_permitido">
+        @if (encuestas.length === 0) {
+            <app-no-data
+                [showIcon]="'NO-DATA'"
+                mensaje="No hay encuestas disponibles"
+            />
+        }
+        <div
+            *ngFor="let encuesta of encuestas"
+            class="card mb-5 relative overflow-visible {{
+                +encuesta.alerta === 1 ? 'card-alerta' : 'card-regular'
+            }}"
+        >
+            <div
+                class="flex flex-wrap w-full justify-content-between gap-0 m-0"
+            >
+                <div class="flex gap-4 font-normal">
+                    <div class="flex flex-column my-2 align-items-start">
+                        <span
+                            class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
+                        >
+                            {{
+                                encuesta?.cEncuNombre.length > 150
+                                    ? (encuesta?.cEncuNombre | slice: 0 : 150) +
+                                      '...'
+                                    : encuesta?.cEncuNombre
+                            }}
+                        </span>
+                        <p-tag
+                            [value]="encuesta.cEncuCateNombre"
+                            severity="warning"
+                        />
+                        <div
+                            class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                        >
+                            <div class="flex items-center gap-1">
+                                <i class="pi pi-calendar text-primary ml-1"></i>
+                                <span>Del:</span>
+                                <span>{{
+                                    encuesta.dEncuDesde | date: 'dd/MM/yyyy'
+                                }}</span>
+                                <span
+                                    >Al:
+                                    {{
+                                        encuesta.dEncuHasta | date: 'dd/MM/yyyy'
+                                    }}</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-column align-items-end justify-content-center gap-2"
+                >
+                    <p-button
+                        label="Responder encuesta"
+                        icon="pi pi-check"
+                        iconPos="left"
+                        (onClick)="responderEncuesta(encuesta)"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
 </p-panel>
 
 <p-dialog
@@ -74,3 +132,5 @@
         <app-encuesta (es_visible)="dialogVisible($event)" />
     </ng-content>
 </p-dialog>
+
+<p-toast></p-toast>

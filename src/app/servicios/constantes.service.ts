@@ -155,6 +155,26 @@ const estudiante = [
                     },
                 ],
             },
+            {
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Ficha Socioeconomica',
+                        icon: 'pi pi-fw pi-file-edit',
+                        routerLink: ['/bienestar/ficha'],
+                    },
+                    {
+                        label: 'Gestionar encuestas',
+                        icon: 'pi pi-fw pi-list-check',
+                        routerLink: ['/bienestar/gestionar-encuestas'],
+                    },
+                    {
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
+                    },
+                ],
+            },
         ],
     },
 ]

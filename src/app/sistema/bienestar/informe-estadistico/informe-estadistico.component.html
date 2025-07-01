@@ -185,7 +185,9 @@
 
         <!-- TABS -->
         <p-tabMenu
+            #tabMenu
             [model]="items"
+            scrollable="true"
             [activeItem]="activeItem"
             (activeItemChange)="handleTabChange($event)"
         ></p-tabMenu>

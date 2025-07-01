@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem } from 'primeng/api'
+import { NivelPobrezaComponent } from './nivel-pobreza/nivel-pobreza.component'
+import { SaludComponent } from './salud/salud.component'
 
 @Component({
     selector: 'app-informe-estadistico',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, NivelPobrezaComponent, SaludComponent],
     templateUrl: './informe-estadistico.component.html',
     styleUrl: './informe-estadistico.component.scss',
 })
@@ -23,7 +25,7 @@ export class InformeEstadisticoComponent implements OnInit {
         {
             label: 'Salud',
             icon: 'pi pi-fw pi-users',
-            //route: '/bienestar/informe-estadistico/salud',
+            route: '/bienestar/informe-estadistico/salud',
         },
         {
             label: 'Vivienda',
@@ -48,6 +50,8 @@ export class InformeEstadisticoComponent implements OnInit {
         console.log('ngOnInit')
         //Redireccionar
         this.activeItem = this.items[0]
+        this.router.navigate([this.activeItem.route])
+        this.handleTabChange(this.activeItem)
     }
 
     handleTabChange(newItem: MenuItem) {

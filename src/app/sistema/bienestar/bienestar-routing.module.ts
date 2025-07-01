@@ -55,6 +55,7 @@ const routes: Routes = [
         path: 'informe-estadistico',
         component: InformeEstadisticoComponent,
         children: [
+            { path: '', redirectTo: 'nivel-pobreza', pathMatch: 'full' },
             { path: 'nivel-pobreza', component: NivelPobrezaComponent },
             { path: 'salud', component: SaludComponent },
         ],

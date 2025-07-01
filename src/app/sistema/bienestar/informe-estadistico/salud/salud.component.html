@@ -6,10 +6,10 @@
                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
             >
                 <div>test</div>
-                <div>
+                <div class="card">
                     <p-chart
                         type="doughnut"
-                        [data]="data"
+                        [data]="nivelPobreza"
                         [options]="options"
                     />
                 </div>
@@ -23,7 +23,13 @@
                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
             >
                 <div>test</div>
-                <div>test</div>
+                <div class="card">
+                    <p-chart
+                        type="bar"
+                        [data]="basicData"
+                        [options]="basicOptions"
+                    />
+                </div>
             </div>
         </p-panel>
     </div>

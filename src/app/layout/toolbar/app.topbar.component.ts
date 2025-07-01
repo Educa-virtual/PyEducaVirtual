@@ -14,7 +14,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
 import { NgIcon, NgIconComponent, provideIcons } from '@ng-icons/core'
 import { mat10k } from '@ng-icons/material-icons/baseline'
-
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -37,6 +37,7 @@ import { mat10k } from '@ng-icons/material-icons/baseline'
 export class AppTopBarComponent implements OnInit {
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
+    private ConstantesService = inject(ConstantesService)
     years = []
     selectedYear: string
 
@@ -45,6 +46,9 @@ export class AppTopBarComponent implements OnInit {
 
     modulos = []
     selectedModulo: string
+
+    iYAcadId: string
+    iSedeId: string
 
     @ViewChild('menubutton') menuButton!: ElementRef
     // @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef
@@ -56,7 +60,10 @@ export class AppTopBarComponent implements OnInit {
         private store: LocalStoreService,
         private tokenStorageService: TokenStorageService,
         private router: Router
-    ) {}
+    ) {
+        this.iYAcadId = this.ConstantesService.iYAcadId
+        this.iSedeId = this.ConstantesService.iSedeId
+    }
 
     ngOnInit() {
         const user = this.store.getItem('dremoUser')
@@ -65,6 +72,7 @@ export class AppTopBarComponent implements OnInit {
         this.selectedYear = year ? year : null
 
         const perfil = this.store.getItem('dremoPerfil')
+        console.log('verificar perfil', perfil)
         this.perfiles = user.perfiles
         const perfil_data = {
             iPerfilId: 0,
@@ -188,10 +196,13 @@ export class AppTopBarComponent implements OnInit {
             ruta: 'mostrar_notificacion',
             data: {
                 iDocenteId: iDocenteId,
+                iYAcadId: this.iYAcadId,
+                iSedeId: this.iSedeId,
             },
         }
         this.getInformation(params, params.prefix)
     }
+
     notificacionEstudiante(iEstudianteId) {
         const params = {
             petition: 'post',
@@ -200,10 +211,13 @@ export class AppTopBarComponent implements OnInit {
             ruta: 'mostrar_notificacion',
             data: {
                 iEstudianteId: iEstudianteId,
+                iYAcadId: this.iYAcadId,
+                iSedeId: this.iSedeId,
             },
         }
         this.getInformation(params, params.prefix)
     }
+
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {

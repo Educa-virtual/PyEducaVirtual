@@ -54,22 +54,31 @@
     </p-carousel>
     <!-- fin de publicacion de comunicado -->
 
-    <div class="container p-5 text-center">
-        <!-- <span class="title">Bienvenido</span> -->
-        <div class="title">
-            <span class="title">Bienvenido </span>
-            <b>{{ name }}</b> a la
-            <!-- style="color: var(--surface-menu)" -->
-            <span class="plataforVirt">Plataforma Educativa Virtual</span>
-            de la Dirección Regional de Educación Moquegua
-        </div>
-        <div class="mt-5 icono-container">
-            <img
-                style="max-width: 150px"
-                src="assets/images/logo-plataforma-virtual-small.png"
-                alt="logo"
-                class="ico-3d"
-            />
+    <div class="container p-5 border-round-xl shadow-4 w-full">
+        <div class="grid">
+            <div
+                class="xl:col-3 sm:col-12 flex-order-2 xl:flex-order-1 lg:flex-order-1 sm:flex-order-2 flex justify-content-center align-items-center text-center"
+            >
+                <div class="w-full">
+                    <img
+                        style="width: 130px"
+                        src="assets/images/logo-plataforma-virtual-small.png"
+                        alt="logo"
+                    />
+                </div>
+            </div>
+            <div
+                class="xl:col-9 sm:col-12 flex-order-1 xl:flex-order-2 lg:flex-order-2 sm:flex-order-1 flex justify-content-center align-items-center text-center"
+            >
+                <div class="title">
+                    <span class="title">Bienvenido </span>
+                    <b>{{ name }}</b> a la
+                    <span class="plataforVirt"
+                        >Plataforma Educativa Virtual</span
+                    >
+                    de la Dirección Regional de Educación Moquegua
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -90,3 +99,5 @@
         {{ descripcion }}
     </p>
 </p-dialog>
+
+<p-toast />

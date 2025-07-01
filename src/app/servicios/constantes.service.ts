@@ -151,6 +151,11 @@ const estudiante = [
                 icon: 'pi pi-fw pi-envelope',
                 routerLink: ['/estudiante/buzon-sugerencias'],
             },
+            {
+                label: 'Bandeja de Notificaciones',
+                icon: 'pi pi-fw pi-inbox',
+                routerLink: ['/estudiante/bandeja-notificaciones'],
+            },
         ],
     },
 ]

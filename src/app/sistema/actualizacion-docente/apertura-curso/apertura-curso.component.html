@@ -467,6 +467,7 @@
                 <p-button
                     *ngFor="let dia of dias; let i = index"
                     [label]="dia.nombre"
+                    [severity]="dia.iestado === '1' ? 'warning' : 'primary'"
                     class="p-2"
                     (click)="mostrarHorario(dia.id)"
                 />
@@ -541,72 +542,136 @@
         </div> -->
 
         <!-- Acción para guardar horario -->
-        <div class="grid">
-            <div
-                class="p-3 border-round-left w-3rem h-6rem bg-primary font-bold flex align-items-center justify-content-center vertical-text-container"
-            >
-                <label for="">{{ nombredia }}</label>
-            </div>
-            <div>
-                <div class="mb-1">
-                    <p-calendar
-                        [iconDisplay]="'input'"
-                        styleClass="w-14rem"
-                        [hourFormat]="'12'"
-                        [showIcon]="true"
-                        [timeOnly]="true"
-                        inputId="templatedisplay"
-                        placeholder="Ingrese hora de inicio"
-                        [(ngModel)]="horaSeleccionadaInicio"
-                    >
-                        <ng-template
-                            pTemplate="inputicon"
-                            let-clickCallBack="clickCallBack"
-                        >
-                            <i
-                                class="pi pi-clock"
-                                (onclick)="clickCallBack($event)"
-                            ></i>
-                        </ng-template>
-                    </p-calendar>
+        @if (nombredia) {
+            <div class="grid">
+                <div
+                    class="p-3 border-round-left w-3rem h-6rem bg-primary font-bold flex align-items-center justify-content-center vertical-text-container"
+                >
+                    <label for="">{{ nombredia }}</label>
                 </div>
                 <div>
-                    <p-calendar
-                        [iconDisplay]="'input'"
-                        styleClass="w-14rem"
-                        [hourFormat]="'12'"
-                        [showIcon]="true"
-                        [timeOnly]="true"
-                        inputId="templatedisplay"
-                        placeholder="Ingrese hora fin"
-                        [(ngModel)]="horaSeleccionadaFin"
-                    >
-                        <ng-template
-                            pTemplate="inputicon"
-                            let-clickCallBack="clickCallBack"
+                    <div class="mb-1">
+                        <p-calendar
+                            [iconDisplay]="'input'"
+                            styleClass="w-14rem"
+                            [hourFormat]="'12'"
+                            [showIcon]="true"
+                            [timeOnly]="true"
+                            inputId="templatedisplay"
+                            placeholder="Ingrese hora de inicio"
+                            [(ngModel)]="horaSeleccionadaInicio"
                         >
-                            <i
-                                class="pi pi-clock"
-                                (onclick)="clickCallBack($event)"
-                            ></i>
-                        </ng-template>
-                    </p-calendar>
+                            <ng-template
+                                pTemplate="inputicon"
+                                let-clickCallBack="clickCallBack"
+                            >
+                                <i
+                                    class="pi pi-clock"
+                                    (onclick)="clickCallBack($event)"
+                                ></i>
+                            </ng-template>
+                        </p-calendar>
+                    </div>
+                    <div>
+                        <p-calendar
+                            [iconDisplay]="'input'"
+                            styleClass="w-14rem"
+                            [hourFormat]="'12'"
+                            [showIcon]="true"
+                            [timeOnly]="true"
+                            inputId="templatedisplay"
+                            placeholder="Ingrese hora fin"
+                            [(ngModel)]="horaSeleccionadaFin"
+                        >
+                            <ng-template
+                                pTemplate="inputicon"
+                                let-clickCallBack="clickCallBack"
+                            >
+                                <i
+                                    class="pi pi-clock"
+                                    (onclick)="clickCallBack($event)"
+                                ></i>
+                            </ng-template>
+                        </p-calendar>
+                    </div>
+                </div>
+                <!-- <div class="mx-5 flex align-items-center justify-content-center">
+                    <i class="pi pi-arrow-right"></i>
+                </div> -->
+            </div>
+            <div class="col flex justify-content-end">
+                <p-button
+                    label="Añadir Horario"
+                    icon="pi pi-plus"
+                    severity="success"
+                    (click)="guardarDatos()"
+                />
+            </div>
+        }
+
+        <p-divider />
+        <!-- <pre>{{ datosTemporalesLista | json }}</pre> -->
+        <div class="grid grid-nogutter grid-cols-3 gap-2">
+            <div class="mt-2" *ngFor="let item of datosTemporalesLista">
+                <div class="grid mt-3">
+                    <div
+                        class="p-3 border-round-left w-3rem h-6rem bg-primary font-bold flex align-items-center justify-content-center vertical-text-container"
+                    >
+                        <label for="">{{ item.dia }}</label>
+                    </div>
+                    <div>
+                        <div class="mb-1">
+                            <p-calendar
+                                [iconDisplay]="'input'"
+                                styleClass="w-14rem"
+                                [hourFormat]="'12'"
+                                [showIcon]="true"
+                                [timeOnly]="true"
+                                inputId="templatedisplay"
+                                placeholder="Ingrese hora de inicio"
+                                [(ngModel)]="item.iHoraInicio"
+                            >
+                                <ng-template
+                                    pTemplate="inputicon"
+                                    let-clickCallBack="clickCallBack"
+                                >
+                                    <i
+                                        class="pi pi-clock"
+                                        (onclick)="clickCallBack($event)"
+                                    ></i>
+                                </ng-template>
+                            </p-calendar>
+                        </div>
+                        <div>
+                            <p-calendar
+                                [iconDisplay]="'input'"
+                                styleClass="w-14rem"
+                                [hourFormat]="'12'"
+                                [showIcon]="true"
+                                [timeOnly]="true"
+                                inputId="templatedisplay"
+                                placeholder="Ingrese hora fin"
+                                [(ngModel)]="item.iHoraFin"
+                            >
+                                <ng-template
+                                    pTemplate="inputicon"
+                                    let-clickCallBack="clickCallBack"
+                                >
+                                    <i
+                                        class="pi pi-clock"
+                                        (onclick)="clickCallBack($event)"
+                                    ></i>
+                                </ng-template>
+                            </p-calendar>
+                        </div>
+                    </div>
+                    <div
+                        class="mx-5 flex align-items-center justify-content-center"
+                    >
+                        <i class="pi pi-arrow-right"></i>
+                    </div>
                 </div>
             </div>
-            <div class="mx-5 flex align-items-center justify-content-center">
-                <i class="pi pi-arrow-right"></i>
-            </div>
-        </div>
-        <!-- <div class="" *ngFor="let horario of datosTemporales">
-            {{horario.dia}}: {{horario.horaInicio}} - {{horario.horaFin}}
-        </div> -->
-        <div class="col flex justify-content-end">
-            <p-button
-                label="Agregar Horario"
-                icon="pi pi-check"
-                severity="success"
-                (click)="guardarDatos()"
-            />
         </div>
     </div>
     <div class="flex justify-content-center py-5">

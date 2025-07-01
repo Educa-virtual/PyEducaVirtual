@@ -70,23 +70,24 @@ export class AperturaCursoComponent implements OnInit {
 
     diaSeleccionado: string | number = 123 //día seleccionado
     fechaSeleccionada: Date | null = null
-    datosTemporales: {
-        iHoraInicio: string
-        iHoraFin: string
-    }[] = [] // obtener los datos temporales
+    // datosTemporales: {
+    //     iHoraInicio: string
+    //     iHoraFin: string
+    // }[] = [] // obtener los datos temporales
+    datosTemporales: { [idDia: number]: any } = {}
     isDisabled: boolean =
         this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO
 
     modoFormulario: 'crear' | 'editar' = 'crear'
 
     dias = [
-        { id: 1, nombre: 'Lunes' },
-        { id: 2, nombre: 'Martes' },
-        { id: 3, nombre: 'Miércoles' },
-        { id: 4, nombre: 'Jueves' },
-        { id: 5, nombre: 'Viernes' },
-        { id: 6, nombre: 'Sabado' },
-        { id: 7, nombre: 'Domingo' },
+        { id: 1, nombre: 'Lunes', iestado: '' },
+        { id: 2, nombre: 'Martes', iestado: '' },
+        { id: 3, nombre: 'Miércoles', iestado: '' },
+        { id: 4, nombre: 'Jueves', iestado: '' },
+        { id: 5, nombre: 'Viernes', iestado: '' },
+        { id: 6, nombre: 'Sabado', iestado: '' },
+        { id: 7, nombre: 'Domingo', iestado: '' },
     ]
 
     constructor(private messageService: MessageService) {}
@@ -297,27 +298,41 @@ export class AperturaCursoComponent implements OnInit {
         const minutos = fecha.getMinutes().toString().padStart(2, '0')
         return `${horas}:${minutos}`
     }
-
+    estadoDiaSeleccionado: number | string = 0 // Estado del día seleccionado
     // guardar temporamente los datos del dia seleccionado
     guardarDatos() {
         if (this.diaSeleccionado) {
-            const horaIni = this.formatearHora(this.horaSeleccionadaInicio)
-            const horaFin = this.formatearHora(this.horaSeleccionadaFin)
+            // const horaIni = this.formatearHora(this.horaSeleccionadaInicio)
+            // const horaFin = this.formatearHora(this.horaSeleccionadaFin)
 
+            const diaNombre =
+                this.dias.find((d) => d.id === this.diaSeleccionado)?.nombre ??
+                ''
             this.datosTemporales[this.diaSeleccionado] = {
                 iDiaId: this.diaSeleccionado.toString(),
                 iHorarioUniforme: '1', // Puedes cambiar el valor según sea necesario
-                iHoraInicio: horaIni,
-                iHoraFin: horaFin,
+                iHoraInicio: this.horaSeleccionadaInicio,
+                iHoraFin: this.horaSeleccionadaFin,
+                dia: diaNombre, // Agregar el nombre del día
             }
-
-            console.log('Datos temporales:', this.datosTemporales)
+            // Cambiar iestado a '1' para ese día
+            this.dias = this.dias.map((dia) =>
+                dia.id === this.diaSeleccionado ? { ...dia, iestado: '1' } : dia
+            )
+            this.estadoDiaSeleccionado =
+                this.dias.find((dia) => dia.id === this.diaSeleccionado)
+                    ?.iestado || 0
+            // console.log('Datos temporales:', this.datosTemporales);
+            // console.log('Días actualizados:', this.dias);
 
             // Restablecer selección
             this.diaSeleccionado = null
             this.horaSeleccionadaInicio = null
             this.horaSeleccionadaFin = null
         }
+    }
+    get datosTemporalesLista() {
+        return Object.values(this.datosTemporales)
     }
 
     loading: boolean = false

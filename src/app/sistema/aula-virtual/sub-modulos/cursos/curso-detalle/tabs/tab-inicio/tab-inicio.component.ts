@@ -194,6 +194,7 @@ export class TabInicioComponent implements OnInit {
 
     // metodo para fijar el anuncio
     fijarAnuncio(id: string, iFijado: number): void {
+        if (this.iPerfilId !== this.DOCENTE) return
         const iCredId = this._constantesService.iCredId
         const params = {
             iAnuncioId: id,
@@ -222,7 +223,6 @@ export class TabInicioComponent implements OnInit {
             },
         })
     }
-
     // obtener anunciados de curso:
     obtenerAnuncios() {
         const iCursosNivelGradId = 1

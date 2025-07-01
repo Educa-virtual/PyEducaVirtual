@@ -55,6 +55,8 @@ export class MultiselectInputComponent implements OnInit {
         if (event?.value === undefined) {
             this.visibleInput = false
             this.inputControl.setValue(null)
+            this.inputControl.clearValidators()
+            this.inputControl.updateValueAndValidity()
             return null
         }
         if (Array.isArray(event.value)) {
@@ -62,18 +64,24 @@ export class MultiselectInputComponent implements OnInit {
                 this.visibleInput = true
                 this.inputControl.markAsTouched()
                 this.inputControl.markAsDirty()
+                this.inputControl.updateValueAndValidity()
             } else {
                 this.visibleInput = false
                 this.inputControl.setValue(null)
+                this.inputControl.clearValidators()
+                this.inputControl.updateValueAndValidity()
             }
         } else {
             if (event.value == this.inputTrigger) {
                 this.visibleInput = true
                 this.inputControl.markAsTouched()
                 this.inputControl.markAsDirty()
+                this.inputControl.updateValueAndValidity()
             } else {
                 this.visibleInput = false
                 this.inputControl.setValue(null)
+                this.inputControl.clearValidators()
+                this.inputControl.updateValueAndValidity()
             }
         }
     }

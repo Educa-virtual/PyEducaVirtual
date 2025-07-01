@@ -4,6 +4,7 @@ import {
     auditoriaColumns,
     auditoriaMiddlewareColumns,
 } from '../table/config'
+import { DatePipe } from '@angular/common'
 export const optionsDropdownConfig = [
     {
         label: 'Accesos autorizados',
@@ -11,8 +12,9 @@ export const optionsDropdownConfig = [
             expand: false,
             columns: accesosAutorizadosColumns,
             params: '',
-            endPoint: 'seg/auditoria/selAuditoriaAccesos',
+            endPoint: 'seg/auditoria/accesos-autorizados',
             response: (response: any) => {
+                const datePipe = new DatePipe('es-PE')
                 return response.data.map((item: any, index: number) => ({
                     index: index + 1,
                     cCredUsuario: item.cCredUsuario,
@@ -21,7 +23,10 @@ export const optionsDropdownConfig = [
                     cIpCliente: item.cIpCliente,
                     cNavegador: item.cNavegador,
                     cSistmaOperativo: item.cSistmaOperativo,
-                    dtFecha: item.dtFecha,
+                    dtFecha: datePipe.transform(
+                        item.dtFecha,
+                        'dd/MM/yyyy HH:mm'
+                    ),
                 }))
             },
         },
@@ -31,19 +36,23 @@ export const optionsDropdownConfig = [
         value: {
             expand: false,
             columns: accesosFallidosColumns,
-            endPoint: 'seg/auditoria/selAuditoriaAccesosFallidos',
+            endPoint: 'seg/auditoria/accesos-fallidos',
             params: '',
             response: (response: any) => {
+                const datePipe = new DatePipe('es-PE')
                 return response.data.map((item: any, index: number) => ({
                     index: index + 1,
                     cLogin: item.cLogin,
                     cPassword: item.cPassword,
-                    cMotivo: item.cMotivo,
+                    cMotivo: JSON.parse(item.cMotivo),
                     cDispositivo: item.cDispositivo,
                     cIpCliente: item.cIpCliente,
                     cNavegador: item.cNavegador,
                     cSistmaOperativo: item.cSistmaOperativo,
-                    dtFecha: item.dtFecha,
+                    dtFecha: datePipe.transform(
+                        item.dtFecha,
+                        'dd/MM/yyyy HH:mm'
+                    ),
                 }))
             },
         },
@@ -55,8 +64,9 @@ export const optionsDropdownConfig = [
             selectedFirst: true,
             columns: auditoriaColumns,
             params: '',
-            endPoint: 'seg/auditoria/selAuditoria',
+            endPoint: 'seg/auditoria/consultas-database',
             response: (response: any) => {
+                const datePipe = new DatePipe('es-PE')
                 return response.data.map((item, index) => {
                     const datosAntiguos = Array.isArray(
                         JSON.parse(item.cAudDatosAntiguos)
@@ -131,14 +141,16 @@ export const optionsDropdownConfig = [
                     matchingKeys.forEach((key) => {
                         reorderedTransformData[key] = transformData[key]
                     })
-
                     return {
                         index: index + 1,
                         class: item.cAudTipoOperaion,
                         cAudUsuario: item.cAudUsuario,
                         cAudTabla: item.cAudTabla,
                         cAudTipoOperaion: item.cAudTipoOperaion,
-                        dtFecha: item.dtFecha,
+                        dtFecha: datePipe.transform(
+                            item.dtFecha,
+                            'dd/MM/yyyy HH:mm'
+                        ),
                         cAudOperacion: JSON.parse(item.cAudOperacion)?.[0][
                             'event_info'
                         ].replace(/,/g, ', '),
@@ -156,8 +168,9 @@ export const optionsDropdownConfig = [
             expand: true,
             columns: auditoriaMiddlewareColumns,
             params: '',
-            endPoint: 'seg/auditoria/selAuditoriaMiddleware',
+            endPoint: 'seg/auditoria/consultas-backend',
             response: (response: any) => {
+                const datePipe = new DatePipe('es-PE')
                 return response.data.map((item, index) => {
                     const datosAntiguos = Array.isArray(
                         JSON.parse(item.cAudDatosAntiguos)
@@ -239,7 +252,10 @@ export const optionsDropdownConfig = [
                         cCredUsuario: item.cCredUsuario,
                         cAudTabla: item.cAudTabla,
                         cAudTipoOperacion: item.cAudTipoOperacion,
-                        dtFecha: item.dtFecha,
+                        dtFecha: datePipe.transform(
+                            item.dtFecha,
+                            'dd/MM/yyyy HH:mm'
+                        ),
                         cAudOperacion: JSON.parse(item.cAudOperacion)?.[0][
                             'event_info'
                         ].replace(/,/g, ', '),

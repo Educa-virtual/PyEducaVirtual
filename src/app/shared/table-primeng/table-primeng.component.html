@@ -41,9 +41,10 @@
                         <app-search-words
                             [placeholder]="searchPlaceholder"
                             (searchChange)="buscarPalabras($event)"
+                            *ngIf="!showSearchTable"
                         >
                         </app-search-words>
-                        <!-- <p-inputGroup>
+                        <p-inputGroup *ngIf="showSearchTable">
                             <p-inputGroupAddon
                                 ><i class="pi pi-search"></i
                             ></p-inputGroupAddon>
@@ -57,18 +58,7 @@
                                     )
                                 "
                             />
-                        </p-inputGroup> -->
-                    </div>
-                    <div class="col-2 align-content-center">
-                        <div class="flex flex-wrap gap-2 justify-content-end">
-                            <ng-content
-                                select="[slot='caption-content']"
-                            ></ng-content>
-                            <app-table-column-filter
-                                [columns]="columnas"
-                                (columnsChange)="onColumnSelected($event)"
-                            ></app-table-column-filter>
-                        </div>
+                        </p-inputGroup>
                     </div>
                 </div>
             }
@@ -196,7 +186,8 @@
         >
             <tr
                 [pSelectableRow]="rowData"
-                [ngClass]="getClass(rowData, 'class')"
+                [ngClass]="getRowClasses(rowData, rowIndex)"
+                (click)="trSelected = rowIndex"
             >
                 @for (
                     col of columnasSeleccionadas;
@@ -425,7 +416,13 @@
                                 @if (rowData[col.field].toString() === '1') {
                                     <i
                                         class="pi pi-check-circle"
-                                        style="color: green"
+                                        [style.color]="
+                                            getColorEstado(
+                                                rowData,
+                                                rowIndex,
+                                                'check'
+                                            )
+                                        "
                                         [pTooltip]="
                                             rowData[col.field] + ' - Habilitado'
                                         "
@@ -434,7 +431,13 @@
                                 } @else {
                                     <i
                                         class="pi pi-times-circle"
-                                        style="color: red"
+                                        [style.color]="
+                                            getColorEstado(
+                                                rowData,
+                                                rowIndex,
+                                                'times'
+                                            )
+                                        "
                                         [pTooltip]="
                                             rowData[col.field] +
                                             ' - Deshabilitado'

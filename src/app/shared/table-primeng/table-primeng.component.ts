@@ -96,13 +96,32 @@ export interface IActionTable {
 export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
+    trSelected
+
     getClass(rowData: any, classes: string): { [key: string]: boolean } {
         const fieldValue = rowData?.[classes]
-        if (classes) {
-            return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
-        } else {
-            return undefined
+        return fieldValue ? { [String(fieldValue)]: true } : {}
+    }
+
+    getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
+        return {
+            ...this.getClass(rowData, 'class'),
+            itemSelected: rowIndex === this.trSelected,
+            itemActive: Number(rowData.bActive) ? true : false,
         }
+    }
+
+    getColorEstado(
+        rowData: any,
+        rowIndex: number,
+        tipo: 'check' | 'times'
+    ): string {
+        const isActiveOrSelected =
+            !!Number(rowData.bActive) || this.trSelected === rowIndex
+
+        if (isActiveOrSelected) return 'white'
+
+        return tipo === 'check' ? 'green' : 'red'
     }
 
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
@@ -117,7 +136,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() groupRowsBy
     @Input() groupfooter: IColumn[]
     @Input() width: string = '100%'
-
+    @Input() showSearchTable: boolean = false
     //placeholder search
     @Input() searchPlaceholder: string = 'Buscar por nombre....'
     debug(d) {

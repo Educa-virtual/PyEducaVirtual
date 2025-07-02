@@ -9,8 +9,10 @@ import {
     SimpleChanges,
     ViewChild,
     ElementRef,
+    inject,
 } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-cuestionario-form-preguntas',
@@ -31,9 +33,11 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     @Input() opcion: string = ''
     @ViewChild('editor', { static: true }) editor!: ElementRef
 
+    private messageService = inject(MessageService)
+
     isFocused = false
     codigoTipoPregunta: string = ''
-    opcionSeleccionada: number = 0 // Para manejar la opción seleccionada
+    opcionSeleccionada: any = null // Para manejar la opción seleccionada
     escalaLine: string = '1'
     escalaLine2: string = '2'
     selectNumber: number = 3
@@ -162,10 +166,18 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
             cAlternativa: op.cAlternativa || '',
             cAlternativaImg: op.imagen || '',
         }))
-
         // Convertir a JSON y guardar en una variable
         this.jsonAlternativas = JSON.stringify(alternativasFormateadas)
 
+        if (!this.cPregunta || !this.iTipoPregId) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Pregunta o tipo de pregunta no pueden estar vacíos',
+            })
+            // console.error('Pregunta o tipo de pregunta no pueden estar vacíos')
+            return
+        }
         const data = {
             cPregunta: this.cPregunta,
             iTipoPregId: this.iTipoPregId,
@@ -194,6 +206,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
         this.actualizarPregunta.emit(data)
         // console.log('datos actualizados', this.data)
     }
+    // x borrar
     onInput(event: Event) {
         const value = (event.target as HTMLElement).innerText
         this.cPregunta = value

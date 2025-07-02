@@ -12,6 +12,7 @@ import { NgIf } from '@angular/common'
 import { GeneralService } from '@/app/servicios/general.service'
 import { environment } from '@/environments/environment'
 import { MaterialEducativoComponent } from '@/app/sistema/docente/material-educativo/material-educativo.component'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-types-files-upload-primeng',
@@ -46,6 +47,8 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
     showModalPreview: boolean = false
     titleFileTareas: string = ''
     typeUpload: string
+
+    constructor(private messageService: MessageService) {}
 
     ngOnChanges(changes) {
         if (changes.typesFiles?.currentValue) {
@@ -140,6 +143,19 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                 this.showModal = false
                 break
             case 'subir-url':
+                const urlName = this.urlName?.trim()
+                const regexx = /^(https?:\/\/)/
+                if (!urlName || !regexx.test(urlName)) {
+                    // Puedes mostrar un mensaje de error aquí si deseas
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error de validación',
+                        detail: 'Debe ingresar un enlace válido de URL para continuar.',
+                    })
+
+                    console.log('Error: URL no válida')
+                    return // 👈 Salimos del case y NO se cierra el modal
+                }
                 data = {
                     accion: 'url-' + this.nameOption,
                     item: {
@@ -151,7 +167,21 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                 this.urlName = null
                 this.showModal = false
                 break
+
             case 'subir-youtube':
+                const url = this.youtubeName?.trim()
+                const regex = /^(https?:\/\/)/
+                if (!url || !regex.test(url)) {
+                    // Puedes mostrar un mensaje de error aquí si deseas
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error de validación',
+                        detail: 'Debe ingresar un enlace válido de YouTube para continuar.',
+                    })
+
+                    console.log('Error: URL no válida')
+                    return // 👈 Salimos del case y NO se cierra el modal
+                }
                 data = {
                     accion: 'youtube-' + this.nameOption,
                     item: {
@@ -164,6 +194,11 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                 this.showModal = false
                 break
         }
+    }
+    validarYoutubeUrl(url: string): boolean {
+        const pattern =
+            /^(https:\/\/)(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}/
+        return pattern.test(url)
     }
 
     updateUrl(item) {

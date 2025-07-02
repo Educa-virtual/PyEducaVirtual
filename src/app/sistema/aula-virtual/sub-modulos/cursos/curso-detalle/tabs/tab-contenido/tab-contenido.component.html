@@ -52,28 +52,9 @@
                     semanaSeleccionada.cContenidoSemTitulo
                 }}"
             >
-                @if (iPerfilId === DOCENTE) {
-                    <div class="flex align-items-end justify-content-end mx-4">
-                        <button
-                            size="small"
-                            [rounded]="true"
-                            class="btn"
-                            pButton
-                            pRipple
-                            (click)="
-                                $event.stopPropagation();
-                                menuContenido.toggle($event)
-                            "
-                            ngClass="p-button-primary"
-                        >
-                            <i class="pi pi-plus"></i>
-                            &nbsp;Crear Actividad
-                        </button>
-                    </div>
-                }
             </app-toolbar-primeng>
         </ng-container>
-        <div class="grid" *ngIf="semanaSeleccionada">
+        <div class="grid mt-1" *ngIf="semanaSeleccionada">
             <div class="col md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Tipo:</p-inputGroupAddon>
@@ -89,17 +70,28 @@
                 </p-inputGroup>
             </div>
             <div class="col md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon
-                        ><i class="pi pi-search"></i
-                    ></p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscar nombre de la actividad"
-                    />
-                    <!--  [(ngModel)]="buscarText" -->
-                </p-inputGroup>
+                @if (iPerfilId === DOCENTE) {
+                    <div class="flex justify-content-end mx-4 mr-5">
+                        <div class="flex align-content-center">
+                            <button
+                                size="small"
+                                icon="pi pi-plus"
+                                label="Crear Actividad"
+                                [rounded]="true"
+                                class="p-button-success"
+                                pButton
+                                pRipple
+                                (click)="
+                                    $event.stopPropagation();
+                                    menuContenido.toggle($event)
+                                "
+                            >
+                                <!-- <i class="pi pi-plus"></i> -->
+                                <!-- &nbsp;Crear Actividad -->
+                            </button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 

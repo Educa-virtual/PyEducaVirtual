@@ -340,6 +340,13 @@ const administracion = [
                         icon: 'pi pi-calendar',
                         items: [
                             {
+                                label: 'Configuracion de bloque horario',
+                                icon: 'pi pi-calendar-clock',
+                                routerLink: [
+                                    '/horario/configurar-bloque-horario',
+                                ],
+                            },
+                            {
                                 label: 'Configuracion de horarios',
                                 icon: 'pi pi-calendar-clock',
                                 routerLink: ['/horario/configurar-horario'],

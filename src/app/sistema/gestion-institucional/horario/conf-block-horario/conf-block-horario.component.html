@@ -1,0 +1,402 @@
+<p-toast />
+
+<app-container-page
+    title="Configuración de bloque Horario"
+    [actions]="configuracionBloques.container.actions"
+    (accionBtnItem)="configuracionBloques.accionBtnItem($event)"
+>
+    <app-table-primeng
+        [columnas]="configuracionBloques.table.columns"
+        [actions]="configuracionBloques.table.actions"
+        [data]="configuracionBloques.table.data"
+        (accionBtnItem)="configuracionBloques.accionBtnItem($event)"
+    />
+</app-container-page>
+
+<p-dialog
+    [header]="dialogs.configuracionBloque.title"
+    [(visible)]="dialogs.configuracionBloque.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form [formGroup]="forms.configuracionBloque" class="grid mt-2">
+        <div class="col-12 grid">
+            <div class="col flex flex-column gap-2">
+                <label for="cDescripcion">Descripción</label>
+                <input
+                    pInputText
+                    id="cDescripcion"
+                    formControlName="cDescripcion"
+                />
+            </div>
+        </div>
+        <div class="col-12 grid">
+            <div class="col-6 flex flex-column gap-2">
+                <label for="iNumBloque">N° de bloque</label>
+                <input
+                    pInputText
+                    id="iNumBloque"
+                    formControlName="iNumBloque"
+                />
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="iBloqueInter">Horas académicas</label>
+                <input
+                    pInputText
+                    id="iBloqueInter"
+                    formControlName="iBloqueInter"
+                />
+            </div>
+        </div>
+        <div class="col-12 grid">
+            <div class="col-6 flex flex-column gap-2">
+                <label for="dInicio">Hora de inicio</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dInicio"
+                    icon="pi pi-clock"
+                    id="dInicio"
+                    iconDisplay="input"
+                    [timeOnly]="true"
+                    hourFormat="24"
+                    placeholder="07:00"
+                    [showIcon]="true"
+                    inputId="dInicio"
+                >
+                    <ng-template
+                        pTemplate="inputicon"
+                        let-clickCallBack="clickCallBack"
+                    >
+                        <i
+                            class="pi pi-clock"
+                            tabindex="0"
+                            role="button"
+                            (click)="clickCallBack($event)"
+                            (keyup)="clickCallBack($event)"
+                        ></i>
+                    </ng-template>
+                </p-calendar>
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="dFin">Hora de fin</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="dFin"
+                    iconDisplay="input"
+                    placeholder="15:30"
+                    id="dFin"
+                    [showTime]="true"
+                    [timeOnly]="true"
+                    hourFormat="24"
+                    [showIcon]="true"
+                    inputId="dFin"
+                >
+                    <ng-template
+                        pTemplate="inputicon"
+                        let-clickCallBack="clickCallBack"
+                    >
+                        <i
+                            class="pi pi-clock"
+                            tabindex="0"
+                            role="button"
+                            (click)="clickCallBack($event)"
+                            (keyup)="clickCallBack($event)"
+                        ></i>
+                    </ng-template>
+                </p-calendar>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-between gap-2">
+            <p-button
+                label="Cancelar"
+                [text]="true"
+                severity="secondary"
+                (onClick)="dialogs.configuracionBloque.visible = false"
+            />
+            <p-button
+                label="Guardar"
+                [outlined]="true"
+                severity="secondary"
+                (onClick)="configuracionBloques.saveData()"
+            />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    #distribucionBloques
+    [header]="dialogs.distribucionBloques.title"
+    [(visible)]="dialogs.distribucionBloques.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    (onShow)="distribucionBloques.maximize()"
+>
+    <div class="mt-2">
+        <form [formGroup]="forms.configuracionBloque" class="grid mt-2">
+            <div class="col-12 grid">
+                <div class="col flex flex-column gap-2">
+                    <label for="cDescripcion">Descripción</label>
+                    <input
+                        pInputText
+                        id="cDescripcion"
+                        formControlName="cDescripcion"
+                    />
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="iNumBloque">N° de bloque</label>
+                    <input
+                        pInputText
+                        id="iNumBloque"
+                        formControlName="iNumBloque"
+                    />
+                </div>
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="iBloqueInter">Horas académicas</label>
+                    <input
+                        pInputText
+                        id="iBloqueInter"
+                        formControlName="iBloqueInter"
+                    />
+                </div>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="dInicio">Hora de inicio</label>
+                    <p-calendar
+                        appendTo="body"
+                        [showOnFocus]="false"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        formControlName="dInicio"
+                        icon="pi pi-clock"
+                        id="dInicio"
+                        iconDisplay="input"
+                        [timeOnly]="true"
+                        hourFormat="24"
+                        placeholder="07:00"
+                        [showIcon]="true"
+                        inputId="dInicio"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-clock"
+                                tabindex="0"
+                                role="button"
+                                (click)="clickCallBack($event)"
+                                (keyup)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="dFin">Hora de fin</label>
+                    <p-calendar
+                        appendTo="body"
+                        [showOnFocus]="false"
+                        inputStyleClass="w-full"
+                        styleClass="w-full"
+                        formControlName="dFin"
+                        iconDisplay="input"
+                        placeholder="15:30"
+                        id="dFin"
+                        [showTime]="true"
+                        [timeOnly]="true"
+                        hourFormat="24"
+                        [showIcon]="true"
+                        inputId="dFin"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-clock"
+                                tabindex="0"
+                                role="button"
+                                (click)="clickCallBack($event)"
+                                (keyup)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+            </div>
+        </form>
+
+        <div class="grid mt-2">
+            <div class="col-12">
+                <p-button
+                    styleClass="w-full"
+                    icon="pi pi-plus"
+                    label="Agregar bloque"
+                    severity="primary"
+                    (onClick)="
+                        bloques.accionBtnItem({
+                            accion: 'agregar',
+                            item: undefined,
+                        })
+                    "
+                />
+            </div>
+        </div>
+
+        <app-table-primeng
+            (accionBtnItem)="bloques.accionBtnItem($event)"
+            [columnas]="bloques.table.columns"
+            [actions]="bloques.table.actions"
+            [data]="bloques.table.data"
+        />
+    </div>
+</p-dialog>
+
+<p-dialog
+    [header]="dialogs.bloque.title"
+    [(visible)]="dialogs.bloque.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    <form [formGroup]="forms.bloque" class="grid mt-2">
+        <div class="col-12 grid">
+            <div class="col-12 flex flex-column gap-2">
+                <label for="cDetalle">Descripción</label>
+                <input pInputText id="cDetalle" formControlName="cDetalle" />
+            </div>
+        </div>
+
+        <div class="col-12 grid">
+            <div class="col-6 flex flex-column gap-2">
+                <label for="tBloqueInicio">Hora de inicio</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="tBloqueInicio"
+                    icon="pi pi-clock"
+                    id="tBloqueInicio"
+                    iconDisplay="input"
+                    [timeOnly]="true"
+                    hourFormat="24"
+                    placeholder="07:00"
+                    [showIcon]="true"
+                    inputId="tBloqueInicio"
+                >
+                    <ng-template
+                        pTemplate="inputicon"
+                        let-clickCallBack="clickCallBack"
+                    >
+                        <i
+                            class="pi pi-clock"
+                            tabindex="0"
+                            role="button"
+                            (click)="clickCallBack($event)"
+                            (keyup)="clickCallBack($event)"
+                        ></i>
+                    </ng-template>
+                </p-calendar>
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="tBloqueFin">Hora de fin</label>
+                <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="w-full"
+                    styleClass="w-full"
+                    formControlName="tBloqueFin"
+                    iconDisplay="input"
+                    placeholder="15:30"
+                    id="tBloqueFin"
+                    [showTime]="true"
+                    [timeOnly]="true"
+                    hourFormat="24"
+                    [showIcon]="true"
+                    inputId="tBloqueFin"
+                >
+                    <ng-template
+                        pTemplate="inputicon"
+                        let-clickCallBack="clickCallBack"
+                    >
+                        <i
+                            class="pi pi-clock"
+                            tabindex="0"
+                            role="button"
+                            (click)="clickCallBack($event)"
+                            (keyup)="clickCallBack($event)"
+                        ></i>
+                    </ng-template>
+                </p-calendar>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-between gap-2">
+            <p-button
+                label="Cancelar"
+                [text]="true"
+                severity="secondary"
+                (onClick)="dialogs.bloque.visible = false"
+            />
+            <p-button
+                label="Guardar"
+                [outlined]="true"
+                severity="secondary"
+                (onClick)="bloques.saveData()"
+            />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog
+    #asignacionConfiguracionBloque
+    [header]="dialogs.asignacionConfiguracionBloque.title"
+    [(visible)]="dialogs.asignacionConfiguracionBloque.visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    (onShow)="asignacionConfiguracionBloque.maximize()"
+>
+    <div class="grid mt-2">
+        <div class="col-6">
+            <h1>Configuración de bloques</h1>
+
+            <app-table-primeng
+                [columnas]="bloques.table.columnsWithoutActions"
+                [data]="bloques.table.data"
+                [showCaption]="false"
+            />
+        </div>
+
+        <div class="col-6">
+            <h1>Grado y sección</h1>
+
+            <form>
+                <div class="col-6 flex flex-column gap-2">
+                    <label for="cFeriadoNombre">Tipo de fecha</label>
+                    <p-dropdown
+                        styleClass="w-full"
+                        appendTo="body"
+                        formControlName="iTipoFerId"
+                        optionLabel="name"
+                        optionValue="code"
+                        placeholder="Seccione un grado"
+                    />
+                </div>
+            </form>
+
+            <app-table-primeng [showCaption]="false" />
+        </div>
+    </div>
+</p-dialog>

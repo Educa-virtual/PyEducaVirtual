@@ -10,6 +10,7 @@ import { SwitchInputComponent } from '../shared/switch-input/switch-input.compon
 import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
 import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component'
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-ficha-recreacion',
@@ -40,6 +41,7 @@ export class FichaRecreacionComponent implements OnInit {
     estados_relacion: Array<any> = []
 
     private _messageService = inject(MessageService)
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
@@ -235,6 +237,15 @@ export class FichaRecreacionComponent implements OnInit {
                         severity: 'success',
                         summary: 'Actualización exitosa',
                         detail: 'Se actualizaron los datos',
+                    })
+                    this._confirmService.openConfirm({
+                        message:
+                            'Gracias por registrar sus datos. ¿Desea salir?',
+                        header: 'Completado',
+                        icon: 'pi pi-check',
+                        accept: () => {
+                            this.router.navigate(['/'])
+                        },
                     })
                 },
                 error: (error) => {

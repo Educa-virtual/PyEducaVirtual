@@ -25,7 +25,8 @@ import { CompartirFichaService } from '../../services/compartir-ficha.service'
 })
 export class FichaFamiliaComponent implements OnInit {
     @ViewChild('filtro') filtro: ElementRef
-    fichaFamiliaRegistro!: FichaFamiliaRegistroComponent
+    @ViewChild('fichaFamiliaRegistroRef')
+    fichaFamiliaRegistro: FichaFamiliaRegistroComponent
     iFichaDGId: string | null = null
     familiares: Array<object>
     familiares_filtrados: Array<object>
@@ -59,7 +60,7 @@ export class FichaFamiliaComponent implements OnInit {
 
     hideDialog() {
         this.iFamiliarId = null
-        // this.fichaFamiliaRegistro.salirResetearForm()
+        this.fichaFamiliaRegistro.salirResetearForm()
     }
 
     visibleDialog(event: any) {
@@ -155,6 +156,7 @@ export class FichaFamiliaComponent implements OnInit {
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
             this.iFamiliarId = item.iFamiliarId
+            this.dialogTitle = 'Editar familiar'
             this.visibleDialogFamiliar = true
         }
         if (accion === 'anular') {

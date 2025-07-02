@@ -201,8 +201,28 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             .valueChanges.subscribe((value) => {
                 if (value === true) {
                     this.ver_controles_direccion = false
+                    const cTipoViaId = this.formFamiliar.get('iTipoViaId')
+                    cTipoViaId.clearValidators()
+                    cTipoViaId.updateValueAndValidity()
+                    const cFamiliarDireccionNombreVia = this.formFamiliar.get(
+                        'cFamiliarDireccionNombreVia'
+                    )
+                    cFamiliarDireccionNombreVia.clearValidators()
+                    cFamiliarDireccionNombreVia.updateValueAndValidity()
                 } else {
                     this.ver_controles_direccion = true
+                    const cTipoViaId = this.formFamiliar.get('iTipoViaId')
+                    cTipoViaId.setValidators([Validators.required])
+                    cTipoViaId.updateValueAndValidity()
+                    const cFamiliarDireccionNombreVia = this.formFamiliar.get(
+                        'cFamiliarDireccionNombreVia'
+                    )
+                    cFamiliarDireccionNombreVia.setValidators([
+                        Validators.required,
+                        Validators.maxLength(150),
+                    ])
+                    cFamiliarDireccionNombreVia.updateValueAndValidity()
+
                     this.formFamiliar.get('iTipoViaId')?.setValue(null)
                     this.formFamiliar
                         .get('cFamiliarDireccionNombreVia')
@@ -252,7 +272,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     }
 
     verFamiliar() {
-        this.formFamiliar?.reset()
         this.formFamiliar?.get('iFichaDGId')?.setValue(this.iFichaDGId)
 
         if (!this.iFamiliarId) return null
@@ -334,6 +353,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     setFormFamiliar(item: FichaFamiliar) {
         if (!item) {
             this.formFamiliar.reset()
+            this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
             this.familiar_registrado = false
             return
         }
@@ -477,6 +497,14 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     }
 
     guardarFamiliar() {
+        if (this.formFamiliar.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
         this.datosFichaBienestar
             .guardarFamiliar(this.formFamiliar.value)
             .subscribe({
@@ -501,6 +529,14 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     }
 
     actualizarFamiliar() {
+        if (this.formFamiliar.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
         this.datosFichaBienestar
             .actualizarFamiliar(this.formFamiliar.value)
             .subscribe({
@@ -534,5 +570,6 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
         this.formFamiliar.get('iFichaDGId')?.setValue(null)
         this.iFamiliarId = null
         this.familiar_registrado = false
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
     }
 }

@@ -63,7 +63,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
                 route: `/bienestar/ficha/${this.iFichaDGId}/familia`,
             },
             {
-                label: 'Economico',
+                label: 'Económico',
                 icon: 'pi pi-fw pi-wallet',
                 route: `/bienestar/ficha/${this.iFichaDGId}/economico`,
             },

@@ -155,6 +155,11 @@ export class PreguntasFormComponent implements OnChanges {
     }
 
     validarAlternativas(tipo: number): { esValido: boolean; mensaje: string } {
+        const iTipoPregId = this.formEvaluacionPreguntas.value.iTipoPregId
+        if (iTipoPregId === 3) {
+            // Si es opción libre, no se valida alternativas
+            return { esValido: true, mensaje: '' }
+        }
         if (!this.alternativas || this.alternativas.length < 3) {
             return {
                 esValido: false,

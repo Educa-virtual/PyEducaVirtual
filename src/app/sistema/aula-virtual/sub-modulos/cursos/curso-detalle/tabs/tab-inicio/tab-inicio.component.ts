@@ -121,7 +121,7 @@ export class TabInicioComponent implements OnInit {
         } else {
             this._confirmService.openConfiSave({
                 message: 'Recuerde que podran verlo todos los estudiantes',
-                header: `¿Esta seguro de guardar?`,
+                header: `¿Desea confirmar la publicación del comunicado?`,
                 accept: () => {
                     this._aulaService.guardarAnuncio(data).subscribe({
                         next: (resp: any) => {

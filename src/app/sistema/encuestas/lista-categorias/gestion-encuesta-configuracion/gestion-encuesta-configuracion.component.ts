@@ -40,12 +40,11 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
     // Propiedades del stepper
     activeStep: number = 0
     totalSteps = 2
+    // Encuesta configuracion
+    encuestaConfiguracionFormGroup: FormGroup
     @Input() visible: boolean = false
     @Output() visibleChange = new EventEmitter<boolean>()
     @Output() mostrarDialogoConfiguracion = new EventEmitter<any>()
-
-    // FormGroup para la encuesta
-    encuestaFormGroup: FormGroup
 
     // Datos para dropdowns
     tiposEncuesta = [
@@ -74,7 +73,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
     }
 
     initializeForm() {
-        this.encuestaFormGroup = this._formBuilder.group({
+        this.encuestaConfiguracionFormGroup = this._formBuilder.group({
             // Campos del paso 1
             nombreEncuesta: [null, [Validators.required]],
             descripcionEncuesta: [null, [Validators.required]],
@@ -101,7 +100,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
             const camposInvalidos: string[] = []
 
             camposStep1.forEach((campo) => {
-                const control = this.encuestaFormGroup.get(campo)
+                const control = this.encuestaConfiguracionFormGroup.get(campo)
                 if (control?.invalid) {
                     camposInvalidos.push(campo)
                 }
@@ -113,7 +112,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
                     summary: 'Faltan datos en campos requeridos',
                     detail: 'Complete todos los campos marcados como obligatorios',
                 })
-                this.encuestaFormGroup.markAllAsTouched()
+                this.encuestaConfiguracionFormGroup.markAllAsTouched()
                 return
             }
 
@@ -137,7 +136,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
         const camposInvalidos: string[] = []
 
         camposStep2.forEach((campo) => {
-            const control = this.encuestaFormGroup.get(campo)
+            const control = this.encuestaConfiguracionFormGroup.get(campo)
             if (control?.invalid) {
                 camposInvalidos.push(campo)
             }
@@ -149,7 +148,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
                 summary: 'Complete la configuración',
                 detail: 'Complete todos los campos requeridos del paso 2',
             })
-            this.encuestaFormGroup.markAllAsTouched()
+            this.encuestaConfiguracionFormGroup.markAllAsTouched()
             return
         }
 
@@ -176,7 +175,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
 
     // Guardar la encuesta
     private guardarEncuesta() {
-        const datosEncuesta = this.encuestaFormGroup.value
+        const datosEncuesta = this.encuestaConfiguracionFormGroup.value
 
         console.log('Datos de la encuesta:', datosEncuesta)
         this._messageService.add({
@@ -192,7 +191,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
     // Resetear formulario (opcional)
     resetFormulario() {
         this.activeStep = 0
-        this.encuestaFormGroup.reset()
+        this.encuestaConfiguracionFormGroup.reset()
     }
     onHide() {
         this.visible = false

@@ -5,6 +5,7 @@ import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+import { AccesoEncuestaComponent } from './acceso-encuesta/acceso-encuesta.component'
 @Component({
     selector: 'app-lista-categorias',
     standalone: true,
@@ -12,6 +13,7 @@ import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-config
         PrimengModule,
         TablePrimengComponent,
         GestionEncuestaConfiguracionComponent,
+        AccesoEncuestaComponent,
     ],
     templateUrl: './lista-categorias.component.html',
     styleUrl: './lista-categorias.component.scss',
@@ -20,6 +22,7 @@ export class ListaCategoriasComponent implements OnInit {
     titleListaCategoria: string = 'Censo DRE/UGEL'
     selectedItem: any
     mostrarDialogoConfiguracion: boolean = false
+    mostrarDialogoAccesoEncuesta: boolean = false
     dataCategorias = [
         {
             item: 1,
@@ -115,6 +118,8 @@ export class ListaCategoriasComponent implements OnInit {
             case 'ver':
                 this.selectedItem = item
                 this.verCategoria()
+                this.abrirDialogoAccesoEncuesta()
+
                 break
             case 'editar':
                 this.selectedItem = item
@@ -166,5 +171,12 @@ export class ListaCategoriasComponent implements OnInit {
 
     cerrarDialogoConfiguracion() {
         this.mostrarDialogoConfiguracion = false
+    }
+
+    abrirDialogoAccesoEncuesta() {
+        this.mostrarDialogoAccesoEncuesta = true
+    }
+    cerrarDialogoAccesoEncuesta() {
+        this.mostrarDialogoAccesoEncuesta = false
     }
 }

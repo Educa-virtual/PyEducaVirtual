@@ -11,7 +11,10 @@ import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
-
+import { CategoriasEncuestaComponent } from './sistema/encuestas/categorias/categorias-encuestas.component'
+import { ListaCategoriasComponent } from './sistema/encuestas/lista-categorias/lista-categorias.component'
+import { AccesoEncuestaComponent } from './sistema/encuestas/lista-categorias/acceso-encuesta/acceso-encuesta.component'
+import { InformacionGeneralComponent } from './sistema/encuestas/lista-categorias/gestion-encuesta-configuracion/informacion-general/informacion-general.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -85,18 +88,28 @@ export const routes: Routes = [
                 path: 'asistencia-auxiliar',
                 component: AuxiliarComponent,
             },
-            // encuestas por categoria
-            /*{
-                path: 'encuesta-por-categoria',
-                component: EncuestasPorCategoriaComponent,
+            // encuestas
+            {
+                path: 'categorias-encuesta',
+                component: CategoriasEncuestaComponent,
             },
+            // encuestas por categoria
+            //{
+            //  path: 'encuesta-por-categoria',
+            //component: EncuestasPorCategoriaComponent,
+            //},
             // lista de encuestas
             {
                 path: 'lista-categoria',
                 component: ListaCategoriasComponent,
             },
-            // llenado de preguntas de encuesta
+            // informacion general
             {
+                path: 'informacion-general',
+                component: InformacionGeneralComponent,
+            },
+            // llenado de preguntas de encuesta
+            /*{
                 path: 'llenado-preguntas-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
             },
@@ -105,11 +118,11 @@ export const routes: Routes = [
                 path: 'gestion-encuesta-configuacion',
                 component: GestionEncuestaConfiguracionComponent,
             },
-            // informacion general
+            ,*/
             {
-                path: 'informacion-general',
-                component: InformacionGeneralComponent,
-            },*/
+                path: 'acceso-encuesta',
+                component: AccesoEncuestaComponent,
+            },
         ],
     },
     {

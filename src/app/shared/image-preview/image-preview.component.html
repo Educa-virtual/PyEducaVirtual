@@ -9,13 +9,11 @@
     <ng-template pTemplate="header" class="flex flex-column flex-1">
         <div class="flex flex-wrap gap-2 justify-content-end">
             <ng-content select="[icons]"></ng-content>
-
             <button
                 size="small"
                 [rounded]="true"
                 [text]="true"
                 pButton
-                pRipple
                 style="color: white"
                 (click)="aumentarZoom()"
             >
@@ -26,17 +24,16 @@
                 [rounded]="true"
                 [text]="true"
                 pButton
-                pRipple
                 style="color: white"
                 (click)="disminuirZoom()"
             >
                 <i class="pi pi-minus"></i>
             </button>
+            <h4 style="color: white">Vista previa de la imagen:</h4>
         </div>
     </ng-template>
     <ng-content>
         <div *ngIf="imageUrl" class="text-center">
-            <h4>Vista previa de la imagen:</h4>
             <!-- <div class="zoom-controls">
         <label for="zoom">Zoom:</label>
         <input type="range" id="zoom" min="50" max="100" [(ngModel)]="zoomLevel" step="10" />

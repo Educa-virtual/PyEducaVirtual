@@ -1,208 +1,257 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import { MessageService } from 'primeng/api'
+import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
+import { MultiselectInputComponent } from '../shared/multiselect-input/multiselect-input.component'
+import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
+import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
+import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-recreacion',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [
+        PrimengModule,
+        MultiselectInputComponent,
+        SwitchInputComponent,
+        DropdownInputComponent,
+        DropdownSimpleComponent,
+    ],
     templateUrl: './ficha-recreacion.component.html',
     styleUrl: './ficha-recreacion.component.scss',
 })
 export class FichaRecreacionComponent implements OnInit {
+    iFichaDGId: any = null
     formRecreacion: FormGroup | undefined
     visibleInput: Array<boolean>
     ficha_registrada: boolean = false
 
+    deportes: Array<any> = []
+    religiones: Array<any> = []
+    transportes: Array<any> = []
+    pasatiempos: Array<any> = []
+    actividades: Array<any> = []
+    tipos_familiares: Array<any> = []
+    relacion_familia: Array<any> = []
+    estados_relacion: Array<any> = []
+
+    private _messageService = inject(MessageService)
+
     constructor(
         private fb: FormBuilder,
-        private compartirFichaService: CompartirFichaService,
-        private router: Router
+        private compartirFicha: CompartirFichaService,
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
-        if (this.compartirFichaService.getiFichaDGId() === null) {
-            this.router.navigate(['/bienestar/ficha/general'])
+        this.compartirFicha.setActiveIndex(7)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
         }
-        this.compartirFichaService.setActiveIndex(7)
     }
 
     ngOnInit() {
-        this.visibleInput = Array(8).fill(false)
-
         this.formRecreacion = this.fb.group({
-            iFichaDGId: [null, Validators.required],
+            iFichaDGId: [this.iFichaDGId, Validators.required],
             iDeporteId: [null],
-            cDeporteObs: [''],
+            cDeporteOtro: ['', Validators.maxLength(80)],
             bFichaDGPerteneceLigaDeportiva: [false],
             cFichaDGPerteneceLigaDeportiva: [''],
             iReligionId: [null],
+            cReligionOtro: ['', Validators.maxLength(80)],
             bFichaDGPerteneceCentroArtistico: [false],
             cFichaDGPerteneceCentroArtistico: [''],
+            iActArtisticaId: [null],
+            cActArtisticaOtro: ['', Validators.maxLength(80)],
             iPasaTiempoId: [null],
-            cPasaTiempoObs: [''],
+            cPasaTiempoOtro: ['', Validators.maxLength(80)],
             bFichaDGAsistioConsultaPsicologica: [false],
             cFichaDGAsistioConsultaPsicologica: [''],
             iTipoFamiliarId: [null],
-            cTipoFamiliarObs: [''],
-            iRelacionPadresId: [null],
+            cTipoFamiliarOtro: ['', Validators.maxLength(80)],
+            iEstadoRelFamiliar: [null],
             iTransporteId: [null],
-            cTransporteObs: [''],
-            nTransFichaGastoSoles: [null],
-            nTransFichaGastoTotal: [null],
+            cTransporteOtro: ['', Validators.maxLength(80)],
+            jsonDeportes: [null],
+            jsonPasatiempos: [null],
+            jsonProblemas: [null],
+            jsonTransportes: [null],
         })
+
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.deportes = this.datosFichaBienestar.getDeportes(data?.deportes)
+            this.religiones = this.datosFichaBienestar.getReligiones(
+                data?.religiones
+            )
+            this.transportes = this.datosFichaBienestar.getTransportes(
+                data?.transportes
+            )
+            this.pasatiempos = this.datosFichaBienestar.getPasatiempos(
+                data?.pasatiempos
+            )
+            this.actividades = this.datosFichaBienestar.getActividades(
+                data?.actividades
+            )
+            this.tipos_familiares = this.datosFichaBienestar.getTiposFamiliares(
+                data?.tipos_familiares
+            )
+            this.estados_relacion =
+                this.datosFichaBienestar.getEstadosRelacion()
+        })
+
+        if (this.iFichaDGId) {
+            this.verFichaRecreacion()
+        }
+
+        this.funcionesBienestar.formMarkAsDirty(this.formRecreacion)
     }
 
-    deportes = [
-        { value: 0, label: 'OTRO' },
-        { value: 1, label: 'FUTBOL' },
-        { value: 2, label: 'VOLEY' },
-        { value: 3, label: 'BASQUET' },
-        { value: 4, label: 'NATACION' },
-    ]
-
-    club = [{ respuesta: 'Si', seleccionado: false }]
-
-    religion = [
-        { value: 0, label: 'OTRO' },
-        { value: 1, label: 'Cristianismo' },
-        { value: 2, label: 'Islam' },
-        { value: 3, label: 'Hinduismo' },
-        { value: 4, label: 'Budismo' },
-        { value: 5, label: 'Ateísmo' },
-    ]
-    // aqui se guarda la opcion seleccionada
-    religionSeleccionada: any = null
-
-    act_artistica = [
-        { value: 0, label: 'Otra actividad' },
-        { value: 1, label: 'Teatro' },
-        { value: 2, label: 'Danza' },
-        { value: 3, label: 'Música' },
-        { value: 4, label: 'Oratoria' },
-    ]
-
-    Pasatiempos = [
-        { value: 0, label: 'Otro pasatiempo' },
-        { value: 1, label: 'Cine' },
-        { value: 2, label: 'Lectura' },
-        { value: 3, label: 'Escuchar Música' },
-        { value: 4, label: 'Video juegos' },
-        { value: 5, label: 'Juegos online' },
-        { value: 6, label: 'Reuniones con amigos' },
-        { value: 7, label: 'Pasear' },
-    ]
-
-    Problememocional = [
-        { value: 0, label: 'Otro' },
-        { value: 1, label: 'Padre' },
-        { value: 2, label: 'Madre' },
-        { value: 3, label: 'Hermanos' },
-        { value: 4, label: 'Amigos' },
-        { value: 5, label: 'Tutor' },
-        { value: 6, label: 'Psicólogo' },
-    ]
-
-    Relac_familiar = [
-        { value: 1, label: 'Bueno' },
-        { value: 2, label: 'Regular' },
-        { value: 3, label: 'Malo' },
-    ]
-    // aqui se guarda la opcion seleccionada
-    relfamiliarSeleccionada: any = null
-
-    dpersonal = [
-        { value: 0, label: 'Otro Emocional' },
-        { value: 1, label: 'Inteligencia Emocional' },
-        { value: 2, label: 'Habilidades Socioemocionales' },
-        { value: 3, label: 'Control de las emociones' },
-        { value: 4, label: 'Resiliencia' },
-        { value: 5, label: 'Autoestima' },
-    ]
-
-    mTransporteUrbano = [
-        { value: 0, label: 'Otro' },
-        { value: 1, label: 'Autobús' },
-        { value: 2, label: 'Taxi' },
-        { value: 3, label: 'Mototaxi' },
-        { value: 4, label: 'Bicicleta' },
-        { value: 5, label: 'Metro' },
-    ]
-
-    // aqui se guarda la opcion seleccionada
-    mTransporteUrbSeleccionado: any = null
-
-    otrosDeportesSeleccionado = false
-    otrosDeportes = ''
-
-    otrosClubesSeleccionado = false
-    otrosClubes = ''
-
-    otrasCulturasSeleccionado = false
-    otrasCulturas = ''
-
-    otrosActividadSeleccionado = false
-    otrasActividades = ''
-
-    otrosPasatiemposSelecccionado = false
-    otrosPasatiempos = ''
-
-    otrasConsultsPsicopedagogicas = false
-    otrasConsultas = ''
-
-    otroProblemasSeleccionados = false
-    otrosProblemas = ''
-
-    otrosdpersonalSeleccionados = false
-    otrosdpersonal = ''
-
-    handleSwitchChange(event: any, index: number) {
-        if (event?.checked === undefined) {
-            this.visibleInput[index] = false
-            return null
-        }
-        if (event.checked === true) {
-            this.visibleInput[index] = true
-        } else {
-            this.visibleInput[index] = false
-        }
+    verFichaRecreacion() {
+        this.datosFichaBienestar
+            .verFichaRecreacion({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                if (data.data.length) {
+                    this.setFormRecreacion(data.data[0])
+                }
+            })
     }
 
-    handleDropdownChange(event: any, index: number) {
-        if (event?.value === undefined) {
-            this.visibleInput[index] = false
-            return null
-        }
-        if (Array.isArray(event.value)) {
-            if (event.value.includes(0)) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        } else {
-            if (event.value == 0) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        }
-    }
+    setFormRecreacion(data: any) {
+        this.ficha_registrada = true
+        this.formRecreacion.patchValue(data)
 
-    guardar() {
-        console.log('Guardando formulario...')
-        // Aquí va la lógica de guardado, por ejemplo, una llamada a servicio
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iDeporteId',
+            data.deportes,
+            'json'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iPasaTiempoId',
+            data.pasatiempos,
+            'json'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iActArtisticaId',
+            data.actividades,
+            'json',
+            'iPasaTiempoId'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iTipoFamiliarId',
+            data.problemas_emocionales,
+            'json'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iTransporteId',
+            data.transportes,
+            'json'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iEstadoRelFamiliar',
+            data.iEstadoRelFamiliar,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'iReligionId',
+            data.iReligionId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'bFichaDGPerteneceLigaDeportiva',
+            data.bFichaDGPerteneceLigaDeportiva,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'bFichaDGPerteneceCentroArtistico',
+            data.bFichaDGPerteneceCentroArtistico,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formRecreacion,
+            'bFichaDGAsistioConsultaPsicologica',
+            data.bFichaDGAsistioConsultaPsicologica,
+            'boolean'
+        )
+
+        this.funcionesBienestar.formMarkAsDirty(this.formRecreacion)
     }
 
     actualizar() {
-        console.log('Actualizando formulario...')
-        // Aquí va la lógica de actualización, por ejemplo, una llamada a servicio
+        if (this.formRecreacion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formRecreacion,
+            'jsonDeportes',
+            'iDeporteId'
+        )
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formRecreacion,
+            'jsonPasatiempos',
+            ['iPasaTiempoId', 'iActArtisticaId'],
+            'iPasaTiempoId'
+        )
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formRecreacion,
+            'jsonProblemas',
+            'iTipoFamiliarId'
+        )
+        this.funcionesBienestar.formControlJsonStringify(
+            this.formRecreacion,
+            'jsonTransportes',
+            'iTransporteId'
+        )
+
+        this.datosFichaBienestar
+            .actualizarFichaRecreacion(this.formRecreacion.value)
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     salir() {
         this.router.navigate(['/'])
-    }
-
-    imprimirFormulario() {
-        window.print()
     }
 }

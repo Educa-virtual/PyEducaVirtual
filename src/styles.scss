@@ -31,3 +31,11 @@ nav.p-breadcrumb {
 nav.p-breadcrumb ol li:last-child a span {
     color: #3b82f6;
 }
+
+/**
+ * Corregir ubicación de flecha en overlaypanel desglegado
+ */
+.p-overlaypanel:after,
+.p-overlaypanel:before {
+    margin-left: 0 !important;
+}

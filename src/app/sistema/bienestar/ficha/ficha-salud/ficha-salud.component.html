@@ -1,116 +1,91 @@
 <br />
 
 <form [formGroup]="formSalud">
-    <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iFichaDGId" />
-
+    <div class="grid p-fluid p-2">
         <div class="col-12">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>
-                    Seguros de salud con los que cuenta el estudiante
-                </p-inputGroupAddon>
-                <p-multiSelect
-                    display="chip"
-                    [options]="seguros_salud"
-                    formControlName="iSeguroSaludId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    multiple="true"
-                    [maxSelectedLabels]="undefined"
-                    (onChange)="handleDropdownChange($event, 0)"
-                    (onClear)="handleDropdownChange($event, 0)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleSeguroInput[0] === true) {
-                    <input
-                        pInputText
-                        formControlName="cSeguroSaludObs"
-                        placeholder="Especifique otro"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+            <app-multiselect-simple
+                [multiselectItems]="seguros_salud"
+                [multiselectControl]="$any(formSalud).controls['iSegSaludId']"
+                [addonLabel]="
+                    'Seguros de salud con los que cuenta el estudiante *'
+                "
+            />
         </div>
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Dolencias o enfermedades crónicas">
-                <div class="grid">
+            <p-fieldset
+                legend="Dolencias o enfermedades crónicas del estudiante"
+            >
+                <div
+                    class="grid"
+                    *ngIf="
+                        controles_dolencias && controles_dolencias.length > 0
+                    "
+                >
                     <div
                         class="col-12"
                         *ngFor="let dolencia of dolencias; let i = index"
                     >
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="handleSwitchChange($event, i)"
-                                    name="bDolencia[{{ dolencia['value'] }}]"
-                                />
-                                <span>{{ dolencia['label'] }}</span>
-                            </p-inputGroupAddon>
-                            @if (visibleInput[i] === true) {
-                                <input
-                                    type="text"
-                                    name="cDolenciaObs[{{ dolencia['value'] }}]"
-                                    pInputText
-                                    placeholder="Indique si está diagnosticado o no, severidad y tiempo de dolencia"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(controles_dolencias.at(i)).controls[
+                                    'bDolFicha'
+                                ]
+                            "
+                            [addonLabel]="dolencia['label']"
+                            inputType="textarea"
+                            [inputInitRows]="3"
+                            [inputMinRows]="3"
+                            [inputMaxRows]="6"
+                            [inputControl]="
+                                $any(controles_dolencias.at(i)).controls[
+                                    'cDolFichaObs'
+                                ]
+                            "
+                            inputPlaceholder="Indique si está diagnosticado o no, la severidad y el tiempo que tiene esta dolencia o enfermedad"
+                            [infoAdicional]="bDolFicha"
+                        />
+                        <ng-template #bDolFicha>
+                            Indique si está diagnosticado o no, la severidad, si
+                            necesita apoyo o acomodaciones y el tiempo que tiene
+                            esta dolencia o enfermedad
+                        </ng-template>
                     </div>
                 </div>
             </p-fieldset>
         </div>
 
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Indique si tiene alergias">
+            <p-fieldset legend="Indique si el estudiante tiene alergias">
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="
-                                        handleSwitchAlergiaChange($event, 0)
-                                    "
-                                    formControlName="bFichaDGAlergiaMedicamentos"
-                                />
-                                <span>Alergia a medicamentos</span>
-                            </p-inputGroupAddon>
-                            @if (visibleAlergiaInput[0] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cFichaDGAlergiaMedicamentos"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(formSalud).controls[
+                                    'bFichaDGAlergiaMedicamentos'
+                                ]
+                            "
+                            addonLabel="¿Tiene alergia a algún medicamento?"
+                            inputType="text"
+                            [inputControl]="
+                                $any(formSalud).controls[
+                                    'cFichaDGAlergiaMedicamentos'
+                                ]
+                            "
+                            inputPlaceholder="Especifique"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bFichaDGAlergiaOtros"
-                                    (onChange)="
-                                        handleSwitchAlergiaChange($event, 1)
-                                    "
-                                />
-                                <span>Otras alergias</span>
-                            </p-inputGroupAddon>
-                            @if (visibleAlergiaInput[1] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cFichaDGAlergiaOtros"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(formSalud).controls['bFichaDGAlergiaOtros']
+                            "
+                            addonLabel="¿Tiene otro tipo de alergias?"
+                            inputType="text"
+                            [inputControl]="
+                                $any(formSalud).controls['cFichaDGAlergiaOtros']
+                            "
+                            inputPlaceholder="Especifique"
+                        />
                     </div>
                 </div>
             </p-fieldset>
@@ -120,7 +95,7 @@
 
 <br />
 
-<app-gestion-pandemia-dosis></app-gestion-pandemia-dosis>
+<app-gestion-pandemia-dosis [iFichaDGId]="iFichaDGId" />
 
 <br />
 
@@ -130,23 +105,13 @@
         (onClick)="salir()"
         severity="secondary"
     />
-    @if (!ficha_registrada) {
-        <p-button
-            type="button"
-            label="Guardar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="guardar()"
-        />
-    } @else {
-        <p-button
-            type="button"
-            label="Actualizar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="actualizar()"
-        />
-    }
+    <p-button
+        type="button"
+        label="Actualizar y continuar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="actualizar()"
+    />
 </div>
 
 <p-toast></p-toast>

@@ -73,3 +73,9 @@ tr {
         color: white;
     }
 }
+
+@media (min-width: 768px) {
+    .md\:table-cell {
+        display: table-cell !important;
+    }
+}

@@ -40,113 +40,140 @@
                     </div>
                 </div>
 
-                <!-- BARRA HORIZONTAL -->
-                <div>
-                    <p-chart
-                        type="doughnut"
-                        [data]="data"
-                        [options]="options"
-                    />
-                </div>
-                <!-- LEYENDA -->
-                <div style="display: flex; flex-direction: column; gap: 8px">
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                        "
-                    >
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                    "
+                >
+                    <div>
+                        <!-- LEYENDA -->
                         <div
-                            style="display: flex; align-items: center; gap: 8px"
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 8px;
+                            "
                         >
-                            <span
+                            <div
                                 style="
-                                    width: 12px;
-                                    height: 12px;
-                                    background: #b794f6;
-                                    border-radius: 50%;
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
                                 "
-                            ></span>
-                            <span>Concreto</span>
-                        </div>
-                        <div style="display: flex; gap: 20px">
-                            <span style="font-weight: bold">2</span>
-                            <span
-                                style="
-                                    color: #666;
-                                    width: 40px;
-                                    text-align: right;
-                                "
-                                >5%</span
                             >
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width: 12px;
+                                            height: 12px;
+                                            background: #b794f6;
+                                            border-radius: 50%;
+                                        "
+                                    ></span>
+                                    <span>Concreto</span>
+                                </div>
+                                <div style="display: flex; gap: 20px">
+                                    <span style="font-weight: bold">2</span>
+                                    <span
+                                        style="
+                                            color: #666;
+                                            width: 40px;
+                                            text-align: right;
+                                        "
+                                        >5%</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width: 12px;
+                                            height: 12px;
+                                            background: #4299e1;
+                                            border-radius: 50%;
+                                        "
+                                    ></span>
+                                    <span>Madera</span>
+                                </div>
+                                <div style="display: flex; gap: 20px">
+                                    <span style="font-weight: bold">17</span>
+                                    <span
+                                        style="
+                                            color: #666;
+                                            width: 40px;
+                                            text-align: right;
+                                        "
+                                        >68%</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width: 12px;
+                                            height: 12px;
+                                            background: #f6ad55;
+                                            border-radius: 50%;
+                                        "
+                                    ></span>
+                                    <span>Adobe</span>
+                                </div>
+                                <div style="display: flex; gap: 20px">
+                                    <span style="font-weight: bold">4</span>
+                                    <span
+                                        style="
+                                            color: #666;
+                                            width: 40px;
+                                            text-align: right;
+                                        "
+                                        >8%</span
+                                    >
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                        "
-                    >
-                        <div
-                            style="display: flex; align-items: center; gap: 8px"
-                        >
-                            <span
-                                style="
-                                    width: 12px;
-                                    height: 12px;
-                                    background: #4299e1;
-                                    border-radius: 50%;
-                                "
-                            ></span>
-                            <span>Madera</span>
-                        </div>
-                        <div style="display: flex; gap: 20px">
-                            <span style="font-weight: bold">17</span>
-                            <span
-                                style="
-                                    color: #666;
-                                    width: 40px;
-                                    text-align: right;
-                                "
-                                >68%</span
-                            >
-                        </div>
-                    </div>
-
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                        "
-                    >
-                        <div
-                            style="display: flex; align-items: center; gap: 8px"
-                        >
-                            <span
-                                style="
-                                    width: 12px;
-                                    height: 12px;
-                                    background: #f6ad55;
-                                    border-radius: 50%;
-                                "
-                            ></span>
-                            <span>Adobe</span>
-                        </div>
-                        <div style="display: flex; gap: 20px">
-                            <span style="font-weight: bold">4</span>
-                            <span
-                                style="
-                                    color: #666;
-                                    width: 40px;
-                                    text-align: right;
-                                "
-                                >8%</span
-                            >
-                        </div>
+                    <div>
+                        <p-chart
+                            type="doughnut"
+                            [data]="data"
+                            [options]="options"
+                        />
                     </div>
                 </div>
             </div>
@@ -195,7 +222,6 @@
 
                 <!-- CONTENEDOR DEL GRÁFICO Y LEYENDA -->
                 <div style="display: flex; gap: 20px; margin-bottom: 20px">
-                    <!-- GRÁFICO -->
                     <div style="flex: 2; height: 250px">
                         <p-chart
                             type="bar"

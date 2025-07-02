@@ -12,12 +12,30 @@
                         margin: -1rem -1rem 0 -1rem;
                     "
                 >
-                    <div>
-                        <span> Nivel de ingreso familiar mensual </span>
+                    <div style="font-weight: bold">
+                        Nivel de ingreso familiar mensual
                     </div>
                 </div>
             </ng-template>
-            <div>
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        30
+                    </div>
+                </div>
                 <div>
                     <p-chart
                         type="bar"
@@ -41,17 +59,36 @@
                         margin: -1rem -1rem 0 -1rem;
                     "
                 >
-                    <div>
-                        <span> Dependientes Económicas </span>
-                    </div>
+                    <div style="font-weight: bold">Dependientes Económicas</div>
                 </div>
             </ng-template>
-            <div>
-                <p-chart
-                    type="bar"
-                    [data]="basicData"
-                    [options]="basicOptions"
-                />
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        30
+                    </div>
+                </div>
+
+                <div>
+                    <p-chart
+                        type="bar"
+                        [data]="basicData"
+                        [options]="basicOptions"
+                    />
+                </div>
             </div>
         </p-panel>
     </div>

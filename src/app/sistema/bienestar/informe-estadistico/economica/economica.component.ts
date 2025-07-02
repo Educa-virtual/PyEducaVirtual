@@ -82,13 +82,13 @@ export class EconomicaComponent implements OnInit {
 
         this.dataIngresoFamiliar = {
             labels: [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
+                '800',
+                '600 - 1500',
+                '1500 - 2500',
+                '2500 - 4000',
+                '4000 - 6000',
+                '6000 - 10,000',
+                '10,000',
             ],
             datasets: [
                 {

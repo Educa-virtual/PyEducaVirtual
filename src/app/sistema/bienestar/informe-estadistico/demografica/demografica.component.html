@@ -12,25 +12,154 @@
                         margin: -1rem -1rem 0 -1rem;
                     "
                 >
-                    <div>
-                        <span> Sexo </span>
-                    </div>
+                    <div style="font-weight: bold">Sexo</div>
                 </div>
             </ng-template>
-            <div>
-                <p-chart
-                    type="doughnut"
-                    [data]="sexoData"
-                    [options]="sexoOptions"
-                />
+            <!-- TOTAL HOGARES -->
+            <div style="margin-bottom: 20px">
+                <h3 style="margin: 0 0 5px 0; color: #333; font-size: 1.1em">
+                    Total de Hogares Registrados
+                </h3>
+                <div
+                    style="
+                        font-size: 1.8em;
+                        font-weight: bold;
+                        color: #333;
+                        margin-bottom: 15px;
+                    "
+                >
+                    23
+                </div>
             </div>
-            <!--<div
+            <div
                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
             >
-                <div>test</div>
-                
+                <!-- COLUMNA 1 -->
+                <div>
+                    <!-- LEYENDA -->
+                    <div
+                        style="display: flex; flex-direction: column; gap: 8px"
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #b794f6;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span>Concreto</span>
+                            </div>
+                            <div style="display: flex; gap: 20px">
+                                <span style="font-weight: bold">2</span>
+                                <span
+                                    style="
+                                        color: #666;
+                                        width: 40px;
+                                        text-align: right;
+                                    "
+                                    >5%</span
+                                >
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #4299e1;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span>Madera</span>
+                            </div>
+                            <div style="display: flex; gap: 20px">
+                                <span style="font-weight: bold">17</span>
+                                <span
+                                    style="
+                                        color: #666;
+                                        width: 40px;
+                                        text-align: right;
+                                    "
+                                    >68%</span
+                                >
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <span
+                                    style="
+                                        width: 12px;
+                                        height: 12px;
+                                        background: #f6ad55;
+                                        border-radius: 50%;
+                                    "
+                                ></span>
+                                <span>Adobe</span>
+                            </div>
+                            <div style="display: flex; gap: 20px">
+                                <span style="font-weight: bold">4</span>
+                                <span
+                                    style="
+                                        color: #666;
+                                        width: 40px;
+                                        text-align: right;
+                                    "
+                                    >8%</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p-chart
+                        type="doughnut"
+                        [data]="sexoData"
+                        [options]="sexoOptions"
+                    />
+                </div>
             </div>
-        -->
         </p-panel>
     </div>
 
@@ -46,23 +175,166 @@
                         margin: -1rem -1rem 0 -1rem;
                     "
                 >
-                    <div>
-                        <span> Edad </span>
-                    </div>
+                    <div style="font-weight: bold">Edad</div>
                 </div>
             </ng-template>
-            <div>
-                <p-chart
-                    type="doughnut"
-                    [data]="edadData"
-                    [options]="edadOptions"
-                />
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares Registrados
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        23
+                    </div>
+                </div>
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                    "
+                >
+                    <!-- COLUMNA 1 -->
+                    <div>
+                        <!-- LEYENDA -->
+                        <div
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 8px;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width: 12px;
+                                            height: 12px;
+                                            background: #b794f6;
+                                            border-radius: 50%;
+                                        "
+                                    ></span>
+                                    <span>Concreto</span>
+                                </div>
+                                <div style="display: flex; gap: 20px">
+                                    <span style="font-weight: bold">2</span>
+                                    <span
+                                        style="
+                                            color: #666;
+                                            width: 40px;
+                                            text-align: right;
+                                        "
+                                        >5%</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width: 12px;
+                                            height: 12px;
+                                            background: #4299e1;
+                                            border-radius: 50%;
+                                        "
+                                    ></span>
+                                    <span>Madera</span>
+                                </div>
+                                <div style="display: flex; gap: 20px">
+                                    <span style="font-weight: bold">17</span>
+                                    <span
+                                        style="
+                                            color: #666;
+                                            width: 40px;
+                                            text-align: right;
+                                        "
+                                        >68%</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width: 12px;
+                                            height: 12px;
+                                            background: #f6ad55;
+                                            border-radius: 50%;
+                                        "
+                                    ></span>
+                                    <span>Adobe</span>
+                                </div>
+                                <div style="display: flex; gap: 20px">
+                                    <span style="font-weight: bold">4</span>
+                                    <span
+                                        style="
+                                            color: #666;
+                                            width: 40px;
+                                            text-align: right;
+                                        "
+                                        >8%</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p-chart
+                            type="doughnut"
+                            [data]="edadData"
+                            [options]="edadOptions"
+                        />
+                    </div>
+                </div>
             </div>
-            <!--<div
-                style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
-            >
-                <div>test</div>
-            </div>-->
         </p-panel>
     </div>
 </div>

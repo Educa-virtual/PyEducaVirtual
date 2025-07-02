@@ -95,9 +95,9 @@ export class DetalleInscripcionComponent implements OnInit {
             text: 'left',
         },
         {
-            type: 'item-checkbox',
+            type: 'item-checkList',
             width: '2rem',
-            field: '',
+            field: 'iDocente',
             header: '¿Es Docente?',
             text_header: 'center',
             text: 'center',
@@ -118,14 +118,14 @@ export class DetalleInscripcionComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-        // {
-        //     type: 'text',
-        //     width: '2rem',
-        //     field: '',
-        //     header: 'Modalidad',
-        //     text_header: 'center',
-        //     text: 'center',
-        // },
+        {
+            type: 'item-innerHtml',
+            width: '4rem',
+            field: 'cEstado',
+            header: 'Estado Solicitud',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'actions',
             width: '1rem',
@@ -138,28 +138,36 @@ export class DetalleInscripcionComponent implements OnInit {
 
     // mostrar los botones de la tabla
     public accionesTabla: IActionTable[] = [
+        // {
+        //     labelTooltip: 'Aceptar ',
+        //     icon: 'pi pi-check-circle',
+        //     accion: 'aceptar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-succes p-button-text',
+        //     // isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
+        // },
+        // {
+        //     labelTooltip: 'Denegar',
+        //     icon: 'pi pi-times-circle',
+        //     accion: 'denegar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        //     // isVisible: (row) => row.iEstado === '1',
+        // },
+        // {
+        //     labelTooltip: 'Comprobante',
+        //     icon: 'pi pi-file-pdf',
+        //     accion: 'mostrarComprobante',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        //     // isVisible: (row) => row.iEstado === '1',
+        // },
         {
-            labelTooltip: 'Aceptar ',
-            icon: 'pi pi-check-circle',
-            accion: 'aceptar',
+            labelTooltip: 'Ver Solicitud',
+            icon: 'pi pi-eye',
+            accion: 'verSolicitud',
             type: 'item',
-            class: 'p-button-rounded p-button-succes p-button-text',
-            // isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
-        },
-        {
-            labelTooltip: 'Denegar',
-            icon: 'pi pi-times-circle',
-            accion: 'denegar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-            // isVisible: (row) => row.iEstado === '1',
-        },
-        {
-            labelTooltip: 'Comprobante',
-            icon: 'pi pi-file-pdf',
-            accion: 'mostrarComprobante',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
+            class: 'p-button-rounded p-button-info p-button-text',
             // isVisible: (row) => row.iEstado === '1',
         },
     ]
@@ -197,6 +205,7 @@ export class DetalleInscripcionComponent implements OnInit {
                 // this.eliminarCapacitacion(item)
                 break
             case 'mostrarComprobante':
+            case 'verSolicitud':
                 this.mostrarVoucher(item)
                 break
             case 'regresar':

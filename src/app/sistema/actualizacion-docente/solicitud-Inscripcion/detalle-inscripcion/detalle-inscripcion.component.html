@@ -3,21 +3,16 @@
     [actions]="actionsContainer"
     (accionBtnItem)="accionBnt($event)"
 >
-    <p-dataView #dv [value]="alumnos" [rows]="5" filterBy="">
-        <ng-template let-products pTemplate="listItem">
-            <app-table-primeng
-                [columnas]="columnasTabla"
-                [data]="alumnos"
-                [showCaption]="false"
-                (accionBtnItem)="accionBnt($event)"
-                [actions]="accionesTabla"
-            >
-                <!--(accionBtnItem)="accionBnt($event)" -->
-            </app-table-primeng>
-        </ng-template>
-    </p-dataView>
+    <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="alumnos"
+        [showCaption]="false"
+        [actions]="accionesTabla"
+        (accionBtnItem)="accionBnt($event)"
+    ></app-table-primeng>
 </app-container-page>
 
+<!-- MODAL VOUCHER -->
 <p-dialog
     [header]="'Voucher de : ' + nombreAlumno"
     [(visible)]="showModal"
@@ -31,7 +26,6 @@
         <p><strong>Nombre:</strong> {{ alumnoSelect.cNombresCompleto }}</p>
         <p><strong>Voucher:</strong> {{ alumnoSelect.cVoucher }}</p>
 
-        <!-- Si es una imagen -->
         <div class="flex justify-content-center flex-wrap">
             <div class="flex align-items-center justify-content-center">
                 <img
@@ -45,8 +39,9 @@
     </ng-container>
 </p-dialog>
 
+<!-- MODAL FICHA DE INSCRIPCIÓN -->
 <p-dialog
-    [header]="'Ficha de Inscripción'"
+    header="Ficha de Inscripción"
     [(visible)]="showModalInscripcion"
     [modal]="true"
     [style]="{ width: '45rem' }"
@@ -56,7 +51,9 @@
         [enableService]="false"
         [closable]="false"
     />
+
     <form [formGroup]="formIncripcion" class="grid mt-4">
+        <!-- Documento de identidad -->
         <div class="col-12">
             <div class="custom-flex-group">
                 <p-dropdown
@@ -68,6 +65,7 @@
                     styleClass="w-full"
                     formControlName="iTipoIdentId"
                 ></p-dropdown>
+
                 <input
                     id="dni"
                     type="text"
@@ -77,21 +75,23 @@
                     placeholder="Ingresar número"
                     (keydown.enter)="buscarDni()"
                 />
+
                 <p-button
                     label="Buscar"
                     icon="pi pi-search"
                     [loading]="loading"
                     (onClick)="buscarDni()"
-                />
+                ></p-button>
             </div>
         </div>
 
+        <!-- Nombre completo -->
         <div class="col-12">
             <p-divider></p-divider>
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-address-book"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon
+                    ><i class="pi pi-address-book"></i
+                ></p-inputGroupAddon>
                 <input
                     id="name"
                     type="text"
@@ -102,11 +102,12 @@
                 />
             </p-inputGroup>
         </div>
+
         <div class="col-6">
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-address-book"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon
+                    ><i class="pi pi-address-book"></i
+                ></p-inputGroupAddon>
                 <input
                     id="name"
                     type="text"
@@ -117,11 +118,12 @@
                 />
             </p-inputGroup>
         </div>
+
         <div class="col-6">
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-address-book"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon
+                    ><i class="pi pi-address-book"></i
+                ></p-inputGroupAddon>
                 <input
                     id="name"
                     type="text"
@@ -132,11 +134,13 @@
                 />
             </p-inputGroup>
         </div>
+
+        <!-- Dirección -->
         <div class="col-12">
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-home"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon
+                    ><i class="pi pi-home"></i
+                ></p-inputGroupAddon>
                 <input
                     id="name"
                     type="text"
@@ -146,11 +150,11 @@
                 />
             </p-inputGroup>
         </div>
+
+        <!-- Correo y celular -->
         <div class="col-7">
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-at"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon><i class="pi pi-at"></i></p-inputGroupAddon>
                 <input
                     id="name"
                     type="text"
@@ -160,11 +164,12 @@
                 />
             </p-inputGroup>
         </div>
+
         <div class="col-5">
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-phone"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon
+                    ><i class="pi pi-phone"></i
+                ></p-inputGroupAddon>
                 <input
                     id="name"
                     type="text"
@@ -174,14 +179,16 @@
                 />
             </p-inputGroup>
         </div>
+
+        <!-- Institución -->
         <div class="col-12">
             <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-building-columns"></i>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon
+                    ><i class="pi pi-building-columns"></i
+                ></p-inputGroupAddon>
                 <p-dropdown
                     [options]="instituciones"
-                    placeholder="Selecionar Institución"
+                    placeholder="Seleccionar Institución"
                     [filter]="true"
                     optionValue="iIieeId"
                     optionLabel="cIieeNombre"
@@ -191,6 +198,8 @@
                 ></p-dropdown>
             </p-inputGroup>
         </div>
+
+        <!-- Subida de archivos -->
         <div class="col-12">
             <p-fileUpload
                 name="demo[]"
@@ -210,12 +219,16 @@
             </p-fileUpload>
         </div>
     </form>
+
+    <!-- Botones -->
     <div footer class="flex justify-content-end gap-2 mt-4">
-        <!-- <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-        /> -->
+        <!--
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+    />
+    -->
         <button
             type="submit"
             pButton
@@ -226,4 +239,5 @@
         ></button>
     </div>
 </p-dialog>
-<p-toast />
+
+<p-toast></p-toast>

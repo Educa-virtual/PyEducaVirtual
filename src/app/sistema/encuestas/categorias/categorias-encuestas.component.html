@@ -2,9 +2,9 @@
     <p-panel class="categoria-panel">
         <ng-template pTemplate="header">
             <div class="flex justify-content-between align-items-center w-full">
-                <span class="text-xl font-bold text-primary"
-                    >{{titleEncuestasPorCategoria}}</span
-                >
+                <span class="text-xl font-bold text-primary">{{
+                    titleEncuestasPorCategoria
+                }}</span>
                 <button
                     pButton
                     pRipple
@@ -35,28 +35,27 @@
                 >
                     <div class="curso__image-container img-transition">
                         <img
-                            [src]="
-                                backend +
-                                '/' +
-                                categoria.cCategoriaEncuestaImagen
-                            "
-                            [alt]="categoria.cCategoriaEncuestaNombre"
+                            [src]="backend + '/' + categoria.cImagenUrl"
+                            [alt]="categoria.cNombre"
                             class="w-full h-full"
                             (error)="updateUrl(categoria)"
                         />
                     </div>
                     <div class="p-3 mb-auto">
                         <h3 class="text-xl">
-                            {{
-                                categoria.cCategoriaEncuestaNombre | stringCase
-                            }}
+                            {{ categoria.cNombre | stringCase }}
                         </h3>
                     </div>
                     <footer
                         class="p-3 pt-0 flex align-items-center justify-content-between"
                     >
-                        <p class="">
-                            {{ categoria.iCantidadEncuestas }} encuestas
+                        <p>
+                            {{ categoria.iTotalEncuestas }}
+                            {{
+                                categoria.iTotalEncuestas === 1
+                                    ? 'encuesta'
+                                    : 'encuestas'
+                            }}
                         </p>
                         <button
                             [size]="'small'"
@@ -64,7 +63,8 @@
                             pButton
                             pRipple
                             ngClass="p-button-primary"
-                        > Acceder
+                        >
+                            Acceder
                         </button>
                     </footer>
                 </article>
@@ -73,7 +73,7 @@
     </p-panel>
 </div>
 
-<app-nueva-categoria
+<!--<app-nueva-categoria
     [(visible)]="mostrarDialogNuevaCategoria"
     (categoriaCreada)="onCategoriaCreada($event)"
-></app-nueva-categoria>
+></app-nueva-categoria>-->

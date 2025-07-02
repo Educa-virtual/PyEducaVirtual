@@ -4,16 +4,13 @@ import { StringCasePipe } from '@shared/pipes/string-case.pipe'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { NuevaCategoriaComponent } from '../lista-categorias/nueva-categoria/nueva-categoria.component'
+import { CategoriasService } from '../services/categorias.service'
 import { environment } from '@/environments/environment'
-export interface IEncuestaCategoria {
-    iCategoriaEncuestaId: number
-    cCategoriaEncuestaNombre: string
-    cCategoriaEncuestaImagen: string
-    iCantidadEncuestas: number
-}
+import { MessageService } from 'primeng/api'
+import { ICategoria } from '../interfaces/categoria.interface'
 
 @Component({
-    selector: 'app-encuestas-por-categoria',
+    selector: 'app-categorias-encuestas',
     standalone: true,
     imports: [
         PrimengModule,
@@ -22,54 +19,42 @@ export interface IEncuestaCategoria {
         FormsModule,
         NuevaCategoriaComponent,
     ],
-    templateUrl: './encuestas-por-categoria.component.html',
-    styleUrl: './encuestas-por-categoria.component.scss',
+    templateUrl: './categorias-encuestas.component.html',
+    styleUrl: './categorias-encuestas.component.scss',
 })
-export class EncuestasPorCategoriaComponent implements OnInit {
-    titleEncuestasPorCategoria: string = 'Encuestas por categoría'
-    backend = environment.backend
+export class CategoriasEncuestaComponent implements OnInit {
+    titleEncuestasPorCategoria: string = 'Categorías de encuestas'
     mostrarDialogNuevaCategoria: boolean = false
-    nuevaCategoria = {
+    backend = environment.backend
+    /*nuevaCategoria = {
         cCategoriaNombre: '',
         cDescripcion: '',
-    }
+    }*/
 
-    categorias: IEncuestaCategoria[] = [
-        {
-            iCategoriaEncuestaId: 1,
-            cCategoriaEncuestaNombre: 'Censo DRE / UGEL',
-            cCategoriaEncuestaImagen: 'categorias/images/censo-dre.jpg',
-            iCantidadEncuestas: 2,
-        },
-        {
-            iCategoriaEncuestaId: 2,
-            cCategoriaEncuestaNombre: 'Encuesta Trimestral Docente',
-            cCategoriaEncuestaImagen:
-                'categorias/images/trimestral-docente.jpg',
-            iCantidadEncuestas: 3,
-        },
-        {
-            iCategoriaEncuestaId: 3,
-            cCategoriaEncuestaNombre: 'Satisfacción Estudiantil',
-            cCategoriaEncuestaImagen:
-                'categorias/images/satisfaccion-estudiantil.jpg',
-            iCantidadEncuestas: 5,
-        },
-        {
-            iCategoriaEncuestaId: 4,
-            cCategoriaEncuestaNombre: 'Evaluación Económica Estudiantil',
-            cCategoriaEncuestaImagen:
-                'categorias/images/evaluacion-economica.jpg',
-            iCantidadEncuestas: 2,
-        },
-    ]
+    categorias: ICategoria[] = []
+
+    constructor(
+        private categoriasService: CategoriasService,
+        private messageService: MessageService
+    ) {}
+
+    //backend = environment.backend
 
     ngOnInit(): void {
-        console.log('ngOnInit')
+        this.obtenerCategorias()
+    }
+
+    obtenerCategorias() {
+        this.categoriasService.obtenerCategorias().subscribe({
+            next: (respuesta: any) => {
+                this.categorias = respuesta.data
+                console.log('Categorías obtenidas:', this.categorias)
+            },
+        })
     }
 
     updateUrl(item) {
-        item.cCategoriaEncuestaImagen = 'categorias/images/no-image.jpg'
+        item.cImagenUrl = 'cursos/images/no-image.jpg'
     }
 
     // Métodos para el dialog Nueva Categoría
@@ -82,7 +67,7 @@ export class EncuestasPorCategoriaComponent implements OnInit {
         this.limpiarFormulario()
     }
 
-    finalizarCreacionCategoria() {
+    /*finalizarCreacionCategoria() {
         if (this.nuevaCategoria.cCategoriaNombre.trim()) {
             const categoria: IEncuestaCategoria = {
                 iCategoriaEncuestaId: Date.now(), // ID temporal
@@ -94,21 +79,21 @@ export class EncuestasPorCategoriaComponent implements OnInit {
             //console.log('Nueva categoría creada:', categoria)
             this.cerrarDialogNuevaCategoria()
         }
-    }
+    }*/
 
     cancelarCreacionCategoria() {
         this.cerrarDialogNuevaCategoria()
     }
 
     private limpiarFormulario() {
-        this.nuevaCategoria = {
+        /*this.nuevaCategoria = {
             cCategoriaNombre: '',
             cDescripcion: '',
-        }
+        }*/
     }
 
     // Mantiene compatibilidad con el componente NuevaCategoriaComponent
-    onCategoriaCreada(nuevaCategoria: IEncuestaCategoria) {
+    onCategoriaCreada(nuevaCategoria: ICategoria) {
         this.categorias.push(nuevaCategoria)
         console.log('Nueva categoría creada:', nuevaCategoria)
     }

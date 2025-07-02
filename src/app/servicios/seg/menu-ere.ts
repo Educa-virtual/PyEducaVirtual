@@ -71,6 +71,11 @@ export const administradorDremo = [
                     },
                 ],
             },
+            {
+                label: 'Encuestas',
+                icon: 'pi pi-list-check',
+                routerLink: ['./encuestas/categorias'],
+            },
 
             //reportesEre,
             {

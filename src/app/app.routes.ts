@@ -11,11 +11,7 @@ import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
-import { EncuestasPorCategoriaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/encuestas-por-categoria.component'
-import { ListaCategoriasComponent } from './sistema/administrador/encuestas/lista-categorias/lista-categorias.component'
-import { LlenadoPreguntasEncuestaComponent } from './sistema/administrador/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
-import { GestionEncuestaConfiguracionComponent } from './sistema/administrador/encuestas/lista-categorias/gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
-import { InformacionGeneralComponent } from './sistema/administrador/encuestas/lista-categorias/gestion-encuesta-configuracion/informacion-general/informacion-general.component'
+
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -65,6 +61,11 @@ export const routes: Routes = [
                     ),
             },
             {
+                path: 'encuestas',
+                loadChildren: () =>
+                    import('./sistema/encuestas/encuestas.routes'),
+            },
+            {
                 path: 'new-mantenimiento-usuario',
                 component: NewMantenimientoUsuarioComponent,
             },
@@ -85,7 +86,7 @@ export const routes: Routes = [
                 component: AuxiliarComponent,
             },
             // encuestas por categoria
-            {
+            /*{
                 path: 'encuesta-por-categoria',
                 component: EncuestasPorCategoriaComponent,
             },
@@ -108,7 +109,7 @@ export const routes: Routes = [
             {
                 path: 'informacion-general',
                 component: InformacionGeneralComponent,
-            },
+            },*/
         ],
     },
     {

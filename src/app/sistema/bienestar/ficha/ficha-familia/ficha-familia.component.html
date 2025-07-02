@@ -1,8 +1,15 @@
-<div class="p-2 grid p-fluid mt-3">
+<br />
+
+<div class="grid p-fluid p-2">
     <div class="col" style="margin-left: -0.5rem">
         <p-inputGroup>
             <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
-            <input pInputText placeholder="Buscar" />
+            <input
+                #filtro
+                pInputText
+                placeholder="Buscar"
+                (input)="filtrarTabla()"
+            />
         </p-inputGroup>
     </div>
     <div class="col-auto align-content-center">
@@ -19,9 +26,9 @@
 <app-table-primeng
     [columnas]="columns"
     [showCaption]="false"
-    [data]="familiares"
+    [data]="familiares_filtrados"
     (accionBtnItem)="accionBtnItemTable($event)"
-    [showPaginator]="true"
+    [showPaginator]="false"
     [(selectedRowData)]="selectedItems"
     [actions]="actions"
     [showAdvancedFilter]="false"
@@ -34,10 +41,24 @@
     [style]="{ width: '56rem' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="hideDialog()"
 >
     <app-ficha-familia-registro
+        #fichaFamiliaRegistroRef
         [iFamiliarId]="iFamiliarId"
-        (es_visible)="visibleDialog($event)"
+        (esVisibleChange)="visibleDialog($event)"
     />
 </p-dialog>
+
+<!-- Botón Seguir -->
+<div class="flex justify-content-end gap-2 mt-3">
+    <p-button
+        type="button"
+        label="Continuar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="continuar()"
+    />
+</div>
+
 <p-toast></p-toast>

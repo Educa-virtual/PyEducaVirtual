@@ -12,22 +12,34 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienestar.service'
-import { CompartirFichaService } from '../../../services/compartir-ficha.service'
 import { FichaFamiliar } from '../../../interfaces/fichaFamiliar'
+import { ActivatedRoute, Router } from '@angular/router'
+import { DropdownInputComponent } from '../../shared/dropdown-input/dropdown-input.component'
+import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-simple.component'
+import { SwitchSimpleComponent } from '../../shared/switch-simple/switch-simple.component'
+import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component'
+import { FuncionesBienestarService } from '../../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-familia-registro',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [
+        PrimengModule,
+        DropdownInputComponent,
+        DropdownSimpleComponent,
+        SwitchSimpleComponent,
+        InputSimpleComponent,
+    ],
     templateUrl: './ficha-familia-registro.component.html',
     styleUrl: './ficha-familia-registro.component.scss',
 })
 export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
-    @Output() es_visible = new EventEmitter<any>()
+    @Output() esVisibleChange = new EventEmitter<any>()
     @Input() iFamiliarId: string | null = null
 
     formFamiliar: FormGroup
     familiar_registrado: boolean = false
+    iFichaDGId: any = null
 
     tipos_documentos: Array<object>
     tipos_familiares: Array<object>
@@ -48,63 +60,65 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     es_peruano: boolean = true
     documento_consultable: boolean = true
     fecha_actual: Date = new Date()
+    ver_controles_direccion: boolean = true
 
     private _messageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
 
     constructor(
         private fb: FormBuilder,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService
-    ) {}
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private funcionesBienestar: FuncionesBienestarService,
+        private route: ActivatedRoute,
+        private router: Router
+    ) {
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
+        }
+    }
 
     ngOnInit(): void {
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.sexos = this.datosFichaBienestarService.getSexos()
-                this.tipos_familiares =
-                    this.datosFichaBienestarService.getTiposFamiliares(
-                        data?.tipos_familiares
-                    )
-                this.tipos_documentos =
-                    this.datosFichaBienestarService.getTiposDocumentos(
-                        data?.tipos_documentos
-                    )
-                this.estados_civiles =
-                    this.datosFichaBienestarService.getEstadosCiviles(
-                        data?.estados_civiles
-                    )
-                this.nacionalidades =
-                    this.datosFichaBienestarService.getNacionalidades(
-                        data?.nacionalidades
-                    )
-                this.departamentos =
-                    this.datosFichaBienestarService.getDepartamentos(
-                        data?.departamentos
-                    )
-                this.datosFichaBienestarService.getProvincias(data?.provincias)
-                this.datosFichaBienestarService.getDistritos(data?.distritos)
-                this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
-                    data?.tipos_vias
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.sexos = this.datosFichaBienestar.getSexos()
+            this.tipos_familiares = this.datosFichaBienestar.getTiposFamiliares(
+                data?.tipos_familiares
+            )
+            this.tipos_documentos = this.datosFichaBienestar.getTiposDocumentos(
+                data?.tipos_documentos
+            )
+            this.estados_civiles = this.datosFichaBienestar.getEstadosCiviles(
+                data?.estados_civiles
+            )
+            this.nacionalidades = this.datosFichaBienestar.getNacionalidades(
+                data?.nacionalidades
+            )
+            this.departamentos = this.datosFichaBienestar.getDepartamentos(
+                data?.departamentos
+            )
+            this.datosFichaBienestar.getProvincias(data?.provincias)
+            this.datosFichaBienestar.getDistritos(data?.distritos)
+            this.tipos_vias = this.datosFichaBienestar.getTiposVias(
+                data?.tipos_vias
+            )
+            this.ocupaciones = this.datosFichaBienestar.getOcupaciones(
+                data?.ocupaciones
+            )
+            this.grados_instruccion =
+                this.datosFichaBienestar.getGradosInstruccion(
+                    data?.grados_instruccion
                 )
-                this.ocupaciones =
-                    this.datosFichaBienestarService.getOcupaciones(
-                        data?.ocupaciones
-                    )
-                this.grados_instruccion =
-                    this.datosFichaBienestarService.getGradosInstruccion(
-                        data?.grados_instruccion
-                    )
-                this.tipos_ies = this.datosFichaBienestarService.getTiposIes(
-                    data?.tipos_ies
-                )
-            })
+            this.tipos_ies = this.datosFichaBienestar.getTiposIes(
+                data?.tipos_ies
+            )
+        })
 
         try {
             this.formFamiliar = this.fb.group({
-                iSesionId: this.compartirFichaService.perfil?.iCredId,
-                iFichaDGId: this.compartirFichaService.getiFichaDGId(), // PK
+                iFamiliarId: this.iFamiliarId,
+                iFichaDGId: [this.iFichaDGId, Validators.required], // PK
                 iPersId: [null],
                 iTipoFamiliarId: [null, Validators.required],
                 bFamiliarVivoConEl: [false],
@@ -113,7 +127,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                 cPersNombre: ['', Validators.required],
                 cPersPaterno: ['', Validators.required],
                 cPersMaterno: [''],
-                dPersNacimiento: [Validators.required],
+                dPersNacimiento: [null, Validators.required],
                 cPersSexo: [null, Validators.required],
                 iTipoEstCivId: [null],
                 iNacionId: [null],
@@ -121,16 +135,20 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
                 iPrvnId: [null],
                 iDsttId: [null],
                 cPersDomicilio: [''],
-                iTipoViaId: [null],
-                cFichaDGDireccionNombreVia: ['', Validators.required],
-                cFichaDGDireccionNroPuerta: [''],
-                cFichaDGDireccionBlock: [''],
-                cFichaDGDirecionInterior: [''],
-                cFichaDGDirecionPiso: [''],
-                cFichaDGDireccionManzana: [''],
-                cFichaDGDireccionLote: [''],
-                cFichaDGDireccionKm: [''],
-                cFichaDGDireccionReferencia: [''],
+                iTipoViaId: [null, Validators.required],
+                cTipoViaOtro: ['', Validators.maxLength(100)],
+                cFamiliarDireccionNombreVia: [
+                    '',
+                    [Validators.required, Validators.maxLength(150)],
+                ],
+                cFamiliarDireccionNroPuerta: ['', Validators.maxLength(10)],
+                cFamiliarDireccionBlock: ['', Validators.maxLength(3)],
+                cFamiliarDireccionInterior: ['', Validators.maxLength(3)],
+                iFamiliarDireccionPiso: [null],
+                cFamiliarDireccionManzana: ['', Validators.maxLength(10)],
+                cFamiliarDireccionLote: ['', Validators.maxLength(3)],
+                cFamiliarDireccionKm: ['', Validators.maxLength(10)],
+                cFamiliarDireccionReferencia: [''],
                 iOcupacionId: [null],
                 iGradoInstId: [null],
                 iTipoIeEstId: [null],
@@ -139,7 +157,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             console.log(error, 'error al inicializar formulario')
         }
 
-        this.showFamiliar()
+        this.verFamiliar()
 
         this.formFamiliar
             .get('iTipoIdentId')
@@ -177,42 +195,80 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
             this.distritos = null
             this.filterDistritos(value)
         })
+
+        this.formFamiliar
+            .get('bFamiliarVivoConEl')
+            .valueChanges.subscribe((value) => {
+                if (value === true) {
+                    this.ver_controles_direccion = false
+                } else {
+                    this.ver_controles_direccion = true
+                    this.formFamiliar.get('iTipoViaId')?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionNombreVia')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionNroPuerta')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionBlock')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionInterior')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('iFamiliarDireccionPiso')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionManzana')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionLote')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionKm')
+                        ?.setValue(null)
+                    this.formFamiliar
+                        .get('cFamiliarDireccionReferencia')
+                        ?.setValue(null)
+                }
+            })
+
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
     }
 
     ngOnChanges() {
-        this.showFamiliar()
+        this.verFamiliar()
     }
 
     filterProvincias(iDptoId: number) {
         if (!iDptoId) return null
-        this.provincias =
-            this.datosFichaBienestarService.filterProvincias(iDptoId)
+        this.provincias = this.datosFichaBienestar.filterProvincias(iDptoId)
     }
 
     filterDistritos(iPrvnId: number) {
         if (!iPrvnId) return null
-        this.distritos =
-            this.datosFichaBienestarService.filterDistritos(iPrvnId)
+        this.distritos = this.datosFichaBienestar.filterDistritos(iPrvnId)
     }
 
-    showFamiliar() {
+    verFamiliar() {
         this.formFamiliar?.reset()
-        this.formFamiliar
-            ?.get('iSesionId')
-            ?.setValue(this.compartirFichaService.perfil?.iCredId)
-        this.formFamiliar
-            ?.get('iFichaDGId')
-            ?.setValue(this.compartirFichaService.getiFichaDGId())
+        this.formFamiliar?.get('iFichaDGId')?.setValue(this.iFichaDGId)
 
         if (!this.iFamiliarId) return null
 
-        this.datosFichaBienestarService
-            .showFamiliar({
+        this.datosFichaBienestar
+            .verFamiliar({
                 iFamiliarId: this.iFamiliarId,
             })
             .subscribe((data: any) => {
-                console.log(data, 'data familiar')
-                this.setFormFamiliar(data.data[0])
+                if (data.data.length === 1) {
+                    this.setFormFamiliar(data.data[0])
+                    this.familiar_registrado = true
+                } else {
+                    this.setFormFamiliar(null)
+                    this.familiar_registrado = false
+                }
             })
     }
 
@@ -220,40 +276,55 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
      * Buscar datos de persona segun documento en formulario
      */
     validarPersona() {
-        this.datosFichaBienestarService
+        if (
+            !this.formFamiliar.get('iTipoIdentId')?.value ||
+            !this.formFamiliar.get('cPersDocumento')?.value
+        ) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe especificar un tipo y número de documento',
+            })
+            return
+        }
+        this.datosFichaBienestar
             .validarPersona({
                 iTipoIdentId: this.formFamiliar.get('iTipoIdentId')?.value,
                 cPersDocumento: this.formFamiliar.get('cPersDocumento')?.value,
             })
             .subscribe({
                 next: (data: any) => {
-                    console.log(data, 'validar persona')
-                    this.setFormFamiliar(data.data)
-                    this._messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: data.message,
-                    })
+                    if (data.data) {
+                        this.setFormFamiliarValidado(data.data)
+                        this._messageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: data.message,
+                        })
+                    } else {
+                        this._messageService.add({
+                            severity: 'danger',
+                            summary: 'Error',
+                            detail: 'No se pudo encontrar el documento',
+                        })
+                        this.formFamiliar.get('cPersNombre').setValue(null)
+                        this.formFamiliar.get('cPersPaterno').setValue(null)
+                        this.formFamiliar.get('cPersMaterno').setValue(null)
+                    }
                 },
                 error: (error) => {
                     console.error('Error validando persona:', error)
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail:
+                            error.error.message || 'Error al validar persona',
                     })
-                },
-                complete: () => {
-                    console.log('Request completed')
+                    this.formFamiliar.get('cPersNombre').setValue(null)
+                    this.formFamiliar.get('cPersPaterno').setValue(null)
+                    this.formFamiliar.get('cPersMaterno').setValue(null)
                 },
             })
-    }
-
-    /**
-     * Buscar datos de familiar segun id compartido
-     */
-    buscarFamiliar() {
-        console.log('buscar familiar')
     }
 
     /**
@@ -261,108 +332,207 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
      * @param item datos del familiar seleccionado
      */
     setFormFamiliar(item: FichaFamiliar) {
-        // Deben ser strings o null
+        if (!item) {
+            this.formFamiliar.reset()
+            this.familiar_registrado = false
+            return
+        }
         this.formFamiliar.patchValue(item)
-        this.formFamiliar
-            .get('iTipoIdentId')
-            ?.setValue(!!+item?.bFamiliarVivoConEl)
-        this.formFamiliar
-            .get('iTipoFamiliarId')
-            ?.setValue(item?.iTipoFamiliarId ? +item.iTipoFamiliarId : null)
-        this.formFamiliar
-            .get('cPersDocumento')
-            ?.setValue(item?.cPersDocumento ? +item.cPersDocumento : null)
-        this.formFamiliar
-            .get('iTipoIdentId')
-            ?.setValue(item?.iTipoIdentId ? +item.iTipoIdentId : null)
-        this.formFamiliar
-            .get('iTipoEstCivId')
-            ?.setValue(item?.iTipoEstCivId ? +item.iTipoEstCivId : null)
-        this.formFamiliar
-            .get('iNacionId')
-            ?.setValue(item?.iNacionId ? +item.iNacionId : null)
-        this.formFamiliar
-            .get('iDptoId')
-            ?.setValue(item?.iDptoId ? +item.iDptoId : null)
-        this.formFamiliar
-            .get('iPrvnId')
-            ?.setValue(item?.iPrvnId ? +item.iPrvnId : null)
-        this.formFamiliar
-            .get('iDsttId')
-            ?.setValue(item?.iDsttId ? +item.iDsttId : null)
-        this.formFamiliar
-            .get('iTipoViaId')
-            ?.setValue(item?.iTipoViaId ? +item.iTipoViaId : null)
-        this.formFamiliar
-            .get('iOcupacionId')
-            ?.setValue(item?.iOcupacionId ? +item.iOcupacionId : null)
-        this.formFamiliar
-            .get('iGradoInstId')
-            ?.setValue(item?.iGradoInstId ? +item.iGradoInstId : null)
-        this.formFamiliar
-            .get('iTipoIeEstId')
-            ?.setValue(item?.iTipoIeEstId ? +item.iTipoIeEstId : null)
-        this.formFamiliar
-            .get('dPersNacimiento')
-            ?.setValue(
-                item?.dPersNacimiento ? new Date(item.dPersNacimiento) : null
-            )
+        this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId)
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'bFamiliarVivoConEl',
+            item.bFamiliarVivoConEl,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoIdentId',
+            item.iTipoIdentId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoFamiliarId',
+            item.iTipoFamiliarId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoEstCivId',
+            item.iTipoEstCivId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iNacionId',
+            item.iNacionId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iDptoId',
+            item.iDptoId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iPrvnId',
+            item.iPrvnId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iDsttId',
+            item.iDsttId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoViaId',
+            item.iTipoViaId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iOcupacionId',
+            item.iOcupacionId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iGradoInstId',
+            item.iGradoInstId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoIeEstId',
+            item.iTipoIeEstId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'dPersNacimiento',
+            item.dPersNacimiento,
+            'date'
+        )
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
+    }
+
+    /**
+     * Setea los datos de un familiar según servicio de validación
+     * @param item datos del familiar seleccionado
+     */
+    setFormFamiliarValidado(item: FichaFamiliar) {
+        if (!item) {
+            this.formFamiliar.get('iPersId')?.setValue(null)
+            this.familiar_registrado = false
+            return
+        }
+        this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId)
+        this.formFamiliar.get('cPersNombre').setValue(item.cPersNombre)
+        this.formFamiliar.get('cPersPaterno').setValue(item.cPersPaterno)
+        this.formFamiliar.get('cPersMaterno').setValue(item.cPersMaterno)
+        this.formFamiliar.get('cPersSexo').setValue(item.cPersSexo)
+        this.formFamiliar.get('cPersDomicilio').setValue(item.cPersDomicilio)
+
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iTipoEstCivId',
+            item.iTipoEstCivId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iNacionId',
+            item.iNacionId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iDptoId',
+            item.iDptoId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iPrvnId',
+            item.iPrvnId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'iDsttId',
+            item.iDsttId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formFamiliar,
+            'dPersNacimiento',
+            item.dPersNacimiento,
+            'date'
+        )
+        this.funcionesBienestar.formMarkAsDirty(this.formFamiliar)
     }
 
     guardarFamiliar() {
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .guardarFamiliar(this.formFamiliar.value)
             .subscribe({
-                next: (data: any) => {
-                    console.log(data, 'guardado')
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
                     this.familiar_registrado = true
-                    // this.datosFichaBienestarService.formFamiliar =
-                    //     this.formFamiliar.value
+                    this.salirResetearForm()
                 },
                 error: (error) => {
                     console.error('Error guardando familiar:', error)
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message || 'Error al guardar datos',
                     })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                    this.es_visible.emit(false)
                 },
             })
     }
 
     actualizarFamiliar() {
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFamiliar(this.formFamiliar.value)
             .subscribe({
-                next: (data: any) => {
-                    console.log(data, 'actualizado')
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
                     this.familiar_registrado = true
-                    // this.datosFichaBienestarService.formFamiliar =
-                    //     this.formFamiliar.value
+                    this.salirResetearForm()
                 },
                 error: (error) => {
                     console.error('Error actualizando familiar:', error)
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail:
+                            error.error.message || 'Error al actualizar datos',
                     })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                    this.es_visible.emit(false)
                 },
             })
     }
 
     salirResetearForm() {
-        this.es_visible.emit(false)
+        if (this.familiar_registrado) {
+            this.esVisibleChange.emit(false)
+        }
         this.formFamiliar.reset()
         this.formFamiliar.get('iPersId')?.setValue(null)
         this.formFamiliar.get('iFichaDGId')?.setValue(null)
+        this.iFamiliarId = null
+        this.familiar_registrado = false
     }
 }

@@ -1,0 +1,8 @@
+<app-modal-primeng
+  *ngIf="showModal"
+  [title]="'SESION DE APRENDIZAJE'"
+  [showModal]="showModal"
+  (accionBtnItem)="this.accionCloseForm.emit($event)"
+  width="35rem"
+>
+</app-modal-primeng>

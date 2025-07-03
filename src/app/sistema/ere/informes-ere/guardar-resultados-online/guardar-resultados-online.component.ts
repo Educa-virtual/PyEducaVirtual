@@ -74,7 +74,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     }
     botonesTabla: IActionTable[] = [
         {
-            labelTooltip: 'guardar',
+            labelTooltip: 'Guardar',
             icon: 'pi pi-check',
             accion: 'guardar',
             type: 'item',

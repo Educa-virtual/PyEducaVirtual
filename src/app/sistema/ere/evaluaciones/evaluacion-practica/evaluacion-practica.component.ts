@@ -128,22 +128,6 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     obtenerPreguntaxiEvaluacionId() {
-        /*const params = {
-            petition: 'post',
-            group: 'ere',
-            prefix: 'evaluacion',
-            ruta: 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId',
-            data: {
-                opcion: 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId',
-                iEvaluacionId: this.iEvaluacionId,
-                iCursoNivelGradId: this.iCursoNivelGradId,
-                iEstudianteId: this._ConstantesService.iEstudianteId,
-                iIieeId: this._ConstantesService.iIieeId,
-                iYAcadId: this._ConstantesService.iYAcadId,
-            },
-        }
-        this.getInformation(params, params.data.opcion);
-      */
         this.accionBtnItem({
             accion: 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId',
             item: [
@@ -531,12 +515,8 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     calcularPreguntasPendientes() {
-        //let cantidadPreguntas = 0
-        //let cantidadPreguntasSinMarcar = 0
         let cantidadPreguntasPendientes = 0
         this.preguntas.forEach((pregunta) => {
-            //cantidadPreguntas += pregunta.pregunta.length
-
             pregunta.pregunta.forEach((item) => {
                 let pendienteResponder = true
                 item.alternativas.forEach((alter) => {
@@ -550,26 +530,6 @@ export class EvaluacionPracticaComponent implements OnInit {
             })
         })
         return cantidadPreguntasPendientes
-        //console.log("Ctd. preguntas: "+cantidadPreguntas)
-        //console.log("Ctd. preguntas sin marcar: "+cantidadPreguntasSinMarcar)
-        //this.cantidadPreguntasPendientes
-        /*const cantidadPreguntas =
-            this.preguntas[this.activeIndex].pregunta.length
-        let cantidadPreguntasMarcadas = 0
-
-        this.preguntas[this.activeIndex].pregunta.forEach((item) => {
-            item.alternativas.forEach((alter) => {
-                if (alter.iMarcado == 1) {
-                    cantidadPreguntasMarcadas++
-                }
-            })
-        })
-
-        if (cantidadPreguntas == cantidadPreguntasMarcadas) {
-            this.preguntas[this.activeIndex].iMarcado = 1
-        } else {
-            this.preguntas[this.activeIndex].iMarcado = 0
-        }*/
     }
 
     guardarPregunta(alternativas, alternativa, marcado) {
@@ -579,38 +539,6 @@ export class EvaluacionPracticaComponent implements OnInit {
             }
         })
         alternativa.iMarcado = marcado
-        /*this.preguntas.forEach((pregunta) => {
-            pregunta.pregunta.forEach((i) => {
-                if (i.iPreguntaId === Number(alternativa.iPreguntaId)) {
-                    i.iMarcado = true
-                }
-            })
-        })*/
-        // alternativa.iMarcado = 1
-
-        //codigo comentado
-        /*this.marcarPaginadorPregunta();
-        const params = {
-            petition: 'post',
-            group: 'ere',
-            prefix: 'resultados',
-            ruta: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
-            data: {
-                opcion: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
-                iResultadoId: alternativa.iResultadoId,
-                iEstudianteId: this._ConstantesService.iEstudianteId,
-                iResultadoRptaEstudiante: alternativa.iAlternativaId,
-                iIieeId: this._ConstantesService.iIieeId,
-                iEvaluacionId: this.iEvaluacionId,
-                iYAcadId: this._ConstantesService.iYAcadId,
-                iPreguntaId: alternativa.iPreguntaId,
-                iCursoNivelGradId: this.iCursoNivelGradId,
-                iMarcado: alternativa.iMarcado,
-            },
-        }
-        this.getInformation(params, params.data.opcion)
-        */
-
         this.accionBtnItem({
             accion: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
             item: null,
@@ -645,23 +573,6 @@ export class EvaluacionPracticaComponent implements OnInit {
     }
 
     terminarExamen() {
-        //codigo comentado
-        /*const params = {
-            petition: 'post',
-            group: 'ere',
-            prefix: 'resultados',
-            ruta: 'terminarExamenxiEstudianteId',
-            data: {
-                opcion: 'terminarExamenxiEstudianteId',
-                iEstudianteId: this._ConstantesService.iEstudianteId,
-                iIieeId: this._ConstantesService.iIieeId,
-                iEvaluacionId: this.iEvaluacionId,
-                iYAcadId: this._ConstantesService.iYAcadId,
-                iCursoNivelGradId: this.iCursoNivelGradId,
-            },
-        }
-        this.getInformation(params, params.data.opcion)
-        */
         this.accionBtnItem({
             accion: 'terminarExamenxiEstudianteId',
             item: [{ iFinalizado: '0' }],
@@ -672,16 +583,6 @@ export class EvaluacionPracticaComponent implements OnInit {
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                /*if (
-                    response.validated &&
-                    accion ==
-                        'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante'
-                ) {
-                    this._MessageService.add({
-                        severity: 'success',
-                        detail: response.message,
-                    })
-                }*/
                 this.accionBtnItem({
                     accion,
                     item: response?.data,

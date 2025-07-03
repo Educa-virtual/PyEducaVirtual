@@ -134,6 +134,10 @@ const estudiante = [
                 icon: 'pi pi-fw pi-envelope',
                 routerLink: ['/estudiante/buzon-sugerencias'],
             },
+            {
+                label: 'Encuestas',
+                icon: 'pi pi-fw pi-book',
+            },
         ],
     },
 ]

@@ -10,6 +10,10 @@ import {
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FuncionesBienestarService } from '../services/funciones-bienestar.service'
+import {
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from '@/app/servicios/seg/perfiles'
 
 @Component({
     selector: 'app-encuesta',
@@ -72,6 +76,9 @@ export class EncuestaComponent implements OnInit {
     ) {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.perfil = this.store.getItem('dremoPerfil')
+        this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+            this.perfil.iPerfilId
+        )
         this.route.paramMap.subscribe((params: any) => {
             this.iEncuId = params.params.id || null
         })

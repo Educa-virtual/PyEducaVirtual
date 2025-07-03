@@ -104,6 +104,10 @@ export class DatosEncuestaService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/verRespuesta`, data)
     }
 
+    verResumen(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verResumen`, data)
+    }
+
     /*
      * Funciones para popular parametros de formularios de ficha
      */

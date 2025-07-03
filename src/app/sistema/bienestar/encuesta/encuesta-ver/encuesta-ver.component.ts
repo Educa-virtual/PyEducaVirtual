@@ -9,6 +9,7 @@ import { PreguntaCerradaComponent } from '../shared/pregunta-cerrada/pregunta-ce
 import { PreguntaAbiertaComponent } from '../shared/pregunta-abierta/pregunta-abierta.component'
 import { PreguntaEscalaComponent } from '../shared/pregunta-escala/pregunta-escala.component'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-encuesta-ver',
@@ -54,7 +55,7 @@ export class EncuestaVerComponent {
             this.iEncuId = params.params.id || 0
             this.iMatrId = params.params.matricula || 0
         })
-        this.puede_editar = Number(this.perfil.iPerfilId) === 80
+        this.puede_editar = Number(this.perfil.iPerfilId) === ESTUDIANTE
     }
 
     ngOnInit(): void {
@@ -72,26 +73,37 @@ export class EncuestaVerComponent {
             this.verEncuesta()
             this.listarPreguntas()
         }
-        this.breadCrumbItems = [
-            {
-                label: 'Gestionar encuestas',
-                routerLink: '/bienestar/gestionar-encuestas',
-            },
-            {
-                label: 'Encuesta',
-                routerLink: '/bienestar/encuesta/' + this.iEncuId,
-                visible: !this.puede_editar,
-            },
-            {
-                label: 'Respuestas',
-                routerLink:
-                    '/bienestar/encuesta/' + this.iEncuId + '/respuestas',
-                visible: !this.puede_editar,
-            },
-            {
-                label: 'Responder encuesta',
-            },
-        ]
+        if (this.puede_editar) {
+            this.breadCrumbItems = [
+                {
+                    label: 'Gestionar encuestas',
+                    routerLink: '/bienestar/gestionar-encuestas',
+                },
+                {
+                    label: 'Responder encuesta',
+                },
+            ]
+        } else {
+            this.breadCrumbItems = [
+                {
+                    label: 'Gestionar encuestas',
+                    routerLink: '/bienestar/gestionar-encuestas',
+                },
+                {
+                    label: 'Encuesta',
+                    routerLink: '/bienestar/encuesta/' + this.iEncuId,
+                },
+                {
+                    label: 'Respuestas',
+                    routerLink:
+                        '/bienestar/encuesta/' + this.iEncuId + '/respuestas',
+                },
+                {
+                    label: 'Responder encuesta',
+                },
+            ]
+        }
+
         this.breadCrumbHome = {
             icon: 'pi pi-home',
             routerLink: '/',
@@ -108,6 +120,9 @@ export class EncuestaVerComponent {
                 next: (data: any) => {
                     if (data.data.length) {
                         this.encuesta = data.data[0]
+                        this.encuesta.permisos_detalle = JSON.parse(
+                            this.encuesta.permisos_detalle
+                        )
                     }
                 },
                 error: (error) => {
@@ -158,7 +173,7 @@ export class EncuestaVerComponent {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
+                    if (data.data[0].respuestas) {
                         this.respuesta_registrada = true
                         const respuestas = JSON.parse(data.data[0].respuestas)
                         this.setRespuestasFormArray(respuestas)

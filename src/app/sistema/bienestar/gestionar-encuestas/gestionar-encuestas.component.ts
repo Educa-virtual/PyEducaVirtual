@@ -336,7 +336,7 @@ export class GestionarEncuestasComponent implements OnInit {
         },
         {
             labelTooltip: 'Ver Preguntas',
-            icon: 'pi pi-list-check',
+            icon: 'pi pi-question',
             accion: 'preguntas',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
@@ -363,7 +363,7 @@ export class GestionarEncuestasComponent implements OnInit {
         },
         {
             labelTooltip: 'Ver respuestas',
-            icon: 'pi pi-list',
+            icon: 'pi pi-users',
             accion: 'respuestas',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
@@ -373,7 +373,7 @@ export class GestionarEncuestasComponent implements OnInit {
         },
         {
             labelTooltip: 'Ver resumen',
-            icon: 'pi pi-chart-bar',
+            icon: 'pi pi-chart-pie',
             accion: 'resumen',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',

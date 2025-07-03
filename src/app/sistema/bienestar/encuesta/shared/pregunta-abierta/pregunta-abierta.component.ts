@@ -38,7 +38,7 @@ export class PreguntaAbiertaComponent implements OnInit {
         this.inputMinRowsString = `${this.inputMinRows}lh`
         this.inputMaxRowsString = `${this.inputMaxRows}lh`
         if (this.controlDisabled) {
-            this.inputControl.disable()
+            this.inputControl?.disable()
         }
     }
 

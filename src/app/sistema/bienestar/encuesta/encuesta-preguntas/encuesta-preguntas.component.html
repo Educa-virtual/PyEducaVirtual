@@ -44,7 +44,8 @@
                         [infoAdicional]="
                             pregunta.cEncuPregAdicional ? infoAdicional : null
                         "
-                    ></app-pregunta-cerrada>
+                        [controlDisabled]="encuesta_bloqueada"
+                    />
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
                     </ng-template>
@@ -83,6 +84,7 @@
                         [infoAdicional]="
                             pregunta.cEncuPregAdicional ? infoAdicional : null
                         "
+                        [controlDisabled]="encuesta_bloqueada"
                     />
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}
@@ -122,6 +124,7 @@
                         [infoAdicional]="
                             pregunta.cEncuPregAdicional ? infoAdicional : null
                         "
+                        [controlDisabled]="encuesta_bloqueada"
                     />
                     <ng-template #infoAdicional>
                         {{ pregunta.cEncuPregAdicional }}

@@ -43,7 +43,18 @@
                                         <span class="font-bold mb-1"
                                             >Permisos</span
                                         >
-                                        <span class="m-0 text-secondary"></span>
+                                        <span class="m-0 text-secondary">
+                                            <ul class="p-0">
+                                                @for (
+                                                    permiso of encuesta?.permisos_detalle;
+                                                    track $index
+                                                ) {
+                                                    <li>
+                                                        {{ permiso?.permiso }}
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </span>
                                     </span>
                                 </li>
                             </ul>

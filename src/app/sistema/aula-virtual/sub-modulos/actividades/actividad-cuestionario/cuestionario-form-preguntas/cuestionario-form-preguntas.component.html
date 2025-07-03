@@ -7,7 +7,7 @@
   <!-- <form [formGroup]="formPreguntas" class="flex flex-column gap-3 w-full"> -->
   <div class="mt-4">
     <div class="grid">
-      <div class="col-6">
+      <div class="flex col-6">
         <!-- Editor de texto -->
         <!-- [innerHTML]="cPregunta" -->
         <textarea
@@ -16,6 +16,7 @@
           autoResize
           [(ngModel)]="cPregunta"
           rows="1"
+          [style]="{ minHeight: '3rem' }"
           class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
           placeholder="Escribe tu pregunta aquí..."
         >
@@ -129,7 +130,7 @@
             </div>
           }
           @case ('TIP-PREG-CASILLA') {
-            <div *ngFor="let opcion of opciones; let i = index" class="mb-2">
+            <div *ngFor="let opcion of opciones; let i = index" class="mb-2 ml-2">
               <p-inputGroup class="mt-1">
                 <p-checkbox
                   [binary]="true"
@@ -144,7 +145,7 @@
                   type="text"
                   pInputText
                   [(ngModel)]="opcion.cAlternativa"
-                  [placeholder]="'Opción ' + (i + 1)"
+                  [placeholder]="' ' + 'Opción ' + (i + 1)"
                   class="input-hover-underline flex-1"
                 />
                 <p-button
@@ -158,24 +159,30 @@
                 </p-button>
               </p-inputGroup>
             </div>
-            <!-- Botón para agregar nueva opción -->
-            <p-checkbox
-              name="grupoOpcionesOtro"
-              [value]="'otro'"
-              [(ngModel)]="opcionSeleccionada"
-            />
-            <input
-              class="ml-2"
-              type="text"
-              readonly
-              pInputText
-              class="input-hover-underline flex-1"
-              placeholder="Añadir opción"
-              (click)="agregarOpcion()"
-            />
+            <div class="grid mt-2 ml-2">
+              <div>
+                <!-- Botón para agregar nueva opción -->
+                <p-checkbox
+                  name="grupoOpcionesOtro"
+                  [value]="'otro'"
+                  [(ngModel)]="opcionSeleccionada"
+                />
+              </div>
+              <div class="ml-2">
+                <input
+                  class="ml-2"
+                  type="text"
+                  readonly
+                  pInputText
+                  class="input-hover-underline flex-1"
+                  placeholder="Añadir opción"
+                  (click)="agregarOpcion()"
+                />
+              </div>
+            </div>
           }
           @case ('TIP-PREG-DESPLEGABLE') {
-            <div *ngFor="let opcion of opciones; let i = index" class="mb-2">
+            <div *ngFor="let opcion of opciones; let i = index" class="mb-2 ml-2">
               <p-inputGroup class="mt-1">
                 <label for="" class="align-content-center mr-2">{{ i + 1 }}</label>
                 <input
@@ -183,7 +190,7 @@
                   type="text"
                   pInputText
                   [(ngModel)]="opcion.cAlternativa"
-                  [placeholder]="'Opción ' + (i + 1)"
+                  [placeholder]="' ' + 'Opción ' + (i + 1)"
                   class="input-hover-underline flex-1"
                 />
                 <p-button

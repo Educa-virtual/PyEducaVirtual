@@ -1,4 +1,14 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  Input,
+  OnInit,
+  AfterViewInit,
+  ViewChildren,
+  QueryList,
+  AfterViewChecked,
+} from '@angular/core';
 import { ICurso } from '../../../interfaces/curso.interface';
 import { PrimengModule } from '@/app/primeng.module';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -14,7 +24,9 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
   templateUrl: './tab-inicio.component.html',
   styleUrl: './tab-inicio.component.scss',
 })
-export class TabInicioComponent implements OnInit {
+export class TabInicioComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  @ViewChildren('textareaRef') textareaRefs!: QueryList<ElementRef>;
+
   @Input() curso: ICurso;
   @Input() anuncios = [];
   @Input() iCursoId;
@@ -44,6 +56,9 @@ export class TabInicioComponent implements OnInit {
   });
   //para los alert
   constructor(private messageService: MessageService) {}
+  ngAfterViewInit(): void {
+    throw new Error('Method not implemented.');
+  }
 
   //Inicializamos
   ngOnInit(): void {
@@ -233,6 +248,18 @@ export class TabInicioComponent implements OnInit {
       this.guardarComunicado.patchValue({
         numero: this.contadorAnuncios,
       });
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.adjustAllTextareas();
+  }
+
+  adjustAllTextareas() {
+    this.textareaRefs?.forEach((textareaEl: ElementRef) => {
+      const textarea = textareaEl.nativeElement;
+      textarea.style.height = 'auto'; // reset
+      textarea.style.height = `${textarea.scrollHeight}px`; // ajustar al contenido
     });
   }
 }

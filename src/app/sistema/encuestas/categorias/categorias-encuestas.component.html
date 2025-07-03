@@ -5,29 +5,31 @@
                 <span class="text-xl font-bold text-primary">{{
                     titleEncuestasPorCategoria
                 }}</span>
-                <button
-                    pButton
-                    pRipple
-                    label="Nueva"
-                    icon="pi pi-plus"
-                    class="p-button-success"
-                    (click)="mostrarDialogNuevaCategoria = true"
-                ></button>
             </div>
         </ng-template>
 
         <!-- Search Bar -->
-        <div class="search-container mb-4">
+        <div class="flex align-items-center mb-4 gap-2">
             <span class="p-input-icon-left w-full">
                 <i class="pi pi-search"></i>
                 <input
                     type="text"
                     pInputText
+                    (input)="onFilter($event)"
                     placeholder="Buscar categorías..."
                     class="w-full"
                 />
             </span>
+            <button
+                pButton
+                pRipple
+                label="Nueva"
+                icon="pi pi-plus"
+                class="p-button-success"
+                (click)="mostrarDialogNuevaCategoria = true"
+            ></button>
         </div>
+
         <div class="categorias-grid">
             <div *ngFor="let categoria of categorias" class="categoria-item">
                 <article
@@ -57,15 +59,17 @@
                                     : 'encuestas'
                             }}
                         </p>
-                        <button
-                            [size]="'small'"
-                            [rounded]="true"
-                            pButton
-                            pRipple
-                            ngClass="p-button-primary"
+                        <a
+                            [routerLink]="[
+                                '/encuestas/categorias',
+                                categoria.iCategoriaEncuestaId,
+                                'categorias',
+                            ]"
+                            style="color: white"
+                            class="p-button p-component p-button-primary p-button-sm p-button-rounded"
                         >
                             Acceder
-                        </button>
+                        </a>
                     </footer>
                 </article>
             </div>
@@ -73,7 +77,9 @@
     </p-panel>
 </div>
 
-<!--<app-nueva-categoria
+<app-nueva-categoria
     [(visible)]="mostrarDialogNuevaCategoria"
     (categoriaCreada)="onCategoriaCreada($event)"
-></app-nueva-categoria>-->
+></app-nueva-categoria>
+
+<p-toast></p-toast>

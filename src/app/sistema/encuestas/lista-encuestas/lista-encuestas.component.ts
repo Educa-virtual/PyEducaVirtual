@@ -4,23 +4,19 @@ import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
-import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+//import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 @Component({
-    selector: 'app-lista-categorias',
+    selector: 'app-lista-encuestas',
     standalone: true,
-    imports: [
-        PrimengModule,
-        TablePrimengComponent,
-        GestionEncuestaConfiguracionComponent,
-    ],
-    templateUrl: './lista-categorias.component.html',
-    styleUrl: './lista-categorias.component.scss',
+    imports: [PrimengModule, TablePrimengComponent],
+    templateUrl: './lista-encuestas.component.html',
+    styleUrl: './lista-encuestas.component.scss',
 })
-export class ListaCategoriasComponent implements OnInit {
-    titleListaCategoria: string = 'Censo DRE/UGEL'
+export class ListaEncuestasComponent implements OnInit {
+    titleListaEncuestas: string = 'Censo DRE/UGEL'
     selectedItem: any
     mostrarDialogoConfiguracion: boolean = false
-    dataCategorias = [
+    dataEncuestas = [
         {
             item: 1,
             iCategoriaId: 1,

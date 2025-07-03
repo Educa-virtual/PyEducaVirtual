@@ -1,4 +1,5 @@
 export interface ICategoria {
+    iCategoriaEncuestaId: number
     bPuedeCrearDirector: boolean
     bPuedeCrearEspDremo: boolean
     bPuedeCrearEspUgel: boolean

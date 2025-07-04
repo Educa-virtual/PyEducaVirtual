@@ -206,6 +206,33 @@ export class ListaEncuestasComponent implements OnInit {
                 this.selectedItem.cConfEncNombre +
                 ' ?',
             accept: () => {
+                this.encuestasService
+                    .eliminarEncuesta(this.selectedItem.iConfEncId)
+                    .subscribe({
+                        next: (resp: any) => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Encuesta eliminada',
+                                detail: resp.message,
+                            })
+                            this.dataEncuestas = this.dataEncuestas.filter(
+                                (encuesta) =>
+                                    encuesta.iConfEncId !==
+                                    this.selectedItem.iConfEncId
+                            )
+                        },
+                        error: (error) => {
+                            console.error(
+                                'Error obteniendo lista de encuestas:',
+                                error
+                            )
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: error.error.message,
+                            })
+                        },
+                    })
                 /*const params = {
                     petition: 'delete',
                     group: 'cap',

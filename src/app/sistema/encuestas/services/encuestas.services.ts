@@ -7,9 +7,16 @@ import { environment } from '@/environments/environment'
 })
 export class EncuestasService {
     constructor(private http: HttpClient) {}
+
     obtenerEncuestasPorCategoria(iCategoriaEncuestaId: string) {
         return this.http.get(
             `${environment.backendApi}/enc/categorias/${iCategoriaEncuestaId}/encuestas`
+        )
+    }
+
+    eliminarEncuesta(iConfEncId: string) {
+        return this.http.delete(
+            `${environment.backendApi}/enc/encuestas/${iConfEncId}`
         )
     }
 }

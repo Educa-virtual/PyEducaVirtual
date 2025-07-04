@@ -21,8 +21,11 @@ import { AgregarSeccionEncuestaComponent } from './agregar-seccion-encuesta/agre
     ],
 })
 export class LlenadoPreguntasEncuestaComponent implements OnInit {
+    // BreadCrumb
     breadCrumbItems: MenuItem[] = []
+    // Título de la encuesta
     titleLLenadoPreguntasEncuesta: string = 'Encuesta: Satisfacción Académica'
+    // Variables para el llenado de preguntas
     selectedItem: any
     totalPreguntas: number = 3
     nIndexAcordionTab: number = null

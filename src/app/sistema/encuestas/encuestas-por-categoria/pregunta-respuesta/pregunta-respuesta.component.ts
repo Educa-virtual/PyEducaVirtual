@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem } from 'primeng/api'
-import { LlenadoPreguntasEncuestaComponent } from '../llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
+import { LlenadoPreguntasEncuestaComponent } from '../../llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
 import { RespuestaPreguntasEncuestaComponent } from '../respuesta-preguntas-encuesta/respuesta-preguntas-encuesta.component'
 
 @Component({
     selector: 'app-pregunta-respuesta',
     standalone: true,
     imports: [
+        CommonModule,
         PrimengModule,
         CommonModule,
         LlenadoPreguntasEncuestaComponent,

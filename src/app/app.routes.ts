@@ -16,6 +16,7 @@ import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucio
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
 //import { CategoriasEncuestaComponent } from './sistema/encuestas/categorias/categorias-encuestas.component'
 import { EstudianteEncuestaComponent } from './sistema/encuestas/estudiante-encuesta/estudiante-encuesta.component'
+
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -122,7 +123,7 @@ export const routes: Routes = [
                 path: 'informacion-general',
                 component: InformacionGeneralComponent,
             },
-            // llnado preguntas encuesta
+            // llenado preguntas encuesta
             {
                 path: 'llenado-pregunta-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,

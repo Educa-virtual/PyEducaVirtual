@@ -155,6 +155,11 @@ export const especialistaDremo = [
             },*/
             //reportesEre,
             {
+                label: 'Encuestas',
+                icon: 'pi pi-list-check',
+                routerLink: ['respuesta-pregunta'],
+            },
+            {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],

@@ -17,6 +17,7 @@ import { AccesoEncuestaComponent } from './sistema/encuestas/lista-categorias/ac
 import { InformacionGeneralComponent } from './sistema/encuestas/lista-categorias/gestion-encuesta-configuracion/informacion-general/informacion-general.component'
 import { EstudianteEncuestaComponent } from './sistema/encuestas/estudiante-encuesta/estudiante-encuesta.component'
 import { LlenadoPreguntasEncuestaComponent } from './sistema/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
+import { PreguntaRespuestaComponent } from './sistema/encuestas/encuestas-por-categoria/pregunta-respuesta/pregunta-respuesta.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -104,10 +105,14 @@ export const routes: Routes = [
                 path: 'informacion-general',
                 component: InformacionGeneralComponent,
             },
-            // llnado preguntas encuesta
+            // llenado preguntas encuesta
             {
                 path: 'llenado-pregunta-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
+            },
+            {
+                path: 'respuesta-pregunta',
+                component: PreguntaRespuestaComponent,
             },
             // encuestas por categoria
             //{

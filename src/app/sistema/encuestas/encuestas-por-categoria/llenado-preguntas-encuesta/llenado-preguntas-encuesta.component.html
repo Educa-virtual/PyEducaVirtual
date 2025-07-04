@@ -1,317 +1,298 @@
-<p-panel class="llenado-preguntas-encuesta">
-    <ng-template pTemplate="header">
-        <div class="flex justify-content-between align-items-center w-full">
-            <span class="text-xl font-bold text-primary">{{
-                titleLLenadoPreguntasEncuesta
-            }}</span>
-        </div>
-    </ng-template>
-
-    <div
-        class="flex justify-content-between align-items-center mb-3 p-3 border-round surface-100"
-    >
-        <div class="flex gap-2">
-            <p-button
-                icon="pi pi-eye"
-                label="Vista previa"
-                severity="warning"
-                size="small"
-                (onClick)="vistaPrevia()"
-            >
-            </p-button>
-            <p-button
-                icon="pi pi-cog"
-                label="Configuración"
-                severity="secondary"
-                size="small"
-                (onClick)="configuracion()"
-            >
-            </p-button>
-        </div>
-
-        <div class="flex align-items-center gap-3">
-            <p-button
-                icon="pi pi-plus"
-                label="Agregar sección"
-                severity="success"
-                size="small"
-                (click)="mostrarDialogoAgregarSeccionEncuesta = true"
-                onclick="onAgregarSeccion($event)"
-            >
-                <!--(onClick)="agregarSeccion()"-->
-            </p-button>
-
-            <div class="flex align-items-center gap-2">
-                <span class="font-semibold">Total de Preguntas</span>
-                <p-badge [value]="totalPreguntas" severity="info" size="large">
-                </p-badge>
-            </div>
-        </div>
+<div
+    class="flex justify-content-between align-items-center mb-3 p-3 border-round surface-100"
+>
+    <div class="flex gap-2">
+        <p-button
+            icon="pi pi-eye"
+            label="Vista previa"
+            severity="warning"
+            size="small"
+            (onClick)="vistaPrevia()"
+        >
+        </p-button>
+        <p-button
+            icon="pi pi-cog"
+            label="Configuración"
+            severity="secondary"
+            size="small"
+            (onClick)="configuracion()"
+        >
+        </p-button>
     </div>
 
-    <p-accordion styleClass="w-full">
-        @for (seccion of secciones; track seccion.id) {
-            <p-accordionTab iconPos="end">
-                <ng-template pTemplate="header">
-                    <span
-                        class="flex align-items-center justify-content-start w-full"
+    <div class="flex align-items-center gap-3">
+        <p-button
+            icon="pi pi-plus"
+            label="Agregar sección"
+            severity="success"
+            size="small"
+            (click)="mostrarDialogoAgregarSeccionEncuesta = true"
+            onclick="onAgregarSeccion($event)"
+        >
+            <!--(onClick)="agregarSeccion()"-->
+        </p-button>
+
+        <div class="flex align-items-center gap-2">
+            <span class="font-semibold">Total de Preguntas</span>
+            <p-badge [value]="totalPreguntas" severity="info" size="large">
+            </p-badge>
+        </div>
+    </div>
+</div>
+
+<p-accordion styleClass="w-full">
+    @for (seccion of secciones; track seccion.id) {
+        <p-accordionTab iconPos="end">
+            <ng-template pTemplate="header">
+                <span
+                    class="flex align-items-center justify-content-start w-full"
+                >
+                    <span class="font-bold text-white">{{
+                        seccion.titulo
+                    }}</span>
+                    <div
+                        class="flex gap-1 ml-auto mr-2"
+                        tabindex="0"
+                        (click)="$event.stopPropagation()"
+                        (keydown.enter)="$event.stopPropagation()"
                     >
-                        <span class="font-bold text-white">{{
-                            seccion.titulo
-                        }}</span>
-                        <div
-                            class="flex gap-1 ml-auto mr-2"
-                            tabindex="0"
-                            (click)="$event.stopPropagation()"
-                            (keydown.enter)="$event.stopPropagation()"
+                        <p-button
+                            icon="pi pi-trash"
+                            severity="danger"
+                            size="small"
+                            [rounded]="true"
+                            class="mi-auto mr-2"
+                            pTooltip="Eliminar sección"
+                            (onClick)="eliminarSeccion(seccion)"
                         >
-                            <p-button
-                                icon="pi pi-trash"
-                                severity="danger"
-                                size="small"
-                                [rounded]="true"
-                                class="mi-auto mr-2"
-                                pTooltip="Eliminar sección"
-                                (onClick)="eliminarSeccion(seccion)"
-                            >
-                            </p-button>
-                        </div>
-                    </span>
-                </ng-template>
+                        </p-button>
+                    </div>
+                </span>
+            </ng-template>
 
-                <div class="seccion-content">
-                    <p-accordion styleClass="w-full">
-                        @for (
-                            pregunta of seccion.preguntas;
-                            track pregunta.id
-                        ) {
-                            <p-accordionTab iconPos="end">
-                                <ng-template pTemplate="header">
-                                    <span
-                                        class="flex align-items-center justify-content-start w-full"
+            <div class="seccion-content">
+                <p-accordion styleClass="w-full">
+                    @for (pregunta of seccion.preguntas; track pregunta.id) {
+                        <p-accordionTab iconPos="end">
+                            <ng-template pTemplate="header">
+                                <span
+                                    class="flex align-items-center justify-content-start w-full"
+                                >
+                                    <span class="font-bold">{{
+                                        pregunta.title
+                                    }}</span>
+                                    <p-button
+                                        icon="pi pi-trash"
+                                        severity="danger"
+                                        size="small"
+                                        [rounded]="true"
+                                        class="ml-auto mr-2"
+                                        pTooltip="Eliminar pregunta"
+                                        (onClick)="
+                                            $event.stopPropagation();
+                                            eliminarPregunta(
+                                                seccion.id,
+                                                pregunta
+                                            )
+                                        "
                                     >
-                                        <span class="font-bold">{{
-                                            pregunta.title
-                                        }}</span>
-                                        <p-button
-                                            icon="pi pi-trash"
-                                            severity="danger"
-                                            size="small"
-                                            [rounded]="true"
-                                            class="ml-auto mr-2"
-                                            pTooltip="Eliminar pregunta"
-                                            (onClick)="
-                                                $event.stopPropagation();
-                                                eliminarPregunta(
-                                                    seccion.id,
-                                                    pregunta
-                                                )
-                                            "
-                                        >
-                                        </p-button>
-                                    </span>
-                                </ng-template>
+                                    </p-button>
+                                </span>
+                            </ng-template>
 
-                                <div class="pregunta-content">
-                                    <div>
-                                        <label
-                                            for="pregunta"
-                                            class="block mb-2 font-semibold"
+                            <div class="pregunta-content">
+                                <div>
+                                    <label
+                                        for="pregunta"
+                                        class="block mb-2 font-semibold"
+                                    >
+                                        Pregunta
+                                        <span class="text-red-500 text-xs"
+                                            >(*) Obligatorio</span
                                         >
-                                            Pregunta
-                                            <span class="text-red-500 text-xs"
-                                                >(*) Obligatorio</span
-                                            >
-                                        </label>
-                                        <editor
-                                            class="w-full"
-                                            [init]="initEnunciado"
-                                            class="w-full"
-                                            placeholder="Escriba la pregunta aquí.."
-                                            [(ngModel)]="pregunta.cPregunta"
-                                        >
-                                        </editor>
-                                        <!--<p-editor
+                                    </label>
+                                    <editor
+                                        class="w-full"
+                                        [init]="initEnunciado"
+                                        class="w-full"
+                                        placeholder="Escriba la pregunta aquí.."
+                                        [(ngModel)]="pregunta.cPregunta"
+                                    >
+                                    </editor>
+                                    <!--<p-editor
                                             class="w-full"
                                             placeholder="Escriba la pregunta aquí..."
                                             [(ngModel)]="pregunta.cPregunta"
                                         >
                                         </p-editor>-->
-                                    </div>
-                                    <div class="grid">
-                                        <div class="col-12 md:col-6">
-                                            <div
-                                                class="mb-3"
-                                                style="
-                                                    width: 130%;
-                                                    max-width: none;
-                                                "
-                                            >
-                                                @for (
-                                                    alternativa of pregunta.alternativas;
-                                                    track alternativa.iAlternativaId;
-                                                    let idx = $index
-                                                ) {
+                                </div>
+                                <div class="grid">
+                                    <div class="col-12 md:col-6">
+                                        <div
+                                            class="mb-3"
+                                            style="width: 130%; max-width: none"
+                                        >
+                                            @for (
+                                                alternativa of pregunta.alternativas;
+                                                track alternativa.iAlternativaId;
+                                                let idx = $index
+                                            ) {
+                                                <div
+                                                    class="alternativa-item p-2 mb-2 border-round"
+                                                    [ngStyle]="{
+                                                        'border-left':
+                                                            alternativa.bAlternativaCorrecta
+                                                                ? '4px solid #22c55e'
+                                                                : 'inherit',
+                                                        background:
+                                                            alternativa.bAlternativaCorrecta
+                                                                ? 'rgb(227 253 237)'
+                                                                : 'transparent',
+                                                    }"
+                                                >
+                                                    <p-inputGroup class="mt-1">
+                                                        <p-inputGroupAddon>
+                                                            {{
+                                                                alternativa.cAlternativaLetra
+                                                            }}
+                                                        </p-inputGroupAddon>
+                                                        <input
+                                                            type="text"
+                                                            pInputText
+                                                            [(ngModel)]="
+                                                                alternativa.cAlternativaDescripcion
+                                                            "
+                                                            placeholder="Ingrese la alternativa"
+                                                        />
+                                                    </p-inputGroup>
+
                                                     <div
-                                                        class="alternativa-item p-2 mb-2 border-round"
-                                                        [ngStyle]="{
-                                                            'border-left':
-                                                                alternativa.bAlternativaCorrecta
-                                                                    ? '4px solid #22c55e'
-                                                                    : 'inherit',
-                                                            background:
-                                                                alternativa.bAlternativaCorrecta
-                                                                    ? 'rgb(227 253 237)'
-                                                                    : 'transparent',
-                                                        }"
+                                                        class="flex justify-content-end"
                                                     >
+                                                        <p-button
+                                                            icon="pi pi-trash"
+                                                            severity="danger"
+                                                            size="small"
+                                                            [text]="true"
+                                                            (onClick)="
+                                                                eliminarAlternativa(
+                                                                    pregunta,
+                                                                    idx
+                                                                )
+                                                            "
+                                                            *ngIf="
+                                                                pregunta
+                                                                    .alternativas
+                                                                    .length > 2
+                                                            "
+                                                        >
+                                                        </p-button>
+                                                        <p-checkbox
+                                                            [label]="
+                                                                'Respuesta correcta'
+                                                            "
+                                                            [inputId]="
+                                                                alternativa.iAlternativaId?.toString() ||
+                                                                'alt_' + idx
+                                                            "
+                                                            [value]="
+                                                                alternativa
+                                                            "
+                                                            [(ngModel)]="
+                                                                alternativa.bAlternativaCorrecta
+                                                            "
+                                                            [binary]="true"
+                                                            (onChange)="
+                                                                cambiarEstadoCheckbox(
+                                                                    alternativa.iAlternativaId ||
+                                                                        idx,
+                                                                    pregunta.alternativas
+                                                                )
+                                                            "
+                                                        >
+                                                        </p-checkbox>
+                                                    </div>
+
+                                                    @if (
+                                                        alternativa.bAlternativaCorrecta
+                                                    ) {
                                                         <p-inputGroup
                                                             class="mt-1"
                                                         >
-                                                            <p-inputGroupAddon>
-                                                                {{
-                                                                    alternativa.cAlternativaLetra
-                                                                }}
-                                                            </p-inputGroupAddon>
+                                                            <p-inputGroupAddon
+                                                                >Explicación</p-inputGroupAddon
+                                                            >
                                                             <input
                                                                 type="text"
                                                                 pInputText
                                                                 [(ngModel)]="
-                                                                    alternativa.cAlternativaDescripcion
+                                                                    alternativa.cAlternativaExplicacion
                                                                 "
-                                                                placeholder="Ingrese la alternativa"
+                                                                placeholder="Explicación de por qué la respuesta es correcta"
                                                             />
                                                         </p-inputGroup>
-
-                                                        <div
-                                                            class="flex justify-content-end"
-                                                        >
-                                                            <p-button
-                                                                icon="pi pi-trash"
-                                                                severity="danger"
-                                                                size="small"
-                                                                [text]="true"
-                                                                (onClick)="
-                                                                    eliminarAlternativa(
-                                                                        pregunta,
-                                                                        idx
-                                                                    )
-                                                                "
-                                                                *ngIf="
-                                                                    pregunta
-                                                                        .alternativas
-                                                                        .length >
-                                                                    2
-                                                                "
-                                                            >
-                                                            </p-button>
-                                                            <p-checkbox
-                                                                [label]="
-                                                                    'Respuesta correcta'
-                                                                "
-                                                                [inputId]="
-                                                                    alternativa.iAlternativaId?.toString() ||
-                                                                    'alt_' + idx
-                                                                "
-                                                                [value]="
-                                                                    alternativa
-                                                                "
-                                                                [(ngModel)]="
-                                                                    alternativa.bAlternativaCorrecta
-                                                                "
-                                                                [binary]="true"
-                                                                (onChange)="
-                                                                    cambiarEstadoCheckbox(
-                                                                        alternativa.iAlternativaId ||
-                                                                            idx,
-                                                                        pregunta.alternativas
-                                                                    )
-                                                                "
-                                                            >
-                                                            </p-checkbox>
-                                                        </div>
-
-                                                        @if (
-                                                            alternativa.bAlternativaCorrecta
-                                                        ) {
-                                                            <p-inputGroup
-                                                                class="mt-1"
-                                                            >
-                                                                <p-inputGroupAddon
-                                                                    >Explicación</p-inputGroupAddon
-                                                                >
-                                                                <input
-                                                                    type="text"
-                                                                    pInputText
-                                                                    [(ngModel)]="
-                                                                        alternativa.cAlternativaExplicacion
-                                                                    "
-                                                                    placeholder="Explicación de por qué la respuesta es correcta"
-                                                                />
-                                                            </p-inputGroup>
-                                                        }
-                                                    </div>
-                                                }
-
-                                                <div class="text-center mt-2">
-                                                    <p-button
-                                                        icon="pi pi-plus"
-                                                        label="Añadir alternativa"
-                                                        severity="primary"
-                                                        size="small"
-                                                        (onClick)="
-                                                            agregarAlternativa(
-                                                                pregunta
-                                                            )
-                                                        "
-                                                    >
-                                                    </p-button>
+                                                    }
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 md:col-6">
-                                            <div
-                                                class="flex justify-content-center align-items-center h-full"
-                                            >
+                                            }
+
+                                            <div class="text-center mt-2">
                                                 <p-button
-                                                    label="Adjuntar"
-                                                    severity="success"
-                                                    icon="pi pi-paperclip"
-                                                ></p-button>
+                                                    icon="pi pi-plus"
+                                                    label="Añadir alternativa"
+                                                    severity="primary"
+                                                    size="small"
+                                                    (onClick)="
+                                                        agregarAlternativa(
+                                                            pregunta
+                                                        )
+                                                    "
+                                                >
+                                                </p-button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-12 md:col-6">
+                                        <div
+                                            class="flex justify-content-center align-items-center h-full"
+                                        >
+                                            <p-button
+                                                label="Adjuntar"
+                                                severity="success"
+                                                icon="pi pi-paperclip"
+                                            ></p-button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </p-accordionTab>
-                        }
-                    </p-accordion>
+                            </div>
+                        </p-accordionTab>
+                    }
+                </p-accordion>
 
-                    <div class="text-center">
-                        <p-button
-                            icon="pi pi-check"
-                            label="Guardar pregunta"
-                            severity="success"
-                            class="btn-block"
-                            (onClick)="guardarPregunta(pregunta)"
-                        >
-                        </p-button>
-                    </div>
-
-                    <div class="text-center mt-3">
-                        <p-button
-                            icon="pi pi-plus"
-                            label="Agregar pregunta"
-                            severity="success"
-                            size="small"
-                            (onClick)="agregarPregunta(seccion)"
-                        >
-                        </p-button>
-                    </div>
+                <div class="text-center">
+                    <p-button
+                        icon="pi pi-check"
+                        label="Guardar pregunta"
+                        severity="success"
+                        class="btn-block"
+                        (onClick)="guardarPregunta(pregunta)"
+                    >
+                    </p-button>
                 </div>
-            </p-accordionTab>
-        }
-    </p-accordion>
-</p-panel>
+
+                <div class="text-center mt-3">
+                    <p-button
+                        icon="pi pi-plus"
+                        label="Agregar pregunta"
+                        severity="success"
+                        size="small"
+                        (onClick)="agregarPregunta(seccion)"
+                    >
+                    </p-button>
+                </div>
+            </div>
+        </p-accordionTab>
+    }
+</p-accordion>
 <app-agregar-seccion-encuesta
     [visible]="mostrarDialogoAgregarSeccionEncuesta"
     (visibleChange)="mostrarDialogoAgregarSeccionEncuesta = $event"

@@ -88,6 +88,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
       petition: 'get',
       group: 'cap',
       prefix: 'capacitaciones',
+      ruta: 'listarCapacitaciones',
       params: {
         iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
       },
@@ -95,7 +96,7 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     this.GeneralService.getGralPrefixx(data).subscribe({
       next: resp => {
         this.data = resp['data'];
-        console.log('Capacitaciones:', this.data);
+        // console.log('Capacitaciones:', this.data);
         this.capacitaciones = [...this.data]; // cargar desde servicio o mock
       },
       error: err => {

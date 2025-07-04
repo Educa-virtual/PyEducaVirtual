@@ -16,6 +16,7 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { IesPersonalComponent } from '../../../ies-personal/ies-personal.component'
 
 @Component({
     selector: 'app-config-hora-docente',
@@ -25,9 +26,10 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         PrimengModule,
         ContainerPageComponent,
         TablePrimengComponent,
+        IesPersonalComponent,
     ],
     templateUrl: './config-hora-docente.component.html',
-    styleUrl: './config-hora-docente.component.scss',
+    styleUrls: ['./config-hora-docente.component.scss'], // ✅ corregido
 })
 export class ConfigHoraDocenteComponent implements OnInit {
     items: MenuItem[]
@@ -37,6 +39,7 @@ export class ConfigHoraDocenteComponent implements OnInit {
     showCaption: string
     caption: string
     docentes: any[]
+    showFormulario = false
 
     private _confirmService = inject(ConfirmationModalService)
     constructor(
@@ -52,7 +55,7 @@ export class ConfigHoraDocenteComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('implemntacion')
+        console.log('implemntacion docente')
 
         try {
             this.form = this.fb.group({
@@ -84,8 +87,46 @@ export class ConfigHoraDocenteComponent implements OnInit {
     }
 
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'editar') {
-            console.log(item, 'btnTable')
+        if (accion === 'verificar_docente') {
+            this._confirmService.openConfiSave({
+                header: 'Advertencia de sistema',
+                message: '¿Desea generar perfil docente?',
+
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.verificarDocentes(item)
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+
+        if (accion === 'verificar') {
+            this._confirmService.openConfiSave({
+                header: 'Advertencia de sistema',
+                message: '¿Desea verificar y generar perfiles a docentes?',
+
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.verificarDocentes(item)
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
         }
         if (accion === 'retornar') {
             this._confirmService.openConfiSave({
@@ -109,46 +150,175 @@ export class ConfigHoraDocenteComponent implements OnInit {
                 },
             })
         }
-    }
-    accionBtnItem(accion) {
-        switch (accion) {
-            case 'guardar':
-                //this.addPersonal();
-                this.searchPersonalDocente()
-                //this.visible=false;
-                break
-            case 'editar':
-                //this.updatePersonal();
-                this.searchPersonalDocente()
-                //this.visible=false;
-                break
+        if (accion === 'agregar') {
+            this.showFormulario = true
+
+            //   this.router.navigate(['/gestion-institucional/asignar-docente'])
+        }
+        if (accion === 'eliminar') {
+            this._confirmService.openConfiSave({
+                message: '¿Estás seguro de que deseas eliminar registro?',
+                header: 'Advertencia del sistema',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.eliminarDocente(item)
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+        if (accion === 'habilitar') {
+            this._confirmService.openConfiSave({
+                message: '¿Estás seguro de que deseas habilitar registro?',
+                header: 'Advertencia del sistema',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.habilitarDocente(item)
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
         }
     }
-    accionesPrincipal: IActionContainer[] = [
-        {
-            labelTooltip: 'Retornar',
-            text: 'Retornar',
-            icon: 'pi pi-arrow-circle-left',
-            accion: 'retornar',
-            class: 'p-button-warning',
-        },
-        // {
-        //     labelTooltip: 'Asignar horas',
-        //     text: 'Asignar horas',
-        //     icon: 'pi pi-plus',
-        //     accion: 'agregar',
-        //     class: 'p-button-primary',
-        // },
-        {
-            labelTooltip: 'Exportar PDF',
-            text: 'Reporte',
-            icon: 'pi pi-file-pdf',
-            accion: 'agregar',
-            class: 'p-button-danger',
-        },
-    ]
+
+    verificarDocentes(item: any) {
+        this.query
+            .addAmbienteAcademico({
+                json: JSON.stringify({
+                    iPersId: item.iPersId ?? 0,
+                    iSedeId: this.configuracion[0].iSedeId,
+                    iYAcadId: this.configuracion[0].iYAcadId,
+                    iEntId: this.configuracion[0].iEntId ?? 10,
+                    iCredId: this.configuracion[0].iCredId ?? 0,
+                }),
+                _opcion: 'verificarDocentesSede',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'verificarDocentes')
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del sistema',
+                        detail:
+                            'Error en el procedimiento de búsqueda de docentes : ' +
+                            error.menssage,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del sistema',
+                        detail: 'Se realizó actualización de docentes',
+                    })
+                    this.searchPersonalDocente()
+                },
+            })
+    }
+
+    eliminarDocente(item: any) {
+        if (item.iPersId > 0) {
+            const params = {
+                esquema: 'acad',
+                tabla: 'personal_ies',
+                json: JSON.stringify({
+                    iEstado: 0,
+                }),
+                campo: 'iPersId',
+                condicion: item.iPersId,
+            }
+
+            this.query.updateAcademico(params).subscribe({
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje',
+                        detail:
+                            'Error. No se proceso petición ' + error.menssage,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        summary: 'Mensaje del sistema',
+                        severity: 'success',
+                        detail: 'Se elimino el registro de docente',
+                    })
+
+                    this.searchPersonalDocente()
+                },
+            })
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje de sistema',
+                detail:
+                    'Error en el procedimiento de eliminación de docente ID: ' +
+                    item.iPersId +
+                    ' incorrecto',
+            })
+        }
+    }
+
+    habilitarDocente(item: any) {
+        if (item.iPersId > 0) {
+            const params = {
+                esquema: 'acad',
+                tabla: 'personal_ies',
+                json: JSON.stringify({
+                    iEstado: 1,
+                }),
+                campo: 'iPersId',
+                condicion: item.iPersId,
+            }
+
+            this.query.updateAcademico(params).subscribe({
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje',
+                        detail:
+                            'Error. No se proceso petición ' + error.menssage,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        summary: 'Mensaje del sistema',
+                        severity: 'success',
+                        detail: 'Se habilito el registro de docente',
+                    })
+
+                    this.searchPersonalDocente()
+                },
+            })
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje de sistema',
+                detail:
+                    'Error en el procedimiento de eliminación de docente ID: ' +
+                    item.iPersId +
+                    ' incorrecto',
+            })
+        }
+    }
 
     searchPersonalDocente() {
+        this.docentes = []
         this.query
             .searchAmbienteAcademico({
                 json: JSON.stringify({
@@ -173,34 +343,81 @@ export class ConfigHoraDocenteComponent implements OnInit {
                             persona.cPersNombre
                         ).trim(),
                     }))
-
-                    console.log(this.docentes, 'personal ies')
                 },
                 error: (error) => {
-                    console.error('Error procedimiento BD:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del sistema',
+                        detail:
+                            'Error en el procedimiento de búsqueda de docentes : ' +
+                            error.menssage,
+                    })
                 },
                 complete: () => {
-                    console.log('Request completed')
-                    // this.getYearCalendarios(this.formCalendario.value)
+                    this.stepService.docentes = this.docentes
                 },
             })
     }
 
+    accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
+        {
+            labelTooltip: 'Verificar docentes',
+            text: 'Verificar docentes',
+            icon: 'pi pi-check-circle',
+            accion: 'verificar',
+            class: 'p-button-success',
+        },
+        {
+            labelTooltip: 'Agregar docente',
+            text: 'Asignar docente',
+            icon: 'pi pi-plus',
+            accion: 'agregar',
+            class: 'p-button-primary',
+        },
+        // {
+        //     labelTooltip: 'Exportar PDF',
+        //     text: 'Reporte',
+        //     icon: 'pi pi-file-pdf',
+        //     accion: 'agregar',
+        //     class: 'p-button-danger',
+        // },
+    ]
+
     selectedItems = []
     actions: IActionTable[] = [
         {
-            labelTooltip: 'Editar',
-            icon: 'pi pi-pencil',
-            accion: 'editar',
+            labelTooltip: 'Verificar docentes',
+            icon: 'pi pi-pen-to-square',
             type: 'item',
+            accion: 'verificar_docente',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
+            labelTooltip: 'Habilitar',
+            icon: 'pi pi-check-circle',
+            accion: 'habilitar',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado === '0'
+            },
+        },
+        {
             labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
+            icon: 'pi pi-ban',
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado === '1'
+            },
         },
     ]
     actionsLista: IActionTable[]
@@ -254,14 +471,31 @@ export class ConfigHoraDocenteComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
+        {
+            type: 'estado-activo',
+            width: '3rem',
+            field: 'docente',
+            header: 'Reg docente',
+            text_header: 'center',
+            text: 'center',
+        },
 
-        // {
-        //     type: 'actions',
-        //     width: '3rem',
-        //     field: 'actions',
-        //     header: 'Acciones',
-        //     text_header: 'center',
-        //     text: 'center',
-        // },
+        {
+            type: 'estado-activo',
+            width: '3rem',
+            field: 'iEstado',
+            header: 'Estado',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'actions',
+            width: '3rem',
+            field: 'actions',
+            header: 'Acciones',
+            text_header: 'center',
+            text: 'center',
+        },
     ]
 }

@@ -27,7 +27,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         TablePrimengComponent,
     ],
     templateUrl: './ies-personal.component.html',
-    styleUrl: './ies-personal.component.scss',
+    styleUrls: ['./ies-personal.component.scss'],
 })
 export class IesPersonalComponent implements OnInit {
     form: FormGroup

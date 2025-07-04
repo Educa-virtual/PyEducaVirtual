@@ -126,6 +126,7 @@ export class AdmStepGradoSeccionService {
     iSedeId: number
     iYAcadId: number
     iNivelTipoId: number
+    iCredId: number
 
     //Variables requeridas para el step de ambientes
     tipo_ambiente: any[] = []
@@ -142,6 +143,9 @@ export class AdmStepGradoSeccionService {
     //variables de plan de estudios
     servicio_educativo: any[] = []
     programacion_curricular: any[] = []
+
+    //variables de horas del docente
+    docentes: any = []
 
     constructor() {
         //       this.initializeData()

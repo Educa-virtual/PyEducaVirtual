@@ -1,4 +1,4 @@
-<div class="grid p-fluid mt-2">
+<div class="grid mt-2">
     <p-toast />
     <div class="field col-12 md:col-4">
         <div
@@ -9,6 +9,7 @@
                 legend="Filtrado de datos"
                 [toggleable]="true"
                 [collapsed]="false"
+                *ngIf="mostrar"
             >
                 <form [formGroup]="formFiltrado" class="grid">
                     <div class="col-12">
@@ -26,11 +27,17 @@
                                 styleClass="w-full"
                             >
                             </p-dropdown>
-                            <label for="iServEdId">Servicio Educativo</label>
+                            <label for="iServEdId"
+                                >Servicio Educativo ({{ serv_horas }} Hrs
+                                semanales)</label
+                            >
                         </span>
                     </div>
 
-                    <div class="col-12 mt-2 grid flex align-items-end">
+                    <div
+                        class="col-12 mt-2 grid flex align-items-end"
+                        *ngIf="programacion_curricular.length > 0"
+                    >
                         <div class="col-10">
                             <span class="p-float-label">
                                 <p-dropdown
@@ -41,7 +48,7 @@
                                     optionValue="iGradoId"
                                     formControlName="iGradoId"
                                     class="max-w-max"
-                                    (onChange)="accionBtnItemTable($event)"
+                                    (onChange)="getFiltradoGrado()"
                                 >
                                 </p-dropdown>
                                 <label for="iGradoId">Grado Académico</label>
@@ -53,19 +60,24 @@
                                 type="button"
                                 icon="pi pi-search"
                                 class="p-button-sm p-button-primary mt-3"
-                                (click)="
-                                    accionBtnItemTable({
-                                        accion: 'addGrado',
-                                        item: '',
-                                    })
-                                "
+                                (click)="getFiltradoGrado()"
                                 aria-label="Agregar grado"
                             ></button>
                         </div>
                     </div>
-                    <div class="field col-12">
+                    <div
+                        class="field col-12"
+                        *ngIf="programacion_curricular.length > 0"
+                    >
+                        <p-message
+                            [severity]="'warn'"
+                            [text]="mensaje"
+                            *ngIf="mensaje; not: null"
+                            closable
+                        />
+
                         <p-table
-                            [value]="gradosUnicos"
+                            [value]="grados_unicos"
                             class="p-datatable-sm"
                             responsiveLayout="scroll"
                         >
@@ -104,6 +116,7 @@
                 legend="Actualización de horas"
                 [toggleable]="true"
                 [style]="{ width: '100%' }"
+                *ngIf="!mostrar"
             >
                 <!-- <p-avatar image="assets/images/logo-proyecto.svg" class="mr-2" size="xlarge" shape="circle" /> -->
                 <form [formGroup]="formNivelGrado">
@@ -131,6 +144,7 @@
                             <label for="cCursoNombre">Área curricular</label>
                         </span>
                     </div>
+
                     <div class="col-12 mt-2 grid flex align-items-end">
                         <div class="field col-12 md:col-4">
                             <span class="p-float-label">
@@ -170,78 +184,78 @@
                             </span>
                         </div>
                     </div>
+                    <div class="field col-12">
+                        <span class="p-float-label">
+                            + Horas adicionales:
+                            {{ hora_adicional[0]?.iTotalHoras || 0 }} + Total de
+                            horas semanales:
+                            {{ total_horas_grado }}
+                        </span>
+                    </div>
+                    <div class="col-12 mt-2 grid flex align-items-end">
+                        <div class="field col-12 md:col-8">
+                            <p-checkbox
+                                formControlName="cDeclaracionJurada"
+                                [binary]="true"
+                                label="Acepto realizar cambios"
+                            />
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <!-- icon="pi pi-search" -->
+                            <button
+                                pButton
+                                type="button"
+                                class="p-button-success"
+                                size="small"
+                                (click)="addDistribucionHoras()"
+                                aria-label="Agregar grado"
+                                [label]="'Registrar horas'"
+                                [disabled]="formNivelGrado.invalid"
+                            ></button>
+                        </div>
+                        <p-message
+                            [severity]="'warn'"
+                            [text]="mensaje"
+                            *ngIf="mensaje; not: null"
+                            closable
+                        />
+                    </div>
                 </form>
             </p-fieldset>
         </div>
-
-        <p-fieldset
-            legend="Declaracion Jurada"
-            [toggleable]="true"
-            [collapsed]="true"
-        >
-            <div class="field col-12 md:col-8">
-                <!-- <p-checkbox formControlName="cDeclaracionJurada" [binary]="true"
-                  label="Declaro haber recibido los siguientes documentos" />
-              <ul>
-                  <p-checkbox formControlName="cDeclaracionJurada" [binary]="true" label="Copia de DNI" />
-              </ul>
-              <ul>
-                  <p-checkbox formControlName="cDeclaracionJurada" [binary]="true"
-                      label="Ficha única de matrícula" />
-              </ul>
-              <ul>
-                  <p-checkbox formControlName="cDeclaracionJurada" [binary]="true"
-                      label="Certificado de estudios" />
-              </ul>
-              <ul>
-                  <p-checkbox formControlName="cDeclaracionJurada" [binary]="true"
-                      label="Otros(CE, PAS, PN o DJ)" />
-              </ul> -->
-            </div>
-            <div class="field col-12 md:col-4">
-                <!--  <button
-      pButton
-      [label]="'Registrar traslado'"
-      icon="pi pi-check"
-      size="small"
-      class="p-button-success"
-      [disabled]="form.invalid"
-      (click)="confirmarTraslado()"
-  ></button> -->
-            </div>
-        </p-fieldset>
     </div>
 
-    <div class="field col-12 md:col-8">
-        <p-fieldset
-            legend="Distribución de horas por grado"
-            [toggleable]="true"
-            [collapsed]="false"
-        >
-            <div class="col-12">
-                @if (programacion_curricular.length > 0) {
-                    <app-table-primeng
-                        [columnas]="columns"
-                        [showCaption]="true"
-                        [data]="programacion_curricular"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="true"
-                        rowsPerPageOptions="10"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actions"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
-                } @else {
-                    <img
-                        src="assets/images/icons/sin-datos.gif"
-                        alt="logo"
-                        width="20%"
-                    />
-                }
-                <ng-container slot="caption-content"> </ng-container>
-            </div>
-        </p-fieldset>
+    <div class="col-12 md:col-8">
+        <!-- <p-fieldset legend="Distribución de horas por grado" [toggleable]="true" [collapsed]="false"> -->
+
+        @if (programacion_curricular.length > 0) {
+            <app-table-primeng
+                [columnas]="columns"
+                [showCaption]="true"
+                [data]="filtrado_programacion_curricular"
+                (accionBtnItem)="accionBtnItemTable($event)"
+                [showPaginator]="true"
+                rowsPerPageOptions="15"
+                [(selectedRowData)]="selectedItems"
+                [actions]="actions"
+                [showSearchTable]="true"
+                [placeholder]="'Ingresar datos a buscar...'"
+            >
+                <!-- <ng-container slot="caption-content"> </ng-container> -->
+            </app-table-primeng>
+        } @else {
+            <p [align]="'center'">
+                <img
+                    src="assets/images/icons/sin-datos.gif"
+                    alt="logo"
+                    width="30%"
+                    style="position: center"
+                />
+            </p>
+        }
+
+        <!-- 
+        </p-fieldset> -->
 
         <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
       <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->

@@ -10,7 +10,9 @@
         <div class="grid p-fluid mt-2 card-container">
             <div class="field col-12 md:col-12">
                 <app-toolbar-primeng
-                    title=" Resumen configuración para grados y secciones de la IE 2024"
+                    title=" Resumen configuración para grados y secciones de la IE {{
+                        anio
+                    }}"
                 ></app-toolbar-primeng>
             </div>
 
@@ -30,7 +32,7 @@
                         <p-inputGroup>
                             <p-inputGroupAddon
                                 >Aulas habilitadas:
-                                {{ total_aulas }}</p-inputGroupAddon
+                                {{ cantidad_ambientes }}</p-inputGroupAddon
                             >
                         </p-inputGroup>
                     </div>
@@ -38,7 +40,7 @@
                     <div class="field col-12 md:col-4">
                         <p-inputGroup>
                             <p-inputGroupAddon
-                                >Ambientes de otro tipo: 0
+                                >Grados y Secciones: {{ total_aulas }}
                             </p-inputGroupAddon>
                         </p-inputGroup>
                     </div>
@@ -50,8 +52,6 @@
                         [data]="r_secciones"
                         [showCaption]="false"
                         [showPaginator]="false"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [(selectedRowData)]="accionBtnItemTable"
                         [actions]="actions"
                     >
                         <!-- <ng-container slot="caption-content"> </ng-container> -->
@@ -83,7 +83,8 @@
                     <div class="field col-12 md:col-3">
                         <p-inputGroup>
                             <p-inputGroupAddon
-                                >Total de Docentes: 2
+                                >Total de Docentes Asignados:
+                                {{ docentes_Asignados }}
                             </p-inputGroupAddon>
                         </p-inputGroup>
                     </div>
@@ -91,24 +92,44 @@
                     <div class="field col-12 md:col-3">
                         <p-inputGroup>
                             <p-inputGroupAddon
-                                >Docentes pendientes: 0
+                                >Docentes pendientes: {{ docentes_pendientes }}
                             </p-inputGroupAddon>
                         </p-inputGroup>
                     </div>
                 </div>
 
                 <p-panel header="Resumen de horas asignadas de la I.E.">
-                    <app-table-primeng
-                        [columnas]="columnHora"
-                        [data]="r_horas"
-                        [showCaption]="false"
-                        [showPaginator]="false"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [(selectedRowData)]="accionBtnItemTable"
-                        [actions]="actions"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Curso</th>
+                                <th *ngFor="let grado of lista_grados">
+                                    Grado {{ grado.cGradoNombre }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fila of tablaPivot; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ fila.cursoNombre }}</td>
+                                <td
+                                    *ngFor="let grado of lista_grados"
+                                    align="center"
+                                >
+                                    <span class="ml-2 font-medium"
+                                        >{{
+                                            fila['asig_' + grado.iGradoId] || 0
+                                        }}
+                                        de
+                                        {{
+                                            fila['grado_' + grado.iGradoId] || 0
+                                        }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </p-panel>
             </div>
         </div>

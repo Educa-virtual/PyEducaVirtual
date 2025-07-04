@@ -81,6 +81,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
     caption: string = '' // Etiqueta de modal
     selAnio: string
     config = []
+    iCredId: number
 
     dremoYear: any
     dremoiYAcadId: any
@@ -102,12 +103,12 @@ export class ConfigGradoSeccionComponent implements OnInit {
         this.stepService.perfil = perfil
         this.dremoYear = this.store.getItem('dremoYear')
         this.dremoiYAcadId = this.store.getItem('dremoiYAcadId')
+        this.iCredId = perfil.iCredId
     }
 
     ngOnInit() {
         //variables
-        console.log(this.stepService.perfil)
-        console.log(this.store.getItem('dremoPerfil'), 'dremo perfil')
+
         this.form = this.fb.group({
             iConfigId: [''],
             iYAcadId: [''],
@@ -379,7 +380,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
         }
         if (accion === 'editar') {
             //    this.stepService.setListaConfig(item)
-
             const registro = [
                 {
                     iConfigId: item.iConfigId,
@@ -411,6 +411,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
             ]
 
             this.stepService.configuracion = registro
+            this.stepService.iCredId = this.iCredId
 
             //console.log(registro, 'configuracion constante')
 

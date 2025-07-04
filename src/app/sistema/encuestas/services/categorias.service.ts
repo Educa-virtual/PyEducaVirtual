@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
-import { map } from 'rxjs'
 
 @Injectable({
     providedIn: 'root',
@@ -10,9 +9,13 @@ export class CategoriasService {
     constructor(private http: HttpClient) {}
 
     obtenerCategorias() {
-        return this.http
-            .get(`${environment.backendApi}/enc/categorias`)
-            .pipe(map((resp) => resp['data']))
+        return this.http.get(`${environment.backendApi}/enc/categorias`)
+        //.pipe(map((resp) => resp['data']))
+    }
+
+    obtenerDetallesCategoria(id: string) {
+        return this.http.get(`${environment.backendApi}/enc/categorias/${id}`)
+        //.pipe(map((resp) => resp['data']))
     }
 
     registrarCategoria(categoria: any) {

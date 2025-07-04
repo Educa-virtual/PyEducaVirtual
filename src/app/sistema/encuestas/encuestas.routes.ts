@@ -16,7 +16,7 @@ const routes: Routes = [
         },
     },
     {
-        path: 'categorias/{iCategoriaEncuestaId}/encuestas',
+        path: 'categorias/:iCategoriaEncuestaId/lista-encuestas',
         component: ListaEncuestasComponent,
         canActivate: [RoleGuard],
         data: {

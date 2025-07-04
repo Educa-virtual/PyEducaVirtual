@@ -63,7 +63,7 @@ export class CategoriasEncuestaComponent implements OnInit {
     obtenerCategorias() {
         this.categoriasService.obtenerCategorias().subscribe({
             next: (respuesta: any) => {
-                this.categoriasInicial = respuesta.map(
+                this.categoriasInicial = respuesta.data.map(
                     (categoria: ICategoria) => ({
                         ...categoria,
                     })

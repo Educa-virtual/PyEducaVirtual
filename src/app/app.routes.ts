@@ -14,12 +14,8 @@ import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/area
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
-import { CategoriasEncuestaComponent } from './sistema/encuestas/categorias/categorias-encuestas.component'
-import { ListaCategoriasComponent } from './sistema/encuestas/lista-categorias/lista-categorias.component'
-import { AccesoEncuestaComponent } from './sistema/encuestas/lista-categorias/acceso-encuesta/acceso-encuesta.component'
-import { InformacionGeneralComponent } from './sistema/encuestas/lista-categorias/gestion-encuesta-configuracion/informacion-general/informacion-general.component'
+//import { CategoriasEncuestaComponent } from './sistema/encuestas/categorias/categorias-encuestas.component'
 import { EstudianteEncuestaComponent } from './sistema/encuestas/estudiante-encuesta/estudiante-encuesta.component'
-import { LlenadoPreguntasEncuestaComponent } from './sistema/encuestas/encuestas-por-categoria/llenado-preguntas-encuesta/llenado-preguntas-encuesta.component'
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
     { path: 'inicio', component: InicioComponent },
@@ -113,7 +109,7 @@ export const routes: Routes = [
                 component: AuxiliarComponent,
             },
             // encuestas
-            {
+            /*{
                 path: 'categorias-encuesta',
                 component: CategoriasEncuestaComponent,
             },
@@ -130,7 +126,7 @@ export const routes: Routes = [
             {
                 path: 'llenado-pregunta-encuesta',
                 component: LlenadoPreguntasEncuestaComponent,
-            },
+            },*/
             // encuestas por categoria
             //{
             //  path: 'encuesta-por-categoria',
@@ -147,10 +143,10 @@ export const routes: Routes = [
                 component: GestionEncuestaConfiguracionComponent,
             },
             ,*/
-            {
+            /*{
                 path: 'acceso-encuesta',
                 component: AccesoEncuestaComponent,
-            },
+            },*/
             {
                 path: 'estudiante-encuesta',
                 component: EstudianteEncuestaComponent,

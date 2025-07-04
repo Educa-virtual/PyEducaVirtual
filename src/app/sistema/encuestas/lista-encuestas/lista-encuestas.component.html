@@ -2,7 +2,7 @@
     <ng-template pTemplate="header">
         <div class="flex justify-content-between align-items-center w-full">
             <span class="text-xl font-bold text-primary">{{
-                titleListaCategoria
+                categoria?.cNombre
             }}</span>
             <!--<button
                 pButton
@@ -26,7 +26,7 @@
     <app-table-primeng
         [columnas]="columns"
         [showCaption]="true"
-        [data]="dataCategorias"
+        [data]="dataEncuestas"
         (accionBtnItem)="accionBtnItemTable($event)"
         [showPaginator]="true"
         sortMode="single"
@@ -41,7 +41,9 @@
     >
     </app-table-primeng>
 </p-panel>
-<app-gestion-encuesta-configuracion
+
+<p-toast></p-toast>
+<!--<app-gestion-encuesta-configuracion
     [visible]="mostrarDialogoConfiguracion"
     (visibleChange)="(mostrarDialogoConfiguracion)"
 >
@@ -50,4 +52,4 @@
     [visible]="mostrarDialogoAccesoEncuesta"
     (visibleChange)="({ mostrarDialogoAccesoEncuesta })"
 >
-</app-acceso-encuesta>
+</app-acceso-encuesta>-->

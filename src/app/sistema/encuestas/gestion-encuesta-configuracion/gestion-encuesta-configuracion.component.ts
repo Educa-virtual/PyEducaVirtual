@@ -40,12 +40,14 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
     // Propiedades del stepper
     activeStep: number = 0
     totalSteps = 2
+    activeItem: any
+    previousItem: any
+    // Encuesta configuracion
+    encuestaConfiguracionFormGroup: FormGroup
     @Input() visible: boolean = false
     @Output() visibleChange = new EventEmitter<boolean>()
     @Output() mostrarDialogoConfiguracion = new EventEmitter<any>()
-
-    // FormGroup para la encuesta
-    encuestaFormGroup: FormGroup
+    @ViewChild('stepper') stepper: Stepper
 
     // Datos para dropdowns
     tiposEncuesta = [
@@ -59,11 +61,23 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
         { id: 2, nombre: 'Avanzada' },
         { id: 3, nombre: 'Personalizada' },
     ]
-
-    @ViewChild('stepper') stepper: Stepper
+    //stepper
+    steps = [
+        {
+            label: 'Información General',
+            route: '/encuestas/gestion-encuesta-configuracion/informacion-general',
+            stepIndex: 0,
+        },
+        {
+            label: 'Población Objetivo',
+            route: '/encuestas/gestion-encuesta-configuracion/poblacion-objetivo',
+            stepIndex: 1,
+        },
+    ]
 
     private _formBuilder = inject(FormBuilder)
     private _messageService = inject(MessageService)
+    router: any
 
     constructor() {
         this.initializeForm()
@@ -74,7 +88,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
     }
 
     initializeForm() {
-        this.encuestaFormGroup = this._formBuilder.group({
+        this.encuestaConfiguracionFormGroup = this._formBuilder.group({
             // Campos del paso 1
             nombreEncuesta: [null, [Validators.required]],
             descripcionEncuesta: [null, [Validators.required]],
@@ -101,7 +115,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
             const camposInvalidos: string[] = []
 
             camposStep1.forEach((campo) => {
-                const control = this.encuestaFormGroup.get(campo)
+                const control = this.encuestaConfiguracionFormGroup.get(campo)
                 if (control?.invalid) {
                     camposInvalidos.push(campo)
                 }
@@ -113,7 +127,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
                     summary: 'Faltan datos en campos requeridos',
                     detail: 'Complete todos los campos marcados como obligatorios',
                 })
-                this.encuestaFormGroup.markAllAsTouched()
+                this.encuestaConfiguracionFormGroup.markAllAsTouched()
                 return
             }
 
@@ -137,7 +151,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
         const camposInvalidos: string[] = []
 
         camposStep2.forEach((campo) => {
-            const control = this.encuestaFormGroup.get(campo)
+            const control = this.encuestaConfiguracionFormGroup.get(campo)
             if (control?.invalid) {
                 camposInvalidos.push(campo)
             }
@@ -149,7 +163,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
                 summary: 'Complete la configuración',
                 detail: 'Complete todos los campos requeridos del paso 2',
             })
-            this.encuestaFormGroup.markAllAsTouched()
+            this.encuestaConfiguracionFormGroup.markAllAsTouched()
             return
         }
 
@@ -176,7 +190,7 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
 
     // Guardar la encuesta
     private guardarEncuesta() {
-        const datosEncuesta = this.encuestaFormGroup.value
+        const datosEncuesta = this.encuestaConfiguracionFormGroup.value
 
         console.log('Datos de la encuesta:', datosEncuesta)
         this._messageService.add({
@@ -192,10 +206,25 @@ export class GestionEncuestaConfiguracionComponent implements OnInit {
     // Resetear formulario (opcional)
     resetFormulario() {
         this.activeStep = 0
-        this.encuestaFormGroup.reset()
+        this.encuestaConfiguracionFormGroup.reset()
     }
     onHide() {
         this.visible = false
         this.visibleChange.emit(this.visible)
+    }
+    handleStepChange(newItem: any) {
+        this.activeItem = newItem
+        this.activeStep = newItem.stepIndex
+        this.router.navigate([newItem.route])
+    }
+
+    updateActiveStepFromRoute() {
+        const url = this.router.url
+        if (url.includes('/informacion-general')) {
+            this.activeStep = 0
+        } else if (url.includes('/poblacion-objetivo')) {
+            this.activeStep = 1
+        }
+        this.activeItem = this.steps[this.activeStep]
     }
 }

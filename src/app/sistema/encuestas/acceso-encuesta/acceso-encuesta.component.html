@@ -1,1 +1,160 @@
-<p>acceso-encuesta works!</p>
+<p-dialog
+    header="Agregar seccion"
+    [(visible)]="visible"
+    (onHide)="onHide()"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="nueva-categoria-dialog"
+    [style]="{ width: '800px', height: '600px' }"
+>
+    <div class="p-4">
+        <!-- Título Administradores -->
+        <div class="mb-4">
+            <h2 class="text-primary text-xl font-bold m-0">Administradores</h2>
+        </div>
+
+        <!-- Campo de búsqueda -->
+        <div class="mb-4">
+            <span class="p-input-icon-right w-full">
+                <i class="pi pi-search"></i>
+                <input
+                    pInputText
+                    type="text"
+                    placeholder="Buscar"
+                    class="w-full"
+                />
+            </span>
+        </div>
+
+        <!-- Lista de usuarios/administradores -->
+        <div class="mb-4">
+            <!-- Usuario 1 -->
+            <div
+                class="flex align-items-center justify-content-between py-3 border-bottom-1 surface-border"
+            >
+                <div class="flex align-items-center">
+                    <p-avatar
+                        label="MP"
+                        size="large"
+                        shape="circle"
+                        class="mr-3"
+                    ></p-avatar>
+                    <span class="font-medium"
+                        >María del Pilar Laura Ramírez Chipana</span
+                    >
+                </div>
+                <div>
+                    <p-dropdown
+                        [options]="[
+                            { label: 'Propietario', value: 'propietario' },
+                            { label: 'Editor', value: 'editor' },
+                        ]"
+                        placeholder="Propietario"
+                        styleClass="w-auto"
+                    ></p-dropdown>
+                </div>
+            </div>
+
+            <!-- Usuario 2 -->
+            <div class="flex align-items-center justify-content-between py-3">
+                <div class="flex align-items-center">
+                    <p-avatar
+                        label="JC"
+                        size="large"
+                        shape="circle"
+                        class="mr-3"
+                    ></p-avatar>
+                    <span class="font-medium">Julio Cesar Perez Sanchez</span>
+                </div>
+                <div>
+                    <p-dropdown
+                        [options]="[
+                            { label: 'Propietario', value: 'propietario' },
+                            { label: 'Editor', value: 'editor' },
+                        ]"
+                        placeholder="Editor"
+                        styleClass="w-auto"
+                    ></p-dropdown>
+                </div>
+            </div>
+        </div>
+
+        <!-- Separador -->
+        <div class="mb-4">
+            <p-divider></p-divider>
+        </div>
+
+        <!-- Sección Acceso a resultados -->
+        <div class="mb-4">
+            <!-- Título -->
+            <div class="mb-3">
+                <h3 class="text-primary text-lg font-semibold m-0">
+                    Acceso a resultados
+                </h3>
+            </div>
+
+            <!-- Especialistas DREMO -->
+            <div
+                class="flex align-items-center justify-content-between py-2 border-bottom-1 surface-border"
+            >
+                <span class="font-medium">Especialistas DREMO</span>
+                <div>
+                    <p-dropdown
+                        [options]="[
+                            { label: 'Detalle', value: 'detalle' },
+                            { label: 'Resumen', value: 'resumen' },
+                            { label: 'Ninguno', value: 'ninguno' },
+                        ]"
+                        placeholder="Detalle"
+                        styleClass="w-auto"
+                    ></p-dropdown>
+                </div>
+            </div>
+
+            <!-- Especialistas UGEL -->
+            <div
+                class="flex align-items-center justify-content-between py-2 border-bottom-1 surface-border"
+            >
+                <span class="font-medium">Especialistas UGEL</span>
+                <div>
+                    <p-dropdown
+                        [options]="[
+                            { label: 'Detalle', value: 'detalle' },
+                            { label: 'Resumen', value: 'resumen' },
+                            { label: 'Ninguno', value: 'ninguno' },
+                        ]"
+                        placeholder="Resumen"
+                        styleClass="w-auto"
+                    ></p-dropdown>
+                </div>
+            </div>
+
+            <!-- Directores -->
+            <div class="flex align-items-center justify-content-between py-2">
+                <span class="font-medium">Directores</span>
+                <div>
+                    <p-dropdown
+                        [options]="[
+                            { label: 'Detalle', value: 'detalle' },
+                            { label: 'Resumen', value: 'resumen' },
+                            { label: 'Ninguno', value: 'ninguno' },
+                        ]"
+                        placeholder="Ninguno"
+                        styleClass="w-auto"
+                    ></p-dropdown>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón Finalizar -->
+        <div class="flex justify-content-end pt-3">
+            <p-button
+                label="Finalizar"
+                icon="pi pi-check"
+                severity="success"
+            ></p-button>
+        </div>
+    </div>
+</p-dialog>

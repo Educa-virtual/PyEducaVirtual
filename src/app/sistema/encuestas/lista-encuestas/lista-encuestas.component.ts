@@ -111,6 +111,8 @@ export class ListaEncuestasComponent implements OnInit {
             case 'ver':
                 this.selectedItem = item
                 this.verCategoria()
+                this.abrirDialogoAccesoEncuesta()
+
                 break
             case 'editar':
                 this.selectedItem = item
@@ -162,5 +164,12 @@ export class ListaEncuestasComponent implements OnInit {
 
     cerrarDialogoConfiguracion() {
         this.mostrarDialogoConfiguracion = false
+    }
+
+    abrirDialogoAccesoEncuesta() {
+        this.mostrarDialogoAccesoEncuesta = true
+    }
+    cerrarDialogoAccesoEncuesta() {
+        this.mostrarDialogoAccesoEncuesta = false
     }
 }

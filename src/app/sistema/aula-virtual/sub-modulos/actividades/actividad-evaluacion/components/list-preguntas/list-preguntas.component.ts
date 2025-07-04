@@ -20,7 +20,6 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { columnsBancoPreguntas } from '../../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas'
 import { removeHTML } from '@/app/shared/utils/remove-html'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ViewPreguntasComponent } from '../../../../aula-banco-preguntas/aula-banco-preguntas/components/view-preguntas/view-preguntas.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
@@ -513,7 +512,7 @@ export class ListPreguntasComponent implements OnChanges {
     mapLocalPregunta(pregunta) {
         if (pregunta.iEncabPregId == -1) {
             pregunta.isLocal = true
-            pregunta.iEvalPregId = generarIdAleatorio()
+            pregunta.iEvalPregId = 0
         } else {
             pregunta.preguntas = this.addLocalPreguntas(pregunta.preguntas)
         }
@@ -531,7 +530,7 @@ export class ListPreguntasComponent implements OnChanges {
     addLocalPreguntas = (preguntas) => {
         return preguntas.map((item) => {
             item.isLocal = true
-            item.iEvalPregId = generarIdAleatorio()
+            item.iEvalPregId = 0
             return item
         })
     }

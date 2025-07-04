@@ -257,7 +257,14 @@ export class ApiAulaService {
             )
             .pipe(map((resp) => resp.data))
     }
-    obtenerReporteFinalDeNotas(params: { iIeCursoId }) {
+    obtenerReporteFinalDeNotas(params: {
+        iIeCursoId
+        iYAcadId
+        iSedeId
+        iSeccionId
+        iNivelGradoId
+        iEstudianteId
+    }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
             {
@@ -308,6 +315,100 @@ export class ApiAulaService {
             {
                 params, // Enviar los datos como parámetros
             }
+        )
+    }
+    guardarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/guardarAnuncios`,
+            data
+        )
+    }
+    eliminarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/eliminarAnuncios`,
+            data // Enviar los datos como parámetros
+        )
+    }
+    fijarAnuncio(data: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/fijarAnuncios`,
+            data // Enviar los datos como parámetros
+        )
+    }
+    obtenerAnuncios(params: any) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/anuncios/listarAnuncios`,
+            params // Enviar los datos como parámetros
+        )
+    }
+    // consultas para las capacitaciones docentes
+    obtenerTipoCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/tipo-capacitaciones/listarTipoCapacitaciones`,
+            data
+        )
+    }
+    obtenerNivelPedagogico(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/nivel-pedagogicos/listarNivelPedagogicos`,
+            data
+        )
+    }
+    obtenerTipoPublico(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/tipo-publicos/listarTipoPublicos`,
+            data
+        )
+    }
+    guardarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/guardarCapacitaciones`,
+            data
+        )
+    }
+    eliminarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/eliminarCapacitaciones`,
+            data
+        )
+    }
+    actualizarCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/actualizarCapacitaciones`,
+            data
+        )
+    }
+    obtenerCapacitacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/cap/capacitaciones/listarCapacitaciones`,
+            data
+        )
+    }
+    guardarCuestionario(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/programacion-actividades/store`,
+            data
+        )
+    }
+
+    guardarReunionVirtual(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/programacion-actividades/store`,
+            data
+        )
+    }
+
+    actualizarReunionVirtual(data, ruta) {
+        return this._http.put(
+            `${this.baseUrlApi}/aula-virtual/reunion-virtuales/${ruta}`,
+            data
+        )
+    }
+
+    EliminarReunionVirtual(data) {
+        return this._http.delete(
+            `${this.baseUrlApi}/aula-virtual/reunion-virtuales`,
+            data
         )
     }
 }

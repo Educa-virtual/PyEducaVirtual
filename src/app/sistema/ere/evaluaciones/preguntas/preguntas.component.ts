@@ -91,6 +91,8 @@ export class PreguntasComponent implements OnInit {
         content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
         paste_as_text: true,
+        branding: false,
+        statusbar: false,
     }
     initEnunciado: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -107,6 +109,8 @@ export class PreguntasComponent implements OnInit {
         content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
         paste_as_text: true,
+        branding: false,
+        statusbar: false,
     }
 
     initAlternativa: EditorComponent['init'] = {
@@ -115,11 +119,13 @@ export class PreguntasComponent implements OnInit {
         menubar: false,
         selector: 'textarea',
         placeholder: 'Escribe aqui...',
-        height: 100,
+        height: 120,
         toolbar: false,
         content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
         paste_as_text: true,
+        branding: false,
+        statusbar: false,
     }
     encabezado = ''
     preguntas = []

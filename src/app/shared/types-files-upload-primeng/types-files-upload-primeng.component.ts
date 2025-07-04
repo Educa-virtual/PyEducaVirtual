@@ -11,11 +11,17 @@ import { PrimengModule } from '@/app/primeng.module'
 import { NgIf } from '@angular/common'
 import { GeneralService } from '@/app/servicios/general.service'
 import { environment } from '@/environments/environment'
+import { MaterialEducativoComponent } from '@/app/sistema/docente/material-educativo/material-educativo.component'
 
 @Component({
     selector: 'app-types-files-upload-primeng',
     standalone: true,
-    imports: [ModalPrimengComponent, PrimengModule, NgIf],
+    imports: [
+        ModalPrimengComponent,
+        PrimengModule,
+        NgIf,
+        MaterialEducativoComponent,
+    ],
     templateUrl: './types-files-upload-primeng.component.html',
     styleUrl: './types-files-upload-primeng.component.scss',
 })
@@ -31,11 +37,13 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
         file: true,
         url: true,
         youtube: true,
-        repository: false,
+        repository: true,
         image: false,
     }
+    public data = [{}]
 
     showModal: boolean = false
+    showModalPreview: boolean = false
     titleFileTareas: string = ''
     typeUpload: string
 
@@ -67,6 +75,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                 this.titleFileTareas = 'Añadir Enlace de Youtube'
                 break
             case 'repository':
+                this.showModalPreview = true
                 this.titleFileTareas = 'Añadir Archivo de mis Recursos'
                 break
             case 'image':

@@ -1,3 +1,6 @@
+<div class="flex justify-content-start">
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" />
+</div>
 <section class="flex flex-column gap-4">
     <p-tabView styleClass="actividad-tabs">
         <p-tabPanel>
@@ -9,375 +12,18 @@
                     </span>
                 </div>
             </ng-template>
-            <div class="flex grid tab-content">
-                <div
-                    class="card"
-                    [class]="iPerfilId !== ESTUDIANTE ? 'col-12' : 'col-6'"
-                >
-                    <h2>Tarea: {{ data?.cTareaTitulo }}</h2>
-                    <div class="grid">
-                        <!-- Columna 1: Muestra la fecha de inicio y la hora límite -->
-                        <div class="col-6 md:col-6 flex flex-column gap-2">
-                            <!-- Título de la sección con icono y estilo -->
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Fecha inicio</span
-                            >
-                            <!-- Contenido de la fecha de inicio -->
-                            <p>
-                                {{ data?.dtTareaInicio | date }}
-
-                                <span class="font-bold">Hora Limite: </span>
-                                {{ data?.dtTareaInicio | date: 'shortTime' }}
-                            </p>
-                        </div>
-                        <!-- Columna 2: Muestra la fecha de entrega y la hora límite -->
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Fecha de Entrega</span
-                            >
-                            <!-- Contenido de la fecha de entrega -->
-                            <p>
-                                {{ data?.dtTareaFin | date }}
-                                <span class="font-bold">Hora Limite: </span>
-                                {{ data?.dtTareaFin | date: 'shortTime' }}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="p-fluid">
-                        <div class="p-field">
-                            <p *ngIf="true">Para estudiantes</p>
-                            <h3>
-                                <label for="descripcion" class="p-text-bold"
-                                    >Descripción de la tarea</label
-                                >
-                            </h3>
-                            <!--  en esta seccion se esta usando Directiva de PrimeNG para aplicar estilos y funcionalidades al campo de texto
-                 Desactiva el campo si no existe 'data.cTareaDescripcion' o si 'isDisabled' es verdadero -->
-                            <input
-                                id="descripcion"
-                                type="text"
-                                pInputText
-                                [value]="data?.cTareaDescripcion"
-                                [disabled]="
-                                    !data?.cTareaDescripcion || isDisabled
-                                "
-                                placeholder="Ingrese el título de la tarea"
-                                class="p-inputtext-sm"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <!-- Título para la sección de recursos -->
-                        <h2>Recursos:</h2>
-                        <app-recursos-lista [files]="FilesTareas">
-                        </app-recursos-lista>
-                    </div>
-                    instrumentos
-                    <div>
-                        <app-rubricas
-                            [title]="'Rúbricas'"
-                            mode="SELECTION"
-                            [params]="params"
-                            (rubricaSelectedChange)="accionRubrica($event)"
-                        ></app-rubricas>
-                    </div>
-                </div>
-                <!-- Esta tarjeta se muestra solo si iPerfilId es 8, lo que indica que solo ciertos usuarios pueden ver este contenido -->
-                <div class="card col-6" [hidden]="iPerfilId !== ESTUDIANTE">
-                    <!-- Verifica si hay una tarea individual para el estudiante y no es una tarea grupal -->
-
-                    @if (
-                        iEstadoEstudianteTarea !== '' &&
-                        !iEstadoEstudianteTareaGrupal
-                    ) {
-                        <!-- Esta sección solo se muestra si iEstadoEstudianteTarea es '0', lo que indica que la tarea no se ha entregado aún -->
-                        <div
-                            class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTarea !== '0'"
-                        >
-                            <h4>Entregar Tareas</h4>
-                            <p-divider></p-divider>
-                            <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
-                            <div
-                                class="flex align-items-center justify-content-center"
-                            >
-                                <app-file-upload-primeng
-                                    [nameFile]="'tareas-estudiantes'"
-                                    [nameOption]="'tareas-estudiantes'"
-                                    (actionFileUpload)="accionBtnItem($event)"
-                                ></app-file-upload-primeng>
-                            </div>
-                            <!-- Lista de archivos adjuntos si existen archivos en FilesTareasEstudiantes -->
-                            @if (FilesTareasEstudiantes.length) {
-                                <div class="col-12">
-                                    <label for="" class="mt-2"
-                                        >Lista de Adjuntos</label
-                                    >
-                                    <!-- Itera sobre cada archivo adjunto en FilesTareasEstudiantes -->
-
-                                    @for (
-                                        item of FilesTareasEstudiantes;
-                                        track item;
-                                        let idx = $index
-                                    ) {
-                                        <p-inputGroup class="mt-1">
-                                            <p-inputGroupAddon>
-                                                <!-- Verifica el tipo de archivo y muestra un ícono -->
-
-                                                @switch (item.type) {
-                                                    @case (1) {
-                                                        <i
-                                                            class="pi pi-upload"
-                                                            style="
-                                                                color: #333437;
-                                                            "
-                                                        ></i>
-                                                    }
-                                                }
-                                            </p-inputGroupAddon>
-                                            <!-- Muestra el nombre del archivo, deshabilitado para no ser editable -->
-                                            <input
-                                                type="text"
-                                                pInputText
-                                                [placeholder]="item.name"
-                                                disabled
-                                            />
-                                            <button
-                                                type="button"
-                                                pButton
-                                                icon="pi pi-trash"
-                                                (click)="
-                                                    FilesTareasEstudiantes.splice(
-                                                        idx,
-                                                        1
-                                                    )
-                                                "
-                                                class="p-button-danger"
-                                            >
-                                                &nbsp;
-                                                <!-- Botón para eliminar el archivo del array FilesTareasEstudiantes -->
-                                            </button>
-                                        </p-inputGroup>
-                                    }
-                                </div>
-                            }
-                            <p-divider></p-divider>
-
-                            <!-- Botón para enviar la tarea -->
-                            <div>
-                                <p-toast></p-toast>
-                            </div>
-
-                            <div
-                                class="flex align-items-center justify-content-center"
-                            >
-                                <p-button
-                                    label="Enviar Tarea"
-                                    icon="pi pi-check"
-                                    iconPos="right"
-                                    (onClick)="entregarEstudianteTarea()"
-                                    raised
-                                    severity="success"
-                                ></p-button>
-                            </div>
-                        </div>
-
-                        @if (miTarea) {
-                            <div>{{ miTarea }}</div>
-                        }
-
-                        <!-- Muestra mensaje de tarea evaluada si el estado de la tarea es '1' -->
-
-                        <div
-                            class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTarea !== '1'"
-                        >
-                            <h4 class="mb-3">Tu Trabajo ya ha sido evaluado</h4>
-
-                            <p-divider class="mb-3"></p-divider>
-                            <!-- Campo de texto para mostrar la calificación -->
-                            <div class="p-field p-fluid mb-3">
-                                <label for="notaEstudiante"
-                                    >Escala Calificación</label
-                                >
-                                <input
-                                    id="notaEstudiante"
-                                    type="text"
-                                    pInputText
-                                    [(ngModel)]="notaTareaEstudiante"
-                                    class="p-inputtext-lg"
-                                    placeholder="Aqui muestra la calificación"
-                                    [disabled]="isDisabled"
-                                />
-                            </div>
-                            <p-divider class="mb-3"></p-divider>
-                            <!-- Campo de texto para el comentario del docente -->
-
-                            <div class="p-field p-fluid mb-3">
-                                <label for="comentarioDocente"
-                                    >Conclusión Descriptiva</label
-                                >
-                                <textarea
-                                    id="comentarioDocente"
-                                    pInputTextarea
-                                    rows="5"
-                                    [(ngModel)]="comentarioTareaEstudiante"
-                                    class="p-inputtextarea-lg"
-                                    placeholder="Muestra Comentario Docente"
-                                    [disabled]="isDisabled"
-                                >
-                                </textarea>
-                            </div>
-                        </div>
-                    }
-                    <!-- Si no hay tarea individual y existe una tarea grupal -->
-                    @if (
-                        !iEstadoEstudianteTarea &&
-                        iEstadoEstudianteTareaGrupal !== ''
-                    ) {
-                        <div
-                            class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTareaGrupal !== '0'"
-                        >
-                            <!-- Esta sección es para la entrega de tarea grupal y se muestra si el estado es '0' -->
-
-                            <h3>Trabajo Grupal</h3>
-                            <p-divider></p-divider>
-                            <!-- Componente de subida de archivos para tareas grupales -->
-                            <div
-                                class="flex align-items-center justify-content-center"
-                            >
-                                <app-file-upload-primeng
-                                    [nameFile]="'tarea-cabecera-grupos'"
-                                    [nameOption]="'tarea-cabecera-grupos'"
-                                    (actionFileUpload)="accionBtnItem($event)"
-                                ></app-file-upload-primeng>
-                            </div>
-                            <!-- Lista de archivos adjuntos para la tarea grupal -->
-                            @if (FilesTareasEstudiantesGrupal.length) {
-                                <div class="col-12">
-                                    <label for="" class="mt-2"
-                                        >Lista de Adjuntos</label
-                                    >
-                                    <!-- Itera sobre cada archivo adjunto en FilesTareasEstudiantesGrupal -->
-                                    @for (
-                                        item of FilesTareasEstudiantesGrupal;
-                                        track item;
-                                        let idx = $index
-                                    ) {
-                                        <p-inputGroup class="mt-1">
-                                            <p-inputGroupAddon>
-                                                <!-- Muestra un ícono basado en el tipo de archivo -->
-                                                @switch (item.type) {
-                                                    @case (1) {
-                                                        <i
-                                                            class="pi pi-upload"
-                                                            style="
-                                                                color: #333437;
-                                                            "
-                                                        ></i>
-                                                    }
-                                                }
-                                                <!-- Muestra el nombre del archivo y un botón para eliminarlo -->
-                                            </p-inputGroupAddon>
-                                            <input
-                                                type="text"
-                                                pInputText
-                                                [placeholder]="item.name"
-                                                disabled
-                                            />
-                                            <!-- Botón para enviar la tarea grupal -->
-                                            <button
-                                                type="button"
-                                                pButton
-                                                icon="pi pi-trash"
-                                                (click)="
-                                                    FilesTareasEstudiantesGrupal.splice(
-                                                        idx,
-                                                        1
-                                                    )
-                                                "
-                                                class="p-button-danger"
-                                            >
-                                                &nbsp;
-                                            </button>
-                                        </p-inputGroup>
-                                    }
-                                </div>
-                            }
-                            <!-- Componente p-divider de PrimeNG para agregar una línea divisoria horizontal -->
-                            <p-divider></p-divider>
-                            <!-- Componente p-toast de PrimeNG para mostrar notificaciones emergentes -->
-                            <p-toast></p-toast>
-                            <!-- Contenedor div con clases para centrar contenido horizontal y verticalmente -->
-                            <div
-                                class="flex align-items-center justify-content-center"
-                            >
-                                <p-button
-                                    label="Enviar Tareass"
-                                    icon="pi pi-check"
-                                    iconPos="right"
-                                    (onClick)="entregarEstudianteTareaGrupal()"
-                                    raised
-                                    severity="success"
-                                ></p-button>
-                            </div>
-                        </div>
-                        <!--Se muestra únicamente cuando la tarea grupal está en el estado evaluado-->
-                        <div
-                            class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTareaGrupal !== '1'"
-                        >
-                            <h4>El Trabajo grupal ya ha sido evaluado</h4>
-                            <p-divider></p-divider>
-                            <p-inputGroup>
-                                <p-inputGroupAddon>
-                                    Escala de Calificación
-                                </p-inputGroupAddon>
-                                <input
-                                    pInputText
-                                    [(ngModel)]="notaTareaEstudianteGrupal"
-                                />
-                            </p-inputGroup>
-                            <p-divider></p-divider>
-                            <!-- Grupo de entrada de PrimeNG -->
-                            <p-inputGroup>
-                                <!-- Este elemento proporciona una etiqueta descriptiva para el área de texto -->
-
-                                <p-inputGroupAddon>
-                                    Conclusión Descriptiva
-                                </p-inputGroupAddon>
-                                <textarea
-                                    pInputText
-                                    rows="5"
-                                    [(ngModel)]="
-                                        comentarioTareaEstudianteGrupal
-                                    "
-                                    [disabled]="isDisabled"
-                                    placeholder="Escribe la conclusión descriptiva aquí..."
-                                >
-                                </textarea>
-                            </p-inputGroup>
-                        </div>
-                    }
-                </div>
-            </div>
+            <app-toolbar-primeng
+                [title]="
+                    'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')
+                "
+            >
+            </app-toolbar-primeng>
+            <app-descripcion-actividades [data]="data" [isDocente]="isDocente">
+            </app-descripcion-actividades>
         </p-tabPanel>
 
         @if (iPerfilId !== ESTUDIANTE) {
             <p-tabPanel>
-                <!-- Este es un contenedor de plantilla para un encabezado fijo con la clase 'header-fixed'. -->
                 <ng-template pTemplate="header" class="header-fixed">
                     <div class="flex align-items-center flex-column gap-2">
                         <app-icon name="matPeople"></app-icon>
@@ -386,6 +32,13 @@
                         </span>
                     </div>
                 </ng-template>
+                <app-toolbar-primeng
+                    [title]="
+                        'Tarea: ' +
+                        (data?.cTareaTitulo || 'Título no disponible')
+                    "
+                >
+                </app-toolbar-primeng>
                 <!--Es un contenedor de nivel de bloque en HTML que se usa comúnmente para agrupar y organizar otros elementos.-->
                 <div class="flex flex-column gap-4 tab-content">
                     <div class="grid">
@@ -481,144 +134,17 @@
                                                     </div>
                                                 </div>
                                                 <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
-                                                <p-table
-                                                    #dv
-                                                    class="col-12 hoverTable"
-                                                    [value]="estudiantes"
-                                                    paginator="false"
-                                                    [globalFilterFields]="[
-                                                        'cPersPaterno',
-                                                        'cPersMaterno',
-                                                        'cPersNombre',
-                                                    ]"
-                                                    styleClass="p-datatable-sm"
-                                                    [scrollable]="true"
-                                                    scrollHeight="300px"
+                                                <app-card-orderlist
+                                                    class="col-12"
+                                                    [data]="estudiantes"
+                                                    (datoSeleccionado)="
+                                                        obtenerEstudianteSeleccionado(
+                                                            $event
+                                                        )
+                                                    "
                                                 >
-                                                    <!-- Plantilla de encabezado que incluye el filtro de búsqueda -->
-                                                    <ng-template
-                                                        pTemplate="caption"
-                                                    >
-                                                        <div
-                                                            class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
-                                                        >
-                                                            <p-iconField
-                                                                iconPosition="left"
-                                                            >
-                                                                <p-inputIcon
-                                                                    styleClass="pi pi-search text-md"
-                                                                />
-                                                                <input
-                                                                    pInputText
-                                                                    type="text"
-                                                                    class="py-2"
-                                                                    (input)="
-                                                                        onGlobalFilter(
-                                                                            dv,
-                                                                            $event
-                                                                        )
-                                                                    "
-                                                                    placeholder="Buscar por apellidos y nombres"
-                                                                />
-                                                            </p-iconField>
-                                                        </div>
-                                                    </ng-template>
-
-                                                    <!-- Plantilla de encabezado de la tabla -->
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <tr
-                                                            class="sticky-header th"
-                                                        >
-                                                            <th>#</th>
-                                                            <th>Apellidos</th>
-                                                            <th>Nombres</th>
-                                                            <th>Estado</th>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <!-- Fila de la tabla que se renderiza por cada estudiante en el contexto -->
-                                                    <ng-template
-                                                        pTemplate="body"
-                                                        let-estudiante
-                                                        let-rowIndex="rowIndex"
-                                                    >
-                                                        <tr
-                                                            (click)="
-                                                                getTareaRealizada(
-                                                                    estudiante
-                                                                );
-                                                                nEstudiante =
-                                                                    rowIndex
-                                                            "
-                                                            [class]="
-                                                                nEstudiante ===
-                                                                rowIndex
-                                                                    ? 'bg-green-200'
-                                                                    : ''
-                                                            "
-                                                        >
-                                                            <td>
-                                                                {{
-                                                                    rowIndex + 1
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante.cPersPaterno
-                                                                }}
-
-                                                                {{
-                                                                    estudiante.cPersMaterno
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante?.cPersNombre
-                                                                }}
-                                                            </td>
-
-                                                            <td
-                                                                style="
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                <div
-                                                                    class="w-1rem h-1rem border-circle ml-3"
-                                                                    [ngClass]="
-                                                                        estudiante.cEstado ===
-                                                                        '0'
-                                                                            ? 'bg-red-500'
-                                                                            : estudiante.cEstado ===
-                                                                                '2'
-                                                                              ? 'bg-yellow-500'
-                                                                              : 'bg-green-500'
-                                                                    "
-                                                                ></div>
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-
-                                                    <!-- Fila de la tabla que se renderiza por cada estudiante en el contexto
-                                            Es una directiva de Angular que permite definir una plantilla reutilizable-->
-
-                                                    <ng-template
-                                                        pTemplate="emptymessage"
-                                                        let-columns
-                                                    >
-                                                        <tr>
-                                                            <td
-                                                                [attr.colspan]="
-                                                                    8
-                                                                "
-                                                            >
-                                                                No se
-                                                                encontraron
-                                                                resultados.
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                </p-table>
+                                                    <!-- (datoSeleccionado)="updateSelectedEstudiante($event)" -->
+                                                </app-card-orderlist>
                                             </div>
                                         </p-accordionTab>
                                     } @else {
@@ -1002,7 +528,12 @@
                                             [legend]="cTareaTitulo"
                                             [toggleable]="true"
                                         >
-                                            <div class="grid">
+                                            <div
+                                                class="grid"
+                                                *ngIf="
+                                                    cTareaEstudianteUrlEstudiante
+                                                "
+                                            >
                                                 @if (
                                                     cTareaEstudianteUrlEstudiante.length
                                                 ) {
@@ -1397,4 +928,4 @@
     [iEstudianteId]="iEstudianteIdGrupo"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-transferir-grupo>
-<p-confirmDialog />
+<p-confirmDialog></p-confirmDialog>

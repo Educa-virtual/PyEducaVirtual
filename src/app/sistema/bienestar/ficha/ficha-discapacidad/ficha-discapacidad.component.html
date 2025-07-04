@@ -1,14 +1,31 @@
 <br />
 
 <form [formGroup]="formDiscapacidad">
-    <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iFichaDGId" />
-
+    <div class="grid p-fluid p-2">
+        <div class="col-12">
+            <p-messages [closable]="false" severity="info">
+                <ng-template pTemplate="content">
+                    <p>
+                        Solo debe llenar esta sección si el estudiante tiene
+                        alguna limitación o discapacidad
+                        <strong>diagnosticada por un médico</strong>, de lo
+                        contrario puede dejar esta sección en blanco y continuar
+                        a la siguiente sección.
+                    </p>
+                </ng-template>
+            </p-messages>
+        </div>
         <div class="col-12 lg:col-6">
             <p-fieldset
                 legend="Indique si el estudiante tiene alguna limitación o discapacidad"
             >
-                <div class="grid">
+                <div
+                    class="grid"
+                    *ngIf="
+                        controles_discapacidades &&
+                        controles_discapacidades.length > 0
+                    "
+                >
                     <div
                         class="col-12"
                         *ngFor="
@@ -16,33 +33,29 @@
                             let i = index
                         "
                     >
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="
-                                        handleSwitchLimitacionChange(
-                                            $event,
-                                            discapacidad['value']
-                                        )
-                                    "
-                                    formControlName="iDiscId"
-                                />
-                                <span>{{ discapacidad['label'] }}</span>
-                            </p-inputGroupAddon>
-                            @if (
-                                visibleLimitacionesInput[
-                                    discapacidad['value']
-                                ] === true
-                            ) {
-                                <input
-                                    type="text"
-                                    formControlName="cDiscFichaObs"
-                                    pInputText
-                                    placeholder="Especifique si está diagnosticado o no, severidad o si necesita apoyo o acomodaciones"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(controles_discapacidades.at(i)).controls[
+                                    'bDiscFicha'
+                                ]
+                            "
+                            [addonLabel]="discapacidad['label']"
+                            inputType="textarea"
+                            [inputInitRows]="3"
+                            [inputMinRows]="3"
+                            [inputMaxRows]="6"
+                            [inputControl]="
+                                $any(controles_discapacidades.at(i)).controls[
+                                    'cDiscFichaObs'
+                                ]
+                            "
+                            inputPlaceholder="Especifique cuando fue diagnosticada, la severidad y si necesita apoyo o acomodaciones"
+                            [infoAdicional]="bDiscFicha"
+                        />
+                        <ng-template #bDiscFicha>
+                            Especifique cuando fue diagnosticada, la severidad y
+                            si necesita apoyo o acomodaciones
+                        </ng-template>
                     </div>
                 </div>
             </p-fieldset>
@@ -53,83 +66,58 @@
             >
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="
-                                        handleSwitchProgramaChange(
-                                            $event,
-                                            'conadis'
-                                        )
-                                    "
-                                    formControlName="bFichaDGEstaEnCONADIS"
-                                />
-                                <span>CONADIS</span>
-                            </p-inputGroupAddon>
-                            @if (visibleProgramaInput['conadis'] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cCodigoCONADIS"
-                                    pInputText
-                                    placeholder="Código de carnet *"
-                                    class="group-element"
-                                    maxlength="50"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(formDiscapacidad).controls[
+                                    'bFichaDGEstaEnCONADIS'
+                                ]
+                            "
+                            addonLabel="CONADIS"
+                            inputType="text"
+                            [inputControl]="
+                                $any(formDiscapacidad).controls[
+                                    'cFichaDGCodigoCONADIS'
+                                ]
+                            "
+                            [inputMaxlength]="50"
+                            inputPlaceholder="Código de carnet *"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bFichaDGEstaEnOMAPED"
-                                    (onChange)="
-                                        handleSwitchProgramaChange(
-                                            $event,
-                                            'omaped'
-                                        )
-                                    "
-                                />
-                                <span>OMAPED</span>
-                            </p-inputGroupAddon>
-                            @if (visibleProgramaInput['omaped'] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cCodigoOMAPED"
-                                    pInputText
-                                    placeholder="Código de carnet *"
-                                    class="group-element"
-                                    maxlength="50"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(formDiscapacidad).controls[
+                                    'bFichaDGEstaEnOMAPED'
+                                ]
+                            "
+                            addonLabel="OMAPED"
+                            inputType="text"
+                            [inputControl]="
+                                $any(formDiscapacidad).controls[
+                                    'cFichaDGCodigoOMAPED'
+                                ]
+                            "
+                            [inputMaxlength]="50"
+                            inputPlaceholder="Código identificador o fecha de inscripción *"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bFichaDGEstaEnOtro"
-                                    (onChange)="
-                                        handleSwitchProgramaChange(
-                                            $event,
-                                            'otro_programa'
-                                        )
-                                    "
-                                />
-                                <span>Otro</span>
-                            </p-inputGroupAddon>
-                            @if (
-                                visibleProgramaInput['otro_programa'] === true
-                            ) {
-                                <input
-                                    type="text"
-                                    formControlName="cOtroProgramaDiscapacidad"
-                                    pInputText
-                                    placeholder="Especifique otro programa"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            [switchControl]="
+                                $any(formDiscapacidad).controls[
+                                    'bOtroProgramaDiscapacidad'
+                                ]
+                            "
+                            addonLabel="OTRO PROGRAMA"
+                            inputType="text"
+                            [inputControl]="
+                                $any(formDiscapacidad).controls[
+                                    'cOtroProgramaDiscapacidad'
+                                ]
+                            "
+                            [inputMaxlength]="50"
+                            inputPlaceholder="Especifique otro programa"
+                        />
                     </div>
                 </div>
             </p-fieldset>
@@ -146,23 +134,13 @@
             (onClick)="salir()"
             severity="secondary"
         />
-        @if (!ficha_registrada) {
-            <p-button
-                type="button"
-                label="Guardar y continuar"
-                icon="pi pi-save"
-                severity="success"
-                (click)="guardar()"
-            />
-        } @else {
-            <p-button
-                type="button"
-                label="Actualizar y continuar"
-                icon="pi pi-save"
-                severity="success"
-                (click)="actualizar()"
-            />
-        }
+        <p-button
+            type="button"
+            label="Actualizar y continuar"
+            icon="pi pi-save"
+            severity="success"
+            (click)="actualizar()"
+        />
     </div>
 </div>
 <p-toast></p-toast>

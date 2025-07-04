@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Subject } from 'rxjs'
-import { map, takeUntil } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment'
@@ -80,6 +80,13 @@ export class DatosFichaBienestarService implements OnDestroy {
     pandemias: Array<object>
     seguros_salud: Array<object>
 
+    /* ficha recreacion */
+    deportes: Array<object>
+    transportes: Array<object>
+    pasatiempos: Array<object>
+    actividades: Array<object>
+    estados_relacion: Array<object>
+
     formGeneral: FichaGeneral
     formFamiliar: FichaFamiliar
     formVivienda: FichaVivienda
@@ -89,26 +96,35 @@ export class DatosFichaBienestarService implements OnDestroy {
     formSalud: FichaSalud
     formDiscapacidad: FichaDiscapacidad
 
-    searchFichas(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichas`, data)
+    listarFichas(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/listarFichas`, data)
     }
 
-    searchFicha(data: any): Promise<any> {
-        return this.http
-            .post(`${baseUrl}/bienestar/searchFicha`, data)
-            .toPromise()
+    listarEstudiantesApoderado(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/listarEstudiantesApoderado`,
+            data
+        )
     }
 
-    searchFichaGeneral(data: any): Promise<any> {
-        return this.http
-            .post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
-            .pipe(
-                map((data: any) => {
-                    this.formGeneral = data.data[0]
-                    return this.formGeneral
-                })
-            )
-            .toPromise()
+    crearFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/crearFicha`, data)
+    }
+
+    cancelarDeclaracion(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/cancelarDeclaracion`, data)
+    }
+
+    verFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFicha`, data)
+    }
+
+    borrarFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/borrarFicha`, data)
+    }
+
+    verFichaGeneral(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaGeneral`, data)
     }
 
     guardarFichaGeneral(data: any) {
@@ -122,16 +138,8 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchFichaEconomico(data: any): Promise<any> {
-        return this.http
-            .post(`${baseUrl}/bienestar/searchFichaEconomico`, data)
-            .pipe(
-                map((data: any) => {
-                    this.formEconomico = data.data[0]
-                    return this.formEconomico
-                })
-            )
-            .toPromise()
+    verFichaEconomico(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaEconomico`, data)
     }
 
     guardarFichaEconomico(data: any) {
@@ -163,13 +171,13 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/borrarFichaFamiliar`, data)
     }
 
-    showFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichaFamiliar`, data)
+    verFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaFamiliar`, data)
     }
 
-    searchFamiliares(data: any) {
+    listarFamiliares(data: any) {
         return this.http.post(
-            `${baseUrl}/bienestar/searchFichaFamiliares`,
+            `${baseUrl}/bienestar/listarFichaFamiliares`,
             data
         )
     }
@@ -193,11 +201,26 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchFichaRecreacion(data: any) {
+    verFichaAlimentacion(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaAlimentacion`, data)
+    }
+
+    guardarFichaAlimentacion(data: any) {
         return this.http.post(
-            `${baseUrl}/bienestar/searchFichaRecreacion`,
+            `${baseUrl}/bienestar/guardarFichaAlimentacion`,
             data
         )
+    }
+
+    actualizarFichaAlimentacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaAlimentacion`,
+            data
+        )
+    }
+
+    verFichaRecreacion(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaRecreacion`, data)
     }
 
     guardarFichaRecreacion(data: any) {
@@ -214,8 +237,40 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    /*
-     * Funciones para popular parametros de formularios de ficha
+    verFichaDiscapacidad(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaDiscapacidad`, data)
+    }
+
+    guardarFichaDiscapacidad(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/guardarFichaDiscapacidad`,
+            data
+        )
+    }
+
+    actualizarFichaDiscapacidad(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaDiscapacidad`,
+            data
+        )
+    }
+
+    verFichaSalud(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verFichaSalud`, data)
+    }
+
+    guardarFichaSalud(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarFichaSalud`, data)
+    }
+
+    actualizarFichaSalud(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarFichaSalud`, data)
+    }
+
+    /**
+     *
+     * FUNCTIONES PARA POPULAR PARAMETROS DE FORMULARIOS DE FICHA
+     *
      */
 
     /**
@@ -223,12 +278,14 @@ export class DatosFichaBienestarService implements OnDestroy {
      */
     getFichaParametros() {
         if (!this.parametros) {
-            return this.http.get(`${baseUrl}/bienestar/createFicha`).pipe(
-                map((data: any) => {
-                    this.parametros = data.data[0]
-                    return this.parametros
-                })
-            )
+            return this.http
+                .get(`${baseUrl}/bienestar/obtenerParametrosFicha`)
+                .pipe(
+                    map((data: any) => {
+                        this.parametros = data.data[0]
+                        return this.parametros
+                    })
+                )
         }
         return of(this.parametros)
     }
@@ -272,8 +329,8 @@ export class DatosFichaBienestarService implements OnDestroy {
         if (!this.tipos_ies && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
             this.tipos_ies = items.map((tipo_ie) => ({
-                value: tipo_ie.iNivelEstudiosId,
-                label: tipo_ie.cNivelEstudiosNombre,
+                value: tipo_ie.iTipoIeEstId,
+                label: tipo_ie.cTipoIeEstNombre,
             }))
             return this.tipos_ies
         }
@@ -290,6 +347,14 @@ export class DatosFichaBienestarService implements OnDestroy {
             return this.tipos_familiares
         }
         return this.tipos_familiares
+    }
+
+    getEstadosRelacion() {
+        return [
+            { value: 1, label: 'Buena' },
+            { value: 2, label: 'Regular' },
+            { value: 3, label: 'Mala' },
+        ]
     }
 
     getNacionalidades(data: any) {
@@ -370,7 +435,6 @@ export class DatosFichaBienestarService implements OnDestroy {
         if (!iDptoId) {
             return null
         }
-        console.log(this.provincias, 'provincias')
         return this.provincias.filter((provincia: any) => {
             if (provincia.iDptoId === iDptoId) {
                 return provincia
@@ -404,18 +468,6 @@ export class DatosFichaBienestarService implements OnDestroy {
             }
             return null
         })
-    }
-
-    getLenguas() {
-        if (!this.lenguas) {
-            this.lenguas = [
-                { label: 'ESPAÑOL', value: '1' },
-                { label: 'QUECHUA', value: '2' },
-                { label: 'AYMARA', value: '3' },
-                { label: 'INGLÉS', value: '4' },
-            ]
-        }
-        return this.lenguas
     }
 
     getReligiones(data: any) {
@@ -594,6 +646,50 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.seguros_salud
     }
 
+    getDeportes(data: any) {
+        if (!this.deportes && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iDeporteId,
+                label: item.cDeporteNombre,
+            }))
+        }
+        return this.deportes
+    }
+
+    getTransportes(data: any) {
+        if (!this.transportes && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iTransporteId,
+                label: item.cTransporteNombre,
+            }))
+        }
+        return this.transportes
+    }
+
+    getPasatiempos(data: any) {
+        if (!this.pasatiempos && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iPasaTiempoId,
+                label: item.cPasaTiempoNombre,
+            }))
+        }
+        return this.pasatiempos
+    }
+
+    getActividades(data: any) {
+        if (!this.actividades && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iPasaTiempoId,
+                label: item.cPasaTiempoNombre,
+            }))
+        }
+        return this.actividades
+    }
+
     getRangosSueldo(data: any) {
         if (!this.rangos_sueldo && data) {
             const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
@@ -638,28 +734,15 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.jornadas_trabajo
     }
 
-    getPandemias() {
-        if (!this.pandemias) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'pandemias',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.pandemias = items.map((religion) => ({
-                            value: religion.iPandemiaId,
-                            label: religion.cPandemiaNombre,
-                        }))
-                        return this.pandemias
-                    })
-                )
+    getPandemias(data: any) {
+        if (!this.pandemias && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((item: any) => ({
+                value: item.iPandemiaId,
+                label: item.cPandemiaNombre,
+            }))
         }
-        return of(this.pandemias)
+        return this.pandemias
     }
 
     subirArchivo(data: any) {
@@ -674,32 +757,34 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
-    searchDosis(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/dosis/index`, data)
+    listarDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/listarDosis`, data)
     }
 
-    agregarDosis(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/dosis/save`, data)
+    verDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/verDosis`, data)
+    }
+
+    guardarDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarDosis`, data)
+    }
+
+    actualizarDosis(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarDosis`, data)
     }
 
     borrarDosis(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/dosis/delete`, data)
+        return this.http.post(`${baseUrl}/bienestar/borrarDosis`, data)
+    }
+
+    descargarFicha(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/descargarFicha`, data, {
+            responseType: 'blob',
+        })
     }
 
     ngOnDestroy() {
         this.onDestroy$.next(true)
         this.onDestroy$.complete()
-    }
-
-    getEstudiantesPorAnio(iPerApodr: number, iIieeId: number, anio: number) {
-        return this.http.get(
-            `${baseUrl}/estudiantes/${iPerApodr}/${iIieeId}/${anio}`
-        )
-    }
-
-    downloadFicha(id: number, anio: number) {
-        return this.http.get(`${baseUrl}/bienestar/ficha-pdf/${id}/${anio}`, {
-            responseType: 'blob',
-        })
     }
 }

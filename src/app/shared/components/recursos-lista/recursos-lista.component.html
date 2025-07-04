@@ -1,5 +1,5 @@
 <ul class="flex flex-column gap-2 list-none p-0">
-    @for (item of files; track item; let idx = $index) {
+    @for (item of files; track idx; let idx = $index) {
         <li>
             <p-inputGroup class="mt-1">
                 <p-inputGroupAddon>

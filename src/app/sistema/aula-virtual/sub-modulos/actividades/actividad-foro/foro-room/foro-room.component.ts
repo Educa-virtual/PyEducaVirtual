@@ -11,27 +11,28 @@ import {
     matStar,
 } from '@ng-icons/material-icons/baseline'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { provideIcons } from '@ng-icons/core'
-import { TabViewModule } from 'primeng/tabview'
-import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-import { NgFor, NgIf } from '@angular/common'
+import { NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
-import { Message } from 'primeng/api'
+import { MenuItem, Message } from 'primeng/api'
 // import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
-import { TimeComponent } from '@/app/shared/time/time.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-//import { Toast } from 'primeng/toast';
+
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component'
+import { ForoRoomDetalleComponent } from '../foro-room-detalle/foro-room-detalle.component'
+import { Location } from '@angular/common'
+import { ForosService } from '@/app/servicios/aula/foros.service'
+import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component'
+
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -39,17 +40,14 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
-        TimeComponent,
         EmptySectionComponent,
         RecursosListaComponent,
         RemoveHTMLPipe,
-        CommonInputComponent,
-        TablePrimengComponent,
-        TabViewModule,
-        OrderListModule,
         PrimengModule,
-        NgFor,
         NgIf,
+        ToolbarPrimengComponent,
+        ForoRoomDetalleComponent,
+        TabDescripcionActividadesComponent,
     ],
     providers: [
         provideIcons({
@@ -66,6 +64,10 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 export class ForoRoomComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() iIeCursoId
+    @Input() iSeccionId
+    @Input() iNivelGradoId
+
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
 
@@ -74,6 +76,7 @@ export class ForoRoomComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    private _ForosService = inject(ForosService)
     // variables
     showEditor = false // variable          para ocultar el p-editor
     public data = []
@@ -115,6 +118,9 @@ export class ForoRoomComponent implements OnInit {
     selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
     selectedComentario: number | null = null
     respuestaInput: string = '' // Para almacenar la respuesta temporal
+    isDocente: boolean = this._constantesService.iPerfilId === DOCENTE
+    items: MenuItem[] | undefined
+    home: MenuItem | undefined
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -151,6 +157,7 @@ export class ForoRoomComponent implements OnInit {
     })
     perfil: any[] = []
     constructor(
+        private location: Location,
         // private websocketService: WebsocketService,
         private store: LocalStoreService
         //private _activatedRoute: ActivatedRoute,
@@ -159,9 +166,26 @@ export class ForoRoomComponent implements OnInit {
         this.perfil = this.store.getItem('dremoPerfil')
         //para obtener el idDocCursoId
     }
-
+    params: any = {}
     selectedItems = []
     ngOnInit(): void {
+        this.items = [
+            {
+                label: 'Mis Áreas Curriculares',
+                routerLink: '/aula-virtual/areas-curriculares',
+            },
+            {
+                label: 'Contenido',
+                command: () => this.goBack(),
+                routerLink: '/',
+            },
+            { label: 'Foro' },
+        ]
+
+        this.home = { icon: 'pi pi-home', routerLink: '/' }
+        this.params = {
+            ejemplo: 'Este es un parámetro',
+        }
         // this.websocketService.messages$.subscribe((msg: any) => {
         //     this.messageWebs.push(`Servidor: ${msg}`)
         // })
@@ -170,12 +194,17 @@ export class ForoRoomComponent implements OnInit {
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
         this.obtenerIdPerfil()
-        this.mostrarCalificacion()
+        // this.mostrarCalificacion()
+
         this.obtenerForo()
         this.getRespuestaF()
-        this.getEstudiantesMatricula()
+        //this.getEstudiantesMatricula()
         // this.obtenerResptDocente()
     }
+    goBack() {
+        this.location.back()
+    }
+
     itemRespuesta: any[] = []
     // menu para editar y eliminar el comentario del foro
     menuItems = [
@@ -305,98 +334,7 @@ export class ForoRoomComponent implements OnInit {
     cancelarEdicion() {
         this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
     }
-    sendCommentPadre(respuestas) {
-        // guardar el comentario
-        const iDocenteId = this._constantesService.iDocenteId
-        this.iEstudianteId = this._constantesService.iEstudianteId
-        this.foroFormComntAl.controls['iDocenteId'].setValue(iDocenteId)
-        this.foroFormComntAl.controls['iEstudianteId'].setValue(
-            this.iEstudianteId
-        )
-        this.foroFormComntAl.controls['iForoRptaId'].setValue(
-            respuestas.iForoRptaId
-        )
-        //console.log('rptaPadre', this.foroFormComntAl)
-        this._aulaService
-            .guardarComentarioRespuesta(this.foroFormComntAl.value)
-            .subscribe({
-                next: (resp: any) => {
-                    // para refrescar la pagina
-                    if (resp?.validated) {
-                        this.getRespuestaF()
-                        this.foroFormComntAl.get('cForoRptaPadre')?.reset()
-                    }
-                },
-                error: (error) => {
-                    console.error('Comentario:', error)
-                },
-            })
-    }
-    // guardar comentario de estudiante foro
-    sendComment() {
-        const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
-        // const idPerfil = this.iEstudianteId
-        // console.log('hola', idPerfil);
-        if (perfil == 80) {
-            this.iEstudianteId = Number(this._constantesService.iEstudianteId)
-            const value = this.foroFormComntAl.value
-            const comentarioEstudiante = value.cForoRptaRespuesta
-            const comentarioEstudianteLimpio =
-                this.limpiarHTML(comentarioEstudiante)
-            value.cForoRptaRespuesta = comentarioEstudianteLimpio
-            const comment = {
-                ...this.foroFormComntAl.value,
-                iForoId: this.ixActivadadId,
-                iEstudianteId: this.iEstudianteId,
-            }
-            console.log('comentarios: ', comment)
 
-            this._aulaService.guardarRespuesta(comment).subscribe({
-                next: (resp: any) => {
-                    console.log('respuesta completa', resp)
-                    // para refrescar la pagina
-                    if (resp?.validated) {
-                        this.getRespuestaF()
-                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
-                        // Enviar comentario a través de WebSocket
-                        // this.websocketService.sendMessage({
-                        //     type: 'newComment',
-                        //     data: comment?.cForoRptaRespuesta,
-                        // })
-                        console.log('que envias', comment?.cForoRptaRespuesta)
-                    }
-                },
-                error: (error) => {
-                    console.error('Comentario:', error)
-                },
-            })
-            this.foroFormComntAl.reset()
-        } else {
-            this.iDocenteId = this._constantesService.iDocenteId
-            const comment = {
-                ...this.foroFormComntAl.value,
-                iForoId: this.ixActivadadId,
-                iDocenteId: this.iDocenteId,
-            }
-            this._aulaService.guardarRespuesta(comment).subscribe({
-                next: (resp: any) => {
-                    // para refrescar la pagina
-                    if (resp?.validated) {
-                        this.getRespuestaF()
-                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
-                        // Enviar comentario a través de WebSocket
-                        // this.websocketService.sendMessage({
-                        //     type: 'newComment',
-                        //     data: comment?.cForoRptaRespuesta,
-                        // })
-                    }
-                },
-                error: (error) => {
-                    console.error('Comentario:', error)
-                },
-            })
-        }
-    }
     mostrarCalificacion() {
         const userId = 1
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
@@ -405,6 +343,7 @@ export class ForoRoomComponent implements OnInit {
         })
     }
     foroRespaldo = []
+    // obtener informacion general de foro
     obtenerForo() {
         this._aulaService
             .obtenerForo({
@@ -414,52 +353,51 @@ export class ForoRoomComponent implements OnInit {
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.messages = [
-                        {
-                            severity: 'info',
-                            detail: resp?.cForoDescripcion,
-                        },
-                    ]
-                    this.foro = resp
-                    this.obtenerResptDocente()
-                    // console.log('obtener datos de foro01', resp)
+                    this.foro = resp.length
+                        ? {
+                              ...resp[0],
+                              dInicio: resp[0].dtForoInicio,
+                              dFin: resp[0].dtForoFin,
+                              cDescripcion: resp[0].cForoDescripcion,
+                              cDocumentos: resp[0].cForoUrl
+                                  ? JSON.parse(resp[0].cForoUrl)
+                                  : [],
+                              cTitle:
+                                  'Foro: ' +
+                                  (resp[0]?.cForoTitulo ||
+                                      'Título no disponible'),
+                              iEstado: Number(resp[0].iEstado),
+                          }
+                        : {}
+                    // console.log('datos generales foro', this.foro)
+                    this.obtenerResptDocente() // función para obtener la retroalimentan al estudiante
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []
-                    // Formatear fechas (si existen)
-                    // Formatear fechas (si existen)
-                    if (this.foro?.dtForoInicio) {
-                        this.foro.dtForoInicio = this.formatDateISO(
-                            this.foro.dtForoInicio
-                        )
-                    }
-
-                    if (this.foro?.dtForoFin) {
-                        this.foro.dtForoFin = this.formatDateISO(
-                            this.foro.dtForoFin
-                        )
-                    }
+                    // console.log(this.FilesTareas)
                 },
             })
     }
+    respuestaDocente: string
+    comentarioDocente: string
     // obtener retroalimentacion de docente a estudiante x su comentario
     obtenerResptDocente() {
         const idEstudiante = Number(this.iEstudianteId)
-        const idForoId = Number(this.foro.iForoId)
+        const idForoId = Number(this.foro?.iForoId)
 
-        // const where = {
-        //     iEstudianteId: idEstudiante,
-        //     iForoId: idForoId
-        // }
-        // console.log(where)
+        // console.log('id foro',idForoId)
         this._aulaService
             .obtenerResptDocente({
                 iEstudianteId: idEstudiante,
                 iForoId: idForoId,
             })
             .subscribe((Data) => {
+                // cForoRptaDocente
                 this.resptDocente = Data['data']
-                console.log(this.resptDocente)
+                // console.log(this.resptDocente)
+                this.comentarioDocente =
+                    this.resptDocente?.[0]?.cForoRptaDocente
+                // console.log('respuesta docente', this.comentarioDocente)
             })
     }
     formatDateISO(date: string | number | Date): string {
@@ -512,10 +450,10 @@ export class ForoRoomComponent implements OnInit {
                             respuesta.json_respuestas_comentarios.length
                     })
 
-                    console.log(
-                        'Respuesta Comentarios de los Foros',
-                        this.respuestasForo
-                    )
+                    // console.log(
+                    //     'Respuesta Comentarios de los Foros',
+                    //     this.respuestasForo
+                    // )
                 },
                 error: (err) => {
                     console.error('Error al obtener respuestas del foro', err)
@@ -539,22 +477,25 @@ export class ForoRoomComponent implements OnInit {
         })
     }
     // consulta para obtener los estudiantes
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params)
-    }
+    // getEstudiantesMatricula() {
+    //     if(this.iPerfilId === ESTUDIANTE) return
+    //     this._ForosService
+    //         .obtenerReporteEstudiantesRetroalimentacion({
+    //             iIeCursoId: this.iIeCursoId,
+    //             iYAcadId: this._constantesService.iYAcadId,
+    //             iSedeId: this._constantesService.iSedeId,
+    //             iSeccionId: this.iSeccionId,
+    //             iNivelGradoId: this.iNivelGradoId,
+    //             iForoId:Number(this.foro.iForoId)
+    //         })
+    //         .subscribe((Data) => {
+    //             this.estudiantes = Data['data']
+    //             this.estudiantes = Data['data'].map((item: any) => {
+    //                 return {
+    //                     ...item,
+    //                     cTitulo: item.completoalumno,
+    //                 }
+    //             })
+    //         })
+    // }
 }

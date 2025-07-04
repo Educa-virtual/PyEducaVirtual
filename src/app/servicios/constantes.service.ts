@@ -76,9 +76,21 @@ const docente = [
                 ],
             },
             {
-                label: 'Mis Capacitaciones',
-                icon: 'pi pi-fw pi-sitemap',
-                routerLink: ['/docente/capacitaciones'],
+                label: 'Aula virtual',
+                icon: 'pi pi-id-card',
+                // routerLink: ['/aula-virtual/capacitate-docente'],
+                items: [
+                    {
+                        label: 'Capacitate',
+                        icon: 'pi pi-book',
+                        routerLink: ['/aula-virtual/capacitate-docente'],
+                    },
+                    {
+                        label: 'Mis Áreas Curriculares',
+                        icon: 'pi pi-book',
+                        routerLink: ['/aula-virtual/'],
+                    },
+                ],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -105,9 +117,8 @@ const docente = [
                 icon: 'pi pi-fw pi-check-square',
                 items: [
                     {
-                        label: 'Consultar Fichas Socioeconómicas',
-                        icon: 'pi pi-fw pi-user-edit',
-                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
                     },
                 ],
             },
@@ -120,6 +131,11 @@ const estudiante = [
         items: [
             inicio,
             {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
                 label: 'Evaluación ERE',
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion/areas'],
@@ -129,10 +145,32 @@ const estudiante = [
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
             },
+            /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
             {
                 label: 'Buzón de sugerencias',
                 icon: 'pi pi-fw pi-envelope',
                 routerLink: ['/estudiante/buzon-sugerencias'],
+            },*/
+            {
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Ficha Socioeconomica',
+                        icon: 'pi pi-fw pi-file-edit',
+                        routerLink: ['/bienestar/ficha-declaracion'],
+                    },
+                    {
+                        label: 'Gestionar encuestas',
+                        icon: 'pi pi-fw pi-list-check',
+                        routerLink: ['/bienestar/gestionar-encuestas'],
+                    },
+                    {
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/bienestar/recordario-fechas'],
+                    },
+                ],
             },
             {
                 label: 'Encuestas',
@@ -411,14 +449,9 @@ const administracion = [
                 icon: 'pi pi-fw pi-check-square',
                 items: [
                     {
-                        label: 'Consultar Fichas',
+                        label: 'Consultar Fichas Socioeconómicas',
                         icon: 'pi pi-fw pi-user-edit',
                         routerLink: ['/bienestar/gestion-fichas'],
-                    },
-                    {
-                        label: 'Ficha Socioeconomica',
-                        icon: 'pi pi-fw pi-file-edit',
-                        routerLink: ['/bienestar/ficha'],
                     },
                     {
                         label: 'Gestionar encuestas',
@@ -428,6 +461,7 @@ const administracion = [
                     {
                         label: 'Recordatorios de cumpleaños',
                         icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/bienestar/recordario-fechas'],
                     },
                     {
                         label: 'Reportes e informes',
@@ -546,40 +580,16 @@ const apoderado = [
                 icon: 'pi pi-user-edit',
                 routerLink: ['apoderado/registro-apoderado'],
             },
-
             {
-                label: 'Consulta Apoderado',
-                icon: 'pi pi-fw pi-users',
-                routerLink: ['/bienestar/gestion-fichas-apoderado'],
-            },
-
-            {
-                label: 'Notificaciones y anuncios',
-                icon: 'pi pi-megaphone',
-                routerLink: ['apoderado/notificacion-apoderado'],
-            },
-            {
-                label: 'Enlaces de ayuda',
-                icon: 'pi pi-fw pi-share-alt',
-                routerLink: ['ayuda'],
-            },
-        ],
-    },
-]
-
-const auxiliar = [
-    {
-        label: 'Auxiliar',
-        items: [
-            {
-                label: 'Asistencia',
-                icon: 'pi pi-qrcode',
-                routerLink: ['asistencia-auxiliar'],
-            },
-            {
-                label: 'Registro de apoderados',
-                icon: 'pi pi-user-edit',
-                routerLink: ['apoderado/registro-apoderado'],
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Gestionar Fichas Socioeconómicas',
+                        icon: 'pi pi-fw pi-user-edit',
+                        routerLink: ['/bienestar/gestion-fichas-apoderado'],
+                    },
+                ],
             },
             {
                 label: 'Notificaciones y anuncios',
@@ -641,7 +651,7 @@ export class ConstantesService {
             case APODERADO:
                 return apoderado
             case AUXILIAR:
-                return auxiliar
+                return first
 
             default:
                 return first

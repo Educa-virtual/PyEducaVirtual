@@ -29,12 +29,13 @@
                 </div>
             </div> -->
         </div>
+
         <div class="col-12 md:col-5 align-content-center">
             <span class="font-bold">Estudiante seleccionado(a):</span>&nbsp;{{
-                selectedEstudianteValue?.cEstNombres || '-'
+                selectedEstudianteValue?.cPersNombre || '-'
             }}
-            {{ selectedEstudianteValue?.cEstPaterno }}
-            {{ selectedEstudianteValue?.cEstMaterno }}
+            {{ selectedEstudianteValue?.cPersPaterno }}
+            {{ selectedEstudianteValue?.cPersMaterno }}
         </div>
         <div class="col-12 md:col-4 flex justify-content-end">
             <button
@@ -53,7 +54,7 @@
                 <i class="pi pi-check"></i>&nbsp; Calificar
             </button>
             &nbsp;
-            <button
+            <!-- <button
                 [disabled]="showListaEstudiantes"
                 pButton
                 pRipple
@@ -62,7 +63,7 @@
                 (click)="accionEvntBtn('abrir-lista-estudiantes', [])"
             >
                 <i class="pi pi-eye"></i>&nbsp; Ver estudiantes
-            </button>
+            </button> -->
         </div>
     </div>
     <!-- <div class="flex justify-content-between flex-wrap">

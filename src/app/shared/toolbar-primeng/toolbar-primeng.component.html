@@ -1,8 +1,8 @@
 <div class="grid">
     <p-toolbar class="col-12">
-        <h2 class="text-white font-bold">
+        <div class="text-white font-bold" [class]="className">
             {{ title }}
-        </h2>
+        </div>
         <ng-content></ng-content>
     </p-toolbar>
 </div>

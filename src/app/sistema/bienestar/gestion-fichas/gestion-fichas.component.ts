@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { PanelModule } from 'primeng/panel'
@@ -11,21 +11,14 @@ import {
     IColumn,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
-
-interface Ficha {
-    iFichaDGId: number
-    iPersId: string
-    dtFichaDG: string
-    cTipoIdentSigla: string
-    cPersDocumento: string
-    cPersNombresApellidos: string
-    cPersSexo: string
-    dPersNacimiento: string
-}
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import {
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-gestion-fichas',
@@ -43,61 +36,76 @@ interface Ficha {
     styleUrls: ['./gestion-fichas.component.scss'],
 })
 export class GestionFichasComponent implements OnInit {
-    fichas: Ficha[] = []
-    searchForm: FormGroup
+    @ViewChild('filtro') filtro: ElementRef
+    fichas: Array<object>
+    fichas_filtradas: Array<object>
+    form: FormGroup
     iIieeId: number
-    public datos: any[] = []
+    perfil: any
 
-    private _MessageService = inject(MessageService)
+    private _messageService = inject(MessageService)
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
         private router: Router,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private store: LocalStoreService,
-        private constantesService: ConstantesService
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private store: LocalStoreService
     ) {
-        this.searchForm = this.fb.group({
-            iCredSesionId: this.constantesService.iCredId,
-            iSedeId: this.constantesService.iSedeId,
-            nombre: [''],
-            apellidos: [''],
-            dni: [''],
-        })
-
-        {
-            //aqui se llama el objeto que trae los datos del perfil
-            const perfil = this.store.getItem('dremoPerfil')
-            console.log(perfil, 'perfil dremo', this.store)
-            this.iIieeId = perfil.iIieeId
-        }
+        this.perfil = this.store.getItem('dremoPerfil')
     }
 
     ngOnInit(): void {
-        this.cargarFichas() //
-    }
+        if (
+            this.perfil.iPerfilId.includes([
+                ESPECIALISTA_DREMO,
+                ESPECIALISTA_UGEL,
+            ])
+        ) {
+            this.columnasTabla = this.columnasTablaEspecialista
+        }
 
-    cargarFichas() {
-        this.datosFichaBienestarService
-            .searchFichas(this.searchForm.value)
-            .subscribe({
-                next: (data: any) => {
-                    this.fichas = data.data
-                },
-                error: (error) => {
-                    console.error('Error al obtener los estudiantes', error)
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
-                },
+        try {
+            this.form = this.fb.group({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iYAcadId: this.store.getItem('dremoiYAcadId'),
             })
+        } catch (error) {
+            console.log(error, 'error de formulario')
+        }
+
+        this.datosFichaBienestar.listarFichas(this.form.value).subscribe({
+            next: (data: any) => {
+                this.fichas = data.data
+                this.fichas_filtradas = this.fichas
+            },
+            error: (error) => {
+                console.error('Error al obtener los estudiantes', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
     }
 
-    //---Filtrado de estudiantes--------------
-    filtrarEstudiantes() {
-        // filtrar por nombre y dni
+    filtrarTabla() {
+        const filtro = this.filtro.nativeElement.value.toLowerCase()
+        this.fichas_filtradas = this.fichas.filter((ficha: any) => {
+            if (ficha.cPersApellidos.toLowerCase().includes(filtro))
+                return ficha
+            if (ficha.cPersNombre.toLowerCase().includes(filtro)) return ficha
+            if (ficha.cGradoNombre.toLowerCase().includes(filtro)) return ficha
+            if (ficha.cSeccionNombre.toLowerCase().includes(filtro))
+                return ficha
+            if (ficha.cEstadoNombre.toLowerCase().includes(filtro)) return ficha
+            if (ficha.cGradoSeccion.toLowerCase().includes(filtro)) return ficha
+            if (ficha.cIieeNombre.toLowerCase().includes(filtro)) return ficha
+            if (ficha.cPersNombreApellidos.toLowerCase().includes(filtro))
+                return ficha
+            return null
+        })
     }
 
     nuevoIngreso(): void {
@@ -107,43 +115,75 @@ export class GestionFichasComponent implements OnInit {
     accionBnt({ accion, item }) {
         switch (accion) {
             case 'imprimir':
-                this.descargarFicha(item.iPersId, 2025)
-                console.log('Imprimir seleccionado')
-                break
-            case 'editar':
-                console.log('Editar seleccionado')
+                this.descargarFicha(item)
                 break
             case 'eliminar':
-                console.log('Eliminar seleccionado')
-                break
-            case 'deshacer':
-                console.log('Deshacer seleccionado')
+                this._confirmService.openConfirm({
+                    message: '¿Está seguro de anular la ficha seleccionada?',
+                    header: 'Anular ficha',
+                    icon: 'pi pi-exclamation-triangle',
+                    accept: () => {
+                        this.borrarFicha(item)
+                    },
+                })
                 break
             default:
                 console.warn('Acción no reconocida:', accion)
         }
     }
 
-    descargarFicha(id: number, anio: number): void {
-        this.datosFichaBienestarService.downloadFicha(id, anio).subscribe({
-            next: (response) => {
-                // const url = window.URL.createObjectURL(blob)
-                // window.open(url, '_blank')
-                const blob = new Blob([response], {
-                    type: 'application/pdf',
-                })
-                const url = window.URL.createObjectURL(blob)
-                const link = document.createElement('a')
-                link.href = url
-                link.target = '_blank'
-                link.click()
-                // window.URL.revokeObjectURL(url)
-            },
-            error: (err) => {
-                console.error('Error al descargar el PDF:', err)
-                alert('No se pudo generar el PDF')
-            },
-        })
+    descargarFicha(item: any): void {
+        this.datosFichaBienestar
+            .descargarFicha({
+                iFichaDGId: item.iFichaDGId,
+            })
+            .subscribe({
+                next: (response) => {
+                    // const url = window.URL.createObjectURL(blob)
+                    // window.open(url, '_blank')
+                    const blob = new Blob([response], {
+                        type: 'application/pdf',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.target = '_blank'
+                    link.click()
+                    // window.URL.revokeObjectURL(url)
+                },
+                error: (err) => {
+                    console.error('Error al descargar el PDF:', err)
+                    alert('No se pudo generar el PDF')
+                },
+            })
+    }
+
+    borrarFicha(item: any): void {
+        this.datosFichaBienestar
+            .borrarFicha({
+                iFichaDGId: item.iFichaDGId,
+            })
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Eliminación exitosa',
+                        detail: 'Se eliminaron los datos',
+                    })
+                    this.fichas = this.fichas.filter(
+                        (ficha: any) => ficha.iFichaDGId !== item.iFichaDGId
+                    )
+                    this.fichas_filtradas = this.fichas
+                },
+                error: (error) => {
+                    console.error('Error eliminando fichas:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     public columnasTabla: IColumn[] = [
@@ -152,56 +192,171 @@ export class GestionFichasComponent implements OnInit {
             header: 'N°',
             type: 'item',
             width: '5%',
-            text_header: 'N°',
-            text: 'N°',
-        },
-        {
-            field: 'cTipoIdentSigla',
-            header: 'Tipo Doc.',
-            type: 'text',
-            width: '10%',
             text_header: 'center',
             text: 'center',
-        },
-        {
-            field: 'cPersDocumento',
-            header: 'Doc.',
-            type: 'text',
-            width: '10%',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            field: 'cPersApellidos',
-            header: 'Apellidos',
-            type: 'text',
-            width: '30%',
-            text_header: 'center',
-            text: 'left',
+            class: 'hidden md:table-cell',
         },
         {
             field: 'cPersNombre',
             header: 'Nombres',
             type: 'text',
             width: '25%',
-            text_header: 'center',
+            text_header: 'left',
             text: 'left',
+            class: 'hidden md:table-cell',
         },
         {
-            field: 'dtFichaDG',
-            header: 'Fecha',
-            type: 'date',
+            field: 'cPersApellidos',
+            header: 'Apellidos',
+            type: 'text',
+            width: '30%',
+            text_header: 'left',
+            text: 'left',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cPersNombreApellidos',
+            header: 'Nombres y Apelidos',
+            type: 'text',
+            width: '60%',
+            text_header: 'left',
+            text: 'left',
+            class: 'table-cell md:hidden',
+        },
+        {
+            field: 'cGradoNombre',
+            header: 'Grado',
+            type: 'text',
             width: '10%',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cSeccionNombre',
+            header: 'Sección',
+            type: 'text',
+            width: '10%',
+            text_header: 'center',
+            text: 'center',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cGradoSeccion',
+            header: 'Sección',
+            type: 'text',
+            width: '20%',
+            text_header: 'center',
+            text: 'center',
+            class: 'table-cell md:hidden',
+        },
+        {
+            field: 'cEstadoNombre',
+            header: 'Estado',
+            type: 'text',
+            width: '10%',
+            text_header: 'center',
+            text: 'center',
+            class: 'hidden md:table-cell',
         },
         {
             type: 'actions',
             width: '10%',
             field: '',
             header: 'Acciones',
+            text_header: 'right',
+            text: 'right',
+        },
+    ]
+
+    public columnasTablaEspecialista: IColumn[] = [
+        {
+            field: 'item',
+            header: 'N°',
+            type: 'item',
+            width: '5%',
             text_header: 'center',
             text: 'center',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cIieeNombre',
+            header: 'I.E.',
+            type: 'text',
+            width: '20%',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            field: 'cPersNombre',
+            header: 'Nombres',
+            type: 'text',
+            width: '20%',
+            text_header: 'left',
+            text: 'left',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cPersApellidos',
+            header: 'Apellidos',
+            type: 'text',
+            width: '20%',
+            text_header: 'left',
+            text: 'left',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cPersNombreApellidos',
+            header: 'Nombres y Apellidos',
+            type: 'text',
+            width: '55%',
+            text_header: 'left',
+            text: 'left',
+            class: 'table-cell md:hidden',
+        },
+        {
+            field: 'cGradoNombre',
+            header: 'Grado',
+            type: 'text',
+            width: '10%',
+            text_header: 'center',
+            text: 'center',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cSeccionNombre',
+            header: 'Sección',
+            type: 'text',
+            width: '10%',
+            text_header: 'center',
+            text: 'center',
+            class: 'hidden md:table-cell',
+        },
+        {
+            field: 'cGradoSeccion',
+            header: 'Sección',
+            type: 'text',
+            width: '20%',
+            text_header: 'center',
+            text: 'center',
+            class: 'table-cell md:hidden',
+        },
+        {
+            field: 'cEstadoNombre',
+            header: 'Estado',
+            type: 'text',
+            width: '10%',
+            text_header: 'center',
+            text: 'center',
+            class: 'hidden md:table-cell',
+        },
+        {
+            type: 'actions',
+            width: '5%',
+            field: '',
+            header: 'Acciones',
+            text_header: 'right',
+            text: 'right',
         },
     ]
 
@@ -214,9 +369,9 @@ export class GestionFichasComponent implements OnInit {
             class: 'p-button-rounded p-button-secondary p-button-text',
         },
         {
-            labelTooltip: 'Ver',
-            icon: 'pi pi-eye',
-            accion: 'ver',
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },

@@ -1,0 +1,36 @@
+<div class="clash-card">
+    <div class="clash-card__image clash-card__image--barbarian img-transition">
+        <img
+            [src]="backend + getUrlImg(capacitacion?.cImagenUrl)"
+            [alt]="capacitacion?.cCapTitulo"
+        />
+    </div>
+    <div
+        class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max"
+    >
+        {{ capacitacion?.cNivelPedNombre }}
+    </div>
+    <div class="title mt-2 font-bold text-center">
+        {{ capacitacion?.cCapTitulo }}
+    </div>
+
+    <div class="mx-4 col-12 grid">
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-file-check mr-2"></i>
+            <span>{{ capacitacion.iAprobadas }} Solicitudes Aprobadas</span>
+        </div>
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-info-circle mr-2"></i>
+            <span>{{ capacitacion.iPendientes }} Solicitudes Pendientes</span>
+        </div>
+    </div>
+
+    <div class="flex mx-3 mt-2 mb-3 justify-content-end">
+        <p-button
+            label="Ingresar"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (click)="mostrarInscritos()"
+        ></p-button>
+    </div>
+</div>

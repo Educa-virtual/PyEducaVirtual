@@ -9,7 +9,7 @@ import {
 import { FormBuilder, Validators } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
 import { PrimengModule } from '@/app/primeng.module'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
 import { DatePipe } from '@angular/common'
@@ -51,6 +51,8 @@ export class TareaFormComponent implements OnChanges {
     private _formBuilder = inject(FormBuilder)
     private GeneralService = inject(GeneralService)
     private ConstantesService = inject(ConstantesService)
+
+    constructor(private messageService: MessageService) {}
 
     ngOnChanges(changes): void {
         if (changes.contenidoSemana?.currentValue) {
@@ -265,17 +267,22 @@ export class TareaFormComponent implements OnChanges {
             this.formTareas.controls.cTareaDescripcion.value || ''
         const tempElement = document.createElement('div')
         tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
+        //const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
 
-        this.formTareas.controls.cTareaDescripcion.setValue(cleanDescripcion)
+        //this.formTareas.controls.cTareaDescripcion.setValue(cleanDescripcion)
 
         this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
         this.formTareas.controls.cTareaArchivoAdjunto.setValue(
             JSON.stringify(this.filesUrl)
         )
         const value = this.formTareas.value
-
+        // console.log('datos de guardar 01', value)
         if (this.formTareas.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: 'Campos vacios!',
+            })
             this.formTareas.markAllAsTouched()
             return
         }

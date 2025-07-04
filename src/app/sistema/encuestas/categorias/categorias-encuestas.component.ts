@@ -3,7 +3,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { StringCasePipe } from '@shared/pipes/string-case.pipe'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
-import { NuevaCategoriaComponent } from '../lista-categorias/nueva-categoria/nueva-categoria.component'
+import { NuevaCategoriaComponent } from './nueva-categoria/nueva-categoria.component'
 import { CategoriasService } from '../services/categorias.service'
 import { environment } from '@/environments/environment'
 import { MessageService } from 'primeng/api'
@@ -32,7 +32,7 @@ export class CategoriasEncuestaComponent implements OnInit {
     }*/
 
     categorias: ICategoria[] = []
-
+    categoriasInicial: ICategoria[] = []
     constructor(
         private categoriasService: CategoriasService,
         private messageService: MessageService
@@ -44,11 +44,31 @@ export class CategoriasEncuestaComponent implements OnInit {
         this.obtenerCategorias()
     }
 
+    onFilter(event: Event) {
+        //Elimina acentos (á, é, etc.) y convierte a minúsculas
+        const normalizeText = (str: string) =>
+            str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+        const text = normalizeText((event.target as HTMLInputElement).value)
+        this.categorias = this.categoriasInicial
+        if (text.length > 1) {
+            this.categorias = this.categorias.filter((categoria) =>
+                normalizeText(categoria.cNombre).includes(text)
+            )
+        }
+    }
+
     obtenerCategorias() {
         this.categoriasService.obtenerCategorias().subscribe({
             next: (respuesta: any) => {
-                this.categorias = respuesta.data
-                console.log('Categorías obtenidas:', this.categorias)
+                this.categoriasInicial = respuesta.map(
+                    (categoria: ICategoria) => ({
+                        ...categoria,
+                    })
+                )
+                this.categorias = this.categoriasInicial
             },
         })
     }
@@ -95,6 +115,5 @@ export class CategoriasEncuestaComponent implements OnInit {
     // Mantiene compatibilidad con el componente NuevaCategoriaComponent
     onCategoriaCreada(nuevaCategoria: ICategoria) {
         this.categorias.push(nuevaCategoria)
-        console.log('Nueva categoría creada:', nuevaCategoria)
     }
 }

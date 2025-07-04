@@ -27,7 +27,10 @@
         />
         <p-button
             [label]="'Guardar Retroalimentación'"
+            [loading]="isLoading"
+            [disabled]="isLoading"
             (onClick)="guardarConclusionxiEvalPromId()"
         />
     </div>
 </app-modal-primeng>
+<p-toast></p-toast>

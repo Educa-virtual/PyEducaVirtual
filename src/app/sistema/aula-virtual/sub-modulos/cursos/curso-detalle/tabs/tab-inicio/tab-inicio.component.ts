@@ -1,19 +1,16 @@
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { ICurso } from '../../../interfaces/curso.interface'
-import { TableModule } from 'primeng/table'
 import { PrimengModule } from '@/app/primeng.module'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-//Message,
 import { MessageService } from 'primeng/api'
-import { GeneralService } from '@/app/servicios/general.service'
-import { ButtonModule } from 'primeng/button'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
-    imports: [TableModule, PrimengModule, ButtonModule],
+    imports: [PrimengModule],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })
@@ -26,115 +23,228 @@ export class TabInicioComponent implements OnInit {
 
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
-    private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)
+    private _confirmService = inject(ConfirmationModalService)
 
     public DOCENTE = DOCENTE
     public ESTUDIANTE = ESTUDIANTE
 
     iPerfilId: number
     anunciosDocente: any[] = []
-
+    data: any[]
+    contadorAnuncios: number = 0
+    remainingText: number = 0
+    tituloremainingText: number = 0
+    cNombres: string = ''
     //form para obtener la variable
-    public guardarPublicacion: FormGroup = this._formBuilder.group({
-        iForo: [''],
-        cForoDescripcion: ['', [Validators.required]],
-        iForoCatId: [4],
+    public guardarComunicado: FormGroup = this._formBuilder.group({
+        numero: new FormControl(''),
+        titulo: ['', [Validators.required, Validators.pattern(/\S+/)]],
+        descripcion: ['', [Validators.required, Validators.pattern(/\S+/)]],
     })
     //para los alert
     constructor(private messageService: MessageService) {}
+
     //Inicializamos
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
+        console.log(this.iPerfilId)
         this.obtenerAnuncios()
+
+        // contador de caracteres de descripcion
+        this.guardarComunicado
+            .get('descripcion')
+            ?.valueChanges.subscribe((value: string) => {
+                this.remainingText = value?.length || 0
+            })
+        // contador de caracteres de título
+        this.guardarComunicado
+            .get('titulo')
+            ?.valueChanges.subscribe((value: string) => {
+                this.tituloremainingText = value?.length || 0
+            })
+        this.cNombres = this._constantesService.nombres
     }
-    // metodo para limpiar las etiquetas
-    limpiarHTML(html: string): string {
-        const temporal = document.createElement('div') // Crear un div temporal
-        temporal.innerHTML = html // Insertar el HTML
-        return temporal.textContent || '' // Obtener solo el texto
-    }
-    //Guardamos el anuncio que el docente hico para los alumnos
-    guardarPublicacionDocente() {
-        const descripcion = this.guardarPublicacion.value
-        const descripcionLimpia = this.limpiarHTML(descripcion.cForoDescripcion)
-        const registro: any = {
-            iForoCatId: descripcion.iForoCatId,
-            idDocCursoId: this.idDocCursoId,
-            cForoDescripcion: descripcionLimpia,
+
+    // asignar el color de los caracteres restantes
+    getColorClass(): string {
+        if (this.remainingText > 480) {
+            return 'text-danger'
+        } else if (this.remainingText > 400) {
+            return 'text-warning'
+        } else {
+            return 'text-normal'
         }
-        console.log('hola where', registro)
-        this._aulaService.guardarAnucio(registro).subscribe({
-            next: (response) => {
-                this.obtenerAnuncios()
-                console.log(response)
+    }
+
+    // asignar el color de los caracteres del titulo
+    asignarColorTitulo(): string {
+        if (this.tituloremainingText > 80) {
+            return 'text-danger'
+        } else {
+            return 'text-normal'
+        }
+    }
+
+    // metodo para buscar x título de enunciado
+    buscarText: string = ''
+    dataFiltrada() {
+        if (!this.buscarText) {
+            return this.data
+        }
+
+        const texto = this.buscarText.toLowerCase()
+
+        return this.data.filter((card) =>
+            card.cTitulo.toLowerCase().includes(texto)
+        )
+        // || card.cContenido.toLowerCase().includes(texto)
+    }
+
+    // guardar anunciado:
+    guardarComunicadoSubmit() {
+        const iCursosNivelGradId = 1
+        const iCredId = this._constantesService.iCredId
+        const data = {
+            iCursosNivelGradId: iCursosNivelGradId,
+            idDocCursoId: this.idDocCursoId,
+            iCredId: iCredId,
+            cTitulo: this.guardarComunicado.value.titulo,
+            cContenido: this.guardarComunicado.value.descripcion,
+        }
+        if (this.guardarComunicado.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Formulario inválido',
+            })
+        } else {
+            this._confirmService.openConfiSave({
+                message: 'Recuerde que podran verlo todos los estudiantes',
+                header: `¿Esta seguro de guardar?`,
+                accept: () => {
+                    this._aulaService.guardarAnuncio(data).subscribe({
+                        next: (resp: any) => {
+                            // para refrescar la pagina
+                            if (resp?.validated) {
+                                this.obtenerAnuncios()
+                                // this.guardarComunicado.get('cForoRptaPadre')?.reset()
+                            }
+                        },
+                        error: (error) => {
+                            console.error('Comentario:', error)
+                        },
+                    })
+                    this.guardarComunicado.reset()
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+            // console.log(this.guardarComunicado.value)
+        }
+    }
+
+    // metodo para eliminar el anuncio
+    eliminarComunicado(id): void {
+        const iAnuncioId = id.iAnuncioId
+        const nombreTitulo = id.cTitulo
+
+        this._confirmService.openConfiSave({
+            message: 'Recuerde que al eliminarlo no podra recuperarlo',
+            header: `¿Esta seguro de Eliminar: ${nombreTitulo} ?`,
+            accept: () => {
+                const iCredId = this._constantesService.iCredId
+                const params = {
+                    iAnuncioId: iAnuncioId,
+                    iCredId: iCredId,
+                }
+                this._aulaService.eliminarAnuncio(params).subscribe({
+                    next: (response) => {
+                        console.log(
+                            'Elemento eliminado correctamente',
+                            response
+                        )
+                    },
+                    error: (err) => {
+                        console.error('Error al eliminar:', err)
+                    },
+                })
+
+                // Si quieres además eliminarlo del array local:
+                this.data = this.data.filter(
+                    (item) => item.iAnuncioId !== iAnuncioId
+                )
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
                 this.messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Se Guardo correctamente el anuncio.',
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
                 })
             },
-            error: (error) => {
-                console.log('Error en la actualización:', error)
-            },
         })
+    }
 
-        this.guardarPublicacion.reset()
-    }
-    //el button para leer mas o menos
-    toggleExpand(comment: any) {
-        comment.expanded = !comment.expanded
-    }
-    //datos de los anuncios
-    obtenerAnuncios() {
-        const idForo = 4
-        const idDocenteCurso = this.idDocCursoId
-        this._aulaService
-            .obtenerAnunciosDocnt({
-                iForoCatId: idForo,
-                iDocenteId: idDocenteCurso,
-            })
-            .subscribe((data) => {
-                this.anunciosDocente = data['data']
-            })
-    }
-    itemRespuesta: any[] = []
-    // menu para editar y eliminar el comentario del foro
-    menuItems = [
-        {
-            label: 'Editar',
-            icon: 'pi pi-pencil',
-            command: () => this.editar(),
-        },
-        {
-            label: 'Eliminar',
-            icon: 'pi pi-trash',
-            command: () => this.eliminar(this.itemRespuesta),
-        },
-    ]
-
-    editar(): void {
-        // let respuestasForo = this.itemRespuesta
-        // console.log('Editar acción ejecutada', respuestasForo)
-        //iForoRptaId
-    }
-    eliminar(itemRespuesta: any): void {
-        const iForoRptaId = {
-            iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
+    // metodo para fijar el anuncio
+    fijarAnuncio(id: string, iFijado: number): void {
+        if (this.iPerfilId !== this.DOCENTE) return
+        const iCredId = this._constantesService.iCredId
+        const params = {
+            iAnuncioId: id,
+            iCredId: iCredId,
         }
-        console.log('Eliminar acción ejecutada01', iForoRptaId)
-        this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
-            next: (response) => {
-                //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
-                console.log('Elemento eliminado correctamente:', response)
-                // Actualiza la lista local después de eliminar
-                // this.itemRespuesta = this.itemRespuesta.filter(
-                //     (item: any) => item.iForoRptaId !== respuestasForo
-                // );
+        this._aulaService.fijarAnuncio(params).subscribe({
+            next: (response: any) => {
+                if (response.validated) {
+                    this.obtenerAnuncios()
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Exito',
+                        detail:
+                            Number(iFijado) === 1
+                                ? 'El anuncio se ha desfijado correctamente.'
+                                : 'El anuncio se ha fijado correctamente.',
+                    })
+                }
             },
             error: (err) => {
-                console.error('Error al eliminar:', err)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo fijar el anuncio: ' + err,
+                })
             },
+        })
+    }
+    // obtener anunciados de curso:
+    obtenerAnuncios() {
+        const iCursosNivelGradId = 1
+        const iCredId = this._constantesService.iCredId
+
+        const paramst = {
+            iCursosNivelGradId: iCursosNivelGradId,
+            idDocCursoId: this.idDocCursoId,
+            iCredId: iCredId,
+        }
+
+        this._aulaService.obtenerAnuncios(paramst).subscribe((Data) => {
+            this.data = Data['data']
+            this.data.sort((a, b) => b.iFijado - a.iFijado)
+
+            // console.log('Anuncios:', this.data)
+
+            this.contadorAnuncios = this.data.length + 1
+            // Asignar valor al campo "numero" del formulario
+            this.guardarComunicado.patchValue({
+                numero: this.contadorAnuncios,
+            })
         })
     }
 }

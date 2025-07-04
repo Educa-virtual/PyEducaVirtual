@@ -23,7 +23,6 @@ import {
 } from './evaluacion-form-preguntas'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { provideIcons } from '@ng-icons/core'
 import { matWorkspacePremium } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
@@ -212,7 +211,7 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
     mapLocalPregunta(pregunta) {
         if (pregunta.iEncabPregId == -1) {
             pregunta.isLocal = true
-            pregunta.iEvalPregId = generarIdAleatorio()
+            pregunta.iEvalPregId = 0
         } else {
             pregunta.preguntas = this.addLocalPreguntas(pregunta.preguntas)
         }
@@ -222,7 +221,7 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
     addLocalPreguntas = (preguntas) => {
         return preguntas.map((item) => {
             item.isLocal = true
-            item.iEvalPregId = generarIdAleatorio()
+            item.iEvalPregId = 0
             return item
         })
     }

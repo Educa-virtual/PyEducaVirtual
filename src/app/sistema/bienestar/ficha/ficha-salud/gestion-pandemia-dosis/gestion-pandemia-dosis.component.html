@@ -1,11 +1,18 @@
-<p-fieldset legend="Dosis de pandemias">
+<p-fieldset
+    legend="Vacunaciones que recibió el estudiante durante pandemias y epidemias"
+>
     <div class="p-2 grid p-fluid mt-3">
         <div class="col" style="margin-left: -0.5rem">
             <p-inputGroup>
                 <p-inputGroupAddon>
                     <i class="pi pi-search"></i>
                 </p-inputGroupAddon>
-                <input pInputText placeholder="Buscar" />
+                <input
+                    #filtro
+                    pInputText
+                    placeholder="Buscar"
+                    (input)="filtrarTabla()"
+                />
             </p-inputGroup>
         </div>
         <div class="col-auto align-content-center">
@@ -22,7 +29,7 @@
     <app-table-primeng
         [columnas]="columns"
         [showCaption]="false"
-        [data]="dosis"
+        [data]="dosis_filtradas"
         (accionBtnItem)="accionBtnItemTable($event)"
         [showPaginator]="false"
         [(selectedRowData)]="selectedItems"
@@ -39,56 +46,42 @@
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
     (onClose)="clearForm()"
-    (onShow)="setFormDosis()"
 >
     <ng-content>
+        <br />
         <form [formGroup]="formDosis">
             <div class="grid p-fluid mt-3">
-                <input type="hidden" formControlName="iFamiliarId" />
-
-                <br />
-
-                <div class="col-12 md:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>Pandemia * </p-inputGroupAddon>
-                        <p-dropdown
-                            [options]="pandemias"
-                            formControlName="iTipoFamiliarId"
-                            optionLabel="nombre"
-                            [checkmark]="true"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            placeholder="Seleccione"
-                            styleClass="group-element"
-                        />
-                    </p-inputGroup>
+                <div class="col-12">
+                    <app-dropdown-simple
+                        [dropdownItems]="pandemias"
+                        [dropdownControl]="
+                            $any(formDosis).controls['iPandemiaId']
+                        "
+                        addonLabel="Pandemia o epidemia *"
+                        dropdownPlaceholder="Seleccione"
+                    />
                 </div>
-                <div class="col-12 md:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>Nro de Dosis *</p-inputGroupAddon>
-                        <p-inputNumber
-                            formControlName="iPanDFichaNroDosis"
-                            min="1"
-                            showButtons="true"
-                            class="group-element"
-                        />
-                    </p-inputGroup>
+                <div class="col-12">
+                    <app-input-simple
+                        inputType="number"
+                        [inputControl]="
+                            $any(formDosis).controls['iPanDFichaNroDosis']
+                        "
+                        addonLabel="Nro de Dosis *"
+                        [inputMin]="1"
+                        [inputMax]="100"
+                        [inputShowButtons]="true"
+                    />
                 </div>
-
-                <div class="col-12 md:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>Fecha de Dosis *</p-inputGroupAddon>
-                        <p-calendar
-                            formControlName="dtPanDFichaDosis"
-                            [iconDisplay]="'input'"
-                            [showIcon]="true"
-                            inputId="dtPanDFichaDosis"
-                            [appendTo]="'body'"
-                            inputStyleClass="group-element"
-                        />
-                    </p-inputGroup>
+                <div class="col-12">
+                    <app-input-simple
+                        inputType="date"
+                        [inputControl]="
+                            $any(formDosis).controls['dtPanDFichaDosis']
+                        "
+                        addonLabel="Fecha en que recibió la dosis *"
+                        [inputMaxDate]="fecha_actual"
+                    />
                 </div>
             </div>
         </form>
@@ -109,6 +102,5 @@
         </div>
     </ng-content>
 </p-dialog>
-<p-toast></p-toast>
 
 <br />

@@ -1,0 +1,24 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase">
+            <div class="flex flex-column">
+                <div class="flex text-xl">GESTIONAR RESPUESTAS DE ENCUESTA</div>
+                <div class="flex text-sm">{{ cEncuNombre }}</div>
+            </div>
+        </span>
+    </ng-template>
+
+    <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="respuestas_filtradas"
+        (accionBtnItem)="accionBnt($event)"
+        [actions]="accionesTabla"
+        [showCaption]="false"
+    />
+</p-panel>

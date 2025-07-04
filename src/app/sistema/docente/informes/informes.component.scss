@@ -50,3 +50,9 @@
 :host ::ng-deep .perfil-name {
     color: black;
 }
+@media (max-width: 868px) {
+    .col-4,
+    .col-8 {
+        width: 100%;
+    }
+}

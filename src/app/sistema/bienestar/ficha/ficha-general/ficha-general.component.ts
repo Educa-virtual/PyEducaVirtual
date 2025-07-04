@@ -9,7 +9,12 @@ import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../../services/compartir-ficha.service'
 import { FichaGeneral } from '../../interfaces/fichaGeneral'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import { SwitchInputComponent } from '../shared/switch-input/switch-input.component'
+import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.component'
+import { InputSimpleComponent } from '../shared/input-simple/input-simple.component'
+import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component'
+import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -19,56 +24,62 @@ import { ActivatedRoute } from '@angular/router'
         InputTextModule,
         FormsModule,
         PrimengModule,
-        //TablePrimengComponent,
         DropdownModule,
+        SwitchInputComponent,
+        DropdownInputComponent,
+        InputSimpleComponent,
+        SwitchSimpleComponent,
     ],
     templateUrl: './ficha-general.component.html',
     styleUrl: './ficha-general.component.scss',
 })
 export class FichaGeneralComponent implements OnInit {
-    formGroup: FormGroup | undefined
     formGeneral: FormGroup
     religiones: Array<object>
     tipos_vias: Array<object>
     visibleInput: Array<boolean>
     ficha_registrada: boolean = false
-    idFicha: any
+    iFichaDGId: any
 
     private _MessageService = inject(MessageService)
     private _ConfirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
-        private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService,
-        private route: ActivatedRoute
+        private datosFichaBienestar: DatosFichaBienestarService,
+        private compartirFicha: CompartirFichaService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private funcionesBienestar: FuncionesBienestarService
     ) {
-        this.compartirFichaService.setActiveIndex(0)
+        this.compartirFicha.setActiveIndex(0)
+        this.route.parent?.paramMap.subscribe((params) => {
+            this.iFichaDGId = params.get('id')
+        })
+        if (!this.iFichaDGId) {
+            this.router.navigate(['/'])
+        }
     }
 
     ngOnInit() {
-        this.route.parent?.paramMap.subscribe((params) => {
-            this.idFicha = params.get('id')
-        })
-        console.log(this.idFicha)
-        this.visibleInput = Array(3).fill(false)
-
         this.formGeneral = this.fb.group({
-            iPersId: this.compartirFichaService.perfil?.iPersId,
-            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            iFichaDGId: this.iFichaDGId,
             iTipoViaId: [null, Validators.required],
-            cTipoViaOtro: [''],
-            cFichaDGDireccionNombreVia: ['', Validators.required],
-            cFichaDGDireccionNroPuerta: [''],
-            cFichaDGDireccionBlock: [''],
-            cFichaDGDirecionInterior: [''],
-            cFichaDGDirecionPiso: [''],
-            cFichaDGDireccionManzana: [''],
-            cFichaDGDireccionLote: [''],
-            cFichaDGDireccionKm: [''],
+            cTipoViaOtro: ['', Validators.maxLength(100)],
+            cFichaDGDireccionNombreVia: [
+                '',
+                [Validators.required, Validators.maxLength(150)],
+            ],
+            cFichaDGDireccionNroPuerta: ['', Validators.maxLength(10)],
+            cFichaDGDireccionBlock: ['', Validators.maxLength(3)],
+            cFichaDGDireccionInterior: ['', Validators.maxLength(3)],
+            iFichaDGDireccionPiso: [null],
+            cFichaDGDireccionManzana: ['', Validators.maxLength(10)],
+            cFichaDGDireccionLote: ['', Validators.maxLength(3)],
+            cFichaDGDireccionKm: ['', Validators.maxLength(10)],
             cFichaDGDireccionReferencia: [''],
             iReligionId: [null],
-            cReligionOtro: [''],
+            cReligionOtro: ['', Validators.maxLength(150)],
             bFamiliarPadreVive: [false],
             bFamiliarMadreVive: [false],
             bFamiliarPadresVivenJuntos: [false],
@@ -76,144 +87,97 @@ export class FichaGeneralComponent implements OnInit {
             iFichaDGNroHijos: [null],
         })
 
-        // Habilitar o deshabilitar el campo "iFichaDGNroHijos" en función de "bFichaDGTieneHijos"
-        this.formGeneral
-            .get('bFichaDGTieneHijos')
-            ?.valueChanges.subscribe((value) => {
-                if (value) {
-                    this.visibleInput[0] = true
-                } else {
-                    this.visibleInput[0] = false
-                    this.formGeneral.get('iFichaDGNroHijos')?.setValue(null) // Limpia si desactivan
+        this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
+            this.tipos_vias = this.datosFichaBienestar.getTiposVias(
+                data?.tipos_vias
+            )
+            this.religiones = this.datosFichaBienestar.getReligiones(
+                data?.religiones
+            )
+        })
+
+        this.verFichaGeneral()
+        this.funcionesBienestar.formMarkAsDirty(this.formGeneral)
+    }
+
+    verFichaGeneral() {
+        this.datosFichaBienestar
+            .verFichaGeneral({
+                iFichaDGId: this.iFichaDGId,
+            })
+            .subscribe((data: any) => {
+                if (data.data.length) {
+                    this.setFormGeneral(data.data[0])
                 }
             })
-
-        this.datosFichaBienestarService
-            .getFichaParametros()
-            .subscribe((data: any) => {
-                this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
-                    data?.tipos_vias
-                )
-                this.religiones = this.datosFichaBienestarService.getReligiones(
-                    data?.religiones
-                )
-            })
-
-        this.searchFichaGeneral()
-    }
-
-    handleDropdownChange(event: any, index: number) {
-        if (event?.value === undefined) {
-            this.visibleInput[index] = false
-            return null
-        }
-        if (Array.isArray(event.value)) {
-            if (event.value.includes(1)) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        } else {
-            if (event.value == 1) {
-                this.visibleInput[index] = true
-            } else {
-                this.visibleInput[index] = false
-            }
-        }
-    }
-
-    async searchFichaGeneral(): Promise<void> {
-        const data = await this.datosFichaBienestarService.searchFichaGeneral({
-            iFichaDGId: await this.compartirFichaService.getiFichaDGId(),
-        })
-        if (data) {
-            this.setFormGeneral(data)
-        }
     }
 
     setFormGeneral(data: FichaGeneral) {
         this.ficha_registrada = true
         this.formGeneral.patchValue(data)
-        this.compartirFichaService.setiFichaDGId(
-            data.iFichaDGId ? data.iFichaDGId + '' : null
+        this.funcionesBienestar.formatearFormControl(
+            this.formGeneral,
+            'iTipoViaId',
+            data.iTipoViaId,
+            'number'
         )
-        this.formGeneral
-            .get('iFichaDGId')
-            .setValue(data.iFichaDGId ? +data.iFichaDGId : null)
-        this.formGeneral
-            .get('iTipoViaId')
-            .setValue(data.iTipoViaId ? +data.iTipoViaId : null)
-        this.formGeneral
-            .get('iReligionId')
-            .setValue(data.iReligionId ? +data.iReligionId : null)
-        this.formGeneral
-            .get('bFamiliarPadreVive')
-            .setValue(!!+data.bFamiliarPadreVive)
-        this.formGeneral
-            .get('bFamiliarMadreVive')
-            .setValue(!!+data.bFamiliarMadreVive)
-        this.formGeneral
-            .get('bFamiliarPadresVivenJuntos')
-            .setValue(!!+data.bFamiliarPadresVivenJuntos)
-        this.formGeneral
-            .get('bFichaDGTieneHijos')
-            .setValue(!!+data.bFichaDGTieneHijos)
-        this.formGeneral.get('iFichaDGNroHijos').setValue(data.iFichaDGNroHijos)
-    }
-
-    guardar() {
-        if (this.formGeneral.invalid) {
-            this._MessageService.add({
-                severity: 'warning',
-                summary: 'Advertencia',
-                detail: 'Debe completar los campos requeridos',
-            })
-            return
-        }
-        this.datosFichaBienestarService
-            .guardarFichaGeneral(this.formGeneral.value)
-            .subscribe({
-                next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
-                    this.ficha_registrada = true
-                    this.datosFichaBienestarService.formGeneral =
-                        this.formGeneral.value
-                },
-                error: (error) => {
-                    console.error('Error guardando ficha:', error)
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error,
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+        this.funcionesBienestar.formatearFormControl(
+            this.formGeneral,
+            'iReligionId',
+            data.iReligionId,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formGeneral,
+            'bFamiliarPadreVive',
+            data.bFamiliarPadreVive,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formGeneral,
+            'bFamiliarMadreVive',
+            data.bFamiliarMadreVive,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formGeneral,
+            'bFamiliarPadresVivenJuntos',
+            data.bFamiliarPadresVivenJuntos,
+            'boolean'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formGeneral,
+            'bFichaDGTieneHijos',
+            data.bFichaDGTieneHijos,
+            'boolean'
+        )
+        this.funcionesBienestar.formMarkAsDirty(this.formGeneral)
     }
 
     actualizar() {
         if (this.formGeneral.invalid) {
             this._MessageService.add({
-                severity: 'warning',
+                severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Debe completar los campos requeridos',
             })
             return
         }
-        this.datosFichaBienestarService
+        this.datosFichaBienestar
             .actualizarFichaGeneral(this.formGeneral.value)
             .subscribe({
-                next: (data: any) => {
-                    this.compartirFichaService.setiFichaDGId(
-                        data.data[0].iFichaDGId
-                    )
+                next: () => {
                     this.ficha_registrada = true
-                    this.datosFichaBienestarService.formGeneral =
-                        this.formGeneral.value
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                    setTimeout(() => {
+                        this.router.navigate([
+                            `/bienestar/ficha/${this.iFichaDGId}/familia`,
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

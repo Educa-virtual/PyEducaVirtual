@@ -13,18 +13,6 @@ export class CompartirEstudianteService {
 
     lista: any[] = []
 
-    tipos_documentos: Array<object>
-    tipos_familiares: Array<object>
-    estados_civiles: Array<object>
-    sexos: Array<object>
-    nacionalidades: Array<object>
-    departamentos: Array<object>
-    provincias: Array<object>
-    distritos: Array<object>
-    lenguas: Array<object>
-    tipos_contacto: Array<object>
-    religiones: Array<object>
-
     private activeIndex: string
     private iEstudianteId: string | null = null
     private iPersId: string | null = null

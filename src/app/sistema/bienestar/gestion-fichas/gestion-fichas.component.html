@@ -4,44 +4,17 @@
             Gestionar fichas socioeconómicas
         </span>
     </ng-template>
-    <ng-template pTemplate="icons" class="flex justify-content-center">
-        <div class="flex flex-wrap gap-2 justify-content-end">
-            <button
-                size="small"
-                pButton
-                pTooltip="Registrar ficha"
-                tooltipPosition="top"
-                (click)="nuevoIngreso()"
-                severity="success"
-            >
-                <i class="pi pi-plus"></i>
-                <span class="ml-2 hidden sm:block">Registar ficha</span>
-            </button>
-        </div>
-    </ng-template>
 
-    <form [formGroup]="searchForm">
+    <form [formGroup]="form">
         <div class="grid">
-            <div class="col-12 md:col-6">
+            <div class="col-12">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Nombres </p-inputGroupAddon>
+                    <p-inputGroupAddon> Buscar </p-inputGroupAddon>
                     <input
+                        #filtro
                         type="text"
                         pInputText
-                        formControlName="nombre"
-                        (input)="filtrarEstudiantes()"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Documento </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="dni"
-                        (input)="filtrarEstudiantes()"
-                        class="w-full"
+                        (input)="filtrarTabla()"
                     />
                 </p-inputGroup>
             </div>
@@ -50,7 +23,7 @@
 
     <app-table-primeng
         [columnas]="columnasTabla"
-        [data]="fichas"
+        [data]="fichas_filtradas"
         (accionBtnItem)="accionBnt($event)"
         [actions]="accionesTabla"
         [showCaption]="false"

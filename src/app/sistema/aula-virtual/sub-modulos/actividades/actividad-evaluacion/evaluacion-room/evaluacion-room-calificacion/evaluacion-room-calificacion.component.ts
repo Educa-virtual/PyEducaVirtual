@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+import { CommonModule, NgFor } from '@angular/common'
 import {
     Component,
     computed,
@@ -21,7 +21,13 @@ import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evalu
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { SharedAnimations } from '@/app/shared/animations/shared-animations'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service'
 interface Leyenda {
     total: number
     text: string
@@ -73,6 +79,8 @@ const leyendas = {
         EvaluacionHeaderComponent,
         NoDataComponent,
         RubricaCalificarComponent,
+        CardOrderListComponent,
+        NgFor,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
@@ -120,12 +128,19 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     tareasCulminado: any
     evaluacionEstudiante: any
 
-    showListaEstudiantes: boolean = true
+    // datos para listar estudiantes
+    perfil: any
+    idDocCursoId: any[] = []
+    private _aulaService = inject(ApiAulaService)
+    private _EvaluacionesService = inject(EvaluacionesService)
+    public estudianteMatriculadosxGrado = []
 
+    showListaEstudiantes: boolean = true
+    estudianteSeleccionado
     updateSelectedEstudiante(value: any) {
+        this.estudianteSeleccionado = value
+        this.estudianteSeleccionado.iEvaluacionId = this.iEvaluacionId
         this._state.update((state) => {
-            console.log('selectedEstudiante')
-            console.log(value)
             this.router.navigate([], {
                 queryParams: {
                     // iEvalPromId: value.iEvalPromId ?? undefined,
@@ -139,6 +154,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
                 selectedEstudiante: value,
             }
         })
+        this.seleccionarEvaluacion()
     }
 
     get selectedEstudianteValue() {
@@ -148,24 +164,35 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     // injeccion de dependencias
     private _evaluacionesService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
+    private _ConstantesService = inject(ConstantesService)
+    private _ActivatedRoute = inject(ActivatedRoute)
     private _unsubscribe$ = new Subject<boolean>()
 
     private router = inject(Router)
 
     public leyendasOrden = ['REVISADO', 'PROCESO', 'FALTA']
 
-    constructor() {}
+    constructor(
+        private store: LocalStoreService,
+        private _activatedRoute: ActivatedRoute
+    ) {
+        this.perfil = this.store.getItem('dremoPerfil')
+        //para obtener el idDocCursoId
+        this.idDocCursoId =
+            this._activatedRoute.snapshot.queryParams['idDocCursoId']
+    }
     ngOnInit() {
         this.getData()
     }
     ngOnChanges(changes) {
-        if (changes.iEstado?.currentValue) {
-            this.iEstado = changes.iEstado?.currentValue
+        console.log('changes', changes)
+        // if (changes.iEstado?.currentValue) {
+        //     this.iEstado = changes.iEstado?.currentValue
 
-            if (this.iEstado === 2) {
-                this.getData()
-            }
-        }
+        //     if (this.iEstado === 2) {
+        //         this.getData()
+        //     }
+        // }
     }
 
     getData() {
@@ -173,23 +200,36 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     }
 
     obtenerEstudiantesEvaluacion() {
-        const params = { iEvaluacionId: this.iEvaluacionId }
-        this._evaluacionesService
-            .obtenerEstudiantesEvaluación(params)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: (estudiantes) => {
-                    this._state.update((current) => ({
-                        ...current,
-                        estudiantes,
-                    }))
-                },
+        if (!this.iEvaluacionId) return
+        if (this._ConstantesService.iPerfilId === ESTUDIANTE) return
+        this._EvaluacionesService
+            .obtenerReporteEstudiantesRetroalimentacion({
+                iIeCursoId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iIeCursoId'),
+                iYAcadId: this._ConstantesService.iYAcadId,
+                iSedeId: this._ConstantesService.iSedeId,
+                iSeccionId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iSeccionId'),
+                iNivelGradoId:
+                    this._ActivatedRoute.snapshot.paramMap.get('iNivelGradoId'),
+                iEvaluacionId: this.iEvaluacionId,
+            })
+            .subscribe((Data) => {
+                this.estudianteMatriculadosxGrado = Data['data']
+                this.estudianteMatriculadosxGrado = Data['data'].map(
+                    (item: any, index) => {
+                        return {
+                            ...item,
+                            cTitulo: index + 1 + '.- ' + item.completoalumno,
+                        }
+                    }
+                )
             })
     }
-
+    preguntasEstudiante: any = []
     private obtenerEvaluacionRespuestasEstudiante() {
         // if (!this._state().evaluacionEstudiante) return
-
+        this.preguntasEstudiante = []
         const params = {
             iEvaluacionId: this.iEvaluacionId,
             iEstudianteId: this.selectedEstudiante().iEstudianteId,
@@ -199,13 +239,16 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (preguntas) => {
-                    this._state.update((current) => ({
-                        ...current,
-                        selectedEstudiante: {
-                            ...current.selectedEstudiante,
-                            preguntas: this.mapPreguntas(preguntas),
-                        },
-                    }))
+                    console.log(preguntas)
+                    this.preguntasEstudiante = preguntas
+                    console.log(this.preguntasEstudiante)
+                    // this._state.update((current) => ({
+                    //     ...current,
+                    //     selectedEstudiante: {
+                    //         ...current.selectedEstudiante,
+                    //         preguntas: this.mapPreguntas(preguntas),
+                    //     },
+                    // }))
                 },
             })
     }
@@ -296,6 +339,9 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
         switch (accion) {
             case 'abrir-lista-estudiantes':
                 this.showListaEstudiantes = true
+                break
+            case 'recargar-lista-estudiantes':
+                this.obtenerEstudiantesEvaluacion()
                 break
         }
     }

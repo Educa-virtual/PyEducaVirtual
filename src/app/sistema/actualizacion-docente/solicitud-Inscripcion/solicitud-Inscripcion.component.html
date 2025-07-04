@@ -1,0 +1,66 @@
+<app-toolbar-primeng title="Capacitaciones"></app-toolbar-primeng>
+<div class="grid">
+    <app-tabs-primeng
+        class="col-12"
+        [activeIndex]="activeIndex"
+        [tabs]="tabs"
+        (updateTab)="updateTab($event)"
+    >
+    </app-tabs-primeng>
+</div>
+<div class="col-12">
+    @switch (activeIndex) {
+        @case (0) {
+            <app-apertura-curso
+                [tipoCapacitacion]="tipoCapacitacion"
+            ></app-apertura-curso>
+        }
+        @case (1) {
+            <div class="grid" *ngIf="!detalleVisible" #gridContainer>
+                <div class="col-12">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            <i class="pi pi-search"></i>
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [ngClass]="{
+                                dropdownStyle: tipoCapacitacionSearch,
+                            }"
+                            [options]="tipoCapacitacionSearch"
+                            styleClass="w-full"
+                            placeholder="Buscar por tipo"
+                            optionValue="iTipoCapId"
+                            optionLabel="cTipoCapNombre"
+                            [(ngModel)]="iTipoCapId"
+                            (onChange)="filtrarCapacitaciones($event)"
+                        >
+                        </p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 mb-5 cursos" *ngIf="data && data.length > 0">
+                    @for (capacitacion of data; track capacitacion) {
+                        <app-card-capacitaciones
+                            [capacitacion]="capacitacion"
+                            (verDetalle)="onVerDetalle($event)"
+                        ></app-card-capacitaciones>
+                    }
+                </div>
+                <div class="col-12 mt-5" *ngIf="data && data.length > 0">
+                    <p-paginator
+                        (onPageChange)="onPageChange($event)"
+                        [first]="paginator.first"
+                        [rows]="paginator.rows"
+                        [totalRecords]="paginator.total"
+                        [rowsPerPageOptions]="paginator.rowsPerPage"
+                    />
+                </div>
+            </div>
+            <div *ngIf="detalleVisible">
+                <app-detalle-inscripcion
+                    [id]="idSeleccionado"
+                    (volver)="volverALista()"
+                ></app-detalle-inscripcion>
+            </div>
+        }
+    }
+</div>

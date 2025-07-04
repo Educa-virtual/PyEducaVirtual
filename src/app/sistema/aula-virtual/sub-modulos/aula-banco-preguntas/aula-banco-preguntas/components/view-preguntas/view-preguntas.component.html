@@ -8,144 +8,195 @@
     [resizable]="false"
 >
     <ng-template pTemplate="content">
-        <div class="p-fluid">
-            <!-- Si hay solo una pregunta -->
-            <ng-container *ngIf="detallePreguntas.length === 1">
-                <div class="grid">
-                    <!-- Título de la pregunta -->
-                    <div class="col-12">
+        @if (detallePreguntas.idEncabPregId) {
+            <div class="grid mt-2">
+                <div class="col-12">
+                    {{ detallePreguntas?.cEncabPregTitulo }}
+                </div>
+                <div class="col-12">
+                    <div
+                        class="p-3 border-1 border-orange-200 border-round bg-orange-50 min-h-10rem mt-2 mb-2 overflow-auto break-words"
+                    >
                         <div
-                            class="font-bold text-xl mb-3"
-                            [innerHTML]="detallePreguntas[0]['cBancoPregunta']"
+                            [innerHTML]="detallePreguntas?.cEncabPregContenido"
                         ></div>
                     </div>
-
-                    <!-- Tipo de pregunta: RadioButton -->
-                    <ng-container
-                        *ngIf="
-                            detallePreguntas[0]['iTipoPregId'] === '1' &&
-                            detallePreguntas[0]['alternativas'].length > 0
-                        "
-                    >
-                        <div class="col-12 px-2">
-                            <p class="font-medium text-base">
-                                Selecciona una opción:
-                            </p>
-                            <div
-                                class="mt-2"
-                                *ngFor="
-                                    let alternativa of detallePreguntas[0][
-                                        'alternativas'
-                                    ];
-                                    let i = index
-                                "
-                            >
-                                <div class="flex align-items-center gap-2">
-                                    <p-radioButton
-                                        [inputId]="
-                                            'alt-' + alternativa['iBancoAltId']
-                                        "
-                                        [name]="
-                                            'alt-' +
-                                            detallePreguntas[0][
-                                                'cBancoPregunta'
-                                            ]
-                                        "
-                                        [value]="alternativa['iBancoAltId']"
-                                        [(ngModel)]="
-                                            alternativa.bBancoAltRptaCorrecta
-                                        "
-                                    ></p-radioButton>
-                                    <div
-                                        [innerHTML]="
-                                            alternativa['cBancoAltDescripcion']
-                                        "
-                                        class="flex-1"
-                                    ></div>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-container>
-
-                    <!-- Tipo de pregunta: Checkbox -->
-                    <ng-container
-                        *ngIf="
-                            detallePreguntas[0]['iTipoPregId'] === '2' &&
-                            detallePreguntas[0]['alternativas'].length > 0
-                        "
-                    >
-                        <div class="col-12 px-2">
-                            <p class="font-medium text-base">
-                                Selecciona todas las respuestas correctas:
-                            </p>
-                            <div
-                                class="mt-2"
-                                *ngFor="
-                                    let alternativa of detallePreguntas[0][
-                                        'alternativas'
-                                    ];
-                                    let i = index
-                                "
-                            >
-                                <div class="flex align-items-center gap-2">
-                                    <p-checkbox
-                                        [(ngModel)]="
-                                            alternativa.bBancoAltRptaCorrecta
-                                        "
-                                        [value]="alternativa['iBancoAltId']"
-                                    ></p-checkbox>
-                                    <div
-                                        [innerHTML]="
-                                            alternativa['cBancoAltDescripcion']
-                                        "
-                                        class="flex-1"
-                                    ></div>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-container>
-
-                    <!-- Texto de ayuda -->
+                </div>
+            </div>
+            <div
+                class="grid"
+                *ngFor="let pregunta of detallePreguntas?.jsonPreguntas"
+            >
+                <div class="col-12">
                     <div
-                        class="col-12 mt-3"
-                        *ngIf="detallePreguntas[0]['cBancoTextoAyuda']"
+                        class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2 overflow-auto break-words"
                     >
-                        <p-message
-                            styleClass="w-full"
-                            severity="info"
-                            [text]="
-                                'Texto de ayuda: ' +
-                                detallePreguntas[0]['cBancoTextoAyuda']
+                        <div
+                            [innerHTML]="
+                                pregunta.cEvalPregPregunta ||
+                                pregunta.cNombre ||
+                                pregunta.cBancoPregunta
                             "
-                        ></p-message>
+                        ></div>
                     </div>
+                    <p-message
+                        *ngIf="pregunta.cEvalPregTextoAyuda"
+                        styleClass="w-full"
+                        severity="info"
+                        [text]="'Texto de ayuda: ' + pregunta.cBancoTextoAyuda"
+                    ></p-message>
                 </div>
-            </ng-container>
-
-            <!-- Si hay más de una pregunta -->
-            <ng-container *ngIf="detallePreguntas.length > 1">
-                <div class="grid">
-                    <div class="col-12">
-                        <p class="font-bold text-xl mb-3">
-                            Enunciado:
-                            {{ detallePreguntas['cEncabPregTitulo'] }}
-                        </p>
-                    </div>
-
-                    <!-- Contenido visual de la pregunta -->
-                    <div class="col-12 md:col-6">
-                        <ngx-doc-viewer
-                            [url]="
-                                environment +
-                                '/' +
-                                detallePreguntas['cEncabPregContenido']
+                <ng-container *ngIf="[1, '1'].includes(pregunta?.iTipoPregId)">
+                    <p class="font-medium text-base">Selecciona una opción:</p>
+                    <div class="grid mt-2">
+                        <div
+                            class="col-12 mt-2 px-2 flex align-items-start"
+                            *ngFor="
+                                let alternativa of pregunta?.jsonAlternativas
                             "
-                            viewer="pdf"
-                            style="width: 100%; height: 50vh"
-                        ></ngx-doc-viewer>
+                        >
+                            <p-radioButton
+                                [inputId]="'alt-' + alternativa.iBancoAltId"
+                                [name]="
+                                    'alt-' + detallePreguntas.cBancoPregunta
+                                "
+                                [value]="alternativa.iBancoAltId"
+                                [(ngModel)]="alternativa.bBancoAltRptaCorrecta"
+                            ></p-radioButton>
+                            <div
+                                [innerHTML]="alternativa.cBancoAltDescripcion"
+                                class="flex-1 ml-2"
+                            ></div>
+                        </div>
                     </div>
+                </ng-container>
+
+                <ng-container *ngIf="[2, '2'].includes(pregunta?.iTipoPregId)">
+                    <p class="font-medium text-base">
+                        Selecciona todas las respuestas correctas:
+                    </p>
+                    <div class="grid mt-2">
+                        <div
+                            class="col-12 px-2"
+                            *ngFor="
+                                let alternativa of pregunta?.jsonAlternativas
+                            "
+                        >
+                            <div class="flex align-items-center gap-2">
+                                <p-checkbox
+                                    [(ngModel)]="
+                                        alternativa.bBancoAltRptaCorrecta
+                                    "
+                                    [value]="alternativa.iBancoAltId"
+                                ></p-checkbox>
+                                <div
+                                    [innerHTML]="
+                                        alternativa.cBancoAltDescripcion
+                                    "
+                                    class="flex-1"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container
+                    *ngIf="[3, '3'].includes(detallePreguntas?.iTipoPregId)"
+                >
+                    <p class="font-medium text-base">
+                        <textarea readonly></textarea>
+                    </p>
+                </ng-container>
+            </div>
+        } @else {
+            <div class="grid">
+                <div class="col-12">
+                    <div
+                        class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2 overflow-auto break-words"
+                    >
+                        <div
+                            [innerHTML]="
+                                detallePreguntas.cEvalPregPregunta ||
+                                detallePreguntas.cNombre
+                            "
+                        ></div>
+                    </div>
+                    <p-message
+                        *ngIf="detallePreguntas.cEvalPregTextoAyuda"
+                        styleClass="w-full"
+                        severity="info"
+                        [text]="
+                            'Texto de ayuda: ' +
+                            detallePreguntas.cBancoTextoAyuda
+                        "
+                    ></p-message>
                 </div>
-            </ng-container>
-        </div>
+                <ng-container
+                    *ngIf="[1, '1'].includes(detallePreguntas?.iTipoPregId)"
+                >
+                    <p class="font-medium text-base">Selecciona una opción:</p>
+                    <div class="grid mt-2">
+                        <div
+                            class="col-12 mt-2 px-2 flex align-items-start"
+                            *ngFor="
+                                let alternativa of detallePreguntas?.jsonAlternativas
+                            "
+                        >
+                            <p-radioButton
+                                [inputId]="'alt-' + alternativa.iBancoAltId"
+                                [name]="
+                                    'alt-' + detallePreguntas.cBancoPregunta
+                                "
+                                [value]="alternativa.iBancoAltId"
+                                [(ngModel)]="alternativa.bBancoAltRptaCorrecta"
+                            ></p-radioButton>
+                            <div
+                                [innerHTML]="alternativa.cBancoAltDescripcion"
+                                class="flex-1 ml-2"
+                            ></div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container
+                    *ngIf="[2, '2'].includes(detallePreguntas?.iTipoPregId)"
+                >
+                    <p class="font-medium text-base">
+                        Selecciona todas las respuestas correctas:
+                    </p>
+                    <div class="grid mt-2">
+                        <div
+                            class="col-12 px-2"
+                            *ngFor="
+                                let alternativa of detallePreguntas?.jsonAlternativas
+                            "
+                        >
+                            <div class="flex align-items-center gap-2">
+                                <p-checkbox
+                                    [(ngModel)]="
+                                        alternativa.bBancoAltRptaCorrecta
+                                    "
+                                    [value]="alternativa.iBancoAltId"
+                                ></p-checkbox>
+                                <div
+                                    [innerHTML]="
+                                        alternativa.cBancoAltDescripcion
+                                    "
+                                    class="flex-1"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container
+                    *ngIf="[3, '3'].includes(detallePreguntas?.iTipoPregId)"
+                >
+                    <p class="font-medium text-base">
+                        <textarea readonly></textarea>
+                    </p>
+                </ng-container>
+            </div>
+        }
     </ng-template>
 </p-dialog>

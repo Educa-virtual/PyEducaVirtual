@@ -201,10 +201,6 @@ export class AreaCardComponent implements OnInit {
     }
 
     descargarArchivoPreguntasWord() {
-        /*window.open(
-            `${environment.backendApi}/ere/evaluaciones/${this.iEvaluacionIdHashed}/areas/${this.curso.iCursosNivelGradId}/archivo-preguntas?tipo=word&token=${localStorage.getItem('dremoToken')}`,
-            '_blank'
-        )*/
         const params = {
             iEvaluacionId: this.iEvaluacionIdHashed,
             iCursosNivelGradId: this.curso.iCursosNivelGradId,

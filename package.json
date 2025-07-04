@@ -9,7 +9,8 @@
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
-        "prepare": "husky"
+        "prepare": "husky",
+        "prod": "ng build --configuration=production"
     },
     "engines": {
         "npm": ">=10.8.2",

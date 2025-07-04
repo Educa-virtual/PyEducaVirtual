@@ -11,7 +11,7 @@ import {
 import { AulaBancoPreguntasModule } from '../aula-banco-preguntas.module'
 import {
     actionsContainer,
-    actionsTableModalAgregarBancoPreguntas,
+    actionsTable,
     columnasModalAgregarBancoPreguntas,
     columns,
 } from './aula-banco-preguntas.model'
@@ -26,7 +26,6 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ViewPreguntasComponent } from './components/view-preguntas/view-preguntas.component'
-import { removeHTML } from '@/app/shared/utils/remove-html'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
@@ -43,12 +42,14 @@ export class AulaBancoPreguntasComponent
     implements OnInit, OnDestroy, OnChanges
 {
     @Output() public selectedRowDataChange = new EventEmitter()
+    @Output() public actionBtnItem = new EventEmitter()
+
     @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     @Input() iEvaluacionId: number
     @Input({ required: true }) set iCursoId(value) {
         this.params.iCursoId = value
     }
-    public actionsTable = actionsTableModalAgregarBancoPreguntas
+    public actionsTable = actionsTable
     public actionsContainer = actionsContainer
     public columnas = columns
     public bancoPreguntas = []
@@ -87,7 +88,7 @@ export class AulaBancoPreguntasComponent
         // console.log(this.mode)
         if (this.mode === 'SELECTION') {
             this.columnas = columnasModalAgregarBancoPreguntas
-            this.actionsTable = actionsTableModalAgregarBancoPreguntas
+            this.actionsTable = actionsTable
         }
     }
     ngOnChanges(changes) {
@@ -123,24 +124,73 @@ export class AulaBancoPreguntasComponent
     obtenerBancoPreguntas() {
         this._aulaBancoApiService.obtenerBancoPreguntas(this.params).subscribe({
             next: (data) => {
-                this.bancoPreguntas = data
-                this.bancoPreguntas.forEach((item) => {
-                    this.expandedRowKeys[item.iPreguntaId] = true
-                    item.iTotalPreguntas = !item.preguntas
-                        ? 1
-                        : item.preguntas.length
+                this.bancoPreguntas = data.data
+                this.bancoPreguntas.forEach((pregunta) => {
+                    if (pregunta.idEncabPregId) {
+                        pregunta.cNombre = pregunta.cEncabPregTitulo
+                    } else {
+                        pregunta.cNombre = pregunta.cBancoPregunta
+                    }
                 })
-                this.bancoPreguntas.forEach((i) => {
-                    i.cPreguntaNoHTML = i.cBancoPregunta
-                        ? removeHTML(i.cBancoPregunta)
-                        : null
+                this.bancoPreguntas.forEach((pregunta) => {
+                    // Primero: parsear jsonPreguntas si viene como string
+                    if (typeof pregunta.jsonPreguntas === 'string') {
+                        try {
+                            pregunta.jsonPreguntas = JSON.parse(
+                                pregunta.jsonPreguntas
+                            )
+                        } catch (e) {
+                            console.error(
+                                'Error al parsear jsonPreguntas:',
+                                e,
+                                pregunta.jsonPreguntas
+                            )
+                            pregunta.jsonPreguntas = {}
+                        }
+                    }
+
+                    // Segundo: parsear jsonAlternativas dentro de jsonPreguntas si viene como string
+                    if (
+                        pregunta.jsonPreguntas &&
+                        typeof pregunta.jsonPreguntas.jsonAlternativas ===
+                            'string'
+                    ) {
+                        try {
+                            pregunta.jsonPreguntas.jsonAlternativas =
+                                JSON.parse(
+                                    pregunta.jsonPreguntas.jsonAlternativas
+                                )
+                        } catch (e) {
+                            console.error(
+                                'Error al parsear jsonAlternativas (dentro de jsonPreguntas):',
+                                e,
+                                pregunta.jsonPreguntas.jsonAlternativas
+                            )
+                            pregunta.jsonPreguntas.jsonAlternativas = []
+                        }
+                    }
+                    // Tercero (opcional): parsear también el jsonAlternativas raíz, si existe como string
+                    if (typeof pregunta.jsonAlternativas === 'string') {
+                        try {
+                            pregunta.jsonAlternativas = JSON.parse(
+                                pregunta.jsonAlternativas
+                            )
+                        } catch (e) {
+                            console.error(
+                                'Error al parsear jsonAlternativas (raíz):',
+                                e,
+                                pregunta.jsonAlternativas
+                            )
+                            pregunta.jsonAlternativas = []
+                        }
+                    }
                 })
-                this.expandedRowKeys = Object.assign({}, this.expandedRowKeys)
             },
         })
     }
 
     public handleAcciones({ accion, item }) {
+        //console.log(accion, item)
         if (accion === 'agregar') {
             this.agregarEditarPregunta({
                 iPreguntaId: 0,
@@ -154,16 +204,37 @@ export class AulaBancoPreguntasComponent
             this.generarWord()
         }
         if (accion === 'editar') {
-            this.agregarEditarPregunta(item)
+            this.actionBtnItem.emit({ accion, item })
+            //this.agregarEditarPregunta(item)
+        }
+
+        if (accion === 'agregar-pregunta-multiple') {
+            this.actionBtnItem.emit({ accion, item })
+            //this.agregarEditarPregunta(item)
+        }
+        if (accion === 'editar-multiple') {
+            this.actionBtnItem.emit({ accion, item })
+            //this.agregarEditarPregunta(item)
         }
 
         if (accion === 'eliminar') {
-            this.handleEliminarBancoPreguntas(item)
+            this.actionBtnItem.emit({ accion, item })
+            //this.handleEliminarBancoPreguntas(item)
         }
-        console.log(accion, item)
+
+        if (accion === 'eliminar-multiple') {
+            this.actionBtnItem.emit({ accion, item })
+            //this.handleEliminarBancoPreguntas(item)
+        }
+        //console.log(accion, item)
         if (accion === 'ver') {
-            this.showDetallePregunta = false
-            this.handleVerPregunta(item)
+            this.showDetallePregunta = true
+            const index =
+                this.bancoPreguntas.findIndex(
+                    (i) => i.iBancoId === item.iBancoId
+                ) + 1
+            this.tituloDetallePregunta = 'PREGUNTA #' + index
+            this.detallePreguntas = item
         }
     }
     selectedItems = []
@@ -283,6 +354,18 @@ export class AulaBancoPreguntasComponent
     }
 
     accionBtnItem(elemento) {
-        console.log(elemento)
+        const { accion, item } = elemento
+        console.log(item)
+        switch (accion) {
+            case 'close-modal':
+                this.showDetallePregunta = false
+                break
+            // case 'ver-pregunta':
+            //     this.handleVerPregunta(item)
+            //     break
+            default:
+                console.warn('Acción no reconocida:', accion)
+        }
+        //console.log(elemento)
     }
 }

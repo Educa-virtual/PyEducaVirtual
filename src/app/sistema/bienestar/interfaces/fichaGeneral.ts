@@ -5,8 +5,8 @@ export interface FichaGeneral {
     cFichaDGDireccionNombreVia: string
     cFichaDGDireccionNroPuerta: string
     cFichaDGDireccionBlock: string
-    cFichaDGDirecionInterior: string
-    cFichaDGDirecionPiso: number
+    cFichaDGDireccionInterior: string
+    iFichaDGDireccionPiso: number
     cFichaDGDireccionManzana: string
     cFichaDGDireccionLote: string
     cFichaDGDireccionKm: string

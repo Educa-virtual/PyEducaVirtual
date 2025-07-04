@@ -1,0 +1,30 @@
+<p-inputGroup styleClass="vertical-group">
+    <p-inputGroupAddon>
+        <a
+            *ngIf="infoAdicional"
+            role="button"
+            class="p-button p-button-secondary mr-2"
+            (click)="panel.toggle($event)"
+            (keypress)="panel.toggle($event)"
+            tabindex="0"
+        >
+            <i class="pi pi-question-circle"></i>
+        </a>
+        <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+            <div class="w-15rem">
+                <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
+            </div>
+        </p-overlayPanel>
+        <span>{{ addonLabel }}</span>
+    </p-inputGroupAddon>
+    <p-dropdown
+        [options]="dropdownItems"
+        [formControl]="dropdownControl"
+        [filter]="filter"
+        [showClear]="showClear"
+        appendTo="body"
+        [placeholder]="dropdownPlaceholder"
+        [style]="{ flex: '1', width: '100%' }"
+        styleClass="group-element"
+    />
+</p-inputGroup>

@@ -6,10 +6,9 @@ import {
     EVALUACION,
     VIDEO_CONFERENCIA,
     IActividad,
+    CUESTIONARIO,
 } from '../interfaces/actividad.interface'
-import { ConstantesService } from '@/app/servicios/constantes.service'
-const _ConstantesService = new ConstantesService()
-const iPerfilId = _ConstantesService.iPerfilId
+
 export const actividadesConfig: Record<
     number,
     Omit<IActividadConfig, 'cProgActTituloLeccion'>
@@ -26,14 +25,16 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                isVisible: () => iPerfilId === DOCENTE,
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
-                isVisible: () => iPerfilId === DOCENTE,
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-eye',
@@ -55,14 +56,16 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                isVisible: () => iPerfilId === DOCENTE,
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
-                isVisible: () => iPerfilId === DOCENTE,
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-eye',
@@ -84,42 +87,22 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
-                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-eye',
                 accion: 'VER',
                 class: '',
                 label: 'Ver',
-            },
-            {
-                icon: {
-                    size: 'xs',
-                    color: '',
-                    name: 'matSendOutline',
-                },
-                accion: 'PUBLICAR',
-                class: '',
-                label: 'Publicar',
-                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
-            },
-            {
-                icon: {
-                    size: 'xs',
-                    color: '',
-                    name: 'matCancelScheduleSendOutline',
-                },
-                accion: 'ANULAR_PUBLICACION',
-                class: '',
-                label: 'Anular Publicación',
-                isVisible: (row) => row.iEstado === 2 && iPerfilId === DOCENTE,
             },
         ],
     },
@@ -129,6 +112,30 @@ export const actividadesConfig: Record<
         icon: 'matVideocam',
         cActTipoNombre: 'Video Conferencia',
         iActTipoId: VIDEO_CONFERENCIA,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-external-link',
+                accion: 'INGRESAR',
+                class: '',
+                label: 'Ingresar',
+            },
+        ],
     },
     // [MATERIAL]: {
     //     'icon-color': 'text-indigo-500',
@@ -137,6 +144,37 @@ export const actividadesConfig: Record<
     //     cActTipoNombre: 'Material',
     //     iActTipoId: MATERIAL,
     // },
+    [CUESTIONARIO]: {
+        'icon-color': 'text-pink-500',
+        'bg-color': 'bg-pink-500 text-white',
+        icon: 'matDescription',
+        cActTipoNombre: 'Cuestionario',
+        iActTipoId: CUESTIONARIO,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+                isVisible: (row, iPerfilId) =>
+                    [1, 2].includes(row['iEstado']) && iPerfilId === DOCENTE,
+            },
+            {
+                icon: 'pi pi-eye',
+                accion: 'VER',
+                class: '',
+                label: 'Ver',
+            },
+        ],
+    },
 }
 
 export const actividadesConfigList: Partial<IActividad>[] = [

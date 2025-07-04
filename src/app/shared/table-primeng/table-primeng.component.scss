@@ -55,6 +55,9 @@ tr {
     background-color: #bee5ff;
 }
 
+.text-innerHtml {
+    font-size: 12px;
+}
 .itemSelected {
     background: var(--blue-500);
     color: white;
@@ -68,5 +71,11 @@ tr {
     color: white;
     i {
         color: white;
+    }
+}
+
+@media (min-width: 768px) {
+    .md\:table-cell {
+        display: table-cell !important;
     }
 }

@@ -1,266 +1,191 @@
 <br />
 
 <form [formGroup]="formAlimentacion">
-    <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iFichaDGId" />
-
+    <div class="grid p-fluid p-2">
         <div class="col-12">
-            <p-inputGroup styleClass="vertical-group">
-                <p-inputGroupAddon>Programas de alimentación</p-inputGroupAddon>
-                <p-multiSelect
-                    display="chip"
-                    [options]="programas_alimentarios"
-                    formControlName="iProAlimId"
-                    [filter]="true"
-                    [showClear]="true"
-                    [maxSelectedLabels]="undefined"
-                    [showToggleAll]="false"
-                    [appendTo]="'body'"
-                    placeholder="Seleccione"
-                    multiple="true"
-                    [maxSelectedLabels]="undefined"
-                    (onChange)="handleDropdownChange($event, 0)"
-                    (onClear)="handleDropdownChange($event, 0)"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                />
-                @if (visibleInput[0] === true) {
-                    <input
-                        pInputText
-                        formControlName="cProAlimNombre"
-                        placeholder="Especifique otro *"
-                        type="text"
-                        class="group-element"
-                    />
-                }
-            </p-inputGroup>
+            <app-multiselect-simple
+                [multiselectItems]="programas_alimentarios"
+                [multiselectControl]="
+                    $any(formAlimentacion).controls['iProgAlimId']
+                "
+                addonLabel="Programas de alimentación"
+                multiselectPlaceholder="Seleccione"
+            />
         </div>
-
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Lugar de alimentación durante la semana">
+            <p-fieldset
+                legend="Lugar de alimentación del estudiante durante la semana"
+            >
                 <div class="grid mt-3">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                ¿Donde consume el desayuno?
-                            </p-inputGroupAddon>
-                            <p-dropdown
-                                [options]="lugares_alimentacion"
-                                formControlName="iLugarAlimIdDesayuno"
-                                [filter]="false"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                (onChange)="handleDropdownChange($event, 1)"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[1] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cLugarAlimDesayuno"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-dropdown-input
+                            [dropdownItems]="lugares_alimentacion"
+                            [dropdownControl]="
+                                $any(formAlimentacion).controls[
+                                    'iLugarAlimIdDesayuno'
+                                ]
+                            "
+                            addonLabel="¿Donde suele consumir el desayuno? *"
+                            dropdownPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cLugarAlimDesayuno'
+                                ]
+                            "
+                            inputPlaceholder="Especifique otro"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                ¿Donde consume el almuerzo?
-                            </p-inputGroupAddon>
-                            <p-dropdown
-                                [options]="lugares_alimentacion"
-                                formControlName="iLugarAlimIdAlmuerzo"
-                                [filter]="false"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                (onChange)="handleDropdownChange($event, 2)"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[2] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cLugarAlimAlmuerzo"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-dropdown-input
+                            [dropdownItems]="lugares_alimentacion"
+                            [dropdownControl]="
+                                $any(formAlimentacion).controls[
+                                    'iLugarAlimIdAlmuerzo'
+                                ]
+                            "
+                            addonLabel="¿Donde suele consumir el almuerzo? *"
+                            dropdownPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cLugarAlimAlmuerzo'
+                                ]
+                            "
+                            inputPlaceholder="Especifique otro"
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                ¿Donde consume la cena?
-                            </p-inputGroupAddon>
-                            <p-dropdown
-                                [options]="lugares_alimentacion"
-                                formControlName="iLugarAlimIdCena"
-                                [filter]="false"
-                                [showClear]="true"
-                                [appendTo]="'body'"
-                                placeholder="Seleccione"
-                                (onChange)="handleDropdownChange($event, 3)"
-                                [style]="{ flex: '1', width: '100%' }"
-                                styleClass="group-element"
-                            />
-                            @if (visibleInput[3] === true) {
-                                <input
-                                    pInputText
-                                    formControlName="cLugarAlimCena"
-                                    placeholder="Especifique otro"
-                                    type="text"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-dropdown-input
+                            [dropdownItems]="lugares_alimentacion"
+                            [dropdownControl]="
+                                $any(formAlimentacion).controls[
+                                    'iLugarAlimIdCena'
+                                ]
+                            "
+                            addonLabel="¿Donde suele consumir la cena? *"
+                            dropdownPlaceholder="Seleccione"
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cLugarAlimCena'
+                                ]
+                            "
+                            inputPlaceholder="Especifique otro"
+                        />
                     </div>
                 </div>
             </p-fieldset>
         </div>
 
         <div class="col-12 lg:col-6">
-            <p-fieldset legend="Información alimenticia adicional">
+            <p-fieldset
+                legend="Información alimenticia adicional sobre el estudiante"
+            >
                 <div class="grid">
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    (onChange)="handleSwitchChange($event, 0)"
-                                    formControlName="bDietaVegetariana"
-                                />
-                                <span> Dieta Vegetariana </span>
-                            </p-inputGroupAddon>
-                            @if (visibleAdicionalInput[0] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cDietaVegetarianaObs"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Tiene una dieta especial?"
+                            inputPlaceholder="Especifique *"
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [switchControl]="
+                                $any(formAlimentacion).controls[
+                                    'bDietaEspecial'
+                                ]
+                            "
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cDietaEspecialObs'
+                                ]
+                            "
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bDietaVegana"
-                                    (onChange)="handleSwitchChange($event, 1)"
-                                />
-                                <span>Dieta Vegana</span>
-                            </p-inputGroupAddon>
-                            @if (visibleAdicionalInput[1] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cDietaVeganaObs"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Tiene alergias alimenticias?"
+                            inputPlaceholder="Especifique *"
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [switchControl]="
+                                $any(formAlimentacion).controls[
+                                    'bFichaDGAlergiaAlimentos'
+                                ]
+                            "
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cFichaDGAlergiaAlimentos'
+                                ]
+                            "
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bAlergiasAlim"
-                                    (onChange)="handleSwitchChange($event, 2)"
-                                />
-                                <span>Alergias alimenticias</span>
-                            </p-inputGroupAddon>
-                            @if (visibleAdicionalInput[2] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cAlergiasAlimObs"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Tiene intolerancias alimenticias?"
+                            inputPlaceholder="Especifique *"
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [switchControl]="
+                                $any(formAlimentacion).controls[
+                                    'bIntoleranciaAlim'
+                                ]
+                            "
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cIntoleranciaAlimObs'
+                                ]
+                            "
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bIntoleranciaAlim"
-                                    (onChange)="handleSwitchChange($event, 3)"
-                                />
-                                <span>Intolerancias alimenticias</span>
-                            </p-inputGroupAddon>
-                            @if (visibleAdicionalInput[3] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cIntoleranciaAlimObs"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Consume suplementos alimenticios?"
+                            inputPlaceholder="Especifique *"
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [switchControl]="
+                                $any(formAlimentacion).controls[
+                                    'bSumplementosAlim'
+                                ]
+                            "
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cSumplementosAlimObs'
+                                ]
+                            "
+                        />
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bSumplementosAlim"
-                                    (onChange)="handleSwitchChange($event, 4)"
-                                />
-                                <span>Suplementos alimenticios</span>
-                            </p-inputGroupAddon>
-                            @if (visibleAdicionalInput[4] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cSumplementosAlimObs"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
+                        <app-switch-input
+                            addonLabel="¿Tiene dificultades para conseguir alimentos?"
+                            inputPlaceholder="Explique *"
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [switchControl]="
+                                $any(formAlimentacion).controls[
+                                    'bDificultadAlim'
+                                ]
+                            "
+                            [inputControl]="
+                                $any(formAlimentacion).controls[
+                                    'cDificultadAlimObs'
+                                ]
+                            "
+                            [infoAdicional]="bDificultadAlim"
+                        />
+                        <ng-template #bDificultadAlim>
+                            Marque esta opción si el estudiante suele tener
+                            dificultades para conseguir alimentos ya sea por
+                            falta de dinero, tiempo, transporte, etc. y explique
+                            brevemente el motivo.
+                        </ng-template>
                     </div>
                     <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                <p-inputSwitch
-                                    formControlName="bDificultadAlim"
-                                    (onChange)="handleSwitchChange($event, 5)"
-                                />
-                                <span
-                                    >¿Tiene dificultades para conseguir
-                                    alimentos?</span
-                                >
-                            </p-inputGroupAddon>
-                            @if (visibleAdicionalInput[5] === true) {
-                                <input
-                                    type="text"
-                                    formControlName="cDificultadAlimObs"
-                                    pInputText
-                                    placeholder="Especifique"
-                                    class="group-element"
-                                />
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12">
-                        <p-inputGroup styleClass="vertical-group">
-                            <p-inputGroupAddon>
-                                Información adicional
-                            </p-inputGroupAddon>
-                            <input
-                                type="text"
-                                formControlName="cInfoAdicionalAlimObs"
-                                pInputText
-                                placeholder="Especifique"
-                                class="group-element"
-                            />
-                        </p-inputGroup>
+                        <app-input-simple
+                            inputType="textarea"
+                            [inputInitRows]="1"
+                            [inputControl]="
+                                $any(formAlimentacion).controls['cAlimObs']
+                            "
+                            addonLabel="Información adicional"
+                        />
                     </div>
                 </div>
             </p-fieldset>
@@ -276,22 +201,12 @@
         (onClick)="salir()"
         severity="secondary"
     />
-    @if (!ficha_registrada) {
-        <p-button
-            type="button"
-            label="Guardar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="guardar()"
-        />
-    } @else {
-        <p-button
-            type="button"
-            label="Actualizar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="actualizar()"
-        />
-    }
+    <p-button
+        type="button"
+        label="Actualizar y continuar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="actualizar()"
+    />
 </div>
 <p-toast></p-toast>

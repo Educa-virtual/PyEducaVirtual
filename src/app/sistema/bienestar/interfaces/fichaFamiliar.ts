@@ -20,8 +20,8 @@ export interface FichaFamiliar {
     cFichaDGDireccionNombreVia: string
     cFichaDGDireccionNroPuerta: string
     cFichaDGDireccionBlock: string
-    cFichaDGDirecionInterior: string
-    cFichaDGDirecionPiso: string
+    cFichaDGDireccionInterior: string
+    iFichaDGDireccionPiso: string
     cFichaDGDireccionManzana: string
     cFichaDGDireccionLote: string
     cFichaDGDireccionKm: string

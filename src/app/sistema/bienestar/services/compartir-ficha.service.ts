@@ -29,7 +29,7 @@ export class CompartirFichaService implements OnDestroy {
         localStorage.setItem('iFichaDGId', index)
     }
 
-    async getiFichaDGId(): Promise<string | null> {
+    getiFichaDGId(): string | null {
         if (!this.iFichaDGId) {
             this.iFichaDGId =
                 localStorage.getItem('iFichaDGId') == 'null'

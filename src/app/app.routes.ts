@@ -17,6 +17,9 @@ import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.co
 //import { CategoriasEncuestaComponent } from './sistema/encuestas/categorias/categorias-encuestas.component'
 import { EstudianteEncuestaComponent } from './sistema/encuestas/estudiante-encuesta/estudiante-encuesta.component'
 import { PreguntaRespuestaComponent } from './sistema/encuestas/encuestas-por-categoria/pregunta-respuesta/pregunta-respuesta.component'
+import { GestionEncuestaConfiguracionComponent } from './sistema/encuestas/gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+import { NuevaEncuestaComponent } from './sistema/encuestas/nueva-encuesta/nueva-encuesta/nueva-encuesta.component'
+import { ListaEncuestasComponent } from './sistema/encuestas/lista-encuestas/lista-encuestas.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -110,6 +113,22 @@ export const routes: Routes = [
                 path: 'asistencia-auxiliar',
                 component: AuxiliarComponent,
             },
+            {
+                path: 'nuevo-encuesta',
+                component: NuevaEncuestaComponent,
+            },
+            {
+                path: 'gestion-encuesta-configuacion',
+                component: GestionEncuestaConfiguracionComponent,
+            },
+            {
+                path: 'nueva-encuesta',
+                component: NuevaEncuestaComponent,
+            },
+            {
+                path: 'lista-categoria',
+                component: ListaEncuestasComponent,
+            },
             // encuestas
             /*{
                 path: 'categorias-encuesta',
@@ -140,10 +159,7 @@ export const routes: Routes = [
 
             /*
             // Gestion-encuesta-configuacion
-            {
-                path: 'gestion-encuesta-configuacion',
-                component: GestionEncuestaConfiguracionComponent,
-            },
+            
             ,*/
             /*{
                 path: 'acceso-encuesta',
@@ -156,6 +172,10 @@ export const routes: Routes = [
             {
                 path: 'pregunta-respuesta',
                 component: PreguntaRespuestaComponent,
+            },
+            {
+                path: 'gestion-encuesta-configuraion',
+                component: GestionEncuestaConfiguracionComponent,
             },
         ],
     },

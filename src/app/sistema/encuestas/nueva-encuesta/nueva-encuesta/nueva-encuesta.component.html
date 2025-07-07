@@ -26,52 +26,55 @@
             </app-informacion-general>
         </div>
 
-        <!-- Paso 2: Preguntas -->
-        <div *ngIf="getCurrentStep() === 1" class="step-panel"></div>
-    </div>
-
-    <!-- Navegación del stepper -->
-    <div
-        class="flex justify-content-between align-items-center mt-4 pt-3 border-top-1 border-gray-300"
-    >
-        <!-- Botón Anterior -->
-        <p-button
-            *ngIf="!isFirstStep()"
-            label="Anterior"
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            size="small"
-            (onClick)="prevStep()"
-        >
-        </p-button>
-
-        <!-- Espacio vacío si es el primer paso -->
-        <div *ngIf="isFirstStep()"></div>
-
-        <!-- Botones de navegación derecha -->
-        <div class="flex gap-2">
-            <!-- Botón Siguiente -->
-            <p-button
-                *ngIf="!isLastStep()"
-                label="Siguiente"
-                icon="pi pi-arrow-right"
-                iconPos="right"
-                size="small"
-                (onClick)="nextStep()"
-            >
-            </p-button>
-
-            <!-- Botón Finalizar -->
-            <p-button
-                *ngIf="isLastStep()"
-                label="Finalizar Encuesta"
-                icon="pi pi-check"
-                iconPos="right"
-                severity="success"
-                size="small"
-                (onClick)="onFinish()"
-            >
-            </p-button>
+        <!-- Paso 2: poblaccion-objetivo -->
+        <div *ngIf="getCurrentStep() === 1" class="step-panel">
+            <app-poblacion-objetivo (nextStep)="onNextFromPoblacionObjetivo()">
+            </app-poblacion-objetivo>
         </div>
-    </div> </p-dialog
->>
+
+        <!-- Navegación del stepper -->
+        <div
+            class="flex justify-content-between align-items-center mt-4 pt-3 border-top-1 border-gray-300"
+        >
+            <!-- Botón Anterior -->
+            <p-button
+                *ngIf="!isFirstStep()"
+                label="Anterior"
+                icon="pi pi-arrow-left"
+                severity="secondary"
+                size="small"
+                (onClick)="prevStep()"
+            >
+            </p-button>
+
+            <!-- Espacio vacío si es el primer paso -->
+            <div *ngIf="isFirstStep()"></div>
+
+            <!-- Botones de navegación derecha -->
+            <div class="flex gap-2">
+                <!-- Botón Siguiente -->
+                <p-button
+                    *ngIf="!isLastStep()"
+                    label="Siguiente"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    size="small"
+                    (onClick)="nextStep()"
+                >
+                </p-button>
+
+                <!-- Botón Finalizar -->
+                <p-button
+                    *ngIf="isLastStep()"
+                    label="Finalizar Encuesta"
+                    icon="pi pi-check"
+                    iconPos="right"
+                    severity="success"
+                    size="small"
+                    (onClick)="onFinish()"
+                >
+                </p-button>
+            </div>
+        </div>
+    </div>
+</p-dialog>

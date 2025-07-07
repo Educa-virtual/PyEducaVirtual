@@ -3,10 +3,16 @@ import { CommonModule } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem } from 'primeng/api'
 import { InformacionGeneralComponent } from '../informacion-general/informacion-general.component'
+import { PoblacionObjetivoComponent } from '../poblacion-objetivo/poblacion-objetivo.component'
 @Component({
     selector: 'app-nueva-encuesta',
     standalone: true,
-    imports: [PrimengModule, CommonModule, InformacionGeneralComponent],
+    imports: [
+        PrimengModule,
+        CommonModule,
+        InformacionGeneralComponent,
+        PoblacionObjetivoComponent,
+    ],
     templateUrl: './nueva-encuesta.component.html',
     styleUrls: ['./nueva-encuesta.component.scss'],
 })
@@ -73,5 +79,8 @@ export class NuevaEncuestaComponent implements OnInit {
     onHide() {
         this.visible = false
         this.visibleChange.emit(this.visible)
+    }
+    onNextFromPoblacionObjetivo() {
+        this.nextStep()
     }
 }

@@ -20,7 +20,7 @@ export class ListaEncuestasComponent implements OnInit {
     iCategoriaEncuestaIdHashed: string = ''
     categoria: any = null
     selectedItem: any
-    mostrarDialogoConfiguracion: boolean = false
+    mostrarDialogoNueva: boolean = false
     mostrarDialogoAccesoEncuesta: boolean = false
     columns = []
 
@@ -266,12 +266,12 @@ export class ListaEncuestasComponent implements OnInit {
         })*/
     }
 
-    abrirDialogoConfiguracion() {
-        this.mostrarDialogoConfiguracion = true
+    abrirDialogoNueva() {
+        this.mostrarDialogoNueva = true
     }
 
-    cerrarDialogoConfiguracion() {
-        this.mostrarDialogoConfiguracion = false
+    cerrarDialogoNueva() {
+        this.mostrarDialogoNueva = false
     }
 
     abrirDialogoAccesoEncuesta() {

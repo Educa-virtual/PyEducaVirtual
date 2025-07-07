@@ -9,6 +9,7 @@ import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.
 import { TAREA } from '@/app/sistema/aula-virtual/interfaces/actividad.interface';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { TareasService } from '@/app/servicios/aula/tareas.service';
+import { DatePipe } from '@angular/common';
 // Selector que se utiliza para referenciar este componente en la plantilla de otros componentes.
 @Component({
   selector: 'app-tarea-form',
@@ -34,6 +35,7 @@ export class TareaFormComponent implements OnChanges {
   private _MessageService = inject(MessageService);
   private _TareasService = inject(TareasService);
 
+  pipe = new DatePipe('es-ES');
   date = this.ajustarAHorarioDeMediaHora(new Date());
   // Indica que el tipo de archivo "file" está habilitado o permitido.
   typesFiles = {
@@ -105,7 +107,19 @@ export class TareaFormComponent implements OnChanges {
     };
     this._GeneralService.getGralPrefix(params).subscribe({
       next: resp => {
-        console.log(resp);
+        const [data] = resp.data;
+
+        this.formTareas.patchValue({
+          iTareaId: data.iTareaId,
+          iDocenteId: data.iDocenteId,
+          cTareaTitulo: data.cTareaTitulo,
+          cTareaDescripcion: data.cTareaDescripcion,
+          dtTareaInicio: new Date(data.dtTareaInicio),
+          dtTareaFin: new Date(data.dtTareaFin),
+          bTareaEsGrupal: data.bTareaEsGrupal,
+        });
+
+        this.filesUrl = data.cTareaArchivoAdjunto ? JSON.parse(data.cTareaArchivoAdjunto) : [];
       },
     });
   }
@@ -194,11 +208,11 @@ export class TareaFormComponent implements OnChanges {
     const data = {
       ...this.formTareas.value,
       dtTareaInicio: this.formTareas.value.dtTareaInicio
-        ? this.formatFechaLocal(this.formTareas.value.dtTareaInicio)
+        ? this.pipe.transform(this.formTareas.value.dtTareaInicio, 'dd/MM/yyyy HH:mm:ss')
         : null,
 
       dtTareaFin: this.formTareas.value.dtTareaFin
-        ? this.formatFechaLocal(this.formTareas.value.dtTareaFin)
+        ? this.pipe.transform(this.formTareas.value.dtTareaFin, 'dd/MM/yyyy HH:mm:ss')
         : null,
     };
 
@@ -297,11 +311,5 @@ export class TareaFormComponent implements OnChanges {
 
   mostrarMensajeToast(message) {
     this._MessageService.add(message);
-  }
-
-  formatFechaLocal(date: Date): string {
-    // Retorna en formato: YYYY-MM-DD HH:mm:ss (local)
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
   }
 }

@@ -33,7 +33,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual';
-import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component';
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component';
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
@@ -44,6 +43,7 @@ import { CuestionarioFormComponent } from '../../../../actividades/actividad-cue
 import { DropdownChangeEvent } from 'primeng/dropdown';
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { SesionAprendizajeFormComponent } from '../../../../sesion-aprendizaje/sesion-aprendizaje-form/sesion-aprendizaje-form.component';
+import { TareaFormComponent } from '../../../../actividades/actividad-tarea/tarea-form/tarea-form.component';
 
 @Component({
   selector: 'app-tab-contenido',
@@ -56,6 +56,7 @@ import { SesionAprendizajeFormComponent } from '../../../../sesion-aprendizaje/s
     ToolbarPrimengComponent,
     CardOrderListComponent,
     SesionAprendizajeFormComponent,
+    TareaFormComponent,
   ],
   templateUrl: './tab-contenido.component.html',
   styleUrl: './tab-contenido.component.scss',
@@ -282,29 +283,22 @@ export class TabContenidoComponent implements OnInit {
   }
 
   // maneja las acciones de las tareas
+  showModalTarea: boolean = false;
+  accionTarea: string = '';
+  semanaTarea;
+  iTareaId: string | number = null;
   handleTareaAction(action: string, actividad: IActividad) {
+    this.showModalTarea = false;
+    this.accionTarea = null;
+    this.semanaTarea = null;
+    this.iTareaId = null;
     switch (action) {
       case 'CREAR':
       case 'EDITAR':
-        const ref: DynamicDialogRef = this._dialogService.open(TareaFormContainerComponent, {
-          ...MODAL_CONFIG,
-          data: {
-            contenidoSemana: this.semanaSeleccionada,
-            iActTipoId: actividad.iActTipoId,
-            actividad: actividad,
-            idDocCursoId: this.idDocCursoId,
-            action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
-          },
-          header: action === 'EDITAR' ? 'Editar Tarea' : 'Crear Tarea',
-        });
-        ref.onClose.subscribe(result => {
-          if (result) {
-            // this.getData()
-            this.obtenerContenidoSemanas(this.semanaSeleccionada);
-          } else {
-            console.log('Formulario cancelado');
-          }
-        });
+        this.showModalTarea = true;
+        this.accionTarea = action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR';
+        this.semanaTarea = this.semanaSeleccionada;
+        this.iTareaId = actividad.ixActivadadId;
         break;
       case 'ELIMINAR':
         this._confirmService.openConfirm({
@@ -375,20 +369,6 @@ export class TabContenidoComponent implements OnInit {
         window.open(actividad['cRVirtualUrlJoin'], '_blank');
         break;
     }
-
-    // if (action === 'EDITAR' || action === 'CREAR') {
-    //     let data = null
-    //     let header = 'Crear Videoconferencia'
-    //     if (action === 'EDITAR') {
-    //         data = actividad
-    //         header = 'Editar Videoconferencia'
-    //     }
-    //     this._dialogService.open(VideoconferenciaFormContainerComponent, {
-    //         ...MODAL_CONFIG,
-    //         data: data,
-    //         header: header,
-    //     })
-    // }
   }
 
   handleForoAction(action: string, actividad: IActividad) {
@@ -647,7 +627,7 @@ export class TabContenidoComponent implements OnInit {
         if (resp.validated) {
           this.mostrarMensajeToast({
             severity: 'success',
-            summary: 'Genial!',
+            summary: '¡Genial!',
             detail: resp.message,
           });
           this.obtenerContenidoSemanas(this.semanaSeleccionada);
@@ -805,5 +785,9 @@ export class TabContenidoComponent implements OnInit {
 
   mostrarMensajeToast(message) {
     this._MessageService.add(message);
+  }
+
+  recargarData() {
+    this.obtenerContenidoSemanas(this.semanaSeleccionada);
   }
 }

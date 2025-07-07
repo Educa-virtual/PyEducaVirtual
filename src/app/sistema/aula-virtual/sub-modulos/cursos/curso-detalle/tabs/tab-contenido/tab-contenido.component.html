@@ -2,7 +2,7 @@
   <div class="card col-4 mr-2">
     <app-toolbar-primeng title="Sesiones de Aprendizaje"></app-toolbar-primeng>
     @if (iPerfilId === DOCENTE) {
-      <div class="flex justify-content-end ml-auto mb-2">
+      <div class="flex justify-content-end ml-auto mb-2 mx-4 mr-5">
         <button
           size="small"
           icon="pi pi-plus"
@@ -40,15 +40,6 @@
         </a>
       </ng-template>
     </p-menu>
-
-    <app-form-evaluacion
-      [showModalEvaluacion]="showModalEvaluacion"
-      [semanaEvaluacion]="semanaEvaluacion"
-      [tituloEvaluacion]="tituloEvaluacion"
-      [opcionEvaluacion]="opcionEvaluacion"
-      [iEvaluacionId]="iEvaluacionId"
-      (accionBtnItem)="accionBtnItem($event)"
-    ></app-form-evaluacion>
   </div>
   <div class="card col">
     <ng-container *ngIf="semanaSeleccionada">
@@ -129,8 +120,27 @@
   </div>
 </div>
 
+<app-form-evaluacion
+  [showModalEvaluacion]="showModalEvaluacion"
+  [semanaEvaluacion]="semanaEvaluacion"
+  [tituloEvaluacion]="tituloEvaluacion"
+  [opcionEvaluacion]="opcionEvaluacion"
+  [iEvaluacionId]="iEvaluacionId"
+  (accionBtnItem)="accionBtnItem($event)"
+></app-form-evaluacion>
+
 <app-sesion-aprendizaje-form
   *ngIf="showModalSesionAprendizaje"
   [showModal]="showModalSesionAprendizaje"
   (accionCloseForm)="showModalSesionAprendizaje = false"
 ></app-sesion-aprendizaje-form>
+
+<app-tarea-form
+  *ngIf="showModalTarea"
+  [showModal]="showModalTarea"
+  [accionTarea]="accionTarea"
+  [semanaTarea]="semanaTarea"
+  [iTareaId]="iTareaId"
+  (accionCloseForm)="showModalTarea = false"
+  (accionRefresh)="recargarData()"
+></app-tarea-form>

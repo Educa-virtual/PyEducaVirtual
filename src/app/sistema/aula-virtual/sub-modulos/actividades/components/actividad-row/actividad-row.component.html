@@ -1,129 +1,111 @@
 <div
-    class="card mb-5 relative overflow-visible"
-    [style]="obtenerStyleActividad(actividad['iEstadoActividad'])"
+  class="card mb-5 relative overflow-visible"
+  [style]="obtenerStyleActividad(actividad['iEstadoActividad'])"
 >
-    <div class="w-full flex justify-start">
-        <span [ngClass]="asignarColorActividad()" class="tag ml-3 font-bold">
-            {{ actividad.cActTipoNombre }}
-        </span>
-    </div>
+  <div class="w-full flex justify-start">
+    <span [ngClass]="asignarColorActividad()" class="tag ml-3 font-bold">
+      {{ actividad.cActTipoNombre }}
+    </span>
+  </div>
 
-    <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
-        <div class="flex gap-4 font-normal">
-            <app-icon
-                [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
-                [color]="'text-blue-500'"
-                class="align-content-center"
-            />
-            <div class="flex flex-column my-2 align-items-start">
-                <span
-                    class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
-                    [title]="actividad?.cProgActTituloLeccion"
-                >
-                    {{
-                        actividad?.cProgActTituloLeccion.length > 150
-                            ? (actividad?.cProgActTituloLeccion
-                                  | slice: 0 : 150) + '...'
-                            : actividad?.cProgActTituloLeccion
-                    }}
-                </span>
-                <div
-                    class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
-                >
-                    <div class="flex items-center gap-1">
-                        <i class="pi pi-calendar text-primary ml-1"></i>
-                        <span>Del:</span>
-                        <span>{{
-                            actividad['dtProgActInicio'] | date: 'dd/MM/yyyy'
-                        }}</span>
-                        <i class="pi pi-clock text-primary ml-2"></i>
-                        <span>{{
-                            actividad['dtProgActInicio'] | date: 'h:mm a'
-                        }}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <i class="pi pi-calendar text-primary ml-1"></i>
-                        <span>Al:</span>
-                        <span>{{
-                            actividad['dtProgActFin'] | date: 'dd/MM/yyyy'
-                        }}</span>
-                        <i class="pi pi-clock text-primary ml-2"></i>
-                        <span>{{
-                            actividad['dtProgActFin'] | date: 'h:mm a'
-                        }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @if (actividad['iEstado'] === 1) {
-            <div class="tag-right-borrador ml-3 font-bold">Borrador</div>
-        }
-        @if (actividad['iEstado'] === 2) {
-            <div class="tag-right-publicado ml-3 font-bold">Publicado</div>
-        }
-        <div
-            class="flex flex-column align-items-end justify-content-center gap-2"
+  <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
+    <div class="flex gap-4 font-normal">
+      <app-icon
+        [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
+        [color]="'text-blue-500'"
+        class="align-content-center"
+      />
+      <div class="flex flex-column my-2 align-items-start">
+        <span
+          class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
+          [title]="actividad?.cProgActTituloLeccion"
         >
-            <ng-container
-                *ngIf="
-                    actividad.iActTipoId
-                        | appActividadConfig: 'acciones' : actividad as acciones
-                "
-            >
-                <div *ngIf="acciones.length > 1">
-                    <button
-                        [rounded]="true"
-                        pButton
-                        pRipple
-                        class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                        (click)="
-                            $event.stopPropagation();
-                            menuActividad.toggle($event)
-                        "
-                    >
-                        <i class="pi pi-ellipsis-h text-blue-500"></i>
-                    </button>
-                </div>
-                <div *ngIf="acciones.length === 1">
-                    <p-button
-                        [rounded]="true"
-                        [icon]="acciones[0].icon"
-                        [label]="acciones[0].label"
-                        (onClick)="
-                            actionSelected.emit({
-                                actividad: this.actividad,
-                                action: acciones[0].accion,
-                            })
-                        "
-                    />
-                </div>
-            </ng-container>
+          {{
+            actividad?.cProgActTituloLeccion.length > 150
+              ? (actividad?.cProgActTituloLeccion | slice: 0 : 150) + '...'
+              : actividad?.cProgActTituloLeccion
+          }}
+        </span>
+        <div
+          class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+        >
+          <div class="flex items-center gap-1 m-1">
+            <span>Desde:</span>
+            <i class="pi pi-calendar text-primary ml-1"></i>
+            <span>{{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }}</span>
+            <i class="pi pi-clock text-primary ml-2"></i>
+            <span>{{ actividad['dtProgActInicio'] | date: 'h:mm a' }}</span>
+          </div>
+          <div class="flex items-center gap-1 m-1">
+            <span>hasta:</span>
+            <i class="pi pi-calendar text-primary ml-1"></i>
+            <span>{{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}</span>
+            <i class="pi pi-clock text-primary ml-2"></i>
+            <span>{{ actividad['dtProgActFin'] | date: 'h:mm a' }}</span>
+          </div>
         </div>
+      </div>
     </div>
+    @if (actividad['iEstado'] === 1) {
+      <div class="tag-right-borrador ml-3 font-bold">Borrador</div>
+    }
+    @if (actividad['iEstado'] === 2) {
+      <div class="tag-right-publicado ml-3 font-bold">Publicado</div>
+    }
+    @if (actividad['iEstado'] === 10) {
+      <div class="tag-right-finalizado ml-3 font-bold">Finalizado</div>
+    }
+    <div class="flex flex-column align-items-end justify-content-center gap-2">
+      <ng-container
+        *ngIf="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad as acciones"
+      >
+        <div *ngIf="acciones.length > 1">
+          <button
+            [rounded]="true"
+            pButton
+            pRipple
+            class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+            (click)="$event.stopPropagation(); menuActividad.toggle($event)"
+          >
+            <i class="pi pi-ellipsis-h text-blue-500"></i>
+          </button>
+        </div>
+        <div *ngIf="acciones.length === 1">
+          <p-button
+            [rounded]="true"
+            [icon]="acciones[0].icon"
+            [label]="acciones[0].label"
+            (onClick)="
+              actionSelected.emit({
+                actividad: this.actividad,
+                action: acciones[0].accion,
+              })
+            "
+          />
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>
 <p-menu
-    #menuActividad
-    [model]="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad"
-    [popup]="true"
+  #menuActividad
+  [model]="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad"
+  [popup]="true"
 >
-    <ng-template pTemplate="item" let-item>
-        <button
-            pButton
-            class="gap-2 w-full flex p-button-text p-button-plain text-left"
-            (click)="onAction(item.accion, $event); menuActividad.hide()"
-        >
-            @if (item.icon | isIconType) {
-                <app-icon
-                    [name]="item.icon.name"
-                    [color]="item.icon.color"
-                    [size]="item.icon.size"
-                >
-                </app-icon>
-            } @else {
-                <i class="{{ item.icon }}"></i>
-            }
+  <ng-template pTemplate="item" let-item>
+    <button
+      pButton
+      class="gap-2 w-full flex p-button-text p-button-plain text-left"
+      (click)="onAction(item.accion, $event); menuActividad.hide()"
+    >
+      @if (item.icon | isIconType) {
+        <app-icon [name]="item.icon.name" [color]="item.icon.color" [size]="item.icon.size">
+        </app-icon>
+      } @else {
+        <i class="{{ item.icon }}"></i>
+      }
 
-            <span>{{ item.label }}</span>
-        </button>
-    </ng-template>
+      <span>{{ item.label }}</span>
+    </button>
+  </ng-template>
 </p-menu>

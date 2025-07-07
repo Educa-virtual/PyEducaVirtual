@@ -91,11 +91,15 @@ export class GestionarEncuestasComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.datosEncuestas.getEncuestaParametros().subscribe((data: any) => {
-            this.categorias = this.datosEncuestas.getCategorias(
-                data?.categorias
-            )
-        })
+        this.datosEncuestas
+            .getEncuestaParametros({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+            })
+            .subscribe((data: any) => {
+                this.categorias = this.datosEncuestas.getCategorias(
+                    data?.categorias
+                )
+            })
 
         this.perfil_permitido = this.perfiles_permitido.includes(
             +this.perfil.iPerfilId

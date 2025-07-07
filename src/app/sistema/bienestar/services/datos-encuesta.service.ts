@@ -108,18 +108,26 @@ export class DatosEncuestaService implements OnDestroy {
         return this.http.post(`${baseUrl}/bienestar/verResumen`, data)
     }
 
+    printRespuestas(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/printRespuestas`, data, {
+            responseType: 'blob',
+        })
+    }
+
     /*
      * Funciones para popular parametros de formularios de ficha
      */
 
-    getEncuestaParametros() {
+    getEncuestaParametros(data: any) {
         if (!this.parametros) {
-            return this.http.get(`${baseUrl}/bienestar/crearEncuesta`).pipe(
-                map((data: any) => {
-                    this.parametros = data.data[0]
-                    return this.parametros
-                })
-            )
+            return this.http
+                .post(`${baseUrl}/bienestar/crearEncuesta`, data)
+                .pipe(
+                    map((data: any) => {
+                        this.parametros = data.data[0]
+                        return this.parametros
+                    })
+                )
         }
         return of(this.parametros)
     }

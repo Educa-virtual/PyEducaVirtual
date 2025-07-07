@@ -13,7 +13,30 @@
             </div>
         </span>
     </ng-template>
-
+    <ng-template pTemplate="icons" class="flex justify-content-center">
+        <button
+            pButton
+            pRipple
+            class="p-button-success"
+            (click)="exportarExcel()"
+        >
+            <i class="pi pi-download"></i>
+            <span class="hidden sm:block ml-2">Exportar</span>
+        </button>
+    </ng-template>
+    <div class="grid mb-3">
+        <div class="col">
+            <p-inputGroup>
+                <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+                <input
+                    #filtro
+                    type="text"
+                    pInputText
+                    (input)="filtrarRespuestas()"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
     <app-table-primeng
         [columnas]="columnasTabla"
         [data]="respuestas_filtradas"

@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { DatosEncuestaService } from '../../services/datos-encuesta.service'
 import { MenuItem, MessageService } from 'primeng/api'
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
@@ -23,7 +23,7 @@ import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
     templateUrl: './encuesta-ver.component.html',
     styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
-export class EncuestaVerComponent {
+export class EncuestaVerComponent implements OnInit {
     iEncuId: number
     iMatrId: number
     perfil: any
@@ -230,6 +230,9 @@ export class EncuestaVerComponent {
                         summary: 'Registro exitoso',
                         detail: 'Se registraron los datos',
                     })
+                    setTimeout(() => {
+                        this.router.navigate(['/bienestar/gestionar-encuestas'])
+                    }, 2000)
                 },
                 error: (error) => {
                     console.error('Error guardando pregunta:', error)
@@ -259,6 +262,9 @@ export class EncuestaVerComponent {
                         summary: 'Actualización exitosa',
                         detail: 'Se actualizaron los datos',
                     })
+                    setTimeout(() => {
+                        this.router.navigate(['/bienestar/gestionar-encuestas'])
+                    }, 2000)
                 },
                 error: (error) => {
                     console.error('Error actualizando pregunta:', error)

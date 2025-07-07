@@ -322,4 +322,8 @@ export class EncuestaPreguntasComponent implements OnInit {
             reject: () => {},
         })
     }
+
+    salir() {
+        this.router.navigate(['/bienestar/gestionar-encuestas'])
+    }
 }

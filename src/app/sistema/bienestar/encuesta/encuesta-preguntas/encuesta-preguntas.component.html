@@ -158,6 +158,17 @@
             }
         }
     </div>
+
+    <div class="flex justify-content-end">
+        <p-button
+            label="Salir"
+            (onClick)="salir()"
+            icon="pi pi-arrow-left"
+            iconPos="left"
+            severity="secondary"
+            [hidden]="pregunta_registrada"
+        />
+    </div>
 </p-panel>
 
 <p-dialog
@@ -253,13 +264,17 @@
             <p-button
                 label="Guardar"
                 (onClick)="guardarPregunta()"
-                styleClass="p-button-success"
+                severity="success"
+                icon="pi pi-save"
+                iconPos="left"
                 [hidden]="pregunta_registrada"
             />
             <p-button
                 label="Actualizar"
                 (onClick)="actualizarPregunta()"
-                styleClass="p-button-success"
+                icon="pi pi-save"
+                iconPos="left"
+                severity="success"
                 [hidden]="!pregunta_registrada"
             />
         </div>

@@ -137,31 +137,50 @@ export class EncuestaComponent implements OnInit {
             cantidad: [0],
         })
 
-        this.datosEncuestas.getEncuestaParametros().subscribe((data: any) => {
-            this.perfiles = this.datosEncuestas.getPerfiles(data?.perfiles)
-            this.categorias = this.datosEncuestas.getCategorias(
-                data?.categorias
-            )
-            this.opciones = this.datosEncuestas.getOpciones(data?.opciones)
-            this.distritos = this.datosEncuestas.getDistritos(data?.distritos)
-            this.secciones = this.datosEncuestas.getSecciones(data?.secciones)
-            this.zonas = this.datosEncuestas.getZonas(data?.zonas)
-            this.tipo_sectores = this.datosEncuestas.getTipoSectores(
-                data?.tipo_sectores
-            )
-            this.ugeles = this.datosEncuestas.getUgeles(data?.ugeles)
-            this.nivel_tipos = this.datosEncuestas.getNivelesTipos(
-                data?.nivel_tipos
-            )
-            this.ies = this.datosEncuestas.getInstitucionesEducativas(
-                data?.instituciones_educativas
-            )
-            this.distritos = this.datosEncuestas.getDistritos(data?.distritos)
-            this.sexos = this.datosEncuestas.getSexos()
-            this.estados = this.datosEncuestas.getEstados()
-            this.datosEncuestas.getNivelesGrados(data?.nivel_grados)
-            this.datosEncuestas.getAreas(data?.areas)
-        })
+        this.datosEncuestas
+            .getEncuestaParametros({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+            })
+            .subscribe((data: any) => {
+                this.perfiles = this.datosEncuestas.getPerfiles(data?.perfiles)
+                this.categorias = this.datosEncuestas.getCategorias(
+                    data?.categorias
+                )
+                this.opciones = this.datosEncuestas.getOpciones(data?.opciones)
+                this.distritos = this.datosEncuestas.getDistritos(
+                    data?.distritos
+                )
+                this.secciones = this.datosEncuestas.getSecciones(
+                    data?.secciones
+                )
+                this.zonas = this.datosEncuestas.getZonas(data?.zonas)
+                this.tipo_sectores = this.datosEncuestas.getTipoSectores(
+                    data?.tipo_sectores
+                )
+                this.ugeles = this.datosEncuestas.getUgeles(data?.ugeles)
+                this.nivel_tipos = this.datosEncuestas.getNivelesTipos(
+                    data?.nivel_tipos
+                )
+                this.ies = this.datosEncuestas.getInstitucionesEducativas(
+                    data?.instituciones_educativas
+                )
+                this.distritos = this.datosEncuestas.getDistritos(
+                    data?.distritos
+                )
+                this.sexos = this.datosEncuestas.getSexos()
+                this.estados = this.datosEncuestas.getEstados()
+                this.datosEncuestas.getNivelesGrados(data?.nivel_grados)
+                this.datosEncuestas.getAreas(data?.areas)
+
+                if (!this.es_especialista) {
+                    this.formPoblacion
+                        .get('iNivelTipoId')
+                        ?.setValue(this.nivel_tipos[0]['value'])
+                    this.formPoblacion
+                        .get('iIieeId')
+                        ?.setValue(this.ies[0]['value'])
+                }
+            })
 
         this.formPoblacion
             .get('iNivelTipoId')

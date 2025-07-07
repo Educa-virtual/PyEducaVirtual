@@ -4,7 +4,7 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { DatosEncuestaService } from '../../services/datos-encuesta.service'
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
@@ -20,6 +20,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class EncuestaRespuestasComponent implements OnInit {
+    @ViewChild('filtro') filtro: ElementRef
     iEncuId: number
     cEncuNombre: string
     perfil: any
@@ -116,12 +117,77 @@ export class EncuestaRespuestasComponent implements OnInit {
             })
     }
 
+    filtrarRespuestas() {
+        const filtro = this.filtro.nativeElement.value
+        this.respuestas_filtradas = this.respuestas.filter((respuesta: any) => {
+            if (
+                respuesta.cPersNombreApellidos
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return respuesta
+            if (
+                respuesta.cGradoNombre
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return respuesta
+            if (
+                respuesta.cSeccionNombre
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return respuesta
+            if (
+                respuesta.cIieeCodigoModular
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return respuesta
+            return null
+        })
+    }
+
+    exportarExcel(iMatrId: number = null) {
+        this.datosEncuestas
+            .printRespuestas({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEncuId: this.iEncuId,
+                iMatrId: iMatrId,
+            })
+            .subscribe({
+                next: (response: any) => {
+                    const blob = new Blob([response], {
+                        type: 'application/vnd.ms-excel',
+                    })
+                    const url = window.URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.download = 'RESPUESTAS-ENCUESTA.xlsx'
+                    link.target = '_blank'
+                    link.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    console.error('Error exportando respuestas:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
     accionBnt({ accion, item }) {
         switch (accion) {
             case 'ver':
                 this.router.navigate([
                     `/bienestar/encuesta/${this.iEncuId}/ver/${item.iMatrId}`,
                 ])
+                break
+            case 'exportar':
+                this.exportarExcel(item.iMatrId)
                 break
             default:
                 console.warn('Acción no reconocida:', accion)
@@ -194,6 +260,13 @@ export class EncuestaRespuestasComponent implements OnInit {
             labelTooltip: 'Ver respuesta',
             icon: 'pi pi-eye',
             accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+        },
+        {
+            labelTooltip: 'Exportar',
+            icon: 'pi pi-download',
+            accion: 'exportar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
         },

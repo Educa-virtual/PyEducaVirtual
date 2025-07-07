@@ -129,7 +129,7 @@ export class TabInicioComponent implements OnInit, AfterViewInit, AfterViewCheck
     } else {
       this._confirmService.openConfiSave({
         message: 'Recuerde que podran verlo todos los estudiantes',
-        header: `¿Desea confirmar la publicación del comunicado?`,
+        header: `¿Desea proceder con la publicación del enunciado?`,
         accept: () => {
           this._aulaService.guardarAnuncio(data).subscribe({
             next: (resp: any) => {

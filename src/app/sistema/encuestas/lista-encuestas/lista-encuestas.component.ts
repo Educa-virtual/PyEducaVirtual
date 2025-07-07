@@ -7,11 +7,16 @@ import { ActivatedRoute } from '@angular/router'
 import { CategoriasService } from '../services/categorias.service'
 import { EncuestasService } from '../services/encuestas.services'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 @Component({
     selector: 'app-lista-encuestas',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        GestionEncuestaConfiguracionComponent,
+    ],
     templateUrl: './lista-encuestas.component.html',
     styleUrl: './lista-encuestas.component.scss',
 })
@@ -20,7 +25,7 @@ export class ListaEncuestasComponent implements OnInit {
     iCategoriaEncuestaIdHashed: string = ''
     categoria: any = null
     selectedItem: any
-    mostrarDialogoNueva: boolean = false
+    mostrarDialogoNuevaEncuesta: boolean = false
     mostrarDialogoAccesoEncuesta: boolean = false
     columns = []
 
@@ -266,12 +271,12 @@ export class ListaEncuestasComponent implements OnInit {
         })*/
     }
 
-    abrirDialogoNueva() {
-        this.mostrarDialogoNueva = true
+    abrirDialogoNuevaEncuesta() {
+        this.mostrarDialogoNuevaEncuesta = true
     }
 
-    cerrarDialogoNueva() {
-        this.mostrarDialogoNueva = false
+    cerrarDialogoNuevaEncuesta() {
+        this.mostrarDialogoNuevaEncuesta = false
     }
 
     abrirDialogoAccesoEncuesta() {

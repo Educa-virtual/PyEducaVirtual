@@ -3,7 +3,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { StringCasePipe } from '@shared/pipes/string-case.pipe'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
-import { NuevaCategoriaComponent } from './nueva-categoria/nueva-categoria.component'
+import { NuevaCategoriaComponent } from '../nueva-categoria/nueva-categoria.component'
 import { CategoriasService } from '../services/categorias.service'
 import { environment } from '@/environments/environment'
 import { MessageService } from 'primeng/api'
@@ -19,8 +19,8 @@ import { ICategoria } from '../interfaces/categoria.interface'
         FormsModule,
         NuevaCategoriaComponent,
     ],
-    templateUrl: './categorias-encuestas.component.html',
-    styleUrl: './categorias-encuestas.component.scss',
+    templateUrl: './lista-categorias.component.html',
+    styleUrl: './lista-categorias.component.scss',
 })
 export class CategoriasEncuestaComponent implements OnInit {
     titleEncuestasPorCategoria: string = 'Categorías de encuestas'

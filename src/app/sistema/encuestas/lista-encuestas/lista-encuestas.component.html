@@ -18,7 +18,7 @@
                 label="Nueva"
                 icon="pi pi-plus"
                 class="p-button-success"
-                (click)="abrirDialogoNueva()"
+                (click)="abrirDialogoNuevaEncuesta()"
             ></button>
         </div>
     </ng-template>
@@ -43,12 +43,12 @@
 </p-panel>
 
 <p-toast></p-toast>
-<!--<app-gestion-encuesta-configuracion
-    [visible]="mostrarDialogoConfiguracion"
-    (visibleChange)="(mostrarDialogoConfiguracion)"
+<app-gestion-encuesta-configuracion
+    [visible]="mostrarDialogoNuevaEncuesta"
+    (visibleChange)="(mostrarDialogoNuevaEncuesta)"
 >
 </app-gestion-encuesta-configuracion>
-<app-acceso-encuesta
+<!--<app-acceso-encuesta
     [visible]="mostrarDialogoAccesoEncuesta"
     (visibleChange)="({ mostrarDialogoAccesoEncuesta })"
 >

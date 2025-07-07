@@ -3,8 +3,8 @@ import { PrimengModule } from '@/app/primeng.module'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { CategoriasService } from '../../services/categorias.service'
-import { ICategoria } from '../../interfaces/categoria.interface'
+import { CategoriasService } from '../services/categorias.service'
+import { ICategoria } from '../interfaces/categoria.interface'
 
 @Component({
     selector: 'app-nueva-categoria',

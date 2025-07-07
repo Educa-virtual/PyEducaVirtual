@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem } from 'primeng/api'
@@ -11,8 +11,10 @@ import { InformacionGeneralComponent } from '../informacion-general/informacion-
     styleUrls: ['./nueva-encuesta.component.scss'],
 })
 export class NuevaEncuestaComponent implements OnInit {
+    @Input() visible: boolean = false
+    @Output() visibleChange = new EventEmitter<boolean>()
+    @Output() mostrarDialogoNuevaEncuesta = new EventEmitter<any>()
     title: string = 'Nueva Encuesta'
-
     items: MenuItem[] = []
     activeIndex: number = 0
 
@@ -67,5 +69,9 @@ export class NuevaEncuestaComponent implements OnInit {
 
     onFinish() {
         console.log('Encuesta finalizada')
+    }
+    onHide() {
+        this.visible = false
+        this.visibleChange.emit(this.visible)
     }
 }

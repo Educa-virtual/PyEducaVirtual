@@ -126,7 +126,7 @@ export const routes: Routes = [
                 component: NuevaEncuestaComponent,
             },
             {
-                path: 'lista-categoria',
+                path: 'lista-encuesta',
                 component: ListaEncuestasComponent,
             },
             // encuestas

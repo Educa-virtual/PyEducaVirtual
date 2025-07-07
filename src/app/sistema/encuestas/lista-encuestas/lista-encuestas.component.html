@@ -53,3 +53,10 @@
     (visibleChange)="({ mostrarDialogoAccesoEncuesta })"
 >
 </app-acceso-encuesta>-->
+
+<app-nueva-encuesta
+    [visible]="mostrarDialogoNuevaEncuesta"
+    (visibleChange)="mostrarDialogoNuevaEncuesta = $event"
+    (cerrarDialogo)="mostrarDialogoNuevaEncuesta = false"
+>
+</app-nueva-encuesta>

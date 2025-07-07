@@ -9,6 +9,7 @@ import { EncuestasService } from '../services/encuestas.services'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+import { NuevaEncuestaComponent } from '../nueva-encuesta/nueva-encuesta/nueva-encuesta.component'
 @Component({
     selector: 'app-lista-encuestas',
     standalone: true,
@@ -16,6 +17,7 @@ import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-confi
         PrimengModule,
         TablePrimengComponent,
         GestionEncuestaConfiguracionComponent,
+        NuevaEncuestaComponent,
     ],
     templateUrl: './lista-encuestas.component.html',
     styleUrl: './lista-encuestas.component.scss',
@@ -28,7 +30,6 @@ export class ListaEncuestasComponent implements OnInit {
     mostrarDialogoNuevaEncuesta: boolean = false
     mostrarDialogoAccesoEncuesta: boolean = false
     columns = []
-
     constructor(
         private messageService: MessageService,
         private categoriasService: CategoriasService,

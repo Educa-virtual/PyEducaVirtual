@@ -10,6 +10,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 import { AccesosEncuestaComponent } from '../accesos-encuesta/accesos-encuesta.component'
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+
 @Component({
     selector: 'app-lista-encuestas',
     standalone: true,
@@ -30,7 +31,6 @@ export class ListaEncuestasComponent implements OnInit {
     mostrarDialogoNuevaEncuesta: boolean = false
     mostrarDialogoAccesosEncuesta: boolean = false
     columns = []
-
     constructor(
         private messageService: MessageService,
         private categoriasService: CategoriasService,

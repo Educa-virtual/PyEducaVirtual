@@ -11,7 +11,6 @@ import { RespuestaPreguntasEncuestaComponent } from '../respuesta-preguntas-encu
     imports: [
         CommonModule,
         PrimengModule,
-        CommonModule,
         LlenadoPreguntasEncuestaComponent,
         RespuestaPreguntasEncuestaComponent,
     ],

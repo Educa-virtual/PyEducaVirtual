@@ -1,0 +1,162 @@
+<br />
+<div class="poblacion-objetivo-container">
+    <p-accordion [multiple]="true" class="custom-accordion">
+        <!-- Especialistas DREMO -->
+        <p-accordionTab
+            [selected]="poblacionData[0].seleccionado"
+            (selectedChange)="onToggleSelection(0, $event)"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex justify-content-between align-items-center w-full accordion-header"
+                >
+                    <div class="flex align-items-center gap-3">
+                        <span class="font-medium text-white">{{
+                            poblacionData[0].nombre
+                        }}</span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold text-white">{{
+                            poblacionData[0].cantidad
+                        }}</span>
+                        <i class="pi pi-bars text-white"></i>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="accordion-content"></div>
+        </p-accordionTab>
+
+        <!-- Especialistas UGEL -->
+        <p-accordionTab
+            [selected]="poblacionData[1].seleccionado"
+            (selectedChange)="onToggleSelection(1, $event)"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex justify-content-between align-items-center w-full accordion-header"
+                >
+                    <div class="flex align-items-center gap-3">
+                        <span class="font-medium text-white">{{
+                            poblacionData[1].nombre
+                        }}</span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold text-white">{{
+                            poblacionData[1].cantidad
+                        }}</span>
+                        <i class="pi pi-bars text-white"></i>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="accordion-content"></div>
+        </p-accordionTab>
+
+        <!-- Directores -->
+        <p-accordionTab
+            [selected]="poblacionData[2].seleccionado"
+            (selectedChange)="onToggleSelection(2, $event)"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex justify-content-between align-items-center w-full accordion-header"
+                >
+                    <div class="flex align-items-center gap-3">
+                        <span class="font-medium text-white">{{
+                            poblacionData[2].nombre
+                        }}</span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold text-white">{{
+                            poblacionData[2].cantidad
+                        }}</span>
+                        <i class="pi pi-bars text-white"></i>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="accordion-content">
+                <p>Contenido específico para Directores</p>
+            </div>
+        </p-accordionTab>
+
+        <!-- Docentes -->
+        <p-accordionTab
+            [selected]="poblacionData[3].seleccionado"
+            (selectedChange)="onToggleSelection(3, $event)"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex justify-content-between align-items-center w-full accordion-header"
+                >
+                    <div class="flex align-items-center gap-3">
+                        <span class="font-medium text-white">{{
+                            poblacionData[3].nombre
+                        }}</span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold text-white">{{
+                            poblacionData[3].cantidad
+                        }}</span>
+                        <i class="pi pi-bars text-white"></i>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="accordion-content">
+                <p>Contenido específico para Docentes</p>
+            </div>
+        </p-accordionTab>
+
+        <!-- Estudiantes -->
+        <p-accordionTab
+            [selected]="poblacionData[4].seleccionado"
+            (selectedChange)="onToggleSelection(4, $event)"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex justify-content-between align-items-center w-full accordion-header"
+                >
+                    <div class="flex align-items-center gap-3">
+                        <span class="font-medium text-white">{{
+                            poblacionData[4].nombre
+                        }}</span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold text-white">{{
+                            poblacionData[4].cantidad
+                        }}</span>
+                        <i class="pi pi-bars text-white"></i>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="accordion-content">
+                <p>Contenido específico para Estudiantes</p>
+            </div>
+        </p-accordionTab>
+
+        <!-- Apoderados -->
+        <p-accordionTab
+            [selected]="poblacionData[5].seleccionado"
+            (selectedChange)="onToggleSelection(5, $event)"
+        >
+            <ng-template pTemplate="header">
+                <div
+                    class="flex justify-content-between align-items-center w-full accordion-header"
+                >
+                    <div class="flex align-items-center gap-3">
+                        <span class="font-medium text-white">{{
+                            poblacionData[5].nombre
+                        }}</span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold text-white">{{
+                            poblacionData[5].cantidad
+                        }}</span>
+                        <i class="pi pi-bars text-white"></i>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="accordion-content">
+                <p>Contenido específico para Apoderados</p>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>

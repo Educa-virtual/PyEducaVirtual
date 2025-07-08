@@ -248,11 +248,11 @@ export class CuestionarioEstudianteComponent implements OnChanges {
     this.bCuestionarioFinalizado = false;
     this._ConfirmationModalService.openConfirm({
       header:
-        'Solo has respondido ' +
+        'Has respondido ' +
         this.getCantidadRespuestas().respondidas +
         ' de ' +
         this.getCantidadRespuestas().total +
-        ' preguntas, ¿estás seguro de finalizar?',
+        ' preguntas, ¿Estás seguro de finalizar?',
       accept: () => {
         const params = {
           iCredId: this._ConstantesService.iCredId,

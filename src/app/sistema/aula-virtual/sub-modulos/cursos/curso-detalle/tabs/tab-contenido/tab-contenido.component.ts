@@ -298,6 +298,7 @@ export class TabContenidoComponent implements OnInit {
         this.showModalTarea = true;
         this.accionTarea = action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR';
         this.semanaTarea = this.semanaSeleccionada;
+        this.semanaTarea.idDocCursoId = this.idDocCursoId;
         this.iTareaId = actividad.ixActivadadId;
         break;
       case 'ELIMINAR':

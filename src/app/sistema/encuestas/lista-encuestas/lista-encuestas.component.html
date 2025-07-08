@@ -56,3 +56,10 @@
     (mostrarDialogoAccesosEncuesta)="abrirDialogoAccesosEncuesta()"
 >
 </app-accesos-encuesta>
+
+<app-nueva-encuesta
+    [visible]="mostrarDialogoNuevaEncuesta"
+    (visibleChange)="(mostrarDialogoNuevaEncuesta)"
+    (mostrarDialogoNuevaEncuesta)="cerrarDialogoNuevaEncuesta()"
+>
+</app-nueva-encuesta>

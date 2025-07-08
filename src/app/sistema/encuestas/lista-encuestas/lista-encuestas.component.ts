@@ -9,6 +9,7 @@ import { EncuestasService } from '../services/encuestas.services'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 import { AccesosEncuestaComponent } from '../accesos-encuesta/accesos-encuesta.component'
+import { NuevaEncuestaComponent } from '../nueva-encuesta/nueva-encuesta/nueva-encuesta.component'
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
@@ -19,6 +20,7 @@ import { AccesosEncuestaComponent } from '../accesos-encuesta/accesos-encuesta.c
         TablePrimengComponent,
         GestionEncuestaConfiguracionComponent,
         AccesosEncuestaComponent,
+        NuevaEncuestaComponent,
     ],
     templateUrl: './lista-encuestas.component.html',
     styleUrl: './lista-encuestas.component.scss',

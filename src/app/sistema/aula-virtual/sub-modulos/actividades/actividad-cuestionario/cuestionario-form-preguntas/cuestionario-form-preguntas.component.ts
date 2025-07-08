@@ -110,7 +110,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     if (this.opcion === 'GUARDAR') {
       this.action = 'GUARDAR';
       this.limpiarPregunta();
-      console.log('datos para guardar', this.data, this.codigoTipoPregunta, this.opciones);
+      // console.log('datos para guardar', this.data, this.codigoTipoPregunta, this.opciones);
     }
   }
 
@@ -131,7 +131,7 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
     }
   }
   limpiarPregunta() {
-    console.log('datos limpios');
+    // console.log('datos limpios');
     this.cPregunta = '';
     this.iTipoPregId = '';
     this.codigoTipoPregunta = '';
@@ -163,7 +163,16 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
       return;
     }
     const alternativas = JSON.parse(this.jsonAlternativas);
-
+    if (this.codigoTipoPregunta === 'TIP-PREG-TEXTO') {
+      const data = {
+        cPregunta: this.cPregunta,
+        iTipoPregId: this.iTipoPregId,
+        jsonAlternativas: this.jsonAlternativas,
+      };
+      this.formpregunta.emit(data);
+      this.showModal = false;
+      return;
+    }
     if (
       !Array.isArray(alternativas) ||
       alternativas.length < 3 ||
@@ -176,14 +185,16 @@ export class CuestionarioFormPreguntasComponent implements OnChanges {
       });
       // console.error('Debe agregar al menos una alternativa')
       return;
+    } else {
+      const data = {
+        cPregunta: this.cPregunta,
+        iTipoPregId: this.iTipoPregId,
+        jsonAlternativas: this.jsonAlternativas,
+      };
+      this.formpregunta.emit(data);
+      this.showModal = false;
+      return;
     }
-    const data = {
-      cPregunta: this.cPregunta,
-      iTipoPregId: this.iTipoPregId,
-      jsonAlternativas: this.jsonAlternativas,
-    };
-    this.formpregunta.emit(data);
-    this.showModal = false;
   }
   actualizar: any;
   actuaizarPregunta() {

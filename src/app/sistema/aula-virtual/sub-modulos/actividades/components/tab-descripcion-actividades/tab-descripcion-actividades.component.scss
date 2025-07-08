@@ -1,5 +1,12 @@
 .estilo-descripcion {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-line;
+  overflow-wrap: break-word; /* Alternativa moderna para compatibilidad */
+  white-space: pre-line;
+  // text-align: justify;
+  hyphens: auto; /* 🔑 Pone guión al cortar palabras automáticamente */
+  // word-wrap: break-word;      /* Corta palabras largas si es necesario */
+  // overflow-wrap: break-word;  /* Alternativa moderna para compatibilidad */
+  // white-space: normal;        /* Permite saltos de línea donde sea necesario */
+  // overflow-wrap: break-word;  /* Rompe solo si hay palabras muy largas sin espacios */
+  // word-break: break-word;     /* Apoyo adicional para navegadores que lo requieren */
+  // hyphens: none;              /* Evita guiones automáticos */
 }

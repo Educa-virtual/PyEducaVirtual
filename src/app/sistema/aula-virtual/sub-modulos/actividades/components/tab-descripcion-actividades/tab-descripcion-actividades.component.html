@@ -38,10 +38,9 @@
     <!-- Descripción -->
     <div class="col-12 mt-2">
       <div class="text-xl font-medium text-900 mb-2">Descripción de la Actividad</div>
-      <div
-        class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem overflow-auto break-words estilo-descripcion"
-      >
-        <div [innerHTML]="data?.cDescripcion || '-'"></div>
+
+      <div lang="es" class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem">
+        <div [innerHTML]="data?.cDescripcion || '-'" class="estilo-descripcion"></div>
       </div>
     </div>
   </div>

@@ -21,7 +21,9 @@ export class PreguntaEscalaComponent implements OnInit {
 
     @Input() controlDisabled: boolean = false
 
-    alternativas: Array<any> = [
+    @Input() jsonAlternativas: string = ''
+
+    @Input() alternativas: Array<any> = [
         { label: 'MUY EN DESACUERDO / NUNCA', value: 1 },
         { label: 'ALGO EN DESACUERDO / CASI NUNCA', value: 2 },
         { label: 'NEUTRAL', value: 3 },
@@ -32,6 +34,17 @@ export class PreguntaEscalaComponent implements OnInit {
     ngOnInit(): void {
         if (this.controlDisabled) {
             this.ratingControl.disable()
+        }
+
+        if (this.jsonAlternativas) {
+            this.alternativas = []
+            const alternativas = JSON.parse(this.jsonAlternativas)
+            alternativas.forEach((alternativa: any) => {
+                this.alternativas.push({
+                    label: alternativa.cEncuAlterNombre,
+                    value: alternativa.iEncuAlterOrden,
+                })
+            })
         }
     }
 }

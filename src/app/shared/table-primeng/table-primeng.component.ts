@@ -49,7 +49,7 @@ export interface IColumn {
     field: string
     header: string
     text_header: string | null
-    class?: string
+    class?: string | ((row: any) => string)
     placeholder?: string
     inputType?: string
     outputType?: string
@@ -115,6 +115,13 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             itemSelected: rowIndex === this.trSelected,
             itemActive: Number(rowData.bActive) ? true : false,
         }
+    }
+
+    getCellClass(col: IColumn, rowData: any = null): string {
+        if (typeof col.class === 'function') {
+            return col.class(rowData)
+        }
+        return col.class || ''
     }
 
     getColorEstado(

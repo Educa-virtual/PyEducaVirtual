@@ -201,15 +201,12 @@
                         styleClass="mb-3 {{ puede_editar ? '' : 'hidden' }}"
                     >
                         <div class="grid">
-                            <div
-                                class="col-12 md:col-6"
-                                *ngIf="es_especialista"
-                            >
+                            <div class="col-12 md:col-6">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                                     <p-dropdown
                                         [options]="nivel_tipos"
-                                        [showClear]="true"
+                                        [showClear]="es_especialista"
                                         formControlName="iNivelTipoId"
                                         placeholder="Seleccione un nivel educativo"
                                         styleClass="group-element"
@@ -299,12 +296,12 @@
                                     />
                                 </p-inputGroup>
                             </div>
-                            <div class="col-12" *ngIf="es_especialista">
+                            <div class="col-12">
                                 <p-inputGroup>
                                     <p-inputGroupAddon>I. E.</p-inputGroupAddon>
                                     <p-dropdown
                                         [options]="ies"
-                                        [showClear]="true"
+                                        [showClear]="es_especialista"
                                         formControlName="iIieeId"
                                         placeholder="Seleccione una Institución Educativa"
                                         styleClass="group-element"

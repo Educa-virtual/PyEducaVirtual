@@ -15,6 +15,14 @@ export class DatosEncuestaService implements OnDestroy {
 
     constructor(private http: HttpClient) {}
 
+    public readonly PREGUNTA_CERRADA = 1
+    public readonly PREGUNTA_ABIERTA = 2
+    public readonly PREGUNTA_ESCALA = 3
+
+    public readonly ESTADO_BORRADOR = 1
+    public readonly ESTADO_TERMINADA = 2
+    public readonly ESTADO_APROBADA = 3
+
     lista: any[] = []
 
     parametros: any
@@ -33,6 +41,7 @@ export class DatosEncuestaService implements OnDestroy {
     sexos: Array<object>
     estados: Array<object>
     perfiles: Array<object>
+    alternativas: Array<object>
 
     listarEncuestas(data: any) {
         return this.http.post(`${baseUrl}/bienestar/listarEncuestas`, data)
@@ -134,9 +143,12 @@ export class DatosEncuestaService implements OnDestroy {
 
     getTiposPreguntas() {
         return [
-            { label: 'PREGUNTA CERRADA (SI/NO)', value: 1 },
-            { label: 'PREGUNTA ABIERTA (TEXTO)', value: 2 },
-            { label: 'PREGUNTA DE ESCALA (1 A 5)', value: 3 },
+            { label: 'PREGUNTA CERRADA (SI/NO)', value: this.PREGUNTA_CERRADA },
+            { label: 'PREGUNTA ABIERTA (TEXTO)', value: this.PREGUNTA_ABIERTA },
+            {
+                label: 'PREGUNTA DE ESCALA (1 A 5)',
+                value: this.PREGUNTA_ESCALA,
+            },
         ]
     }
 
@@ -160,6 +172,17 @@ export class DatosEncuestaService implements OnDestroy {
             }))
         }
         return this.opciones
+    }
+
+    getAlternativas(data: any) {
+        if (!this.alternativas && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((opcion: any) => ({
+                value: opcion.iEncuAlterGrupoId,
+                label: opcion.cEncuAlterNombre,
+            }))
+        }
+        return this.alternativas
     }
 
     getDistritos(data: any) {
@@ -395,8 +418,8 @@ export class DatosEncuestaService implements OnDestroy {
     getEstados() {
         if (!this.estados) {
             this.estados = [
-                { label: 'BORRADOR', value: 1 },
-                { label: 'TERMINADA', value: 2 },
+                { label: 'BORRADOR', value: this.ESTADO_BORRADOR },
+                { label: 'TERMINADA', value: this.ESTADO_TERMINADA },
             ]
         }
         return this.estados

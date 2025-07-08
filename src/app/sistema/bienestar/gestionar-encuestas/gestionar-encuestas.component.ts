@@ -334,8 +334,11 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
-            isVisible: function (rowData: any) {
-                return rowData.iEstado == 1 && rowData.puede_editar
+            isVisible: (rowData: any) => {
+                return (
+                    rowData.iEstado != this.datosEncuestas.ESTADO_APROBADA &&
+                    rowData.puede_editar
+                )
             },
         },
         {
@@ -351,8 +354,11 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'aprobar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: function (rowData: any) {
-                return rowData.iEstado == 2 && rowData.puede_aprobar
+            isVisible: (rowData: any) => {
+                return (
+                    rowData.iEstado == this.datosEncuestas.ESTADO_TERMINADA &&
+                    rowData.puede_aprobar
+                )
             },
         },
         {
@@ -361,8 +367,11 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: function (rowData: any) {
-                return rowData.iEstado == 1 && rowData.puede_editar
+            isVisible: (rowData: any) => {
+                return (
+                    rowData.iEstado == this.datosEncuestas.ESTADO_BORRADOR &&
+                    rowData.puede_editar
+                )
             },
         },
         {
@@ -371,8 +380,11 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'respuestas',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: function (rowData: any) {
-                return rowData.iEstado == 3 && rowData.puede_ver_respuestas
+            isVisible: (rowData: any) => {
+                return (
+                    rowData.iEstado == this.datosEncuestas.ESTADO_APROBADA &&
+                    rowData.puede_ver_respuestas
+                )
             },
         },
         {
@@ -381,8 +393,11 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'resumen',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: function (rowData: any) {
-                return rowData.iEstado == 3 && rowData.puede_ver_resumen
+            isVisible: (rowData: any) => {
+                return (
+                    rowData.iEstado == this.datosEncuestas.ESTADO_APROBADA &&
+                    rowData.puede_ver_resumen
+                )
             },
         },
     ]

@@ -99,7 +99,7 @@
                                 "
                                 [iEncuPregId]="pregunta.iEncuPregId"
                                 [controlDisabled]="!puede_editar"
-                            ></app-pregunta-cerrada>
+                            />
                             <ng-template #infoAdicional>
                                 {{ pregunta.cEncuPregAdicional }}
                             </ng-template>
@@ -148,6 +148,7 @@
                                 "
                                 [iEncuPregId]="pregunta.iEncuPregId"
                                 [controlDisabled]="!puede_editar"
+                                [jsonAlternativas]="pregunta.jsonAlternativas"
                             />
                             <ng-template #infoAdicional>
                                 {{ pregunta.cEncuPregAdicional }}

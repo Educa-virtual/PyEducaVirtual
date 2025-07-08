@@ -205,6 +205,11 @@
     border-bottom-right-radius: 0.5rem !important;
 }
 
+:host ::ng-deep .p-chip {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+}
+
 .card {
     background: var(--surface-card);
     border: 1px solid var(--surface-border);

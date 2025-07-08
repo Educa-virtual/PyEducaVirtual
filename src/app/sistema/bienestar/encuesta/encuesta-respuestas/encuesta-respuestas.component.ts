@@ -11,6 +11,10 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import {
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-encuesta-respuestas',
@@ -144,6 +148,12 @@ export class EncuestaRespuestasComponent implements OnInit {
                     .includes(filtro.toLowerCase())
             )
                 return respuesta
+            if (
+                respuesta.cIieeNombre
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+            )
+                return respuesta
             return null
         })
     }
@@ -198,17 +208,8 @@ export class EncuestaRespuestasComponent implements OnInit {
         {
             field: 'item',
             type: 'item',
-            width: '10%',
+            width: '5%',
             header: 'N°',
-            text_header: 'center',
-            text: 'center',
-            class: 'hidden md:table-cell',
-        },
-        {
-            field: 'dRptaUltimaFecha',
-            type: 'date',
-            width: '15%',
-            header: 'Fecha',
             text_header: 'center',
             text: 'center',
             class: 'hidden md:table-cell',
@@ -216,7 +217,7 @@ export class EncuestaRespuestasComponent implements OnInit {
         {
             field: 'cPersNombreApellidos',
             type: 'text',
-            width: '45%',
+            width: '40%',
             header: 'Estudiante',
             text_header: 'left',
             text: 'left',
@@ -240,10 +241,38 @@ export class EncuestaRespuestasComponent implements OnInit {
         {
             field: 'cIieeCodigoModular',
             type: 'text',
-            width: '10%',
+            width: '5%',
             header: 'I.E.',
             text_header: 'center',
             text: 'center',
+            class: () => {
+                if (
+                    [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+                        this.perfil.iPerfilId
+                    )
+                ) {
+                    return 'hidden md:table-cell'
+                }
+                return 'hidden'
+            },
+        },
+        {
+            field: 'cIieeNombre',
+            type: 'text',
+            width: '20%',
+            header: 'I.E. Nombre',
+            text_header: 'center',
+            text: 'center',
+            class: () => {
+                if (
+                    [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+                        this.perfil.iPerfilId
+                    )
+                ) {
+                    return 'hidden md:table-cell'
+                }
+                return 'hidden'
+            },
         },
         {
             field: '',

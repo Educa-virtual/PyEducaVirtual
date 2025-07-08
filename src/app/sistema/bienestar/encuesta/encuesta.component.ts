@@ -535,6 +535,12 @@ export class EncuestaComponent implements OnInit {
         this.poblacion = [...this.poblacion, form]
         this.formEncuesta.get('poblacion')?.setValue(this.poblacion)
         this.formPoblacion.reset()
+        if (!this.es_especialista) {
+            this.formPoblacion
+                .get('iNivelTipoId')
+                ?.setValue(this.nivel_tipos[0]['value'])
+            this.formPoblacion.get('iIieeId')?.setValue(this.ies[0]['value'])
+        }
 
         this.obtenerPoblacionObjetivo()
     }

@@ -35,7 +35,9 @@ export class EncuestaPreguntasComponent implements OnInit {
     pregunta_registrada: boolean = false
     preguntas: Array<any>
     tipos_preguntas: Array<object>
+    alternativas: Array<object>
     encuesta_bloqueada: boolean = true
+    es_pregunta_escala: boolean = false
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -79,6 +81,7 @@ export class EncuestaPreguntasComponent implements OnInit {
             this.formPregunta = this.fb.group({
                 iEncuId: [this.iEncuId, Validators.required],
                 iCredEntPerfId: [this.perfil.iCredEntPerfId],
+                iEncuAlterGrupoId: [null],
                 iEncuPregId: [null],
                 iEncuPregTipoId: [null, Validators.required],
                 iEncuPregOrden: [null],
@@ -89,7 +92,23 @@ export class EncuestaPreguntasComponent implements OnInit {
             console.error('Error creando formulario:', error)
         }
 
-        this.tipos_preguntas = this.datosEncuestas.getTiposPreguntas()
+        this.datosEncuestas
+            .getEncuestaParametros({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+            })
+            .subscribe((data: any) => {
+                this.alternativas = this.datosEncuestas.getAlternativas(
+                    data?.alternativas
+                )
+                this.tipos_preguntas = this.datosEncuestas.getTiposPreguntas()
+            })
+
+        this.formPregunta
+            .get('iEncuPregTipoId')
+            .valueChanges.subscribe((value) => {
+                this.es_pregunta_escala =
+                    value === this.datosEncuestas.PREGUNTA_ESCALA
+            })
 
         if (this.iEncuId) {
             this.verEncuesta()
@@ -107,7 +126,8 @@ export class EncuestaPreguntasComponent implements OnInit {
                     if (data.data.length) {
                         this.cEncuNombre = data.data[0].cEncuNombre
                         this.encuesta_bloqueada =
-                            Number(data.data[0].iEstado) === 3
+                            Number(data.data[0].iEstado) !==
+                            this.datosEncuestas.ESTADO_BORRADOR
                         this.listarPreguntas()
                     } else {
                         this._messageService.add({
@@ -203,6 +223,12 @@ export class EncuestaPreguntasComponent implements OnInit {
             this.formPregunta,
             'iEncuPregOrden',
             data.iEncuPregOrden,
+            'number'
+        )
+        this.funcionesBienestar.formatearFormControl(
+            this.formPregunta,
+            'iEncuAlterGrupoId',
+            data.iEncuAlterGrupoId,
             'number'
         )
         this.pregunta_registrada = true

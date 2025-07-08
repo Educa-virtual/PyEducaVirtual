@@ -33,7 +33,6 @@
           <p-button
             icon="pi pi-book"
             [rounded]="true"
-            [disabled]="iEstadoForo === 10"
             [severity]="estudiante?.iEstadoRpta === '0' ? 'danger' : 'success'"
             tooltipPosition="bottom"
             pTooltip="Calificar"
@@ -44,6 +43,7 @@
                                 estudiante
                             )
                         " -->
+          <!-- [disabled]="iEstadoForo === 10" -->
         </div>
       </div>
     </ng-template>

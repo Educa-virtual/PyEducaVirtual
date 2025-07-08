@@ -182,6 +182,10 @@ export const routes: Routes = [
                 path: 'gestion-encuesta-configuraion',
                 component: GestionEncuestaConfiguracionComponent,
             },
+            {
+                path: 'estudiante-encuesta',
+                component: EstudianteEncuestaComponent,
+            },
         ],
     },
     {

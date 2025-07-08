@@ -48,8 +48,11 @@
     (visibleChange)="(mostrarDialogoNuevaEncuesta)"
 >
 </app-gestion-encuesta-configuracion>
-<!--<app-acceso-encuesta
-    [visible]="mostrarDialogoAccesoEncuesta"
-    (visibleChange)="({ mostrarDialogoAccesoEncuesta })"
+
+<app-accesos-encuesta
+    [visible]="mostrarDialogoAccesosEncuesta"
+    [encuesta]="selectedItem"
+    (visibleChange)="cerrarDialogoAccesosEncuesta()"
+    (mostrarDialogoAccesosEncuesta)="abrirDialogoAccesosEncuesta()"
 >
-</app-acceso-encuesta>-->
+</app-accesos-encuesta>

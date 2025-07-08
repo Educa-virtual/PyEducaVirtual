@@ -19,4 +19,15 @@ export class EncuestasService {
             `${environment.backendApi}/enc/encuestas/${iConfEncId}`
         )
     }
+
+    actualizarAccesosEncuesta(iCategoriaEncuestaId: string, form: any) {
+        return this.http.patch(
+            `${environment.backendApi}/enc/encuestas/${iCategoriaEncuestaId}/accesos`,
+            {
+                iEspDremoTipoAccesoId: form.get('iEspDremoTipoAccesoId')?.value,
+                iEspUgelTipoAccesoId: form.get('iEspUgelTipoAccesoId')?.value,
+                iDirectorTipoAccesoId: form.get('iDirectorTipoAccesoId')?.value,
+            }
+        )
+    }
 }

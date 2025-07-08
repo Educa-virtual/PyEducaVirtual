@@ -8,6 +8,7 @@ import { CategoriasService } from '../services/categorias.service'
 import { EncuestasService } from '../services/encuestas.services'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+import { AccesosEncuestaComponent } from '../accesos-encuesta/accesos-encuesta.component'
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 @Component({
     selector: 'app-lista-encuestas',
@@ -16,6 +17,7 @@ import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-confi
         PrimengModule,
         TablePrimengComponent,
         GestionEncuestaConfiguracionComponent,
+        AccesosEncuestaComponent,
     ],
     templateUrl: './lista-encuestas.component.html',
     styleUrl: './lista-encuestas.component.scss',
@@ -26,7 +28,7 @@ export class ListaEncuestasComponent implements OnInit {
     categoria: any = null
     selectedItem: any
     mostrarDialogoNuevaEncuesta: boolean = false
-    mostrarDialogoAccesoEncuesta: boolean = false
+    mostrarDialogoAccesosEncuesta: boolean = false
     columns = []
 
     constructor(
@@ -51,9 +53,9 @@ export class ListaEncuestasComponent implements OnInit {
 
     actions: IActionTable[] = [
         {
-            labelTooltip: 'Ver encuesta',
+            labelTooltip: 'Gestionar accesos',
             icon: 'pi pi-user-plus',
-            accion: 'ver',
+            accion: 'accesos',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },
@@ -173,9 +175,10 @@ export class ListaEncuestasComponent implements OnInit {
     accionBtnItemTable({ accion, item }) {
         this.selectedItem = item
         switch (accion) {
-            case 'ver':
-                this.verEncuesta()
-                this.abrirDialogoAccesoEncuesta()
+            case 'accesos':
+                /*this.verEncuesta()
+                this.abrirDialogoAccesosEncuesta()*/
+                this.abrirDialogoAccesosEncuesta()
                 break
             case 'editar':
                 this.editarEncuesta()
@@ -279,10 +282,10 @@ export class ListaEncuestasComponent implements OnInit {
         this.mostrarDialogoNuevaEncuesta = false
     }
 
-    abrirDialogoAccesoEncuesta() {
-        this.mostrarDialogoAccesoEncuesta = true
+    abrirDialogoAccesosEncuesta() {
+        this.mostrarDialogoAccesosEncuesta = true
     }
-    cerrarDialogoAccesoEncuesta() {
-        this.mostrarDialogoAccesoEncuesta = false
+    cerrarDialogoAccesosEncuesta() {
+        this.mostrarDialogoAccesosEncuesta = false
     }
 }

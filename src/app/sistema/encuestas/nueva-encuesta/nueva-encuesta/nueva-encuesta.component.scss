@@ -121,25 +121,41 @@
         background: white !important;
     }
 }
+:host ::ng-deep .search-container .p-inputgroup {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
 
-// border
-// Input con border igual a los dropdowns
-:host ::ng-deep .search-input .p-inputtext {
-    border: 1px solid #dee2e6 !important; // mismo color que surface-border
-    border-radius: 6px !important;
-    padding: 0.75rem !important;
-    font-size: 0.875rem !important;
-    color: #374151 !important;
-    background: white !important;
-
-    &::placeholder {
-        color: #9ca3af !important;
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    &:enabled:focus {
-        outline: 0 none !important;
-        outline-offset: 0 !important;
-        box-shadow: 0 0 0 0.2rem rgba(74, 105, 189, 0.2) !important;
-        border-color: #4a69bd !important;
+    &:focus-within {
+        box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.15);
+    }
+
+    .p-inputgroup-addon {
+        background: linear-gradient(
+            135deg,
+            #4a69bd 0%,
+            #5f7cdb 100%
+        ) !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .p-inputtext {
+        border-left: none !important;
+        padding: 12px 16px !important;
+
+        &:focus {
+            border-color: #4a69bd !important;
+            background: #fafbff !important;
+        }
+
+        &::placeholder {
+            font-style: italic;
+        }
     }
 }

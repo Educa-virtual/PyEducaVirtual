@@ -24,18 +24,22 @@
             <!-- Filtros superiores -->
             <div class="flex gap-3 mb-4">
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-inputGroupAddon>Ugel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>I.E.</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
@@ -44,42 +48,51 @@
                 <p-inputGroup class="flex-1">
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccionar"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
             </div>
-            <!-- Buscador -->
-            <!--<p-inputGroup class="flex-1">
+            <div class="mb-3 search-container flat">
+                <p-inputGroup class="flat">
                     <p-inputGroupAddon>
                         <i class="pi pi-search"></i>
                     </p-inputGroupAddon>
-                    <input pInputText placeholder="Buscar por grado/sección o IE" styleClass="w-full">
-                </p-inputGroup>-->
-            <!-- En tus dropdowns agrega la clase border-1 surface-border -->
-            <div class="mb-3 search-input">
-                <input
-                    pInputText
-                    placeholder="Buscar por apellidos y nombres"
-                    class="w-full"
-                    style="border: 1px solid #dee2e6; border-radius: 6px"
-                />
+                    <input
+                        pInputText
+                        placeholder="Buscar por apellidos y nombres..."
+                        class="w-full"
+                    />
+                </p-inputGroup>
             </div>
 
-            <!-- Tabla de docentes -->
+            <!-- Tabla -->
             <div class="card">
                 <p-table
                     [value]="docentesData"
-                    [tableStyle]="{ 'min-width': '50rem' }"
                     styleClass="p-datatable-sm"
                     [paginator]="true"
                     [rows]="10"
@@ -112,10 +125,10 @@
                                         class="pi pi-info-circle mb-2"
                                         style="font-size: 2rem"
                                     ></i>
-                                    <p>No hay docentes disponibles</p>
+                                    <p>No hay datos disponibles</p>
                                     <small
                                         >Seleccione filtros para ver los
-                                        docentes</small
+                                        datos</small
                                     >
                                 </div>
                             </td>
@@ -149,18 +162,22 @@
             <!-- Filtros superiores -->
             <div class="flex gap-3 mb-4">
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-inputGroupAddon>Ugel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>I.E.</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
@@ -169,26 +186,51 @@
                 <p-inputGroup class="flex-1">
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccionar"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
             </div>
+            <div class="mb-3 search-container flat">
+                <p-inputGroup class="flat">
+                    <p-inputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        placeholder="Buscar por grado/sección o IE"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
 
-            <!-- Tabla de docentes -->
+            <!-- Tabla -->
             <div class="card">
                 <p-table
                     [value]="docentesData"
-                    [tableStyle]="{ 'min-width': '50rem' }"
                     styleClass="p-datatable-sm"
                     [paginator]="true"
                     [rows]="10"
@@ -221,10 +263,10 @@
                                         class="pi pi-info-circle mb-2"
                                         style="font-size: 2rem"
                                     ></i>
-                                    <p>No hay docentes disponibles</p>
+                                    <p>No hay datos disponibles</p>
                                     <small
                                         >Seleccione filtros para ver los
-                                        docentes</small
+                                        datos</small
                                     >
                                 </div>
                             </td>
@@ -258,18 +300,22 @@
             <!-- Filtros superiores -->
             <div class="flex gap-3 mb-4">
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-inputGroupAddon>Ugel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>I.E.</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
@@ -278,26 +324,51 @@
                 <p-inputGroup class="flex-1">
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccionar"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
             </div>
+            <div class="mb-3 search-container flat">
+                <p-inputGroup class="flat">
+                    <p-inputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        placeholder="Buscar por grado/sección o IE"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
 
-            <!-- Tabla de docentes -->
+            <!-- Tabla -->
             <div class="card">
                 <p-table
                     [value]="docentesData"
-                    [tableStyle]="{ 'min-width': '50rem' }"
                     styleClass="p-datatable-sm"
                     [paginator]="true"
                     [rows]="10"
@@ -330,10 +401,10 @@
                                         class="pi pi-info-circle mb-2"
                                         style="font-size: 2rem"
                                     ></i>
-                                    <p>No hay docentes disponibles</p>
+                                    <p>No hay datos disponibles</p>
                                     <small
                                         >Seleccione filtros para ver los
-                                        docentes</small
+                                        datos</small
                                     >
                                 </div>
                             </td>
@@ -367,18 +438,22 @@
             <!-- Filtros superiores -->
             <div class="flex gap-3 mb-4">
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-inputGroupAddon>Ugel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>I.E.</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
@@ -387,26 +462,51 @@
                 <p-inputGroup class="flex-1">
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccionar"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
             </div>
+            <div class="mb-3 search-container flat">
+                <p-inputGroup class="flat">
+                    <p-inputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        placeholder="Buscar por grado/sección o IE"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
 
-            <!-- Tabla de docentes -->
+            <!-- Tabla -->
             <div class="card">
                 <p-table
                     [value]="docentesData"
-                    [tableStyle]="{ 'min-width': '50rem' }"
                     styleClass="p-datatable-sm"
                     [paginator]="true"
                     [rows]="10"
@@ -439,10 +539,10 @@
                                         class="pi pi-info-circle mb-2"
                                         style="font-size: 2rem"
                                     ></i>
-                                    <p>No hay docentes disponibles</p>
+                                    <p>No hay datos disponibles</p>
                                     <small
                                         >Seleccione filtros para ver los
-                                        docentes</small
+                                        datos</small
                                     >
                                 </div>
                             </td>
@@ -476,18 +576,22 @@
             <!-- Filtros superiores -->
             <div class="flex gap-3 mb-4">
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-inputGroupAddon>Ugel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>I.E.</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
@@ -496,26 +600,51 @@
                 <p-inputGroup class="flex-1">
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccionar"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
             </div>
+            <div class="mb-3 search-container flat">
+                <p-inputGroup class="flat">
+                    <p-inputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        placeholder="Buscar por grado/sección o IE"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
 
-            <!-- Tabla de docentes -->
+            <!-- Tabla -->
             <div class="card">
                 <p-table
                     [value]="docentesData"
-                    [tableStyle]="{ 'min-width': '50rem' }"
                     styleClass="p-datatable-sm"
                     [paginator]="true"
                     [rows]="10"
@@ -548,10 +677,10 @@
                                         class="pi pi-info-circle mb-2"
                                         style="font-size: 2rem"
                                     ></i>
-                                    <p>No hay docentes disponibles</p>
+                                    <p>No hay datos disponibles</p>
                                     <small
                                         >Seleccione filtros para ver los
-                                        docentes</small
+                                        datos</small
                                     >
                                 </div>
                             </td>
@@ -585,18 +714,22 @@
             <!-- Filtros superiores -->
             <div class="flex gap-3 mb-4">
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-inputGroupAddon>Ugel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>I.E.</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
@@ -605,26 +738,51 @@
                 <p-inputGroup class="flex-1">
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione nivel"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
                 <p-inputGroup class="flex-1">
-                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
-                        placeholder="Seleccione especialidad"
+                        placeholder="Seleccionar"
                         styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccionar"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        [filter]="true"
                     >
                     </p-dropdown>
                 </p-inputGroup>
             </div>
+            <div class="mb-3 search-container flat">
+                <p-inputGroup class="flat">
+                    <p-inputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        placeholder="Buscar por grado/sección o IE"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
 
-            <!-- Tabla de docentes -->
+            <!-- Tabla -->
             <div class="card">
                 <p-table
                     [value]="docentesData"
-                    [tableStyle]="{ 'min-width': '50rem' }"
                     styleClass="p-datatable-sm"
                     [paginator]="true"
                     [rows]="10"
@@ -657,10 +815,10 @@
                                         class="pi pi-info-circle mb-2"
                                         style="font-size: 2rem"
                                     ></i>
-                                    <p>No hay docentes disponibles</p>
+                                    <p>No hay datos disponibles</p>
                                     <small
                                         >Seleccione filtros para ver los
-                                        docentes</small
+                                        datos</small
                                     >
                                 </div>
                             </td>

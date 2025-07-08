@@ -4,20 +4,18 @@
 >
     <div class="flex align-items-center gap-3">
         <div class="flex align-items-center gap-2">
-            <span
-                class="bg-primary text-white px-3 py-2 border-round font-medium"
-            >
-                Participantes
-            </span>
-            <p-dropdown
-                [options]="participantesOptions"
-                [(ngModel)]="participantesSeleccionados"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ 'min-width': '200px' }"
-                placeholder="Seleccionar"
-            >
-            </p-dropdown>
+            <p-inputGroup class="flex-1">
+                <p-inputGroupAddon>Participantes</p-inputGroupAddon>
+                <p-dropdown
+                    [options]="participantesOptions"
+                    [(ngModel)]="participantesSeleccionados"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ 'min-width': '200px' }"
+                    placeholder="Seleccionar"
+                >
+                </p-dropdown>
+            </p-inputGroup>
         </div>
 
         <!-- Botones de exportación -->

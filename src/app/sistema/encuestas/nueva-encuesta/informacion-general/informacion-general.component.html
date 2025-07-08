@@ -5,7 +5,7 @@
             >Título:
             <span class="text-red-500 text-xs">(*) Obligatorio</span>
         </label>
-        <input pInputText id="username" />
+        <input pInputText placeholder="Ingrese títutlo" />
         <!-- <small id="username-help">
             Enter your username to reset your password.
         </small> -->
@@ -15,7 +15,7 @@
             >Subtítulo:
             <span class="text-blue-500 text-xs">(Opcional)</span>
         </label>
-        <input pInputText id="username" />
+        <input pInputText placeholder="Ingrese subtítulo" />
     </div>
     <div class="flex gap-3">
         <p-inputGroup>
@@ -32,37 +32,24 @@
                 styleClass="w-full"
                 [options]="tiempos"
                 optionLabel="label"
-                placeholder="Select a City"
+                placeholder="Seleccione tiempo de duración"
             />
         </p-inputGroup>
     </div>
     <div class="">
         <div>
             <strong class="text-blue-700 text-2xl"
-                >Consideraciones al adjuntar archivos:</strong
+                >Consideraciones generales:</strong
             >
             <span class="text-red-500 text-xs">(*) Obligatorio</span>
+            <editor
+                class="w-full"
+                [init]="initConsideraciones"
+                class="w-full"
+                placeholder="Ingrese consideraciones generales"
+            >
+            </editor>
         </div>
-        <ul class="border-1 w-full py-4 flex flex-column gap-2">
-            <li>
-                Este formulario debe ser llenado por el Jefe(a) responsable de
-                Gestión Pedagógica, Coordinador pedagógico, especialista o
-                docente que haga sus veces, siempre y cuando tenga conocimiento
-                del tema.
-            </li>
-            <li>
-                La devolución del formulario del módulo X, debidamente llenado,
-                debe ser enviado al estadístico de su jurisdicción para su
-                registro en el Sistema de Gestión de Información Educativa –
-                SIGIED en el plazo indicado.
-            </li>
-            <li>Revise bien sus respuestas antes de enviarlas</li>
-            <li>
-                Utilice fuentes de información válidas: los planes de monitoreo
-                pedagógico 2023, 2024, el informe anual de visitas y
-                acompañamiento, entre otros documentos.
-            </li>
-        </ul>
     </div>
     <div class="flex gap-4">
         <strong class="w-max flex-shrink-0 text-blue-700 text-2xl"

@@ -13,6 +13,7 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { ButtonModule } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
 import { Router } from '@angular/router'
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 
 @Component({
     selector: 'app-informacion-general',
@@ -27,19 +28,37 @@ import { Router } from '@angular/router'
         CheckboxModule,
         ButtonModule,
         ReactiveFormsModule,
+        EditorComponent,
     ],
     templateUrl: './informacion-general.component.html',
     styleUrl: './informacion-general.component.scss',
+    providers: [
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
 })
 export class InformacionGeneralComponent implements OnInit {
     form: FormGroup
     tiempos: any[]
+
+    initConsideraciones: EditorComponent['init'] = {
+        base_url: '/tinymce',
+        suffix: '.min',
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escriba aquí...',
+        height: 200,
+        toolbar: false,
+        paste_as_text: true,
+        branding: false,
+        statusbar: false,
+    }
+
     constructor(
         private router: Router,
         private fb: FormBuilder
     ) {
         this.form = this.fb.group({
-            title: [''],
+            titulo: [''],
             subTitle: [''],
             fechaInicio: [''],
             fechaFin: [''],

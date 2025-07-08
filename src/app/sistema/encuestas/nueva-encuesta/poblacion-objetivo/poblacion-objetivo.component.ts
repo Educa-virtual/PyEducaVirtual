@@ -7,13 +7,31 @@ import { FormsModule } from '@angular/forms'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { DropdownModule } from 'primeng/dropdown'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { TableModule } from 'primeng/table'
+import { IconFieldModule } from 'primeng/iconfield'
+import { InputIconModule } from 'primeng/inputicon'
+
 interface PoblacionItem {
     id: string
     nombre: string
     cantidad: number
     seleccionado: boolean
     icon: string
+}
+
+interface PoblacionSeleccionada {
+    nombre: string
+    cantidad: number
+    criterio: string
+    estado: string
+}
+
+interface DocenteData {
+    grado: number
+    seccion: string
+    ie: string
+    nivel: string
+    ugel: string
 }
 
 @Component({
@@ -26,9 +44,11 @@ interface PoblacionItem {
         CheckboxModule,
         FormsModule,
         InputGroupModule,
-        TablePrimengComponent,
         InputGroupAddonModule,
         DropdownModule,
+        TableModule,
+        IconFieldModule,
+        InputIconModule,
     ],
     templateUrl: './poblacion-objetivo.component.html',
     styleUrls: ['./poblacion-objetivo.component.scss'],
@@ -37,6 +57,8 @@ export class PoblacionObjetivoComponent implements OnInit {
     @Output() nextStep = new EventEmitter<void>()
 
     poblacionData: PoblacionItem[] = []
+    poblacionSeleccionada: PoblacionSeleccionada[] = []
+    docentesData: DocenteData[] = []
 
     ngOnInit() {
         this.poblacionData = [
@@ -83,6 +105,96 @@ export class PoblacionObjetivoComponent implements OnInit {
                 icon: 'pi-home',
             },
         ]
+
+        // Datos simulados para la tabla
+        this.poblacionSeleccionada = [
+            {
+                nombre: 'Especialistas DREMO',
+                cantidad: 24,
+                criterio: 'Área: Matemática',
+                estado: 'Configurado',
+            },
+            {
+                nombre: 'Docentes',
+                cantidad: 45,
+                criterio: 'Nivel: Primaria',
+                estado: 'Pendiente',
+            },
+        ]
+
+        // Datos simulados para docentes según Figma
+        this.docentesData = [
+            {
+                grado: 1,
+                seccion: 'A',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 1,
+                seccion: 'B',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 1,
+                seccion: 'C',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 2,
+                seccion: 'A',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 2,
+                seccion: 'B',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 2,
+                seccion: 'C',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 3,
+                seccion: 'A',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 3,
+                seccion: 'B',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 3,
+                seccion: 'C',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+            {
+                grado: 4,
+                seccion: 'A',
+                ie: 'JUAN XXIII',
+                nivel: 'Primaria',
+                ugel: 'Mariscal Nieto',
+            },
+        ]
     }
 
     onSelectionChange(index: number) {
@@ -99,5 +211,12 @@ export class PoblacionObjetivoComponent implements OnInit {
 
     getSelectedPoblacion() {
         return this.poblacionData.filter((item) => item.seleccionado)
+    }
+
+    onNext() {
+        if (this.hasSelection()) {
+            console.log('Población seleccionada:', this.getSelectedPoblacion())
+            this.nextStep.emit()
+        }
     }
 }

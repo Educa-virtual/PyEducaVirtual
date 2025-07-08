@@ -1,162 +1,673 @@
 <br />
-<div class="poblacion-objetivo-container">
-    <p-accordion [multiple]="true" class="custom-accordion">
-        <!-- Especialistas DREMO -->
-        <p-accordionTab
-            [selected]="poblacionData[0].seleccionado"
-            (selectedChange)="onToggleSelection(0, $event)"
-        >
-            <ng-template pTemplate="header">
-                <div
-                    class="flex justify-content-between align-items-center w-full accordion-header"
-                >
-                    <div class="flex align-items-center gap-3">
-                        <span class="font-medium text-white">{{
-                            poblacionData[0].nombre
-                        }}</span>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <span class="font-bold text-white">{{
-                            poblacionData[0].cantidad
-                        }}</span>
-                        <i class="pi pi-bars text-white"></i>
-                    </div>
+<!-- Accordion para selección de población -->
+<p-accordion [multiple]="true" class="custom-accordion mb-4">
+    <!-- Especialistas DREMO -->
+    <p-accordionTab [selected]="poblacionData[0].seleccionado">
+        <ng-template pTemplate="header">
+            <div
+                class="flex justify-content-between align-items-center w-full accordion-header"
+            >
+                <div class="flex align-items-center gap-3">
+                    <span class="font-medium text-white">{{
+                        poblacionData[0].nombre
+                    }}</span>
                 </div>
-            </ng-template>
-            <div class="accordion-content"></div>
-        </p-accordionTab>
-
-        <!-- Especialistas UGEL -->
-        <p-accordionTab
-            [selected]="poblacionData[1].seleccionado"
-            (selectedChange)="onToggleSelection(1, $event)"
-        >
-            <ng-template pTemplate="header">
-                <div
-                    class="flex justify-content-between align-items-center w-full accordion-header"
-                >
-                    <div class="flex align-items-center gap-3">
-                        <span class="font-medium text-white">{{
-                            poblacionData[1].nombre
-                        }}</span>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <span class="font-bold text-white">{{
-                            poblacionData[1].cantidad
-                        }}</span>
-                        <i class="pi pi-bars text-white"></i>
-                    </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="font-bold text-white">{{
+                        poblacionData[0].cantidad
+                    }}</span>
+                    <i class="pi pi-bars text-white"></i>
                 </div>
-            </ng-template>
-            <div class="accordion-content"></div>
-        </p-accordionTab>
-
-        <!-- Directores -->
-        <p-accordionTab
-            [selected]="poblacionData[2].seleccionado"
-            (selectedChange)="onToggleSelection(2, $event)"
-        >
-            <ng-template pTemplate="header">
-                <div
-                    class="flex justify-content-between align-items-center w-full accordion-header"
-                >
-                    <div class="flex align-items-center gap-3">
-                        <span class="font-medium text-white">{{
-                            poblacionData[2].nombre
-                        }}</span>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <span class="font-bold text-white">{{
-                            poblacionData[2].cantidad
-                        }}</span>
-                        <i class="pi pi-bars text-white"></i>
-                    </div>
-                </div>
-            </ng-template>
-            <div class="accordion-content">
-                <p>Contenido específico para Directores</p>
             </div>
-        </p-accordionTab>
-
-        <!-- Docentes -->
-        <p-accordionTab
-            [selected]="poblacionData[3].seleccionado"
-            (selectedChange)="onToggleSelection(3, $event)"
-        >
-            <ng-template pTemplate="header">
-                <div
-                    class="flex justify-content-between align-items-center w-full accordion-header"
-                >
-                    <div class="flex align-items-center gap-3">
-                        <span class="font-medium text-white">{{
-                            poblacionData[3].nombre
-                        }}</span>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <span class="font-bold text-white">{{
-                            poblacionData[3].cantidad
-                        }}</span>
-                        <i class="pi pi-bars text-white"></i>
-                    </div>
-                </div>
-            </ng-template>
-            <div class="accordion-content">
-                <p>Contenido específico para Docentes</p>
+        </ng-template>
+        <div class="accordion-content">
+            <!-- Filtros superiores -->
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
             </div>
-        </p-accordionTab>
-
-        <!-- Estudiantes -->
-        <p-accordionTab
-            [selected]="poblacionData[4].seleccionado"
-            (selectedChange)="onToggleSelection(4, $event)"
-        >
-            <ng-template pTemplate="header">
-                <div
-                    class="flex justify-content-between align-items-center w-full accordion-header"
-                >
-                    <div class="flex align-items-center gap-3">
-                        <span class="font-medium text-white">{{
-                            poblacionData[4].nombre
-                        }}</span>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <span class="font-bold text-white">{{
-                            poblacionData[4].cantidad
-                        }}</span>
-                        <i class="pi pi-bars text-white"></i>
-                    </div>
-                </div>
-            </ng-template>
-            <div class="accordion-content">
-                <p>Contenido específico para Estudiantes</p>
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
             </div>
-        </p-accordionTab>
-
-        <!-- Apoderados -->
-        <p-accordionTab
-            [selected]="poblacionData[5].seleccionado"
-            (selectedChange)="onToggleSelection(5, $event)"
-        >
-            <ng-template pTemplate="header">
-                <div
-                    class="flex justify-content-between align-items-center w-full accordion-header"
-                >
-                    <div class="flex align-items-center gap-3">
-                        <span class="font-medium text-white">{{
-                            poblacionData[5].nombre
-                        }}</span>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <span class="font-bold text-white">{{
-                            poblacionData[5].cantidad
-                        }}</span>
-                        <i class="pi pi-bars text-white"></i>
-                    </div>
-                </div>
-            </ng-template>
-            <div class="accordion-content">
-                <p>Contenido específico para Apoderados</p>
+            <!-- Buscador -->
+            <!--<p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>
+                        <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
+                    <input pInputText placeholder="Buscar por grado/sección o IE" styleClass="w-full">
+                </p-inputGroup>-->
+            <!-- En tus dropdowns agrega la clase border-1 surface-border -->
+            <div class="mb-3 search-input">
+                <input
+                    pInputText
+                    placeholder="Buscar por apellidos y nombres"
+                    class="w-full"
+                    style="border: 1px solid #dee2e6; border-radius: 6px"
+                />
             </div>
-        </p-accordionTab>
-    </p-accordion>
-</div>
+
+            <!-- Tabla de docentes -->
+            <div class="card">
+                <p-table
+                    [value]="docentesData"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [paginator]="true"
+                    [rows]="10"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 8%">#</th>
+                            <th style="width: 15%">Grado</th>
+                            <th style="width: 15%">Sección</th>
+                            <th style="width: 25%">IE</th>
+                            <th style="width: 17%">Nivel</th>
+                            <th style="width: 20%">UGEL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-docente let-i="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ docente.grado }}</td>
+                            <td class="text-center">{{ docente.seccion }}</td>
+                            <td>{{ docente.ie }}</td>
+                            <td>{{ docente.nivel }}</td>
+                            <td>{{ docente.ugel }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <div class="text-gray-500">
+                                    <i
+                                        class="pi pi-info-circle mb-2"
+                                        style="font-size: 2rem"
+                                    ></i>
+                                    <p>No hay docentes disponibles</p>
+                                    <small
+                                        >Seleccione filtros para ver los
+                                        docentes</small
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </p-accordionTab>
+
+    <!-- Especialistas UGEL -->
+    <p-accordionTab [selected]="poblacionData[1].seleccionado">
+        <ng-template pTemplate="header">
+            <div
+                class="flex justify-content-between align-items-center w-full accordion-header"
+            >
+                <div class="flex align-items-center gap-3">
+                    <span class="font-medium text-white">{{
+                        poblacionData[1].nombre
+                    }}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="font-bold text-white">{{
+                        poblacionData[1].cantidad
+                    }}</span>
+                    <i class="pi pi-bars text-white"></i>
+                </div>
+            </div>
+        </ng-template>
+        <div class="accordion-content">
+            <!-- Filtros superiores -->
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+
+            <!-- Tabla de docentes -->
+            <div class="card">
+                <p-table
+                    [value]="docentesData"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [paginator]="true"
+                    [rows]="10"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 8%">#</th>
+                            <th style="width: 15%">Grado</th>
+                            <th style="width: 15%">Sección</th>
+                            <th style="width: 25%">IE</th>
+                            <th style="width: 17%">Nivel</th>
+                            <th style="width: 20%">UGEL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-docente let-i="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ docente.grado }}</td>
+                            <td class="text-center">{{ docente.seccion }}</td>
+                            <td>{{ docente.ie }}</td>
+                            <td>{{ docente.nivel }}</td>
+                            <td>{{ docente.ugel }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <div class="text-gray-500">
+                                    <i
+                                        class="pi pi-info-circle mb-2"
+                                        style="font-size: 2rem"
+                                    ></i>
+                                    <p>No hay docentes disponibles</p>
+                                    <small
+                                        >Seleccione filtros para ver los
+                                        docentes</small
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </p-accordionTab>
+
+    <!-- Directores -->
+    <p-accordionTab [selected]="poblacionData[2].seleccionado">
+        <ng-template pTemplate="header">
+            <div
+                class="flex justify-content-between align-items-center w-full accordion-header"
+            >
+                <div class="flex align-items-center gap-3">
+                    <span class="font-medium text-white">{{
+                        poblacionData[2].nombre
+                    }}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="font-bold text-white">{{
+                        poblacionData[2].cantidad
+                    }}</span>
+                    <i class="pi pi-bars text-white"></i>
+                </div>
+            </div>
+        </ng-template>
+        <div class="accordion-content">
+            <!-- Filtros superiores -->
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+
+            <!-- Tabla de docentes -->
+            <div class="card">
+                <p-table
+                    [value]="docentesData"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [paginator]="true"
+                    [rows]="10"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 8%">#</th>
+                            <th style="width: 15%">Grado</th>
+                            <th style="width: 15%">Sección</th>
+                            <th style="width: 25%">IE</th>
+                            <th style="width: 17%">Nivel</th>
+                            <th style="width: 20%">UGEL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-docente let-i="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ docente.grado }}</td>
+                            <td class="text-center">{{ docente.seccion }}</td>
+                            <td>{{ docente.ie }}</td>
+                            <td>{{ docente.nivel }}</td>
+                            <td>{{ docente.ugel }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <div class="text-gray-500">
+                                    <i
+                                        class="pi pi-info-circle mb-2"
+                                        style="font-size: 2rem"
+                                    ></i>
+                                    <p>No hay docentes disponibles</p>
+                                    <small
+                                        >Seleccione filtros para ver los
+                                        docentes</small
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </p-accordionTab>
+
+    <!-- Docentes -->
+    <p-accordionTab [selected]="poblacionData[3].seleccionado">
+        <ng-template pTemplate="header">
+            <div
+                class="flex justify-content-between align-items-center w-full accordion-header"
+            >
+                <div class="flex align-items-center gap-3">
+                    <span class="font-medium text-white">{{
+                        poblacionData[3].nombre
+                    }}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="font-bold text-white">{{
+                        poblacionData[3].cantidad
+                    }}</span>
+                    <i class="pi pi-bars text-white"></i>
+                </div>
+            </div>
+        </ng-template>
+        <div class="accordion-content">
+            <!-- Filtros superiores -->
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+
+            <!-- Tabla de docentes -->
+            <div class="card">
+                <p-table
+                    [value]="docentesData"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [paginator]="true"
+                    [rows]="10"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 8%">#</th>
+                            <th style="width: 15%">Grado</th>
+                            <th style="width: 15%">Sección</th>
+                            <th style="width: 25%">IE</th>
+                            <th style="width: 17%">Nivel</th>
+                            <th style="width: 20%">UGEL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-docente let-i="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ docente.grado }}</td>
+                            <td class="text-center">{{ docente.seccion }}</td>
+                            <td>{{ docente.ie }}</td>
+                            <td>{{ docente.nivel }}</td>
+                            <td>{{ docente.ugel }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <div class="text-gray-500">
+                                    <i
+                                        class="pi pi-info-circle mb-2"
+                                        style="font-size: 2rem"
+                                    ></i>
+                                    <p>No hay docentes disponibles</p>
+                                    <small
+                                        >Seleccione filtros para ver los
+                                        docentes</small
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </p-accordionTab>
+
+    <!-- Estudiantes -->
+    <p-accordionTab [selected]="poblacionData[4].seleccionado">
+        <ng-template pTemplate="header">
+            <div
+                class="flex justify-content-between align-items-center w-full accordion-header"
+            >
+                <div class="flex align-items-center gap-3">
+                    <span class="font-medium text-white">{{
+                        poblacionData[4].nombre
+                    }}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="font-bold text-white">{{
+                        poblacionData[4].cantidad
+                    }}</span>
+                    <i class="pi pi-bars text-white"></i>
+                </div>
+            </div>
+        </ng-template>
+        <div class="accordion-content">
+            <!-- Filtros superiores -->
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+
+            <!-- Tabla de docentes -->
+            <div class="card">
+                <p-table
+                    [value]="docentesData"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [paginator]="true"
+                    [rows]="10"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 8%">#</th>
+                            <th style="width: 15%">Grado</th>
+                            <th style="width: 15%">Sección</th>
+                            <th style="width: 25%">IE</th>
+                            <th style="width: 17%">Nivel</th>
+                            <th style="width: 20%">UGEL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-docente let-i="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ docente.grado }}</td>
+                            <td class="text-center">{{ docente.seccion }}</td>
+                            <td>{{ docente.ie }}</td>
+                            <td>{{ docente.nivel }}</td>
+                            <td>{{ docente.ugel }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <div class="text-gray-500">
+                                    <i
+                                        class="pi pi-info-circle mb-2"
+                                        style="font-size: 2rem"
+                                    ></i>
+                                    <p>No hay docentes disponibles</p>
+                                    <small
+                                        >Seleccione filtros para ver los
+                                        docentes</small
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </p-accordionTab>
+
+    <!-- Apoderados -->
+    <p-accordionTab [selected]="poblacionData[5].seleccionado">
+        <ng-template pTemplate="header">
+            <div
+                class="flex justify-content-between align-items-center w-full accordion-header"
+            >
+                <div class="flex align-items-center gap-3">
+                    <span class="font-medium text-white">{{
+                        poblacionData[5].nombre
+                    }}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <span class="font-bold text-white">{{
+                        poblacionData[5].cantidad
+                    }}</span>
+                    <i class="pi pi-bars text-white"></i>
+                </div>
+            </div>
+        </ng-template>
+        <div class="accordion-content">
+            <!-- Filtros superiores -->
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="flex gap-3 mb-4">
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione nivel"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+                <p-inputGroup class="flex-1">
+                    <p-inputGroupAddon>Especialidad</p-inputGroupAddon>
+                    <p-dropdown
+                        placeholder="Seleccione especialidad"
+                        styleClass="w-full"
+                    >
+                    </p-dropdown>
+                </p-inputGroup>
+            </div>
+
+            <!-- Tabla de docentes -->
+            <div class="card">
+                <p-table
+                    [value]="docentesData"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [paginator]="true"
+                    [rows]="10"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 8%">#</th>
+                            <th style="width: 15%">Grado</th>
+                            <th style="width: 15%">Sección</th>
+                            <th style="width: 25%">IE</th>
+                            <th style="width: 17%">Nivel</th>
+                            <th style="width: 20%">UGEL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-docente let-i="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ docente.grado }}</td>
+                            <td class="text-center">{{ docente.seccion }}</td>
+                            <td>{{ docente.ie }}</td>
+                            <td>{{ docente.nivel }}</td>
+                            <td>{{ docente.ugel }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <div class="text-gray-500">
+                                    <i
+                                        class="pi pi-info-circle mb-2"
+                                        style="font-size: 2rem"
+                                    ></i>
+                                    <p>No hay docentes disponibles</p>
+                                    <small
+                                        >Seleccione filtros para ver los
+                                        docentes</small
+                                    >
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </p-accordionTab>
+</p-accordion>

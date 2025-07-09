@@ -333,7 +333,12 @@ export class InformesEreComponent implements OnInit {
                         this.sinDatos()
                     } else {
                         this.formFiltrosObtenido = this.formFiltros.value
-                        this.puede_exportar = true
+                        const id = this.formFiltros.value.iEvaluacionId
+                        const evaluacion: any = this.evaluaciones.find(
+                            (e: any) => e.value === id
+                        )
+                        this.puede_exportar = evaluacion?.bExportarExcel === 1
+
                         this.fullData = data.data
                         this.filtros = data.data[0][0]
                         this.resultados = data.data[1]

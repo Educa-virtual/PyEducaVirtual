@@ -1,1 +1,130 @@
-<p>pregunta-visualizacion works!</p>
+<!-- Contenido principal con accordion -->
+<div disabled>
+    <div class="container-page">
+        <p-accordion [activeIndex]="0" styleClass="w-full">
+            <!-- Sección 1: Datos Generales -->
+            <p-accordionTab header="SECCIÓN 1: DATOS GENERALES">
+                <div class="seccion-content">
+                    <!-- Pregunta 1 -->
+                    <div class="pregunta-item mb-6">
+                        <h5 class="pregunta-titulo mb-4">
+                            1. ¿Cuáles son los planes específicos con que
+                            cuenta?
+                        </h5>
+
+                        <div class="opciones-lista">
+                            <div class="opcion-item">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta1"
+                                    value="A"
+                                    inputId="q1a"
+                                >
+                                </p-radioButton>
+                                <label for="q1a" class="ml-2">A </label>
+                                <span>14</span>
+                            </div>
+
+                            <div class="opcion-item">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta1"
+                                    value="B"
+                                    inputId="q1b"
+                                >
+                                </p-radioButton>
+                                <label for="q1b" class="ml-2">B </label>
+                                <span>8</span>
+                            </div>
+
+                            <div class="opcion-item">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta1"
+                                    value="C"
+                                    inputId="q1c"
+                                >
+                                </p-radioButton>
+                                <label for="q1c" class="ml-2">C </label>
+                                <span>10</span>
+                            </div>
+
+                            <div class="opcion-item selected">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta1"
+                                    value="D"
+                                    inputId="q1d"
+                                >
+                                </p-radioButton>
+                                <label for="q1d" class="ml-2">D </label>
+                                <span>12</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2 -->
+                    <div class="pregunta-item mb-6">
+                        <h5 class="pregunta-titulo mb-4">
+                            2. ¿Cuenta con planes específicos de monitoreo?
+                        </h5>
+
+                        <div class="opciones-lista">
+                            <div class="opcion-item selected">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta2"
+                                    value="A"
+                                    inputId="q2a"
+                                >
+                                </p-radioButton>
+                                <label for="q1d" class="ml-2">A </label>
+                                <span>14</span>
+                            </div>
+
+                            <div class="opcion-item">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta2"
+                                    value="B"
+                                    inputId="q2b"
+                                >
+                                </p-radioButton>
+                                <label for="q2b" class="ml-2">B </label>
+                                <span>8</span>
+                            </div>
+
+                            <div class="opcion-item">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta2"
+                                    value="C"
+                                    inputId="q2c"
+                                >
+                                </p-radioButton>
+                                <label for="q2c" class="ml-2">C </label>
+                                <span>10</span>
+                            </div>
+
+                            <div class="opcion-item">
+                                <p-radioButton
+                                    [(ngModel)]="respuesta2"
+                                    value="D"
+                                    inputId="q2d"
+                                >
+                                </p-radioButton>
+                                <label for="q2d" class="ml-2">D </label>
+                                <span>12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </p-accordionTab>
+
+            <!-- Sección 2: Evaluación y Resultados -->
+            <p-accordionTab header="SECCIÓN 2: EVALUACIÓN Y RESULTADOS">
+                <div class="seccion-content">
+                    <div class="text-center p-4">
+                        <i class="pi pi-info-circle text-4xl text-400 mb-3"></i>
+                        <p class="text-600 text-lg">
+                            Contenido de evaluación y resultados
+                        </p>
+                    </div>
+                </div>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+</div>

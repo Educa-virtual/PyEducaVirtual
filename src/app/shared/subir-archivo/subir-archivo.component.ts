@@ -25,8 +25,7 @@ export class SubirArchivoComponent {
 
   @Output() obtenerArchivo = new EventEmitter<any>();
   @Input() carpeta: string = '';
-
-  archivos = [];
+  @Input() archivos = [];
 
   tipos: any[] = ['.pdf', 'application/pdf'];
   unidades = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
@@ -59,6 +58,8 @@ export class SubirArchivoComponent {
         detail: 'Revise el archivo',
       });
     }
+
+    event.target.value = '';
   }
 
   generarIdUnico(): number {

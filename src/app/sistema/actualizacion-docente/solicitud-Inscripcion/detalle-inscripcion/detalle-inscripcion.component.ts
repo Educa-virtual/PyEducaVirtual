@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, OnChanges } from '@angular/core';
 import {
   TablePrimengComponent,
   IColumn,
@@ -8,27 +8,20 @@ import {
 import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
-import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identificaciones.service';
 import { Message, MessageService } from 'primeng/api';
-import { GeneralService } from '@/app/servicios/general.service';
-import { FileUploadModule } from 'primeng/fileupload';
+import { InscripcionesService } from '@/app/servicios/cap/inscripciones.service';
+import { SubirArchivoComponent } from '@/app/shared/subir-archivo/subir-archivo.component';
 
 @Component({
   selector: 'app-detalle-inscripcion',
   standalone: true,
-  imports: [
-    PrimengModule,
-    TablePrimengComponent,
-    ContainerPageComponent,
-    ModalPrimengComponent,
-    FileUploadModule,
-  ],
+  imports: [PrimengModule, TablePrimengComponent, ContainerPageComponent, SubirArchivoComponent],
   templateUrl: './detalle-inscripcion.component.html',
   styleUrl: './detalle-inscripcion.component.scss',
 })
-export class DetalleInscripcionComponent implements OnInit {
+export class DetalleInscripcionComponent implements OnInit, OnChanges {
   @Input() id!: string;
   @Output() volver = new EventEmitter<void>();
 
@@ -37,7 +30,8 @@ export class DetalleInscripcionComponent implements OnInit {
   private _ConstantesService = inject(ConstantesService);
   private _TiposIdentificacionesService = inject(TiposIdentificacionesService);
   private _constantesService = inject(ConstantesService);
-  private GeneralService = inject(GeneralService);
+  private _InscripcionesService = inject(InscripcionesService);
+  private _MessageService = inject(MessageService);
 
   alumnos: any[];
   showModal: boolean = false;
@@ -50,6 +44,8 @@ export class DetalleInscripcionComponent implements OnInit {
   uploadedFiles: any[] = [];
   datosCurso: any; // variable para guardar los datos del curso
   tituloCurso: Message[] = [];
+  archivos = [];
+  loadingFormulario: boolean = false;
 
   public formIncripcion: FormGroup = this._formBuilder.group({
     iTipoIdentId: ['', [Validators.required]],
@@ -58,13 +54,17 @@ export class DetalleInscripcionComponent implements OnInit {
     cPersPaterno: ['', [Validators.required]],
     cPersMaterno: ['', [Validators.required]],
     cPersDomicilio: ['', [Validators.required]],
-    cInscripCorreo: ['', [Validators.required]],
+    cInscripCorreo: ['', [Validators.required, Validators.email]],
     cInscripCel: ['', [Validators.required]],
     cIieeNombre: ['', [Validators.required]],
-    cVoucher: ['', [Validators.required]],
+    cVoucher: [''],
+    iPersId: [''],
   });
-  constructor(private messageService: MessageService) {}
 
+  ngOnChanges(changes) {
+    console.log(changes);
+    this.formIncripcion.reset();
+  }
   ngOnInit(): void {
     this.obtenerSolicitudesXCurso();
     this.obtenerTipoIdentificaciones();
@@ -131,30 +131,6 @@ export class DetalleInscripcionComponent implements OnInit {
 
   // mostrar los botones de la tabla
   public accionesTabla: IActionTable[] = [
-    // {
-    //     labelTooltip: 'Aceptar ',
-    //     icon: 'pi pi-check-circle',
-    //     accion: 'aceptar',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-succes p-button-text',
-    //     // isVisible: (row) => ['1', '2', '3'].includes(row.iEstado),
-    // },
-    // {
-    //     labelTooltip: 'Denegar',
-    //     icon: 'pi pi-times-circle',
-    //     accion: 'denegar',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-danger p-button-text',
-    //     // isVisible: (row) => row.iEstado === '1',
-    // },
-    // {
-    //     labelTooltip: 'Comprobante',
-    //     icon: 'pi pi-file-pdf',
-    //     accion: 'mostrarComprobante',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-danger p-button-text',
-    //     // isVisible: (row) => row.iEstado === '1',
-    // },
     {
       labelTooltip: 'Ver Solicitud',
       icon: 'pi pi-eye',
@@ -212,7 +188,6 @@ export class DetalleInscripcionComponent implements OnInit {
   mostrarVoucher(voucher: any) {
     this.alumnoSelect = voucher;
     this.nombreAlumno = voucher.cPersNombre;
-    console.log(this.alumnoSelect);
     this.showModal = true;
   }
 
@@ -227,7 +202,6 @@ export class DetalleInscripcionComponent implements OnInit {
     this._capService.listarInscripcionxcurso(data).subscribe({
       next: (res: any) => {
         this.alumnos = res['data'];
-        console.log('datos del Alumnos incritos', this.alumnos);
       },
     });
   }
@@ -240,7 +214,7 @@ export class DetalleInscripcionComponent implements OnInit {
     const dni = this.formIncripcion.get('dni')?.value;
 
     if (!idtipoDocumento) {
-      this.messageService.add({
+      this._MessageService.add({
         severity: 'error',
         summary: 'Error',
         detail: 'Seleccione un tipo de documento',
@@ -252,7 +226,6 @@ export class DetalleInscripcionComponent implements OnInit {
       setTimeout(() => {
         this.loading = false;
       }, 2000);
-      console.log('guardar');
 
       // Validar el tipo de documento
       switch (idtipoDocumento) {
@@ -261,7 +234,7 @@ export class DetalleInscripcionComponent implements OnInit {
             .get('dni')
             ?.setValidators([Validators.required, Validators.pattern(/^\d{8}$/)]);
           if (!dni || dni.toString().length !== 8) {
-            this.messageService.add({
+            this._MessageService.add({
               severity: 'error',
               summary: 'Error',
               detail: 'Ingrese un DNI válido de 8 dígitos numéricos',
@@ -269,120 +242,161 @@ export class DetalleInscripcionComponent implements OnInit {
             return;
           } else {
             // Obtner datos para buscar la persona
-            const data = {
-              iTipoIdentId: idtipoDocumento,
-              iPersId: '',
-              cPersDocumento: dni,
-            };
             const params = {
-              petition: 'post',
-              group: 'cap',
-              prefix: 'inscripciones',
-              ruta: 'persona-inscripcion',
-              data: data,
-              params: {
-                iCredId: this._constantesService.iCredId,
-              },
+              iCredId: this._ConstantesService.iCredId,
             };
-            // Servicio para buscar la persona
-            this.GeneralService.getGralPrefixx(params).subscribe((Data: any) => {
-              // this.persona = (Data as any)['data']
-              this.persona = Data.data; // ← Accede al primer objeto del array "data"
-              this.instituciones = Data.instituciones || []; // ← Asigna el segundo array
-              // console.log('Datos persona:', this.persona);
-              // console.log('Otra data:', this.instituciones);
-              // Aquí actualizas el nombre en el formulario
-              this.formIncripcion.patchValue({
-                cPersNombre: this.persona.cPersNombre,
-                cPersPaterno: this.persona.cPersPaterno,
-                cPersMaterno: this.persona.cPersMaterno,
-                cPersDomicilio: this.persona.cPersDomicilio,
-                // nombreLargo: `${this.persona.cPersPaterno} ${this.persona.cPersMaterno} ${this.persona.cPersNombre}`,
+            this._InscripcionesService
+              .buscarPersonaInscripcionxiCapacitacionId(
+                this.datosCurso.iCapacitacionId,
+                idtipoDocumento,
+                dni,
+                params
+              )
+              .subscribe({
+                next: resp => {
+                  if (resp.validated) {
+                    const data = resp.data;
+                    this.formIncripcion.patchValue({
+                      cPersNombre: data.cPersNombre,
+                      cPersPaterno: data.cPersPaterno,
+                      cPersMaterno: data.cPersMaterno,
+                      cPersDomicilio: data.cPersDomicilio,
+                      cInscripCorreo: data.cPersCorreo,
+                      cInscripCel: data.cPersCel,
+                      iPersId: data.iPersId,
+                    });
+                    this.instituciones = resp.instituciones;
+                  } else {
+                    this.mostrarMensajeToast({
+                      severity: 'warning',
+                      summary: '¡Atención!',
+                      detail: resp.message,
+                    });
+                  }
+                },
+                error: error => {
+                  const errores = error?.error?.errors;
+                  if (error.status === 422 && errores) {
+                    // Recorre y muestra cada mensaje de error
+                    Object.keys(errores).forEach(campo => {
+                      errores[campo].forEach((mensaje: string) => {
+                        this.mostrarMensajeToast({
+                          severity: 'error',
+                          summary: 'Error de validación',
+                          detail: mensaje,
+                        });
+                      });
+                    });
+                  } else {
+                    // Error genérico si no hay errores específicos
+                    this.mostrarMensajeToast({
+                      severity: 'error',
+                      summary: 'Error',
+                      detail: error?.error?.message || 'Ocurrió un error inesperado',
+                    });
+                  }
+                },
               });
-            });
           }
-
-          break;
-        case 2: // RUC
-          console.log('RUC');
           break;
       }
     }
   }
   instituciones: any[] = []; // Datos de instituciones educativas
 
-  // metodo para subir el archivo
-  onUpload(event: any) {
-    const file = event.files?.[0];
-
-    if (file) {
-      console.log('File uploaded:', file.name);
-    }
-
-    this.formIncripcion.patchValue({
-      cVoucher: event.files,
-    });
-
-    const data = this.formIncripcion.value;
-    console.log('guardar:', data);
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Archivo cargado',
-      detail: '',
-    });
-  }
   // metodo para guardar inscripción
   guardarInscripcion() {
+    if (this.loadingFormulario) return; // evitar doble clic
+    this.loadingFormulario = true;
+
     const datos = this.formIncripcion.value;
     const data = {
       iCapacitacionId: this.datosCurso.iCapacitacionId,
-      iPersId: this.persona.iPersId,
+      iPersId: datos.iPersId,
       cInscripCorreo: datos.cInscripCorreo,
       cInscripCel: datos.cInscripCel,
       iIieeId: datos.cIieeNombre, // Institución Educativa ID
       iCredId: this._constantesService.iCredId, // Credencial ID
-      cVoucher: 'noGuarda_DX.png', // Nombre del archivo
+      cVoucher: datos.cVoucher, // Nombre del archivo
+      iTipoIdentId: datos.iTipoIdentId,
+      cPersDocumento: datos.dni,
+      cPersNombre: datos.cPersNombre,
+      cPersPaterno: datos.cPersPaterno,
+      cPersMaterno: datos.cPersMaterno,
+      cPersDomicilio: datos.cPersDomicilio,
     };
-    // console.log('datos de guardar', data)
-    // /cap/inscripciones/inscripcion`,
-    const params = {
-      petition: 'post',
-      group: 'cap',
-      prefix: 'inscripciones',
-      ruta: 'inscripcion',
-      data: data,
-      params: { iCredId: this._constantesService.iCredId },
-    };
-    console.log('datos a guardar', params);
-    // Servicio para buscar la persona
-    this.GeneralService.getGralPrefixx(params).subscribe(Data => {
-      const response = (Data as any)['data'];
-      console.log(response);
-      this.formIncripcion.reset();
-      this.showModalInscripcion = false;
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Inscripción exitosa',
-      });
+
+    this._InscripcionesService.guardarInscripcion(data).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          this.obtenerSolicitudesXCurso();
+          this.showModalInscripcion = false;
+          this.mostrarMensajeToast({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: resp.message,
+          });
+          setTimeout(() => {
+            this.showModalInscripcion = false;
+          }, 2000);
+        }
+        this.loadingFormulario = false;
+      },
+      error: error => {
+        const errores = error?.error?.errors;
+        if (error.status === 422 && errores) {
+          // Recorre y muestra cada mensaje de error
+          Object.keys(errores).forEach(campo => {
+            errores[campo].forEach((mensaje: string) => {
+              this.mostrarMensajeToast({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: mensaje,
+              });
+            });
+          });
+        } else {
+          // Error genérico si no hay errores específicos
+          this.mostrarMensajeToast({
+            severity: 'error',
+            summary: 'Error',
+            detail: error?.error?.message || 'Ocurrió un error inesperado',
+          });
+        }
+        this.loadingFormulario = false;
+      },
     });
   }
   // obtener tipo de documentación
   obtenerTipoIdentificaciones(): void {
-    this._TiposIdentificacionesService.obtenerTipoIdentificaciones().subscribe({
+    const params = {
+      iCredId: this._ConstantesService.iCredId,
+    };
+    this._TiposIdentificacionesService.obtenerTipoIdentificaciones(params).subscribe({
       next: (response: any) => {
-        this.tiposIdentificaciones = response.data;
-        // console.log('tipodedato', this.tiposIdentificaciones)
+        const data = response.data;
+        if (data.length > 0) {
+          this.formIncripcion.get('iTipoIdentId')?.setValue(data[0].iTipoIdentId);
+        }
+        this.tiposIdentificaciones = data.length ? [data[0]] : [];
       },
       error: error => {
-        console.error('Error al obtener tipos de identificaciones:', error);
+        this.mostrarMensajeToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: error?.error?.message || error || 'Ocurrió un error inesperado',
+        });
       },
     });
   }
   // mostrar el modal para inscribir en el curso desde administrador
   mostrarInscripcion() {
+    this.formIncripcion.reset();
+    this.archivos = [];
+    if (this.tiposIdentificaciones.length > 0) {
+      this.formIncripcion.get('iTipoIdentId')?.setValue(this.tiposIdentificaciones[0].iTipoIdentId);
+    }
     this.showModalInscripcion = true;
-
     this.tituloCurso = [
       {
         severity: 'info',
@@ -390,5 +404,17 @@ export class DetalleInscripcionComponent implements OnInit {
         // life: 5000,
       },
     ];
+  }
+
+  mostrarMensajeToast(message) {
+    this._MessageService.add(message);
+  }
+  obtenerArchivo(file) {
+    const documentos = file[0]['path'];
+    if (documentos.validated) {
+      this.formIncripcion.patchValue({
+        cVoucher: documentos.data,
+      });
+    }
   }
 }

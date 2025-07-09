@@ -190,20 +190,14 @@
 
     <!-- Subida de archivos -->
     <div class="col-12">
-      <p-fileUpload
-        name="demo[]"
-        url="https://www.primefaces.org/cdn/api/upload.php"
-        (onUpload)="onUpload($event)"
-        [multiple]="true"
-        accept="image/*"
-        maxFileSize="1000000"
-      >
-        <ng-template pTemplate="content">
-          <ul *ngIf="uploadedFiles.length">
-            <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
-          </ul>
-        </ng-template>
-      </p-fileUpload>
+      <label for="" style="color: var(--bg-header-modal)" class="font-bold"
+        >Adjuntar Documento/Voucher<span></span
+      ></label>
+      <app-subir-archivo
+        [carpeta]="'inscripciones'"
+        [archivos]="archivos"
+        (obtenerArchivo)="obtenerArchivo($event)"
+      ></app-subir-archivo>
     </div>
   </form>
 
@@ -222,9 +216,9 @@
       icon="pi pi-send"
       label="Guardar"
       class="p-button-success"
+      [loading]="loadingFormulario"
+      [disabled]="loadingFormulario || formIncripcion.invalid"
       (click)="guardarInscripcion()"
     ></button>
   </div>
 </p-dialog>
-
-<p-toast></p-toast>

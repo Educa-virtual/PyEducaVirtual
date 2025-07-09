@@ -6,6 +6,13 @@ import { ConfHorariosComponent } from '@/app/shared/horario/conf-horario.compone
 import { ToolbarPrimengComponent } from '../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { MessageService } from 'primeng/api'
+import {
+    IActionTable,
+    TablePrimengComponent,
+} from '../../../../shared/table-primeng/table-primeng.component'
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 interface Curso {
     iCursoId: number
     cCursoNombre: string
@@ -13,14 +20,19 @@ interface Curso {
     nombre_corto: string
     nCursoTotalHoras: number
     iDocHoraAsignada: number
-    horarios: any[]
+    horario: any[]
 }
 @Component({
     selector: 'app-configuracion-horario',
     standalone: true,
     templateUrl: './configuracion-horario.component.html',
     styleUrls: ['./configuracion-horario.component.scss'],
-    imports: [PrimengModule, ConfHorariosComponent, ToolbarPrimengComponent],
+    imports: [
+        PrimengModule,
+        ConfHorariosComponent,
+        ToolbarPrimengComponent,
+        TablePrimengComponent,
+    ],
 })
 export class ConfiguracionHorarioComponent implements OnInit {
     gradosSecciones: any[] = []
@@ -34,6 +46,17 @@ export class ConfiguracionHorarioComponent implements OnInit {
     bloques: number = 0
     horario = []
 
+    displayDialog: boolean = false
+    titulo: string = ''
+    formDistribucion: FormGroup
+    iSedeId: number
+    dremoYear: number
+    dremoiYAcadId: number
+    iCredId: number
+    horario_ies: any[] = [] // Variable para almacenar los horarios obtenidos de la base de datos
+    conf_bloques: any[] = [] // Variable para almacenar los bloques de configuración obtenidos de la base de datos
+    conf_detalle_bloques: any[] = [] // Variable para almacenar los detalles de los bloques de configuración obtenidos de la base de datos
+    filtrar_grado: any = []
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -49,10 +72,30 @@ export class ConfiguracionHorarioComponent implements OnInit {
 
     private _GeneralService = inject(GeneralService)
     private _ConstantesService = inject(ConstantesService)
-    private _MessageService = inject(MessageService)
+    private messageService = inject(MessageService)
+
+    constructor(
+        public query: GeneralService,
+        private fb: FormBuilder,
+        private store: LocalStoreService
+    ) {
+        const perfil = this.store.getItem('dremoPerfil')
+        console.log(perfil, 'perfil dremo', this.store)
+        this.iSedeId = perfil.iSedeId
+        this.dremoYear = this.store.getItem('dremoYear')
+        this.dremoiYAcadId = this.store.getItem('dremoiYAcadId')
+        this.iCredId = perfil.iCredId
+    }
 
     async ngOnInit() {
         this.obtenerGradoSeccion()
+        this.getHorarios_ies()
+        this.getConfBloques()
+        this.formDistribucion = this.fb.group({
+            iGradoId: [null, Validators.required],
+            iSeccionId: [{ value: null, disabled: true }, Validators.required],
+            iConfBloqueId: [null, Validators.required],
+        })
     }
 
     obtenerGradoSeccion() {
@@ -87,6 +130,148 @@ export class ConfiguracionHorarioComponent implements OnInit {
         this.secciones = this.gradosSecciones.filter(
             (item) => item.iGradoId === this.iGradoId
         )
+    }
+
+    accionBtnItemTable(elemento): void {
+        const { accion, item } = elemento
+        switch (accion) {
+            case 'bloques':
+                this.configurarHorario()
+                break
+            case 'editar':
+                this.displayDialog = true
+                this.horario = item
+                this.titulo =
+                    'Distribucion de horarios Grado: ' + item.cGradoNombre
+                this.formDistribucion.get('iGradoId')?.setValue(item.iGradoId)
+                this.formDistribucion
+                    .get('iSeccionId')
+                    ?.setValue(item.iSeccionId)
+                this.formDistribucion
+                    .get('iConfBloqueId')
+                    ?.setValue(item.iConfBloqueId)
+                this.iGradoId = item.iGradoId
+                this.iSeccionId = item.iSeccionId
+                this.getConfDetalleBloques()
+                console.log(this.horario, 'horario item', item)
+                break
+            default:
+                break
+        }
+    }
+
+    configurarHorario() {
+        this.titulo =
+            'Distribución de horarios Grado:' + this.secciones[0].cGradoNombre
+        this.formDistribucion.get('iGradoId')?.setValue(this.iGradoId)
+        this.displayDialog = true
+        this.filtrar_grado = this.horario_ies.filter(
+            (item) =>
+                item.iGradoId === this.formDistribucion.get('iGradoId')?.value
+        )
+    }
+
+    guardarHorario() {
+        /*iSedeId INT,
+        iYAcadId INT,
+        iGradoId INT,
+        iSeccionId INT
+        tHoraInicio TIME,
+        tHoraFin TIME,
+        iIntervalo INT,
+        iEstado INT,
+        this.horario*/
+    }
+
+    getConfBloques() {
+        this.query
+            .searchCalAcademico({
+                esquema: 'hor',
+                tabla: 'configuracion_bloques',
+                campos: '*',
+                condicion: 'iEstado=1',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.conf_bloques = data.data
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al cargar los datos del horario: ' +
+                            error.message,
+                    })
+                },
+            })
+    }
+
+    getConfDetalleBloques() {
+        const iConfBloqueId = this.formDistribucion.get('iConfBloqueId')?.value
+        this.query
+            .searchCalAcademico({
+                esquema: 'hor',
+                tabla: 'detalle_bloques',
+                campos: '*',
+                condicion: 'iConfBloqueId=' + iConfBloqueId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.conf_detalle_bloques = data.data
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al cargar los datos del horario: ' +
+                            error.message,
+                    })
+                },
+            })
+    }
+
+    getHorarios_ies() {
+        this.query
+            .searchCalendario({
+                json: JSON.stringify({
+                    iSedeId: this.iSedeId,
+                    iYAcadId: this.dremoiYAcadId,
+                }),
+                _opcion: 'getHorarios_ies',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.horario_ies = data.data
+                    console.log(this.horario_ies, 'x')
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al cargar los datos del horario: ' +
+                            error.message,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Se cargaron los registros del horario correctamente',
+                    })
+                },
+            })
+    }
+
+    filtrarGradoHorario() {
+        this.filtrar_grado = this.horario_ies.filter(
+            (item) =>
+                item.iGradoId === this.formDistribucion.get('iGradoId')?.value
+        )
+
+        // this.iSeccionId = this.formDistribucion.get('iSeccionId')?.value
     }
 
     obtenerCursosxiGradoIdxiSeccionId() {
@@ -145,7 +330,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
                 //     'Error fetching Servicios de Atención:',
                 //     error
                 // )
-                this._MessageService.add({
+                this.messageService.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: error,
@@ -156,4 +341,140 @@ export class ConfiguracionHorarioComponent implements OnInit {
             },
         })
     }
+
+    selectedItems = []
+    actions: IActionTable[] = [
+        {
+            labelTooltip: 'Calendario',
+            icon: 'pi pi-calendar-plus',
+            accion: 'bloques',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado === '1' // Mostrar solo si el estado es 1 (activo)
+            },
+        },
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado === '0' // Mostrar solo si el estado es 1 (activo)
+            },
+        },
+        // {
+        //     labelTooltip: 'Eliminar',
+        //     icon: 'pi pi-trash',
+        //     accion: 'eliminar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        // },
+    ]
+
+    columns = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: 'N°',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'cGradoNombre',
+            header: 'Grado',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'cSeccionNombre',
+            header: 'Sección',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'tHoraInicio',
+            header: 'Inicio',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'tHoraFin',
+            header: 'Fin',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'cHorario',
+            header: 'Horario',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'cEstado',
+            header: 'Estado',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        // {
+        //     type: 'estado-activo',
+        //     width: '5rem',
+        //     field: 'iEstado',
+        //     header: 'Activo',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
+
+        {
+            type: 'actions',
+            width: '3rem',
+            field: 'actions',
+            header: 'Acciones',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
+
+    columnsDetalle = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: 'N°',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'time',
+            width: '5rem',
+            field: 'tBloqueInicio',
+            header: 'Inicio de Bloque',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'time',
+            width: '5rem',
+            field: 'tBloqueFin',
+            header: 'Fin de Bloque',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
 }

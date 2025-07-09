@@ -1,1 +1,163 @@
-<p>horario works!</p>
+<app-container-page
+    title="Registro de configuración de horarios"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <p-toast />
+
+    <div class="card">
+        <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="horarios"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            [(selectedRowData)]="accionBtnItemTable"
+            [actions]="actions"
+        >
+        </app-table-primeng>
+    </div>
+
+    <p-dialog
+        header="{{ caption }}"
+        [(visible)]="visible"
+        [style]="{ width: '86rem' }"
+        [modal]="true"
+        [closable]="true"
+        [draggable]="true"
+        [resizable]="true"
+        [maximizable]="true"
+    >
+        <form [formGroup]="formHorario">
+            <input
+                pInputText
+                type="hidden"
+                formControlName="iConfBloqueId"
+                class="p-inputtext-sm"
+            />
+
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-6">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            id="cDescripcion"
+                            formControlName="cDescripcion"
+                            aria-describedby="cDescripcion-help"
+                        />
+                        <label for="cDescripcion"
+                            >Descripcion de horario:</label
+                        >
+                    </span>
+                </div>
+                <div class="field col-12 md:col-2">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            type="number"
+                            id="iNumBloque"
+                            formControlName="iNumBloque"
+                            aria-describedby="iNumBloque-help"
+                        />
+                        <label for="iNumBloque">Número de bloque:</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-2">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            type="number"
+                            id="iBloqueInter"
+                            formControlName="iBloqueInter"
+                            aria-describedby="iBloqueInter-help"
+                        />
+                        <label for="iBloqueInter">Intervalo:</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-2">
+                    <span class="p-float-label">
+                        <p-inputSwitch
+                            formControlName="iEstado"
+                            [trueValue]="1"
+                            [falseValue]="0"
+                        />
+                    </span>
+                </div>
+            </div>
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-calendar
+                            formControlName="tInicio"
+                            [iconDisplay]="'input'"
+                            [showIcon]="true"
+                            [timeOnly]="true"
+                            [disabledDays]="[0, 6]"
+                            inputId="icondisplay"
+                        >
+                        </p-calendar>
+
+                        <label for="tInicio">Hora Inicio</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-calendar
+                            formControlName="tFin"
+                            [iconDisplay]="'input'"
+                            [showIcon]="true"
+                            [timeOnly]="true"
+                            [disabledDays]="[0, 6]"
+                            inputId="icondisplay"
+                        >
+                        </p-calendar>
+
+                        <label for="tFin">Hora Inicio</label>
+                    </span>
+                </div>
+
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-button
+                            label="Guardar"
+                            [disabled]="formHorario.invalid"
+                            (onClick)="accionBtnItem('guardar')"
+                        />
+                    </span>
+                </div>
+            </div>
+        </form>
+        @if (option === 'editar') {
+            <p-card>
+                <app-block-horario
+                    [iConfBloqueId]="formHorario.value.iConfBloqueId"
+                    [iNumBloque]="formHorario.value.iNumBloque"
+                    [iIntervalo]="formHorario.value.iBloqueInter"
+                    [iEstado]="formHorario.value.iEstado"
+                    (act_iConfBloqueId)="accionBtnItemTable($event)"
+                ></app-block-horario>
+            </p-card>
+        }
+    </p-dialog>
+    @if (option === 'bloques') {
+        <p-dialog
+            header="{{ caption }}"
+            [(visible)]="visible_detalle"
+            [style]="{ width: '86rem' }"
+            [modal]="true"
+            [closable]="true"
+            [resizable]="true"
+            [maximizable]="true"
+        >
+            <p-card>
+                <app-block-horario
+                    [iConfBloqueId]="formHorario.value.iConfBloqueId"
+                    [iNumBloque]="formHorario.value.iNumBloque"
+                    [iIntervalo]="formHorario.value.iBloqueInter"
+                    [iEstado]="formHorario.value.iEstado"
+                    (act_iConfBloqueId)="accionBtnItemTable($event)"
+                ></app-block-horario>
+            </p-card>
+        </p-dialog>
+    }
+</app-container-page>

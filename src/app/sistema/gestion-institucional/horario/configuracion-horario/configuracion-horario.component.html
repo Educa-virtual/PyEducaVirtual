@@ -1,6 +1,6 @@
-<app-toolbar-primeng
-    [title]="'Configuración de horarios'"
-></app-toolbar-primeng>
+<app-toolbar-primeng [title]="'Configuración de horarios'">
+    <p-toast
+/></app-toolbar-primeng>
 <div class="card">
     <div class="grid">
         <div class="col-12">
@@ -8,7 +8,7 @@
                 >Búsqueda de Áreas Curriculares</span
             >
         </div>
-        <div class="col-12 md:col-4">
+        <div class="col-12 md:col-3">
             <p-inputGroup>
                 <p-inputGroupAddon>Grado</p-inputGroupAddon>
                 <p-dropdown
@@ -22,7 +22,7 @@
                 />
             </p-inputGroup>
         </div>
-        <div class="col-12 md:col-4">
+        <div class="col-12 md:col-3">
             <p-inputGroup>
                 <p-inputGroupAddon>Sección</p-inputGroupAddon>
                 <p-dropdown
@@ -35,7 +35,7 @@
                 />
             </p-inputGroup>
         </div>
-        <div class="col-12 md:col-4 text-right">
+        <div class="col-12 md:col-2 text-right">
             <button
                 pButton
                 pRipple
@@ -44,9 +44,33 @@
                 [disabled]="!iGradoId || !iSeccionId"
                 (click)="obtenerCursosxiGradoIdxiSeccionId()"
             >
-                <i class="pi pi-search"></i>&nbsp; Buscar
+                <i class="pi pi-search"></i>&nbsp;Buscar
             </button>
             <p-divider></p-divider>
+        </div>
+        <div class="col-12 md:col-2">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-success"
+                [disabled]="!iGradoId"
+                (click)="configurarHorario()"
+            >
+                <i class="pi pi-calendar"></i>&nbsp;Configurar
+            </button>
+        </div>
+        <div class="col-12 md:col-2">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-warning"
+                [disabled]="!iGradoId"
+                (click)="configurarHorario()"
+            >
+                <i class="pi pi-check"></i>&nbsp;Procesar
+            </button>
         </div>
     </div>
     <div class="col-12">
@@ -59,4 +83,107 @@
         ></app-conf-horario>
     </div>
 </div>
-<p-toast></p-toast>
+
+<p-dialog
+    [(visible)]="displayDialog"
+    [header]="titulo"
+    [modal]="true"
+    [style]="{ width: '89vw' }"
+    [baseZIndex]="10000"
+    [dismissableMask]="true"
+    [closable]="true"
+    [resizable]="true"
+    [maximizable]="true"
+>
+    <p-panel *ngIf="formDistribucion">
+        <form [formGroup]="formDistribucion">
+            <div class="grid">
+                <div class="col-12 md:col-3">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Grado</p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iGradoId"
+                            styleClass="w-full"
+                            placeholder="Seleccione Grado"
+                            (onChange)="filtrarGradoHorario()"
+                            optionValue="iGradoId"
+                            [options]="grados"
+                            optionLabel="cGradoNombre"
+                        />
+                    </p-inputGroup>
+                </div>
+
+                <div class="col-12 md:col-3">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iSeccionId"
+                            styleClass="w-full"
+                            placeholder="Seleccione Sección"
+                            optionValue="iSeccionId"
+                            [options]="secciones"
+                            optionLabel="cSeccionNombre"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-4">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Horario</p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iConfBloqueId"
+                            styleClass="w-full"
+                            placeholder="Seleccione horario"
+                            optionValue="iConfBloqueId"
+                            [options]="conf_bloques"
+                            optionLabel="cDescripcion"
+                            [filter]="true"
+                            [filterPlaceholder]="'Buscar Horario...'"
+                            [appendTo]="'body'"
+                            filterBy="cDescripcion"
+                            [showClear]="false"
+                            (onChange)="getConfDetalleBloques()"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-2">
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-primary"
+                        [disabled]="formDistribucion.invalid"
+                        (click)="obtenerCursosxiGradoIdxiSeccionId()"
+                    >
+                        <i class="pi pi-save"></i>&nbsp;Actualizar
+                    </button>
+                </div>
+            </div>
+            <div class="grid">
+                <div class="col-8">
+                    <app-table-primeng
+                        [columnas]="columns"
+                        [showCaption]="false"
+                        [data]="filtrar_grado"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="true"
+                        [(selectedRowData)]="accionBtnItemTable"
+                        [actions]="actions"
+                    >
+                    </app-table-primeng>
+                </div>
+                <div class="col-4">
+                    <app-table-primeng
+                        [columnas]="columnsDetalle"
+                        [showCaption]="false"
+                        [data]="conf_detalle_bloques"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="false"
+                        [(selectedRowData)]="accionBtnItemTable"
+                        [actions]="actions"
+                    >
+                    </app-table-primeng>
+                </div>
+            </div>
+        </form>
+    </p-panel>
+</p-dialog>

@@ -23,9 +23,9 @@ import { EncuestasService } from '../services/encuestas.services'
 export class AccesosEncuestaComponent implements OnInit, OnChanges {
     //searchValue: string = ''
     @Input() visible: boolean = false
-    @Input() encuesta: any = null
     @Output() visibleChange = new EventEmitter<boolean>()
     @Output() mostrarDialogoAccesosEncuesta = new EventEmitter<void>()
+    @Input() encuesta: any = null
     form: FormGroup
     propietario: any
     dataTiposAcceso: SelectItem[] = []

@@ -1,67 +1,77 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { IconComponent } from '@/app/shared/icon/icon.component';
+import { TipoExperienciaAprendizajeService } from '@/app/servicios/aula/tipo-experiencia-aprendizaje.service';
+import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { provideIcons } from '@ng-icons/core';
-import { matCloudUpload } from '@ng-icons/material-icons/baseline';
+import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { SubirArchivoComponent } from '../../../../../shared/subir-archivo/subir-archivo.component';
 
 @Component({
   selector: 'app-sesion-aprendizaje-form',
   standalone: true,
-  imports: [ModalPrimengComponent, NgIf, PrimengModule, IconComponent],
+  imports: [ModalPrimengComponent, NgIf, PrimengModule, SubirArchivoComponent],
   templateUrl: './sesion-aprendizaje-form.component.html',
   styleUrl: './sesion-aprendizaje-form.component.scss',
-  viewProviders: [provideIcons({ matCloudUpload })],
 })
 export class SesionAprendizajeFormComponent implements OnChanges {
   @Output() accionCloseForm = new EventEmitter<void>();
   @Input() showModal: boolean = false;
 
-  archivos = [
-    {
-      id: 0,
-      url: '',
-      progreso: 5,
-      nombre: '',
-    },
-  ];
+  private _TipoExperienciaAprendizajeService = inject(TipoExperienciaAprendizajeService);
+  private _ConstantesService = inject(ConstantesService);
+  private _MessageService = inject(MessageService);
 
-  tipos: any[] = ['image/jpeg', 'image/jpg', 'image/png', '.pdf', 'application/pdf'];
+  tipoExperiencia = [];
 
-  seleccionarArchivo(event) {
-    console.log(event);
-  }
   ngOnChanges(changes) {
     if (changes['showModal']) {
       this.showModal = changes['showModal'].currentValue;
+      this.obtenerTipoExperienciaAprendizaje();
     }
   }
 
-  loadImage(url) {
-    URL.revokeObjectURL(url);
+  obtenerTipoExperienciaAprendizaje() {
+    const params = {
+      iCredId: this._ConstantesService.iCredId,
+    };
+    this._TipoExperienciaAprendizajeService.obtenerTipoExperienciaAprendizaje(params).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          const data = resp.data;
+          this.tipoExperiencia = data;
+        }
+      },
+      error: error => {
+        const errores = error?.error?.errors;
+        if (error.status === 422 && errores) {
+          // Recorre y muestra cada mensaje de error
+          Object.keys(errores).forEach(campo => {
+            errores[campo].forEach((mensaje: string) => {
+              this.mostrarMensajeToast({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: mensaje,
+              });
+            });
+          });
+        } else {
+          // Error genérico si no hay errores específicos
+          this.mostrarMensajeToast({
+            severity: 'error',
+            summary: 'Error',
+            detail: error?.error?.message || 'Ocurrió un error inesperado',
+          });
+        }
+      },
+    });
   }
 
-  removerArchivo(archivo) {
-    console.log('remover archivo');
-    //this.archivos = [];
-    const indice = this.archivos.findIndex(el => el.id === archivo.id);
-    console.log(indice);
-    // const data = this.swal2Service.objectToFormData({
-    //   path: this.archivos[indice].path,
-    // });
-
-    // this.subirArchivoService
-    //   .removerArchivoTemporal(data)
-    //   .toPromise()
-    //   .then(tm => {
-    //     this.archivos.splice(indice, 1);
-    //     this.obtenerArchivo.emit(this.archivos);
-    //   })
-    //   .catch(err => {
-    //     // this.toastr.error('Error: ' + err.error.message, 'Error!');
-    //     console.log(err);
-    //     this.swal2Service.alertaToast('Archivo no removido', 'Revisar archivo', 'warning');
-    //   });
+  mostrarMensajeToast(message) {
+    this._MessageService.add(message);
+  }
+  obtenerArchivo(file) {
+    const documentos = file[0]['path'];
+    console.log(documentos);
   }
 }

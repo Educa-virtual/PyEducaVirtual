@@ -20,52 +20,22 @@
     </div>
     <div class="col-12 md:col-6">
       <p-inputGroup>
-        <p-inputGroupAddon>Categoría</p-inputGroupAddon>
-        <p-dropdown styleClass="w-full" placeholder="Seleccione una Categoría" appendTo="body" />
+        <p-inputGroupAddon>Tipo de E.A.</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Seleccione un tipo"
+          appendTo="body"
+          [options]="tipoExperiencia"
+          optionValue="iTipExp"
+          optionLabel="cNombre"
+        />
       </p-inputGroup>
     </div>
     <div class="col-12">
-      <div class="pb-2 d-flex justify-content-center">
-        <div class="input-file compacto">
-          <input (change)="seleccionarArchivo($event)" type="file" [accept]="tipos.toString()" />
-          <div class="input-file-text">
-            <app-icon
-              [name]="'matCloudUpload'"
-              class="mb-1"
-              [color]="'#454545'"
-              [size]="'32'"
-            ></app-icon>
-            <span> Click o soltar archivo </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- <div class="card-input-compact p-2 d-flex mb-2" *ngFor="let archivo of archivos">
-        <div class="pr-2">
-          <img [src]="archivo.url" class="image" (load)="loadImage(archivo.url)" />
-        </div>
-        <div class="detalle">
-          <div class="w-100">
-            <p class="m-0 d-flex justify-content-between flex-wrap">
-              <small class="text-muted">{{ archivo.nombre }}</small>
-              <small> {{ archivo.peso }}</small>
-            </p>
-            <div class="progress">
-              <div
-                class="progress-bar"
-                role="progressbar"
-                [ngStyle]="{ width: archivo.progreso + '%' }"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              ></div>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="archivo.progreso == 100" class="card-estado" (click)="removerArchivo(archivo)">
-          <span class="show-close material-icons text-white small"> close </span>
-          <span class="show-ckeck material-icons text-white small"> done </span>
-        </div>
-      </div> -->
+      <label for="" style="color: var(--bg-header-modal)" class="font-bold"
+        >Adjuntar Sesión de Aprendizaje</label
+      >
+      <app-subir-archivo (obtenerArchivo)="obtenerArchivo($event)"></app-subir-archivo>
     </div>
   </form>
   <div footer class="flex justify-content-end gap-2">

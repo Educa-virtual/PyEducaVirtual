@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { IconComponent } from '../icon/icon.component';
 import { CommonModule, formatDate, NgFor, NgIf } from '@angular/common';
 import { provideIcons } from '@ng-icons/core';
@@ -24,6 +24,7 @@ export class SubirArchivoComponent {
   private _MessageService = inject(MessageService);
 
   @Output() obtenerArchivo = new EventEmitter<any>();
+  @Input() carpeta: string = '';
 
   archivos = [];
 
@@ -101,7 +102,7 @@ export class SubirArchivoComponent {
 
     const formData = await this.objectToFormData({
       file: this.archivos[indice].archivo,
-      nameFile: `sesion-aprendizaje/${formatDate(new Date(), 'yyyy-MM-dd_HH', 'en')}`,
+      nameFile: `${this.carpeta}/${formatDate(new Date(), 'yyyy-MM-dd', 'es')}`,
     });
 
     this._GeneralService

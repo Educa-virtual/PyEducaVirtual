@@ -35,7 +35,10 @@
       <label for="" style="color: var(--bg-header-modal)" class="font-bold"
         >Adjuntar Sesión de Aprendizaje</label
       >
-      <app-subir-archivo (obtenerArchivo)="obtenerArchivo($event)"></app-subir-archivo>
+      <app-subir-archivo
+        [carpeta]="'sesion-aprendizaje1'"
+        (obtenerArchivo)="obtenerArchivo($event)"
+      ></app-subir-archivo>
     </div>
   </form>
   <div footer class="flex justify-content-end gap-2">

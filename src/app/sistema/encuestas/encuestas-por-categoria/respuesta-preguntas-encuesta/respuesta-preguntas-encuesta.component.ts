@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
-
+import { PreguntaVisualizacionComponent } from '../pregunta-visualizacion/pregunta-visualizacion.component'
 interface PreguntaRespuesta {
     id: number
     pregunta: string
@@ -19,7 +19,7 @@ interface Seccion {
 @Component({
     selector: 'app-respuesta-preguntas-encuesta',
     standalone: true,
-    imports: [CommonModule, PrimengModule],
+    imports: [CommonModule, PrimengModule, PreguntaVisualizacionComponent],
     templateUrl: './respuesta-preguntas-encuesta.component.html',
     styleUrl: './respuesta-preguntas-encuesta.component.scss',
 })
@@ -29,8 +29,7 @@ export class RespuestaPreguntasEncuestaComponent implements OnInit {
 
     participantesOptions = [
         { label: 'Todos', value: 'Todos' },
-        { label: 'Participantes Activos', value: 'Activos' },
-        { label: 'Participantes Inactivos', value: 'Inactivos' },
+        { label: 'Juan Perez' },
     ]
 
     secciones: Seccion[] = [
@@ -88,8 +87,8 @@ export class RespuestaPreguntasEncuestaComponent implements OnInit {
         console.log('Exportando a PDF...')
     }
 
-    onSeccionToggle(index: number) {
-        this.secciones[index].expandida = !this.secciones[index].expandida
+    onSeccionToggle() {
+        console.log('seccionTogle')
     }
 
     getChartData(datos: any[]) {
@@ -158,5 +157,11 @@ export class RespuestaPreguntasEncuestaComponent implements OnInit {
                 },
             },
         }
+    }
+    onParticipanteChange(participante: string) {
+        console.log('Participante seleccionado:', participante)
+    }
+    mostrarComponenteHijo(): boolean {
+        return this.participantesSeleccionados !== 'Todos'
     }
 }

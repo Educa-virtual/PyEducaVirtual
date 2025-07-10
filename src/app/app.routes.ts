@@ -22,6 +22,7 @@ import { NuevaEncuestaComponent } from './sistema/encuestas/nueva-encuesta/nueva
 import { ListaEncuestasComponent } from './sistema/encuestas/lista-encuestas/lista-encuestas.component'
 import { PoblacionObjetivoComponent } from './sistema/encuestas/nueva-encuesta/poblacion-objetivo/poblacion-objetivo.component'
 import { PreguntaVisualizacionComponent } from './sistema/encuestas/encuestas-por-categoria/pregunta-visualizacion/pregunta-visualizacion.component'
+import { ResumenEncuestaComponent } from './sistema/encuestas/resumen-encuesta/resumen-encuesta.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -138,6 +139,10 @@ export const routes: Routes = [
             {
                 path: 'pregunta-visualizacion',
                 component: PreguntaVisualizacionComponent,
+            },
+            {
+                path: 'resumen-encuesta',
+                component: ResumenEncuestaComponent,
             },
             // encuestas
             /*{

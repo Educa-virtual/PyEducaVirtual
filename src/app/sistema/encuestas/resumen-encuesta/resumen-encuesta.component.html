@@ -1,0 +1,95 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex justify-content-between align-items-center w-full">
+            <strong class="text-3xl">CENSO DRE/UGEL 2024</strong>
+            <!--<span class="text-xl">SEGUIMIENTO Y MONITOREO PEDAGÓGICO </span>        -->
+        </div>
+    </ng-template>
+
+    <div class="flex flex-column gap-2">
+        <strong>Consideraciones Generales</strong>
+        <div class="flex gap-6">
+            <div class="flex-1">
+                <ul class="w-full py-4 flex flex-column gap-2">
+                    <li class="pr-3">
+                        Este formulario debe ser llenado por el Jefe(a)
+                        responsable de Gestión Pedagógica, Coordinador
+                        pedagógico, especialista o docente que haga sus veces,
+                        siempre y cuando tenga conocimiento del tema.
+                    </li>
+                    <li class="pr-3">
+                        La devolución del formulario del módulo X, debidamente
+                        llenado, debe ser enviado al estadístico de su
+                        jurisdicción para su registro en el Sistema de Gestión
+                        de Información Educativa – SIGIED en el plazo indicado.
+                    </li>
+                    <li class="pr-3">
+                        Revise bien sus respuestas antes de enviarlas
+                    </li>
+                    <li class="pr-3">
+                        Utilice fuentes de información válidas: los planes de
+                        monitoreo pedagógico 2023, 2024, el informe anual de
+                        visitas y acompañamiento, entre otros documentos.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex-1 py-4 flex flex-column justify-content-between">
+                <div class="flex flex-column gap-4">
+                    <div class="flex gap-4 align-items-center">
+                        <i class="pi pi-calendar bg-green-500"></i>
+                        <div class="flex flex-column gap-2">
+                            <strong>Inicio de encuesta</strong>
+                            <span>Lunes, 29 de octubre de 2024 08:00 </span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 align-items-center">
+                        <i class="pi pi-calendar bg-red-500"></i>
+                        <div class="flex flex-column gap-2">
+                            <strong>Cierre de encuesta</strong>
+                            <span>Lunes, 28 de octubre de 2024 13:15 </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 align-items-center">
+                    <strong>Lista de participantes:</strong>
+                    <p-button
+                        label="PDF"
+                        icon="pi pi-file-pdf"
+                        severity="danger"
+                    />
+                </div>
+            </div>
+
+            <div class="flex-1 py-4">
+                <div class="col-12 flex mb-4">
+                    <img
+                        src="assets/images/icons/tiempo.gif"
+                        alt="Tiempo"
+                        class="w-6rem md:w-8rem h-auto"
+                    />
+
+                    <div class="text-center mt-3">
+                        <strong>Duracion:</strong>
+                        <h4 class="text-primary font-bold">
+                            <!-- {{
+                        evaluacion?.iTiempo
+                            ? convertirATiempo(evaluacion.iTiempo)
+                            : '0 horas 0 minutos'
+                    }} -->
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p-button
+            class="align-self-end"
+            icon="pi pi-check"
+            label="Finalizar"
+            severity="success"
+            iconPos="right"
+        />
+    </div>
+</p-panel>

@@ -8,6 +8,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles'
 import { TextFieldModule } from '@angular/cdk/text-field'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-evaluacion-exclusiones',
@@ -27,13 +28,19 @@ export class EvaluacionExclusionesComponent implements OnInit {
     formExclusion: FormGroup
     exclusiones: Array<any>
     exclusiones_filtradas: Array<any>
+    exclusion_registrada: boolean = false
 
     dialog_header: string
     dialog_visible: boolean
 
     es_director: boolean = false
 
+    longitud_documento = 11
+    formato_documento = '999.999.999-9'
+    tipos_documentos: Array<object>
+
     private _messageService = inject(MessageService)
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private exclusionesService: EvaluacionExclusionesService,
@@ -62,52 +69,89 @@ export class EvaluacionExclusionesComponent implements OnInit {
                 ],
                 iEvaluacionId: [null, Validators.required],
                 iEvalExcluId: [null],
-                cEvalExcluMotivo: [null],
+                cEvalExcluMotivo: [null, Validators.required],
                 dEvalExcluArchivo: [null],
                 cEstCodigo: [null],
-                cPersNombreApellidos: [null],
-                iMatrId: [null],
+                cPersDatos: [null, Validators.required],
+                iTipoIdentId: [null],
+                cPersDocumento: [null],
+                iMatrId: [null, Validators.required],
             })
         } catch (error) {
             console.error('Error al crear el formulario:', error)
         }
 
+        this.exclusionesService.getTiposDocumentos().subscribe({
+            next: (data: any) => {
+                this.tipos_documentos = data.data.map((doc: any) => ({
+                    value: doc.iTipoIdentId,
+                    label: doc.cTipoIdentSigla + ' - ' + doc.cTipoIdentNombre,
+                    longitud: doc.iTipoIdentLongitud,
+                }))
+            },
+            error: (error) => {
+                console.error('Error obteniendo tipos de documentos:', error)
+            },
+        })
+
         if (this.cEvaluacionKey) {
-            this.exclusionesService
-                .verEvaluacion(this.cEvaluacionKey)
-                .subscribe({
-                    next: (data: any) => {
-                        if (data.data) {
-                            this.evaluacion = data.data
-                            if (this.evaluacion) {
-                                this.breadCrumbItems = [
-                                    {
-                                        label: 'Evaluaciones',
-                                        routerLink: ['/ere/evaluaciones'],
-                                    },
-                                    {
-                                        label: this.evaluacion
-                                            ?.cEvaluacionNombre,
-                                    },
-                                    {
-                                        label: 'Gestionar exclusiones',
-                                    },
-                                ]
-                            }
-                        }
-                    },
-                    error: (error) => {
-                        console.error('Error obteniendo evaluación:', error)
-                        this._messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: error.error.message,
-                        })
-                    },
-                })
+            this.obtenerEvaluacion()
+            this.listarExclusiones()
         }
+
+        this.formExclusion
+            .get('iTipoIdentId')
+            .valueChanges.subscribe((value) => {
+                const tipo_doc = this.tipos_documentos.find(
+                    (item: any) => item.value === value
+                )
+                if (tipo_doc) {
+                    const longitud =
+                        this.formExclusion.get('cPersDocumento')?.value
+                    if (longitud && longitud.length > tipo_doc['longitud']) {
+                        this.formExclusion.get('cPersDocumento').setValue(null)
+                    }
+                    this.longitud_documento = tipo_doc['longitud']
+                    this.formato_documento = '9'.repeat(this.longitud_documento)
+                }
+            })
+    }
+
+    obtenerEvaluacion() {
+        this.exclusionesService.verEvaluacion(this.cEvaluacionKey).subscribe({
+            next: (data: any) => {
+                if (data.data) {
+                    this.evaluacion = data.data
+                    if (this.evaluacion) {
+                        this.breadCrumbItems = [
+                            {
+                                label: 'Evaluaciones',
+                                routerLink: ['/ere/evaluaciones'],
+                            },
+                            {
+                                label: this.evaluacion?.cEvaluacionNombre,
+                            },
+                            {
+                                label: 'Gestionar exclusiones',
+                            },
+                        ]
+                    }
+                }
+            },
+            error: (error) => {
+                console.error('Error obteniendo evaluación:', error)
+                this._messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                })
+            },
+        })
+    }
+
+    listarExclusiones() {
         this.exclusionesService
-            .verExclusiones({
+            .listarExclusiones({
                 iCredEntPerfId: this.perfil.iCredEntPerfId,
                 iEvaluacionId: this.cEvaluacionKey,
             })
@@ -137,10 +181,16 @@ export class EvaluacionExclusionesComponent implements OnInit {
     }
 
     filtrarExclusiones() {
+        const filtro = this.filtro.nativeElement.value.toLowerCase()
         this.exclusiones_filtradas = this.exclusiones.filter((ex) => {
-            return ex.cExclusionNombre
-                .toLowerCase()
-                .includes(this.filtro.value.toLowerCase())
+            if (ex.cEstCodigo.toLowerCase().includes(filtro)) return ex
+            if (ex.cPersNombreApellidos.toLowerCase().includes(filtro))
+                return ex
+            if (ex.cGradoNombre.toLowerCase().includes(filtro)) return ex
+            if (ex.cSeccionNombre.toLowerCase().includes(filtro)) return ex
+            if (ex.cIieeCodigoModular.toLowerCase().includes(filtro)) return ex
+            if (ex.cIieeNombre.toLowerCase().includes(filtro)) return ex
+            return null
         })
     }
 
@@ -179,26 +229,86 @@ export class EvaluacionExclusionesComponent implements OnInit {
             })
     }
 
-    setFormExclusion(data: any) {
+    handleArchivo(event) {
+        const file = (event.target as HTMLInputElement)?.files?.[0]
         this.formExclusion.patchValue({
-            iCredEntPerfId: this.perfil.iCredEntPerfId,
-            iEvaluacionId: this.evaluacion.iEvaluacionId,
-            cEstCodigo: data.cEstCodigo,
-            cEvalExcluMotivo: data.cEvalExcluMotivo,
-            dEvalExcluArchivo: data.dEvalExcluArchivo,
-            iMatrId: +data.iMatrId,
+            cEvalExcluArchivo: file,
         })
     }
 
+    setFormExclusion(data: any) {
+        this.formExclusion.reset()
+        this.formExclusion.patchValue({
+            iCredEntPerfId: this.perfil.iCredEntPerfId,
+            iEvaluacionId: this.evaluacion.iEvaluacionId,
+            iEvalExcluId: data ? data.iEvalExcluId : null,
+            cPersDatos: data
+                ? data?.cPersNombreApellidos +
+                  ' (' +
+                  data?.cGradoAbreviacion +
+                  ' ' +
+                  data?.cSeccionNombre +
+                  ')'
+                : null,
+            cEvalExcluMotivo: data ? data?.cEvalExcluMotivo : null,
+            dEvalExcluArchivo: data ? data?.dEvalExcluArchivo : null,
+            iMatrId: data ? data?.iMatrId : null,
+        })
+        this.exclusion_registrada = this.formExclusion.value.iEvalExcluId
+            ? true
+            : false
+        this.exclusionesService.formMarkAsDirty(this.formExclusion)
+    }
+
+    getFormData() {
+        const formData: FormData = new FormData()
+        formData.append(
+            'cEvalExcluArchivo',
+            this.formExclusion.controls['cEvalExcluArchivo'].value
+        )
+        formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId)
+        formData.append('iEvaluacionId', this.evaluacion.iEvaluacionId)
+        formData.append(
+            'iEvalExcluId',
+            this.formExclusion.controls['iEvalExcluId'].value
+        )
+        formData.append(
+            'cEvalExcluMotivo',
+            this.formExclusion.controls['cEvalExcluMotivo'].value
+        )
+        formData.append(
+            'dEvalExcluArchivo',
+            this.formExclusion.controls['dEvalExcluArchivo'].value
+        )
+        formData.append('iMatrId', this.formExclusion.controls['iMatrId'].value)
+        return formData
+    }
+
     guardarExclusion() {
+        if (this.formExclusion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar todos los campos obligatorios',
+            })
+            console.log(this.formExclusion.value, 'form')
+            this.exclusionesService.formMarkAsDirty(this.formExclusion)
+            return
+        }
         this.exclusionesService
             .guardarExclusion(this.formExclusion.value)
             .subscribe({
                 next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Registro exitoso',
+                        detail: 'Se registraron los datos',
+                    })
                     this.salir()
+                    this.listarExclusiones()
                 },
                 error: (error) => {
-                    console.error('Error obteniendo encuesta:', error)
+                    console.error('Error guardando encuesta:', error)
                     this._messageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -208,29 +318,128 @@ export class EvaluacionExclusionesComponent implements OnInit {
             })
     }
 
-    buscarMatricula() {
-        console.log('matricula')
+    actualizarExclusion() {
+        if (this.formExclusion.invalid) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe completar todos los campos obligatorios',
+            })
+            this.exclusionesService.formMarkAsDirty(this.formExclusion)
+            return
+        }
+        this.exclusionesService
+            .actualizarExclusion(this.formExclusion.value)
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Actualización exitosa',
+                        detail: 'Se actualizaron los datos',
+                    })
+                    this.salir()
+                    this.listarExclusiones()
+                },
+                error: (error) => {
+                    console.error('Error actualizando encuesta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
-    subirArchivo(event: any) {
-        console.log(event)
+    buscarMatricula(tipo: 'codigo' | 'documento') {
+        this.exclusionesService
+            .buscarMatricula({
+                iYAcadId: this.store.getItem('dremoiYAcadId'),
+                iSedeId: this.perfil?.iSedeId,
+                cEstCodigo:
+                    tipo === 'codigo'
+                        ? this.formExclusion.value.cEstCodigo
+                        : null,
+                iTipoIdentId:
+                    tipo === 'documento'
+                        ? this.formExclusion.value.iTipoIdentId
+                        : null,
+                cPersDocumento:
+                    tipo == 'documento'
+                        ? this.formExclusion.value.cPersDocumento
+                        : null,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    if (data.data) {
+                        this.setFormExclusion(data.data)
+                    } else {
+                        this.setFormExclusion(null)
+                        this._messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'No se encontró la matricula',
+                        })
+                    }
+                },
+                error: (error) => {
+                    this.setFormExclusion(null)
+                    console.error('Error obteniendo matricula:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
-    salir() {
-        this.dialogVisible(false)
+    borrarExclusion(data: any) {
+        this.exclusionesService
+            .eliminarExclusion({
+                iCredEntPerfId: this.perfil.iCredEntPerfId,
+                iEvalExcluId: data.iEvalExcluId,
+            })
+            .subscribe({
+                next: () => {
+                    this._messageService.add({
+                        severity: 'success',
+                        summary: 'Eliminación exitosa',
+                        detail: 'Se eliminaron los datos',
+                    })
+                    this.salir()
+                },
+                error: (error) => {
+                    console.error('Error eliminando encuesta:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
+    }
+
+    resetear() {
         this.formExclusion.reset()
         this.formExclusion.patchValue({
             iCredEntPerfId: this.perfil.iCredEntPerfId,
             iEvaluacionId: this.evaluacion.iEvaluacionId,
         })
+        this.exclusion_registrada = false
+    }
+
+    salir() {
+        this.resetear()
+        this.dialogVisible(false)
     }
 
     columnasTabla: any[] = [
         {
-            field: 'item',
-            type: 'item',
-            width: '5%',
-            header: 'N°',
+            field: 'cEstCodigo',
+            type: 'text',
+            width: '10%',
+            header: 'Código',
             text_header: 'center',
             text: 'center',
             class: 'hidden md:table-cell',
@@ -238,7 +447,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
         {
             field: 'cPersNombreApellidos',
             type: 'text',
-            width: '40%',
+            width: '35%',
             header: 'Estudiante',
             text_header: 'left',
             text: 'left',
@@ -289,18 +498,18 @@ export class EvaluacionExclusionesComponent implements OnInit {
 
     accionesTabla: any[] = [
         {
-            labelTooltip: 'Ver',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
-        },
-        {
             labelTooltip: 'Editar',
             icon: 'pi pi-file-edit',
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
+        },
+        {
+            labelTooltip: 'Borrar',
+            icon: 'pi pi-trash',
+            accion: 'borrar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
 
@@ -309,8 +518,13 @@ export class EvaluacionExclusionesComponent implements OnInit {
             case 'editar':
                 this.editarExclusion(event.item)
                 break
-            case 'ver':
-                this.editarExclusion(event.item)
+            case 'borrar':
+                this._confirmService.openConfirm({
+                    header: '¿Realmente desea eliminar la exclución seleccionada?',
+                    accept: () => {
+                        this.borrarExclusion(event.item)
+                    },
+                })
                 break
         }
     }

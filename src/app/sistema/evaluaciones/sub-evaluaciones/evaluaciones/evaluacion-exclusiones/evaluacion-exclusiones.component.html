@@ -65,22 +65,31 @@
     [style]="{ width: '60vw' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="salir()"
     [breakpoints]="{ '1080px': '75vw', '640px': '100vw' }"
 >
     <ng-content>
+        <p-messages severity="info">
+            <ng-template pTemplate>
+                Puede buscar al estudiante por su código o por su documento de
+                identidad, al realizar la búsqueda se completará el campo de
+                datos del estudiante. Para proceder debe llenar todos los campos
+                requeridos (*).
+            </ng-template>
+        </p-messages>
         <form [formGroup]="formExclusion">
             <div class="grid mt-3">
-                <div class="col-12 md:col-6">
+                <div class="col-12 lg:col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
                             <p-button
                                 size="small"
                                 label="Buscar"
                                 styleClass="p-button-primary"
-                                (onClick)="buscarMatricula()"
+                                (onClick)="buscarMatricula('codigo')"
                                 severity="success"
                             />
-                            Código de Estudiante *
+                            Código de Estudiante
                         </p-inputGroupAddon>
                         <p-inputMask
                             formControlName="cEstCodigo"
@@ -94,14 +103,51 @@
                         />
                     </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-6 lg:col-3">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon> Tipo Documento </p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iTipoIdentId"
+                            [options]="tipos_documentos"
+                            placeholder="Tipo de documento"
+                            [showClear]="false"
+                            [filter]="true"
+                            appendTo="body"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-6 lg:col-3">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
-                            <span>Nombre del Estudiante</span>
+                            <p-button
+                                size="small"
+                                label="Buscar"
+                                styleClass="p-button-primary"
+                                (onClick)="buscarMatricula('documento')"
+                                severity="success"
+                            />
+                            Documento
+                        </p-inputGroupAddon>
+                        <p-inputMask
+                            formControlName="cPersDocumento"
+                            [maxlength]="longitud_documento"
+                            [mask]="formato_documento"
+                            autoClear="false"
+                            slotChar=""
+                            styleClass="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Datos del Estudiante *</span>
                         </p-inputGroupAddon>
                         <input
                             pInputText
-                            formControlName="cPersNombreApellidos"
+                            formControlName="cPersDatos"
                             [style]="{ flex: '1', width: '100%' }"
                             appenTo="body"
                             class="group-element"
@@ -112,14 +158,16 @@
                 <div class="col-12">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
-                            <span>Motivo de la exclusión *</span>
+                            <span
+                                >Motivo y justificación de la exclusión *</span
+                            >
                         </p-inputGroupAddon>
                         <textarea
                             cdkTextareaAutosize
                             #autosize="cdkTextareaAutosize"
                             formControlName="cEvalExcluMotivo"
                             pInputTextarea
-                            placeholder="Especifique el motivo de la exclusión"
+                            placeholder="Especifique el motivo y justificación de la exclusión"
                             [rows]="3"
                             class="group-element"
                             [style.minHeight]="3"
@@ -129,30 +177,57 @@
                         ></textarea>
                     </p-inputGroup>
                 </div>
-                <div class="col-12">
+                <!-- <div class="col-12">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
                             <span>Justificación de la exclusión *</span>
                         </p-inputGroupAddon>
                         <p-fileUpload
                             name="demo[]"
-                            (onUpload)="subirArchivo($event)"
-                            [multiple]="true"
+                            (onUpload)="handleArchivo($event)"
+                            [multiple]="false"
                             accept="image/*,.pdf"
-                            fileLimit="2"
+                            fileLimit="1"
                             invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
                             invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
                             invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
-                            invalidFileTypeMessageDetail="los tipos de archivos permitidos: {0}."
-                            invalidFileLimitMessageDetail="el límite de archivos es {0}."
+                            invalidFileTypeMessageDetail="los tipos de archivos permitidos son: {0}."
+                            invalidFileLimitMessageDetail="solo debe subir {0} archivo."
                             invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
                             maxFileSize="10485760"
                         >
                         </p-fileUpload>
                     </p-inputGroup>
-                </div>
+                </div> -->
             </div>
         </form>
+
+        <!-- Botón Guardar y Seguir -->
+        <div class="flex justify-content-end gap-2">
+            <p-button
+                *ngIf="!exclusion_registrada"
+                type="button"
+                label="Guardar"
+                icon="pi pi-save"
+                severity="success"
+                (click)="guardarExclusion()"
+            />
+            <p-button
+                *ngIf="exclusion_registrada"
+                type="button"
+                label="Actualizar"
+                icon="pi pi-save"
+                severity="success"
+                (click)="actualizarExclusion()"
+            />
+            <p-button
+                type="button"
+                label="Salir"
+                icon="pi pi-arrow-left"
+                severity="secondary"
+                (click)="resetear()"
+            />
+        </div>
     </ng-content>
 </p-dialog>
 

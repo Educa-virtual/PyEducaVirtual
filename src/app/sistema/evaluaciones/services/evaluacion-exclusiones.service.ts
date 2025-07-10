@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { FormGroup } from '@angular/forms'
 
 const baseUrl = environment.backendApi
 
@@ -21,9 +22,9 @@ export class EvaluacionExclusionesService {
         return this.http.get(`${baseUrl}/ere/evaluaciones/${iEvaluacionId}`)
     }
 
-    verExclusiones(data: any) {
+    listarExclusiones(data: any) {
         return this.http.post(
-            `${baseUrl}/ere/Evaluaciones/verExclusiones`,
+            `${baseUrl}/ere/Evaluaciones/listarExclusiones`,
             data
         )
     }
@@ -51,5 +52,22 @@ export class EvaluacionExclusionesService {
             `${baseUrl}/ere/Evaluaciones/eliminarExclusion`,
             data
         )
+    }
+
+    buscarMatricula(data: any) {
+        return this.http.post(`${baseUrl}/acad/matricula/searchMatricula`, data)
+    }
+
+    getTiposDocumentos() {
+        return this.http.post(`${baseUrl}/grl/listTipoIdentificaciones`, null)
+    }
+
+    formMarkAsDirty(form: FormGroup) {
+        if (form) {
+            form.markAllAsTouched()
+            Object.keys(form.controls).forEach((key) => {
+                form.get(key)?.markAsDirty()
+            })
+        }
     }
 }

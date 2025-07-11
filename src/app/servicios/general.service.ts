@@ -417,4 +417,18 @@ export class GeneralService {
             data
         )
     }
+
+    //nuevoa
+    obtenerCursosDiasHorarios(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/obtenerCursosDiasHorarios`,
+            data
+        )
+    }
+    guardarRemoverCursosDiasHorarios(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/CursosDiasHorarios`,
+            data
+        )
+    }
 }

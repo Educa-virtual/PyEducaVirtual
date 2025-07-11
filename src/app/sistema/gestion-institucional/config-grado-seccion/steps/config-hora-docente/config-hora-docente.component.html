@@ -1,3 +1,4 @@
+<p-toast />
 <app-container-page
     title="Asignar horas"
     [actions]="accionesPrincipal"
@@ -26,4 +27,16 @@
             />
         </div>
     </div>
+
+    <p-dialog
+        [(visible)]="showFormulario"
+        [modal]="true"
+        [style]="{ width: '50vw' }"
+        [maximizable]="true"
+        [closable]="true"
+        [dismissableMask]="true"
+        [header]="'Agregar Personal'"
+    >
+        <app-ies-personal></app-ies-personal>
+    </p-dialog>
 </app-container-page>

@@ -44,8 +44,8 @@ export class ConfigAsignarGradoComponent implements OnInit {
     caption: string
     c_accion: string
 
-    lista: any = {} // para componente tree
-    rawData: Array<object> // para componente tree
+    //lista: any = {} // para componente tree
+    //rawData: Array<object> // para componente tree
 
     docentes: any = []
     lista_niveles_grados: any = []
@@ -83,60 +83,44 @@ export class ConfigAsignarGradoComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log(this.configuracion, 'configuracion onit')
-        this.validariProgId()
+        this.docentes = this.stepService.docentes.filter(
+            (d) => d.docente === '1'
+        )
+
+        console.log(this.stepService.docentes, ' docentes desde servicio')
         try {
-            this.searchPersonalDocente()
-            this.SearchNivelGrados()
-            this.getGrado()
-            //this.getPlanes()
             this.getSeccionesAsignadas()
-            this.getSemestres()
 
             this.formSearch = this.fb.group({
-                iSemAcadId_search: [0],
-                iProgId_search: [this.configuracion[0].iProgId],
-                iNivelGradoId_search: [0],
-                iTurnoId_search: [0],
+                iGradoId: [0],
                 iSeccionId_search: [0],
                 iModalServId_search: [0],
                 buscador: [1],
             })
             this.form = this.fb.group({
-                idDocCursoId: [0], // PK,
-                iSemAcadId: [0], // tabla docente_curso (FK)
-                iYAcadId: [this.configuracion[0].iYAcadId], // tabla docente_curso (FK)
-                iDocenteId: [0, Validators.required], // tabla docente_curso (FK)
-                iIeCursoId: [{ value: 0, disabled: true }],
+                idDocCursoId: [null], //ok
+                iDocenteId: [null], //ok tabla docente_curso (FK)
+                iIeCursoId: [0, Validators.required], //ok
+                cDocCursoObservaciones: [''], //ok
 
-                iModalServId: [0],
+                iSeccionId: [
+                    { value: 0, disabled: true },
+                    [Validators.required],
+                ], //ok
 
-                iSeccionId: [{ value: 0, disabled: true }, Validators.required], // tabla docente_curso (FK)
-                iTurnoId: [{ value: 0, disabled: true }, Validators.required], // tabla docente_curso (FK)
-                cDocCursoObsevaciones: [''], // tabla docente_curso (FK)
-                // iDocCursoHorasLectivas: [0, [Validators.pattern(/^\d+$/),  Validators.min(4), Validators.max(40)]],
-                iEstado: [1],
-                iCursoId: [{ value: 0, disabled: true }],
-
-                iNivelGradoId: [{ value: 0, disabled: true }],
-                cCicloNombre: [{ value: '', disabled: true }],
-                cNivelNombre: [{ value: '', disabled: true }],
-                cNivelTipoNombre: [{ value: '', disabled: true }],
-                ihora_disponible: [{ value: 0 }, [Validators.min(this.minimo)]],
+                cCursoNombre: [{ value: '', disabled: true }], // ok tabla docente_curso (FK)
+                iGradoId: [{ value: 0, disabled: true }], //ok
+                ihora_disponible: [{ value: 0 }, [Validators.min(this.minimo)]], //ok
                 ihora_total: [
                     { value: 0, disabled: true },
                     [Validators.pattern(/^\d+$/)],
                     Validators.required,
-                ],
-                ihora_asignada: [
+                ], //ok
+                iDocCursoHorasLectivas: [
                     { value: 0, disabled: true },
                     [Validators.pattern(/^\d+$/)],
                     Validators.required,
-                ],
-
-                iCursosNivelGradId: [],
-                iCursosNivelGradId_ies_cursos: [],
-                iDocenteId_ies_curso: [],
+                ], //ok
             })
         } catch (error) {
             this.messageService.add({
@@ -195,102 +179,21 @@ export class ConfigAsignarGradoComponent implements OnInit {
 
     onChange(event: any, cbo: string): void {
         const selected = event.value
-        // const iSemAcadId_search = this.formSearch.get('iSemAcadId_search')?.value ?? null;
-        const iNivelGradoId_search =
-            this.formSearch.get('iNivelGradoId_search')?.value ?? null
-        const iModalServId_search =
-            this.formSearch.get('iModalServId_search')?.value ?? null
-        // const iTurnoId_search= this.formSearch.get('iTurnoId_search')?.value ?? null;
-        // const iProgId_search = this.formSearch.get('iProgId_search')?.value ?? null;
 
-        if (cbo === 'searchNivelGrado') {
-            this.cursos = [] // limpia los valores del array en caso de seleccion de cbo
-            console.log(event.value, 'valor para buscar ')
-        }
         if (cbo === 'grado') {
             // Encuentra el objeto
             // Extraer los valores únicos de "cGradoNombre" e "iNivelGradoId"
             this.cursos = [] // limpia los valores del array en caso de seleccion de cbo
-            const filteredData = this.lista_niveles_grados.filter(
-                (item) => item.iNivelGradoId === selected
+            const filteredData = this.seccionesAsignadas.filter(
+                (item) => item.iGradoId === selected
             )
-
-            this.modalidades = Array.from(
-                new Map(
-                    filteredData.map((item) => [
-                        item.iModalServId,
-                        {
-                            iModalServId: item.iModalServId,
-                            cModalServNombre: item.cModalServNombre,
-                        },
-                    ])
-                ).values()
-            )
-
-            // Ordenar el arreglo sin importar el tamaño
-            this.modalidades = this.modalidades.sort(
-                (a, b) => Number(a.iModalServId) - Number(b.iModalServId)
-            )
-            console.log(this.modalidades, 'this.modalidades ')
-        }
-        if (cbo === 'modalidad') {
-            // Encuentra el objeto
-            this.cursos = [] // limpia los valores del array en caso de seleccion de cbo
-            const filteredData = this.lista_niveles_grados.filter(
-                (item) =>
-                    item.iNivelGradoId === iNivelGradoId_search &&
-                    item.iModalServId === selected
-            )
-            console.log(
-                this.lista_niveles_grados,
-                'lista_niveles_grados modalidad'
-            )
-            console.log(filteredData, 'filteredData en modalidad')
-            this.turnos = Array.from(
-                new Map(
-                    filteredData.map((item) => [
-                        item.iTurnoId, // Clave única para evitar duplicados
-                        {
-                            iTurnoId: item.iTurnoId,
-                            cTurnoNombre: item.cTurnoNombre,
-                        },
-                    ])
-                ).values()
-            )
-
-            // Ordenar el arreglo sin importar el tamaño
-            this.turnos = this.turnos.sort(
-                (a, b) => Number(a.iTurnoId) - Number(b.iTurnoId)
-            )
-            console.log(this.turnos, 'this.turnos ')
-        }
-        if (cbo === 'turno') {
-            this.cursos = [] // limpia los valores del array en caso de seleccion de cbo
-            const filteredData = this.lista_niveles_grados.filter(
-                (item) =>
-                    item.iNivelGradoId === iNivelGradoId_search &&
-                    item.iModalServId === iModalServId_search &&
-                    item.iTurnoId === selected
-            )
-
-            // Construir un array único de turnos
-            this.secciones = Array.from(
-                new Map(
-                    filteredData.map((item) => [
-                        item.iSeccionId, // Clave única para evitar duplicados
-                        {
-                            iSeccionId: item.iSeccionId,
-                            cSeccionNombre: item.cSeccionNombre,
-                        },
-                    ])
-                ).values()
-            )
+            this.secciones = filteredData
             // Ordenar el arreglo sin importar el tamaño
             this.secciones = this.secciones.sort(
                 (a, b) => Number(a.iSeccionId) - Number(b.iSeccionId)
             )
-            console.log(this.secciones, 'this.iSeccionId ')
         }
+
         if (cbo === 'seccion') {
             this.searchListarAsignaturas()
         }
@@ -302,40 +205,53 @@ export class ConfigAsignarGradoComponent implements OnInit {
     // buscadores
 
     searchListarAsignaturas() {
-        const params = JSON.stringify({
-            iNivelGradoId:
-                this.formSearch.get('iNivelGradoId_search')?.value ?? 0,
-            iSemAcadId: this.formSearch.get('iSemAcadId_search')?.value ?? 0,
-            iModalServId:
-                this.formSearch.get('iModalServId_search')?.value ?? 0,
-            iTurnoId: this.formSearch.get('iTurnoId_search')?.value ?? 0,
-            iSeccionId: this.formSearch.get('iSeccionId_search')?.value ?? 0,
-            iProgId: this.formSearch.get('iProgId_search')?.value ?? 0,
-            iYAcadId: this.configuracion[0].iYAcadId,
-        })
-        this.query
-            .searchAmbienteAcademico({
-                json: params,
-                _opcion: 'listarAreasModalidadTurnoSeccion',
+        const iSeccionId = Number(
+            this.formSearch.get('iSeccionId_search')?.value
+        )
+        const iGradoId = Number(this.formSearch.get('iGradoId')?.value)
+
+        if (iSeccionId > 0 && iGradoId > 0) {
+            this.form.get('iSeccionId').setValue(iSeccionId)
+            const params = JSON.stringify({
+                iSeccionId: iSeccionId,
+                iConfigId: Number(this.configuracion[0].iConfigId),
+                iGradoId: iGradoId,
             })
-            .subscribe({
-                next: (data: any) => {
-                    //this.lista = this.extraerSecciones(data.data)
-                    this.cursos = data.data
-                    console.log(data.data, ' cursos xxx')
-                },
-                error: (error) => {
-                    console.error('Error fetching  seccionesAsignadas:', error)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error de conexión',
-                        detail: 'Se registro error en el procedimiento',
-                    })
-                },
-                complete: () => {
-                    console.log(this.lista, 'desde getSeccionesAsignadas')
-                },
+
+            this.query
+                .searchAmbienteAcademico({
+                    json: params,
+                    _opcion: 'getCurriculaXgradosIes', //'listarAreasModalidadTurnoSeccion',
+                })
+                .subscribe({
+                    next: (data: any) => {
+                        this.cursos = data.data
+                    },
+                    error: (error) => {
+                        console.error(
+                            'Error fetching  seccionesAsignadas:',
+                            error
+                        )
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error de conexión',
+                            detail: 'Se registro error en el procedimiento',
+                        })
+                    },
+                    complete: () => {
+                        console.log(this.cursos, 'cursos')
+                    },
+                })
+        } else {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe seleccionar un grado y sección para listar las asignaturas',
             })
+            this.cursos = []
+            this.form.get('iSeccionId').setValue(0)
+            this.form.get('iGradoId').setValue(0)
+        }
     }
 
     searchListaAreaDocente() {
@@ -347,9 +263,9 @@ export class ConfigAsignarGradoComponent implements OnInit {
         this.query
             .searchAmbienteAcademico({
                 json: JSON.stringify({
-                    iProgId: this.formSearch.get('iProgId_search')?.value,
-                    iYAcadId: this.configuracion[0].iYAcadId,
+                    iConfigId: this.configuracion[0].iConfigId,
                     iDocenteId: iDocenteId,
+                    iYAcadId: this.configuracion[0].iYAcadId,
                 }),
                 _opcion: 'listarAreaXDocenteSedeAnio',
             })
@@ -383,7 +299,7 @@ export class ConfigAsignarGradoComponent implements OnInit {
                         const valor = !isNaN(disponible) ? disponible : 0
                         this.form.get('ihora_disponible')?.setValue(valor)
                         this.actualizarMinimo(
-                            this.form.get('ihora_asignada')?.value
+                            this.form.get('iDocCursoHorasLectivas')?.value
                         )
                     } else {
                         this.form.get('ihora_disponible')?.setValue(0)
@@ -392,90 +308,6 @@ export class ConfigAsignarGradoComponent implements OnInit {
             })
     }
 
-    SearchNivelGrados() {
-        this.query
-            .searchAmbienteAcademico({
-                json: JSON.stringify({
-                    iConfigId: this.configuracion[0].iConfigId,
-                }),
-                _opcion: 'getGradoModalidadTurnoSeccion',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    this.lista_niveles_grados = data.data
-
-                    // Extraer los valores únicos de "cGradoNombre" e "iNivelGradoId"
-                    this.grados = Array.from(
-                        new Map(
-                            data.data.map((item) => [
-                                item.iNivelGradoId + item.cGradoNombre,
-                                {
-                                    iNivelGradoId: item.iNivelGradoId,
-                                    cGradoNombre: item.cGradoNombre,
-                                },
-                            ])
-                        ).values()
-                    )
-
-                    console.log(this.grados, 'this.grados')
-                    console.log(
-                        this.lista_niveles_grados,
-                        'this.lista_niveles_grados'
-                    )
-                },
-                error: (error) => {
-                    console.error('Error procedimiento BD:', error)
-                },
-                complete: () => {
-                    // Ordenar el arreglo sin importar el tamaño
-                    this.grados = this.grados.sort(
-                        (a, b) =>
-                            Number(a.iNivelGradoId) - Number(b.iNivelGradoId)
-                    )
-                    console.log('Request completed')
-                    // this.getYearCalendarios(this.formCalendario.value)
-                },
-            })
-    }
-    searchPersonalDocente() {
-        this.query
-            .searchAmbienteAcademico({
-                json: JSON.stringify({
-                    iSedeId: this.configuracion[0].iSedeId,
-                    iYAcadId: this.configuracion[0].iYAcadId,
-                }),
-                _opcion: 'getDocentesSede',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-
-                    this.docentes = item.map((persona) => ({
-                        ...persona,
-                        nombre_completo: (
-                            persona.cPersDocumento +
-                            ' ' +
-                            persona.cPersPaterno +
-                            ' ' +
-                            persona.cPersMaterno +
-                            ' ' +
-                            persona.cPersNombre +
-                            ' - ' +
-                            persona.cEspDocNombre
-                        ).trim(),
-                    }))
-
-                    console.log(this.docentes, 'personal ies')
-                },
-                error: (error) => {
-                    console.error('Error procedimiento BD:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                    // this.getYearCalendarios(this.formCalendario.value)
-                },
-            })
-    }
     // getPlanes(){
     //     const params = 'iSedeId = '+  this.configuracion[0].iSedeId
     //     this.query.searchCalAcademico({
@@ -497,30 +329,6 @@ export class ConfigAsignarGradoComponent implements OnInit {
     //             },
     //         })
     // }
-
-    getSemestres() {
-        const params = 'iYAcadId = ' + this.configuracion[0].iYAcadId
-        this.query
-            .searchCalAcademico({
-                esquema: 'acad',
-                tabla: 'semestre_academicos',
-                campos: '*',
-                condicion: params,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    this.semestres = data.data
-                    //    this.iServId = this.serv_atencion[0].iServEdId
-                    console.log(this.secciones, 'secciones')
-                },
-                error: (error) => {
-                    console.error('Error fetching secciones:', error)
-                },
-                complete: () => {
-                    // console.log('Request completed')
-                },
-            })
-    }
 
     //tree
     getSeccionesAsignadas() {
@@ -555,35 +363,32 @@ export class ConfigAsignarGradoComponent implements OnInit {
                     console.error('Error fetching  seccionesAsignadas:', error)
                 },
                 complete: () => {
-                    // console.log('Request completed')
-                    //    setTimeout(() => {
+                    console.log(this.seccionesAsignadas, 'seccionesAsignadas')
 
-                    //    // this.updateData();
-                    // }, 2000);
-                    console.log(this.lista, 'desde getSeccionesAsignadas')
+                    const gradosMap = new Map()
+
+                    this.seccionesAsignadas.forEach((a: any) => {
+                        const gradoId = a.iGradoId ?? ''
+                        const gradoNombre = a.arrayAmbientes.grado ?? ''
+                        if (!gradosMap.has(gradoId)) {
+                            gradosMap.set(gradoId, {
+                                iGradoId: gradoId,
+                                grado: gradoNombre,
+                            })
+                        }
+                    })
+
+                    this.grados = Array.from(gradosMap.values()).sort((a, b) =>
+                        a.iGradoId.localeCompare(b.iGradoId)
+                    )
+                    //ordenar
+                    this.grados = this.grados.sort(
+                        (a, b) => Number(a.iGradoId) - Number(b.iGradoId)
+                    )
                 },
             })
     }
 
-    getGrado() {
-        this.query
-            .searchGradoCiclo({
-                iNivelTipoId: this.stepService.iNivelTipoId,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    // this.grados = data.data
-                    this.rawData = data.data
-                    console.log(this.grados, 'grados desde getGrado')
-                },
-                error: (error) => {
-                    console.error('Error fetching grados:', error)
-                },
-                complete: () => {
-                    console.log(this.grados, 'grados desde getGrado')
-                },
-            })
-    }
     //========================================================
     //funciones de registro
 
@@ -621,30 +426,35 @@ export class ConfigAsignarGradoComponent implements OnInit {
 
     addAreaDocente() {
         //agrega asignatura a Docente
-        const params = JSON.stringify({
-            iProgId: Number(this.formSearch.get('iProgId_search')?.value),
-            iCursosNivelGradId: Number(
-                this.form.get('iCursosNivelGradId')?.value
-            ),
-            iCursosNivelGradId_ies_cursos:
-                Number(this.form.get('iCursosNivelGradId_ies_cursos')?.value) ??
-                0,
-            idDocCursoId: Number(this.form.get('idDocCursoId')?.value) ?? 0,
-            iIeCursoId: Number(this.form.get('iIeCursoId')?.value) ?? 0,
+        const iConfigId = this.configuracion[0].iConfigId ?? null
 
-            iSemAcadId: Number(this.form.get('iSemAcadId')?.value),
-            iYAcadId: Number(this.configuracion[0].iYAcadId),
-            iCursoId: this.form.get('iCursoId')?.value,
+        if (iConfigId === null || iConfigId === 0) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje del sistema',
+                detail: 'Configuración no encontrada, verifique la configuración del sistema',
+            })
+
+            return
+        }
+        const params = JSON.stringify({
+            idDocCursoId: this.form.get('idDocCursoId')?.value ?? 0,
+            iSemAcadId: Number(this.configuracion[0].iSemAcadId) ?? null,
+            iYAcadId: Number(this.configuracion[0].iYAcadId) ?? null,
+            iDocenteId: this.form.get('iDocenteId')?.value,
+            iIeCursoId: Number(this.form.get('iIeCursoId')?.value),
             cDocCursoObservaciones: this.form.get('cDocCursoObservaciones')
                 ?.value,
-            iDocCursoHorasLectivas: this.form.get('ihora_asignada')?.value,
-            iEstado: this.form.get('iEstado')?.value,
-            iSeccionId: this.form.get('iSeccionId')?.value,
-            iTurnoId: this.form.get('iTurnoId')?.value,
-            iModalServId: this.form.get('iModalServId')?.value,
-            iDocenteId: this.form.get('iDocenteId')?.value,
-        })
+            iDocCursoHorasLectivas: this.form.get('iDocCursoHorasLectivas')
+                ?.value,
+            iEstado: 1,
 
+            iConfigId: this.configuracion[0].iConfigId ?? null,
+            iSesionId: this.stepService.iCredId,
+
+            iSeccionId: this.form.get('iSeccionId')?.value,
+        })
+        console.log(params, 'params')
         this.query
             .addAmbienteAcademico({
                 json: params,
@@ -665,9 +475,9 @@ export class ConfigAsignarGradoComponent implements OnInit {
                         summary: 'Mensaje',
                         detail: 'Proceso exitoso',
                     })
-                    console.log('Request completed')
-                    this.searchListaAreaDocente()
-                    this.visible = true
+
+                    //  this.searchListaAreaDocente()
+                    // this.visible = true
                 },
             })
     }
@@ -702,37 +512,52 @@ export class ConfigAsignarGradoComponent implements OnInit {
     }
     // acciones de componente table
     accionBtnItemTable({ accion, item }) {
+        if (accion === 'retornar') {
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate([
+                        '/gestion-institucional/hora-docente',
+                    ])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+
         if (accion === 'editar') {
             console.log(item, 'btnTable')
             this.c_accion = accion
             this.caption = 'Editar áreas curricularesasignadas a docente'
 
-            this.form
-                .get('iNivelGradoId')
-                ?.setValue(this.formSearch.get('iNivelGradoId_search')?.value)
-            this.form
-                .get('iModalServId')
-                ?.setValue(this.formSearch.get('iModalServId_search')?.value)
-            this.form
-                .get('iSemAcadId')
-                ?.setValue(this.formSearch.get('iSemAcadId_search')?.value)
-            this.form
-                .get('iTurnoId')
-                ?.setValue(this.formSearch.get('iTurnoId_search')?.value)
+            this.form.get('iIeCursoId')?.setValue(item.iIeCursoId)
+
             this.form
                 .get('iSeccionId')
                 ?.setValue(this.formSearch.get('iSeccionId_search')?.value)
+
             this.form.get('iCursoId')?.setValue(item.iCursoId)
+
             this.form.get('iDocenteId')?.setValue(item.iDocenteId)
+            this.form.get('idDocCursoId')?.setValue(item.idDocCursoId) //iTotalHoras
+            this.form.get('iDocCursoHorasLectivas')?.setValue(item.iTotalHoras) //.iDocCursoHorasLectivas
             this.form.get('idDocCursoId')?.setValue(item.idDocCursoId)
-            this.form.get('ihora_asignada')?.setValue(item.nCursoTotalHoras) //.iDocCursoHorasLectivas
-            this.form.get('idDocCursoId')?.setValue(item.idDocCursoId)
+
+            this.form.get('cCursoNombre')?.setValue(item.cCursoNombre) //.iDocCursoHorasLectivas
+
             this.form
-                .get('iCursosNivelGradId')
-                ?.setValue(item.iCursosNivelGradId)
-            this.form
-                .get('iCursosNivelGradId_ies_cursos')
-                ?.setValue(item.iCursosNivelGradId_ies_cursos)
+                .get('iGradoId')
+                ?.setValue(this.formSearch.get('iGradoId')?.value)
 
             // detecta si el área curricular fue asignada a una seccion de la institución
             if (item.iSeccionId === null) {
@@ -769,20 +594,14 @@ export class ConfigAsignarGradoComponent implements OnInit {
             this.caption = 'Asignar área curricular a docente'
             //this.clearForm();
             this.visible = true
-            this.form
-                .get('iNivelGradoId')
-                ?.setValue(this.formSearch.get('iNivelGradoId_search')?.value)
-            this.form
-                .get('iModalServId')
-                ?.setValue(this.formSearch.get('iModalServId_search')?.value)
-            this.form
-                .get('iTurnoId')
-                ?.setValue(this.formSearch.get('iTurnoId_search')?.value)
+
             this.form
                 .get('iSeccionId')
                 ?.setValue(this.formSearch.get('iSeccionId_search')?.value)
             this.form.get('iCursoId')?.setValue(item.iCursoId)
-            this.form.get('ihora_asignada')?.setValue(item.nCursoTotalHoras) //.iDocCursoHorasLectivas
+            this.form
+                .get('iDocCursoHorasLectivas')
+                ?.setValue(item.nCursoTotalHoras) //.iDocCursoHorasLectivas
         }
         if (accion === 'eliminar') {
             this._confirmService.openConfirm({
@@ -833,7 +652,7 @@ export class ConfigAsignarGradoComponent implements OnInit {
             case 'editar':
                 //this.updatePersonal();
                 this.addAreaDocente()
-                this.searchListaAreaDocente()
+                //   this.searchListaAreaDocente()
                 this.searchListarAsignaturas()
                 this.visible = false
                 break

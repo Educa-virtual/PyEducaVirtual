@@ -27,8 +27,11 @@ import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-us
 import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
+import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component'
+import { YearsComponent } from './years/years.component'
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
+    { path: 'years-academicos', component: YearsComponent },
     { path: 'configGradoSeccion', component: ConfigGradoSeccionComponent },
     { path: 'config', component: ConfigComponent },
     { path: 'ambiente', component: ConfigAmbienteComponent },
@@ -38,7 +41,8 @@ const routes: Routes = [
     { path: 'hora-docente', component: ConfigHoraDocenteComponent },
     { path: 'asignar-grado', component: ConfigAsignarGradoComponent },
     { path: 'resumen', component: ConfigResumenComponent },
-    { path: 'fechas', component: ConfigFechasComponent },
+    { path: 'fechas-nacionales', component: ConfigFechasComponent },
+    { path: 'fechas-importantes', component: FechasImportantesComponent },
     { path: 'IesPersonal', component: IesPersonalComponent },
     { path: 'horario', component: HorarioComponent },
     { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
@@ -46,9 +50,9 @@ const routes: Routes = [
     { path: 'estadistica', component: EstadisticaComponent },
     { path: 'gestion-traslados', component: GestionTrasladosComponent },
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
-    { path: 'registro-vacantes', component: GestionVacantesComponent },
     { path: 'Informacion-ie', component: InformacionComponent },
     { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
+    //{ path: 'mantenimiento-ciclo', component: SincronizarArchivoComponent },
 
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
@@ -81,6 +85,14 @@ const routes: Routes = [
             import(
                 './gestion-traslados/traslado-externo/traslado-externo.component'
             ).then((c) => c.TrasladoExternoComponent),
+    },
+
+    {
+        path: 'ciclo',
+        loadComponent: () =>
+            import(
+                './mantenimiento/mantenimiento-ciclo/mantenimiento-ciclo.component'
+            ).then((c) => c.MantenimientoCicloComponent),
     },
     {
         path: 'traslado-interno',

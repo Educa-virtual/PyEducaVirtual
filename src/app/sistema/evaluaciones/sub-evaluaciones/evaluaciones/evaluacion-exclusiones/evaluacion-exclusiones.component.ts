@@ -99,6 +99,11 @@ export class EvaluacionExclusionesComponent implements OnInit {
                     label: doc.cTipoIdentSigla + ' - ' + doc.cTipoIdentNombre,
                     longitud: doc.iTipoIdentLongitud,
                 }))
+                this.tipos_documentos.unshift({
+                    value: 0,
+                    label: 'CODIGO DE ESTUDIANTE',
+                    longitud: 15,
+                })
             },
             error: (error) => {
                 console.error('Error obteniendo tipos de documentos:', error)
@@ -251,6 +256,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
     }
 
     setFormExclusion(data: any) {
+        const es_codigo = this.formExclusion.value.iTipoIdentId === 0
         this.formExclusion.reset()
         this.formExclusion.patchValue({
             iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -270,9 +276,12 @@ export class EvaluacionExclusionesComponent implements OnInit {
             cEvalExcluMotivo: data ? data?.cEvalExcluMotivo : null,
             dEvalExcluArchivo: data ? data?.dEvalExcluArchivo : null,
             iMatrId: data ? data?.iMatrId : null,
-            cEstCodigo: data ? data?.cEstCodigo : null,
-            iTipoIdentId: data ? data?.iTipoIdentId : null,
-            cPersDocumento: data ? data?.cPersDocumento : null,
+            iTipoIdentId: data ? (es_codigo ? 0 : data?.iTipoIdentId) : null,
+            cPersDocumento: data
+                ? es_codigo
+                    ? data?.cEstCodigo
+                    : data?.cPersDocumento
+                : null,
         })
         this.exclusion_registrada = this.formExclusion.value.iEvalExcluId
             ? true
@@ -317,7 +326,6 @@ export class EvaluacionExclusionesComponent implements OnInit {
                 summary: 'Advertencia',
                 detail: 'Debe completar todos los campos obligatorios',
             })
-            console.log(this.formExclusion.value, 'form')
             this.exclusionesService.formMarkAsDirty(this.formExclusion)
             return
         }
@@ -377,50 +385,20 @@ export class EvaluacionExclusionesComponent implements OnInit {
             })
     }
 
-    buscarMatricula(tipo: 'codigo' | 'documento') {
-        const codigo = this.formExclusion.value.cEstCodigo
-        const tipo_doc = this.formExclusion.value.iTipoIdentId
-        const num_doc = this.formExclusion.value.cPersDocumento
-        console.log(tipo_doc, 'tipo_doc')
-        console.log(num_doc.length, 'num_doc lenght')
-        console.log(this.longitud_documento, 'longitud_documento')
-        if (tipo === 'codigo' && Number(codigo?.length) !== 15) {
-            this._messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe indicar un código de estudiante de 15 caracteres',
-            })
-            return
-        } else if (
-            tipo === 'documento' &&
-            (tipo_doc === null ||
-                Number(num_doc?.length) !== Number(this.longitud_documento))
-        ) {
-            this._messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail:
-                    'Debe indicar un tipo y número de documento válidos (de ' +
-                    this.longitud_documento +
-                    ' caracteres)',
-            })
-            return
-        }
-
+    buscarMatricula() {
+        const tipo_doc = Number(this.formExclusion.value.iTipoIdentId)
         this.exclusionesService
             .buscarMatricula({
                 iYAcadId: this.store.getItem('dremoiYAcadId'),
                 iSedeId: this.perfil?.iSedeId,
                 cEstCodigo:
-                    tipo === 'codigo'
-                        ? this.formExclusion.value.cEstCodigo
+                    tipo_doc === 0
+                        ? this.formExclusion.value.cPersDocumento
                         : null,
                 iTipoIdentId:
-                    tipo === 'documento'
-                        ? this.formExclusion.value.iTipoIdentId
-                        : null,
+                    tipo_doc > 0 ? this.formExclusion.value.iTipoIdentId : null,
                 cPersDocumento:
-                    tipo == 'documento'
+                    tipo_doc > 0
                         ? this.formExclusion.value.cPersDocumento
                         : null,
             })

@@ -94,32 +94,7 @@
                         />
                     </p-inputGroup>
                 </div>
-                <div class="col-12 lg:col-6">
-                    <p-inputGroup styleClass="vertical-group">
-                        <p-inputGroupAddon>
-                            <p-button
-                                *ngIf="!exclusion_bloqueada"
-                                size="small"
-                                label="Buscar"
-                                styleClass="p-button-primary"
-                                (onClick)="buscarMatricula('codigo')"
-                                severity="success"
-                            />
-                            Código de Estudiante
-                        </p-inputGroupAddon>
-                        <p-inputMask
-                            formControlName="cEstCodigo"
-                            placeholder="Código de Estudiante"
-                            mask="99999999999999"
-                            autoClear="false"
-                            slotChar=""
-                            appendTo="body"
-                            [style]="{ flex: '1', width: '100%' }"
-                            styleClass="group-element"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-6 lg:col-3">
+                <div class="col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon> Tipo Documento </p-inputGroupAddon>
                         <p-dropdown
@@ -134,7 +109,7 @@
                         />
                     </p-inputGroup>
                 </div>
-                <div class="col-6 lg:col-3">
+                <div class="col-6">
                     <p-inputGroup styleClass="vertical-group">
                         <p-inputGroupAddon>
                             <p-button
@@ -142,7 +117,7 @@
                                 size="small"
                                 label="Buscar"
                                 styleClass="p-button-primary"
-                                (onClick)="buscarMatricula('documento')"
+                                (onClick)="buscarMatricula()"
                                 severity="success"
                             />
                             Documento

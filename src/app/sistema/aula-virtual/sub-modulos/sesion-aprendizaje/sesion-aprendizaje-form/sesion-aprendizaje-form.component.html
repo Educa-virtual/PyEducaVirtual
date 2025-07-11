@@ -15,7 +15,14 @@
     <div class="col-12 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon>Periodo</p-inputGroupAddon>
-        <p-dropdown styleClass="w-full" placeholder="Seleccione un Periodo" appendTo="body" />
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Seleccione un Periodo"
+          appendTo="body"
+          [options]="periodos"
+          optionValue="iPeriodoEvalAperId"
+          optionLabel="cNombrePeriodo"
+        />
       </p-inputGroup>
     </div>
     <div class="col-12 md:col-6">

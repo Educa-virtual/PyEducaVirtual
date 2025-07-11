@@ -440,6 +440,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
                         summary: 'Eliminación exitosa',
                         detail: 'Se eliminaron los datos',
                     })
+                    this.listarExclusiones()
                     this.salir()
                 },
                 error: (error) => {

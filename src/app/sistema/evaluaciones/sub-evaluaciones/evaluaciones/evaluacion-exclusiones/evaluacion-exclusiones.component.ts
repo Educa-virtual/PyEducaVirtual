@@ -381,7 +381,10 @@ export class EvaluacionExclusionesComponent implements OnInit {
         const codigo = this.formExclusion.value.cEstCodigo
         const tipo_doc = this.formExclusion.value.iTipoIdentId
         const num_doc = this.formExclusion.value.cPersDocumento
-        if (tipo === 'codigo' && codigo?.length !== 15) {
+        console.log(tipo_doc, 'tipo_doc')
+        console.log(num_doc.length, 'num_doc lenght')
+        console.log(this.longitud_documento, 'longitud_documento')
+        if (tipo === 'codigo' && Number(codigo?.length) !== 15) {
             this._messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
@@ -390,7 +393,8 @@ export class EvaluacionExclusionesComponent implements OnInit {
             return
         } else if (
             tipo === 'documento' &&
-            (tipo_doc === null || num_doc?.length !== this.longitud_documento)
+            (tipo_doc === null ||
+                Number(num_doc?.length) !== Number(this.longitud_documento))
         ) {
             this._messageService.add({
                 severity: 'warn',

@@ -7,6 +7,8 @@ import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angu
 import { MessageService } from 'primeng/api';
 import { SubirArchivoComponent } from '../../../../../shared/subir-archivo/subir-archivo.component';
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
+import { FormBuilder, Validators } from '@angular/forms';
+// import { validEvents } from '@tinymce/tinymce-angular/editor/Events';
 
 @Component({
   selector: 'app-sesion-aprendizaje-form',
@@ -18,17 +20,28 @@ import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calen
 export class SesionAprendizajeFormComponent implements OnChanges {
   @Output() accionCloseForm = new EventEmitter<void>();
   @Input() showModal: boolean = false;
+  @Input() idSesion: number = 0;
+  @Output() dataSesion = new EventEmitter<any>();
 
   private _TipoExperienciaAprendizajeService = inject(TipoExperienciaAprendizajeService);
   private _ConstantesService = inject(ConstantesService);
   private _MessageService = inject(MessageService);
   private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
+  private _formBuilder = inject(FormBuilder);
 
   tipoExperiencia = [];
   periodos = [];
+  data: any;
+
+  public formSesines = this._formBuilder.group({
+    cContenidoSemTitulo: ['', [Validators.required]],
+    iPeriodoEvalAperId: ['', [Validators.required]],
+    iTipExp: ['', [Validators.required]],
+  });
 
   ngOnChanges(changes) {
     if (changes['showModal']) {
+      this.idSesion;
       this.showModal = changes['showModal'].currentValue;
       this.obtenerTipoExperienciaAprendizaje();
       this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
@@ -111,11 +124,22 @@ export class SesionAprendizajeFormComponent implements OnChanges {
       });
   }
 
+  // guadar datos del formulario de sesion de aprendizaje
+  guardarDatosdeSesion() {
+    this.data = {
+      ...this.formSesines.value,
+      cAdjunot: this.documentos.data,
+    };
+
+    this.dataSesion.emit(this.data);
+    this.accionCloseForm.emit();
+  }
   mostrarMensajeToast(message) {
     this._MessageService.add(message);
   }
+  documentos: any;
   obtenerArchivo(file) {
-    const documentos = file[0]['path'];
-    console.log(documentos);
+    this.documentos = file[0]['path'];
+    console.log(this.documentos);
   }
 }

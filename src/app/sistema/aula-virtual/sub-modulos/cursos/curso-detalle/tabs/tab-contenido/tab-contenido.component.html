@@ -6,12 +6,12 @@
         <button
           size="small"
           icon="pi pi-plus"
-          label="Agregar Sesión de Aprendizaje"
+          label="Agregar Sesión de Aprendizajee"
           [rounded]="true"
           class="p-button-success"
           pButton
           pRipple
-          (click)="showModalSesionAprendizaje = true"
+          (click)="accionBnt({ accion: 'guardar' })"
         ></button>
       </div>
     }
@@ -132,6 +132,8 @@
 <app-sesion-aprendizaje-form
   *ngIf="showModalSesionAprendizaje"
   [showModal]="showModalSesionAprendizaje"
+  [idSesion]="idSesion"
+  (dataSesion)="guardarSesionDeAprendizaje($event)"
   (accionCloseForm)="showModalSesionAprendizaje = false"
 ></app-sesion-aprendizaje-form>
 
@@ -144,3 +146,5 @@
   (accionCloseForm)="showModalTarea = false"
   (accionRefresh)="recargarData()"
 ></app-tarea-form>
+
+<p-toast />

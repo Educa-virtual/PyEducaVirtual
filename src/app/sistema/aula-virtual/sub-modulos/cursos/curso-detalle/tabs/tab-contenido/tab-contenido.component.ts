@@ -77,6 +77,7 @@ export class TabContenidoComponent implements OnInit {
   @Input() idDocCursoId;
   @Input() iCursoId;
   @Input() curso;
+
   public rangeDates: Date[] | undefined;
   public accionesContenido: MenuItem[];
   public actividadSelected: IActividad | undefined;
@@ -139,7 +140,6 @@ export class TabContenidoComponent implements OnInit {
     nextWeek.setDate(today.getDate() + 7);
 
     this.rangeDates = [today, nextWeek];
-
     this.getData();
   }
 
@@ -173,6 +173,7 @@ export class TabContenidoComponent implements OnInit {
     });
   }
   loadingContenidoSemanas: boolean = true;
+  idSesion: number = 0;
   private obtenerContenidoSemanas(semana) {
     this.loadingContenidoSemanas = true;
 
@@ -215,6 +216,7 @@ export class TabContenidoComponent implements OnInit {
                 iContenidoSemId: item.iContenidoSemId,
               };
             });
+            this.idSesion = this.contenidosList?.length + 1;
           }
         },
         error: error => {
@@ -222,6 +224,88 @@ export class TabContenidoComponent implements OnInit {
           this.loadingContenidoSemanas = false;
         },
       });
+  }
+  accionBnt({ accion, item }: { accion: string; item?: any }): void {
+    switch (accion) {
+      case 'close-modal':
+        console.log(item);
+        this.showModalSesionAprendizaje = false;
+        // this.showModal = false;
+        // this.obtenerInstructores();
+        break;
+      case 'guardar':
+        // this.accion = accion;
+        // this.showModal = true;
+        this.showModalSesionAprendizaje = true;
+        console.log('guardar');
+        break;
+      case 'editar':
+        // this.accion = accion;
+        // console.log(item);
+        // this.instructor = item;
+        // this.showModal = true;
+        break;
+      case 'eliminar':
+        // this.eliminarInstructor(item);
+        break;
+    }
+  }
+  // guardar sesion aprendizaje
+  guardarSesionDeAprendizaje(data: any) {
+    const datos = {
+      ...data,
+      cTipoUsuario: DOCENTE,
+      iYAcadId: this._constantesService.iYAcadId,
+      idDocCursoId: this.idDocCursoId,
+      iCredId: this._constantesService.iCredId,
+    };
+    const params = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'contenido-semanas',
+      data: datos,
+      params: {
+        iCredId: this._constantesService.iCredId,
+      },
+    };
+    console.log('datos de semana 01', params);
+    //Servicio para obtener los instructores
+    this.GeneralService.getGralPrefixx(params).subscribe({
+      next: response => {
+        if (response.validated) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Acción exitosa',
+            detail: response.message,
+          });
+          this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          // this.showModal = false
+          // this.instructorForm.reset()
+        }
+      },
+      error: error => {
+        const errores = error?.error?.errors;
+        if (error.status === 422 && errores) {
+          // Recorre y muestra cada mensaje de error
+          Object.keys(errores).forEach(campo => {
+            errores[campo].forEach((mensaje: string) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: mensaje,
+              });
+            });
+          });
+        } else {
+          // Error genérico si no hay errores específicos
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error?.error?.message || 'Ocurrió un error inesperado',
+          });
+        }
+      },
+    });
   }
 
   setSemanaSeleccionada(semana) {

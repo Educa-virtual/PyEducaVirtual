@@ -1,13 +1,22 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import {
+    ChangeDetectorRef,
+    Component,
+    inject,
+    OnInit,
+    ViewChild,
+} from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 import { EvaluacionExclusionesService } from '../../../services/evaluacion-exclusiones.service'
 import { MenuItem, MessageService } from 'primeng/api'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles'
 import { TextFieldModule } from '@angular/cdk/text-field'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import {
+    IActionTable,
+    TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
@@ -29,14 +38,15 @@ export class EvaluacionExclusionesComponent implements OnInit {
     exclusiones: Array<any>
     exclusiones_filtradas: Array<any>
     exclusion_registrada: boolean = false
+    exclusion_bloqueada: boolean = false
 
     dialog_header: string
     dialog_visible: boolean
 
     es_director: boolean = false
 
-    longitud_documento = 11
-    formato_documento = '999.999.999-9'
+    longitud_documento = 7
+    formato_documento = '99999999'
     tipos_documentos: Array<object>
 
     private _messageService = inject(MessageService)
@@ -47,7 +57,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
         private route: ActivatedRoute,
         private fb: FormBuilder,
         private store: LocalStoreService,
-        private router: Router
+        private cf: ChangeDetectorRef
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         this.es_director = Number(this.perfil.iPerfilId) === Number(DIRECTOR_IE)
@@ -72,6 +82,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
                 cEvalExcluMotivo: [null, Validators.required],
                 dEvalExcluArchivo: [null],
                 cEstCodigo: [null],
+                cIieeDatos: [null],
                 cPersDatos: [null, Validators.required],
                 iTipoIdentId: [null],
                 cPersDocumento: [null],
@@ -174,6 +185,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
     agregarExclusion() {
         this.dialog_header = 'Registrar exclusión'
         this.dialog_visible = true
+        this.exclusion_bloqueada = false
     }
 
     dialogVisible(visible: boolean) {
@@ -198,12 +210,14 @@ export class EvaluacionExclusionesComponent implements OnInit {
         this.dialog_header = 'Editar exclusión'
         this.dialog_visible = true
         this.obtenerExclusion(data)
+        this.exclusion_bloqueada = false
     }
 
     verExclusion(data: any) {
         this.dialog_header = 'Ver exclusión'
         this.dialog_visible = true
         this.obtenerExclusion(data)
+        this.exclusion_bloqueada = true
     }
 
     obtenerExclusion(data: any) {
@@ -245,19 +259,31 @@ export class EvaluacionExclusionesComponent implements OnInit {
             cPersDatos: data
                 ? data?.cPersNombreApellidos +
                   ' (' +
-                  data?.cGradoAbreviacion +
+                  data?.cGradoNombre +
                   ' ' +
                   data?.cSeccionNombre +
                   ')'
                 : null,
+            cIieeDatos: data
+                ? data?.cIieeCodigoModular + ' ' + data?.cIieeNombre
+                : null,
             cEvalExcluMotivo: data ? data?.cEvalExcluMotivo : null,
             dEvalExcluArchivo: data ? data?.dEvalExcluArchivo : null,
             iMatrId: data ? data?.iMatrId : null,
+            cEstCodigo: data ? data?.cEstCodigo : null,
+            iTipoIdentId: data ? data?.iTipoIdentId : null,
+            cPersDocumento: data ? data?.cPersDocumento : null,
         })
         this.exclusion_registrada = this.formExclusion.value.iEvalExcluId
             ? true
             : false
         this.exclusionesService.formMarkAsDirty(this.formExclusion)
+        if (this.exclusion_bloqueada) {
+            this.formExclusion.disable()
+        } else {
+            this.formExclusion.enable()
+        }
+        this.cf.detectChanges()
     }
 
     getFormData() {
@@ -352,6 +378,31 @@ export class EvaluacionExclusionesComponent implements OnInit {
     }
 
     buscarMatricula(tipo: 'codigo' | 'documento') {
+        const codigo = this.formExclusion.value.cEstCodigo
+        const tipo_doc = this.formExclusion.value.iTipoIdentId
+        const num_doc = this.formExclusion.value.cPersDocumento
+        if (tipo === 'codigo' && codigo?.length !== 15) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe indicar un código de estudiante de 15 caracteres',
+            })
+            return
+        } else if (
+            tipo === 'documento' &&
+            (tipo_doc === null || num_doc?.length !== this.longitud_documento)
+        ) {
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail:
+                    'Debe indicar un tipo y número de documento válidos (de ' +
+                    this.longitud_documento +
+                    ' caracteres)',
+            })
+            return
+        }
+
         this.exclusionesService
             .buscarMatricula({
                 iYAcadId: this.store.getItem('dremoiYAcadId'),
@@ -496,13 +547,22 @@ export class EvaluacionExclusionesComponent implements OnInit {
         },
     ]
 
-    accionesTabla: any[] = [
+    accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
             icon: 'pi pi-file-edit',
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
+            isVisible: () => this.es_director,
+        },
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: () => !this.es_director,
         },
         {
             labelTooltip: 'Borrar',
@@ -510,6 +570,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
             accion: 'borrar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: () => this.es_director,
         },
     ]
 
@@ -517,6 +578,9 @@ export class EvaluacionExclusionesComponent implements OnInit {
         switch (event.accion) {
             case 'editar':
                 this.editarExclusion(event.item)
+                break
+            case 'ver':
+                this.verExclusion(event.item)
                 break
             case 'borrar':
                 this._confirmService.openConfirm({

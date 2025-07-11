@@ -420,7 +420,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'verListaExclusion',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: () => this.iPerfilId === DIRECTOR_IE,
+            isVisible: () =>
+                this.iPerfilId === DIRECTOR_IE ||
+                this.iPerfilId === ESPECIALISTA_DREMO ||
+                this.iPerfilId === ESPECIALISTA_UGEL ||
+                this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
             labelTooltip: 'Asignar horas de inicio y fin a las áreas',

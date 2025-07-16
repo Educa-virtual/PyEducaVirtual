@@ -8,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { SubirArchivoComponent } from '../../../../../shared/subir-archivo/subir-archivo.component';
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 // import { validEvents } from '@tinymce/tinymce-angular/editor/Events';
 
 @Component({
@@ -32,12 +33,15 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   tipoExperiencia = [];
   periodos = [];
   data: any;
+  pdfURL: SafeResourceUrl | null = null;
 
   public formSesines = this._formBuilder.group({
     cContenidoSemTitulo: ['', [Validators.required]],
     iPeriodoEvalAperId: ['', [Validators.required]],
     iTipExp: ['', [Validators.required]],
   });
+
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnChanges(changes) {
     if (changes['showModal']) {
@@ -46,6 +50,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
       this.obtenerTipoExperienciaAprendizaje();
       this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
     }
+    // console.log('datos pdf',this.documentos)
   }
 
   obtenerTipoExperienciaAprendizaje() {
@@ -141,5 +146,12 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   obtenerArchivo(file) {
     this.documentos = file[0]['path'];
     console.log(this.documentos);
+  }
+  verPdf() {
+    const rutaRelativa = this.documentos.data;
+    const baseURL = 'http://localhost:8000/storage/'; // cambia por tu URL real si estás en producción
+    const url = baseURL + rutaRelativa;
+
+    this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

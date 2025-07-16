@@ -46,9 +46,27 @@
       </p-inputGroup>
     </div>
     <div class="col-12">
-      <label for="" style="color: var(--bg-header-modal)" class="font-bold"
-        >Adjuntar Sesión de Aprendizaje</label
-      >
+      <div class="mt-4 flex justify-content-between flex-wrap">
+        <div>
+          <label for="" style="color: var(--bg-header-modal)" class="font-bold"
+            >Adjuntar Sesión de Aprendizaje</label
+          >
+        </div>
+        {{ documentos }}
+        <div *ngIf="documentos">
+          <p-button
+            icon="pi pi-eye"
+            [rounded]="true"
+            [text]="true"
+            severity="secondary"
+            (click)="verPdf()"
+          />
+          <!-- Mostrar el embed solo cuando hay URL -->
+          <div *ngIf="pdfURL" class="pdf-container">
+            <embed [src]="pdfURL" type="application/pdf" width="100%" height="600px" />
+          </div>
+        </div>
+      </div>
       <app-subir-archivo
         [carpeta]="'sesion-aprendizaje1'"
         (obtenerArchivo)="obtenerArchivo($event)"

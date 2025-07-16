@@ -5,7 +5,11 @@
             >Título:
             <span class="text-red-500 text-xs">(*) Obligatorio</span>
         </label>
-        <input pInputText placeholder="Ingrese títutlo" />
+        <input
+            pInputText
+            placeholder="Ingrese títutlo"
+            formControlName="cConfEncNombre"
+        />
         <!-- <small id="username-help">
             Enter your username to reset your password.
         </small> -->
@@ -15,24 +19,40 @@
             >Subtítulo:
             <span class="text-blue-500 text-xs">(Opcional)</span>
         </label>
-        <input pInputText placeholder="Ingrese subtítulo" />
+        <input
+            pInputText
+            placeholder="Ingrese subtítulo"
+            formControlName="cConfEncSubNombre"
+        />
     </div>
     <div class="flex gap-3">
         <p-inputGroup>
             <p-inputGroupAddon>Fecha inicio</p-inputGroupAddon>
-            <p-calendar styleClass="w-full" view="date" dateFormat="dd/mm/yy" />
+            <p-calendar
+                styleClass="w-full"
+                view="date"
+                formControlName="dConfEncInicio"
+                dateFormat="dd/mm/yy"
+                placeholder="Fecha de inicio"
+            />
         </p-inputGroup>
         <p-inputGroup>
             <p-inputGroupAddon>Fecha fin</p-inputGroupAddon>
-            <p-calendar styleClass="w-full" view="date" dateFormat="dd/mm/yy" />
+            <p-calendar
+                styleClass="w-full"
+                view="date"
+                formControlName="dConfEncFin"
+                dateFormat="dd/mm/yy"
+                placeholder="Fecha fin"
+            />
         </p-inputGroup>
         <p-inputGroup>
             <p-inputGroupAddon>Tiempo</p-inputGroupAddon>
             <p-dropdown
                 styleClass="w-full"
-                [options]="tiempos"
-                optionLabel="label"
+                [options]="dataTiemposDuracion"
                 placeholder="Seleccione tiempo de duración"
+                formControlName="iTiemDurId"
             />
         </p-inputGroup>
     </div>
@@ -47,6 +67,7 @@
                 [init]="initConsideraciones"
                 class="w-full"
                 placeholder="Ingrese consideraciones generales"
+                formControlName="cConfEncDesc"
             >
             </editor>
         </div>

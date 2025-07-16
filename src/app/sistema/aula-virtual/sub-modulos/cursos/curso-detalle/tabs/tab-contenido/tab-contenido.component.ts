@@ -254,7 +254,7 @@ export class TabContenidoComponent implements OnInit {
   guardarSesionDeAprendizaje(data: any) {
     const datos = {
       ...data,
-      cTipoUsuario: DOCENTE,
+      cTipoUsuario: 'DOCENTE',
       iYAcadId: this._constantesService.iYAcadId,
       idDocCursoId: this.idDocCursoId,
       iCredId: this._constantesService.iCredId,

@@ -128,7 +128,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   guardarDatosdeSesion() {
     this.data = {
       ...this.formSesines.value,
-      cAdjunot: this.documentos.data,
+      cAdjunto: this.documentos.data,
     };
 
     this.dataSesion.emit(this.data);

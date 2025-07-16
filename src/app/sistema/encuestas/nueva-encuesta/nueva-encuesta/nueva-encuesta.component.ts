@@ -74,7 +74,7 @@ export class NuevaEncuestaComponent implements OnInit {
     }
 
     onFinish() {
-        console.log('Encuesta finalizada')
+        this.onHide()
     }
     onHide() {
         this.visible = false

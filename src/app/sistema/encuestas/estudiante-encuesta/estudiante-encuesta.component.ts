@@ -78,9 +78,9 @@ export class EstudianteEncuestaComponent {
         }
     }
 
-    siguientePregunta() {
-        if (this.activeIndex < this.preguntas.length - 1) {
-            this.activeIndex = this.activeIndex + 1
+    siguientePregunta(index: number) {
+        if (index <= this.preguntas.length - 1) {
+            this.activeIndex = index + 1
         }
     }
 

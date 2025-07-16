@@ -4,20 +4,19 @@
 >
     <div class="flex align-items-center gap-3">
         <div class="flex align-items-center gap-2">
-            <span
-                class="bg-primary text-white px-3 py-2 border-round font-medium"
-            >
-                Participantes
-            </span>
-            <p-dropdown
-                [options]="participantesOptions"
-                [(ngModel)]="participantesSeleccionados"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ 'min-width': '200px' }"
-                placeholder="Seleccionar"
-            >
-            </p-dropdown>
+            <p-inputGroup class="flex-1">
+                <p-inputGroupAddon>Participantesss</p-inputGroupAddon>
+                <p-dropdown
+                    [options]="participantesOptions"
+                    [(ngModel)]="participantesSeleccionados"
+                    (onChange)="onParticipanteChange($event.value)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ 'min-width': '200px' }"
+                    placeholder="Seleccionar"
+                >
+                </p-dropdown>
+            </p-inputGroup>
         </div>
 
         <!-- Botones de exportación -->
@@ -53,14 +52,13 @@
     </div>
 </div>
 
-<!-- Contenido principal -->
-<div class="container-page">
+<!-- SI selecciona "Todos" - Mostrar accordion normal -->
+<div class="container-page" *ngIf="participantesSeleccionados === 'Todos'">
     <p-accordion [multiple]="true" [activeIndex]="[0]" styleClass="w-full">
         <p-accordionTab
             *ngFor="let seccion of secciones; let i = index"
             [header]="seccion.titulo"
             [selected]="seccion.expandida"
-            (selectedChange)="onSeccionToggle(i)"
         >
             <!-- Contenido de cada sección -->
             <div class="p-4" *ngIf="seccion.preguntas.length > 0">
@@ -125,4 +123,11 @@
             </div>
         </p-accordionTab>
     </p-accordion>
+</div>
+
+<div class="container-page" *ngIf="participantesSeleccionados !== 'Todos'">
+    <app-pregunta-visualizacion
+        [participanteSeleccionado]="participantesSeleccionados"
+    >
+    </app-pregunta-visualizacion>
 </div>

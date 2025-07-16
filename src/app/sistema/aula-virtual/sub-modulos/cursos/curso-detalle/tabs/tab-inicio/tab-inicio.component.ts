@@ -4,7 +4,6 @@ import {
   inject,
   Input,
   OnInit,
-  AfterViewInit,
   ViewChildren,
   QueryList,
   AfterViewChecked,
@@ -24,7 +23,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
   templateUrl: './tab-inicio.component.html',
   styleUrl: './tab-inicio.component.scss',
 })
-export class TabInicioComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class TabInicioComponent implements OnInit, AfterViewChecked {
   @ViewChildren('textareaRef') textareaRefs!: QueryList<ElementRef>;
 
   @Input() curso: ICurso;
@@ -56,9 +55,6 @@ export class TabInicioComponent implements OnInit, AfterViewInit, AfterViewCheck
   });
   //para los alert
   constructor(private messageService: MessageService) {}
-  ngAfterViewInit(): void {
-    throw new Error('Method not implemented.');
-  }
 
   //Inicializamos
   ngOnInit(): void {

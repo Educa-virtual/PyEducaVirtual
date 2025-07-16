@@ -23,6 +23,13 @@ export class DatosEncuestaService implements OnDestroy {
     public readonly ESTADO_TERMINADA = 2
     public readonly ESTADO_APROBADA = 3
 
+    public readonly TIPO_REPORTE_LISTA = 1
+    public readonly TIPO_REPORTE_INDIVIDUAL = 2
+
+    public readonly GRAFICO_BARRA = 1
+    public readonly GRAFICO_CIRCULAR = 2
+    public readonly GRAFICO_NUBE = 3
+
     lista: any[] = []
 
     parametros: any
@@ -42,6 +49,8 @@ export class DatosEncuestaService implements OnDestroy {
     estados: Array<object>
     perfiles: Array<object>
     alternativas: Array<object>
+    tipos_reportes: Array<object>
+    tipos_graficos: Array<object>
 
     listarEncuestas(data: any) {
         return this.http.post(`${baseUrl}/bienestar/listarEncuestas`, data)
@@ -423,6 +432,46 @@ export class DatosEncuestaService implements OnDestroy {
             ]
         }
         return this.estados
+    }
+
+    getTiposReportes() {
+        if (!this.tipos_reportes) {
+            this.tipos_reportes = [
+                {
+                    label: 'LISTA DE PALABRAS UNICAS (TOP 15)',
+                    value: this.TIPO_REPORTE_LISTA,
+                },
+                {
+                    label: 'NUBE DE PALABRAS UNICAS (TOP 50)',
+                    value: this.TIPO_REPORTE_INDIVIDUAL,
+                },
+            ]
+        }
+        return this.tipos_reportes
+    }
+
+    getTiposGraficos() {
+        if (!this.tipos_graficos) {
+            this.tipos_graficos = [
+                {
+                    label: 'BARRA',
+                    value: this.GRAFICO_BARRA,
+                    iEncuPregTipoId: [
+                        this.PREGUNTA_CERRADA,
+                        this.PREGUNTA_ESCALA,
+                    ],
+                },
+                {
+                    label: 'CIRCULAR',
+                    value: this.GRAFICO_CIRCULAR,
+                    iEncuPregTipoId: [
+                        this.PREGUNTA_CERRADA,
+                        this.PREGUNTA_ESCALA,
+                    ],
+                },
+            ]
+        }
+        return this.tipos_graficos
     }
 
     ngOnDestroy() {

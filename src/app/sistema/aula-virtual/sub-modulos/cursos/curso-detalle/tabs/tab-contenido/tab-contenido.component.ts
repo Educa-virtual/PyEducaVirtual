@@ -307,6 +307,70 @@ export class TabContenidoComponent implements OnInit {
       },
     });
   }
+  //
+  editarSesionDeAprendizaje() {
+    this.showModalSesionAprendizaje = true;
+    console.log('editar');
+  }
+  eliminarSesionDeAprendizaje(itemn: any) {
+    console.log('Eliminar', itemn);
+    // const data = item;
+    this._confirmService.openConfirm({
+      header: '¿Esta seguro de eliminar la sesión:  ',
+      // data.cPersNombre +
+      // ' ' +
+      // data.cPersPaterno +
+      // ' ?',
+      accept: () => {
+        // const params = {
+        //   petition: 'delete',
+        //   group: 'cap',
+        //   prefix: 'instructores',
+        //   ruta: data.iInstId,
+        //   params: {
+        //     iCredId: this._constantesService.iCredId,
+        //   },
+        // };
+        // Servicio para obtener los instructores
+        // this.GeneralService.getGralPrefixx(params).subscribe({
+        //   next: resp => {
+        //     if (resp.validated) {
+        //       this.messageService.add({
+        //         severity: 'success',
+        //         summary: 'Acción exitosa',
+        //         detail: resp.message,
+        //       });
+        //       this.obtenerInstructores();
+        //     }
+        //   },
+        // });
+      },
+      reject: () => {
+        // Mensaje de cancelación (opcional)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Cancelado',
+          detail: 'Acción cancelada',
+        });
+      },
+    });
+  }
+  // botones de editar y eliminar semana
+  btnAccion = [
+    {
+      label: 'Editar',
+      icon: 'pi pi-file-edit',
+      class: 'p-button-warning',
+      action: () => this.editarSesionDeAprendizaje(),
+      // action: () =>this.guardar()
+    },
+    {
+      label: 'Eliminar',
+      icon: 'pi pi-trash',
+      class: 'p-button-danger',
+      action: () => this.eliminarSesionDeAprendizaje({ item: 2 }), //this.guardar()
+    },
+  ];
 
   setSemanaSeleccionada(semana) {
     this.semanaSeleccionada = semana;

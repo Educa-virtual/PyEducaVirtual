@@ -21,22 +21,14 @@
           {{ (objeto.cDescripcion | slice: 0 : 150) + '...' }}
         </div>
       </div>
-      <!-- 
+
       <i
-        class="icon pi pi-check"
+        class="icon pi pi-arrow-circle-right"
         style="font-size: 1.5rem; cursor: pointer"
         tabindex="0"
         (click)="obtenerDatos(objeto)"
         (keydown.enter)="obtenerDatos(objeto)"
-      ></i> -->
-      <button
-        [rounded]="true"
-        pButton
-        pRipple
-        class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-      >
-        <i class="pi pi-ellipsis-h text-blue-500"></i>
-      </button>
+      ></i>
     </div>
   </ng-template>
 </p-orderList>

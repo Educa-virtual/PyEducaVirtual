@@ -17,7 +17,10 @@ import { CommonModule } from '@angular/common'
 import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services/api-evaluaciones-r.service'
 import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/perfilesConstantes'
 import { PrimengModule } from '@/app/primeng.module'
@@ -160,6 +163,12 @@ export class AreaCardComponent implements OnInit {
                 disabled:
                     this.iPerfilId !== DIRECTOR_IE &&
                     this.iPerfilId !== ESPECIALISTA_DREMO,
+            },
+            {
+                label: 'Activar matriz',
+                icon: '',
+                command: () => {},
+                disabled: this.iPerfilId !== ADMINISTRADOR_DREMO,
             },
         ]
     }

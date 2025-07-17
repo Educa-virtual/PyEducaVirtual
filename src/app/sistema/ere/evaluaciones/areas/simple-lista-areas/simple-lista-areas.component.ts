@@ -21,11 +21,13 @@ import { CommonModule } from '@angular/common'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services/api-evaluaciones-r.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 import { environment } from '@/environments/environment'
-
 interface Column {
     field: string
     header: string
@@ -78,13 +80,13 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     breadCrumbHome: MenuItem = {}
     colsDirector: Column[] = []
     colsEspecialista: Column[] = []
+    colsAdministradorDremo: Column[] = []
     cursos: ICurso[] = []
 
     mostrarDialogoEdicion: boolean = false
     visible: boolean = false
 
     cursoSeleccionado: ICurso | null = null
-
     cursosAgrupados: { [key: string]: ICurso[] } = {}
     gradosFiltrados: string[] = []
     gradosOrdenados: string[]
@@ -164,6 +166,24 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 width: '10%',
             },
             { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+            { field: 'acciones', header: 'Acciones', width: '10%' },
+        ]
+
+        this.colsAdministradorDremo = [
+            { field: 'id', header: 'Nº', width: '5%' },
+            { field: 'area', header: 'Área', width: '15%' },
+            {
+                field: 'cuadernillo',
+                header: 'Cuadernillo de Evaluación',
+                width: '10%',
+            },
+            {
+                field: 'hojaRespuestas',
+                header: 'Hoja de respuestas',
+                width: '10%',
+            },
+            { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+            { field: 'activarMatriz', header: 'Activar Matriz', width: '10%' },
             { field: 'acciones', header: 'Acciones', width: '10%' },
         ]
     }
@@ -320,6 +340,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
     get esEspecialista(): boolean {
         return this.iPerfilId === ESPECIALISTA_DREMO
+    }
+    get esAdministradorDremo(): boolean {
+        return this.iPerfilId === ADMINISTRADOR_DREMO
     }
 
     eliminarArchivoCuadernillo(curso: ICurso): void {

@@ -315,6 +315,153 @@
     </div>
 </div>
 
+<!-- Administrador DREMO -->
+<div *ngIf="esAdministradorDremo" class="mb-4">
+    <div *ngFor="let grado of gradosOrdenados" class="mb-4">
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-graduation-cap text-primary"></i>
+                    <span class="font-semibold text-primary">{{ grado }}</span>
+                </div>
+            </ng-template>
+
+            <p-table
+                [value]="cursosAgrupados[grado]"
+                [tableStyle]="{ 'min-width': '70rem' }"
+                styleClass="p-datatable-sm"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th
+                            *ngFor="let col of colsAdministradorDremo"
+                            [style.width]="col.width"
+                            style="text-align: center"
+                        >
+                            {{ col.header }}
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="text-align: center; width: 5%">
+                            {{ obtenerIndiceGlobal(curso) }}
+                        </td>
+
+                        <td style="width: 15%">
+                            <div class="flex align-items-center gap-2">
+                                <img
+                                    [src]="backend + '/' + curso.cCursoImagen"
+                                    [alt]="curso.cCursoNombre"
+                                    class="w-3rem h-3rem border-circle"
+                                    (error)="updateUrl(curso)"
+                                />
+                                <div>
+                                    <div class="font-semibold">
+                                        {{ curso.cCursoNombre | stringCase }}
+                                    </div>
+                                    <div class="text-sm text-500">
+                                        {{ curso.iCantidadPreguntas }} preguntas
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Descargar cuadernillo -->
+                        <td style="text-align: center; width: 10%">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                [disabled]="!curso.bTieneArchivo"
+                                (click)="descargarPDF('Cuadernillo', curso)"
+                                pTooltip="{{
+                                    curso.bTieneArchivo
+                                        ? 'Descargar cuadernillo'
+                                        : 'No disponible'
+                                }}"
+                            ></p-button>
+                        </td>
+
+                        <!-- Descargar hoja de respuestas -->
+                        <td style="text-align: center; width: 10%">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                (click)="descargarCartillaRespuestas(curso)"
+                                pTooltip="Descargar hoja de respuestas"
+                            ></p-button>
+                        </td>
+
+                        <!-- Descargar matriz -->
+                        <td style="text-align: center; width: 10%">
+                            <p-button
+                                label="Descargar"
+                                icon="pi pi-download"
+                                severity="danger"
+                                size="small"
+                                (click)="descargarPDF('Matriz', curso)"
+                                pTooltip="Descargar matriz"
+                            ></p-button>
+                        </td>
+
+                        <!-- Activar Matriz -->
+                        <td style="text-align: center; width: 10%">
+                            <p-button
+                                label="Activar"
+                                icon="pi pi-power-off"
+                                severity="success"
+                                size="small"
+                                pTooltip="Activar matriz para este curso"
+                            ></p-button>
+                        </td>
+
+                        <!-- Acciones adicionales -->
+                        <td style="text-align: center; width: 10%">
+                            <div class="flex gap-1 justify-content-center">
+                                <p-button
+                                    icon="pi pi-cog"
+                                    severity="secondary"
+                                    size="small"
+                                    [text]="true"
+                                    pTooltip="Configuraciones avanzadas"
+                                ></p-button>
+                                <p-button
+                                    icon="pi pi-chart-line"
+                                    severity="info"
+                                    size="small"
+                                    [text]="true"
+                                    pTooltip="Ver reportes"
+                                ></p-button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td
+                            [attr.colspan]="colsAdministradorDremo.length"
+                            class="text-center p-4"
+                        >
+                            <i
+                                class="pi pi-info-circle text-4xl text-400 mb-3"
+                            ></i>
+                            <p class="text-500 m-0">
+                                No hay áreas disponibles para este grado
+                            </p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+    </div>
+</div>
+
 <!-- Mensaje cuando no hay cursos -->
 <div *ngIf="cursos.length === 0" class="text-center p-6">
     <i class="pi pi-info-circle text-6xl text-400 mb-4"></i>

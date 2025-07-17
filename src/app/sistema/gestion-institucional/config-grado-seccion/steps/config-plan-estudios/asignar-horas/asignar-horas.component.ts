@@ -309,6 +309,7 @@ export class AsignarHorasComponent implements OnInit {
                 this.filtrado_programacion_curricular,
                 'horas adicionales filtradas'
             )
+            this.serv_horas = Number(this.serv_horas) || 0
 
             if (Number(sumatoria) !== Number(this.serv_horas)) {
                 this.messageService.add({
@@ -324,7 +325,7 @@ export class AsignarHorasComponent implements OnInit {
                 this.mensaje =
                     'Observación: Total de horas semanales ' +
                     sumatoria +
-                    'Hras, diferentes al servicio educativo' +
+                    'Hras, diferentes al servicio educativo ' +
                     +this.serv_horas +
                     ' Hras'
             }

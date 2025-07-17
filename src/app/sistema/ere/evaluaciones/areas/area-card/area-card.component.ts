@@ -24,7 +24,7 @@ import {
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/perfilesConstantes'
 import { PrimengModule } from '@/app/primeng.module'
-import { ActivarMatrizComponent } from '../activar-matriz/activar-matriz.component'
+import { ActivarDescargaComponent } from '../activar-descarga/activar-descarga.component'
 
 @Component({
     selector: 'app-area-card',
@@ -35,7 +35,7 @@ import { ActivarMatrizComponent } from '../activar-matriz/activar-matriz.compone
         ButtonModule,
         StringCasePipe,
         PrimengModule,
-        ActivarMatrizComponent,
+        ActivarDescargaComponent,
     ],
     templateUrl: './area-card.component.html',
     styleUrl: './area-card.component.scss',

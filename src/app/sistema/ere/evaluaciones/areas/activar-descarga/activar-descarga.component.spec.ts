@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { ActivarMatrizComponent } from './activar-matriz.component'
+import { ActivarDescargaComponent } from './activar-descarga.component'
 
-describe('ActivarMatrizComponent', () => {
-    let component: ActivarMatrizComponent
-    let fixture: ComponentFixture<ActivarMatrizComponent>
+describe('ActivarDescargaComponent', () => {
+    let component: ActivarDescargaComponent
+    let fixture: ComponentFixture<ActivarDescargaComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ActivarMatrizComponent],
+            imports: [ActivarDescargaComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(ActivarMatrizComponent)
+        fixture = TestBed.createComponent(ActivarDescargaComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

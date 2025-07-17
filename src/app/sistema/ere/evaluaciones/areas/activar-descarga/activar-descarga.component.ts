@@ -3,17 +3,18 @@ import { PrimengModule } from '@/app/primeng.module'
 import { FormBuilder, FormGroup } from '@angular/forms'
 
 @Component({
-    selector: 'app-activar-matriz',
+    selector: 'app-activar-descarga',
     standalone: true,
     imports: [PrimengModule],
-    templateUrl: './activar-matriz.component.html',
-    styleUrl: './activar-matriz.component.scss',
+    templateUrl: './activar-descarga.component.html',
+    styleUrl: './activar-descarga.component.scss',
 })
-export class ActivarMatrizComponent implements OnInit {
+export class ActivarDescargaComponent implements OnInit {
     @Input() visible: boolean = false
     @Output() visibleChange = new EventEmitter<boolean>()
     @Output() mostrarActivarMatriz = new EventEmitter<any>()
 
+    checked: boolean = false
     form: FormGroup
     constructor(private fb: FormBuilder) {}
 

@@ -13,3 +13,46 @@
         color: var(--primary-color-text) !important;
     }
 }
+
+:host ::ng-deep .p-inputgroup .group-element,
+:host ::ng-deep .p-inputgroup .p-inputtextarea,
+:host ::ng-deep .p-inputgroup .group-element .p-dropdown {
+    width: 100% !important;
+    border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .group-element:last-child,
+:host ::ng-deep .p-inputgroup .p-inputtextarea,
+:host ::ng-deep .p-inputgroup .group-element.p-inputtext {
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+    border-top-left-radius: 0rem !important;
+    border-bottom-left-radius: 0rem !important;
+}
+
+:host
+    ::ng-deep
+    .p-inputgroup
+    p-dropdown:has(+ .group-element)
+    .p-dropdown.group-element,
+:host
+    ::ng-dee
+    .p-inputgroup
+    p-multiselect:has(+ .group-element)
+    .p-multiselect.group-element {
+    border-radius: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon {
+    border-top-left-radius: 0.5rem !important;
+    border-bottom-left-radius: 0.5rem !important;
+    border-top-right-radius: 0rem !important;
+    border-bottom-right-radius: 0rem !important;
+    padding: 0 1rem !important;
+    border: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon:only-child {
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+}

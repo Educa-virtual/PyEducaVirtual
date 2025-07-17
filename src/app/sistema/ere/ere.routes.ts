@@ -15,6 +15,7 @@ import { MostrarEvaluacionComponent } from './evaluaciones/examen/mostrar-evalua
 import { RendirExamenComponent } from './evaluaciones/examen/rendir-examen/rendir-examen.component'
 import { AsignarAreasEspecialistaDremoComponent } from '../especialista-dremo/asignar-areas/especialista-dremo.component'
 import { AsignarAreasEspecialistaUgelComponent } from '../especialista-ugel/asignar-areas/asignar-areas.component'
+import { EvaluacionExclusionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaciones/evaluacion-exclusiones/evaluacion-exclusiones.component'
 /*import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
@@ -165,6 +166,21 @@ const routes: Routes = [
             expectedRole: [ESTUDIANTE],
             breadcrumb: 'Rendir Examen',
             icon: 'pi pi-share-alt',
+        },
+    },
+    {
+        path: 'evaluaciones/:iEvaluacionId/exclusiones',
+        component: EvaluacionExclusionesComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [
+                ADMINISTRADOR_DREMO,
+                ESPECIALISTA_DREMO,
+                ESPECIALISTA_UGEL,
+                DIRECTOR_IE,
+            ],
+            breadcrumb: 'Gerstionar exclusiones',
+            icon: 'pi pi-times',
         },
     },
 

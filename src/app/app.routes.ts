@@ -149,10 +149,7 @@ export const routes: Routes = [
     {
         path: 'bienestar',
 
-        loadChildren: () =>
-            import('./sistema/bienestar/bienestar.module').then(
-                (m) => m.BienestarModule
-            ),
+        loadChildren: () => import('./sistema/bienestar/bienestar.routes'),
     },
     {
         path: 'apoderado',

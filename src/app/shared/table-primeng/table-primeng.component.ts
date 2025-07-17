@@ -48,7 +48,8 @@ export interface IColumn {
     padding?: string
     field: string
     header: string
-    text_header: string
+    text_header: string | null
+    class?: string
     placeholder?: string
     inputType?: string
     outputType?: string

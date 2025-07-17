@@ -17,7 +17,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-transferir-grupo.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ScrollerModule } from 'primeng/scroller';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
@@ -31,6 +31,8 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { Location } from '@angular/common';
 import { DescripcionActividadesComponent } from '../../components/descripcion-actividades/descripcion-actividades.component';
 import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component';
+import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 @Component({
   selector: 'app-tarea-room',
   standalone: true,
@@ -54,8 +56,7 @@ import { TabDescripcionActividadesComponent } from '../../components/tab-descrip
   styleUrl: './tarea-room.component.scss',
   providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent implements OnChanges, OnInit {
-  form: FormGroup;
+export class TareaRoomComponent extends MostrarErrorComponent implements OnChanges, OnInit {
   @Input() iIeCursoId;
   @Input() iSeccionId;
   @Input() iNivelGradoId;
@@ -76,6 +77,9 @@ export class TareaRoomComponent implements OnChanges, OnInit {
   private _formBuilder = inject(FormBuilder);
   private _aulaService = inject(ApiAulaService);
   private confirmationService = inject(ConfirmationService);
+  private _EscalaCalificacionesService = inject(EscalaCalificacionesService);
+  private location = inject(Location);
+  private fb = inject(FormBuilder);
 
   students: any;
 
@@ -88,15 +92,10 @@ export class TareaRoomComponent implements OnChanges, OnInit {
   home: MenuItem | undefined;
   isDocente: boolean = this._constantesService.iPerfilId === DOCENTE;
 
-  constructor(
-    private messageService: MessageService,
-    private location: Location,
-    private fb: FormBuilder
-  ) {
-    this.form = this.fb.group({
-      editor: [''],
-    });
-  }
+  form: FormGroup = this.fb.group({
+    editor: [''],
+  });
+
   public entregarEstud: FormGroup = this._formBuilder.group({
     cTareaEstudianteUrlEstudiante: [''],
     iEstudianteId: [1],
@@ -378,9 +377,6 @@ export class TareaRoomComponent implements OnChanges, OnInit {
           : null;
 
         break;
-      case 'get-escala-calificaciones':
-        this.escalaCalificaciones = item;
-        break;
       case 'guardar-calificacion-docente':
         this.iEscalaCalifId = null;
         this.estudianteSeleccionado = null;
@@ -519,18 +515,14 @@ export class TareaRoomComponent implements OnChanges, OnInit {
   }
 
   obtenerEscalaCalificaciones() {
-    const params = {
-      petition: 'post',
-      group: 'evaluaciones',
-      prefix: 'escala-calificaciones',
-      ruta: 'list',
-      data: {
-        opcion: 'CONSULTAR',
+    this._EscalaCalificacionesService.obtenerEscalaCalificaciones().subscribe({
+      next: resp => {
+        if (resp.validated) this.escalaCalificaciones = resp.data;
       },
-      params: { skipSuccessMessage: true },
-    };
-    this.getInformation(params, 'get-' + params.prefix);
+      error: error => this.mostrarErrores(error),
+    });
   }
+
   guardarTareaEstudiantesxDocente() {
     if (!this.iEscalaCalifId) {
       this.messageService.add({

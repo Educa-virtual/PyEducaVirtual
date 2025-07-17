@@ -325,7 +325,7 @@
 </div>
 
 <!-- Mensaje para perfiles no autorizados -->
-<div
+<!--<div
     *ngIf="!esDirector && !esEspecialista"
     class="text-center p-6 bg-red-50 border-round"
 >
@@ -334,9 +334,8 @@
     <p class="text-red-600 m-0">
         Su perfil no tiene permisos para acceder a esta funcionalidad.
     </p>
-</div>
+</div>-->
 
-<!-- Componentes dialogs -->
 <app-configurar-nivel-logro [(mostrar)]="visible"></app-configurar-nivel-logro>
 <app-dialog-generar-cuadernillo
     [(mostrarDialogoEdicion)]="mostrarDialogoEdicion"

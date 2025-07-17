@@ -7,7 +7,56 @@
     [draggable]="false"
     [resizable]="false"
     styleClass="nueva-categoria-dialog"
-    [style]="{ width: '700px', height: '350px' }"
+    [style]="{ width: '700px', height: '320px' }"
 >
-    contenido test
+    <br />
+    <form [formGroup]="form" class="dialog-content">
+        <!-- Sección Acceso a resultados -->
+        <div class="mb-4">
+            <!-- Título -->
+            <div class="mb-3">
+                <h2 class="text-primary text-lg font-semibold m-0">
+                    Descargar Matriz
+                </h2>
+            </div>
+            <div class="grid border-bottom-1 surface-border">
+                <div class="col-9">
+                    <span class="font-medium">Especialistas DREMO</span>
+                    <!-- Especialistas DREMO -->
+                    <!--<div class="flex align-items-center justify-content-between py-2 border-bottom-1 surface-border">
+
+                    </div>-->
+                </div>
+                <div class="col-3">
+                    <p-dropdown
+                        formControlName="iEspDremoTipoAccesoId"
+                        placeholder="Detalle"
+                        styleClass="w-full"
+                    ></p-dropdown>
+                </div>
+            </div>
+            <div class="grid border-bottom-1 surface-border">
+                <div class="col-9">
+                    <span class="font-medium">Directores</span>
+                </div>
+                <div class="col-3">
+                    <p-dropdown
+                        formControlName="iDirectorTipoAccesoId"
+                        placeholder="Ninguno"
+                        styleClass="w-full"
+                    ></p-dropdown>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón Actualizar -->
+        <div class="flex justify-content-end pt-3">
+            <p-button
+                label="Guardar"
+                icon="pi pi-check"
+                severity="success"
+                (click)="onHide()"
+            ></p-button>
+        </div>
+    </form>
 </p-dialog>

@@ -1,5 +1,6 @@
 import { Component, Output, Input, OnInit, EventEmitter } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
+import { FormBuilder, FormGroup } from '@angular/forms'
 
 @Component({
     selector: 'app-activar-matriz',
@@ -13,8 +14,12 @@ export class ActivarMatrizComponent implements OnInit {
     @Output() visibleChange = new EventEmitter<boolean>()
     @Output() mostrarActivarMatriz = new EventEmitter<any>()
 
+    form: FormGroup
+    constructor(private fb: FormBuilder) {}
+
     ngOnInit() {
         console.log('inicializando OnInit')
+        this.form = this.fb.group({})
     }
 
     onHide() {

@@ -213,6 +213,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   semanas = [];
   obtenerContenidoSemanasxiSilaboId() {
     if (!this.iSilaboId) return;
+
     const params = { iCredId: this._ConstantesService.iCredId };
 
     this._ContenidoSemanasService
@@ -220,12 +221,16 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       .subscribe({
         next: resp => {
           if (resp.validated) {
-            this.semanas = [];
-            this.semanas = resp.data;
-            this.semanas.unshift({
-              iContenidoSemId: 0,
-              cContenidoSemTitulo: 'Todas las semanas',
-            });
+            this.semanas = resp.data || [];
+
+            const yaExisteTodas = this.semanas.some(semana => semana.iContenidoSemId === 0);
+
+            if (!yaExisteTodas) {
+              this.semanas.unshift({
+                iContenidoSemId: 0,
+                cContenidoSemTitulo: 'Todas las semanas',
+              });
+            }
           }
         },
         error: error => this.mostrarErrores(error),
@@ -467,5 +472,35 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       [EVALUACION]: 'background-foro',
     };
     return clases[this.actividadSeleccionado] || '';
+  }
+
+  obtenerCalificacionxPeriodo() {
+    const nPeriodo = this.periodos.find(p => p.iPeriodoEvalAperId === this.periodoSeleccionado);
+    if (!nPeriodo || !this.estudianteSeleccionado) return '';
+    const calificacionKey = `iEscalaCalifIdPeriodo${nPeriodo.iNumeroPeriodo}Final`;
+    return this.estudianteSeleccionado[calificacionKey];
+  }
+
+  obtenerSeverityCalificacion(): 'success' | 'warning' | 'danger' | undefined {
+    const calificacion = this.obtenerCalificacionxPeriodo();
+    switch (calificacion) {
+      case 'AD':
+      case 'A':
+        return 'success';
+      case 'B':
+        return 'warning';
+      case 'C':
+        return 'danger';
+      default:
+        return undefined; // O puedes devolver 'secondary' u otro si quieres estilo neutro
+    }
+  }
+
+  obteneSemanasxiPeriodoEvalAperId(): any[] {
+    if (!this.periodoSeleccionado) return [];
+    return this.semanas.filter(
+      semana =>
+        semana.iContenidoSemId === 0 || semana.iPeriodoEvalAperId === this.periodoSeleccionado
+    );
   }
 }

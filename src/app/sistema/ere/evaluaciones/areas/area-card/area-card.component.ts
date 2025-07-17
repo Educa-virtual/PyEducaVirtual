@@ -24,6 +24,7 @@ import {
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/perfilesConstantes'
 import { PrimengModule } from '@/app/primeng.module'
+import { ActivarMatrizComponent } from '../activar-matriz/activar-matriz.component'
 
 @Component({
     selector: 'app-area-card',
@@ -34,6 +35,7 @@ import { PrimengModule } from '@/app/primeng.module'
         ButtonModule,
         StringCasePipe,
         PrimengModule,
+        ActivarMatrizComponent,
     ],
     templateUrl: './area-card.component.html',
     styleUrl: './area-card.component.scss',
@@ -43,6 +45,8 @@ export class AreaCardComponent implements OnInit {
     private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
     private _ConstantesService = inject(ConstantesService)
+
+    mostrarActivarMatriz: boolean = false
 
     @Input() iEvaluacionIdHashed: string = ''
     @Input() curso: ICurso
@@ -167,7 +171,9 @@ export class AreaCardComponent implements OnInit {
             {
                 label: 'Activar matriz',
                 icon: '',
-                command: () => {},
+                command: () => {
+                    this.mostrarActivarMatriz = true
+                },
                 disabled: this.iPerfilId !== ADMINISTRADOR_DREMO,
             },
         ]
@@ -291,5 +297,11 @@ export class AreaCardComponent implements OnInit {
 
     importarResultados() {
         console.log('importar resultados')
+    }
+    cerrarDialogoNuevaEncuesta() {
+        this.mostrarActivarMatriz = false
+    }
+    abrirDialogoNuevaEncuesta() {
+        this.mostrarActivarMatriz = true
     }
 }

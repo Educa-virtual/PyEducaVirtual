@@ -1,1 +1,13 @@
-<p>activar-matriz works!</p>
+<p-dialog
+    header="Activar Matriz"
+    [(visible)]="visible"
+    (onHide)="onHide()"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="nueva-categoria-dialog"
+    [style]="{ width: '700px', height: '30px' }"
+>
+    contenido test
+</p-dialog>

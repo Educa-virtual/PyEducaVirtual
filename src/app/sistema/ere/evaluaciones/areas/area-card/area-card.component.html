@@ -54,3 +54,9 @@
     </ng-template>
 </p-menu>
 <p-toast />
+<app-activar-matriz
+    [visible]="mostrarActivarMatriz"
+    (visibleChange)="cerrarDialogoNuevaEncuesta()"
+    (mostrarDialogoNuevaEncuesta)="abrirDialogoNuevaEncuesta()"
+>
+</app-activar-matriz>

@@ -1,10 +1,23 @@
-import { Component } from '@angular/core'
+import { Component, Output, Input, OnInit, EventEmitter } from '@angular/core'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-activar-matriz',
     standalone: true,
-    imports: [],
+    imports: [PrimengModule],
     templateUrl: './activar-matriz.component.html',
     styleUrl: './activar-matriz.component.scss',
 })
-export class ActivarMatrizComponent {}
+export class ActivarMatrizComponent implements OnInit {
+    @Input() visible: boolean = false
+    @Output() visibleChange = new EventEmitter<boolean>()
+    @Output() mostrarActivarMatriz = new EventEmitter<any>()
+
+    ngOnInit() {
+        console.log('inicializando OnInit')
+    }
+
+    onHide() {
+        console.log('onHide')
+    }
+}

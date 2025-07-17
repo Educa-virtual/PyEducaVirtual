@@ -9,6 +9,7 @@ import { SubirArchivoComponent } from '../../../../../shared/subir-archivo/subir
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { environment } from '@/environments/environment';
 // import { validEvents } from '@tinymce/tinymce-angular/editor/Events';
 
 @Component({
@@ -34,6 +35,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   periodos = [];
   data: any;
   pdfURL: SafeResourceUrl | null = null;
+  showPdf: boolean = false;
 
   public formSesines = this._formBuilder.group({
     cContenidoSemTitulo: ['', [Validators.required]],
@@ -148,10 +150,14 @@ export class SesionAprendizajeFormComponent implements OnChanges {
     console.log(this.documentos);
   }
   verPdf() {
+    this.showPdf = true;
     const rutaRelativa = this.documentos.data;
-    const baseURL = 'http://localhost:8000/storage/'; // cambia por tu URL real si estás en producción
+    const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
     const url = baseURL + rutaRelativa;
 
     this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+  cerrarModal() {
+    this.showPdf = false;
   }
 }

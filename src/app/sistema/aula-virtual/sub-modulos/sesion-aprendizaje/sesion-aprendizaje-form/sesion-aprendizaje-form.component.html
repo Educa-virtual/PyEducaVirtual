@@ -52,7 +52,7 @@
             >Adjuntar Sesión de Aprendizaje</label
           >
         </div>
-        {{ documentos }}
+        <!-- {{ documentos }} -->
         <div *ngIf="documentos">
           <p-button
             icon="pi pi-eye"
@@ -60,11 +60,12 @@
             [text]="true"
             severity="secondary"
             (click)="verPdf()"
+            pTooltip="Ver pdf"
           />
           <!-- Mostrar el embed solo cuando hay URL -->
-          <div *ngIf="pdfURL" class="pdf-container">
-            <embed [src]="pdfURL" type="application/pdf" width="100%" height="600px" />
-          </div>
+          <!-- <div *ngIf="pdfURL" class="pdf-container">
+            <embed [src]="pdfURL" type="application/pdf"/>
+          </div> -->
         </div>
       </div>
       <app-subir-archivo
@@ -76,6 +77,18 @@
   <div footer class="flex justify-content-end gap-2">
     <p-button label="Cancelar" severity="secondary" (onClick)="this.accionCloseForm.emit()" />
     <p-button [label]="'GUARDAR'" (click)="guardarDatosdeSesion()" />
+  </div>
+</app-modal-primeng>
+
+<!--  -->
+<app-modal-primeng
+  [title]="'Vista previa del documento'"
+  [showModal]="showPdf"
+  (accionBtnItem)="cerrarModal()"
+  width="55rem"
+>
+  <div *ngIf="pdfURL" class="pdf-container">
+    <embed [src]="pdfURL" type="application/pdf" width="100%" height="600px" />
   </div>
 </app-modal-primeng>
 

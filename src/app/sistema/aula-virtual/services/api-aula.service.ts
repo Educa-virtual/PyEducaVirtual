@@ -36,12 +36,7 @@ export class ApiAulaService {
       data
     );
   }
-  obtenerCalificacion(data) {
-    return this._http.post(
-      `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerCalificacion`,
-      data
-    );
-  }
+
   obtenerForo(params: { iActTipoId; ixActivadadId }) {
     return this._http
       .get<any>(`${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerForo`, { params })
@@ -96,16 +91,8 @@ export class ApiAulaService {
           if (!response || !response.data) {
             throw new Error('La respuesta no contiene datos válidos');
           }
-          console.log(response.data);
           return response.data;
         })
-        // map((data) => {
-        //     if (data.iActTipoId == 2) {
-        //         const preguntas = mapItemsBancoToEre(data.preguntas)
-        //         data.preguntas = mapData(preguntas)
-        //     }
-        //     return data
-        // })
       );
   }
 

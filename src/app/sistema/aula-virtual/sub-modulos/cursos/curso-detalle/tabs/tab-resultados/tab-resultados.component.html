@@ -1,219 +1,239 @@
 <div class="card relative mt-3">
-    <p-selectButton
-        [options]="stateOptions"
-        [(ngModel)]="seleccionarResultado"
-        optionLabel="label"
-        optionValue="value"
-        (onChange)="obtenerTab($event)"
-        class="tab"
-    />
-    <div class="grid">
-        @switch (seleccionarResultado) {
-            @case ('1') {
-                <div class="col-12 mt-5">
-                    <app-table-primeng
-                        [columnas]="columnasTabla"
-                        [data]="reporteNotasFinales"
-                        (accionBtnItem)="accionBnt($event)"
-                        [actions]="accionesTabla"
-                    >
-                        <!--  -->
-                    </app-table-primeng>
-                </div>
-            }
-            @case ('2') {
-                <div class="card col-12 md:col-4 relative mr-2 mt-6">
-                    <samp class="tagEst">Lista de Estudiantes</samp>
-                    <div class="mt-3">
-                        <app-card-orderlist
-                            [data]="reporteNotasFinales"
-                            (datoSeleccionado)="obtenerComnt($event)"
-                        >
-                        </app-card-orderlist>
-                    </div>
-                </div>
-                <div class="card col relative mt-6">
-                    <samp class="tagDet">Detalles por Estudiante</samp>
-                    <!-- Mostrar botones de las actividades realizadas -->
-                    <div class="mt-5 col-12">
-                        <p-selectButton
-                            [options]="listarActividades"
-                            [(ngModel)]="actividadSeleccionado"
-                            optionLabel="label"
-                            optionValue="value"
-                            [unselectable]="false"
-                            class="actividad"
-                        >
-                        </p-selectButton>
-                    </div>
-                    <div class="grid col-12">
-                        <div class="col-6">
-                            <p-dropdown
-                                [options]="unidades"
-                                optionLabel="cPeriodoEvalNombre"
-                                styleClass="w-full"
-                                placeholder="Todos los periodos"
-                            />
-                        </div>
-                        <div class="col-6">
-                            <p-dropdown
-                                optionLabel="name"
-                                styleClass="w-full"
-                                placeholder="Todas las semanas"
-                            />
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div class="col-12">
-                            @for (
-                                actividad of obtenerActividadesxiActTipoId();
-                                track $index;
-                                let i = $index
-                            ) {
-                                <div
-                                    class="card mb-5 relative overflow-visible"
-                                    [style]="obtenerStyleActividad()"
-                                >
-                                    <div
-                                        class="flex flex-wrap w-full justify-content-between gap-0 m-0"
-                                    >
-                                        <div class="flex gap-4 font-normal">
-                                            <div class="align-content-center">
-                                                #{{ i + 1 }}
-                                            </div>
-                                            <div
-                                                class="flex flex-column my-2 align-items-start"
-                                            >
-                                                <span
-                                                    class="text-none font-bold"
-                                                    >{{
-                                                        actividad.cProgActTituloLeccion
-                                                    }}</span
-                                                >
-                                                <div class="mt-2">
-                                                    <i
-                                                        class="pi pi-calendar text-primary"
-                                                    ></i>
-                                                    <span>
-                                                        Fecha de Inicio:
-                                                        {{
-                                                            actividad[
-                                                                'dtProgActInicio'
-                                                            ]
-                                                                | date
-                                                                    : 'dd/MM/yyyy'
-                                                        }}
-                                                    </span>
+  <p-selectButton
+    [options]="stateOptions"
+    [(ngModel)]="seleccionarResultado"
+    optionLabel="label"
+    optionValue="value"
+    (onChange)="obtenerTab($event)"
+    class="tab"
+  />
+  <div class="grid">
+    @switch (seleccionarResultado) {
+      @case ('1') {
+        <div class="col-12 mt-5">
+          <app-table-primeng
+            [columnas]="columnasTabla"
+            [data]="reporteNotasFinales"
+            (accionBtnItem)="accionBnt($event)"
+            [actions]="accionesTabla"
+          >
+          </app-table-primeng>
+        </div>
+      }
+      @case ('2') {
+        <div class="card col-12 md:col-4 relative mr-2 mt-6">
+          <samp class="tagEst">Lista de Estudiantes</samp>
+          <div class="mt-3">
+            <app-card-orderlist
+              [seleccionado]="estudianteSeleccionado"
+              [data]="reporteNotasFinales"
+              (datoSeleccionado)="obtenerComnt($event)"
+            >
+            </app-card-orderlist>
+          </div>
+        </div>
+        <div class="card col relative mt-6">
+          <samp class="tagDet">Detalles por Estudiante</samp>
 
-                                                    <span>
-                                                        Fecha de Fin:
-                                                        {{
-                                                            actividad[
-                                                                'dtProgActFin'
-                                                            ]
-                                                                | date
-                                                                    : 'dd/MM/yyyy'
-                                                        }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="flex flex-column align-items-end justify-content-center gap-2"
-                                        >
-                                            <div
-                                                class="align-content-center text-xl font-bold"
-                                            >
-                                                {{
-                                                    actividad[
-                                                        'nTareaEstudianteNota'
-                                                    ] || '-'
-                                                }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
+          <div class="grid mt-2 flex justify-content-end ml-1">
+            <div class="col-12 alert-docente my-1 mx-2" *ngIf="iPerfilId === DOCENTE">
+              <i class="pi pi-info-circle mr-2 text-primary"></i>
+              <span>
+                Seleccione un <strong>estudiante</strong> y luego un <strong>período</strong> para
+                calificar.
+              </span>
+            </div>
+            <div class="col-8">
+              <p-inputGroup>
+                <p-inputGroupAddon>Periodo:</p-inputGroupAddon>
+                <p-dropdown
+                  styleClass="w-full"
+                  placeholder="Seleccione un Periodo"
+                  appendTo="body"
+                  [options]="periodos"
+                  optionValue="iPeriodoEvalAperId"
+                  optionLabel="cNombrePeriodo"
+                  [(ngModel)]="periodoSeleccionado"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-4 flex justify-content-around">
+              @if (iPerfilId === DOCENTE) {
+                <p-button
+                  label="Calificar"
+                  severity="success"
+                  [disabled]="!estudianteSeleccionado || !periodoSeleccionado"
+                  (onClick)="enviarDatosFinales(estudianteSeleccionado, true)"
+                />
+                @if (estudianteSeleccionado) {
+                  <p-button
+                    *ngIf="obtenerCalificacionxPeriodo()"
+                    [label]="obtenerCalificacionxPeriodo()"
+                    [rounded]="true"
+                    [severity]="obtenerSeverityCalificacion()"
+                  />
+                }
+              }
+            </div>
+          </div>
+          <div class="col-12">
+            <p-selectButton
+              [options]="listarActividades"
+              [(ngModel)]="actividadSeleccionado"
+              optionLabel="label"
+              optionValue="value"
+              [unselectable]="false"
+              class="actividad"
+            >
+            </p-selectButton>
+          </div>
+          <div class="col-12">
+            <p-inputGroup>
+              <p-inputGroupAddon>Buscar:</p-inputGroupAddon>
+              <p-dropdown
+                [options]="obteneSemanasxiPeriodoEvalAperId()"
+                appendTo="body"
+                optionValue="iContenidoSemId"
+                optionLabel="cContenidoSemTitulo"
+                styleClass="w-full"
+                placeholder="Todas las semanas"
+                [(ngModel)]="semanaSeleccionado"
+                [filter]="true"
+                filterBy="cContenidoSemTitulo"
+                [showClear]="true"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="grid">
+            @if (estudianteSeleccionado) {
+              <div class="col-12 mt-2">
+                @for (actividad of obtenerActividadesxiActTipoId(); track $index; let i = $index) {
+                  <div
+                    class="card mb-5 relative overflow-visible"
+                    [style]="obtenerStyleActividad()"
+                  >
+                    <div class="flex flex-wrap justify-between gap-0 m-0 w-full">
+                      <div class="flex gap-2 font-normal w-full">
+                        <div class="flex flex-column my-2 align-items-start flex-1 min-w-0">
+                          <span
+                            class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
+                            [title]="actividad?.cProgActTituloLeccion"
+                          >
+                            #{{ i + 1 }}.
+                            {{
+                              actividad?.cProgActTituloLeccion.length > 150
+                                ? (actividad?.cProgActTituloLeccion | slice: 0 : 150) + '...'
+                                : actividad?.cProgActTituloLeccion
+                            }}
+                          </span>
+                          <div
+                            class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                          >
+                            <div class="flex items-center gap-1 m-1">
+                              <span>Desde:</span>
+                              <i class="pi pi-calendar text-primary ml-1"></i>
+                              <span>{{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }}</span>
+                              <i class="pi pi-clock text-primary ml-2"></i>
+                              <span>{{ actividad['dtProgActInicio'] | date: 'h:mm a' }}</span>
+                            </div>
+                            <div class="flex items-center gap-1 m-1">
+                              <span>hasta:</span>
+                              <i class="pi pi-calendar text-primary ml-1"></i>
+                              <span>{{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}</span>
+                              <i class="pi pi-clock text-primary ml-2"></i>
+                              <span>{{ actividad['dtProgActFin'] | date: 'h:mm a' }}</span>
+                            </div>
+                          </div>
+                          @if (actividad.cTareaEstudianteComentarioDocente) {
+                            <div
+                              class="mt-3 p-3 border-1 border-green-200 border-round bg-green-50 w-full"
+                            >
+                              <p class="text-gray-700 font-medium mb-2">
+                                🏆<b>Conclusión Descriptiva:</b>
+                              </p>
+                              <div
+                                class="mx-1"
+                                [innerHTML]="actividad.cTareaEstudianteComentarioDocente || '-'"
+                              ></div>
+                            </div>
+                          }
                         </div>
+                      </div>
                     </div>
-                </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="col-12">
+                <app-no-data
+                  [showIcon]="'NO-DATA'"
+                  [mensaje]="'No ha seleccionado para visualizar las actividades'"
+                ></app-no-data>
+              </div>
             }
-        }
-    </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
 </div>
 <p-dialog
-    [style]="{ width: '60rem' }"
-    class="p-fluid"
-    [modal]="true"
-    [(visible)]="mostrarModalConclusionDesc"
-    header="Agregar conclusión descriptiva a : {{
-        estudianteSelect?.completoalumno
-    }}"
+  [style]="{ width: '60rem' }"
+  class="p-fluid"
+  [modal]="true"
+  [(visible)]="mostrarModalConclusionDesc"
+  header="Agregar conclusión descriptiva a : {{ estudianteSelect?.completoalumno }}"
 >
-    <form [formGroup]="conclusionDescrp" class="flex flex-column gap-3 w-full">
-        <div class="grid pt-2">
-            <!-- Mostrar la califcación comentada segun el requerimiento -->
-            <!--  for="calificacion" [options]="calificacion"-->
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        Nivel de Logro final:
-                    </p-inputGroupAddon>
-                    <p-dropdown
-                        formControlName="iEscalaCalifId"
-                        [options]="calificacion"
-                        optionValue="iEscalaCalifId"
-                        optionLabel="cEscalaCalifNombre"
-                        placeholder="Seleccione una Calificación"
-                        [style]="{ width: '100%' }"
-                        [showClear]="true"
-                    ></p-dropdown>
-                </p-inputGroup>
-            </div>
-            <!-- Mostrar descripción -->
-            <div class="col-12">
-                <label for="descripcion" class="font-bold mt-1"
-                    >Descripción
-                    <span class="text-red-500 text-xs">(*) Obligatorio</span>
-                </label>
-                <div class="mt-2 pt-2">
-                    <!-- <p-editor id="descripcion" formControlName="cDetMatConclusionDescPromedio"
-                        placeholder="Escribe una conclusión descriptiva.... " [style]="{ height: '150px' }" /> -->
-                    <textarea
-                        id="descripcion"
-                        formControlName="cDetMatConclusionDescPromedio"
-                        placeholder="Escribe una descripción.... "
-                        [style]="{ height: '150px' }"
-                        class="w-full p-inputtext p-component"
-                    ></textarea>
-                </div>
-            </div>
+  <form [formGroup]="conclusionDescrp" class="flex flex-column gap-3 w-full">
+    <div class="grid pt-2">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Nivel de Logro final: </p-inputGroupAddon>
+          <p-dropdown
+            formControlName="iEscalaCalifId"
+            [options]="calificacion"
+            optionValue="iEscalaCalifId"
+            optionLabel="cEscalaCalifNombre"
+            placeholder="Seleccione una Calificación"
+            [style]="{ width: '100%' }"
+            [showClear]="true"
+          ></p-dropdown>
+        </p-inputGroup>
+      </div>
+      <!-- Mostrar descripción -->
+      <div class="col-12">
+        <label for="descripcion" class="font-bold mt-1"
+          >Descripción
+          <span class="text-red-500 text-xs">(*) Obligatorio</span>
+        </label>
+        <div class="mt-2 pt-2">
+          <textarea
+            id="descripcion"
+            formControlName="cDetMatConclusionDescPromedio"
+            placeholder="Escribe una descripción.... "
+            [style]="{ height: '150px' }"
+            class="w-full p-inputtext p-component"
+          ></textarea>
         </div>
-    </form>
-    <div class="reply-container">
-        <div class="button-container">
-            <button
-                pButton
-                pRipple
-                label="Cancelar"
-                icon="pi pi-times"
-                class="p-button-secondary mx-3"
-                type="button"
-                size="small"
-                (click)="cerrarModalDeCalif()"
-            ></button>
-            <button
-                pButton
-                pRipple
-                type="button"
-                label="Enviar"
-                icon="pi pi-send"
-                size="small"
-                class="p-button-primary"
-                (click)="guardarConclusionDescriptiva()"
-            ></button>
-            <!-- (click)="calificarComnt()" -->
-        </div>
+      </div>
     </div>
+  </form>
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      class="w-full"
+      styleClass="w-full"
+      (click)="mostrarModalConclusionDesc = false"
+    />
+    <p-button
+      label="Guardar"
+      class="w-full"
+      styleClass="w-full"
+      [loading]="isLoading"
+      [disabled]="isLoading"
+      (click)="guardarConclusionDescriptiva()"
+    />
+  </div>
 </p-dialog>
 <p-toast></p-toast>

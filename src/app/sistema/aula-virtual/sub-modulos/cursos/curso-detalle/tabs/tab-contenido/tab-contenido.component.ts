@@ -494,7 +494,7 @@ export class TabContenidoComponent implements OnInit {
               idDocCursoId: this.idDocCursoId,
               action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
             },
-            header: action === 'EDITAR' ? 'Editar Videoconferencia' : 'Crear Videoconferenciad',
+            header: action === 'EDITAR' ? 'Editar Videoconferencia' : 'Crear Videoconferencia',
           }
         );
         ref.onClose.subscribe(result => {

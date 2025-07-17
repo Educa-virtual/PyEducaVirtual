@@ -67,6 +67,7 @@
                 />
                 @if (estudianteSeleccionado) {
                   <p-button
+                    *ngIf="obtenerCalificacionxPeriodo()"
                     [label]="obtenerCalificacionxPeriodo()"
                     [rounded]="true"
                     [severity]="obtenerSeverityCalificacion()"

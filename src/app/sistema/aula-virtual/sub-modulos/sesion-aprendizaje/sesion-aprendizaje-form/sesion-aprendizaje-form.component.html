@@ -82,9 +82,9 @@
     <p-button label="Cancelar" severity="secondary" (onClick)="this.accionCloseForm.emit()" />
     <button
       pButton
-      [label]="accion === 'editar' ? 'EDITAR' : 'GUARDAR'"
+      [label]="accion === 'editar' ? 'ACTUALIZAR' : 'GUARDAR'"
       [class]="accion === 'editar' ? 'p-button-warning' : 'p-button-success'"
-      (click)="guardarDatosdeSesion()"
+      (click)="accion === 'editar' ? actualizarDatosdeSesion() : guardarDatosdeSesion()"
     ></button>
     <!-- <p-button 
       [label]="accion === 'editar'? 'EDITAR' : 'GUARDAR'" 

@@ -22,6 +22,7 @@ import { environment } from '@/environments/environment';
 export class SesionAprendizajeFormComponent implements OnChanges {
   @Output() accionCloseForm = new EventEmitter<void>();
   @Output() dataSesion = new EventEmitter<any>();
+  @Output() editarSesion = new EventEmitter<any>();
   @Input() showModal: boolean = false;
   @Input() idSesion: number = 0;
   @Input() accion: string = '';
@@ -154,6 +155,15 @@ export class SesionAprendizajeFormComponent implements OnChanges {
     };
 
     this.dataSesion.emit(this.data);
+    this.accionCloseForm.emit();
+  }
+  // funcion para actualizar los datos de las sesiones
+  actualizarDatosdeSesion() {
+    this.data = {
+      ...this.formSesines.value,
+      cAdjunto: this.documentos?.data ? this.documentos.data : this.rutaRelativa,
+    };
+    this.editarSesion.emit(this.data);
     this.accionCloseForm.emit();
   }
   mostrarMensajeToast(message) {

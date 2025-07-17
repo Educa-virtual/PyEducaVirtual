@@ -309,6 +309,62 @@ export class TabContenidoComponent implements OnInit {
       },
     });
   }
+  // funcion para actualizar datos
+  actualizarSesionDeAprendizaje(data: any) {
+    const datos = {
+      ...data,
+      cTipoUsuario: 'DOCENTE',
+      iCredId: this._constantesService.iCredId,
+    };
+    const params = {
+      petition: 'put',
+      group: 'acad',
+      prefix: 'contenido-semanas',
+      ruta: this.semanaActivado,
+      data: datos,
+      params: {
+        iCredId: this._constantesService.iCredId,
+      },
+    };
+    console.log('datos datos actualizados', params);
+    //Servicio para obtener los instructores
+    this.GeneralService.getGralPrefixx(params).subscribe({
+      next: response => {
+        if (response.validated) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Acción exitosa',
+            detail: response.message,
+          });
+          this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          // this.showModal = false
+          // this.instructorForm.reset()
+        }
+      },
+      error: error => {
+        const errores = error?.error?.errors;
+        if (error.status === 422 && errores) {
+          // Recorre y muestra cada mensaje de error
+          Object.keys(errores).forEach(campo => {
+            errores[campo].forEach((mensaje: string) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: mensaje,
+              });
+            });
+          });
+        } else {
+          // Error genérico si no hay errores específicos
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error?.error?.message || 'Ocurrió un error inesperado',
+          });
+        }
+      },
+    });
+  }
   datosSesion: any;
   accion: string = '';
   //
@@ -338,7 +394,8 @@ export class TabContenidoComponent implements OnInit {
   eliminarSesionDeAprendizaje() {
     // console.log('Eliminar', itemn);
     this._confirmService.openConfirm({
-      header: '¿Esta seguro de eliminar la sesión:  ' + this.semanaSeleccionada.cContenidoSemTitulo,
+      header: '¿Está seguro de eliminar la sesión?',
+      message: this.semanaSeleccionada.cContenidoSemTitulo,
       accept: () => {
         const params = {
           petition: 'delete',

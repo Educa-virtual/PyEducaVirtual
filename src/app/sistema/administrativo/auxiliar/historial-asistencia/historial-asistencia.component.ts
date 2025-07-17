@@ -42,7 +42,7 @@ export class HistorialAsistenciaComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log(1)
+        console.log()
         // this.buscarGrupos();
     }
     buscarGrupos() {
@@ -82,7 +82,6 @@ export class HistorialAsistenciaComponent implements OnInit {
         switch (accion) {
             case 'verificar_grupos':
                 if (item) {
-                    console.log(item)
                     this.grupo = item
                 }
                 break

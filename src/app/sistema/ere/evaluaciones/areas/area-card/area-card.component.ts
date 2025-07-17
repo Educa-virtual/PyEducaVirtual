@@ -298,10 +298,10 @@ export class AreaCardComponent implements OnInit {
     importarResultados() {
         console.log('importar resultados')
     }
-    cerrarDialogoNuevaEncuesta() {
+    cerrarActivarMatriz() {
         this.mostrarActivarMatriz = false
     }
-    abrirDialogoNuevaEncuesta() {
+    abrirActivarMatriz() {
         this.mostrarActivarMatriz = true
     }
 }

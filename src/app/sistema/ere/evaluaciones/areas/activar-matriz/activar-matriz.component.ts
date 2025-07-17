@@ -18,6 +18,7 @@ export class ActivarMatrizComponent implements OnInit {
     }
 
     onHide() {
-        console.log('onHide')
+        this.visible = false
+        this.visibleChange.emit(this.visible)
     }
 }

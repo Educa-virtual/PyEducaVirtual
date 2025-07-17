@@ -230,12 +230,14 @@ export class TabContenidoComponent implements OnInit {
       case 'close-modal':
         console.log(item);
         this.showModalSesionAprendizaje = false;
+
         // this.showModal = false;
         // this.obtenerInstructores();
         break;
       case 'guardar':
         // this.accion = accion;
         // this.showModal = true;
+        this.accion = 'guardar';
         this.showModalSesionAprendizaje = true;
         console.log('guardar');
         break;
@@ -307,43 +309,63 @@ export class TabContenidoComponent implements OnInit {
       },
     });
   }
+  datosSesion: any;
+  accion: string = '';
   //
   editarSesionDeAprendizaje() {
+    const params = {
+      petition: 'get',
+      group: 'acad',
+      prefix: 'contenido-semanas',
+      ruta: this.semanaActivado,
+      params: {
+        iCredId: this._constantesService.iCredId,
+      },
+    };
+    // Servicio para obtener los instructores
+    this.GeneralService.getGralPrefixx(params).subscribe(Data => {
+      const dataArray = (Data as any)['data'];
+      this.datosSesion = Array.isArray(dataArray) && dataArray.length > 0 ? dataArray[0] : null;
+      this.accion = 'editar';
+      // console.log('Objeto único de sesión', this.datosSesion);
+    });
+
     this.showModalSesionAprendizaje = true;
-    console.log('editar');
+    // console.log(this.semanaSeleccionada)
   }
-  eliminarSesionDeAprendizaje(itemn: any) {
-    console.log('Eliminar', itemn);
-    // const data = item;
+
+  //  función para eliminar sesiones de aprendizaje
+  eliminarSesionDeAprendizaje() {
+    // console.log('Eliminar', itemn);
     this._confirmService.openConfirm({
-      header: '¿Esta seguro de eliminar la sesión:  ',
-      // data.cPersNombre +
-      // ' ' +
-      // data.cPersPaterno +
-      // ' ?',
+      header: '¿Esta seguro de eliminar la sesión:  ' + this.semanaSeleccionada.cContenidoSemTitulo,
       accept: () => {
-        // const params = {
-        //   petition: 'delete',
-        //   group: 'cap',
-        //   prefix: 'instructores',
-        //   ruta: data.iInstId,
-        //   params: {
-        //     iCredId: this._constantesService.iCredId,
-        //   },
-        // };
+        const params = {
+          petition: 'delete',
+          group: 'acad',
+          prefix: 'contenido-semanas',
+          ruta: this.semanaActivado,
+          params: {
+            iCredId: this._constantesService.iCredId,
+          },
+        };
         // Servicio para obtener los instructores
-        // this.GeneralService.getGralPrefixx(params).subscribe({
-        //   next: resp => {
-        //     if (resp.validated) {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Acción exitosa',
-        //         detail: resp.message,
-        //       });
-        //       this.obtenerInstructores();
-        //     }
-        //   },
-        // });
+        this.GeneralService.getGralPrefixx(params).subscribe({
+          next: resp => {
+            if (resp.validated) {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Acción exitosa',
+                detail: resp.message,
+              });
+              // window.location.reload();
+              this.getData();
+              // this.semanaSeleccionada()
+              // this.obtenerContenidoSemanas(this.semanaSeleccionada);
+              // this.obtenerInstructores();
+            }
+          },
+        });
       },
       reject: () => {
         // Mensaje de cancelación (opcional)
@@ -368,7 +390,7 @@ export class TabContenidoComponent implements OnInit {
       label: 'Eliminar',
       icon: 'pi pi-trash',
       class: 'p-button-danger',
-      action: () => this.eliminarSesionDeAprendizaje({ item: 2 }), //this.guardar()
+      action: () => this.eliminarSesionDeAprendizaje(), //this.guardar()
     },
   ];
 

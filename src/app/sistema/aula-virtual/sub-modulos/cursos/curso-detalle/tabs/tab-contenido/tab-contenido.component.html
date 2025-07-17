@@ -42,6 +42,7 @@
     </p-menu>
   </div>
   <div class="card col">
+    {{ semanaSeleccionada }}
     <ng-container *ngIf="semanaSeleccionada">
       <app-toolbar-primeng
         title="{{ semanaSeleccionada.cContenidoSemNumero }} {{
@@ -133,6 +134,8 @@
 <app-sesion-aprendizaje-form
   *ngIf="showModalSesionAprendizaje"
   [showModal]="showModalSesionAprendizaje"
+  [datosSesion]="datosSesion"
+  [accion]="accion"
   [idSesion]="idSesion"
   (dataSesion)="guardarSesionDeAprendizaje($event)"
   (accionCloseForm)="showModalSesionAprendizaje = false"

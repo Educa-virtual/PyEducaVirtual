@@ -21,9 +21,11 @@ import { environment } from '@/environments/environment';
 })
 export class SesionAprendizajeFormComponent implements OnChanges {
   @Output() accionCloseForm = new EventEmitter<void>();
+  @Output() dataSesion = new EventEmitter<any>();
   @Input() showModal: boolean = false;
   @Input() idSesion: number = 0;
-  @Output() dataSesion = new EventEmitter<any>();
+  @Input() accion: string = '';
+  @Input() datosSesion: any;
 
   private _TipoExperienciaAprendizajeService = inject(TipoExperienciaAprendizajeService);
   private _ConstantesService = inject(ConstantesService);
@@ -34,8 +36,10 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   tipoExperiencia = [];
   periodos = [];
   data: any;
+  documentos: any;
   pdfURL: SafeResourceUrl | null = null;
   showPdf: boolean = false;
+  rutaRelativa: string = '';
 
   public formSesines = this._formBuilder.group({
     cContenidoSemTitulo: ['', [Validators.required]],
@@ -46,11 +50,22 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnChanges(changes) {
+    // console.log('accion', this.accion, this.datosSesion)
     if (changes['showModal']) {
       this.idSesion;
       this.showModal = changes['showModal'].currentValue;
       this.obtenerTipoExperienciaAprendizaje();
       this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
+    }
+    if (this.accion === 'editar') {
+      this.rutaRelativa = this.datosSesion.cAdjunto;
+      this.formSesines.patchValue({
+        cContenidoSemTitulo: this.datosSesion.cContenidoSemTitulo,
+        iPeriodoEvalAperId: this.datosSesion.iPeriodoEvalAperId,
+        iTipExp: this.datosSesion.iTipExp,
+      });
+    } else {
+      this.accion = '';
     }
     // console.log('datos pdf',this.documentos)
   }
@@ -144,18 +159,25 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   mostrarMensajeToast(message) {
     this._MessageService.add(message);
   }
-  documentos: any;
+
   obtenerArchivo(file) {
     this.documentos = file[0]['path'];
-    console.log(this.documentos);
+    // console.log(this.documentos);
   }
   verPdf() {
     this.showPdf = true;
-    const rutaRelativa = this.documentos.data;
-    const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
-    const url = baseURL + rutaRelativa;
+    if (!this.rutaRelativa) {
+      this.rutaRelativa = this.documentos.data;
+      const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
+      const url = baseURL + this.rutaRelativa;
 
-    this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    } else {
+      const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
+      const url = baseURL + this.rutaRelativa;
+
+      this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
   }
   cerrarModal() {
     this.showPdf = false;

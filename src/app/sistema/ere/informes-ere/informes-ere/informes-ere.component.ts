@@ -361,7 +361,7 @@ export class InformesEreComponent implements OnInit {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.mensaje,
                     })
                 },
                 complete: () => {
@@ -707,7 +707,7 @@ export class InformesEreComponent implements OnInit {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.mensaje,
                     })
                 },
             })
@@ -858,7 +858,7 @@ export class InformesEreComponent implements OnInit {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail: error.error.mensaje,
                 })
             },
         })

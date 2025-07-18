@@ -53,74 +53,79 @@
         />
     </div>
     <div *ngIf="!perfil_permitido">
-        @if (encuestas.length === 0) {
+        @if (!encuestas || encuestas.length === 0) {
             <app-no-data
                 [showIcon]="'NO-DATA'"
                 mensaje="No hay encuestas disponibles"
             />
-        }
-        <div
-            *ngFor="let encuesta of encuestas"
-            class="card mb-5 relative overflow-visible {{
-                +encuesta.alerta === 1 ? 'card-alerta' : 'card-regular'
-            }}"
-        >
+        } @else {
             <div
-                class="flex flex-wrap w-full justify-content-between gap-0 m-0"
+                *ngFor="let encuesta of encuestas"
+                class="card mb-5 relative overflow-visible {{
+                    +encuesta.alerta === 1 ? 'card-alerta' : 'card-regular'
+                }}"
             >
-                <div class="flex gap-4 font-normal">
-                    <div class="flex flex-column my-2 align-items-start">
-                        <span
-                            class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
-                        >
-                            {{
-                                encuesta?.cEncuNombre.length > 150
-                                    ? (encuesta?.cEncuNombre | slice: 0 : 150) +
-                                      '...'
-                                    : encuesta?.cEncuNombre
-                            }}
-                        </span>
-                        <p-tag
-                            [value]="encuesta.cEncuCateNombre"
-                            severity="warning"
-                        />
-                        <div
-                            class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
-                        >
-                            <div class="flex items-center gap-1">
-                                <i class="pi pi-calendar text-primary ml-1"></i>
-                                <span>Del:</span>
-                                <span>{{
-                                    encuesta.dEncuDesde | date: 'dd/MM/yyyy'
-                                }}</span>
-                                <span
-                                    >Al:
-                                    {{
-                                        encuesta.dEncuHasta | date: 'dd/MM/yyyy'
-                                    }}</span
-                                >
+                <div
+                    class="flex flex-wrap w-full justify-content-between gap-0 m-0"
+                >
+                    <div class="flex gap-4 font-normal">
+                        <div class="flex flex-column my-2 align-items-start">
+                            <span
+                                class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
+                            >
+                                {{
+                                    encuesta?.cEncuNombre.length > 150
+                                        ? (encuesta?.cEncuNombre
+                                              | slice: 0 : 150) + '...'
+                                        : encuesta?.cEncuNombre
+                                }}
+                            </span>
+                            <p-tag
+                                [value]="encuesta.cEncuCateNombre"
+                                severity="warning"
+                            />
+                            <div
+                                class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                            >
+                                <div class="flex items-center gap-1">
+                                    <i
+                                        class="pi pi-calendar text-primary ml-1"
+                                    ></i>
+                                    <span>Del:</span>
+                                    <span>{{
+                                        encuesta.dEncuDesde | date: 'dd/MM/yyyy'
+                                    }}</span>
+                                    <span
+                                        >Al:
+                                        {{
+                                            encuesta.dEncuHasta
+                                                | date: 'dd/MM/yyyy'
+                                        }}</span
+                                    >
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div
-                    class="flex flex-column align-items-end justify-content-center gap-2"
-                >
-                    <p-button
-                        label="Responder ({{ encuesta.count_respuestas }}/{{
-                            encuesta.count_preguntas
-                        }})"
-                        icon="pi pi-pen-to-square"
-                        iconPos="left"
-                        (onClick)="responderEncuesta(encuesta)"
-                    />
+                    <div
+                        class="flex flex-column align-items-end justify-content-center gap-2"
+                    >
+                        <p-button
+                            label="Responder ({{ encuesta.count_respuestas }}/{{
+                                encuesta.count_preguntas
+                            }})"
+                            icon="pi pi-pen-to-square"
+                            iconPos="left"
+                            (onClick)="responderEncuesta(encuesta)"
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 </p-panel>
 
 <p-dialog
+    *ngIf="perfil_permitido"
     [draggable]="false"
     [maximizable]="true"
     [header]="dialog_header"

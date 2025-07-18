@@ -138,14 +138,15 @@ export class DatosEncuestaService implements OnDestroy {
 
     getEncuestaParametros(data: any) {
         if (!this.parametros) {
-            return this.http
+            this.parametros = this.http
                 .post(`${baseUrl}/bienestar/crearEncuesta`, data)
                 .pipe(
                     map((data: any) => {
-                        this.parametros = data.data[0]
+                        this.parametros = data.data
                         return this.parametros
                     })
                 )
+            return this.parametros
         }
         return of(this.parametros)
     }

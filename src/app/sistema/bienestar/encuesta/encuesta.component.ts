@@ -5,6 +5,7 @@ import { MenuItem, MessageService } from 'primeng/api'
 import { DatosEncuestaService } from '../services/datos-encuesta.service'
 import {
     IActionTable,
+    IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
@@ -29,6 +30,9 @@ export class EncuestaComponent implements OnInit {
     perfil: any
     iEncuId: number
     encuesta: any
+
+    columns_poblacion: IColumn[]
+    columns_permisos: IColumn[]
 
     ultima_fecha_anio: Date = new Date(new Date().getFullYear(), 11, 31)
     fecha_actual: Date = new Date()
@@ -63,6 +67,11 @@ export class EncuestaComponent implements OnInit {
 
     puede_editar: boolean = true
     encuesta_registrada: boolean = false
+    encuesta_bloqueada: boolean = false
+
+    ESTADO_BORRADOR: number = this.datosEncuestas.ESTADO_BORRADOR
+    ESTADO_TERMINADA: number = this.datosEncuestas.ESTADO_TERMINADA
+    ESTADO_APROBADA: number = this.datosEncuestas.ESTADO_APROBADA
 
     private _messageService = inject(MessageService)
 
@@ -171,14 +180,18 @@ export class EncuestaComponent implements OnInit {
                 this.estados = this.datosEncuestas.getEstados()
                 this.datosEncuestas.getNivelesGrados(data?.nivel_grados)
                 this.datosEncuestas.getAreas(data?.areas)
-
                 if (!this.es_especialista) {
-                    this.formPoblacion
-                        .get('iNivelTipoId')
-                        ?.setValue(this.nivel_tipos[0]['value'])
-                    this.formPoblacion
-                        .get('iIieeId')
-                        ?.setValue(this.ies[0]['value'])
+                    const nivel_tipo =
+                        this.nivel_tipos && this.nivel_tipos.length > 0
+                            ? this.nivel_tipos[0]['value']
+                            : null
+                    const ie =
+                        this.ies && this.ies.length > 0
+                            ? this.ies[0]['value']
+                            : null
+                    this.formPoblacion.get('iNivelTipoId')?.setValue(nivel_tipo)
+                    this.filterNivelesGrados(nivel_tipo)
+                    this.formPoblacion.get('iIieeId')?.setValue(ie)
                 }
             })
 
@@ -220,6 +233,8 @@ export class EncuestaComponent implements OnInit {
         if (this.iEncuId) {
             this.verEncuesta()
         }
+
+        this.inicializarColumnas()
     }
 
     filterNivelesTipos() {
@@ -262,9 +277,10 @@ export class EncuestaComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
+                    if (data.data) {
                         this.encuesta_registrada = true
-                        this.setFormEncuesta(data.data[0])
+                        this.setFormEncuesta(data.data)
+                        this.inicializarColumnas()
                     } else {
                         this.router.navigate(['/bienestar/gestionar-encuestas'])
                     }
@@ -282,8 +298,8 @@ export class EncuestaComponent implements OnInit {
     }
 
     setFormEncuesta(data: any) {
-        if (Number(data.iEstado) === 3) {
-            data.iEstado = 2
+        if (Number(data.iEstado) !== this.ESTADO_BORRADOR) {
+            data.iEstado = this.ESTADO_TERMINADA
             this.formEncuesta.disable()
             this.puede_editar = false
         }
@@ -503,7 +519,7 @@ export class EncuestaComponent implements OnInit {
             ''
         )
         this.datosEncuestas
-            .actualizarEncuesta(this.formEncuesta.value)
+            .actualizarEncuesta(this.formEncuesta.getRawValue())
             .subscribe({
                 next: () => {
                     this._messageService.add({
@@ -530,6 +546,46 @@ export class EncuestaComponent implements OnInit {
         if (item) {
             this.formPoblacion.patchValue(item)
         }
+        if (
+            this.formPoblacion.value.iNivelTipoId === null &&
+            this.formPoblacion.value.iTipoSectorId === null &&
+            this.formPoblacion.value.iZonaId === null &&
+            this.formPoblacion.value.iUgelId === null &&
+            this.formPoblacion.value.iDsttId === null &&
+            this.formPoblacion.value.iIieeId === null &&
+            this.formPoblacion.value.iNivelGradoId === null &&
+            this.formPoblacion.value.iSeccionId === null &&
+            this.formPoblacion.value.cPersSexo === null
+        ) {
+            this.funcionesBienestar.formMarkAsDirty(this.formPoblacion)
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'No puede agregar un registro en blanco',
+            })
+            return
+        }
+        const duplicados = this.poblacion.filter(
+            (item: any) =>
+                item.iNivelTipoId === this.formPoblacion.value.iNivelTipoId &&
+                item.iTipoSectorId === this.formPoblacion.value.iTipoSectorId &&
+                item.iZonaId === this.formPoblacion.value.iZonaId &&
+                item.iUgelId === this.formPoblacion.value.iUgelId &&
+                item.iDsttId === this.formPoblacion.value.iDsttId &&
+                item.iIieeId === this.formPoblacion.value.iIieeId &&
+                item.iNivelGradoId === this.formPoblacion.value.iNivelGradoId &&
+                item.iSeccionId === this.formPoblacion.value.iSeccionId &&
+                item.cPersSexo === this.formPoblacion.value.cPersSexo
+        )
+        if (duplicados.length) {
+            this.funcionesBienestar.formMarkAsDirty(this.formPoblacion)
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Ya existe un registro con estos datos',
+            })
+            return
+        }
         this.actualizarPoblacion(this.formPoblacion.value)
         const form: Array<object> = this.formPoblacion.value
         this.poblacion = [...this.poblacion, form]
@@ -548,6 +604,32 @@ export class EncuestaComponent implements OnInit {
     agregarPermiso(item: any = null) {
         if (item) {
             this.formPermisos.patchValue(item)
+        }
+        if (
+            this.formPermisos.value.iPerfilId === null ||
+            this.formPermisos.value.iEncuOpcId === null
+        ) {
+            this.funcionesBienestar.formMarkAsDirty(this.formPermisos)
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'No puede agregar un permiso en blanco',
+            })
+            return
+        }
+        const duplicados = this.permisos.filter(
+            (permiso: any) =>
+                permiso.iPerfilId === this.formPermisos.value.iPerfilId &&
+                permiso.iEncuOpcId === this.formPermisos.value.iEncuOpcId
+        )
+        if (duplicados.length) {
+            this.funcionesBienestar.formMarkAsDirty(this.formPermisos)
+            this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Ya existe un permiso con ese perfil y opción',
+            })
+            return
         }
         this.actualizarPermisos(this.formPermisos.value)
         const form: Array<object> = this.formPermisos.value
@@ -572,9 +654,8 @@ export class EncuestaComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
-                        this.cantidad_poblacion =
-                            data.data[0].iPoblacionObjetivo
+                    if (data.data) {
+                        this.cantidad_poblacion = data.data.iPoblacionObjetivo
                     } else {
                         this.cantidad_poblacion = 0
                     }
@@ -613,8 +694,9 @@ export class EncuestaComponent implements OnInit {
     accionBtnItemTablePermisos({ accion, item }) {
         if (accion == 'eliminar') {
             this.permisos = this.permisos.filter(
-                (permiso: any) => item.iEncuPobId != permiso.iEncuPobId
+                (permiso: any) => item.iEncuPermId != permiso.iEncuPermId
             )
+            this.formEncuesta.get('permisos')?.setValue(this.permisos)
         }
     }
 
@@ -638,65 +720,73 @@ export class EncuestaComponent implements OnInit {
         },
     ]
 
-    columns_poblacion = [
-        {
-            type: 'item',
-            width: '10%',
-            field: '',
-            header: 'N°',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '70%',
-            field: 'poblacion',
-            header: 'Población',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'actions',
-            width: '20%',
-            field: '',
-            header: 'Acciones',
-            text_header: 'right',
-            text: 'right',
-        },
-    ]
+    inicializarColumnas() {
+        this.columns_poblacion = [
+            {
+                type: 'item',
+                width: '10%',
+                field: '',
+                header: 'N°',
+                text_header: 'center',
+                text: 'center',
+            },
+            {
+                type: 'text',
+                width: '70%',
+                field: 'poblacion',
+                header: 'Población',
+                text_header: 'left',
+                text: 'left',
+            },
+        ]
 
-    columns_permisos = [
-        {
-            type: 'item',
-            width: '5%',
-            field: 'item',
-            header: '#',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '20%',
-            field: 'cPerfilNombre',
-            header: 'Perfil',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10%',
-            field: 'cEncuOpcNombre',
-            header: 'Permiso',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'actions',
-            width: '20%',
-            field: '',
-            header: 'Acciones',
-            text_header: 'right',
-            text: 'right',
-        },
-    ]
+        if (!this.encuesta || this.encuesta?.iEstado === this.ESTADO_BORRADOR) {
+            this.columns_poblacion.push({
+                type: 'actions',
+                width: '20%',
+                field: '',
+                header: 'Acciones',
+                text_header: 'right',
+                text: 'right',
+            })
+        }
+
+        this.columns_permisos = [
+            {
+                type: 'item',
+                width: '5%',
+                field: 'item',
+                header: '#',
+                text_header: 'center',
+                text: 'center',
+            },
+            {
+                type: 'text',
+                width: '20%',
+                field: 'cPerfilNombre',
+                header: 'Perfil',
+                text_header: 'left',
+                text: 'left',
+            },
+            {
+                type: 'text',
+                width: '10%',
+                field: 'cEncuOpcNombre',
+                header: 'Permiso',
+                text_header: 'left',
+                text: 'left',
+            },
+        ]
+
+        if (!this.encuesta || this.encuesta?.iEstado === this.ESTADO_BORRADOR) {
+            this.columns_permisos.push({
+                type: 'actions',
+                width: '20%',
+                field: '',
+                header: 'Acciones',
+                text_header: 'right',
+                text: 'right',
+            })
+        }
+    }
 }

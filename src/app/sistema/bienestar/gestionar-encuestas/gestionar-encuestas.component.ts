@@ -91,20 +91,21 @@ export class GestionarEncuestasComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.datosEncuestas
-            .getEncuestaParametros({
-                iCredEntPerfId: this.perfil.iCredEntPerfId,
-            })
-            .subscribe((data: any) => {
-                this.categorias = this.datosEncuestas.getCategorias(
-                    data?.categorias
-                )
-            })
-
         this.perfil_permitido = this.perfiles_permitido.includes(
             +this.perfil.iPerfilId
         )
         this.listarEncuestas()
+        if (this.perfil_permitido) {
+            this.datosEncuestas
+                .getEncuestaParametros({
+                    iCredEntPerfId: this.perfil.iCredEntPerfId,
+                })
+                .subscribe((data: any) => {
+                    this.categorias = this.datosEncuestas.getCategorias(
+                        data?.categorias
+                    )
+                })
+        }
     }
 
     agregarEncuesta() {
@@ -119,8 +120,12 @@ export class GestionarEncuestasComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    this.encuestas = data.data
-                    this.encuestas_filtradas = this.encuestas
+                    if (data.data.length) {
+                        this.encuestas = data.data
+                        this.encuestas_filtradas = this.encuestas
+                    } else {
+                        this.encuestas = null
+                    }
                 },
                 error: (error) => {
                     console.error('Error obteniendo encuestas:', error)

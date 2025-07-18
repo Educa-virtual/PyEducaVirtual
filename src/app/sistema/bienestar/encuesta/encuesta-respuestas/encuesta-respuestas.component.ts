@@ -82,8 +82,8 @@ export class EncuestaRespuestasComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
-                        this.cEncuNombre = data.data[0].cEncuNombre
+                    if (data.data) {
+                        this.cEncuNombre = data.data.cEncuNombre
                     }
                 },
                 error: (error) => {

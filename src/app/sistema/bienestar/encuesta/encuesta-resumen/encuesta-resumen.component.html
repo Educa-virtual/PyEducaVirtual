@@ -30,115 +30,121 @@
                     [collapsed]="false"
                     [style]="{ width: '100%' }"
                 >
-                    <div
-                        class="grid text-panel"
-                        [formGroup]="getFormResumenPregunta(i)"
-                    >
+                    <ng-container *ngIf="pregunta.resumen">
                         <div
-                            class="col-12 md:col-6"
-                            *ngIf="
-                                +pregunta.iEncuPregTipoId !== PREGUNTA_ABIERTA
-                            "
+                            class="grid text-panel"
+                            [formGroup]="getFormResumenPregunta(i)"
                         >
-                            <p-inputGroup>
-                                <p-inputGroupAddon
-                                    >Tipo de gráfico</p-inputGroupAddon
-                                >
-                                <p-dropdown
-                                    [options]="tipos_graficos"
-                                    formControlName="iTipoGrafico"
-                                    [filter]="true"
-                                    [showClear]="false"
-                                    appendTo="body"
-                                    placeholder="Seleccione"
-                                    [style]="{ flex: '1', width: '100%' }"
-                                    styleClass="group-element"
-                                />
-                            </p-inputGroup>
-                        </div>
-                        <div
-                            class="col-12 md:col-6"
-                            *ngIf="
-                                +pregunta.iEncuPregTipoId === PREGUNTA_ABIERTA
-                            "
-                        >
-                            <p-inputGroup>
-                                <p-inputGroupAddon
-                                    >Tipo de reporte</p-inputGroupAddon
-                                >
-                                <p-dropdown
-                                    [options]="tipos_reportes"
-                                    formControlName="iTipoReporte"
-                                    [filter]="true"
-                                    [showClear]="false"
-                                    appendTo="body"
-                                    placeholder="Seleccione"
-                                    [style]="{ flex: '1', width: '100%' }"
-                                    styleClass="group-element"
-                                />
-                            </p-inputGroup>
-                        </div>
-                        <div
-                            class="col-12"
-                            *ngIf="
-                                +pregunta.iEncuPregTipoId !== PREGUNTA_ABIERTA
-                            "
-                        >
-                            <p-chart
-                                *ngIf="
-                                    getFormResumenPregunta(i).get(
-                                        'iTipoGrafico'
-                                    )?.value === GRAFICO_BARRA
-                                "
-                                type="bar"
-                                [data]="pregunta.resumen_grafico"
-                                [options]="options_bar"
-                                [plugins]="plugin_bar"
-                                style="width: 100%"
-                            />
-                            <p-chart
-                                *ngIf="
-                                    getFormResumenPregunta(i).get(
-                                        'iTipoGrafico'
-                                    )?.value === GRAFICO_CIRCULAR
-                                "
-                                type="pie"
-                                [data]="pregunta.resumen_grafico"
-                                [options]="options_pie"
-                                [plugins]="plugin_pie"
+                            <div
                                 class="col-12 md:col-6"
-                                height="300px"
-                            />
-                        </div>
-                        <div
-                            class="col-12"
-                            *ngIf="
-                                +pregunta.iEncuPregTipoId === PREGUNTA_ABIERTA
-                            "
-                        >
-                            <p-chart
                                 *ngIf="
-                                    getFormResumenPregunta(i).get(
-                                        'iTipoReporte'
-                                    )?.value === TIPO_REPORTE_LISTA
+                                    +pregunta.iEncuPregTipoId !==
+                                    PREGUNTA_ABIERTA
                                 "
-                                type="bar"
-                                [data]="pregunta.resumen_grafico"
-                                [options]="options_bar"
-                                [plugins]="plugin_bar"
-                                style="width: 100%"
-                            />
-                            <app-wordcloud-chart
+                            >
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Tipo de gráfico</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        [options]="tipos_graficos"
+                                        formControlName="iTipoGrafico"
+                                        [filter]="true"
+                                        [showClear]="false"
+                                        appendTo="body"
+                                        placeholder="Seleccione"
+                                        [style]="{ flex: '1', width: '100%' }"
+                                        styleClass="group-element"
+                                    />
+                                </p-inputGroup>
+                            </div>
+                            <div
+                                class="col-12 md:col-6"
                                 *ngIf="
-                                    getFormResumenPregunta(i).get(
-                                        'iTipoReporte'
-                                    )?.value === TIPO_REPORTE_INDIVIDUAL
+                                    +pregunta.iEncuPregTipoId ===
+                                    PREGUNTA_ABIERTA
                                 "
-                                [wordCloudData]="pregunta.resumen_wordcloud"
-                                [WordCloudOptions]="options_wordcloud"
-                            />
+                            >
+                                <p-inputGroup>
+                                    <p-inputGroupAddon
+                                        >Tipo de reporte</p-inputGroupAddon
+                                    >
+                                    <p-dropdown
+                                        [options]="tipos_reportes"
+                                        formControlName="iTipoReporte"
+                                        [filter]="true"
+                                        [showClear]="false"
+                                        appendTo="body"
+                                        placeholder="Seleccione"
+                                        [style]="{ flex: '1', width: '100%' }"
+                                        styleClass="group-element"
+                                    />
+                                </p-inputGroup>
+                            </div>
+                            <div
+                                class="col-12"
+                                *ngIf="
+                                    +pregunta.iEncuPregTipoId !==
+                                    PREGUNTA_ABIERTA
+                                "
+                            >
+                                <p-chart
+                                    *ngIf="
+                                        getFormResumenPregunta(i).get(
+                                            'iTipoGrafico'
+                                        )?.value === GRAFICO_BARRA
+                                    "
+                                    type="bar"
+                                    [data]="pregunta.resumen_grafico"
+                                    [options]="options_bar"
+                                    [plugins]="plugin_bar"
+                                    style="width: 100%"
+                                />
+                                <p-chart
+                                    *ngIf="
+                                        getFormResumenPregunta(i).get(
+                                            'iTipoGrafico'
+                                        )?.value === GRAFICO_CIRCULAR
+                                    "
+                                    type="pie"
+                                    [data]="pregunta.resumen_grafico"
+                                    [options]="options_pie"
+                                    [plugins]="plugin_pie"
+                                    class="col-12 md:col-6"
+                                    height="300px"
+                                />
+                            </div>
+                            <div
+                                class="col-12"
+                                *ngIf="
+                                    +pregunta.iEncuPregTipoId ===
+                                    PREGUNTA_ABIERTA
+                                "
+                            >
+                                <p-chart
+                                    *ngIf="
+                                        getFormResumenPregunta(i).get(
+                                            'iTipoReporte'
+                                        )?.value === TIPO_REPORTE_LISTA
+                                    "
+                                    type="bar"
+                                    [data]="pregunta.resumen_grafico"
+                                    [options]="options_bar"
+                                    [plugins]="plugin_bar"
+                                    style="width: 100%"
+                                />
+                                <app-wordcloud-chart
+                                    *ngIf="
+                                        getFormResumenPregunta(i).get(
+                                            'iTipoReporte'
+                                        )?.value === TIPO_REPORTE_INDIVIDUAL
+                                    "
+                                    [wordCloudData]="pregunta.resumen_wordcloud"
+                                    [WordCloudOptions]="options_wordcloud"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    </ng-container>
                 </p-fieldset>
             </div>
         </div>

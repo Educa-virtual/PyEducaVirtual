@@ -42,6 +42,9 @@ export class EncuestaPreguntasComponent implements OnInit {
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
 
+    PREGUNTA_ESCALA: number = this.datosEncuestas.PREGUNTA_ESCALA
+    ESTADO_BORRADOR: number = this.datosEncuestas.ESTADO_BORRADOR
+
     private _messageService = inject(MessageService)
     private _confirmService = inject(ConfirmationModalService)
 
@@ -106,8 +109,7 @@ export class EncuestaPreguntasComponent implements OnInit {
         this.formPregunta
             .get('iEncuPregTipoId')
             .valueChanges.subscribe((value) => {
-                this.es_pregunta_escala =
-                    value === this.datosEncuestas.PREGUNTA_ESCALA
+                this.es_pregunta_escala = value === this.PREGUNTA_ESCALA
             })
 
         if (this.iEncuId) {
@@ -123,11 +125,10 @@ export class EncuestaPreguntasComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
-                        this.cEncuNombre = data.data[0].cEncuNombre
+                    if (data.data) {
+                        this.cEncuNombre = data.data.cEncuNombre
                         this.encuesta_bloqueada =
-                            Number(data.data[0].iEstado) !==
-                            this.datosEncuestas.ESTADO_BORRADOR
+                            Number(data.data.iEstado) !== this.ESTADO_BORRADOR
                         this.listarPreguntas()
                     } else {
                         this._messageService.add({
@@ -185,8 +186,8 @@ export class EncuestaPreguntasComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
-                        this.setFormPregunta(data.data[0])
+                    if (data.data) {
+                        this.setFormPregunta(data.data)
                     }
                 },
                 error: (error) => {

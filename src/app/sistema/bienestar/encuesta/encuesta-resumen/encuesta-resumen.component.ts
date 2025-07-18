@@ -107,12 +107,15 @@ export class EncuestaResumenComponent implements OnInit {
                 if (data.data.length) {
                     this.preguntas = data.data
                     this.preguntas.forEach((pregunta: any) => {
-                        pregunta.resumen = JSON.parse(pregunta.resumen)
-                        pregunta.resumen_grafico = this.formatearDataPrimeChart(
-                            pregunta.resumen
-                        )
-                        pregunta.resumen_wordcloud =
-                            this.formatearDataWordcloud(pregunta.resumen)
+                        if (!pregunta.resumen) {
+                            pregunta.resumen = this.formatearDataVacia()
+                        } else {
+                            pregunta.resumen = JSON.parse(pregunta.resumen)
+                            pregunta.resumen_grafico =
+                                this.formatearDataPrimeChart(pregunta.resumen)
+                            pregunta.resumen_wordcloud =
+                                this.formatearDataWordcloud(pregunta.resumen)
+                        }
                     })
                     this.formResumenArray = this.fb.array(
                         this.preguntas.map((pregunta: any) =>
@@ -228,13 +231,25 @@ export class EncuestaResumenComponent implements OnInit {
 
     formatearDataWordcloud(resumen: any) {
         const palabras = resumen.map((item: any) => item.alternativa)
-        const cantidad = resumen.map((item: any) => item.cantidad * 1.5)
+        const cantidad = resumen.map((item: any) => item.cantidad)
         return {
             labels: palabras,
             datasets: [
                 {
                     label: 'respuestas',
                     data: cantidad,
+                },
+            ],
+        }
+    }
+
+    formatearDataVacia() {
+        return {
+            labels: [],
+            datasets: [
+                {
+                    label: 'respuestas',
+                    data: [],
                 },
             ],
         }
@@ -252,8 +267,8 @@ export class EncuestaResumenComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
-                        this.cEncuNombre = data.data[0].cEncuNombre
+                    if (data.data) {
+                        this.cEncuNombre = data.data.cEncuNombre
                     }
                 },
                 error: (error) => {

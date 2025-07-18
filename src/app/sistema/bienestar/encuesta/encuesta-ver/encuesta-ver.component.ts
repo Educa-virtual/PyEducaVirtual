@@ -118,8 +118,8 @@ export class EncuestaVerComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    if (data.data.length) {
-                        this.encuesta = data.data[0]
+                    if (data.data) {
+                        this.encuesta = data.data
                         this.encuesta.permisos_detalle = JSON.parse(
                             this.encuesta.permisos_detalle
                         )

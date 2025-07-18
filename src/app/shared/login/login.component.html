@@ -91,3 +91,47 @@
 >
 </app-sin-rol-asignado>
 <p-toast />
+
+<p-dialog
+    [header]="'DIÁLOGO INFORMATIVO DE EDUCA VIRTUAL'"
+    [(visible)]="anuncio"
+    [maximizable]="true"
+    [modal]="true"
+    [closable]="true"
+    [style]="{ width: '80vw' }"
+>
+    <div class="content-grid">
+        <!-- Video lado izquierdo -->
+        <div class="video-section">
+            <div class="video-container">
+                <iframe
+                    [src]="
+                        sanitizer.bypassSecurityTrustResourceUrl(
+                            'https://www.youtube.com/embed/7o_oeT7C-3Y'
+                        )
+                    "
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+            </div>
+        </div>
+
+        <!-- Documentación lado derecho -->
+        <div class="doc-section">
+            <h3>📄 Documentación</h3>
+            <p>Consulta los manuales y guías rápidas aquí:</p>
+            <ul>
+                <li>
+                    <a
+                        href="http://localhost:4200/#/docente/asistencia/1/9/2/118/9/6/2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        👉 Manual de Asistencia
+                    </a>
+                </li>
+                <!-- Añade más manuales si deseas -->
+            </ul>
+        </div>
+    </div>
+</p-dialog>

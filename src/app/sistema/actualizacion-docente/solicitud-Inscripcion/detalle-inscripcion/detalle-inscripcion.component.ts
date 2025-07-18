@@ -13,6 +13,8 @@ import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identifi
 import { Message, MessageService } from 'primeng/api';
 import { InscripcionesService } from '@/app/servicios/cap/inscripciones.service';
 import { SubirArchivoComponent } from '@/app/shared/subir-archivo/subir-archivo.component';
+import { environment } from '@/environments/environment';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-detalle-inscripcion',
@@ -46,6 +48,8 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
   tituloCurso: Message[] = [];
   archivos = [];
   loadingFormulario: boolean = false;
+  nombreCurso: string = '';
+  pdfURL: SafeResourceUrl | null = null;
 
   public formIncripcion: FormGroup = this._formBuilder.group({
     iTipoIdentId: ['', [Validators.required]],
@@ -60,6 +64,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     cVoucher: [''],
     iPersId: [''],
   });
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnChanges(changes) {
     console.log(changes);
@@ -68,6 +73,9 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.obtenerSolicitudesXCurso();
     this.obtenerTipoIdentificaciones();
+
+    this.nombreCurso = this.datosCurso.cCapTitulo;
+    console.log('id', this.id);
   }
   // mostrar los headr de las tablas
   public columnasTabla: IColumn[] = [
@@ -161,6 +169,9 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
   // asignar la accion a los botones de la tabla
   accionBnt({ accion, item }): void {
     switch (accion) {
+      case 'cerrar':
+        this.showModal = false;
+        break;
       case 'aceptar':
         console.log(item);
         // this.modoFormulario = 'editar'
@@ -175,6 +186,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
         break;
       case 'mostrarComprobante':
       case 'verSolicitud':
+        this.verPdf(item);
         this.mostrarVoucher(item);
         break;
       case 'regresar':
@@ -184,6 +196,9 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
         this.mostrarInscripcion();
         break;
     }
+  }
+  cerrar() {
+    this.showModal = false;
   }
   mostrarVoucher(voucher: any) {
     this.alumnoSelect = voucher;
@@ -202,6 +217,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     this._capService.listarInscripcionxcurso(data).subscribe({
       next: (res: any) => {
         this.alumnos = res['data'];
+        console.log('datos de alumnos', this.alumnos);
       },
     });
   }
@@ -416,5 +432,14 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
         cVoucher: documentos.data,
       });
     }
+  }
+
+  verPdf(data: any) {
+    // console.log('data de pdf',data)
+    const rutaRelativa = data.cVoucher;
+    const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
+    const url = baseURL + rutaRelativa;
+
+    this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

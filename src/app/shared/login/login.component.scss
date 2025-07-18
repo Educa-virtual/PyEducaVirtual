@@ -119,30 +119,3 @@
         grid-template-columns: 1fr;
     }
 }
-
-::ng-deep .p-dialog {
-    background-color: #ffffff !important;
-    /* fondo blanco */
-    color: #800000 !important;
-    /* texto rojo tinto */
-}
-
-::ng-deep .p-dialog-header {
-    color: #800000 !important;
-    background: #ffffff !important;
-    /* asegura el título en rojo tinto */
-}
-
-// ::ng-deep .p-dialog-header {
-//     background: var(--bg-header-modal) !important;
-//     color: 800000 !important;
-
-//     .p-icon {
-//       color: white !important;
-
-//       &:hover {
-//         background: 800000 !important;
-//         color: var(--bg-header-modal) !important;
-//       }
-//     }
-//   }

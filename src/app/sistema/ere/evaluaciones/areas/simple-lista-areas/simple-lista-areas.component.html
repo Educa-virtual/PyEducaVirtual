@@ -417,6 +417,7 @@
                                 severity="success"
                                 size="small"
                                 pTooltip="Activar matriz para este curso"
+                                (click)="onDialogActivarDescarga(curso)"
                             ></p-button>
                         </td>
 
@@ -424,19 +425,19 @@
                         <td style="text-align: center; width: 10%">
                             <div class="flex gap-1 justify-content-center">
                                 <p-button
-                                    icon="pi pi-cog"
+                                    icon="pi pi-list"
                                     severity="secondary"
                                     size="small"
                                     [text]="true"
                                     pTooltip="Configuraciones avanzadas"
                                 ></p-button>
-                                <p-button
+                                <!--<p-button
                                     icon="pi pi-chart-line"
                                     severity="info"
                                     size="small"
                                     [text]="true"
                                     pTooltip="Ver reportes"
-                                ></p-button>
+                                ></p-button>-->
                             </div>
                         </td>
                     </tr>

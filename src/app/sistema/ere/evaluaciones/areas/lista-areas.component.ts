@@ -25,6 +25,7 @@ import { ImportarResultadosComponent } from '../../informes-ere/importar-resulta
 import { AreasService } from '../services/areas.service'
 import { GuardarResultadosOnlineComponent } from '../../informes-ere/guardar-resultados-online/guardar-resultados-online.component'
 import { SimpleListaAreasComponent } from './simple-lista-areas/simple-lista-areas.component'
+import { ActivarDescargaComponent } from './activar-descarga/activar-descarga.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -42,6 +43,7 @@ export type Layout = 'list' | 'grid'
         ImportarResultadosComponent,
         GuardarResultadosOnlineComponent,
         SimpleListaAreasComponent,
+        ActivarDescargaComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -63,6 +65,8 @@ export class ListaAreasComponent implements OnInit {
 
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
+    @ViewChild(ActivarDescargaComponent)
+    dialogActivarDescarga!: ActivarDescargaComponent
 
     modoCard: boolean = false
     iEvaluacionIdHashed: string = ''
@@ -242,5 +246,11 @@ export class ListaAreasComponent implements OnInit {
                 normalizeText(curso.cCursoNombre).includes(text)
             )
         }
+    }
+    // En lista-areas.component.ts - agregar este método
+    recibirDatosParaActivarDescarga(datos: { curso: ICurso }) {
+        console.log('Activar descarga para:', datos.curso.cCursoNombre)
+        // Cambiar por esta línea:
+        this.dialogActivarDescarga.visible = true // ← AGREGAR ESTA LÍNEA
     }
 }

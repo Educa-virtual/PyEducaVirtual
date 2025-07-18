@@ -63,6 +63,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     }>()
 
     @Output() solicitudActualizacion = new EventEmitter<void>()
+    @Output() dialogActivarDescarga = new EventEmitter<{ curso: ICurso }>()
 
     private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
@@ -499,5 +500,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                     })
                 },
             })
+    }
+    onDialogActivarDescarga(curso: ICurso): void {
+        this.cursoSeleccionado = curso
+        this.dialogActivarDescarga.emit({ curso })
     }
 }

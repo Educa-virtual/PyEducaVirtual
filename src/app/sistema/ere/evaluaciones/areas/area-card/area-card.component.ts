@@ -46,7 +46,7 @@ export class AreaCardComponent implements OnInit {
     private evaluacionesService = inject(ApiEvaluacionesRService)
     private _ConstantesService = inject(ConstantesService)
 
-    mostrarActivarMatriz: boolean = false
+    mostrarActivarDescargas: boolean = false
 
     @Input() iEvaluacionIdHashed: string = ''
     @Input() curso: ICurso
@@ -172,7 +172,7 @@ export class AreaCardComponent implements OnInit {
                 label: 'Activar matriz',
                 icon: '',
                 command: () => {
-                    this.mostrarActivarMatriz = true
+                    this.mostrarActivarDescargas = true
                 },
                 disabled: this.iPerfilId !== ADMINISTRADOR_DREMO,
             },
@@ -298,10 +298,10 @@ export class AreaCardComponent implements OnInit {
     importarResultados() {
         console.log('importar resultados')
     }
-    cerrarActivarMatriz() {
-        this.mostrarActivarMatriz = false
+    cerrarActivarDescargas() {
+        this.mostrarActivarDescargas = false
     }
-    abrirActivarMatriz() {
-        this.mostrarActivarMatriz = true
+    abrirActivarDescargas() {
+        this.mostrarActivarDescargas = true
     }
 }

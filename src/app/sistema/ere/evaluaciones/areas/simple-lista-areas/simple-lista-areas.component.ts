@@ -185,8 +185,8 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             },
             { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
             {
-                field: 'activarDescarga',
-                header: 'Activar Descarga',
+                field: 'activarDescargas',
+                header: 'Activar descargas',
                 width: '10%',
             },
             { field: 'acciones', header: 'Acciones', width: '10%' },

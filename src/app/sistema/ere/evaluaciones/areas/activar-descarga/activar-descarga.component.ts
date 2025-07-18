@@ -12,7 +12,7 @@ import { FormBuilder, FormGroup } from '@angular/forms'
 export class ActivarDescargaComponent implements OnInit {
     @Input() visible: boolean = false
     @Output() visibleChange = new EventEmitter<boolean>()
-    @Output() mostrarActivarMatriz = new EventEmitter<any>()
+    @Output() mostrarActivarDescargas = new EventEmitter<any>()
 
     checked: boolean = false
     form: FormGroup

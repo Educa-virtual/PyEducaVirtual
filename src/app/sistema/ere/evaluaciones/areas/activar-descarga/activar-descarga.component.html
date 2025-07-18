@@ -1,5 +1,5 @@
 <p-dialog
-    header="Activar Descarga"
+    header="{{ titulo }}"
     [(visible)]="visible"
     (onHide)="onHide()"
     [modal]="true"
@@ -7,7 +7,7 @@
     [draggable]="false"
     [resizable]="false"
     styleClass="nueva-categoria-dialog"
-    [style]="{ width: '600px', height: '250px' }"
+    [style]="{ width: '600px', height: '270px' }"
 >
     <br />
     <form [formGroup]="form" class="dialog-content">
@@ -16,19 +16,19 @@
             <!-- Título -->
             <div class="mb-3">
                 <h2 class="text-primary text-lg font-semibold m-0">
-                    Descargar Matriz y Resultados
+                    Matriz y resultados de evaluación
                 </h2>
             </div>
             <div class="grid border-bottom-1 surface-border">
                 <div class="col-9">
-                    <span class="font-medium">Permitir descarga</span>
+                    <span class="font-medium">Activar descarga</span>
                     <!-- Especialistas DREMO -->
                     <!--<div class="flex align-items-center justify-content-between py-2 border-bottom-1 surface-border">
 
                     </div>-->
                 </div>
                 <div class="col-3">
-                    <p-inputSwitch [(ngModel)]="checked" />
+                    <p-inputSwitch formControlName="bDescarga" />
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 label="Guardar"
                 icon="pi pi-check"
                 severity="success"
-                (click)="onHide()"
+                (click)="actualizarEstado()"
             ></p-button>
         </div>
     </form>

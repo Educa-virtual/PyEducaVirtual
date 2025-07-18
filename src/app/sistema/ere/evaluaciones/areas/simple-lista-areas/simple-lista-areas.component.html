@@ -89,6 +89,7 @@
                                 size="small"
                                 (click)="descargarPDF('Matriz', curso)"
                                 pTooltip="Descargar matriz"
+                                [disabled]="!curso.bDescarga"
                             ></p-button>
                         </td>
                         <!-- ver resultados-->
@@ -258,6 +259,7 @@
                                 size="small"
                                 pTooltip="Descargar matriz"
                                 (click)="descargarPDF('Matriz', curso)"
+                                [disabled]="!curso.bDescarga"
                             ></p-button>
                         </td>
 
@@ -408,6 +410,7 @@
                                 size="small"
                                 (click)="descargarPDF('Matriz', curso)"
                                 pTooltip="Descargar matriz"
+                                [disabled]="!curso.bDescarga"
                             ></p-button>
                         </td>
 
@@ -418,7 +421,7 @@
                                 icon="pi pi-check"
                                 severity="success"
                                 size="small"
-                                pTooltip="Activar matriz para este curso"
+                                pTooltip="Activar descargas"
                                 (click)="onDialogActivarDescarga(curso)"
                             ></p-button>
                         </td>

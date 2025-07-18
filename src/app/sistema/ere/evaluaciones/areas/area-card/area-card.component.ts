@@ -17,10 +17,7 @@ import { CommonModule } from '@angular/common'
 import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services/api-evaluaciones-r.service'
 import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import {
-    ADMINISTRADOR_DREMO,
-    ESPECIALISTA_DREMO,
-} from '@/app/servicios/seg/perfiles'
+import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/perfilesConstantes'
 import { PrimengModule } from '@/app/primeng.module'
@@ -91,7 +88,11 @@ export class AreaCardComponent implements OnInit {
                 label: 'Descargar matriz',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.descargarMatrizPorEvaluacionArea()
+                    if (this.curso.bDescarga == '0' || !this.curso.bDescarga) {
+                        alert('La descarga de la matriz no está activada')
+                    } else {
+                        this.descargarMatrizPorEvaluacionArea()
+                    }
                 },
             },
             {
@@ -168,14 +169,14 @@ export class AreaCardComponent implements OnInit {
                     this.iPerfilId !== DIRECTOR_IE &&
                     this.iPerfilId !== ESPECIALISTA_DREMO,
             },
-            {
+            /*{
                 label: 'Activar matriz',
                 icon: '',
                 command: () => {
                     this.mostrarActivarDescargas = true
                 },
                 disabled: this.iPerfilId !== ADMINISTRADOR_DREMO,
-            },
+            },*/
         ]
     }
 

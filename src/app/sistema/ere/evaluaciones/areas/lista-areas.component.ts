@@ -65,6 +65,7 @@ export class ListaAreasComponent implements OnInit {
 
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
+
     @ViewChild(ActivarDescargaComponent)
     dialogActivarDescarga!: ActivarDescargaComponent
 
@@ -116,10 +117,12 @@ export class ListaAreasComponent implements OnInit {
     importarResultados(datos: { curso: ICurso }) {
         this.dialogImportarResultados.mostrarDialog(datos)
     }
+
     // Modal para guardar resultados online
     guardarResultadosOnline(datos: { curso: ICurso }) {
         this.dialogGuardarResultadosOnline.mostrarDialog(datos)
     }
+
     obtenerAreasPorEvaluacionyEspecialista() {
         this.obtenerAreasPorEvaluacion()
     }
@@ -153,13 +156,35 @@ export class ListaAreasComponent implements OnInit {
             }
         })
     }
+
+    actualizarEstadoDescarga(datos: { curso: ICurso }) {
+        const cursoIndex = this.cursos.findIndex(
+            (c) => c.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+        )
+
+        if (cursoIndex !== -1) {
+            this.cursos[cursoIndex].bDescarga = datos.curso.bDescarga
+            this.cursos = [...this.cursos]
+        }
+
+        this.gestionarPreguntasCard?.forEach((card) => {
+            if (
+                card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+            ) {
+                card.curso.bDescarga = datos.curso.bDescarga
+            }
+        })
+    }
+
     actualizarEstadoResultadosImportados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }
+
     // modal guardar resultados online
     actualizarEstadoResultadosGuardados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }
+
     ngOnInit() {
         this.mensajeInfo = [
             {
@@ -247,10 +272,8 @@ export class ListaAreasComponent implements OnInit {
             )
         }
     }
-    // En lista-areas.component.ts - agregar este método
+
     recibirDatosParaActivarDescarga(datos: { curso: ICurso }) {
-        console.log('Activar descarga para:', datos.curso.cCursoNombre)
-        // Cambiar por esta línea:
-        this.dialogActivarDescarga.visible = true // ← AGREGAR ESTA LÍNEA
+        this.dialogActivarDescarga.mostrarDialog(datos)
     }
 }

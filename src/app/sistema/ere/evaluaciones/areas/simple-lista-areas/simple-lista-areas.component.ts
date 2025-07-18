@@ -28,6 +28,7 @@ import {
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 import { environment } from '@/environments/environment'
+import { AreasService } from '../../services/areas.service'
 interface Column {
     field: string
     header: string
@@ -91,7 +92,10 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     cursosAgrupados: { [key: string]: ICurso[] } = {}
     gradosFiltrados: string[] = []
     gradosOrdenados: string[]
-    constructor(private messageService: MessageService) {}
+    constructor(
+        private messageService: MessageService,
+        private areasService: AreasService
+    ) {}
     ngOnInit(): void {
         this.initializeBreadcrumb()
         this.initializeColumns()
@@ -192,6 +196,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             { field: 'acciones', header: 'Acciones', width: '10%' },
         ]
     }
+
     descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
         if (!this.cursoSeleccionado) {
             alert('No hay curso seleccionado')
@@ -363,14 +368,30 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 'p-button-success p-button-sm custom-accept',
             rejectButtonStyleClass: 'p-button-danger p-button-sm custom-reject',
             accept: () => {
-                console.log(
-                    'Eliminando archivo de cuadernillo para:',
-                    curso.cCursoNombre
-                )
-                curso.bTieneArchivo = false
-                console.log(
-                    'Archivo eliminado. Ahora puede subir un nuevo archivo.'
-                )
+                this.areasService
+                    .eliminarArchivoPreguntasPdf(
+                        curso.iEvaluacionIdHashed,
+                        curso.iCursosNivelGradId
+                    )
+                    .subscribe({
+                        next: () => {
+                            curso.bTieneArchivo = false
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Éxito',
+                                detail: 'Archivo eliminado correctamente.',
+                            })
+                        },
+                        error: (err) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail:
+                                    err.error.message ||
+                                    'Error al eliminar el archivo de cuadernillo.',
+                            })
+                        },
+                    })
             },
         })
     }

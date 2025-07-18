@@ -186,4 +186,8 @@
 <app-configurar-nivel-logro
     #configurarNivelLogroRef
 ></app-configurar-nivel-logro>
-<app-activar-descarga #activarDescargaRef></app-activar-descarga>
+
+<app-activar-descarga
+    #activarDescargaRef
+    (actualizarEstadoDescargaEvent)="actualizarEstadoDescarga($event)"
+></app-activar-descarga>

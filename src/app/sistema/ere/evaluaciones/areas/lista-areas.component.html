@@ -159,7 +159,12 @@
                 (solicitudActualizacion)="
                     obtenerAreasPorEvaluacionyEspecialista()
                 "
-            ></app-simple-lista-areas>
+                (dialogActivarDescarga)="
+                    recibirDatosParaActivarDescarga($event)
+                "
+            >
+                ></app-simple-lista-areas
+            >
         }
     }
 </app-container-page>
@@ -181,3 +186,4 @@
 <app-configurar-nivel-logro
     #configurarNivelLogroRef
 ></app-configurar-nivel-logro>
+<app-activar-descarga #activarDescargaRef></app-activar-descarga>

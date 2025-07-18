@@ -184,7 +184,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     this.obtenerEscalaCalificaciones();
     this.obtenerReporteDenotasFinales();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
-    this.obtenerContenidoSemanasxiSilaboId();
+    this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId();
   }
 
   periodoSeleccionado: number | string | null = null;
@@ -211,13 +211,15 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
   semanaSeleccionado: number | string | null = null;
   semanas = [];
-  obtenerContenidoSemanasxiSilaboId() {
-    if (!this.iSilaboId) return;
+  obtenerContenidoSemanasxidDocCursoIdxiYAcadId() {
+    const iYAcadId = this._ConstantesService.iYAcadId;
+
+    if (!iYAcadId || !this.idDocCursoId) return;
 
     const params = { iCredId: this._ConstantesService.iCredId };
 
     this._ContenidoSemanasService
-      .obtenerContenidoSemanasxiSilaboId(this.iSilaboId, params)
+      .obtenerContenidoSemanasxidDocCursoIdxiYAcadId(this.idDocCursoId, iYAcadId, params)
       .subscribe({
         next: resp => {
           if (resp.validated) {

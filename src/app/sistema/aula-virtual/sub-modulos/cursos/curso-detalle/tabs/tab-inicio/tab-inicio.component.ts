@@ -29,7 +29,6 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
   @Input() curso: ICurso;
   @Input() anuncios = [];
   @Input() iCursoId;
-  @Input() _iSilaboId;
   @Input() idDocCursoId;
 
   private _formBuilder = inject(FormBuilder);

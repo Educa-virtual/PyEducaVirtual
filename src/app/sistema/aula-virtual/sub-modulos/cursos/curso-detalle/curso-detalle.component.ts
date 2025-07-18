@@ -45,6 +45,9 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
   selectTab: number = 0;
   iPerfilId: number;
 
+  tabContenidoLoaded = false;
+  tabResultadosLoaded = false;
+
   tabs = [
     {
       title: 'Inicio',

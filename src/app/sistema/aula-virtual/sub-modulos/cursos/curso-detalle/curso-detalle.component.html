@@ -16,31 +16,26 @@
   >
   </app-tabs-primeng>
   <div class="col-12">
-    @switch (selectTab) {
-      @case (0) {
-        <app-tab-inicio
-          [_iSilaboId]="iSilaboId"
-          [iCursoId]="curso?.iCursoId"
-          [idDocCursoId]="curso?.idDocCursoId"
-          [curso]="curso"
-        ></app-tab-inicio>
-      }
-      @case (1) {
-        <app-tab-contenido
-          [_iSilaboId]="iSilaboId"
-          [iCursoId]="curso?.iCursoId"
-          [idDocCursoId]="curso?.idDocCursoId"
-          [curso]="curso"
-        ></app-tab-contenido>
-      }
-      @case (2) {
-        <app-tab-resultados
-          [iSilaboId]="iSilaboId"
-          [iCursoId]="curso?.iCursoId"
-          [idDocCursoId]="curso?.idDocCursoId"
-          [curso]="curso"
-        ></app-tab-resultados>
-      }
-    }
+    <app-tab-inicio
+      *ngIf="selectTab === 0"
+      [iCursoId]="curso?.iCursoId"
+      [idDocCursoId]="curso?.idDocCursoId"
+      [curso]="curso"
+    ></app-tab-inicio>
+
+    <app-tab-contenido
+      *ngIf="selectTab === 1"
+      [iCursoId]="curso?.iCursoId"
+      [idDocCursoId]="curso?.idDocCursoId"
+      [curso]="curso"
+    ></app-tab-contenido>
+
+    <app-tab-resultados
+      *ngIf="selectTab === 2"
+      [iSilaboId]="iSilaboId"
+      [iCursoId]="curso?.iCursoId"
+      [idDocCursoId]="curso?.idDocCursoId"
+      [curso]="curso"
+    ></app-tab-resultados>
   </div>
 </div>

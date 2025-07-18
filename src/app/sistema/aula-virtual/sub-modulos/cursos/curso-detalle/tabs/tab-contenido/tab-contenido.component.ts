@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import {
   EVALUACION,
   FORO,
@@ -9,7 +9,7 @@ import {
   CUESTIONARIO,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface';
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -44,6 +44,9 @@ import { DropdownChangeEvent } from 'primeng/dropdown';
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { SesionAprendizajeFormComponent } from '../../../../sesion-aprendizaje/sesion-aprendizaje-form/sesion-aprendizaje-form.component';
 import { TareaFormComponent } from '../../../../actividades/actividad-tarea/tarea-form/tarea-form.component';
+import { ActividadTiposService } from '@/app/servicios/aula/actividad-tipos.service';
+import { ContenidoSemanasService } from '@/app/servicios/acad/contenido-semanas.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 
 @Component({
   selector: 'app-tab-contenido',
@@ -72,8 +75,7 @@ import { TareaFormComponent } from '../../../../actividades/actividad-tarea/tare
     }),
   ],
 })
-export class TabContenidoComponent implements OnInit {
-  @Input({ required: true }) private _iSilaboId: string;
+export class TabContenidoComponent extends MostrarErrorComponent implements OnInit, OnChanges {
   @Input() idDocCursoId;
   @Input() iCursoId;
   @Input() curso;
@@ -87,14 +89,18 @@ export class TabContenidoComponent implements OnInit {
   // public actividades = actividadesConfigList
 
   // injeccion de dependencias
-  private _constantesService = inject(ConstantesService);
+  private _ConstantesService = inject(ConstantesService);
   private _generalService = inject(GeneralService);
   private _confirmService = inject(ConfirmationModalService);
   private _aulaService = inject(ApiAulaService);
   private _evalService = inject(ApiEvaluacionesService);
   private GeneralService = inject(GeneralService);
   private _EvaluacionesService = inject(EvaluacionesService);
-  private _MessageService = inject(MessageService);
+  private _ActividadTiposService = inject(ActividadTiposService);
+  private _ContenidoSemanasService = inject(ContenidoSemanasService);
+  private _dialogService = inject(DialogService);
+  private router = inject(Router);
+  private _activatedRoute = inject(ActivatedRoute);
 
   // para mostrar las actividades de la semana
   // private semanaSeleccionadaS
@@ -120,12 +126,12 @@ export class TabContenidoComponent implements OnInit {
     [CUESTIONARIO]: this.handleCuestionarioAction.bind(this), // Asumiendo que CUESTIONARIO
   };
 
-  constructor(
-    private _dialogService: DialogService,
-    private router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private messageService: MessageService
-  ) {}
+  // constructor(
+  //   private _dialogService: DialogService,
+  //   private router: Router,
+  //   private _activatedRoute: ActivatedRoute,
+  //   private messageService: MessageService
+  // ) {}
 
   iPerfilId: number = null;
   public DOCENTE = DOCENTE;
@@ -134,13 +140,25 @@ export class TabContenidoComponent implements OnInit {
   showModalSesionAprendizaje: boolean = false;
 
   ngOnInit(): void {
-    this.iPerfilId = this._constantesService.iPerfilId;
+    this.iPerfilId = this._ConstantesService.iPerfilId;
     const today = new Date();
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
     this.rangeDates = [today, nextWeek];
     this.getData();
+  }
+
+  private _prevIdDocCursoId: number | null = null;
+
+  ngOnChanges(changes: SimpleChanges) {
+    const curr = changes['idDocCursoId']?.currentValue;
+
+    if (curr && this._prevIdDocCursoId !== curr) {
+      this._prevIdDocCursoId = curr;
+      this.idDocCursoId = curr;
+      this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId(null, true);
+    }
   }
 
   // maneja el evento de seleccion de semana
@@ -156,30 +174,66 @@ export class TabContenidoComponent implements OnInit {
 
   private getData() {
     this.obtenerTipoActivadad();
-    this.obtenerContenidoSemanas(null);
+    //this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId(null, false);
   }
   iActTipoId: number | string = 0;
   obtenerTipoActivadad() {
-    this._aulaService.obtenerTipoActividades().subscribe({
+    this._ActividadTiposService.obtenerTipoActividades().subscribe({
       next: tipoActivadeds => {
-        this.tipoActivadedes = tipoActivadeds;
-        this.tipoActivadedes.unshift({
-          iActTipoId: 0,
-          cActTipoNombre: 'Todas las actividades',
-        });
-        // console.log('las actividades', this.tipoActivadedes)
+        this.tipoActivadedes = tipoActivadeds || [];
+
+        const yaExisteTodas = this.tipoActivadedes.some(semana => semana.iContenidoSemId === 0);
+
+        if (!yaExisteTodas) {
+          this.tipoActivadedes.unshift({
+            iContenidoSemId: 0,
+            cContenidoSemTitulo: 'Todas las semanas',
+          });
+        }
+
         this.generarAccionesContenido();
       },
     });
   }
   loadingContenidoSemanas: boolean = true;
   idSesion: number = 0;
+  obtenerContenidoSemanasxidDocCursoIdxiYAcadId(semanaSeleccionada, recargar: boolean) {
+    console.log(semanaSeleccionada);
+    const iYAcadId = this._ConstantesService.iYAcadId;
+
+    if (!iYAcadId || !this.idDocCursoId) return;
+    this.loadingContenidoSemanas = true;
+    const params = { iCredId: this._ConstantesService.iCredId };
+
+    this._ContenidoSemanasService
+      .obtenerContenidoSemanasxidDocCursoIdxiYAcadId(this.idDocCursoId, iYAcadId, params, recargar)
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.contenidoSemanas = (resp.data || []).filter(
+              semana => semana.iContenidoSemId !== 0
+            );
+
+            this.contenidosList = this.contenidoSemanas.map((item: any, index: number) => {
+              return {
+                cTitulo: `${index + 1}. SESIÓN DE APRENDIZAJE ${item.cContenidoSemNumero || ''}`,
+                cDescripcion: item.cContenidoSemTitulo || '',
+                iContenidoSemId: item.iContenidoSemId,
+              };
+            });
+            this.idSesion = this.contenidosList?.length + 1;
+          }
+        },
+        error: error => this.mostrarErrores(error),
+      });
+  }
+
   private obtenerContenidoSemanas(semana) {
     this.loadingContenidoSemanas = true;
 
     this._aulaService
       .contenidoSemanasProgramacionActividades({
-        iSilaboId: this._iSilaboId,
+        iSilaboId: 0, // this._iSilaboId,
         perfil: this.iPerfilId === DOCENTE ? 'DOCENTE' : 'ESTUDIANTE',
         iContenidoSemId: semana ? semana.iContenidoSemId : null,
       })
@@ -257,9 +311,9 @@ export class TabContenidoComponent implements OnInit {
     const datos = {
       ...data,
       cTipoUsuario: 'DOCENTE',
-      iYAcadId: this._constantesService.iYAcadId,
+      iYAcadId: this._ConstantesService.iYAcadId,
       idDocCursoId: this.idDocCursoId,
-      iCredId: this._constantesService.iCredId,
+      iCredId: this._ConstantesService.iCredId,
     };
     const params = {
       petition: 'post',
@@ -267,10 +321,9 @@ export class TabContenidoComponent implements OnInit {
       prefix: 'contenido-semanas',
       data: datos,
       params: {
-        iCredId: this._constantesService.iCredId,
+        iCredId: this._ConstantesService.iCredId,
       },
     };
-    console.log('datos de semana 01', params);
     //Servicio para obtener los instructores
     this.GeneralService.getGralPrefixx(params).subscribe({
       next: response => {
@@ -280,7 +333,9 @@ export class TabContenidoComponent implements OnInit {
             summary: 'Acción exitosa',
             detail: response.message,
           });
-          this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          console.log(this.semanaSeleccionada);
+          this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId(this.semanaSeleccionada, true);
+          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           // this.showModal = false
           // this.instructorForm.reset()
         }
@@ -314,7 +369,7 @@ export class TabContenidoComponent implements OnInit {
     const datos = {
       ...data,
       cTipoUsuario: 'DOCENTE',
-      iCredId: this._constantesService.iCredId,
+      iCredId: this._ConstantesService.iCredId,
     };
     const params = {
       petition: 'put',
@@ -323,7 +378,7 @@ export class TabContenidoComponent implements OnInit {
       ruta: this.semanaActivado,
       data: datos,
       params: {
-        iCredId: this._constantesService.iCredId,
+        iCredId: this._ConstantesService.iCredId,
       },
     };
     console.log('datos datos actualizados', params);
@@ -375,7 +430,7 @@ export class TabContenidoComponent implements OnInit {
       prefix: 'contenido-semanas',
       ruta: this.semanaActivado,
       params: {
-        iCredId: this._constantesService.iCredId,
+        iCredId: this._ConstantesService.iCredId,
       },
     };
     // Servicio para obtener los instructores
@@ -403,7 +458,7 @@ export class TabContenidoComponent implements OnInit {
           prefix: 'contenido-semanas',
           ruta: this.semanaActivado,
           params: {
-            iCredId: this._constantesService.iCredId,
+            iCredId: this._ConstantesService.iCredId,
           },
         };
         // Servicio para obtener los instructores
@@ -667,7 +722,7 @@ export class TabContenidoComponent implements OnInit {
             iEvaluacionId: this.actividadSelected['iForo'],
             iCursoId: this.iCursoId,
             idDocCursoId: this.idDocCursoId,
-            iEstudianteId: this._constantesService.iEstudianteId ?? undefined,
+            iEstudianteId: this._ConstantesService.iEstudianteId ?? undefined,
           },
           relativeTo: this._activatedRoute,
         }
@@ -791,7 +846,7 @@ export class TabContenidoComponent implements OnInit {
               iEvaluacionId: this.actividadSelected['iEvaluacionId'],
               iCursoId: this.iCursoId,
               idDocCursoId: this.idDocCursoId,
-              iEstudianteId: this._constantesService.iEstudianteId ?? undefined,
+              iEstudianteId: this._ConstantesService.iEstudianteId ?? undefined,
               iNivelCicloId: this.curso.iNivelCicloId,
             },
             relativeTo: this._activatedRoute,
@@ -848,7 +903,7 @@ export class TabContenidoComponent implements OnInit {
 
   private eliminarEvaluacion(iEvaluacionId) {
     const params = {
-      iCredId: this._constantesService.iCredId,
+      iCredId: this._ConstantesService.iCredId,
     };
     this._EvaluacionesService.eliminarEvaluacionesxiEvaluacionId(iEvaluacionId, params).subscribe({
       next: resp => {
@@ -911,7 +966,7 @@ export class TabContenidoComponent implements OnInit {
       prefix: 'cuestionarios',
       ruta: (actividad.iCuestionarioId = actividad.ixActivadadId),
       params: {
-        iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
+        iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
       },
     };
 
@@ -956,7 +1011,7 @@ export class TabContenidoComponent implements OnInit {
       ruta: actividad.ixActivadadId.toString(),
       params: {
         skipSuccessMessage: true,
-        iCredId: this._constantesService.iCredId,
+        iCredId: this._ConstantesService.iCredId,
       },
     };
     this._generalService.getGralPrefixx(data).subscribe({
@@ -1009,10 +1064,6 @@ export class TabContenidoComponent implements OnInit {
       .filter((fecha: any) => fecha !== null);
 
     this.semanaSeleccionada.fechas = fechasFiltradas;
-  }
-
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
   }
 
   recargarData() {

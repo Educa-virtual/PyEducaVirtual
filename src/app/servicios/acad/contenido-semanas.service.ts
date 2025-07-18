@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 
 const baseUrl = environment.backendApi;
 
@@ -9,28 +9,49 @@ const baseUrl = environment.backendApi;
   providedIn: 'root',
 })
 export class ContenidoSemanasService {
+  private cacheContenidoSemanas: any[] | null = null;
+
   constructor(private http: HttpClient) {}
 
-  obtenerContenidoSemanasxiSilaboId(
-    iSilaboId,
+  obtenerContenidoSemanasxidDocCursoIdxiYAcadId(
+    idDocCursoId,
+    iYAcadId,
     params = {},
     forzarRecarga = false
   ): Observable<any> {
+    if (!forzarRecarga && this.cacheContenidoSemanas) {
+      return of({
+        validated: true,
+        data: this.cacheContenidoSemanas,
+      });
+    }
+
     const headers = new HttpHeaders()
       .set('x-cache', forzarRecarga ? 'false' : 'true')
       .set('x-cache-duration', '3600000');
 
-    // Agregar timestamp si es recarga forzada para evitar cache del navegador
     if (forzarRecarga) {
       params = {
         ...params,
-        _ts: Date.now(), // valor dinámico
+        _ts: Date.now(),
       };
     }
 
-    return this.http.get(`${baseUrl}/acad/contenido-semanas/silabo/${iSilaboId}`, {
-      params,
-      headers,
-    });
+    return this.http
+      .get(`${baseUrl}/acad/contenido-semanas/curso/${idDocCursoId}/year/${iYAcadId}`, {
+        params,
+        headers,
+      })
+      .pipe(
+        tap((resp: any) => {
+          if (resp.validated) {
+            this.cacheContenidoSemanas = resp.data;
+          }
+        })
+      );
+  }
+
+  limpiarCache() {
+    this.cacheContenidoSemanas = null;
   }
 }

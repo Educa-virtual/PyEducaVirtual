@@ -54,4 +54,10 @@ export class ContenidoSemanasService {
   limpiarCache() {
     this.cacheContenidoSemanas = null;
   }
+
+  obtenerActividadesxiContenidoSemId(iContenidoSemId, params) {
+    return this.http.get(`${baseUrl}/acad/contenido-semanas/${iContenidoSemId}/actividades`, {
+      params,
+    });
+  }
 }

@@ -17,6 +17,8 @@ import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/t
 import { TabsPrimengComponent } from '../../../../../shared/tabs-primeng/tabs-primeng.component';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
+import { ContenidoSemanasService } from '@/app/servicios/acad/contenido-semanas.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 
 @Component({
   selector: 'app-curso-detalle',
@@ -32,11 +34,16 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
   templateUrl: './curso-detalle.component.html',
   styleUrl: './curso-detalle.component.scss',
 })
-export class CursoDetalleComponent implements OnInit, AfterViewChecked {
+export class CursoDetalleComponent
+  extends MostrarErrorComponent
+  implements OnInit, AfterViewChecked
+{
   @Input() iSilaboId: string;
-  private _activatedRoute = inject(ActivatedRoute);
+  private _ActivatedRoute = inject(ActivatedRoute);
   private _ChangeDetectorRef = inject(ChangeDetectorRef);
-  private _constantesService = inject(ConstantesService);
+  private _ConstantesService = inject(ConstantesService);
+  private _ContenidoSemanasService = inject(ContenidoSemanasService);
+  private _Router = inject(Router);
 
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
@@ -67,41 +74,34 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
   ];
 
   public estudiantes: IEstudiante[] = [];
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  public contenidoSemanas = [];
 
   ngOnInit() {
-    // const storedTab = localStorage.getItem('selectedTab')
-    // if (storedTab !== null) {
-    //     this.selectTab = Number(storedTab)
-    // }
-    this.route.queryParams.subscribe(params => {
+    this._ActivatedRoute.queryParams.subscribe(params => {
       if (params['tab'] !== undefined) {
         this.selectTab = Number(params['tab']);
       }
     });
     this.listenParams();
-    this.iPerfilId = Number(this._constantesService.iPerfilId);
+    this.iPerfilId = Number(this._ConstantesService.iPerfilId);
+    this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId(true);
   }
 
   // obtiene el parametro y actualiza el tab
   listenParams() {
-    const cCursoNombre = this._activatedRoute.snapshot.queryParams['cCursoNombre'];
-    const cNivelNombreCursos = this._activatedRoute.snapshot.queryParams['cNivelNombreCursos'];
-    const cNivelTipoNombre = this._activatedRoute.snapshot.queryParams['cNivelTipoNombre'];
-    const cGradoAbreviacion = this._activatedRoute.snapshot.queryParams['cGradoAbreviacion'];
-    const cSeccionNombre = this._activatedRoute.snapshot.queryParams['cSeccionNombre'];
-    const cCicloRomanos = this._activatedRoute.snapshot.queryParams['cCicloRomanos'];
-    const idDocCursoId = this._activatedRoute.snapshot.queryParams['idDocCursoId'];
-    const iCursoId = this._activatedRoute.snapshot.queryParams['iCursoId'];
-    const iNivelCicloId = this._activatedRoute.snapshot.queryParams['iNivelCicloId'];
-    const iIeCursoId = this._activatedRoute.snapshot.queryParams['iIeCursoId'];
-    const iSeccionId = this._activatedRoute.snapshot.queryParams['iSeccionId'];
-    const iNivelGradoId = this._activatedRoute.snapshot.queryParams['iNivelGradoId'];
-    const cantidad = this._activatedRoute.snapshot.queryParams['cantidad'];
+    const cCursoNombre = this._ActivatedRoute.snapshot.queryParams['cCursoNombre'];
+    const cNivelNombreCursos = this._ActivatedRoute.snapshot.queryParams['cNivelNombreCursos'];
+    const cNivelTipoNombre = this._ActivatedRoute.snapshot.queryParams['cNivelTipoNombre'];
+    const cGradoAbreviacion = this._ActivatedRoute.snapshot.queryParams['cGradoAbreviacion'];
+    const cSeccionNombre = this._ActivatedRoute.snapshot.queryParams['cSeccionNombre'];
+    const cCicloRomanos = this._ActivatedRoute.snapshot.queryParams['cCicloRomanos'];
+    const idDocCursoId = this._ActivatedRoute.snapshot.queryParams['idDocCursoId'];
+    const iCursoId = this._ActivatedRoute.snapshot.queryParams['iCursoId'];
+    const iNivelCicloId = this._ActivatedRoute.snapshot.queryParams['iNivelCicloId'];
+    const iIeCursoId = this._ActivatedRoute.snapshot.queryParams['iIeCursoId'];
+    const iSeccionId = this._ActivatedRoute.snapshot.queryParams['iSeccionId'];
+    const iNivelGradoId = this._ActivatedRoute.snapshot.queryParams['iNivelGradoId'];
+    const cantidad = this._ActivatedRoute.snapshot.queryParams['cantidad'];
     this.curso = {
       cCursoNombre,
       iCursoId,
@@ -121,7 +121,7 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
   }
   //función para recorrer el tabs para que filtre segun el perfil
   updateTab(tab): void {
-    this.router.navigate([], {
+    this._Router.navigate([], {
       queryParams: { tab: tab },
       queryParamsHandling: 'merge',
     });
@@ -132,5 +132,28 @@ export class CursoDetalleComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked() {
     this._ChangeDetectorRef.detectChanges();
+  }
+
+  obtenerContenidoSemanasxidDocCursoIdxiYAcadId(recargar: boolean) {
+    const iYAcadId = this._ConstantesService.iYAcadId;
+
+    if (!iYAcadId || !this.curso.idDocCursoId) return;
+    const params = { iCredId: this._ConstantesService.iCredId };
+
+    this._ContenidoSemanasService
+      .obtenerContenidoSemanasxidDocCursoIdxiYAcadId(
+        this.curso.idDocCursoId,
+        iYAcadId,
+        params,
+        recargar
+      )
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.contenidoSemanas = resp.data || [];
+          }
+        },
+        error: error => this.mostrarErrores(error),
+      });
   }
 }

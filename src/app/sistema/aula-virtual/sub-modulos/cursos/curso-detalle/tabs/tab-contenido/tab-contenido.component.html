@@ -11,20 +11,20 @@
           class="p-button-success"
           pButton
           pRipple
-          (click)="accionBnt({ accion: 'guardar' })"
+          (click)="showModalSesionAprendizaje = true"
         ></button>
       </div>
     }
     <div class="flex flex-column">
       @if (contenidoSemanas.length > 0) {
         <app-card-orderlist
-          [data]="contenidosList"
-          (datoSeleccionado)="mostrarDetalleSemana($event)"
+          [data]="contenidoSemanas"
+          (datoSeleccionado)="obtenerActividadesxiContenidoSemId($event)"
         >
         </app-card-orderlist>
         <p-divider></p-divider>
       }
-      @if (!loadingContenidoSemanas && contenidoSemanas.length === 0) {
+      @if (contenidoSemanas.length === 0) {
         <div class="card">
           <app-no-data [showIcon]="'NO-DATA'" [mensaje]="'No hay lista de semanas'"></app-no-data>
         </div>
@@ -43,13 +43,13 @@
   </div>
   <div class="card col">
     <ng-container *ngIf="semanaSeleccionada">
-      <app-toolbar-primeng
+      <!-- <app-toolbar-primeng
         title="{{ semanaSeleccionada.cContenidoSemNumero }} {{
           semanaSeleccionada.cContenidoSemTitulo
         }}"
         [butons]="btnAccion"
       >
-      </app-toolbar-primeng>
+      </app-toolbar-primeng> -->
     </ng-container>
     <div class="grid mt-1" *ngIf="semanaSeleccionada">
       <div class="col md:col-6">
@@ -90,33 +90,24 @@
     </div>
 
     <div class="col">
-      <ng-container *ngIf="semanaSeleccionada">
+      <ng-container *ngIf="semanaSeleccionada.length; else noData">
         <div class="text-primary text-lg font-bold pb-2">
           Detalle de Semana
-          {{ semanaSeleccionada.cContenidoSemNumero }}
           <p-divider></p-divider>
         </div>
-
-        <!-- <p class="mb-2"><strong>Tema:</strong> {{ semanaSeleccionada.cContenidoSemTitulo }}</p> -->
-
-        @for (fecha of semanaSeleccionada.fechas; track $index) {
-          <!-- <h4 class="mt-3">{{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}</h4> -->
-
-          <app-actividad-lista
-            [actividades]="fecha.actividades"
-            (actionSelected)="actionSelected($event)"
-          >
+        @for (actividad of semanaSeleccionada; track $index) {
+          <app-actividad-lista [actividades]="actividad" (actionSelected)="actionSelected($event)">
           </app-actividad-lista>
         }
       </ng-container>
       <!-- para mostrar cuando no tiene una semana seleccionado -->
-      <ng-container *ngIf="!semanaSeleccionada">
+      <ng-template #noData>
         <app-no-data
           [showIcon]="'NO-DATA'"
-          [mensaje]="'Debe seleccionar una semana de la lista para ver las actividades'"
+          [mensaje]="'No hay actividades para esta sesión de aprendizaje'"
         ></app-no-data>
         <!-- <p class="text-gray-500">Selecciona una semana para ver los detalles.</p> -->
-      </ng-container>
+      </ng-template>
     </div>
   </div>
 </div>
@@ -127,7 +118,7 @@
   [tituloEvaluacion]="tituloEvaluacion"
   [opcionEvaluacion]="opcionEvaluacion"
   [iEvaluacionId]="iEvaluacionId"
-  (accionBtnItem)="accionBtnItem($event)"
+  (accionCloseForm)="showModalEvaluacion = false"
 ></app-form-evaluacion>
 
 <app-sesion-aprendizaje-form
@@ -135,7 +126,7 @@
   [showModal]="showModalSesionAprendizaje"
   [datosSesion]="datosSesion"
   [accion]="accion"
-  [idSesion]="idSesion"
+  [idSesion]="contenidoSemanas.length + 1"
   (dataSesion)="guardarSesionDeAprendizaje($event)"
   (editarSesion)="actualizarSesionDeAprendizaje($event)"
   (accionCloseForm)="showModalSesionAprendizaje = false"
@@ -150,5 +141,3 @@
   (accionCloseForm)="showModalTarea = false"
   (accionRefresh)="recargarData()"
 ></app-tarea-form>
-
-<p-toast />

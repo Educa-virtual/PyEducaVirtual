@@ -18,7 +18,11 @@
       <div class="flex flex-column flex-grow-1">
         <div class="font-bold">{{ objeto?.cTitulo }}</div>
         <div *ngIf="objeto.cDescripcion">
-          {{ (objeto.cDescripcion | slice: 0 : 150) + '...' }}
+          {{
+            objeto?.cDescripcion.length > 150
+              ? (objeto?.cDescripcion | slice: 0 : 150) + '...'
+              : objeto?.cDescripcion
+          }}
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject, OnChanges, SimpleChanges } from '@angular/core';
 import {
   TablePrimengComponent,
   IColumn,
@@ -18,9 +18,7 @@ import { DetalleMatriculasService } from '@/app/servicios/acad/detalle-matricula
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
-import { ContenidoSemanasService } from '@/app/servicios/acad/contenido-semanas.service';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 
 @Component({
   selector: 'app-tab-resultados',
@@ -29,12 +27,26 @@ import { ValidacionFormulariosService } from '@/app/servicios/validacion-formula
   styleUrls: ['./tab-resultados.component.scss'],
   imports: [TablePrimengComponent, PrimengModule, CardOrderListComponent, NoDataComponent],
 })
-export class TabResultadosComponent extends MostrarErrorComponent implements OnInit {
+export class TabResultadosComponent extends MostrarErrorComponent implements OnInit, OnChanges {
   @Input() iSilaboId;
   @Input() iCursoId;
   @Input() idDocCursoId;
   @Input() curso;
+  @Input() contenidoSemanas = [];
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['contenidoSemanas']) {
+      this.contenidoSemanas = changes['contenidoSemanas']?.currentValue;
+      const yaExisteTodas = this.contenidoSemanas.some(semana => semana.iContenidoSemId === 0);
+
+      if (!yaExisteTodas) {
+        this.contenidoSemanas.unshift({
+          iContenidoSemId: 0,
+          cContenidoSemTitulo: 'Todas las semanas',
+        });
+      }
+    }
+  }
   private _formBuilder = inject(FormBuilder);
   private _aulaService = inject(ApiAulaService);
   private _ConstantesService = inject(ConstantesService);
@@ -42,8 +54,6 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   private _MessageService = inject(MessageService);
   private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
   private _EscalaCalificacionesService = inject(EscalaCalificacionesService);
-  private _ContenidoSemanasService = inject(ContenidoSemanasService);
-  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
 
   loading = false;
   reporteNotasFinales: any[] = [];
@@ -184,7 +194,6 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     this.obtenerEscalaCalificaciones();
     this.obtenerReporteDenotasFinales();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
-    this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId();
   }
 
   periodoSeleccionado: number | string | null = null;
@@ -210,34 +219,6 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   }
 
   semanaSeleccionado: number | string | null = null;
-  semanas = [];
-  obtenerContenidoSemanasxidDocCursoIdxiYAcadId() {
-    const iYAcadId = this._ConstantesService.iYAcadId;
-
-    if (!iYAcadId || !this.idDocCursoId) return;
-
-    const params = { iCredId: this._ConstantesService.iCredId };
-
-    this._ContenidoSemanasService
-      .obtenerContenidoSemanasxidDocCursoIdxiYAcadId(this.idDocCursoId, iYAcadId, params)
-      .subscribe({
-        next: resp => {
-          if (resp.validated) {
-            this.semanas = resp.data || [];
-
-            const yaExisteTodas = this.semanas.some(semana => semana.iContenidoSemId === 0);
-
-            if (!yaExisteTodas) {
-              this.semanas.unshift({
-                iContenidoSemId: 0,
-                cContenidoSemTitulo: 'Todas las semanas',
-              });
-            }
-          }
-        },
-        error: error => this.mostrarErrores(error),
-      });
-  }
 
   accionBnt({ accion, item }) {
     if (accion === 'agregarConclusion') {
@@ -500,7 +481,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
   obteneSemanasxiPeriodoEvalAperId(): any[] {
     if (!this.periodoSeleccionado) return [];
-    return this.semanas.filter(
+    return this.contenidoSemanas.filter(
       semana =>
         semana.iContenidoSemId === 0 || semana.iPeriodoEvalAperId === this.periodoSeleccionado
     );

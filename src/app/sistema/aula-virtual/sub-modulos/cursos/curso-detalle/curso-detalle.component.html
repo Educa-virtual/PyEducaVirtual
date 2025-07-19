@@ -28,6 +28,8 @@
       [iCursoId]="curso?.iCursoId"
       [idDocCursoId]="curso?.idDocCursoId"
       [curso]="curso"
+      [contenidoSemanas]="contenidoSemanas"
+      (recargarContenidoSemanas)="obtenerContenidoSemanasxidDocCursoIdxiYAcadId(true)"
     ></app-tab-contenido>
 
     <app-tab-resultados
@@ -36,6 +38,8 @@
       [iCursoId]="curso?.iCursoId"
       [idDocCursoId]="curso?.idDocCursoId"
       [curso]="curso"
+      [contenidoSemanas]="contenidoSemanas"
     ></app-tab-resultados>
   </div>
 </div>
+<p-toast />

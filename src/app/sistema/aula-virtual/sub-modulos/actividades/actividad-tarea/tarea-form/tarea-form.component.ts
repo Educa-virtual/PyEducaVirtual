@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output, OnChanges } from '@angular/core';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { GeneralService } from '@/app/servicios/general.service';
-import { Message, MessageService } from 'primeng/api';
+import { Message } from 'primeng/api';
 import { PrimengModule } from '@/app/primeng.module';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -10,6 +10,7 @@ import { TAREA } from '@/app/sistema/aula-virtual/interfaces/actividad.interface
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { TareasService } from '@/app/servicios/aula/tareas.service';
 import { DatePipe } from '@angular/common';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 // Selector que se utiliza para referenciar este componente en la plantilla de otros componentes.
 @Component({
   selector: 'app-tarea-form',
@@ -19,7 +20,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './tarea-form.component.scss',
 })
 // Clase principal que gestiona el contenedor del formulario de tareas.
-export class TareaFormComponent implements OnChanges {
+export class TareaFormComponent extends MostrarErrorComponent implements OnChanges {
   @Output() accionCloseForm = new EventEmitter<void>();
   @Output() accionRefresh = new EventEmitter<void>();
 
@@ -32,7 +33,6 @@ export class TareaFormComponent implements OnChanges {
   private _ConstantesService = inject(ConstantesService);
   private _GeneralService = inject(GeneralService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
-  private _MessageService = inject(MessageService);
   private _TareasService = inject(TareasService);
 
   pipe = new DatePipe('es-ES');
@@ -199,8 +199,15 @@ export class TareaFormComponent implements OnChanges {
       nombresCampos
     );
 
-    if (!valid && message) {
-      this.mostrarMensajeToast(message);
+    if (!valid) {
+      if (message) {
+        // Mostrar solo el mensaje generado por el servicio
+        this.mostrarMensajeToast({
+          severity: 'error',
+          detail: '',
+          summary: '¡Error!',
+        });
+      }
       this.isLoading = false;
       return;
     }
@@ -239,26 +246,7 @@ export class TareaFormComponent implements OnChanges {
         this.isLoading = false;
       },
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
         this.isLoading = false;
       },
     });
@@ -284,32 +272,9 @@ export class TareaFormComponent implements OnChanges {
         this.isLoading = false;
       },
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
         this.isLoading = false;
       },
     });
-  }
-
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
   }
 }

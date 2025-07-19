@@ -2,7 +2,7 @@ import { MessageService } from 'primeng/api';
 import { inject } from '@angular/core';
 
 export abstract class MostrarErrorComponent {
-  protected messageService = inject(MessageService); // ✅ CAMBIO AQUÍ
+  protected messageService = inject(MessageService);
 
   protected mostrarErrores(error: any) {
     const errores = error?.error?.errors;

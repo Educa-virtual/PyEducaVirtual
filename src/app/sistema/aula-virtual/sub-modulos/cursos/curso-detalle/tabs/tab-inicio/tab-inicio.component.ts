@@ -12,10 +12,10 @@ import { ICurso } from '../../../interfaces/curso.interface';
 import { PrimengModule } from '@/app/primeng.module';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service';
-import { MessageService } from 'primeng/api';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 @Component({
   selector: 'app-tab-inicio',
   standalone: true,
@@ -23,7 +23,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
   templateUrl: './tab-inicio.component.html',
   styleUrl: './tab-inicio.component.scss',
 })
-export class TabInicioComponent implements OnInit, AfterViewChecked {
+export class TabInicioComponent extends MostrarErrorComponent implements OnInit, AfterViewChecked {
   @ViewChildren('textareaRef') textareaRefs!: QueryList<ElementRef>;
 
   @Input() curso: ICurso;
@@ -52,8 +52,6 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
     titulo: ['', [Validators.required, Validators.pattern(/\S+/)]],
     descripcion: ['', [Validators.required, Validators.pattern(/\S+/)]],
   });
-  //para los alert
-  constructor(private messageService: MessageService) {}
 
   //Inicializamos
   ngOnInit(): void {
@@ -116,7 +114,7 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
       cContenido: this.guardarComunicado.value.descripcion,
     };
     if (this.guardarComunicado.invalid) {
-      this.messageService.add({
+      this.mostrarMensajeToast({
         severity: 'error',
         summary: 'Error',
         detail: 'Formulario inválido',
@@ -124,25 +122,31 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
     } else {
       this._confirmService.openConfiSave({
         message: 'Recuerde que podran verlo todos los estudiantes',
-        header: `¿Desea proceder con la publicación del enunciado?`,
+        header: `¿Desea proceder con la publicación del anuncio?`,
         accept: () => {
           this._aulaService.guardarAnuncio(data).subscribe({
             next: (resp: any) => {
               // para refrescar la pagina
               if (resp?.validated) {
+                this.mostrarMensajeToast({
+                  severity: 'success',
+                  summary: '¡Genial!',
+                  detail: 'Anuncio creado correctamente',
+                });
+
                 this.obtenerAnuncios();
                 // this.guardarComunicado.get('cForoRptaPadre')?.reset()
               }
             },
             error: error => {
-              console.error('Comentario:', error);
+              this.mostrarErrores(error);
             },
           });
           this.guardarComunicado.reset();
         },
         reject: () => {
           // Mensaje de cancelación (opcional)
-          this.messageService.add({
+          this.mostrarMensajeToast({
             severity: 'error',
             summary: 'Cancelado',
             detail: 'Acción cancelada',
@@ -168,20 +172,24 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
           iCredId: iCredId,
         };
         this._aulaService.eliminarAnuncio(params).subscribe({
-          next: response => {
-            console.log('Elemento eliminado correctamente', response);
+          next: (response: any) => {
+            if (response.validated) {
+              this.mostrarMensajeToast({
+                severity: 'success',
+                summary: '¡Genial!',
+                detail: 'Anuncio eliminado correctamente',
+              });
+            }
+            this.obtenerAnuncios();
           },
-          error: err => {
-            console.error('Error al eliminar:', err);
+          error: error => {
+            this.mostrarErrores(error);
           },
         });
-
-        // Si quieres además eliminarlo del array local:
-        this.data = this.data.filter(item => item.iAnuncioId !== iAnuncioId);
       },
       reject: () => {
         // Mensaje de cancelación (opcional)
-        this.messageService.add({
+        this.mostrarMensajeToast({
           severity: 'error',
           summary: 'Cancelado',
           detail: 'Acción cancelada',
@@ -202,7 +210,7 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
       next: (response: any) => {
         if (response.validated) {
           this.obtenerAnuncios();
-          this.messageService.add({
+          this.mostrarMensajeToast({
             severity: 'success',
             summary: 'Exito',
             detail:
@@ -213,7 +221,7 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
         }
       },
       error: err => {
-        this.messageService.add({
+        this.mostrarMensajeToast({
           severity: 'error',
           summary: 'Error',
           detail: 'No se pudo fijar el anuncio: ' + err,
@@ -232,17 +240,19 @@ export class TabInicioComponent implements OnInit, AfterViewChecked {
       iCredId: iCredId,
     };
 
-    this._aulaService.obtenerAnuncios(paramst).subscribe(Data => {
-      this.data = Data['data'];
-      this.data.sort((a, b) => b.iFijado - a.iFijado);
+    this._aulaService.obtenerAnuncios(paramst).subscribe({
+      next: Data => {
+        this.data = Data['data'] || [];
+        this.data.sort((a, b) => b.iFijado - a.iFijado);
+        this.contadorAnuncios = this.data.length + 1;
 
-      // console.log('Anuncios:', this.data)
-
-      this.contadorAnuncios = this.data.length + 1;
-      // Asignar valor al campo "numero" del formulario
-      this.guardarComunicado.patchValue({
-        numero: this.contadorAnuncios,
-      });
+        this.guardarComunicado.patchValue({
+          numero: this.contadorAnuncios,
+        });
+      },
+      error: error => {
+        this.mostrarErrores(error);
+      },
     });
   }
 

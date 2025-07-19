@@ -30,7 +30,7 @@ export class FormEvaluacionComponent implements OnChanges {
   private _EvaluacionesService = inject(EvaluacionesService);
   private _ConstantesService = inject(ConstantesService);
 
-  @Output() accionBtnItem = new EventEmitter();
+  @Output() accionCloseForm = new EventEmitter();
   @Input() showModalEvaluacion: boolean = false;
   @Input() tituloEvaluacion: string;
   @Input() opcionEvaluacion: string;
@@ -147,7 +147,7 @@ export class FormEvaluacionComponent implements OnChanges {
 
         this.filesUrl = [];
 
-        this.accionBtnItem.emit({ accion, item });
+        this.accionCloseForm.emit();
         break;
       case 'subir-file-evaluacion':
         this.filesUrl.push({

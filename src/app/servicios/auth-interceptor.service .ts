@@ -30,7 +30,7 @@ export class AuthInterceptorService implements HttpInterceptor {
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${token.replaceAll('"', '')}`,
-                    icredentperfid: dremoPerfil.iCredEntPerfId,
+                    icredentperfid: dremoPerfil?.iCredEntPerfId,
                 },
             })
         }

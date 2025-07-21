@@ -9,6 +9,7 @@ import {
     SUBDIRECTOR_IE,
     APODERADO,
     AUXILIAR,
+    ASISTENTE_SOCIAL,
 } from './perfilesConstantes'
 import {
     ADMINISTRADOR_DREMO,
@@ -460,12 +461,8 @@ const administracion = [
                         routerLink: ['/bienestar/recordario-fechas'],
                     },
                     {
-                        label: 'Reportes e informes',
-                        icon: 'pi pi-fw pi-chart-bar',
-                    },
-                    {
-                        label: 'Informes y estadístico',
-                        icon: 'pi pi-fw pi-file-edit',
+                        label: 'Informes y estadística',
+                        icon: 'pi pi-fw pi-chart-line',
                         routerLink: ['/bienestar/informe-estadistico'],
                     },
                 ],
@@ -612,6 +609,35 @@ const first = [
     },
 ]
 
+const asistente_social = [
+    {
+        label: 'Bienestar Social',
+        icon: 'pi pi-fw pi-check-square',
+        items: [
+            {
+                label: 'Consultar Fichas Socioeconómicas',
+                icon: 'pi pi-fw pi-user-edit',
+                routerLink: ['/bienestar/gestion-fichas'],
+            },
+            {
+                label: 'Gestionar encuestas',
+                icon: 'pi pi-fw pi-list-check',
+                routerLink: ['/bienestar/gestionar-encuestas'],
+            },
+            {
+                label: 'Recordatorios de cumpleaños',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/bienestar/recordario-fechas'],
+            },
+            {
+                label: 'Informes y estadística',
+                icon: 'pi pi-fw pi-chart-line',
+                routerLink: ['/bienestar/informe-estadistico'],
+            },
+        ],
+    },
+]
+
 @Injectable({
     providedIn: 'root',
 })
@@ -653,7 +679,8 @@ export class ConstantesService {
                 return apoderado
             case AUXILIAR:
                 return first
-
+            case ASISTENTE_SOCIAL:
+                return asistente_social
             default:
                 return first
         }

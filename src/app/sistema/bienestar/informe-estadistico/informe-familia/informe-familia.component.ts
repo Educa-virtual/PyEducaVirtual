@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 @Component({
-    selector: 'app-demografica',
+    selector: 'app-informe-familia',
     standalone: true,
     imports: [PrimengModule],
-    templateUrl: './demografica.component.html',
-    styleUrl: './demografica.component.scss',
+    templateUrl: './informe-familia.component.html',
+    styleUrl: './informe-familia.component.scss',
 })
-export class DemograficaComponent implements OnInit {
+export class InformeFamiliaComponent implements OnInit {
     //oanel izquierdo
     sexoData: any
     sexoOptions: any

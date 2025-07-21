@@ -23,7 +23,7 @@ import { NivelPobrezaComponent } from './informe-estadistico/nivel-pobreza/nivel
 import { SaludComponent } from './informe-estadistico/salud/salud.component'
 import { ViviendaComponent } from './informe-estadistico/vivienda/vivienda.component'
 import { EconomicaComponent } from './informe-estadistico/economica/economica.component'
-import { DemograficaComponent } from './informe-estadistico/demografica/demografica.component'
+import { InformeFamiliaComponent } from './informe-estadistico/informe-familia/informe-familia.component'
 
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
@@ -66,7 +66,7 @@ const routes: Routes = [
             { path: 'salud', component: SaludComponent },
             { path: 'vivienda', component: ViviendaComponent },
             { path: 'economica', component: EconomicaComponent },
-            { path: 'demografica', component: DemograficaComponent },
+            { path: 'demografica', component: InformeFamiliaComponent },
         ],
     },
 ]

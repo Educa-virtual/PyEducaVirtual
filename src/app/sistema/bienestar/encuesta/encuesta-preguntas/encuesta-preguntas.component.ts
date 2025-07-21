@@ -128,7 +128,9 @@ export class EncuestaPreguntasComponent implements OnInit {
                     if (data.data) {
                         this.cEncuNombre = data.data.cEncuNombre
                         this.encuesta_bloqueada =
-                            Number(data.data.iEstado) !== this.ESTADO_BORRADOR
+                            Number(data.data.iEstado) !==
+                                this.ESTADO_BORRADOR ||
+                            Number(data.data.puede_editar) !== 1
                         this.listarPreguntas()
                     } else {
                         this._messageService.add({

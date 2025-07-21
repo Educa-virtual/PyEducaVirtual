@@ -298,7 +298,10 @@ export class EncuestaComponent implements OnInit {
     }
 
     setFormEncuesta(data: any) {
-        if (Number(data.iEstado) !== this.ESTADO_BORRADOR) {
+        if (
+            Number(data.iEstado) !== this.ESTADO_BORRADOR ||
+            Number(data.puede_editar) !== 1
+        ) {
             data.iEstado = this.ESTADO_TERMINADA
             this.formEncuesta.disable()
             this.puede_editar = false

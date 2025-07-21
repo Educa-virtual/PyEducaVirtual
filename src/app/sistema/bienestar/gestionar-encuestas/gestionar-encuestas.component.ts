@@ -68,6 +68,10 @@ export class GestionarEncuestasComponent implements OnInit {
         ESPECIALISTA_UGEL,
     ]
 
+    ESTADO_BORRADOR: number = this.datosEncuestas.ESTADO_BORRADOR
+    ESTADO_TERMINADA: number = this.datosEncuestas.ESTADO_TERMINADA
+    ESTADO_APROBADA: number = this.datosEncuestas.ESTADO_APROBADA
+
     private _messageService = inject(MessageService)
     private _confirmService = inject(ConfirmationModalService)
 
@@ -203,12 +207,12 @@ export class GestionarEncuestasComponent implements OnInit {
             })
     }
 
-    actualizarEncuestaEstado(item) {
+    actualizarEncuestaEstado(item: any, estado: number) {
         this.datosEncuestas
             .actualizarEncuestaEstado({
                 iCredEntPerfId: this.perfil.iCredEntPerfId,
                 iEncuId: item.iEncuId,
-                iEstado: 3,
+                iEstado: estado,
             })
             .subscribe({
                 next: () => {
@@ -239,6 +243,9 @@ export class GestionarEncuestasComponent implements OnInit {
             case 'editar':
                 this.router.navigate([`/bienestar/encuesta/${item.iEncuId}`])
                 break
+            case 'ver':
+                this.router.navigate([`/bienestar/encuesta/${item.iEncuId}`])
+                break
             case 'preguntas':
                 this.router.navigate([
                     `/bienestar/encuesta/${item.iEncuId}/preguntas`,
@@ -255,13 +262,32 @@ export class GestionarEncuestasComponent implements OnInit {
                     reject: () => {},
                 })
                 break
+            case 'estado':
+                const nuevo_estado =
+                    Number(item.iEstado) === this.ESTADO_BORRADOR
+                        ? this.ESTADO_TERMINADA
+                        : this.ESTADO_BORRADOR
+                this._confirmService.openConfirm({
+                    message:
+                        '¿Está seguro de cambiar el estado de la encuesta?',
+                    header: 'Confirmación',
+                    icon: 'pi pi-exclamation-triangle',
+                    accept: () => {
+                        this.actualizarEncuestaEstado(item, nuevo_estado)
+                    },
+                    reject: () => {},
+                })
+                break
             case 'aprobar':
                 this._confirmService.openConfirm({
                     message: '¿Está seguro de aprobar la encuesta?',
                     header: 'Confirmación',
                     icon: 'pi pi-exclamation-triangle',
                     accept: () => {
-                        this.actualizarEncuestaEstado(item)
+                        this.actualizarEncuestaEstado(
+                            item,
+                            this.ESTADO_APROBADA
+                        )
                     },
                     reject: () => {},
                 })
@@ -339,12 +365,19 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
-            isVisible: (rowData: any) => {
-                return (
-                    rowData.iEstado != this.datosEncuestas.ESTADO_APROBADA &&
-                    rowData.puede_editar
-                )
-            },
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) === this.ESTADO_BORRADOR &&
+                Number(rowData.puede_editar) === 1,
+        },
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-secondary p-button-text',
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) !== this.ESTADO_BORRADOR ||
+                Number(rowData.puede_editar) !== 1,
         },
         {
             labelTooltip: 'Ver Preguntas',
@@ -359,12 +392,19 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'aprobar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: (rowData: any) => {
-                return (
-                    rowData.iEstado == this.datosEncuestas.ESTADO_TERMINADA &&
-                    rowData.puede_aprobar
-                )
-            },
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) === this.ESTADO_TERMINADA &&
+                Number(rowData.puede_aprobar) === 1,
+        },
+        {
+            labelTooltip: 'Cambiar estado',
+            icon: 'pi pi-sync',
+            accion: 'estado',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) !== this.ESTADO_APROBADA &&
+                Number(rowData.puede_editar) === 1,
         },
         {
             labelTooltip: 'Eliminar',
@@ -372,12 +412,9 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: (rowData: any) => {
-                return (
-                    rowData.iEstado == this.datosEncuestas.ESTADO_BORRADOR &&
-                    rowData.puede_editar
-                )
-            },
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) === this.ESTADO_BORRADOR &&
+                Number(rowData.puede_editar) === 1,
         },
         {
             labelTooltip: 'Ver respuestas',
@@ -385,12 +422,9 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'respuestas',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: (rowData: any) => {
-                return (
-                    rowData.iEstado == this.datosEncuestas.ESTADO_APROBADA &&
-                    rowData.puede_ver_respuestas
-                )
-            },
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) === this.ESTADO_APROBADA &&
+                Number(rowData.puede_ver_respuestas) === 1,
         },
         {
             labelTooltip: 'Ver resumen',
@@ -398,12 +432,9 @@ export class GestionarEncuestasComponent implements OnInit {
             accion: 'resumen',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: (rowData: any) => {
-                return (
-                    rowData.iEstado == this.datosEncuestas.ESTADO_APROBADA &&
-                    rowData.puede_ver_resumen
-                )
-            },
+            isVisible: (rowData: any) =>
+                Number(rowData.iEstado) == this.ESTADO_APROBADA &&
+                Number(rowData.puede_ver_resumen) === 1,
         },
     ]
 }

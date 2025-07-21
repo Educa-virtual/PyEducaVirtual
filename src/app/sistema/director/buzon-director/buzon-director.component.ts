@@ -6,17 +6,16 @@ import {
 import { Component, OnInit } from '@angular/core'
 import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { VerSugerenciaComponent } from '../../estudiante/buzon-sugerencias/ver-sugerencia/ver-sugerencia.component'
 import { ResponderSugerenciaComponent } from '../responder-sugerencia/responder-sugerencia.component'
-
+import { DirectorVerSugerenciaComponent } from '../director-ver-sugerencia/director-ver-sugerencia.component'
 @Component({
     selector: 'app-buzon-director',
     standalone: true,
     imports: [
         PrimengModule,
         TablePrimengComponent,
-        VerSugerenciaComponent,
         ResponderSugerenciaComponent,
+        DirectorVerSugerenciaComponent,
     ],
     templateUrl: './buzon-director.component.html',
     styleUrl: './buzon-director.component.scss',

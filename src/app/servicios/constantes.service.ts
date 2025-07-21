@@ -172,6 +172,11 @@ const estudiante = [
                     },
                 ],
             },
+            {
+                label: 'Buzon de sugerencia',
+                icon: 'pi pi-fw pi-list-check',
+                routerLink: ['/estudiante/buzon-sugerencias'],
+            },
         ],
     },
 ]

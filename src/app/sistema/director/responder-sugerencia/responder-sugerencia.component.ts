@@ -20,7 +20,6 @@ export class ResponderSugerenciaComponent implements OnInit {
     form: FormGroup
     private _selectedItem: any
     @Output() eventSugerenciaRespondida = new EventEmitter<boolean>()
-    //subir archivos propiedad
     archivos: any
 
     @Input()
@@ -62,6 +61,10 @@ export class ResponderSugerenciaComponent implements OnInit {
         this.eventSugerenciaRespondida.emit(false)
     }
 
+    cancelarResponderSugerencia() {
+        this.eventSugerenciaRespondida.emit(true)
+    }
+
     enviarRespuesta() {
         if (this.form.valid) {
             // Como estás usando datos hardcoded:
@@ -70,7 +73,6 @@ export class ResponderSugerenciaComponent implements OnInit {
                 summary: 'Éxito',
                 detail: 'Respuesta enviada correctamente',
             })
-
             this.eventSugerenciaRespondida.emit(true)
         }
     }

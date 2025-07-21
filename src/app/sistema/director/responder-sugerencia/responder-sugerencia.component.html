@@ -4,6 +4,7 @@
             <p-inputGroup>
                 <p-inputGroupAddon>Alumno</p-inputGroupAddon>
                 <input
+                    class="disabled"
                     pInputText
                     type="text"
                     formControlName="cNombreEstudiante"
@@ -15,6 +16,7 @@
             <p-inputGroup>
                 <p-inputGroupAddon>Fecha</p-inputGroupAddon>
                 <input
+                    class="disabled"
                     pInputText
                     type="text"
                     formControlName="dtFechaCreacion"
@@ -26,6 +28,7 @@
             <p-inputGroup>
                 <p-inputGroupAddon>Asunto</p-inputGroupAddon>
                 <input
+                    class="disabled"
                     pInputText
                     type="text"
                     formControlName="cAsunto"
@@ -37,6 +40,7 @@
             <p-inputGroup>
                 <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
                 <input
+                    class="disabled"
                     pInputText
                     type="text"
                     formControlName="cPrioridadNombre"
@@ -46,8 +50,9 @@
         </div>
         <div class="field col-12">
             <label for="cSugerencia">Sugerencia del alumno:</label>
-            <div class="p-inputgroup p-fluid estilo-editor">
+            <div>
                 <div
+                    class="disabled"
                     id="cSugerencia"
                     [innerHTML]="form.get('cSugerencia')?.value"
                 ></div>
@@ -93,7 +98,7 @@
             label="Cancelar"
             severity="secondary"
             class="mr-2"
-            (click)="cerrarDialog()"
+            (click)="cancelarResponderSugerencia()"
         ></p-button>
         <p-button
             label="Enviar respuesta"

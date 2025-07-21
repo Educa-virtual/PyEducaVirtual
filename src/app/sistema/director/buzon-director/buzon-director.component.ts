@@ -30,7 +30,7 @@ export class BuzonDirectorComponent implements OnInit {
     mostrarFormularioResponder: boolean = false
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
     selectedItem: any
-
+    cerrarResponderSugerencia: boolean = false
     //breadcrumb
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -270,9 +270,10 @@ export class BuzonDirectorComponent implements OnInit {
             accion: 'responder',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
-            isVisible: (row) => {
-                return !row.cRespuesta || row.cRespuesta === ''
-            },
+            // se mantiene visible para que se pueda responder sugerencia  solo si no tiene respuesta
+            //isVisible: (row) => {
+            //return !row.cRespuesta || row.cRespuesta === ''
+            //},
         },
     ]
 }

@@ -18,6 +18,12 @@ import { EncuestaPreguntasComponent } from './encuesta/encuesta-preguntas/encues
 import { EncuestaRespuestasComponent } from './encuesta/encuesta-respuestas/encuesta-respuestas.component'
 import { EncuestaResumenComponent } from './encuesta/encuesta-resumen/encuesta-resumen.component'
 import { EncuestaVerComponent } from './encuesta/encuesta-ver/encuesta-ver.component'
+import { InformeEstadisticoComponent } from './informe-estadistico/informe-estadistico.component'
+import { NivelPobrezaComponent } from './informe-estadistico/nivel-pobreza/nivel-pobreza.component'
+import { SaludComponent } from './informe-estadistico/salud/salud.component'
+import { ViviendaComponent } from './informe-estadistico/vivienda/vivienda.component'
+import { EconomicaComponent } from './informe-estadistico/economica/economica.component'
+import { DemograficaComponent } from './informe-estadistico/demografica/demografica.component'
 
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
@@ -51,6 +57,18 @@ const routes: Routes = [
     { path: 'encuesta/:id/resumen', component: EncuestaResumenComponent },
     { path: 'encuesta/:id/ver', component: EncuestaVerComponent },
     { path: 'encuesta/:id/ver/:matricula', component: EncuestaVerComponent },
+    {
+        path: 'informe-estadistico',
+        component: InformeEstadisticoComponent,
+        children: [
+            { path: '', redirectTo: 'nivel-pobreza', pathMatch: 'full' },
+            { path: 'nivel-pobreza', component: NivelPobrezaComponent },
+            { path: 'salud', component: SaludComponent },
+            { path: 'vivienda', component: ViviendaComponent },
+            { path: 'economica', component: EconomicaComponent },
+            { path: 'demografica', component: DemograficaComponent },
+        ],
+    },
 ]
 
 export class AppRoutingModule {}

@@ -1,0 +1,95 @@
+<br />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+    <div>
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    style="
+                        display: flex;
+                        width: 100%;
+                        color: white;
+                        padding: 8px 12px;
+                        margin: -1rem -1rem 0 -1rem;
+                    "
+                >
+                    <div style="font-weight: bold">
+                        Nivel de ingreso familiar mensual
+                    </div>
+                </div>
+            </ng-template>
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        30
+                    </div>
+                </div>
+                <div>
+                    <p-chart
+                        type="bar"
+                        [data]="dataIngresoFamiliar"
+                        [options]="optionsIngresoFamiliar"
+                    />
+                </div>
+            </div>
+        </p-panel>
+    </div>
+
+    <div>
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    style="
+                        display: flex;
+                        width: 100%;
+                        color: white;
+                        padding: 8px 12px;
+                        margin: -1rem -1rem 0 -1rem;
+                    "
+                >
+                    <div style="font-weight: bold">Dependientes Económicas</div>
+                </div>
+            </ng-template>
+            <div style="padding: 20px">
+                <!-- TOTAL HOGARES -->
+                <div style="margin-bottom: 20px">
+                    <h3
+                        style="margin: 0 0 5px 0; color: #333; font-size: 1.1em"
+                    >
+                        Total de Hogares
+                    </h3>
+                    <div
+                        style="
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        30
+                    </div>
+                </div>
+
+                <div>
+                    <p-chart
+                        type="bar"
+                        [data]="basicData"
+                        [options]="basicOptions"
+                    />
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>

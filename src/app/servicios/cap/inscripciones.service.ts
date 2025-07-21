@@ -27,4 +27,7 @@ export class InscripcionesService {
   guardarInscripcion(data): Observable<any> {
     return this.http.post(`${baseUrl}/cap/inscripciones/inscripcion`, data);
   }
+  aprobarInscripcion(iInscripId, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/cap/inscripciones/${iInscripId}/estado`, data);
+  }
 }

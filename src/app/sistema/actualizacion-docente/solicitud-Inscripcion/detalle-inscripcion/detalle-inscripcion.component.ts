@@ -66,8 +66,9 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
   });
   constructor(private sanitizer: DomSanitizer) {}
 
-  ngOnChanges(changes) {
-    console.log(changes);
+  // changes
+  ngOnChanges() {
+    // console.log(changes);
     this.formIncripcion.reset();
   }
   ngOnInit(): void {
@@ -75,7 +76,6 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     this.obtenerTipoIdentificaciones();
 
     this.nombreCurso = this.datosCurso.cCapTitulo;
-    console.log('id', this.id);
   }
   // mostrar los headr de las tablas
   public columnasTabla: IColumn[] = [
@@ -217,7 +217,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     this._capService.listarInscripcionxcurso(data).subscribe({
       next: (res: any) => {
         this.alumnos = res['data'];
-        console.log('datos de alumnos', this.alumnos);
+        // console.log('datos de alumnos', this.alumnos);
       },
     });
   }
@@ -431,9 +431,56 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
       this.formIncripcion.patchValue({
         cVoucher: documentos.data,
       });
+    } else {
+      console.log('no tiene comprobante');
     }
   }
 
+  // función para aprobar las inscripciones
+  aprobarInscripcion(datos: any) {
+    // console.log(datos)
+    const iInscripId = datos.iInscripId;
+    const data = {
+      bEstado: true,
+      iCredId: this._ConstantesService.iCredId,
+    };
+    this._InscripcionesService.aprobarInscripcion(iInscripId, data).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          this.mostrarMensajeToast({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: resp.message,
+          });
+          this.showModal = false;
+          this.obtenerSolicitudesXCurso();
+        }
+      },
+    });
+  }
+  // Función para denegar las inscripcion del estudiante
+  denegarIncripcion(datos: any) {
+    const iInscripId = datos.iInscripId;
+    const data = {
+      bEstado: false,
+      iCredId: this._ConstantesService.iCredId,
+    };
+    this._InscripcionesService.aprobarInscripcion(iInscripId, data).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          this.mostrarMensajeToast({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: resp.message,
+          });
+          this.showModal = false;
+          this.obtenerSolicitudesXCurso();
+        }
+      },
+    });
+  }
+
+  // Función para visualizar el comprobante
   verPdf(data: any) {
     // console.log('data de pdf',data)
     const rutaRelativa = data.cVoucher;

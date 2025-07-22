@@ -32,12 +32,23 @@ export class DatosInformeBienestarService {
     zonas: Array<object>
     tipo_sectores: Array<object>
 
+    antiguo_form: any
+    reportes: any
+
     crearReporte(data: any) {
         return this.http.post(`${baseUrl}/bienestar/crearReporte`, data)
     }
 
-    verReporte(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/verReporte`, data)
+    verReporte(data?: any) {
+        if (!this.reportes) {
+            this.antiguo_form = data
+            this.reportes = this.http.post(
+                `${baseUrl}/bienestar/verReporte`,
+                data
+            )
+            return this.reportes
+        }
+        return this.reportes
     }
 
     getSexos() {

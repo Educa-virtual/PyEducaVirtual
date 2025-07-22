@@ -1,3 +1,9 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex justify-between align-center">
@@ -62,6 +68,7 @@
                                         >
                                         <p-dropdown
                                             [options]="nivel_tipos"
+                                            [showClear]="true"
                                             formControlName="iNivelTipoId"
                                             placeholder="Seleccione un nivel"
                                             styleClass="group-element"
@@ -77,6 +84,7 @@
                                     >
                                     <p-dropdown
                                         [options]="nivel_grados"
+                                        [showClear]="true"
                                         formControlName="iNivelGradoId"
                                         placeholder="Seleccione un grado"
                                         styleClass="group-element"
@@ -237,3 +245,5 @@
 
     <router-outlet></router-outlet>
 </p-panel>
+
+<p-toast></p-toast>

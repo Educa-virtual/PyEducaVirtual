@@ -14,16 +14,18 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     styleUrl: './../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class InformeEstadisticoComponent implements OnInit {
-    title: string = 'Informes y Estadístico'
+    title: string = 'Informes y estadística'
     activeItem: any
 
     perfil: any
     iYAcadId: number
     formReportes: FormGroup
-    reportes: any
     cantidad_matriculados: number
     cantidad_fichas: number
     cantidad_con_discapacidad: number
+
+    breadCrumbItems: MenuItem[]
+    breadCrumbHome: MenuItem
 
     nivel_tipos: any
     nivel_grados: any
@@ -48,6 +50,19 @@ export class InformeEstadisticoComponent implements OnInit {
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
+
+        this.breadCrumbItems = [
+            {
+                label: 'Bienestar Social',
+            },
+            {
+                label: this.title,
+            },
+        ]
+        this.breadCrumbHome = {
+            icon: 'pi pi-home',
+            routerLink: '/',
+        }
     }
 
     ngOnInit(): void {
@@ -64,10 +79,6 @@ export class InformeEstadisticoComponent implements OnInit {
             iSeccionId: [null],
             cPersSexo: [null],
         })
-
-        this.activeItem = this.tabItems[0]
-        this.router.navigate([this.activeItem.route])
-        this.handleTabChange(this.activeItem)
 
         this.datosInformes
             .obtenerParametros({
@@ -182,22 +193,23 @@ export class InformeEstadisticoComponent implements OnInit {
 
     verReporte() {
         this.datosInformes.verReporte(this.formReportes.value).subscribe({
-            next: (data: any) => {
-                if (data.data) {
-                    this.reportes = data.data
-                    this.cantidad_matriculados =
-                        this.reportes.cantidad_matriculados
-                    this.cantidad_fichas = this.reportes.cantidad_fichas
-                    this.cantidad_con_discapacidad =
-                        this.reportes.cantidad_con_discapacidad
-                }
+            next: (data) => {
+                const reportes = data?.data
+                this.cantidad_matriculados = reportes?.cantidad_matriculados
+                this.cantidad_fichas = reportes?.cantidad_fichas
+                this.cantidad_con_discapacidad =
+                    reportes?.cantidad_con_discapacidad
+
+                this.activeItem = this.tabItems[0]
+                this.router.navigate([this.activeItem.route])
+                this.handleTabChange(this.activeItem)
             },
             error: (error) => {
-                console.error('Error obteniendo informe:', error)
+                console.log(error)
                 this._messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail: error.error.message,
                 })
             },
         })
@@ -211,27 +223,27 @@ export class InformeEstadisticoComponent implements OnInit {
         {
             label: 'Familia',
             icon: 'pi pi-fw pi-users',
-            route: '/bienestar/informe-estadistico/nivel-pobreza',
+            route: '/bienestar/informe-estadistico/informe-familia',
         },
         {
             label: 'Económico',
             icon: 'pi pi-fw pi-wallet',
-            route: '/bienestar/informe-estadistico/salud',
+            route: '/bienestar/informe-estadistico/informe-economico',
         },
         {
             label: 'Vivienda',
             icon: 'pi pi-fw pi-home',
-            route: '/bienestar/informe-estadistico/vivienda',
+            route: '/bienestar/informe-estadistico/informe-vivienda',
         },
         {
             label: 'Alimentación',
             icon: 'pi pi-fw pi-shopping-cart',
-            route: '/bienestar/informe-estadistico/economica',
+            route: '/bienestar/informe-estadistico/informe-alimentacion',
         },
         {
             label: 'Salud',
             icon: 'pi pi-fw pi-heart',
-            route: '/bienestar/informe-estadistico/demografica',
+            route: '/bienestar/informe-estadistico/informe-salud',
         },
     ]
 }

@@ -1,0 +1,58 @@
+<div class="grid text-panel" [formGroup]="formChart">
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Tipo de gráfico</p-inputGroupAddon>
+            <p-dropdown
+                [options]="tipos_graficos"
+                formControlName="iTipoGrafico"
+                [filter]="true"
+                [showClear]="false"
+                appendTo="body"
+                placeholder="Seleccione"
+                [style]="{ flex: '1', width: '100%' }"
+                styleClass="group-element"
+            />
+        </p-inputGroup>
+    </div>
+    <div class="col-12">
+        @if (total_cantidad === 0) {
+            <p-message severity="info" text="No hay datos para mostrar" />
+        } @else {
+            <p-chart
+                *ngIf="
+                    formChart.get('iTipoGrafico')?.value ===
+                    GRAFICO_BARRA_VERTICAL
+                "
+                type="bar"
+                [data]="data_formateada"
+                [options]="options_bar_vertical"
+                [plugins]="plugin_bar_vertical"
+                style="width: 100%"
+                height="300px"
+            />
+            <p-chart
+                *ngIf="
+                    formChart.get('iTipoGrafico')?.value ===
+                    GRAFICO_BARRA_HORIZONTAL
+                "
+                type="bar"
+                [data]="data_formateada"
+                [options]="options_bar_horizontal"
+                [plugins]="plugin_bar_horizontal"
+                style="width: 100%"
+                height="300px"
+            />
+            <p-chart
+                *ngIf="
+                    formChart.get('iTipoGrafico')?.value === GRAFICO_CIRCULAR
+                "
+                type="pie"
+                [data]="data_formateada"
+                [options]="options_pie"
+                [plugins]="plugin_pie"
+                class="col-12 md:col-6"
+                height="300px"
+            />
+        }
+    </div>
+</div>

@@ -1,84 +1,27 @@
 import { Component, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
+import { DatosInformeBienestarService } from '../../services/datos-infome-bienestar.service'
+import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.component'
 @Component({
     selector: 'app-informe-familia',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, MultiChartComponent],
     templateUrl: './informe-familia.component.html',
     styleUrl: './informe-familia.component.scss',
 })
 export class InformeFamiliaComponent implements OnInit {
-    //oanel izquierdo
-    sexoData: any
-    sexoOptions: any
-    //panel derecho
-    edadData: any
-    edadOptions: any
+    reportes_familia: any
+
+    constructor(private datosInformes: DatosInformeBienestarService) {}
 
     ngOnInit() {
-        console.log('DemograficaComponent initialized')
-
-        const documentStyle = getComputedStyle(document.documentElement)
-        const textColor = documentStyle.getPropertyValue('--text-color')
-
-        this.sexoData = {
-            labels: ['A', 'B', 'C'],
-            datasets: [
-                {
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        documentStyle.getPropertyValue('--blue-500'),
-                        documentStyle.getPropertyValue('--yellow-500'),
-                        documentStyle.getPropertyValue('--green-500'),
-                    ],
-                    hoverBackgroundColor: [
-                        documentStyle.getPropertyValue('--blue-400'),
-                        documentStyle.getPropertyValue('--yellow-400'),
-                        documentStyle.getPropertyValue('--green-400'),
-                    ],
-                },
-            ],
-        }
-
-        this.sexoOptions = {
-            cutout: '60%',
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor,
-                    },
-                },
-            },
-        }
-
-        this.edadData = {
-            labels: ['A', 'B', 'C'],
-            datasets: [
-                {
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        documentStyle.getPropertyValue('--blue-500'),
-                        documentStyle.getPropertyValue('--yellow-500'),
-                        documentStyle.getPropertyValue('--green-500'),
-                    ],
-                    hoverBackgroundColor: [
-                        documentStyle.getPropertyValue('--blue-400'),
-                        documentStyle.getPropertyValue('--yellow-400'),
-                        documentStyle.getPropertyValue('--green-400'),
-                    ],
-                },
-            ],
-        }
-
-        this.edadOptions = {
-            cutout: '60%',
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor,
-                    },
-                },
-            },
-        }
+        this.datosInformes.verReporte().subscribe((data) => {
+            this.reportes_familia = {
+                padre_vive: JSON.parse(data.data?.padre_vive),
+                madre_vive: JSON.parse(data.data?.madre_vive),
+                padres_viven_juntos: JSON.parse(data.data?.padres_viven_juntos),
+                tiene_hijos: JSON.parse(data.data?.tiene_hijos),
+            }
+        })
     }
 }

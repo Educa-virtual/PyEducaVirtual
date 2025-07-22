@@ -19,10 +19,10 @@ import { EncuestaRespuestasComponent } from './encuesta/encuesta-respuestas/encu
 import { EncuestaResumenComponent } from './encuesta/encuesta-resumen/encuesta-resumen.component'
 import { EncuestaVerComponent } from './encuesta/encuesta-ver/encuesta-ver.component'
 import { InformeEstadisticoComponent } from './informe-estadistico/informe-estadistico.component'
-import { NivelPobrezaComponent } from './informe-estadistico/nivel-pobreza/nivel-pobreza.component'
-import { SaludComponent } from './informe-estadistico/salud/salud.component'
-import { ViviendaComponent } from './informe-estadistico/vivienda/vivienda.component'
-import { EconomicaComponent } from './informe-estadistico/economica/economica.component'
+import { InformeAlimentacionComponent } from './informe-estadistico/informe-alimentacion/informe-alimentacion.component'
+import { InformeSaludComponent } from './informe-estadistico/informe-salud/informe-salud.component'
+import { InformeViviendaComponent } from './informe-estadistico/informe-vivienda/informe-vivienda.component'
+import { InformeEconomicoComponent } from './informe-estadistico/informe-economico/informe-economico.component'
 import { InformeFamiliaComponent } from './informe-estadistico/informe-familia/informe-familia.component'
 
 const routes: Routes = [
@@ -62,11 +62,14 @@ const routes: Routes = [
         component: InformeEstadisticoComponent,
         children: [
             { path: '', redirectTo: 'nivel-pobreza', pathMatch: 'full' },
-            { path: 'nivel-pobreza', component: NivelPobrezaComponent },
-            { path: 'salud', component: SaludComponent },
-            { path: 'vivienda', component: ViviendaComponent },
-            { path: 'economica', component: EconomicaComponent },
-            { path: 'demografica', component: InformeFamiliaComponent },
+            { path: 'informe-familia', component: InformeFamiliaComponent },
+            { path: 'informe-economico', component: InformeEconomicoComponent },
+            { path: 'informe-vivienda', component: InformeViviendaComponent },
+            {
+                path: 'informe-alimentacion',
+                component: InformeAlimentacionComponent,
+            },
+            { path: 'informe-salud', component: InformeSaludComponent },
         ],
     },
 ]

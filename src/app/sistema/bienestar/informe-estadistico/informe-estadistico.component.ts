@@ -12,6 +12,11 @@ import { FormBuilder, FormGroup } from '@angular/forms'
 import { DatosInformeBienestarService } from '../services/datos-informe-bienestar.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TabMenu } from 'primeng/tabmenu'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from '@/app/servicios/seg/perfiles'
 
 @Component({
     selector: 'app-informe-estadistico',
@@ -45,6 +50,11 @@ export class InformeEstadisticoComponent implements OnInit {
     sexos: any
     distritos: any
 
+    perfiles_especialista: Array<number> = [
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        ADMINISTRADOR_DREMO,
+    ]
     es_especialista: boolean = false
 
     private _messageService = inject(MessageService)
@@ -58,6 +68,10 @@ export class InformeEstadisticoComponent implements OnInit {
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
+
+        this.es_especialista = this.perfiles_especialista.includes(
+            Number(this.perfil.iPerfilId)
+        )
 
         this.breadCrumbItems = [
             {
@@ -74,6 +88,7 @@ export class InformeEstadisticoComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log(this.es_especialista, 'es_especialista')
         this.formReportes = this.fb.group({
             iCredEntPerfId: [this.perfil.iCredEntPerfId],
             iYAcadId: [this.iYAcadId],

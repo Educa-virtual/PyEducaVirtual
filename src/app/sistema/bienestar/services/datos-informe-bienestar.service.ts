@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { map, of, Observable, BehaviorSubject } from 'rxjs'
+import { map, of, Observable, BehaviorSubject, shareReplay } from 'rxjs'
 
 const baseUrl = environment.backendApi
 
@@ -49,13 +49,11 @@ export class DatosInformeBienestarService {
         return this.http.post(`${baseUrl}/bienestar/crearReporte`, data)
     }
 
-    verReporte(data?: any) {
+    verReporte(data?: any): Observable<any> {
         if (!this.reportes) {
-            this.antiguo_form = data
-            this.reportes = this.http.post(
-                `${baseUrl}/bienestar/verReporte`,
-                data
-            )
+            this.reportes = this.http
+                .post(`${baseUrl}/bienestar/verReporte`, data)
+                .pipe(shareReplay(1))
             return this.reportes
         }
         return this.reportes

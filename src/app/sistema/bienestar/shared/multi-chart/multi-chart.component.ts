@@ -62,7 +62,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
     formatearGraficos() {
         /* Si tiene menos de 4 opciones, usar gráfico circular */
         if (this.data_chart.length < 4) {
-            this.formChart.get('iTipoGrafico').setValue(this.GRAFICO_CIRCULAR)
+            this.formChart?.get('iTipoGrafico').setValue(this.GRAFICO_CIRCULAR)
         } else {
             /* Si tiene opciones de menos de 10 caracteres, usar gráfico vertical */
             const opcion_max_length = this.data_chart
@@ -70,7 +70,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
                 .reduce((a: any, b: any) => (a > b ? a : b))
             if (opcion_max_length < 10) {
                 this.formChart
-                    .get('iTipoGrafico')
+                    ?.get('iTipoGrafico')
                     .setValue(this.GRAFICO_BARRA_VERTICAL)
             }
         }
@@ -174,27 +174,38 @@ export class MultiChartComponent implements OnInit, OnChanges {
 
         const colorVars = [
             '--red-500',
+            '--orange-500',
             '--yellow-500',
             '--green-500',
+            '--teal-500',
             '--cyan-500',
             '--blue-500',
+            '--indigo-500',
         ]
 
         const hoverColorVars = [
-            '--red-400',
-            '--yellow-400',
-            '--green-400',
-            '--cyan-400',
-            '--blue-400',
+            '--red-300',
+            '--orange-300',
+            '--yellow-300',
+            '--green-300',
+            '--teal-300',
+            '--cyan-300',
+            '--blue-300',
+            '--indigo-300',
         ]
 
+        const cantidad_opciones = opciones.length
         // Genera el array de colores según la cantidad de opciones
         const backgroundColors = opciones.map((_: any, idx: number) =>
-            documentStyle.getPropertyValue(colorVars[idx % colorVars.length])
+            documentStyle.getPropertyValue(
+                this.getColorIndex(idx, cantidad_opciones, colorVars)
+            )
         )
         const hoverBackgroundColors = opciones.map((_: any, idx: number) =>
             documentStyle.getPropertyValue(
-                hoverColorVars[idx % colorVars.length]
+                hoverColorVars[
+                    this.getColorIndex(idx, cantidad_opciones, hoverColorVars)
+                ]
             )
         )
 
@@ -211,9 +222,25 @@ export class MultiChartComponent implements OnInit, OnChanges {
         }
     }
 
+    getColorIndex(
+        index: number,
+        items: number,
+        array_colores: string[]
+    ): string {
+        const total_colores = array_colores.length
+        if (items <= total_colores) {
+            const posicion = Math.round(
+                (index * (total_colores - 1)) / (items - 1)
+            )
+            return array_colores[posicion]
+        } else {
+            return array_colores[index % total_colores]
+        }
+    }
+
     plugin_pie = [
         {
-            afterDraw: (chart) => {
+            beforeDraw: (chart) => {
                 if (chart.data.datasets[0].data.length == 0) return
                 const {
                     ctx,
@@ -254,14 +281,28 @@ export class MultiChartComponent implements OnInit, OnChanges {
                         ctx.textBaseline = 'middle'
                         ctx.fillStyle = dataset.backgroundColor[index]
                         //ctx.fillStyle = "black";
-                        ctx.fillText(
-                            chart.data.labels[index] +
-                                ' (' +
-                                chart.data.datasets[0].data[index] +
-                                ')',
-                            xLine + extraLine + plusFivePx,
-                            yLine
-                        )
+                        // ctx.fillText(
+                        //     chart.data.labels[index] +
+                        //         ' (' +
+                        //         chart.data.datasets[0].data[index] +
+                        //         ')',
+                        //     xLine + extraLine + plusFivePx,
+                        //     yLine
+                        // )
+                        const texto: string = chart.data.labels[index]
+                        const cantidad: string =
+                            '(' + chart.data.datasets[0].data[index] + ')'
+                        const texto_array: Array<string> = texto.split(/[\s-]+/)
+                        const line_height = 10
+                        texto_array.forEach((item: string, index: number) => {
+                            ctx.fillText(
+                                index == texto_array.length - 1
+                                    ? item + ' ' + cantidad
+                                    : item,
+                                xLine + extraLine + plusFivePx,
+                                yLine + line_height * index
+                            )
+                        })
                     })
                 })
             },
@@ -270,7 +311,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
 
     plugin_bar_vertical = [
         {
-            afterDraw: (chart) => {
+            beforeDraw: (chart) => {
                 const { ctx } = chart
                 chart.data.datasets.forEach((dataset, i) => {
                     if (dataset.data.length == 0) return
@@ -290,7 +331,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
 
     plugin_bar_horizontal = [
         {
-            afterDraw: (chart) => {
+            beforeDraw: (chart) => {
                 const { ctx } = chart
                 chart.data.datasets.forEach((dataset, i) => {
                     if (dataset.data.length == 0) return

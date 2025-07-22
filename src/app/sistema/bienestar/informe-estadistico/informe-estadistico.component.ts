@@ -223,27 +223,37 @@ export class InformeEstadisticoComponent implements OnInit {
         {
             label: 'Familia',
             icon: 'pi pi-fw pi-users',
-            route: '/bienestar/informe-estadistico/informe-familia',
+            route: '/bienestar/informe-estadistico/familia',
         },
         {
             label: 'Económico',
             icon: 'pi pi-fw pi-wallet',
-            route: '/bienestar/informe-estadistico/informe-economico',
+            route: '/bienestar/informe-estadistico/economico',
         },
         {
             label: 'Vivienda',
             icon: 'pi pi-fw pi-home',
-            route: '/bienestar/informe-estadistico/informe-vivienda',
+            route: '/bienestar/informe-estadistico/vivienda',
         },
         {
             label: 'Alimentación',
             icon: 'pi pi-fw pi-shopping-cart',
-            route: '/bienestar/informe-estadistico/informe-alimentacion',
+            route: '/bienestar/informe-estadistico/alimentacion',
+        },
+        {
+            label: 'Discapacidad',
+            icon: 'pi pi-fw pi-heart-fill',
+            route: '/bienestar/informe-estadistico/discapacidad',
         },
         {
             label: 'Salud',
             icon: 'pi pi-fw pi-heart',
-            route: '/bienestar/informe-estadistico/informe-salud',
+            route: '/bienestar/informe-estadistico/salud',
+        },
+        {
+            label: 'Recreación',
+            icon: 'pi pi-fw pi-image',
+            route: '/bienestar/informe-estadistico/recreacion',
         },
     ]
 }

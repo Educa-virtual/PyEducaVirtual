@@ -24,6 +24,8 @@ import { InformeSaludComponent } from './informe-estadistico/informe-salud/infor
 import { InformeViviendaComponent } from './informe-estadistico/informe-vivienda/informe-vivienda.component'
 import { InformeEconomicoComponent } from './informe-estadistico/informe-economico/informe-economico.component'
 import { InformeFamiliaComponent } from './informe-estadistico/informe-familia/informe-familia.component'
+import { InformeDiscapacidadComponent } from './informe-estadistico/informe-discapacidad/informe-discapacidad.component'
+import { InformeRecreacionComponent } from './informe-estadistico/informe-recreacion/informe-recreacion.component'
 
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
@@ -61,15 +63,14 @@ const routes: Routes = [
         path: 'informe-estadistico',
         component: InformeEstadisticoComponent,
         children: [
-            { path: '', redirectTo: 'nivel-pobreza', pathMatch: 'full' },
-            { path: 'informe-familia', component: InformeFamiliaComponent },
-            { path: 'informe-economico', component: InformeEconomicoComponent },
-            { path: 'informe-vivienda', component: InformeViviendaComponent },
-            {
-                path: 'informe-alimentacion',
-                component: InformeAlimentacionComponent,
-            },
-            { path: 'informe-salud', component: InformeSaludComponent },
+            { path: '', redirectTo: 'familia', pathMatch: 'full' },
+            { path: 'familia', component: InformeFamiliaComponent },
+            { path: 'economico', component: InformeEconomicoComponent },
+            { path: 'vivienda', component: InformeViviendaComponent },
+            { path: 'alimentacion', component: InformeAlimentacionComponent },
+            { path: 'discapacidad', component: InformeDiscapacidadComponent },
+            { path: 'salud', component: InformeSaludComponent },
+            { path: 'recreacion', component: InformeRecreacionComponent },
         ],
     },
 ]

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { ChartModule } from 'primeng/chart'
-import { DatosInformeBienestarService } from '../../services/datos-infome-bienestar.service'
+import { DatosInformeBienestarService } from '../../services/datos-informe-bienestar.service'
 import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.component'
 @Component({
     selector: 'app-informe-recreacion',
@@ -13,7 +13,9 @@ import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.compon
 export class InformeRecreacionComponent implements OnInit {
     reportes_recreacion: any
 
-    constructor(private datosInformes: DatosInformeBienestarService) {}
+    constructor(private datosInformes: DatosInformeBienestarService) {
+        this.datosInformes.setActiveIndex(6)
+    }
 
     ngOnInit() {
         this.datosInformes.verReporte().subscribe((data) => {

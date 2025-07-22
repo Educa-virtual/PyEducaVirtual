@@ -199,7 +199,7 @@
             [model]="tabItems"
             scrollable="true"
             [activeItem]="activeItem"
-            (activeItemChange)="handleTabChange($event)"
+            (activeItemChange)="scrollToActiveTab(activeItem)"
         >
             <ng-template pTemplate="item" let-item>
                 <ng-container *ngIf="item.route">

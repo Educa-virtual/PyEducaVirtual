@@ -1,10 +1,17 @@
-import { Component, inject, OnInit } from '@angular/core'
+import {
+    ChangeDetectorRef,
+    Component,
+    inject,
+    OnInit,
+    ViewChild,
+} from '@angular/core'
 import { Router } from '@angular/router'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { FormBuilder, FormGroup } from '@angular/forms'
-import { DatosInformeBienestarService } from '../services/datos-infome-bienestar.service'
+import { DatosInformeBienestarService } from '../services/datos-informe-bienestar.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { TabMenu } from 'primeng/tabmenu'
 
 @Component({
     selector: 'app-informe-estadistico',
@@ -14,6 +21,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     styleUrl: './../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
 export class InformeEstadisticoComponent implements OnInit {
+    @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu
     title: string = 'Informes y estadística'
     activeItem: any
 
@@ -22,7 +30,6 @@ export class InformeEstadisticoComponent implements OnInit {
     formReportes: FormGroup
     cantidad_matriculados: number
     cantidad_fichas: number
-    cantidad_con_discapacidad: number
 
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
@@ -46,7 +53,8 @@ export class InformeEstadisticoComponent implements OnInit {
         private router: Router,
         private fb: FormBuilder,
         private datosInformes: DatosInformeBienestarService,
-        private store: LocalStoreService
+        private store: LocalStoreService,
+        private cf: ChangeDetectorRef
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
@@ -197,12 +205,6 @@ export class InformeEstadisticoComponent implements OnInit {
                 const reportes = data?.data
                 this.cantidad_matriculados = reportes?.cantidad_matriculados
                 this.cantidad_fichas = reportes?.cantidad_fichas
-                this.cantidad_con_discapacidad =
-                    reportes?.cantidad_con_discapacidad
-
-                this.activeItem = this.tabItems[0]
-                this.router.navigate([this.activeItem.route])
-                this.handleTabChange(this.activeItem)
             },
             error: (error) => {
                 console.log(error)
@@ -215,8 +217,35 @@ export class InformeEstadisticoComponent implements OnInit {
         })
     }
 
-    handleTabChange(newItem: MenuItem) {
-        this.activeItem = newItem
+    ngAfterViewInit() {
+        this.datosInformes.getActiveIndex().subscribe((value) => {
+            this.activeItem = value
+            this.cf.detectChanges()
+        })
+    }
+
+    /**
+     * Mover scrool a la pestaña seleccionada
+     * @param event
+     */
+    scrollToActiveTab(activeIndex: any) {
+        activeIndex = activeIndex || 0
+        if (this.tabMenu) {
+            const navContainer =
+                this.tabMenu.content.nativeElement.querySelector(
+                    '.p-tabmenu-nav'
+                )
+            const activeTabElement = navContainer.querySelector(
+                `.p-tabmenuitem:nth-child(${activeIndex + 1})`
+            )
+            if (activeTabElement) {
+                activeTabElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'center',
+                })
+            }
+        }
     }
 
     tabItems = [

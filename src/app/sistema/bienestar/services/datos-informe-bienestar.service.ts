@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { map, of } from 'rxjs'
+import { map, of, Observable, BehaviorSubject } from 'rxjs'
 
 const baseUrl = environment.backendApi
 
@@ -34,6 +34,16 @@ export class DatosInformeBienestarService {
 
     antiguo_form: any
     reportes: any
+
+    private activeIndex = new BehaviorSubject<number | null>(null)
+
+    getActiveIndex(): Observable<any> {
+        return this.activeIndex.asObservable()
+    }
+
+    setActiveIndex(index: number) {
+        this.activeIndex.next(index)
+    }
 
     crearReporte(data: any) {
         return this.http.post(`${baseUrl}/bienestar/crearReporte`, data)

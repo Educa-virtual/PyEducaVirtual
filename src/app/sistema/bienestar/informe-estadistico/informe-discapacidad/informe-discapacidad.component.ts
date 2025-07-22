@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 //import { ActivatedRoute } from '@angular/router'
 import { PrimengModule } from '@/app/primeng.module'
 import { ChartModule } from 'primeng/chart'
-import { DatosInformeBienestarService } from '../../services/datos-infome-bienestar.service'
+import { DatosInformeBienestarService } from '../../services/datos-informe-bienestar.service'
 import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.component'
 @Component({
     selector: 'app-informe-discapacidad',
@@ -15,14 +15,16 @@ export class InformeDiscapacidadComponent implements OnInit {
     reportes_discapacidad: any
     cantidad_con_discapacidad: number
 
-    constructor(private datosInformes: DatosInformeBienestarService) {}
+    constructor(private datosInformes: DatosInformeBienestarService) {
+        this.datosInformes.setActiveIndex(4)
+    }
 
     ngOnInit() {
         this.datosInformes.verReporte().subscribe((data) => {
             this.cantidad_con_discapacidad =
                 data.data?.cantidad_con_discapacidad
             this.reportes_discapacidad = {
-                seguros_discapacidad: JSON.parse(
+                tipos_discapacidades: JSON.parse(
                     data.data?.tipos_discapacidades
                 ),
             }

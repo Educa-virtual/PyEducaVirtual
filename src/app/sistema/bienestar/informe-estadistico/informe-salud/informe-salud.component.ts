@@ -19,13 +19,15 @@ export class InformeSaludComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.datosInformes.verReporte().subscribe((data) => {
-            this.reportes_salud = {
-                seguros_salud: JSON.parse(data.data?.seguros_salud),
-                alergia_medicamentos: JSON.parse(
-                    data.data?.alergia_medicamentos
-                ),
-                tipos_dolencias: JSON.parse(data.data?.tipos_dolencias),
+        this.datosInformes.reportes$.subscribe((data) => {
+            if (data) {
+                this.reportes_salud = {
+                    seguros_salud: JSON.parse(data.data?.seguros_salud),
+                    alergia_medicamentos: JSON.parse(
+                        data.data?.alergia_medicamentos
+                    ),
+                    tipos_dolencias: JSON.parse(data.data?.tipos_dolencias),
+                }
             }
         })
     }

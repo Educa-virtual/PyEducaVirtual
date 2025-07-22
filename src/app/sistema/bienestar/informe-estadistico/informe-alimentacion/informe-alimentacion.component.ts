@@ -18,19 +18,21 @@ export class InformeAlimentacionComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.datosInformes.verReporte().subscribe((data) => {
-            this.reportes_alimentacion = {
-                programas_alimentacion: JSON.parse(
-                    data.data?.programas_alimentacion
-                ),
-                lugar_desayuno: JSON.parse(data.data?.lugar_desayuno),
-                lugar_almuerzo: JSON.parse(data.data?.lugar_almuerzo),
-                lugar_cena: JSON.parse(data.data?.lugar_cena),
-                tiene_dietas: JSON.parse(data.data?.tiene_dietas),
-                alergia_alimentos: JSON.parse(data.data?.alergia_alimentos),
-                dificultad_conseguir_alimentos: JSON.parse(
-                    data.data?.dificultad_conseguir_alimentos
-                ),
+        this.datosInformes.reportes$.subscribe((data) => {
+            if (data) {
+                this.reportes_alimentacion = {
+                    programas_alimentacion: JSON.parse(
+                        data.data?.programas_alimentacion
+                    ),
+                    lugar_desayuno: JSON.parse(data.data?.lugar_desayuno),
+                    lugar_almuerzo: JSON.parse(data.data?.lugar_almuerzo),
+                    lugar_cena: JSON.parse(data.data?.lugar_cena),
+                    tiene_dietas: JSON.parse(data.data?.tiene_dietas),
+                    alergia_alimentos: JSON.parse(data.data?.alergia_alimentos),
+                    dificultad_conseguir_alimentos: JSON.parse(
+                        data.data?.dificultad_conseguir_alimentos
+                    ),
+                }
             }
         })
     }

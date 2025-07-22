@@ -20,16 +20,28 @@ export class InformeViviendaComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.datosInformes.verReporte().subscribe((data) => {
-            this.reportes_vivienda = {
-                ocupacion_vivienda: JSON.parse(data.data?.ocupacion_vivienda),
-                estado_vivienda: JSON.parse(data.data?.estado_vivienda),
-                material_paredes: JSON.parse(data.data?.material_paredes),
-                suministro_agua: JSON.parse(data.data?.suministro_agua),
-                tipo_vivienda: JSON.parse(data.data?.tipo_vivienda),
-                tipo_sshh: JSON.parse(data.data?.tipo_sshh),
-                tipo_alumbrado: JSON.parse(data.data?.tipo_alumbrado),
-                elementos_vivienda: JSON.parse(data.data?.elementos_vivienda),
+        this.datosInformes.reportes$.subscribe((data) => {
+            if (data) {
+                this.reportes_vivienda = {
+                    ocupacion_vivienda: [
+                        ...JSON.parse(data.data?.ocupacion_vivienda),
+                    ],
+                    estado_vivienda: [
+                        ...JSON.parse(data.data?.estado_vivienda),
+                    ],
+                    material_paredes: [
+                        ...JSON.parse(data.data?.material_paredes),
+                    ],
+                    suministro_agua: [
+                        ...JSON.parse(data.data?.suministro_agua),
+                    ],
+                    tipo_vivienda: [...JSON.parse(data.data?.tipo_vivienda)],
+                    tipo_sshh: [...JSON.parse(data.data?.tipo_sshh)],
+                    tipo_alumbrado: [...JSON.parse(data.data?.tipo_alumbrado)],
+                    elementos_vivienda: [
+                        ...JSON.parse(data.data?.elementos_vivienda),
+                    ],
+                }
             }
         })
     }

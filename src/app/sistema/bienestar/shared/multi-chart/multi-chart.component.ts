@@ -184,14 +184,14 @@ export class MultiChartComponent implements OnInit, OnChanges {
         ]
 
         const hoverColorVars = [
-            '--red-300',
-            '--orange-300',
-            '--yellow-300',
-            '--green-300',
-            '--teal-300',
-            '--cyan-300',
-            '--blue-300',
-            '--indigo-300',
+            '--red-400',
+            '--orange-400',
+            '--yellow-400',
+            '--green-400',
+            '--teal-400',
+            '--cyan-400',
+            '--blue-400',
+            '--indigo-400',
         ]
 
         const cantidad_opciones = opciones.length
@@ -203,9 +203,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
         )
         const hoverBackgroundColors = opciones.map((_: any, idx: number) =>
             documentStyle.getPropertyValue(
-                hoverColorVars[
-                    this.getColorIndex(idx, cantidad_opciones, hoverColorVars)
-                ]
+                this.getColorIndex(idx, cantidad_opciones, hoverColorVars)
             )
         )
 

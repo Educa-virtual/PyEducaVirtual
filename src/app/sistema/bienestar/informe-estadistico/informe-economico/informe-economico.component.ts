@@ -18,17 +18,19 @@ export class InformeEconomicoComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.datosInformes.verReporte().subscribe((data) => {
-            this.reportes_economico = {
-                rango_ingresos_familiar: JSON.parse(
-                    data.data?.rango_ingresos_familiar
-                ),
-                tiene_trabajo: JSON.parse(data.data?.tiene_trabajo),
-                apoyo_economico: JSON.parse(data.data?.apoyo_economico),
-                dependencia_economica: JSON.parse(
-                    data.data?.dependencia_economica
-                ),
-                jornada_laboral: JSON.parse(data.data?.jornada_laboral),
+        this.datosInformes.reportes$.subscribe((data) => {
+            if (data) {
+                this.reportes_economico = {
+                    rango_ingresos_familiar: JSON.parse(
+                        data.data?.rango_ingresos_familiar
+                    ),
+                    tiene_trabajo: JSON.parse(data.data?.tiene_trabajo),
+                    apoyo_economico: JSON.parse(data.data?.apoyo_economico),
+                    dependencia_economica: JSON.parse(
+                        data.data?.dependencia_economica
+                    ),
+                    jornada_laboral: JSON.parse(data.data?.jornada_laboral),
+                }
             }
         })
     }

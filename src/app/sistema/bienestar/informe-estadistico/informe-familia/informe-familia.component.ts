@@ -17,12 +17,16 @@ export class InformeFamiliaComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.datosInformes.verReporte().subscribe((data) => {
-            this.reportes_familia = {
-                padre_vive: JSON.parse(data.data?.padre_vive),
-                madre_vive: JSON.parse(data.data?.madre_vive),
-                padres_viven_juntos: JSON.parse(data.data?.padres_viven_juntos),
-                tiene_hijos: JSON.parse(data.data?.tiene_hijos),
+        this.datosInformes.reportes$.subscribe((data) => {
+            if (data) {
+                this.reportes_familia = {
+                    padre_vive: [...JSON.parse(data.data?.padre_vive)],
+                    madre_vive: [...JSON.parse(data.data?.madre_vive)],
+                    padres_viven_juntos: [
+                        ...JSON.parse(data.data?.padres_viven_juntos),
+                    ],
+                    tiene_hijos: [...JSON.parse(data.data?.tiene_hijos)],
+                }
             }
         })
     }

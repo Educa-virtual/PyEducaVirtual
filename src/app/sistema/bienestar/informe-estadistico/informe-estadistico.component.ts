@@ -5,7 +5,6 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core'
-import { Router } from '@angular/router'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { FormBuilder, FormGroup } from '@angular/forms'
@@ -17,6 +16,7 @@ import {
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-informe-estadistico',
@@ -88,7 +88,6 @@ export class InformeEstadisticoComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log(this.es_especialista, 'es_especialista')
         this.formReportes = this.fb.group({
             iCredEntPerfId: [this.perfil.iCredEntPerfId],
             iYAcadId: [this.iYAcadId],
@@ -215,21 +214,25 @@ export class InformeEstadisticoComponent implements OnInit {
     }
 
     verReporte() {
-        this.datosInformes.verReporte(this.formReportes.value).subscribe({
-            next: (data) => {
-                const reportes = data?.data
-                this.cantidad_matriculados = reportes?.cantidad_matriculados
-                this.cantidad_fichas = reportes?.cantidad_fichas
-            },
-            error: (error) => {
-                console.log(error)
-                this._messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.error.message,
-                })
-            },
-        })
+        const forzar_consulta = true
+        this.datosInformes
+            .verReporte(this.formReportes.value, forzar_consulta)
+            .subscribe({
+                next: (data) => {
+                    const reportes = data?.data
+                    this.cantidad_matriculados = reportes?.cantidad_matriculados
+                    this.cantidad_fichas = reportes?.cantidad_fichas
+                    // this.router.navigate([`/bienestar/informe-estadistico/familia`])
+                },
+                error: (error) => {
+                    console.log(error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     ngAfterViewInit() {

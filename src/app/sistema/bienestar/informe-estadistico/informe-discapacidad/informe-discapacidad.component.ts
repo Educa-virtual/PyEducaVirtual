@@ -20,13 +20,15 @@ export class InformeDiscapacidadComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.datosInformes.verReporte().subscribe((data) => {
-            this.cantidad_con_discapacidad =
-                data.data?.cantidad_con_discapacidad
-            this.reportes_discapacidad = {
-                tipos_discapacidades: JSON.parse(
-                    data.data?.tipos_discapacidades
-                ),
+        this.datosInformes.reportes$.subscribe((data) => {
+            if (data) {
+                this.cantidad_con_discapacidad =
+                    data.data?.cantidad_con_discapacidad
+                this.reportes_discapacidad = {
+                    tipos_discapacidades: JSON.parse(
+                        data.data?.tipos_discapacidades
+                    ),
+                }
             }
         })
     }

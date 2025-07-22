@@ -1,6 +1,9 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+//import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+//import { MessageService } from 'primeng/api'
 @Component({
     selector: 'app-estudiante-encuesta',
     standalone: true,
@@ -9,6 +12,8 @@ import { FormsModule } from '@angular/forms'
     styleUrl: './estudiante-encuesta.component.scss',
 })
 export class EstudianteEncuestaComponent {
+    private _ConfirmationModalService = inject(ConfirmationModalService)
+
     title: string = 'Censo DRE/UGEL 2024'
     subtitle: string = 'SEGUIMIENTO Y MONITORIO PEDAGÓGICO'
     activeIndex: number = 0
@@ -71,6 +76,64 @@ export class EstudianteEncuestaComponent {
                 },
             ],
         },
+        {
+            iPreguntaId: '1003',
+            cPregunta:
+                '<p>¿Cuál de los siguientes es un ejemplo de valor moral?</p>',
+            title: 'Pregunta 3',
+            iMarcado: 0,
+            alternativas: [
+                {
+                    iAlternativaId: '1005',
+                    cAlternativaDescripcion: 'Honestidad',
+                    iMarcado: 0,
+                },
+                {
+                    iAlternativaId: '1006',
+                    cAlternativaDescripcion: 'Egoísmo',
+                    iMarcado: 0,
+                },
+                {
+                    iAlternativaId: '1007',
+                    cAlternativaDescripcion: 'Envidia',
+                    iMarcado: 0,
+                },
+                {
+                    iAlternativaId: '1008',
+                    cAlternativaDescripcion: 'Avaricia',
+                    iMarcado: 0,
+                },
+            ],
+        },
+        {
+            iPreguntaId: '1004',
+            cPregunta:
+                '<p>¿Cuál de los siguientes es un ejemplo de valor moral?</p>',
+            title: 'Pregunta 4',
+            iMarcado: 0,
+            alternativas: [
+                {
+                    iAlternativaId: '1005',
+                    cAlternativaDescripcion: 'Honestidad',
+                    iMarcado: 0,
+                },
+                {
+                    iAlternativaId: '1006',
+                    cAlternativaDescripcion: 'Egoísmo',
+                    iMarcado: 0,
+                },
+                {
+                    iAlternativaId: '1007',
+                    cAlternativaDescripcion: 'Envidia',
+                    iMarcado: 0,
+                },
+                {
+                    iAlternativaId: '1008',
+                    cAlternativaDescripcion: 'Avaricia',
+                    iMarcado: 0,
+                },
+            ],
+        },
     ]
     anteriorPregunta() {
         if (this.activeIndex > 0) {
@@ -100,4 +163,32 @@ export class EstudianteEncuestaComponent {
     calcularPreguntasRespondidas(): number {
         return this.preguntas.filter((p) => p.iMarcado === 0).length
     }
+    finalizarEncuesta() {
+        console.log('finalizar encuesta')
+    }
+    /*preguntarTerminarEncuesta() {
+        const cantidadPreguntasPendientes = this.calcularPreguntasPendientes()
+        let mensaje = ''
+        switch (cantidadPreguntasPendientes) {
+            case 0:
+                mensaje = 'El examen se dará por terminado. ¿Desea continuar?'
+                break
+            case 1:
+                mensaje =
+                    'Hay 1 pregunta pendiente de responder. ¿Desea continuar?'
+                break
+            default:
+                mensaje =
+                    'Hay ' +
+                    cantidadPreguntasPendientes +
+                    ' preguntas pendientes de responder. ¿Desea continuar?'
+                break
+        }
+        this._ConfirmationModalService.openConfirm({
+            header: mensaje,
+            accept: () => {
+                this.terminarExamen()
+            },
+        })
+    }  */
 }

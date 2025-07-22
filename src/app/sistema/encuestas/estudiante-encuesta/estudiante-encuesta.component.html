@@ -6,7 +6,7 @@
                 pButton
                 pRipple
                 label="Timer"
-                icon="pi pi-plus"
+                icon="pi pi-clock"
                 class="p-button-success"
             ></button>
         </div>
@@ -92,13 +92,36 @@
             </p-accordion>
         </div>
         <div class="col-12 flex justify-content-between mt-4">
-            <p-button label="Anterior" severity="warning" />
+            <p-button
+                label="Anterior"
+                severity="warning"
+                (click)="anteriorPregunta()"
+                *ngIf="activeIndex >= 1"
+            />
+            <div
+                *ngIf="activeIndex === 0"
+                style="width: 85px; height: 40px"
+            ></div>
+
             <p-button
                 label="Siguiente"
                 severity="success"
                 (click)="siguientePregunta(activeIndex)"
                 *ngIf="activeIndex !== preguntas.length - 1"
             />
+            <p-button
+                label="Finalizar"
+                severity="success"
+                *ngIf="activeIndex === preguntas.length - 1"
+            ></p-button>
+            <!--<p-button label="Anterior" severity="warning" (click)="anteriorPregunta()" />
+            <p-button
+                label="Siguiente"
+                severity="success"
+                (click)="siguientePregunta(activeIndex)"
+                *ngIf="activeIndex !== preguntas.length - 1"
+            />
+            <p-button label="Finalizar" severity="success"></p-button>-->
         </div>
     </div>
 </p-panel>

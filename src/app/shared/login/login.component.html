@@ -91,3 +91,81 @@
 >
 </app-sin-rol-asignado>
 <p-toast />
+
+<p-dialog
+    [header]="'DIÁLOGO INFORMATIVO DE EDUCA VIRTUAL'"
+    [(visible)]="anuncio"
+    [maximizable]="true"
+    [modal]="true"
+    [closable]="true"
+    [style]="{ width: '80vw' }"
+    styleClass="dialog-con-header-normal"
+>
+    <div class="content-grid">
+        <!-- Video lado izquierdo -->
+        <div class="video-section">
+            <div class="video-container">
+                <iframe
+                    [src]="
+                        sanitizer.bypassSecurityTrustResourceUrl(
+                            'https://www.youtube.com/embed/WMmiaV7lJJw'
+                        )
+                    "
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+            </div>
+        </div>
+
+        <!-- Documentación lado derecho -->
+        <div class="doc-section">
+            <h3>📄 Documentación</h3>
+            <p>Consulta los manuales y guías rápidas aquí:</p>
+            <ul>
+                <li>
+                    <a
+                        href="https://drive.google.com/file/d/10oSCdI5CZbLxHaQhRRTrumFLuTE2-BYG/view?usp=drive_link"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        👉 Configurar hora de exámen ERE
+                    </a>
+                </li>
+                <!-- Añade más manuales si deseas -->
+            </ul>
+            <ul>
+                <li>
+                    <a
+                        href="https://drive.google.com/file/d/1aDUDtom3XQcIbKy_PcM17dFChplm4YfQ/view?usp=drive_link"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        👉 Rendir Exámen ERE
+                    </a>
+                </li>
+                <!-- Añade más manuales si deseas -->
+            </ul>
+            <ul>
+                <li>
+                    <a
+                        href="https://www.youtube.com/@ProyectoVirtualDREMO/playlists"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        👉 Videos Tutoriales
+                    </a>
+                </li>
+                <!-- Añade más manuales si deseas -->
+            </ul>
+
+            <br />
+            <br />
+            <br />
+            <br />
+            <h3>📄 Contactos</h3>
+            <ul>
+                <li>Soporte de plataforma 966635379</li>
+            </ul>
+        </div>
+    </div>
+</p-dialog>

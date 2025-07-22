@@ -66,7 +66,6 @@ export class DirectorVerSugerenciaComponent implements OnInit {
 
     enviarRespuesta() {
         if (this.form.valid) {
-            // Como estás usando datos hardcoded:
             this.messageService.add({
                 severity: 'success',
                 summary: 'Éxito',

@@ -2,13 +2,13 @@
     <ng-template pTemplate="header">
         <div class="flex justify-content-between align-items-center w-full">
             <span class="text-xl font-bold text-primary">{{ title }}</span>
-            <button
-                pButton
-                pRipple
-                label="Timer"
-                icon="pi pi-clock"
-                class="p-button-success"
-            ></button>
+            <app-time
+                [etiqueta]="'Tiempo restante'"
+                [inicio]="tiempoActual"
+                [fin]="tiempoFin"
+                (accionTime)="timeEvent($event)"
+                *ngIf="!finalizado"
+            ></app-time>
         </div>
     </ng-template>
 
@@ -113,15 +113,9 @@
                 label="Finalizar"
                 severity="success"
                 *ngIf="activeIndex === preguntas.length - 1"
+                (click)="finalizarEncuesta()"
             ></p-button>
-            <!--<p-button label="Anterior" severity="warning" (click)="anteriorPregunta()" />
-            <p-button
-                label="Siguiente"
-                severity="success"
-                (click)="siguientePregunta(activeIndex)"
-                *ngIf="activeIndex !== preguntas.length - 1"
-            />
-            <p-button label="Finalizar" severity="success"></p-button>-->
         </div>
     </div>
 </p-panel>
+<p-toast></p-toast>

@@ -1,23 +1,25 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-//import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-//import { MessageService } from 'primeng/api'
+import { MessageService } from 'primeng/api'
+import { TimeComponent } from '@/app/shared/time/time.component'
 @Component({
     selector: 'app-estudiante-encuesta',
     standalone: true,
-    imports: [PrimengModule, FormsModule],
+    imports: [PrimengModule, FormsModule, TimeComponent],
     templateUrl: './estudiante-encuesta.component.html',
     styleUrl: './estudiante-encuesta.component.scss',
 })
-export class EstudianteEncuestaComponent {
+export class EstudianteEncuestaComponent implements OnInit {
     private _ConfirmationModalService = inject(ConfirmationModalService)
-
+    private _MessageService = inject(MessageService)
     title: string = 'Censo DRE/UGEL 2024'
     subtitle: string = 'SEGUIMIENTO Y MONITORIO PEDAGÓGICO'
     activeIndex: number = 0
-
+    tiempoActual = new Date()
+    tiempoFin = new Date()
+    finalizado: boolean = false
     preguntas = [
         {
             iPreguntaId: '1001',
@@ -135,6 +137,10 @@ export class EstudianteEncuestaComponent {
             ],
         },
     ]
+    ngOnInit() {
+        this.tiempoActual = new Date()
+        this.tiempoFin = new Date(this.tiempoActual.getTime() + 30 * 60 * 1000)
+    }
     anteriorPregunta() {
         if (this.activeIndex > 0) {
             this.activeIndex = this.activeIndex - 1
@@ -163,32 +169,67 @@ export class EstudianteEncuestaComponent {
     calcularPreguntasRespondidas(): number {
         return this.preguntas.filter((p) => p.iMarcado === 0).length
     }
-    finalizarEncuesta() {
-        console.log('finalizar encuesta')
+    calcularPreguntasPendientes(): number {
+        return this.preguntas.filter((p) => p.iMarcado === 0).length
     }
-    /*preguntarTerminarEncuesta() {
+    finalizarEncuesta() {
+        this.preguntarTerminarEncuesta()
+    }
+    preguntarTerminarEncuesta() {
         const cantidadPreguntasPendientes = this.calcularPreguntasPendientes()
         let mensaje = ''
+
         switch (cantidadPreguntasPendientes) {
             case 0:
-                mensaje = 'El examen se dará por terminado. ¿Desea continuar?'
+                mensaje = 'La encuesta se dará por terminada. ¿Desea continuar?'
                 break
             case 1:
                 mensaje =
                     'Hay 1 pregunta pendiente de responder. ¿Desea continuar?'
                 break
             default:
-                mensaje =
-                    'Hay ' +
-                    cantidadPreguntasPendientes +
-                    ' preguntas pendientes de responder. ¿Desea continuar?'
+                mensaje = `Hay ${cantidadPreguntasPendientes} preguntas pendientes de responder. ¿Desea continuar?`
                 break
         }
+
         this._ConfirmationModalService.openConfirm({
             header: mensaje,
             accept: () => {
-                this.terminarExamen()
+                this.terminarEncuesta()
+            },
+            reject: () => {
+                console.log('Usuario canceló la finalización')
             },
         })
-    }  */
+    }
+    terminarEncuesta() {
+        this._MessageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Encuesta finalizada correctamente',
+        })
+    }
+    timeEvent($event: any) {
+        const { accion } = $event
+        switch (accion) {
+            case 'tiempo-finalizado':
+                this.finalizado = true
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Tiempo agotado',
+                    detail: 'El tiempo para completar la encuesta ha terminado',
+                })
+                this.terminarEncuesta()
+                break
+            case 'tiempo-1-minuto-restante':
+                this._MessageService.add({
+                    severity: 'warn',
+                    summary: 'Tiempo restante',
+                    detail: 'Queda 1 minuto para finalizar la encuesta',
+                })
+                break
+            default:
+                break
+        }
+    }
 }

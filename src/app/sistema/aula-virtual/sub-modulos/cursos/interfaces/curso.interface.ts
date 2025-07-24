@@ -31,4 +31,5 @@ export interface ICurso {
     bDocente?: string
     cDocente?: string
     bEstudiante?: string
+    bDescarga?: string | number
 }

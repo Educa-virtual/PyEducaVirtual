@@ -21,6 +21,7 @@ import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/perfilesConstantes'
 import { PrimengModule } from '@/app/primeng.module'
+import { ActivarDescargaComponent } from '../activar-descarga/activar-descarga.component'
 
 @Component({
     selector: 'app-area-card',
@@ -31,6 +32,7 @@ import { PrimengModule } from '@/app/primeng.module'
         ButtonModule,
         StringCasePipe,
         PrimengModule,
+        ActivarDescargaComponent,
     ],
     templateUrl: './area-card.component.html',
     styleUrl: './area-card.component.scss',
@@ -40,6 +42,8 @@ export class AreaCardComponent implements OnInit {
     private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
     private _ConstantesService = inject(ConstantesService)
+
+    mostrarActivarDescargas: boolean = false
 
     @Input() iEvaluacionIdHashed: string = ''
     @Input() curso: ICurso
@@ -84,7 +88,11 @@ export class AreaCardComponent implements OnInit {
                 label: 'Descargar matriz',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.descargarMatrizPorEvaluacionArea()
+                    if (this.curso.bDescarga == '0' || !this.curso.bDescarga) {
+                        alert('La descarga de la matriz no está activada')
+                    } else {
+                        this.descargarMatrizPorEvaluacionArea()
+                    }
                 },
             },
             {
@@ -161,6 +169,14 @@ export class AreaCardComponent implements OnInit {
                     this.iPerfilId !== DIRECTOR_IE &&
                     this.iPerfilId !== ESPECIALISTA_DREMO,
             },
+            /*{
+                label: 'Activar matriz',
+                icon: '',
+                command: () => {
+                    this.mostrarActivarDescargas = true
+                },
+                disabled: this.iPerfilId !== ADMINISTRADOR_DREMO,
+            },*/
         ]
     }
 
@@ -282,5 +298,11 @@ export class AreaCardComponent implements OnInit {
 
     importarResultados() {
         console.log('importar resultados')
+    }
+    cerrarActivarDescargas() {
+        this.mostrarActivarDescargas = false
+    }
+    abrirActivarDescargas() {
+        this.mostrarActivarDescargas = true
     }
 }

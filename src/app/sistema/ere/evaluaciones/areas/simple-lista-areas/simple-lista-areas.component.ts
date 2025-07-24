@@ -21,11 +21,14 @@ import { CommonModule } from '@angular/common'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services/api-evaluaciones-r.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 import { environment } from '@/environments/environment'
-
+import { AreasService } from '../../services/areas.service'
 interface Column {
     field: string
     header: string
@@ -61,6 +64,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     }>()
 
     @Output() solicitudActualizacion = new EventEmitter<void>()
+    @Output() dialogActivarDescarga = new EventEmitter<{ curso: ICurso }>()
 
     private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
@@ -78,17 +82,20 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     breadCrumbHome: MenuItem = {}
     colsDirector: Column[] = []
     colsEspecialista: Column[] = []
+    colsAdministradorDremo: Column[] = []
     cursos: ICurso[] = []
 
     mostrarDialogoEdicion: boolean = false
     visible: boolean = false
 
     cursoSeleccionado: ICurso | null = null
-
     cursosAgrupados: { [key: string]: ICurso[] } = {}
     gradosFiltrados: string[] = []
     gradosOrdenados: string[]
-    constructor(private messageService: MessageService) {}
+    constructor(
+        private messageService: MessageService,
+        private areasService: AreasService
+    ) {}
     ngOnInit(): void {
         this.initializeBreadcrumb()
         this.initializeColumns()
@@ -166,7 +173,30 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
             { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
             { field: 'acciones', header: 'Acciones', width: '10%' },
         ]
+
+        this.colsAdministradorDremo = [
+            { field: 'id', header: 'Nº', width: '5%' },
+            { field: 'area', header: 'Área', width: '15%' },
+            {
+                field: 'cuadernillo',
+                header: 'Cuadernillo de Evaluación',
+                width: '10%',
+            },
+            {
+                field: 'hojaRespuestas',
+                header: 'Hoja de respuestas',
+                width: '10%',
+            },
+            { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+            {
+                field: 'activarDescargas',
+                header: 'Activar descargas',
+                width: '10%',
+            },
+            { field: 'acciones', header: 'Acciones', width: '10%' },
+        ]
     }
+
     descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
         if (!this.cursoSeleccionado) {
             alert('No hay curso seleccionado')
@@ -321,6 +351,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     get esEspecialista(): boolean {
         return this.iPerfilId === ESPECIALISTA_DREMO
     }
+    get esAdministradorDremo(): boolean {
+        return this.iPerfilId === ADMINISTRADOR_DREMO
+    }
 
     eliminarArchivoCuadernillo(curso: ICurso): void {
         this.cursoSeleccionado = curso
@@ -335,14 +368,30 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                 'p-button-success p-button-sm custom-accept',
             rejectButtonStyleClass: 'p-button-danger p-button-sm custom-reject',
             accept: () => {
-                console.log(
-                    'Eliminando archivo de cuadernillo para:',
-                    curso.cCursoNombre
-                )
-                curso.bTieneArchivo = false
-                console.log(
-                    'Archivo eliminado. Ahora puede subir un nuevo archivo.'
-                )
+                this.areasService
+                    .eliminarArchivoPreguntasPdf(
+                        curso.iEvaluacionIdHashed,
+                        curso.iCursosNivelGradId
+                    )
+                    .subscribe({
+                        next: () => {
+                            curso.bTieneArchivo = false
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Éxito',
+                                detail: 'Archivo eliminado correctamente.',
+                            })
+                        },
+                        error: (err) => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail:
+                                    err.error.message ||
+                                    'Error al eliminar el archivo de cuadernillo.',
+                            })
+                        },
+                    })
             },
         })
     }
@@ -472,5 +521,9 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
                     })
                 },
             })
+    }
+    onDialogActivarDescarga(curso: ICurso): void {
+        this.cursoSeleccionado = curso
+        this.dialogActivarDescarga.emit({ curso })
     }
 }

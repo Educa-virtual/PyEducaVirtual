@@ -21,7 +21,7 @@ export class InformeViviendaComponent implements OnInit {
 
     ngOnInit() {
         this.datosInformes.reportes$.subscribe((data) => {
-            if (data) {
+            if (data?.data) {
                 this.reportes_vivienda = {
                     ocupacion_vivienda: [
                         ...JSON.parse(data.data?.ocupacion_vivienda),

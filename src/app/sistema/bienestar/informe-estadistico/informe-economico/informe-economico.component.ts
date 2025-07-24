@@ -19,7 +19,7 @@ export class InformeEconomicoComponent implements OnInit {
 
     ngOnInit() {
         this.datosInformes.reportes$.subscribe((data) => {
-            if (data) {
+            if (data?.data) {
                 this.reportes_economico = {
                     rango_ingresos_familiar: JSON.parse(
                         data.data?.rango_ingresos_familiar

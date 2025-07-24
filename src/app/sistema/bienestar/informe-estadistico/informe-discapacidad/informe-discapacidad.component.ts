@@ -21,7 +21,7 @@ export class InformeDiscapacidadComponent implements OnInit {
 
     ngOnInit() {
         this.datosInformes.reportes$.subscribe((data) => {
-            if (data) {
+            if (data?.data) {
                 this.cantidad_con_discapacidad =
                     data.data?.cantidad_con_discapacidad
                 this.reportes_discapacidad = {

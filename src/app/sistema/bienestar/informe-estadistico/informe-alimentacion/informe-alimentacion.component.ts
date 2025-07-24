@@ -19,7 +19,7 @@ export class InformeAlimentacionComponent implements OnInit {
 
     ngOnInit() {
         this.datosInformes.reportes$.subscribe((data) => {
-            if (data) {
+            if (data?.data) {
                 this.reportes_alimentacion = {
                     programas_alimentacion: JSON.parse(
                         data.data?.programas_alimentacion

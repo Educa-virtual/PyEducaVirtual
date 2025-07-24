@@ -26,6 +26,7 @@ import { InformeEconomicoComponent } from './informe-estadistico/informe-economi
 import { InformeFamiliaComponent } from './informe-estadistico/informe-familia/informe-familia.component'
 import { InformeDiscapacidadComponent } from './informe-estadistico/informe-discapacidad/informe-discapacidad.component'
 import { InformeRecreacionComponent } from './informe-estadistico/informe-recreacion/informe-recreacion.component'
+import { InformeDemograficoComponent } from './informe-estadistico/informe-demografico/informe-demografico.component'
 
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
@@ -71,6 +72,7 @@ const routes: Routes = [
             { path: 'discapacidad', component: InformeDiscapacidadComponent },
             { path: 'salud', component: InformeSaludComponent },
             { path: 'recreacion', component: InformeRecreacionComponent },
+            { path: 'demografico', component: InformeDemograficoComponent },
         ],
     },
 ]

@@ -18,7 +18,7 @@ export class InformeFamiliaComponent implements OnInit {
 
     ngOnInit() {
         this.datosInformes.reportes$.subscribe((data) => {
-            if (data) {
+            if (data?.data) {
                 this.reportes_familia = {
                     padre_vive: [...JSON.parse(data.data?.padre_vive)],
                     madre_vive: [...JSON.parse(data.data?.madre_vive)],

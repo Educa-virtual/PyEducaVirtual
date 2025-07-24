@@ -220,6 +220,14 @@ export class InformeEstadisticoComponent implements OnInit {
             .subscribe({
                 next: (data) => {
                     const reportes = data?.data
+                    if (!reportes) {
+                        this._messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'No se pudo obtener los datos',
+                        })
+                        return
+                    }
                     this.cantidad_matriculados = reportes?.cantidad_matriculados
                     this.cantidad_fichas = reportes?.cantidad_fichas
                     // this.router.navigate([`/bienestar/informe-estadistico/familia`])
@@ -301,6 +309,11 @@ export class InformeEstadisticoComponent implements OnInit {
             label: 'Recreación',
             icon: 'pi pi-fw pi-image',
             route: '/bienestar/informe-estadistico/recreacion',
+        },
+        {
+            label: 'Demográfico',
+            icon: 'pi pi-fw pi-globe',
+            route: '/bienestar/informe-estadistico/demografico',
         },
     ]
 }

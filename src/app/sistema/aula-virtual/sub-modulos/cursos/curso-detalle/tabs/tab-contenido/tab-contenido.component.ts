@@ -154,8 +154,11 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         }));
     }
   }
-
+  datos: any;
   obtenerActividadesxiContenidoSemId(semana) {
+    // this.semanaSeleccionada = semana
+    this.datos = semana;
+    // console.log('datos seleccionado', this.datos)
     const iContenidoSemId = semana.iContenidoSemId;
     if (!iContenidoSemId) return;
     const params = { iCredId: this._ConstantesService.iCredId };
@@ -181,6 +184,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       (item: any) => item.iContenidoSemId === semana.iContenidoSemId
     );
     this.semanaSeleccionada = semanaSeleccionada;
+    console.log('datos de selecc', this.semanaSeleccionada);
     this.semanaSeleccionadaFiltrada = semanaSeleccionada;
   }
 
@@ -277,13 +281,14 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       petition: 'put',
       group: 'acad',
       prefix: 'contenido-semanas',
-      ruta: this.semanaActivado,
+      ruta: this.datos.iContenidoSemId,
       data: datos,
       params: {
         iCredId: this._ConstantesService.iCredId,
       },
     };
     console.log('datos datos actualizados', params);
+    // return
     //Servicio para obtener los instructores
     this.GeneralService.getGralPrefixx(params).subscribe({
       next: response => {
@@ -331,16 +336,19 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       petition: 'get',
       group: 'acad',
       prefix: 'contenido-semanas',
-      ruta: this.semanaActivado,
+      ruta: this.datos.iContenidoSemId,
       params: {
         iCredId: this._ConstantesService.iCredId,
       },
     };
+    console.log('editar', params);
+    // return
     // Servicio para obtener los instructores
     this.GeneralService.getGralPrefixx(params).subscribe(Data => {
       const dataArray = (Data as any)['data'];
       this.datosSesion = Array.isArray(dataArray) && dataArray.length > 0 ? dataArray[0] : null;
       this.accion = 'editar';
+      this.recargarContenidoSemanas.emit();
       // console.log('Objeto único de sesión', this.datosSesion);
     });
 
@@ -359,7 +367,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
           petition: 'delete',
           group: 'acad',
           prefix: 'contenido-semanas',
-          ruta: this.semanaActivado,
+          ruta: this.datos.iContenidoSemId,
           params: {
             iCredId: this._ConstantesService.iCredId,
           },
@@ -374,10 +382,8 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
                 detail: resp.message,
               });
               // window.location.reload();
+              this.recargarContenidoSemanas.emit();
               this.getData();
-              // this.semanaSeleccionada()
-              // this.obtenerContenidoSemanas(this.semanaSeleccionada);
-              // this.obtenerInstructores();
             }
           },
         });
@@ -482,7 +488,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       case 'EDITAR':
         this.showModalTarea = true;
         this.accionTarea = action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR';
-        this.semanaTarea = this.semanaSeleccionada;
+        this.semanaTarea = this.datos;
         this.semanaTarea.idDocCursoId = this.idDocCursoId;
         this.iTareaId = actividad.ixActivadadId;
         break;
@@ -525,7 +531,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             ...MODAL_CONFIG,
             width: '40%',
             data: {
-              contenidoSemana: this.semanaSeleccionada,
+              contenidoSemana: this.datos,
               iActTipoId: actividad.iActTipoId,
               actividad: actividad,
               idDocCursoId: this.idDocCursoId,
@@ -536,7 +542,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         );
         ref.onClose.subscribe(result => {
           if (result) {
-            //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+            //this.obtenerContenidoSemanas(this.datos);
           } else {
             console.log('Formulario cancelado');
           }
@@ -563,7 +569,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         .open(ForoFormContainerComponent, {
           ...MODAL_CONFIG,
           data: {
-            contenidoSemana: this.semanaSeleccionada,
+            contenidoSemana: this.datos,
             iActTipoId: actividad.iActTipoId,
             actividad: actividad,
             action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
@@ -585,7 +591,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
           ...MODAL_CONFIG,
           header: 'Crear Foro',
           data: {
-            contenidoSemana: this.semanaSeleccionada,
+            contenidoSemana: this.datos,
             iActTipoId: actividad.iActTipoId,
             actividad: actividad,
             action: 'guardar',
@@ -640,7 +646,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         const ref: DynamicDialogRef = this._dialogService.open(CuestionarioFormComponent, {
           ...MODAL_CONFIG,
           data: {
-            contenidoSemana: this.semanaSeleccionada,
+            contenidoSemana: this.datos,
             iActTipoId: actividad.iActTipoId,
             actividad: actividad,
             idDocCursoId: this.idDocCursoId,
@@ -713,7 +719,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         this.showModalEvaluacion = true;
         this.tituloEvaluacion = action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR';
         this.opcionEvaluacion = action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR';
-        this.semanaEvaluacion = this.semanaSeleccionada;
+        this.semanaEvaluacion = this.datos;
         this.iEvaluacionId = actividad.ixActivadadId;
         break;
       case 'ELIMINAR':

@@ -42,16 +42,14 @@
     </p-menu>
   </div>
   <div class="card col">
-    <ng-container *ngIf="semanaSeleccionada">
-      <!-- <app-toolbar-primeng
-        title="{{ semanaSeleccionada.cContenidoSemNumero }} {{
-          semanaSeleccionada.cContenidoSemTitulo
-        }}"
+    <ng-container *ngIf="datos">
+      <app-toolbar-primeng
+        title="{{ datos.cTitulo }} {{ datos.cContenidoSemTitulo }}"
         [butons]="btnAccion"
       >
-      </app-toolbar-primeng> -->
+      </app-toolbar-primeng>
     </ng-container>
-    <div class="grid mt-1" *ngIf="semanaSeleccionada">
+    <div class="grid mt-1" *ngIf="datos">
       <div class="col md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>Tipo:</p-inputGroupAddon>
@@ -90,6 +88,7 @@
     </div>
 
     <div class="col">
+      {{ semanaSeleccionada.length }}
       <ng-container *ngIf="semanaSeleccionada.length; else noData">
         <div class="text-primary text-lg font-bold pb-2">
           Detalle de Semana

@@ -35,8 +35,9 @@ export class ActivarDescargaComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.fb.group({
-            bDescarga: [false],
+            bDescarga: [true],
         })
+        console.log('OKI')
     }
 
     onHide() {
@@ -46,7 +47,11 @@ export class ActivarDescargaComponent implements OnInit {
 
     mostrarDialog(datos: { curso: ICurso }) {
         this.curso = datos.curso
-        this.form.get('bDescarga')?.patchValue(this.curso.bDescarga == '1')
+        console.log(this.curso)
+        //this.form.get('bDescarga')?.patchValue(this.curso.bDescarga === '1' ? true : false)
+        this.form
+            .get('bDescarga')
+            ?.setValue(this.curso.bDescarga == '0' ? false : true)
         this.titulo = `Activar descargas para ${this.stringCasePipe.transform(this.curso.cCursoNombre)} - ${this.curso.cGradoAbreviacion.toString().substring(0, 1)}° Grado
             - ${this.curso.cNivelTipoNombre.toString().replace('Educación ', '')}`
         this.visible = true

@@ -190,12 +190,12 @@ const administrador = [
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
-            },
+            },*/
             {
                 label: 'Registro de fechas especiales',
                 icon: 'pi pi-calendar',
                 routerLink: ['/gestion-institucional/fechas'],
-            },*/
+            },
             {
                 label: 'Backup de BD',
                 icon: 'pi pi-fw pi-database',
@@ -294,6 +294,13 @@ const administracion = [
                     //         '/gestion-institucional/calendarioAcademico',
                     //     ],
                     // },
+                    {
+                        label: 'Fechas importantes',
+                        icon: 'pi pi-calendar',
+                        routerLink: [
+                            '/gestion-institucional/fechas-importantes',
+                        ],
+                    },
                     {
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',

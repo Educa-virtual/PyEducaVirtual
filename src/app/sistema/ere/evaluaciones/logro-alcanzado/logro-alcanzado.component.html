@@ -1,0 +1,60 @@
+<p-panel>
+    <ng-template pTemplate="header" class="encabezado">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                Registrar Logros Alcanzados
+            </h3>
+        </div>
+    </ng-template>
+    <div
+        style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        "
+    >
+        <div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
+                <p-dropdown
+                    id="nivel"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccionar"
+                    styleClass="w-full"
+                >
+                </p-dropdown>
+            </p-inputGroup>
+        </div>
+        <div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Sección: </p-inputGroupAddon>
+                <p-dropdown
+                    id="seccion"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccionar"
+                    styleClass="w-full"
+                >
+                </p-dropdown>
+            </p-inputGroup>
+        </div>
+        <div>
+            <p-inputGroup>
+                <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
+                <p-dropdown
+                    id="periodo"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccionar"
+                    styleClass="w-full"
+                >
+                </p-dropdown>
+            </p-inputGroup>
+        </div>
+    </div>
+    <div>
+        <app-table-primeng></app-table-primeng>
+    </div>
+</p-panel>

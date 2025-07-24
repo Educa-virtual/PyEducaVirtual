@@ -14,6 +14,7 @@ import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/area
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component'
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component'
 import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component'
+import { LogroAlcanzadoComponent } from './sistema/ere/evaluaciones/logro-alcanzado/logro-alcanzado.component'
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -101,6 +102,10 @@ export const routes: Routes = [
             {
                 path: 'asistencia-auxiliar',
                 component: AuxiliarComponent,
+            },
+            {
+                path: 'logro-alcanzado',
+                component: LogroAlcanzadoComponent,
             },
         ],
     },

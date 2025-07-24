@@ -114,7 +114,7 @@ const docente = [
             // },
             {
                 label: 'Bienestar Social',
-                icon: 'pi pi-fw pi-check-square',
+                icon: 'pi pi-check-square',
                 items: [
                     {
                         label: 'Recordatorios de cumpleaños',
@@ -169,6 +169,17 @@ const estudiante = [
                         label: 'Recordatorios de cumpleaños',
                         icon: 'pi pi-fw pi-bell',
                         routerLink: ['/bienestar/recordario-fechas'],
+                    },
+                ],
+            },
+            {
+                label: 'Informes y Estadísticas',
+                icon: 'pi pi-chart-line',
+                items: [
+                    {
+                        label: 'Logros Alcanzados',
+                        icon: 'pi pi-trophy',
+                        routerLink: 'ere/logro-alcanzado',
                     },
                 ],
             },

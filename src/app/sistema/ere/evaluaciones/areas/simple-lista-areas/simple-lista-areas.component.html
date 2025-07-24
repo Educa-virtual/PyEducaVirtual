@@ -89,7 +89,7 @@
                                 size="small"
                                 (click)="descargarPDF('Matriz', curso)"
                                 pTooltip="Descargar matriz"
-                                [disabled]="!curso.bDescarga"
+                                [disabled]="!(curso.bDescarga === '1')"
                             ></p-button>
                         </td>
                         <!-- ver resultados-->
@@ -259,7 +259,7 @@
                                 size="small"
                                 pTooltip="Descargar matriz"
                                 (click)="descargarPDF('Matriz', curso)"
-                                [disabled]="!curso.bDescarga"
+                                [disabled]="!(curso.bDescarga === '1')"
                             ></p-button>
                         </td>
 

@@ -144,17 +144,14 @@
                               <span>{{ actividad['dtProgActFin'] | date: 'h:mm a' }}</span>
                             </div>
                           </div>
-                          @if (actividad.cTareaEstudianteComentarioDocente) {
+                          @if (actividad.cRptaDocente) {
                             <div
                               class="mt-3 p-3 border-1 border-green-200 border-round bg-green-50 w-full"
                             >
                               <p class="text-gray-700 font-medium mb-2">
                                 🏆<b>Conclusión Descriptiva:</b>
                               </p>
-                              <div
-                                class="mx-1"
-                                [innerHTML]="actividad.cTareaEstudianteComentarioDocente || '-'"
-                              ></div>
+                              <div class="mx-1" [innerHTML]="actividad.cRptaDocente || '-'"></div>
                             </div>
                           }
                         </div>

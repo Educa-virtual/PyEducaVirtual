@@ -37,7 +37,8 @@ export class CambiarConstrasenaComponent {
         //private _GeneralService: GeneralService,
         //private _ConstantesService: ConstantesService
     ) {
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+        // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 
         this.form = this.fb.group(
             {

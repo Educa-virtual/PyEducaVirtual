@@ -44,7 +44,7 @@
   <div class="card col">
     <ng-container *ngIf="datos">
       <app-toolbar-primeng
-        title="{{ datos.cTitulo }} {{ datos.cContenidoSemTitulo }}"
+        title="{{ datos.cTitulo }}: {{ datos.cContenidoSemTitulo }}"
         [butons]="btnAccion"
       >
       </app-toolbar-primeng>
@@ -88,7 +88,6 @@
     </div>
 
     <div class="col">
-      {{ semanaSeleccionada.length }}
       <ng-container *ngIf="semanaSeleccionada.length; else noData">
         <div class="text-primary text-lg font-bold pb-2">
           Detalle de Semana

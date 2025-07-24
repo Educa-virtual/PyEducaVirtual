@@ -270,6 +270,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       },
     });
   }
+
   // funcion para actualizar datos
   actualizarSesionDeAprendizaje(data: any) {
     const datos = {
@@ -298,7 +299,13 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             summary: 'Acción exitosa',
             detail: response.message,
           });
+          // console.log(data)
           this.recargarContenidoSemanas.emit();
+          this.datos = {
+            ...this.datos,
+            cContenidoSemTitulo: data.cContenidoSemTitulo,
+          };
+          // this.datos = data
           //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           // this.showModal = false
           // this.instructorForm.reset()
@@ -341,7 +348,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         iCredId: this._ConstantesService.iCredId,
       },
     };
-    console.log('editar', params);
+    // console.log('editar', params);
     // return
     // Servicio para obtener los instructores
     this.GeneralService.getGralPrefixx(params).subscribe(Data => {
@@ -349,6 +356,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       this.datosSesion = Array.isArray(dataArray) && dataArray.length > 0 ? dataArray[0] : null;
       this.accion = 'editar';
       this.recargarContenidoSemanas.emit();
+      // this.datos
       // console.log('Objeto único de sesión', this.datosSesion);
     });
 
@@ -383,6 +391,8 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
               });
               // window.location.reload();
               this.recargarContenidoSemanas.emit();
+              this.semanaSeleccionada = [];
+              this.datos = '';
               this.getData();
             }
           },
@@ -496,6 +506,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         this._confirmService.openConfirm({
           header: '¿Esta seguro de eliminar la tarea ' + actividad['cTareaTitulo'] + ' ?',
           accept: () => {
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             this.deleteTareaxiTareaid(actividad);
           },
         });
@@ -542,6 +553,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         );
         ref.onClose.subscribe(result => {
           if (result) {
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             //this.obtenerContenidoSemanas(this.datos);
           } else {
             console.log('Formulario cancelado');
@@ -553,6 +565,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
           header:
             '¿Esta seguro de eliminar la videoconferencia ' + actividad['cRVirtualTema'] + ' ?',
           accept: () => {
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             this.deleteReunionVirtualxiRVirtualId(actividad);
           },
         });
@@ -579,6 +592,8 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         })
         .onClose.subscribe(result => {
           if (result) {
+            // this.semanaSeleccionada
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           } else {
             console.log('Formulario cancelado');
@@ -600,6 +615,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         })
         .onClose.subscribe(result => {
           if (result) {
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           } else {
             console.log('Formulario cancelado');
@@ -610,6 +626,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       this._confirmService.openConfirm({
         header: '¿Esta seguro de eliminar el Foro: ' + actividad['cProgActTituloLeccion'] + ' ?',
         accept: () => {
+          this.obtenerActividadesxiContenidoSemId(this.datos);
           this.deleteForosxiForoId(actividad);
         },
       });
@@ -656,6 +673,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         });
         ref.onClose.subscribe(result => {
           if (result) {
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           } else {
             console.log('Formulario cancelado');
@@ -669,6 +687,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             actividad['cProgActTituloLeccion'] +
             ' ?',
           accept: () => {
+            this.obtenerActividadesxiContenidoSemId(this.datos);
             this.deleteCuestionarioxId(actividad);
           },
         });

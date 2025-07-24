@@ -1,5 +1,5 @@
 <div
-  class="card mb-5 relative overflow-visible"
+  class="card mb-5 relative overflow-visible transition-all hover:bg-gray-100 hover:shadow-md"
   [style]="obtenerStyleActividad(actividad['iEstadoActividad'])"
 >
   <div class="w-full flex justify-start">
@@ -8,14 +8,14 @@
     </span>
   </div>
 
-  <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
+  <div class="flex flex-nowrap w-full justify-content-between items-start">
     <div class="flex gap-4 font-normal">
       <app-icon
         [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
         [color]="'text-blue-500'"
         class="align-content-center"
       />
-      <div class="flex flex-column my-2 align-items-start">
+      <div class="flex flex-column my-2 align-items-start max-w-[calc(100%-140px)]">
         <span
           class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
           [title]="actividad?.cProgActTituloLeccion"
@@ -55,7 +55,7 @@
     @if (actividad['iEstado'] === 10) {
       <div class="tag-right-finalizado ml-3 font-bold">Finalizado</div>
     }
-    <div class="flex flex-column align-items-end justify-content-center gap-2">
+    <div class="flex flex-column align-items-end justify-content-center gap-2 shrink-0">
       <ng-container
         *ngIf="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad as acciones"
       >

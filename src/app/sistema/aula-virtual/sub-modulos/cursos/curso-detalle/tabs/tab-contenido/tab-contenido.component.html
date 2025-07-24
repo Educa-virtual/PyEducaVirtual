@@ -44,8 +44,10 @@
   <div class="card col">
     <ng-container *ngIf="datos">
       <app-toolbar-primeng
-        title="{{ datos.cTitulo }}: {{ datos.cContenidoSemTitulo }}"
+        [header]="datos.cTitulo + ':'"
+        [title]="datos.cContenidoSemTitulo"
         [butons]="btnAccion"
+        [customStyle]="false"
       >
       </app-toolbar-primeng>
     </ng-container>

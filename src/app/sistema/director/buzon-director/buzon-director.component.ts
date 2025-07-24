@@ -270,9 +270,6 @@ export class BuzonDirectorComponent implements OnInit {
             accion: 'responder',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
-            isVisible: (row) => {
-                return !row.cRespuesta || row.cRespuesta === ''
-            },
         },
     ]
 }

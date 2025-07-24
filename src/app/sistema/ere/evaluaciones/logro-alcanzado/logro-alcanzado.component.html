@@ -55,6 +55,12 @@
         </div>
     </div>
     <div>
-        <app-table-primeng></app-table-primeng>
+        <app-table-primeng
+            [data]="dataSugerencias"
+            [columnas]="columns"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [searchPlaceholder]="'Buscar...'"
+            [actions]="actions"
+        ></app-table-primeng>
     </div>
 </p-panel>

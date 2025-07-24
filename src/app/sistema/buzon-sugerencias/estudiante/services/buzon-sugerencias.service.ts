@@ -7,7 +7,6 @@ import { environment } from '@/environments/environment'
 })
 export class BuzonSugerenciasService {
     private urlBackendApi = environment.backendApi
-    private urlBackend = environment.backend
 
     constructor(private http: HttpClient) {}
 

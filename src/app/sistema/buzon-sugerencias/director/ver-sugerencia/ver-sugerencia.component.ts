@@ -9,13 +9,13 @@ import {
 import { MessageService } from 'primeng/api'
 import { CommonModule } from '@angular/common'
 @Component({
-    selector: 'app-director-ver-sugerencia',
+    selector: 'app-ver-sugerencia',
     standalone: true,
     imports: [PrimengModule, ReactiveFormsModule, CommonModule],
-    templateUrl: './director-ver-sugerencia.component.html',
-    styleUrl: './director-ver-sugerencia.component.scss',
+    templateUrl: './ver-sugerencia.component.html',
+    styleUrl: './ver-sugerencia.component.scss',
 })
-export class DirectorVerSugerenciaComponent implements OnInit {
+export class VerSugerenciaComponent implements OnInit {
     form: FormGroup
     private _selectedItem: any
     @Output() eventSugerenciaRespondida = new EventEmitter<boolean>()

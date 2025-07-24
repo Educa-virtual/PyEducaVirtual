@@ -137,17 +137,16 @@ const estudiante = [
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/02'],
             },
-            {
+            /*{
                 label: 'Buzon de Sugerencias',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/01'],
-            },
+            },*/
             {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
-
             {
                 label: 'Dremo ERE',
                 icon: 'pi pi-fw pi-user',

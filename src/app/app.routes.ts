@@ -7,7 +7,7 @@ import { NotfoundComponent } from './shared/notfound/notfound.component'
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component'
-import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component'
+
 import { RecursosComponent } from './sistema/ere/informes-ere/recursos-ere/recursos.component'
 import { SimpleListaAreasComponent } from './sistema/ere/evaluaciones/areas/simple-lista-areas/simple-lista-areas.component'
 import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/areas/especialista-simple-area/especialista-simple-area.component'
@@ -43,9 +43,11 @@ export const routes: Routes = [
                 loadChildren: () => import('./sistema/ere/ere.routes'),
             },
             {
-                path: 'estudiante',
+                path: 'buzon-sugerencias',
                 loadChildren: () =>
-                    import('./sistema/estudiante/estudiante.routes'),
+                    import(
+                        './sistema/buzon-sugerencias/buzon-sugerencias.routes'
+                    ),
             },
             // Ruta de Especialista
             {
@@ -73,10 +75,6 @@ export const routes: Routes = [
             {
                 path: 'new-mantenimiento-usuario',
                 component: NewMantenimientoUsuarioComponent,
-            },
-            {
-                path: 'buzon-director',
-                component: BuzonDirectorComponent,
             },
             {
                 path: 'recursos',

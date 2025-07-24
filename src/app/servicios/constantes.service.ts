@@ -145,12 +145,6 @@ const estudiante = [
                 icon: 'pi pi-pen-to-square',
                 routerLink: ['/ere/evaluacion-practica'],
             },
-            /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
-            {
-                label: 'Buzón de sugerencias',
-                icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/estudiante/buzon-sugerencias'],
-            },*/
             {
                 label: 'Bienestar Social',
                 icon: 'pi pi-fw pi-check-square',
@@ -173,9 +167,9 @@ const estudiante = [
                 ],
             },
             {
-                label: 'Buzon de sugerencia',
-                icon: 'pi pi-fw pi-list-check',
-                routerLink: ['/estudiante/buzon-sugerencias'],
+                label: 'Buzón de sugerencias',
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/buzon-sugerencias/estudiante'],
             },
         ],
     },
@@ -549,7 +543,7 @@ const administracion = [
             {
                 label: 'Buzón de sugerencias',
                 icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/buzon-director'],
+                routerLink: ['/buzon-sugerencias/director'],
             },
         ],
     },

@@ -7,20 +7,21 @@ import { Component, OnInit } from '@angular/core'
 import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ResponderSugerenciaComponent } from '../responder-sugerencia/responder-sugerencia.component'
-import { DirectorVerSugerenciaComponent } from '../director-ver-sugerencia/director-ver-sugerencia.component'
+import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.component'
+import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
 @Component({
-    selector: 'app-buzon-director',
+    selector: 'app-lista-sugerencias',
     standalone: true,
     imports: [
         PrimengModule,
         TablePrimengComponent,
         ResponderSugerenciaComponent,
-        DirectorVerSugerenciaComponent,
+        VerSugerenciaComponent,
     ],
-    templateUrl: './buzon-director.component.html',
-    styleUrl: './buzon-director.component.scss',
+    templateUrl: './lista-sugerencias.component.html',
+    styleUrl: './lista-sugerencias.component.scss',
 })
-export class BuzonDirectorComponent implements OnInit {
+export class ListaSugerenciasComponent implements OnInit {
     title: string = 'Buzón de sugerencias - Director'
     prioridades: any[]
     formularioVerHeader: string
@@ -33,9 +34,10 @@ export class BuzonDirectorComponent implements OnInit {
     //breadcrumb
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
+    dataSugerencias: any[]
 
     // datos hardcodeados tabla
-    dataSugerencias = [
+    /*dataSugerencias = [
         {
             item: 1,
             iSugerenciaId: 1,
@@ -91,7 +93,7 @@ export class BuzonDirectorComponent implements OnInit {
             cSugerencia:
                 'La plataforma virtual se cae frecuentemente durante las horas pico.',
         },
-    ]
+    ]*/
 
     columns = [
         {
@@ -167,28 +169,72 @@ export class BuzonDirectorComponent implements OnInit {
     ]
 
     constructor(
-        //private buzonSugerenciasService: BuzonSugerenciasService,
+        private buzonSugerenciasService: BuzonSugerenciasService,
         private messageService: MessageService,
         private confirmationModalService: ConfirmationModalService
     ) {}
 
     ngOnInit() {
-        console.log('inicialiazando buzon director')
-        this.breadCrumbHome = {
-            icon: 'pi pi-home',
-            routerLink: '/inicio',
-        }
-
-        this.breadCrumbItems = [
-            { label: 'Administración' },
-            { label: 'Buzón de sugerencias' },
-        ]
+        this.obtenerListaSugerencias()
     }
 
-    listenDialogVerSugerencia(event: boolean) {
-        if (event == false) {
-            this.mostrarFormularioVer = false
+    obtenerListaSugerencias() {
+        this.buzonSugerenciasService.obtenerListaSugerencias().subscribe({
+            next: (data: any) => {
+                this.dataSugerencias = data.data
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener sugerencias',
+                    detail: error.error.message,
+                })
+            },
+        })
+    }
+
+    actions: IActionTable[] = [
+        {
+            labelTooltip: 'Ver sugerencia',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+        },
+        {
+            labelTooltip: 'Responder sugerencia',
+            icon: 'pi pi-pen-to-square',
+            accion: 'responder',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+            // se mantiene visible para que se pueda responder sugerencia  solo si no tiene respuesta
+            //isVisible: (row) => {
+            //return !row.cRespuesta || row.cRespuesta === ''
+            //},
+        },
+    ]
+
+    accionBtnItemTable({ accion, item }) {
+        switch (accion) {
+            case 'ver':
+                this.selectedItem = item
+                this.verSugerencia()
+                break
+            case 'responder':
+                this.selectedItem = item
+                this.responderSugerencia()
+                break
         }
+    }
+
+    verSugerencia() {
+        this.formularioVerHeader = 'Ver sugerencia'
+        this.mostrarFormularioVer = true
+    }
+
+    responderSugerencia() {
+        this.formularioResponderHeader = 'Responder sugerencia'
+        this.mostrarFormularioResponder = true
     }
 
     listenSugerenciaRespondida(event: boolean) {
@@ -214,65 +260,4 @@ export class BuzonDirectorComponent implements OnInit {
             }
         }
     }
-
-    verSugerencia() {
-        this.formularioVerHeader = 'Ver sugerencia'
-        this.mostrarFormularioVer = true
-    }
-
-    responderSugerencia() {
-        this.formularioResponderHeader = 'Responder sugerencia'
-        this.mostrarFormularioResponder = true
-    }
-
-    // metodo obtener sugerencias
-    obtenerListaSugerencias() {
-        /* this.buzonSugerenciasService.obtenerListaSugerencias().subscribe({
-            next: (data: any) => {
-                this.dataSugerencias = data.data
-            },
-            error: (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Problema al obtener sugerencias',
-                    detail: error,
-                })
-            },
-        }) */
-    }
-
-    // botones tabla
-    accionBtnItemTable({ accion, item }) {
-        switch (accion) {
-            case 'ver':
-                this.selectedItem = item
-                this.verSugerencia()
-                break
-            case 'responder':
-                this.selectedItem = item
-                this.responderSugerencia()
-                break
-        }
-    }
-
-    actions: IActionTable[] = [
-        {
-            labelTooltip: 'Ver sugerencia',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
-        },
-        {
-            labelTooltip: 'Responder sugerencia',
-            icon: 'pi pi-pen-to-square',
-            accion: 'responder',
-            type: 'item',
-            class: 'p-button-rounded p-button-success p-button-text',
-            // se mantiene visible para que se pueda responder sugerencia  solo si no tiene respuesta
-            //isVisible: (row) => {
-            //return !row.cRespuesta || row.cRespuesta === ''
-            //},
-        },
-    ]
 }

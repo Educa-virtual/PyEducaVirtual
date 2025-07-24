@@ -7,15 +7,15 @@ import {
 import { Component, OnInit } from '@angular/core' //inject,
 //import { MessageService } from 'primeng/api'
 //import { Router } from '@angular/router'
-import { RegistrarSugerenciaComponent } from './registrar-sugerencia/registrar-sugerencia.component'
-import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
+import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-sugerencia.component'
+import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { VerSugerenciaComponent } from './ver-sugerencia/ver-sugerencia.component'
+import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.component'
 //import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
 
 @Component({
-    selector: 'app-buzon-sugerencias',
+    selector: 'app-lista-sugerencias',
     standalone: true,
     imports: [
         PrimengModule,
@@ -23,10 +23,10 @@ import { VerSugerenciaComponent } from './ver-sugerencia/ver-sugerencia.componen
         RegistrarSugerenciaComponent,
         VerSugerenciaComponent,
     ],
-    templateUrl: './buzon-sugerencias.component.html',
-    styleUrl: './buzon-sugerencias.component.scss',
+    templateUrl: './lista-sugerencias.component.html',
+    styleUrl: './lista-sugerencias.component.scss',
 })
-export class BuzonSugerenciasComponent implements OnInit {
+export class ListaSugerenciasComponent implements OnInit {
     prioridades: any[]
     formularioNuevoHeader: string
     mostrarFormularioNuevo: boolean = false
@@ -104,7 +104,6 @@ export class BuzonSugerenciasComponent implements OnInit {
     ]
 
     constructor(
-        //private fb: FormBuilder,
         private buzonSugerenciasService: BuzonSugerenciasService,
         private messageService: MessageService,
         private confirmationModalService: ConfirmationModalService

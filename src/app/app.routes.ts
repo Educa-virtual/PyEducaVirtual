@@ -189,10 +189,6 @@ export const routes: Routes = [
                 component: PreguntaRespuestaComponent,
             },
             {
-                path: 'gestion-encuesta-configuraion',
-                component: GestionEncuestaConfiguracionComponent,
-            },
-            {
                 path: 'estudiante-encuesta',
                 component: EstudianteEncuestaComponent,
             },

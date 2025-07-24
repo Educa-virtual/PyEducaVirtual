@@ -111,12 +111,14 @@
 </div>
 
 <app-form-evaluacion
+  *ngIf="showModalEvaluacion"
   [showModalEvaluacion]="showModalEvaluacion"
   [semanaEvaluacion]="semanaEvaluacion"
   [tituloEvaluacion]="tituloEvaluacion"
   [opcionEvaluacion]="opcionEvaluacion"
   [iEvaluacionId]="iEvaluacionId"
   (accionCloseForm)="showModalEvaluacion = false"
+  (accionRefresh)="recargarData()"
 ></app-form-evaluacion>
 
 <app-sesion-aprendizaje-form

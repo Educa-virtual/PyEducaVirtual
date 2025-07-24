@@ -739,6 +739,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         this.tituloEvaluacion = action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR';
         this.opcionEvaluacion = action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR';
         this.semanaEvaluacion = this.datos;
+        this.semanaEvaluacion.idDocCursoId = this.idDocCursoId;
         this.iEvaluacionId = actividad.ixActivadadId;
         break;
       case 'ELIMINAR':
@@ -910,6 +911,6 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   }
 
   recargarData() {
-    //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+    this.obtenerActividadesxiContenidoSemId(this.datos);
   }
 }

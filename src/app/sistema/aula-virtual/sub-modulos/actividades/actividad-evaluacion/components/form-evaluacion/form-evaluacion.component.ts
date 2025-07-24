@@ -31,6 +31,8 @@ export class FormEvaluacionComponent implements OnChanges {
   private _ConstantesService = inject(ConstantesService);
 
   @Output() accionCloseForm = new EventEmitter();
+  @Output() accionRefresh = new EventEmitter<void>();
+
   @Input() showModalEvaluacion: boolean = false;
   @Input() tituloEvaluacion: string;
   @Input() opcionEvaluacion: string;
@@ -235,10 +237,10 @@ export class FormEvaluacionComponent implements OnChanges {
             summary: '¡Genial!',
             detail: resp.message,
           });
-          this.accionBtn({
-            accion: 'close-modal-validated',
-            item: [],
-          });
+          setTimeout(() => {
+            this.accionRefresh.emit();
+            this.accionCloseForm.emit();
+          }, 500);
         }
         this.isLoading = false;
       },
@@ -282,10 +284,10 @@ export class FormEvaluacionComponent implements OnChanges {
               summary: '¡Genial!',
               detail: resp.message,
             });
-            this.accionBtn({
-              accion: 'close-modal-validated',
-              item: [],
-            });
+            setTimeout(() => {
+              this.accionRefresh.emit();
+              this.accionCloseForm.emit();
+            }, 500);
           }
           this.isLoading = false;
         },

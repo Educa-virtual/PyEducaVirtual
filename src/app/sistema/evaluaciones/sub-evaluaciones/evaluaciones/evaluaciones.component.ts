@@ -411,8 +411,20 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-help p-button-text',
             isVisible: () =>
                 this.iPerfilId === ESPECIALISTA_DREMO ||
-                //this.iPerfilId === ADMINISTRADOR_DREMO ||
+                this.iPerfilId === ADMINISTRADOR_DREMO ||
                 this.iPerfilId === DIRECTOR_IE,
+        },
+        {
+            labelTooltip: 'Gestionar exclusiones',
+            icon: 'pi pi-user-minus',
+            accion: 'verListaExclusion',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: () =>
+                this.iPerfilId === DIRECTOR_IE ||
+                this.iPerfilId === ESPECIALISTA_DREMO ||
+                this.iPerfilId === ESPECIALISTA_UGEL ||
+                this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
             labelTooltip: 'Asignar horas de inicio y fin a las áreas',
@@ -545,6 +557,13 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 )
                 this.router.navigate([
                     'ere/evaluaciones/' + item.iEvaluacionIdxHash + '/areas',
+                ])
+                break
+            case 'verListaExclusion':
+                this.router.navigate([
+                    'ere/evaluaciones/' +
+                        item.iEvaluacionIdxHash +
+                        '/exclusiones',
                 ])
                 break
             case 'asignarHoraAreas':

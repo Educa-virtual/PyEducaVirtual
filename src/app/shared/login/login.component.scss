@@ -21,18 +21,22 @@
         grid-template-areas:
             'form'
             'banner';
+
         &__banner {
             img {
                 display: none;
             }
         }
+
         display: flex;
         justify-content: center;
     }
 }
+
 .login_card {
     width: 80%;
     margin-left: 25%;
+
     @media (max-width: 850px) {
         margin-left: 10%;
     }
@@ -47,3 +51,115 @@
     outline-offset: 0px;
     box-shadow: none;
 }
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 ratio */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Grid general */
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 10px;
+}
+
+/* Sección de documentación */
+.doc-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.doc-section h3 {
+    margin-top: 0;
+    color: #1f497d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.doc-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.doc-section li {
+    margin-bottom: 10px;
+}
+
+.doc-section a {
+    color: #007ad9;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.doc-section a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+    //   animation: blink 3s infinite;
+    color: rgb(255, 255, 255) !important;
+}
+
+// .p-dialog-header-close {
+
+//     color: rgb(248, 252, 8) !important;
+// }
+
+::ng-deep .p-dialog-header {
+    background: #800000 !important;
+
+    /* asegura el título en rojo tinto */
+    .p-icon {
+        color: rgb(248, 252, 8) !important;
+    }
+
+    .p-icon {
+        color: rgb(248, 252, 8) !important;
+
+        &:hover {
+            color: #800000 !important;
+            //   color: var(rgb(248, 252, 8)) !important;
+        }
+    }
+}
+
+// @keyframes blink {
+
+//     0%,
+//     50%,
+//     100% {
+//         opacity: 1;
+//         color: #800000;
+//     }
+
+//     25%,
+//     75% {
+//         opacity: 0;
+//         color: #800000;
+//     }
+// }

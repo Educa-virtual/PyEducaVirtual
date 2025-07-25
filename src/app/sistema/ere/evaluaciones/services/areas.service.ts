@@ -19,4 +19,26 @@ export class AreasService {
             )
             .pipe(map((resp) => resp['data']))
     }
+
+    actualizarEstadoDescarga(
+        iEvaluacionId: string,
+        iCursoNivelGradId: string,
+        bDescarga: boolean
+    ): Observable<any> {
+        return this.http.patch(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursoNivelGradId}/descargas/estado`,
+            { bDescarga: bDescarga }
+        )
+    }
+
+    eliminarArchivoPreguntasPdf(
+        iEvaluacionId: string,
+        iCursoNivelGradId: string
+    ): Observable<any> {
+        return this.http
+            .delete(
+                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursoNivelGradId}/archivo-preguntas`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
 }

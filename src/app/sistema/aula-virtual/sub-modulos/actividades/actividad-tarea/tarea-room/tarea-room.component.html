@@ -36,57 +36,59 @@
           <div section class="col-12">
             @if (!bTareaEsGrupal) {
               @if (!iEvaluado) {
-                <div class="card-body m-3">
-                  <h4>Entregar Tareas</h4>
-                  <p-divider></p-divider>
-                  <div class="flex align-items-center justify-content-center">
-                    <app-file-upload-primeng
-                      [nameFile]="'tareas-estudiantes'"
-                      [nameOption]="'tareas-estudiantes'"
-                      (actionFileUpload)="accionBtnItem($event)"
-                    ></app-file-upload-primeng>
-                  </div>
-                  @if (FilesTareasEstudiantes.length) {
-                    <div class="col-12">
-                      <label for="" class="mt-2">Lista de Adjuntos</label>
-
-                      @for (item of FilesTareasEstudiantes; track item; let idx = $index) {
-                        <p-inputGroup class="mt-1">
-                          <p-inputGroupAddon>
-                            @switch (item.type) {
-                              @case (1) {
-                                <i class="pi pi-upload" style="color: #333437"></i>
-                              }
-                            }
-                          </p-inputGroupAddon>
-                          <input type="text" pInputText [placeholder]="item.name" disabled />
-                          <button
-                            type="button"
-                            pButton
-                            icon="pi pi-trash"
-                            (click)="FilesTareasEstudiantes.splice(idx, 1)"
-                            class="p-button-danger"
-                          >
-                            &nbsp;
-                          </button>
-                        </p-inputGroup>
-                      }
+                @if (data?.iEstado === 2) {
+                  <div class="card-body m-3">
+                    <h4>Entregar Tareas</h4>
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <app-file-upload-primeng
+                        [nameFile]="'tareas-estudiantes'"
+                        [nameOption]="'tareas-estudiantes'"
+                        (actionFileUpload)="accionBtnItem($event)"
+                      ></app-file-upload-primeng>
                     </div>
-                  }
-                  <p-divider></p-divider>
-                  <div class="flex align-items-center justify-content-center">
-                    <p-button
-                      label="Enviar Tarea"
-                      icon="pi pi-check"
-                      iconPos="right"
-                      (onClick)="entregarEstudianteTarea()"
-                      raised
-                      severity="success"
-                    ></p-button>
+                    @if (FilesTareasEstudiantes.length) {
+                      <div class="col-12">
+                        <label for="" class="mt-2">Lista de Adjuntos</label>
+
+                        @for (item of FilesTareasEstudiantes; track item; let idx = $index) {
+                          <p-inputGroup class="mt-1">
+                            <p-inputGroupAddon>
+                              @switch (item.type) {
+                                @case (1) {
+                                  <i class="pi pi-upload" style="color: #333437"></i>
+                                }
+                              }
+                            </p-inputGroupAddon>
+                            <input type="text" pInputText [placeholder]="item.name" disabled />
+                            <button
+                              type="button"
+                              pButton
+                              icon="pi pi-trash"
+                              (click)="FilesTareasEstudiantes.splice(idx, 1)"
+                              class="p-button-danger"
+                            >
+                              &nbsp;
+                            </button>
+                          </p-inputGroup>
+                        }
+                      </div>
+                    }
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <p-button
+                        label="Enviar Tarea"
+                        icon="pi pi-check"
+                        iconPos="right"
+                        (onClick)="entregarEstudianteTarea()"
+                        raised
+                        severity="success"
+                      ></p-button>
+                    </div>
                   </div>
-                </div>
-                @if (miTarea) {
-                  <div>{{ miTarea }}</div>
+                  @if (miTarea) {
+                    <div>{{ miTarea }}</div>
+                  }
                 }
               } @else {
                 <div class="grid">
@@ -109,56 +111,58 @@
               }
             } @else {
               @if (!iEvaluado) {
-                <div class="card-body m-3">
-                  <h3>Trabajo Grupal</h3>
-                  <p-divider></p-divider>
-                  <div class="flex align-items-center justify-content-center">
-                    <app-file-upload-primeng
-                      [nameFile]="'tarea-cabecera-grupos'"
-                      [nameOption]="'tarea-cabecera-grupos'"
-                      (actionFileUpload)="accionBtnItem($event)"
-                    ></app-file-upload-primeng>
-                  </div>
-                  @if (FilesTareasEstudiantesGrupal.length) {
-                    <div class="col-12">
-                      <label for="" class="mt-2">Lista de Adjuntos</label>
-                      @for (item of FilesTareasEstudiantesGrupal; track item; let idx = $index) {
-                        <p-inputGroup class="mt-1">
-                          <p-inputGroupAddon>
-                            @switch (item.type) {
-                              @case (1) {
-                                <i class="pi pi-upload" style="color: #333437"></i>
-                              }
-                            }
-                          </p-inputGroupAddon>
-                          <input type="text" pInputText [placeholder]="item.name" disabled />
-                          <button
-                            type="button"
-                            pButton
-                            icon="pi pi-trash"
-                            (click)="FilesTareasEstudiantesGrupal.splice(idx, 1)"
-                            class="p-button-danger"
-                          >
-                            &nbsp;
-                          </button>
-                        </p-inputGroup>
-                      }
+                @if (data?.iEstado === 2) {
+                  <div class="card-body m-3">
+                    <h3>Trabajo Grupal</h3>
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <app-file-upload-primeng
+                        [nameFile]="'tarea-cabecera-grupos'"
+                        [nameOption]="'tarea-cabecera-grupos'"
+                        (actionFileUpload)="accionBtnItem($event)"
+                      ></app-file-upload-primeng>
                     </div>
-                  }
-                  <p-divider></p-divider>
-                  <div class="flex align-items-center justify-content-center">
-                    <p-button
-                      label="Enviar Tareass"
-                      icon="pi pi-check"
-                      iconPos="right"
-                      (onClick)="entregarEstudianteTareaGrupal()"
-                      raised
-                      severity="success"
-                    ></p-button>
+                    @if (FilesTareasEstudiantesGrupal.length) {
+                      <div class="col-12">
+                        <label for="" class="mt-2">Lista de Adjuntos</label>
+                        @for (item of FilesTareasEstudiantesGrupal; track item; let idx = $index) {
+                          <p-inputGroup class="mt-1">
+                            <p-inputGroupAddon>
+                              @switch (item.type) {
+                                @case (1) {
+                                  <i class="pi pi-upload" style="color: #333437"></i>
+                                }
+                              }
+                            </p-inputGroupAddon>
+                            <input type="text" pInputText [placeholder]="item.name" disabled />
+                            <button
+                              type="button"
+                              pButton
+                              icon="pi pi-trash"
+                              (click)="FilesTareasEstudiantesGrupal.splice(idx, 1)"
+                              class="p-button-danger"
+                            >
+                              &nbsp;
+                            </button>
+                          </p-inputGroup>
+                        }
+                      </div>
+                    }
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <p-button
+                        label="Enviar Tareass"
+                        icon="pi pi-check"
+                        iconPos="right"
+                        (onClick)="entregarEstudianteTareaGrupal()"
+                        raised
+                        severity="success"
+                      ></p-button>
+                    </div>
                   </div>
-                </div>
-                @if (miTareaGrupal) {
-                  <div>{{ miTareaGrupal }}</div>
+                  @if (miTareaGrupal) {
+                    <div>{{ miTareaGrupal }}</div>
+                  }
                 }
               } @else {
                 <div class="grid">

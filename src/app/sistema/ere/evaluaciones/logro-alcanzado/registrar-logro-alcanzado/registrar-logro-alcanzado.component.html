@@ -1,1 +1,24 @@
-<p>registrar-logro-alcanzado works!</p>
+<br />
+<div class="p-fluid">
+    <div class="field">
+        <input pInputText [value]="selectedItem?.cNombreEstudiante" readonly />
+    </div>
+    <div class="field">
+        <textarea
+            pInputTextarea
+            rows="4"
+            placeholder="Describe el logro..."
+        ></textarea>
+    </div>
+    <div class="flex justify-content-end">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            class="mr-2"
+            (click)="cerrarDialog()"
+        >
+        </p-button>
+        <p-button label="Guardar" severity="success" (click)="guardarLogro()">
+        </p-button>
+    </div>
+</div>

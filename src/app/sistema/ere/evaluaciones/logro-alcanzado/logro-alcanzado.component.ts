@@ -4,16 +4,22 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { RegistrarLogroAlcanzadoComponent } from './registrar-logro-alcanzado/registrar-logro-alcanzado.component'
 @Component({
     selector: 'app-logro-alcanzado',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        RegistrarLogroAlcanzadoComponent,
+    ],
     templateUrl: './logro-alcanzado.component.html',
     styleUrl: './logro-alcanzado.component.scss',
 })
 export class LogroAlcanzadoComponent implements OnInit {
     //breadCrumbHome: MenuItem
-    formularioRegistro: string
+    dialogRegistrarLogroAlcanzado: boolean = false
+    registrarLogroAlcanzado: string
     selectedItem: any
     dataSugerencias = [
         {
@@ -101,12 +107,17 @@ export class LogroAlcanzadoComponent implements OnInit {
         console.log('Logro alcanzado')
     }
     registroLogroAlcanzado() {
-        this.formularioRegistro = 'Logro alcanzado'
-        //this.mostrarFormularioVer = true
+        this.registrarLogroAlcanzado = 'Logro alcanzado'
+        this.dialogRegistrarLogroAlcanzado = true
+    }
+    listenDialogRegistrarLogro(event: boolean) {
+        if (event == false) {
+            this.dialogRegistrarLogroAlcanzado = false
+        }
     }
     accionBtnItemTable({ accion, item }) {
         switch (accion) {
-            case 'ver':
+            case 'Resistrar':
                 this.selectedItem = item
                 this.registroLogroAlcanzado()
                 break
@@ -114,9 +125,9 @@ export class LogroAlcanzadoComponent implements OnInit {
     }
     actions: IActionTable[] = [
         {
-            labelTooltip: 'Ver sugerencia',
+            labelTooltip: 'Resistrar logro',
             icon: 'pi pi-file-edit',
-            accion: 'ver',
+            accion: 'Resistrar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },

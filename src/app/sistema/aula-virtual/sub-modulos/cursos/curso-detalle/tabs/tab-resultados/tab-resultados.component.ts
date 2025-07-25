@@ -10,7 +10,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service';
 import { MessageService } from 'primeng/api';
-import { Subject, takeUntil } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component';
 import { SelectButtonChangeEvent } from 'primeng/selectbutton';
@@ -384,6 +384,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
     this._DetalleMatriculasService
       .guardarConclusionDescriptiva(this.estudianteSelect.iDetMatrId, params)
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: response => {
           this.estudianteSeleccionado = null;

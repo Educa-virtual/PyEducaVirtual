@@ -121,7 +121,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
     if (Number(this.iPerfilId) == ESTUDIANTE) {
       this.obtenerTareaxiTareaidxiEstudianteId();
     } else {
-      this.obtenerEscalaCalificaciones();
+      //this.obtenerEscalaCalificaciones();
     }
 
     this.form.get('editor').disable();
@@ -132,6 +132,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   ngOnChanges(changes) {
     if (changes.iTareaId?.currentValue) {
       this.iTareaId = changes.iTareaId.currentValue;
+      this.getTareaEstudiantes();
       this.getTareasxiTareaid();
     }
   }
@@ -282,7 +283,8 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
       },
     });
   }
-
+  bTareaEsGrupal: boolean = false;
+  iEvaluado: boolean = false;
   public accionBtnItem(elemento) {
     const { accion } = elemento;
     const { item } = elemento;
@@ -425,7 +427,8 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
         this.iEstadoEstudianteTareaGrupal = data.cEstadoGrupal;
         this.notaTareaEstudiante = data.cEscalaCalifNombre;
         this.comentarioTareaEstudiante = data.cTareaEstudianteComentarioDocente;
-
+        this.bTareaEsGrupal = data.bTareaEsGrupal === '1' ? true : false;
+        this.iEvaluado = data.iEvaluado === '1' ? true : false;
         this.notaTareaEstudianteGrupal = data.cEscalaCalifNombre;
         this.comentarioTareaEstudianteGrupal = data.cTareaGrupoComentarioDocente;
         this.FilesTareasEstudiantesGrupal = data.cTareaGrupoUrl
@@ -524,16 +527,16 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   }
 
   guardarTareaEstudiantesxDocente() {
-    if (!this.iEscalaCalifId) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Falta Entregar su tarea',
-        detail: 'Seleccione calificación para guardar',
-      });
-      return;
-    }
+    // if (!this.iEscalaCalifId) {
+    //   this.messageService.add({
+    //     severity: 'warn',
+    //     summary: 'Falta Entregar su tarea',
+    //     detail: 'Seleccione calificación para guardar',
+    //   });
+    //   return;
+    // }
     // Verifica que los datos requeridos estén completos antes de continuar
-    if (this.iTareaEstudianteId && this.iEscalaCalifId) {
+    if (this.iTareaEstudianteId) {
       const params = {
         petition: 'post',
         group: 'aula-virtual',
@@ -542,7 +545,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
         data: {
           opcion: 'GUARDAR-CALIFICACION-DOCENTE',
           iTareaEstudianteId: this.iTareaEstudianteId,
-          iEscalaCalifId: this.iEscalaCalifId,
+          //iEscalaCalifId: this.iEscalaCalifId,
           cTareaEstudianteComentarioDocente: this.cTareaEstudianteComentarioDocente,
           nTareaEstudianteNota: 0,
         },
@@ -602,14 +605,6 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   }
 
   guardarTareaCabeceraGruposxDocente() {
-    if (!this.iEscalaCalifId) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Falta Entregar su tarea',
-        detail: 'Seleccione calaficación para guardar',
-      });
-      return;
-    }
     const params = {
       petition: 'post',
       group: 'aula-virtual',
@@ -618,7 +613,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
       data: {
         opcion: 'GUARDAR-CALIFICACION-DOCENTE',
         iTareaCabGrupoId: this.iTareaCabGrupoId,
-        iEscalaCalifId: this.iEscalaCalifId,
+        //iEscalaCalifId: this.iEscalaCalifId,
         cTareaGrupoComentarioDocente: this.cTareaGrupoComentarioDocente,
         nTareaGrupoNota: 0,
       },
@@ -733,13 +728,19 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
     };
     this.getInformation(params, 'entregar-estudiante-tarea');
   }
-
+  miTareaGrupal;
   entregarEstudianteTareaGrupal() {
+    const now = new Date();
+    const fechaEntrega = now.toLocaleDateString(); // Ejemplo: "21/11/2024"
+    const horaEntrega = now.toLocaleTimeString(); // Ejemplo: "10:45:23"
+
     this.messageService.add({
       severity: 'success',
       summary: 'Tarea enviada',
       detail: 'La tarea ha sido entregada exitosamente.',
     });
+
+    this.miTareaGrupal = `La tarea grupal fue entregada el ${fechaEntrega} a las ${horaEntrega}.`;
 
     if (!this.FilesTareasEstudiantesGrupal.length) return;
     const params = {

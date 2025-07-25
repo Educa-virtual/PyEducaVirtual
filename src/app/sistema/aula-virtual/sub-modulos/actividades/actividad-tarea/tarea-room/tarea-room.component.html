@@ -34,14 +34,160 @@
         </div>
         @if (iPerfilId === ESTUDIANTE) {
           <div section class="col-12">
-            <!-- Verifica si hay una tarea individual para el estudiante y no es una tarea grupal -->
+            @if (!bTareaEsGrupal) {
+              @if (!iEvaluado) {
+                <div class="card-body m-3">
+                  <h4>Entregar Tareas</h4>
+                  <p-divider></p-divider>
+                  <div class="flex align-items-center justify-content-center">
+                    <app-file-upload-primeng
+                      [nameFile]="'tareas-estudiantes'"
+                      [nameOption]="'tareas-estudiantes'"
+                      (actionFileUpload)="accionBtnItem($event)"
+                    ></app-file-upload-primeng>
+                  </div>
+                  @if (FilesTareasEstudiantes.length) {
+                    <div class="col-12">
+                      <label for="" class="mt-2">Lista de Adjuntos</label>
 
+                      @for (item of FilesTareasEstudiantes; track item; let idx = $index) {
+                        <p-inputGroup class="mt-1">
+                          <p-inputGroupAddon>
+                            @switch (item.type) {
+                              @case (1) {
+                                <i class="pi pi-upload" style="color: #333437"></i>
+                              }
+                            }
+                          </p-inputGroupAddon>
+                          <input type="text" pInputText [placeholder]="item.name" disabled />
+                          <button
+                            type="button"
+                            pButton
+                            icon="pi pi-trash"
+                            (click)="FilesTareasEstudiantes.splice(idx, 1)"
+                            class="p-button-danger"
+                          >
+                            &nbsp;
+                          </button>
+                        </p-inputGroup>
+                      }
+                    </div>
+                  }
+                  <p-divider></p-divider>
+                  <div class="flex align-items-center justify-content-center">
+                    <p-button
+                      label="Enviar Tarea"
+                      icon="pi pi-check"
+                      iconPos="right"
+                      (onClick)="entregarEstudianteTarea()"
+                      raised
+                      severity="success"
+                    ></p-button>
+                  </div>
+                </div>
+                @if (miTarea) {
+                  <div>{{ miTarea }}</div>
+                }
+              } @else {
+                <div class="grid">
+                  <div class="col-12 mt-2">
+                    <div class="text-xl font-medium text-900 mb-2">
+                      <span class="text-blue-500"
+                        ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                      >
+                      <p-divider></p-divider>
+                      <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                    </div>
+                    <div
+                      class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                    >
+                      <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                      <div [innerHTML]="comentarioTareaEstudiante || '-'"></div>
+                    </div>
+                  </div>
+                </div>
+              }
+            } @else {
+              @if (!iEvaluado) {
+                <div class="card-body m-3">
+                  <h3>Trabajo Grupal</h3>
+                  <p-divider></p-divider>
+                  <div class="flex align-items-center justify-content-center">
+                    <app-file-upload-primeng
+                      [nameFile]="'tarea-cabecera-grupos'"
+                      [nameOption]="'tarea-cabecera-grupos'"
+                      (actionFileUpload)="accionBtnItem($event)"
+                    ></app-file-upload-primeng>
+                  </div>
+                  @if (FilesTareasEstudiantesGrupal.length) {
+                    <div class="col-12">
+                      <label for="" class="mt-2">Lista de Adjuntos</label>
+                      @for (item of FilesTareasEstudiantesGrupal; track item; let idx = $index) {
+                        <p-inputGroup class="mt-1">
+                          <p-inputGroupAddon>
+                            @switch (item.type) {
+                              @case (1) {
+                                <i class="pi pi-upload" style="color: #333437"></i>
+                              }
+                            }
+                          </p-inputGroupAddon>
+                          <input type="text" pInputText [placeholder]="item.name" disabled />
+                          <button
+                            type="button"
+                            pButton
+                            icon="pi pi-trash"
+                            (click)="FilesTareasEstudiantesGrupal.splice(idx, 1)"
+                            class="p-button-danger"
+                          >
+                            &nbsp;
+                          </button>
+                        </p-inputGroup>
+                      }
+                    </div>
+                  }
+                  <p-divider></p-divider>
+                  <div class="flex align-items-center justify-content-center">
+                    <p-button
+                      label="Enviar Tareass"
+                      icon="pi pi-check"
+                      iconPos="right"
+                      (onClick)="entregarEstudianteTareaGrupal()"
+                      raised
+                      severity="success"
+                    ></p-button>
+                  </div>
+                </div>
+                @if (miTareaGrupal) {
+                  <div>{{ miTareaGrupal }}</div>
+                }
+              } @else {
+                <div class="grid">
+                  <div class="col-12 mt-2">
+                    <div class="text-xl font-medium text-900 mb-2">
+                      <span class="text-blue-500"
+                        ><i class="pi pi-check"></i>&nbsp;El Trabajo grupal ya ha sido
+                        evaluado</span
+                      >
+                      <p-divider></p-divider>
+                      <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                    </div>
+                    <div
+                      class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                    >
+                      <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                      <div [innerHTML]="comentarioTareaEstudianteGrupal || '-'"></div>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+          <!-- <div section class="col-12">
+           
             @if (iEstadoEstudianteTarea !== '' && !iEstadoEstudianteTareaGrupal) {
-              <!-- Esta sección solo se muestra si iEstadoEstudianteTarea es '0', lo que indica que la tarea no se ha entregado aún -->
               <div class="card-body m-3" [hidden]="iEstadoEstudianteTarea !== '0'">
                 <h4>Entregar Tareas</h4>
                 <p-divider></p-divider>
-                <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
                 <div class="flex align-items-center justify-content-center">
                   <app-file-upload-primeng
                     [nameFile]="'tareas-estudiantes'"
@@ -49,24 +195,19 @@
                     (actionFileUpload)="accionBtnItem($event)"
                   ></app-file-upload-primeng>
                 </div>
-                <!-- Lista de archivos adjuntos si existen archivos en FilesTareasEstudiantes -->
-                @if (FilesTareasEstudiantes.length) {
+               @if (FilesTareasEstudiantes.length) {
                   <div class="col-12">
                     <label for="" class="mt-2">Lista de Adjuntos</label>
-                    <!-- Itera sobre cada archivo adjunto en FilesTareasEstudiantes -->
-
+                   
                     @for (item of FilesTareasEstudiantes; track item; let idx = $index) {
                       <p-inputGroup class="mt-1">
                         <p-inputGroupAddon>
-                          <!-- Verifica el tipo de archivo y muestra un ícono -->
-
                           @switch (item.type) {
                             @case (1) {
                               <i class="pi pi-upload" style="color: #333437"></i>
                             }
                           }
                         </p-inputGroupAddon>
-                        <!-- Muestra el nombre del archivo, deshabilitado para no ser editable -->
                         <input type="text" pInputText [placeholder]="item.name" disabled />
                         <button
                           type="button"
@@ -76,15 +217,13 @@
                           class="p-button-danger"
                         >
                           &nbsp;
-                          <!-- Botón para eliminar el archivo del array FilesTareasEstudiantes -->
-                        </button>
+                           </button>
                       </p-inputGroup>
                     }
                   </div>
                 }
                 <p-divider></p-divider>
 
-                <!-- Botón para enviar la tarea -->
                 <div>
                   <p-toast></p-toast>
                 </div>
@@ -105,8 +244,7 @@
                 <div>{{ miTarea }}</div>
               }
 
-              <!-- Muestra mensaje de tarea evaluada si el estado de la tarea es '1' -->
-
+             
               <div class="grid" [hidden]="iEstadoEstudianteTarea !== '1'">
                 <div class="col-12 mt-2">
                   <div class="text-xl font-medium text-900 mb-2">
@@ -123,47 +261,12 @@
                     <div [innerHTML]="comentarioTareaEstudiante || '-'"></div>
                   </div>
                 </div>
-                <!-- <h4 class="mb-3">Tu Trabajo ya ha sido evaluado</h4>
-
-                <p-divider class="mb-3"></p-divider>
-                 <div class="p-field p-fluid mb-3">
-                  <label for="notaEstudiante">Escala Calificación</label>
-                  <input
-                    id="notaEstudiante"
-                    type="text"
-                    pInputText
-                    [(ngModel)]="notaTareaEstudiante"
-                    class="p-inputtext-lg"
-                    placeholder="Aqui muestra la calificación"
-                    [disabled]="isDisabled"
-                  />
-                </div>
-                <p-divider class="mb-3"></p-divider>
-               
-
-                <div class="p-field p-fluid mb-3">
-                  <label for="comentarioDocente">Conclusión Descriptiva</label>
-                  <textarea
-                    id="comentarioDocente"
-                    pInputTextarea
-                    rows="5"
-                    [(ngModel)]="comentarioTareaEstudiante"
-                    class="p-inputtextarea-lg"
-                    placeholder="Muestra Comentario Docente"
-                    [disabled]="isDisabled"
-                  >
-                  </textarea>
-                </div> -->
               </div>
             }
-            <!-- Si no hay tarea individual y existe una tarea grupal -->
             @if (!iEstadoEstudianteTarea && iEstadoEstudianteTareaGrupal !== '') {
               <div class="card-body m-3" [hidden]="iEstadoEstudianteTareaGrupal !== '0'">
-                <!-- Esta sección es para la entrega de tarea grupal y se muestra si el estado es '0' -->
-
                 <h3>Trabajo Grupal</h3>
                 <p-divider></p-divider>
-                <!-- Componente de subida de archivos para tareas grupales -->
                 <div class="flex align-items-center justify-content-center">
                   <app-file-upload-primeng
                     [nameFile]="'tarea-cabecera-grupos'"
@@ -171,25 +274,20 @@
                     (actionFileUpload)="accionBtnItem($event)"
                   ></app-file-upload-primeng>
                 </div>
-                <!-- Lista de archivos adjuntos para la tarea grupal -->
-                @if (FilesTareasEstudiantesGrupal.length) {
+               @if (FilesTareasEstudiantesGrupal.length) {
                   <div class="col-12">
                     <label for="" class="mt-2">Lista de Adjuntos</label>
-                    <!-- Itera sobre cada archivo adjunto en FilesTareasEstudiantesGrupal -->
                     @for (item of FilesTareasEstudiantesGrupal; track item; let idx = $index) {
                       <p-inputGroup class="mt-1">
                         <p-inputGroupAddon>
-                          <!-- Muestra un ícono basado en el tipo de archivo -->
                           @switch (item.type) {
                             @case (1) {
                               <i class="pi pi-upload" style="color: #333437"></i>
                             }
                           }
-                          <!-- Muestra el nombre del archivo y un botón para eliminarlo -->
-                        </p-inputGroupAddon>
+                          </p-inputGroupAddon>
                         <input type="text" pInputText [placeholder]="item.name" disabled />
-                        <!-- Botón para enviar la tarea grupal -->
-                        <button
+                         <button
                           type="button"
                           pButton
                           icon="pi pi-trash"
@@ -202,11 +300,8 @@
                     }
                   </div>
                 }
-                <!-- Componente p-divider de PrimeNG para agregar una línea divisoria horizontal -->
-                <p-divider></p-divider>
-                <!-- Componente p-toast de PrimeNG para mostrar notificaciones emergentes -->
+                 <p-divider></p-divider>
                 <p-toast></p-toast>
-                <!-- Contenedor div con clases para centrar contenido horizontal y verticalmente -->
                 <div class="flex align-items-center justify-content-center">
                   <p-button
                     label="Enviar Tareass"
@@ -218,7 +313,6 @@
                   ></p-button>
                 </div>
               </div>
-              <!--Se muestra únicamente cuando la tarea grupal está en el estado evaluado-->
               <div class="grid" [hidden]="iEstadoEstudianteTareaGrupal !== '1'">
                 <div class="col-12 mt-2">
                   <div class="text-xl font-medium text-900 mb-2">
@@ -235,44 +329,11 @@
                     <div [innerHTML]="comentarioTareaEstudianteGrupal || '-'"></div>
                   </div>
                 </div>
-                <!-- <h4>El Trabajo grupal ya ha sido evaluado</h4>
-                <p-divider></p-divider>
-                <p-inputGroup>
-                  <p-inputGroupAddon> Escala de Calificación </p-inputGroupAddon>
-                  <input pInputText [(ngModel)]="notaTareaEstudianteGrupal" />
-                </p-inputGroup>
-                <p-divider></p-divider>
-                
-                <p-inputGroup>
-                
-
-                  <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
-                  <textarea
-                    pInputText
-                    rows="5"
-                    [(ngModel)]="comentarioTareaEstudianteGrupal"
-                    [disabled]="isDisabled"
-                    placeholder="Escribe la conclusión descriptiva aquí..."
-                  >
-                  </textarea>
-                </p-inputGroup> -->
               </div>
             }
-            <!-- <div class="col-12 mt-2">
-              <div class="text-xl font-medium text-900 mb-2">
-                <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
-              </div>
-              <div
-                class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
-              >
-                <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
-              </div>
-            </div> -->
-          </div>
+          </div> -->
         }
       </app-tab-descripcion-actividades>
-      <!-- <app-descripcion-actividades [data]="data" [isDocente]="isDocente">
-      </app-descripcion-actividades> -->
     </p-tabPanel>
 
     @if (iPerfilId !== ESTUDIANTE) {
@@ -765,9 +826,8 @@
                     <p-divider></p-divider>
                     <p-fieldset legend="Calificación" [toggleable]="true">
                       <div class="grid">
-                        <div class="col-12">
+                        <!-- <div class="col-12">
                           <p-inputGroup>
-                            <!-- Componente de grupo de entrada que permite incluir elementos de entrada relacionados de manera conjunta -->
                             <p-inputGroupAddon>Escala de calificación</p-inputGroupAddon>
                             <p-dropdown
                               [(ngModel)]="iEscalaCalifId"
@@ -780,7 +840,7 @@
                               }"
                             ></p-dropdown>
                           </p-inputGroup>
-                        </div>
+                        </div> -->
                         <div class="col-12">
                           <p-inputGroup>
                             <!-- p-inputGroupAddon: Un componente de PrimeNG que se usa para agregar elementos al principio o al final de un grupo de entrada. -->

@@ -1,180 +1,104 @@
-// //color de bottones de cabecera
-// :host ::ng-deep p-inputGroupAddon {
-//     background-color: var(--bg-header-modal) !important;
-//     color: var(--primary-color-text) !important;
-//     i {
-//         color: var(--primary-color-text) !important;
-//     }
-// }
-// /* Rotar el texto del encabezado */
-// .vertical-header {
-//     writing-mode: vertical-lr; /* Hace el texto vertical */
-//     transform: rotate(180deg); /* Invierte el texto para que sea legible */
-//     text-align: center; /* Alinea el texto en el centro de la celda */
-//     vertical-align: middle; /* Centra el texto verticalmente */
-//     height: 120px; /* Ajusta según el espacio que necesites */
-//     white-space: nowrap; /* Evita que el texto se parta */
-//     width: 4rem;
-// }
-// // estilo de cabecer DE Mostrar
-// .heard-color {
-//     background-color: rgb(202, 202, 214);
-// }
-// :host ::ng-deep .actividad-tabs .p-tabview-nav {
-//     display: flex;
-//     justify-content: space-between;
-//     // position: fixed;
-//     // background-color: white;
-// }
-// :host ::ng-deep .actividad-tabs .p-tabview-nav li {
-//     flex: 1;
-// }
-// :host ::ng-deep .actividad-tabs .p-tabview-nav li a {
-//     text-align: center;
-//     //width: 100%;
-//     display: block;
-//     color: inherit;
-// }
-
-// :host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
-//     color: var(--primary-color);
-// }
-// // altura de listar estudiantes
-// :host ::ng-deep .cdk-drop-list {
-//     max-height: 500px;
-//     border: none;
-// }
-// // borrar las barras al costado
 :host ::ng-deep .listAlumno .p-orderlist-controls {
-    display: none;
-    height: 600px;
+  display: none;
+  height: 600px;
 }
-// // estilo de listar estudiantes
-// :host ::ng-deep .perfilesList {
-//     border-radius: 8px; /* Radio del borde */
-//     border: 1px solid #ccc;
-//     border-radius: 8px;
-//     padding: 1px 1px 1px 1px;
-//     width: 100%;
-//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
-//     display: flex;
-//     align-items: center;
-//     padding: 1rem;
-//     img {
-//         width: 150px;
-//         box-shadow:
-//             0 3px 6px rgba(0, 0, 0, 0.16),
-//             0 3px 6px rgba(0, 0, 0, 0.23);
-//         margin-right: 2rem;
-//     }
-// }
-// /*El icono de los perfiles de los comentarios y participantes*/
-// .btn {
-//     border-radius: 50%; /* Si quieres hacerla circular */
-// }
-// 3867149912 codigo de cacelación del plan de claro
+
 .button-container {
-    display: flex;
-    margin-top: 10px; /* Espacio entre el editor y el botón */
+  display: flex;
+  margin-top: 10px; /* Espacio entre el editor y el botón */
 }
-// :host ::ng-deep .perfil-name {
-//     color: black;
-// }
 
 .tabs {
-    display: flex;
-    margin-bottom: 1rem;
-    .tab {
-        padding: 0.5rem 1rem;
-        margin-right: 0.5rem;
-        border: none;
-        border-radius: 4px;
-        background: #eaeaea;
-        cursor: pointer;
+  display: flex;
+  margin-bottom: 1rem;
+  .tab {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background: #eaeaea;
+    cursor: pointer;
 
-        &.active {
-            background: #2c3e50;
-            color: white;
-        }
+    &.active {
+      background: #2c3e50;
+      color: white;
     }
+  }
 }
 .tagEst {
-    position: absolute;
-    top: -15px;
-    left: 10px; // Alinear exactamente desde el borde izquierdo
-    background-color: #399760;
-    padding: 5px 10px; /* Aumentar padding lateral para aire */
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    color: white;
-    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
-    width: fit-content; /* Para que no ocupe más de lo necesario */
+  position: absolute;
+  top: -15px;
+  left: 10px; // Alinear exactamente desde el borde izquierdo
+  background-color: #399760;
+  padding: 5px 10px; /* Aumentar padding lateral para aire */
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: white;
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+  width: fit-content; /* Para que no ocupe más de lo necesario */
 }
 .tagDet {
-    position: absolute;
-    top: -15px;
-    left: 10px; // Alinear exactamente desde el borde izquierdo
-    background-color: #f97316;
-    padding: 5px 10px; /* Aumentar padding lateral para aire */
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    color: white;
-    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
-    width: fit-content; /* Para que no ocupe más de lo necesario */
+  position: absolute;
+  top: -15px;
+  left: 10px; // Alinear exactamente desde el borde izquierdo
+  background-color: #f97316;
+  padding: 5px 10px; /* Aumentar padding lateral para aire */
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: white;
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+  width: fit-content; /* Para que no ocupe más de lo necesario */
 }
 .tab {
-    position: absolute;
-    top: -20px;
-    left: 10px; // Alinear exactamente desde el borde izquierdo
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    color: white;
-    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
-    width: fit-content; /* Para que no ocupe más de lo necesario */
+  position: absolute;
+  top: -20px;
+  left: 10px; // Alinear exactamente desde el borde izquierdo
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: white;
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+  width: fit-content; /* Para que no ocupe más de lo necesario */
 }
 
 :host ::ng-deep .actividad .p-selectbutton .p-button {
-    flex: 1; /* Cada botón tomará el mismo espacio */
-    width: 100%; /* Opcional: Garantiza que el contenedor tome todo el ancho */
+  flex: 1; /* Cada botón tomará el mismo espacio */
+  width: 100%; /* Opcional: Garantiza que el contenedor tome todo el ancho */
 }
 :host ::ng-deep .actividad .p-selectbutton {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 
-// :host ::ng-deep .p-selectbutton .p-button:nth-child(1) {
-//     background-color: #007bff !important; /* Azul */
-//     color: white !important;
-// }
-
-// :host ::ng-deep .p-selectbutton .p-button:nth-child(2) {
-//     background-color: #28a745 !important; /* Verde */
-//     color: white !important;
-// }
-
-// :host ::ng-deep .p-selectbutton .p-button:nth-child(3) {
-//     background-color: #dc3545 !important; /* Rojo */
-//     color: white !important;
-// }
 :host ::ng-deep .actividad .p-selectbutton .p-button:nth-child(1).p-highlight {
-    background-color: #b51f32 !important; /* Azul */
+  background-color: var(--green-500) !important; /* Azul */
 }
 
 :host ::ng-deep .actividad .p-selectbutton .p-button:nth-child(2).p-highlight {
-    background-color: #399760 !important; /* Verde */
+  background-color: var(--yellow-500) !important; /* Verde */
 }
 
 :host ::ng-deep .actividad .p-selectbutton .p-button:nth-child(3).p-highlight {
-    background-color: #3e67a9 !important; /* Rojo */
+  background-color: var(--red-500) !important; /* Rojo */
 }
 
 :host ::ng-deep p-inputGroupAddon {
-    background-color: var(--bg-header-modal) !important;
+  background-color: var(--bg-header-modal) !important;
+  color: var(--primary-color-text) !important;
+  i {
     color: var(--primary-color-text) !important;
-    i {
-        color: var(--primary-color-text) !important;
-    }
+  }
+}
+
+.alert-docente {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  color: #0d47a1;
+  font-style: italic;
 }

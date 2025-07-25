@@ -60,4 +60,8 @@ export class ContenidoSemanasService {
       params,
     });
   }
+
+  guardarSesionDeAprendizaje(data): Observable<any> {
+    return this.http.post(`${baseUrl}/acad/contenido-semanas`, data);
+  }
 }

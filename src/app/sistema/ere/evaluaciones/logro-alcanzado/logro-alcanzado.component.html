@@ -66,9 +66,9 @@
     <p-dialog
         [draggable]="false"
         [maximizable]="true"
-        [header]="registrarLogroAlcanzado"
+        [header]="registroTitleModal"
         [(visible)]="dialogRegistrarLogroAlcanzado"
-        [style]="{ width: '85rem', height: '600px' }"
+        [style]="{ width: '85rem', height: '730px' }"
         [modal]="true"
         [contentStyle]="{ overflow: 'auto' }"
         [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
@@ -77,5 +77,21 @@
             (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)"
             [selectedItem]="selectedItem"
         ></app-registrar-logro-alcanzado>
+    </p-dialog>
+    <p-dialog
+        [draggable]="false"
+        [maximizable]="true"
+        [header]="boletaTitleModal"
+        [(visible)]="dialogBoletaLogroAlcanzado"
+        [style]="{ width: '60rem', height: '670px' }"
+        [modal]="true"
+        [contentStyle]="{ overflow: 'auto' }"
+        [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    >
+        <app-boleta-logro
+            [selectedItem]="selectedItem"
+            (boletaLogroImprimir)="listenDialogBoleta($event)"
+        >
+        </app-boleta-logro>
     </p-dialog>
 </p-panel>

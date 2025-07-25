@@ -5,6 +5,7 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { RegistrarLogroAlcanzadoComponent } from './registrar-logro-alcanzado/registrar-logro-alcanzado.component'
+import { BoletaLogroComponent } from './boleta-logro/boleta-logro.component'
 @Component({
     selector: 'app-logro-alcanzado',
     standalone: true,
@@ -12,6 +13,7 @@ import { RegistrarLogroAlcanzadoComponent } from './registrar-logro-alcanzado/re
         PrimengModule,
         TablePrimengComponent,
         RegistrarLogroAlcanzadoComponent,
+        BoletaLogroComponent,
     ],
     templateUrl: './logro-alcanzado.component.html',
     styleUrl: './logro-alcanzado.component.scss',
@@ -19,7 +21,9 @@ import { RegistrarLogroAlcanzadoComponent } from './registrar-logro-alcanzado/re
 export class LogroAlcanzadoComponent implements OnInit {
     //breadCrumbHome: MenuItem
     dialogRegistrarLogroAlcanzado: boolean = false
-    registrarLogroAlcanzado: string
+    registroTitleModal: string
+    dialogBoletaLogroAlcanzado: boolean = false
+    boletaTitleModal: string
     selectedItem: any
     dataSugerencias = [
         {
@@ -27,7 +31,7 @@ export class LogroAlcanzadoComponent implements OnInit {
             iLogroAlcanzadoId: 1,
             dtFechaCreacion: new Date('2025-04-20'),
             cAsunto: 'Mejora en materiales de clase',
-            cNombreEstudiante: 'Juan Pérez',
+            cNombreEstudiante: 'Gómez Torres Luis Alberto',
             cRespuesta: '',
             cSugerencia:
                 'Sería bueno tener acceso a más material digital para las clases de matemáticas.',
@@ -107,7 +111,8 @@ export class LogroAlcanzadoComponent implements OnInit {
         console.log('Logro alcanzado')
     }
     registroLogroAlcanzado() {
-        this.registrarLogroAlcanzado = 'Logro alcanzado'
+        this.registroTitleModal =
+            'Registro : Gómez Torres Luis Alberto - Nivel: 4to - Sección: C'
         this.dialogRegistrarLogroAlcanzado = true
     }
     listenDialogRegistrarLogro(event: boolean) {
@@ -115,11 +120,24 @@ export class LogroAlcanzadoComponent implements OnInit {
             this.dialogRegistrarLogroAlcanzado = false
         }
     }
+    boletaLogroImprimir() {
+        this.boletaTitleModal = 'Boleta de Logros de'
+        this.dialogBoletaLogroAlcanzado = true
+    }
+    listenDialogBoleta(event: boolean) {
+        if (event == false) {
+            this.dialogBoletaLogroAlcanzado = false
+        }
+    }
     accionBtnItemTable({ accion, item }) {
         switch (accion) {
             case 'Resistrar':
                 this.selectedItem = item
                 this.registroLogroAlcanzado()
+                break
+            case 'Imprimir':
+                this.selectedItem = item
+                this.boletaLogroImprimir()
                 break
         }
     }
@@ -132,9 +150,9 @@ export class LogroAlcanzadoComponent implements OnInit {
             class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
-            labelTooltip: 'Responder sugerencia',
+            labelTooltip: 'Imprimir Boleta',
             icon: 'pi pi-print',
-            accion: 'responder',
+            accion: 'Imprimir',
             type: 'item',
             class: 'p-button-rounded p-button-success p-button-text',
         },

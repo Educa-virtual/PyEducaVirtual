@@ -57,6 +57,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
       this.showModal = changes['showModal'].currentValue;
       this.obtenerTipoExperienciaAprendizaje();
       this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
+      this.formSesines.reset();
     }
     if (this.accion === 'editar') {
       this.rutaRelativa = this.datosSesion.cAdjunto;
@@ -153,7 +154,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
       ...this.formSesines.value,
       cAdjunto: this.documentos.data,
     };
-
+    this.formSesines.reset();
     this.dataSesion.emit(this.data);
     this.accionCloseForm.emit();
   }
@@ -163,6 +164,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
       ...this.formSesines.value,
       cAdjunto: this.documentos?.data ? this.documentos.data : this.rutaRelativa,
     };
+    this.formSesines.reset();
     this.editarSesion.emit(this.data);
     this.accionCloseForm.emit();
   }

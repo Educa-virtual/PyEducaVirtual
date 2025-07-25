@@ -131,7 +131,7 @@
   [idSesion]="contenidoSemanas.length + 1"
   (dataSesion)="guardarSesionDeAprendizaje($event)"
   (editarSesion)="actualizarSesionDeAprendizaje($event)"
-  (accionCloseForm)="showModalSesionAprendizaje = false"
+  (accionCloseForm)="showModalSesionAprendizaje = false; datosSesion = null; accion = null"
 ></app-sesion-aprendizaje-form>
 
 <app-tarea-form

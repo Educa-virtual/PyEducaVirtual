@@ -161,7 +161,17 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     // console.log('datos seleccionado', this.datos)
     const iContenidoSemId = semana.iContenidoSemId;
     if (!iContenidoSemId) return;
-    const params = { iCredId: this._ConstantesService.iCredId };
+    let cPerfil: string | undefined;
+
+    switch (this.iPerfilId) {
+      case ESTUDIANTE:
+        cPerfil = 'ESTUDIANTE';
+        break;
+      case DOCENTE:
+        cPerfil = 'DOCENTE';
+        break;
+    }
+    const params = { iCredId: this._ConstantesService.iCredId, cPerfil };
     this._ContenidoSemanasService
       .obtenerActividadesxiContenidoSemId(iContenidoSemId, params)
       .subscribe({
@@ -189,6 +199,28 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   }
 
   private getData() {
+    switch (this.iPerfilId) {
+      case ESTUDIANTE:
+        this.btnAccion = [];
+        break;
+      case DOCENTE:
+        this.btnAccion = [
+          {
+            label: 'Editar',
+            icon: 'pi pi-file-edit',
+            class: 'p-button-warning',
+            action: () => this.editarSesionDeAprendizaje(),
+            // action: () =>this.guardar()
+          },
+          {
+            label: 'Eliminar',
+            icon: 'pi pi-trash',
+            class: 'p-button-danger',
+            action: () => this.eliminarSesionDeAprendizaje(), //this.guardar()
+          },
+        ];
+        break;
+    }
     this.obtenerTipoActivadad();
   }
 
@@ -288,7 +320,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         iCredId: this._ConstantesService.iCredId,
       },
     };
-    console.log('datos datos actualizados', params);
+
     // return
     //Servicio para obtener los instructores
     this.GeneralService.getGralPrefixx(params).subscribe({
@@ -409,21 +441,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     });
   }
   // botones de editar y eliminar semana
-  btnAccion = [
-    {
-      label: 'Editar',
-      icon: 'pi pi-file-edit',
-      class: 'p-button-warning',
-      action: () => this.editarSesionDeAprendizaje(),
-      // action: () =>this.guardar()
-    },
-    {
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      class: 'p-button-danger',
-      action: () => this.eliminarSesionDeAprendizaje(), //this.guardar()
-    },
-  ];
+  btnAccion = [];
 
   setSemanaSeleccionada(semana) {
     this.semanaSeleccionada = semana;

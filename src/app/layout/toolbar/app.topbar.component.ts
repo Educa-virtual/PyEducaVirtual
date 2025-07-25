@@ -14,6 +14,8 @@ import { GeneralService } from '@/app/servicios/general.service';
 import { MessageService } from 'primeng/api';
 import { provideIcons } from '@ng-icons/core';
 import { mat10k } from '@ng-icons/material-icons/baseline';
+import { ConstantesService } from '@/app/servicios/constantes.service';
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-topbar',
@@ -35,6 +37,8 @@ import { mat10k } from '@ng-icons/material-icons/baseline';
 export class AppTopBarComponent implements OnInit {
   private _GeneralService = inject(GeneralService);
   private _MessageService = inject(MessageService);
+  private _ConstantesService = inject(ConstantesService);
+
   years = [];
   selectedYear: string;
 
@@ -75,14 +79,15 @@ export class AppTopBarComponent implements OnInit {
     this.modulos = user.modulos;
     this.selectedModulo = modulo ? modulo.iModuloId : null;
 
-    // if (user.iDocenteId) {
-    //   // this.notificacionDocente(user.iDocenteId)
-    //   console.log(1);
-    // }
-    // if (user.iEstudianteId) {
-    //   // this.notificacionEstudiante(user.iEstudianteId)
-    //   console.log(1);
-    // }
+    const iPerfilId = this._ConstantesService.iPerfilId;
+    switch (iPerfilId) {
+      case ESTUDIANTE:
+        this.notificacionEstudiante(user.iEstudianteId);
+        break;
+      case DOCENTE:
+        this.notificacionDocente(user.iDocenteId);
+        break;
+    }
   }
 
   changeModulo(value) {
@@ -149,6 +154,7 @@ export class AppTopBarComponent implements OnInit {
         data.sort((a, b) => {
           return a.diferencias - b.diferencias;
         });
+
         this.totalNotificaciones = data.length;
 
         this.items = [
@@ -160,13 +166,26 @@ export class AppTopBarComponent implements OnInit {
         break;
       case 'notificacion_estudiante':
         item.forEach(i => {
-          data.push({
-            label: i.titulo,
-            icon: i.icono,
-            sublabel: i.distancia,
+          i.notificarEstudiante = i.notificarEstudiante ? JSON.parse(i.notificarEstudiante) : [];
+          i.notificarEstudiante.forEach(j => {
+            this.notificaciones.push(j);
           });
         });
+
+        // this.notificaciones = this.notificaciones.filter(i => i.respuesta);
+        this.notificaciones.forEach(i => {
+          data.push({
+            icon: i.icono,
+            sublabel: i.distancia,
+            diferencias: i.diferencia,
+            label: i.titulo,
+          });
+        });
+        // data.sort((a, b) => {
+        //   return a.diferencias - b.diferencias;
+        // });
         this.totalNotificaciones = data.length;
+
         this.items = [
           {
             label: 'Notificaciones',
@@ -184,6 +203,8 @@ export class AppTopBarComponent implements OnInit {
       ruta: 'mostrar_notificacion',
       data: {
         iDocenteId: iDocenteId,
+        iYAcadId: this._ConstantesService.iYAcadId,
+        iSedeId: this._ConstantesService.iSedeId,
       },
     };
     this.getInformation(params, params.prefix);
@@ -196,6 +217,8 @@ export class AppTopBarComponent implements OnInit {
       ruta: 'mostrar_notificacion',
       data: {
         iEstudianteId: iEstudianteId,
+        iYAcadId: this._ConstantesService.iYAcadId,
+        iSedeId: this._ConstantesService.iSedeId,
       },
     };
     this.getInformation(params, params.prefix);

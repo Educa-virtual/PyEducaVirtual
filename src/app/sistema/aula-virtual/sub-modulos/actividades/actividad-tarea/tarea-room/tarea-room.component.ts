@@ -714,7 +714,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
     this.miTarea = `La tarea fue entregada el ${fechaEntrega} a las ${horaEntrega}.`;
 
     if (!this.FilesTareasEstudiantes.length) return;
-    console.log('entregarEstudianteTarea');
+
     const params = {
       petition: 'post',
       group: 'aula-virtual',

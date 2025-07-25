@@ -253,17 +253,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       idDocCursoId: this.idDocCursoId,
       iCredId: this._ConstantesService.iCredId,
     };
-    const params = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'contenido-semanas',
-      data: datos,
-      params: {
-        iCredId: this._ConstantesService.iCredId,
-      },
-    };
-    //Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe({
+    this._ContenidoSemanasService.guardarSesionDeAprendizaje(datos).subscribe({
       next: response => {
         if (response.validated) {
           this.messageService.add({
@@ -272,33 +262,10 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             detail: response.message,
           });
           this.recargarContenidoSemanas.emit();
-          //this.obtenerContenidoSemanasxidDocCursoIdxiYAcadId(this.semanaSeleccionada, true);
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
-          // this.showModal = false
-          // this.instructorForm.reset()
         }
       },
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
       },
     });
   }

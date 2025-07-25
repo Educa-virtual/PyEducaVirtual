@@ -25,6 +25,7 @@ import { ImportarResultadosComponent } from '../../informes-ere/importar-resulta
 import { AreasService } from '../services/areas.service'
 import { GuardarResultadosOnlineComponent } from '../../informes-ere/guardar-resultados-online/guardar-resultados-online.component'
 import { SimpleListaAreasComponent } from './simple-lista-areas/simple-lista-areas.component'
+import { ActivarDescargaComponent } from './activar-descarga/activar-descarga.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -42,6 +43,7 @@ export type Layout = 'list' | 'grid'
         ImportarResultadosComponent,
         GuardarResultadosOnlineComponent,
         SimpleListaAreasComponent,
+        ActivarDescargaComponent,
     ],
     templateUrl: './lista-areas.component.html',
     styleUrl: './lista-areas.component.scss',
@@ -63,6 +65,9 @@ export class ListaAreasComponent implements OnInit {
 
     @ViewChildren(AreaCardComponent)
     gestionarPreguntasCard!: QueryList<AreaCardComponent>
+
+    @ViewChild(ActivarDescargaComponent)
+    dialogActivarDescarga!: ActivarDescargaComponent
 
     modoCard: boolean = false
     iEvaluacionIdHashed: string = ''
@@ -112,10 +117,12 @@ export class ListaAreasComponent implements OnInit {
     importarResultados(datos: { curso: ICurso }) {
         this.dialogImportarResultados.mostrarDialog(datos)
     }
+
     // Modal para guardar resultados online
     guardarResultadosOnline(datos: { curso: ICurso }) {
         this.dialogGuardarResultadosOnline.mostrarDialog(datos)
     }
+
     obtenerAreasPorEvaluacionyEspecialista() {
         this.obtenerAreasPorEvaluacion()
     }
@@ -149,13 +156,35 @@ export class ListaAreasComponent implements OnInit {
             }
         })
     }
+
+    actualizarEstadoDescarga(datos: { curso: ICurso }) {
+        const cursoIndex = this.cursos.findIndex(
+            (c) => c.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+        )
+
+        if (cursoIndex !== -1) {
+            this.cursos[cursoIndex].bDescarga = datos.curso.bDescarga
+            this.cursos = [...this.cursos]
+        }
+
+        this.gestionarPreguntasCard?.forEach((card) => {
+            if (
+                card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+            ) {
+                card.curso.bDescarga = datos.curso.bDescarga
+            }
+        })
+    }
+
     actualizarEstadoResultadosImportados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }
+
     // modal guardar resultados online
     actualizarEstadoResultadosGuardados(datos: { curso: ICurso }) {
         console.log(datos, 'datos')
     }
+
     ngOnInit() {
         this.mensajeInfo = [
             {
@@ -242,5 +271,9 @@ export class ListaAreasComponent implements OnInit {
                 normalizeText(curso.cCursoNombre).includes(text)
             )
         }
+    }
+
+    recibirDatosParaActivarDescarga(datos: { curso: ICurso }) {
+        this.dialogActivarDescarga.mostrarDialog(datos)
     }
 }

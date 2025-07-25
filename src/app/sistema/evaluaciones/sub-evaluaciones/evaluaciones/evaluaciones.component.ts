@@ -411,7 +411,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-help p-button-text',
             isVisible: () =>
                 this.iPerfilId === ESPECIALISTA_DREMO ||
-                //this.iPerfilId === ADMINISTRADOR_DREMO ||
+                this.iPerfilId === ADMINISTRADOR_DREMO ||
                 this.iPerfilId === DIRECTOR_IE,
         },
         {

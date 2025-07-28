@@ -1,0 +1,12 @@
+<p>asignar-calendario works!</p>
+
+<app-table-primeng
+    [columnas]="columnsBloque"
+    [showCaption]="false"
+    [data]="registros"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+>
+</app-table-primeng>

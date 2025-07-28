@@ -72,6 +72,26 @@ export class ConfirmationModalService {
             rejectVisible: false,
             acceptLabel: 'Aceptar',
             ...config,
+            accept: config.accept, // ⚠️ Esto agrega la función accept si se la pasas
         })
     }
+
+    // openAlert({
+    //     header,
+    //     ...config
+    // }: Omit<IModal, 'header'> & { header: string }): Promise<void> {
+    //     return new Promise((resolve) => {
+    //         this.dialogState.next({
+    //             header,
+    //             key: 'manual',
+    //             icon: 'pi pi-exclamation-triangle',
+    //             rejectVisible: false,
+    //             acceptLabel: 'Aceptar',
+    //             ...config,
+    //             accept: () => {
+    //                 resolve();
+    //             },
+    //         });
+    //     });
+    // }
 }

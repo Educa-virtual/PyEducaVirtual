@@ -13,6 +13,7 @@ import {
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 interface Curso {
     iCursoId: number
     cCursoNombre: string
@@ -20,8 +21,9 @@ interface Curso {
     nombre_corto: string
     nCursoTotalHoras: number
     iDocHoraAsignada: number
-    horario: any[]
+    horario: any
 }
+
 @Component({
     selector: 'app-configuracion-horario',
     standalone: true,
@@ -44,7 +46,11 @@ export class ConfiguracionHorarioComponent implements OnInit {
     cursos: Curso[] = []
     dias: any = []
     bloques: number = 0
-    horario = []
+    horarios: any = []
+    horario: number
+
+    lista_horas: any = []
+    vbloques: boolean = false
 
     displayDialog: boolean = false
     titulo: string = ''
@@ -73,6 +79,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
     private _GeneralService = inject(GeneralService)
     private _ConstantesService = inject(ConstantesService)
     private messageService = inject(MessageService)
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         public query: GeneralService,
@@ -134,26 +141,61 @@ export class ConfiguracionHorarioComponent implements OnInit {
 
     accionBtnItemTable(elemento): void {
         const { accion, item } = elemento
+        this.horarios = item
+
+        this.titulo = 'Distribucion de horarios Grado: ' + item.cGradoNombre
+        this.formDistribucion.get('iGradoId')?.setValue(item.iGradoId)
+        this.formDistribucion.get('iSeccionId')?.setValue(item.iSeccionId)
+        this.formDistribucion.get('iConfBloqueId')?.setValue(item.iConfBloqueId)
+        this.iGradoId = item.iGradoId
+        this.iSeccionId = item.iSeccionId
+
         switch (accion) {
             case 'bloques':
-                this.configurarHorario()
+                this.displayDialog = true
+                this.vbloques = true
+
+                if (Array.isArray(this.horarios)) {
+                    const horarioItem = this.horarios[0] as {
+                        iHorarioIeId: number
+                    }
+                    if (this.horarios.length > 0 && horarioItem?.iHorarioIeId) {
+                        this.horario = horarioItem.iHorarioIeId
+                        this.getHorasAsignadas(horarioItem.iHorarioIeId)
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Mensaje del Sistema',
+                            detail: 'Error el horario asignado es invalido',
+                        })
+                        //   console.error('Horario array is empty or missing iHorarioIeId:', this.horario);
+                    }
+                } else if ((this.horarios as any)?.iHorarioIeId) {
+                    this.horario = (this.horarios as any).iHorarioIeId
+                    this.getHorasAsignadas((this.horarios as any).iHorarioIeId)
+                } else {
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Horario pendiente de asignación',
+                    })
+                    //console.error('Invalid horario structure:', this.horario);
+                }
+
+                this._confirmService.openAlert({
+                    header: 'Advertencia ',
+                    message:
+                        'Este proceso calcula los días laborables excluyendo los feriados calendarios y fechas especiales',
+                    icon: 'pi pi-exclamation-triangle',
+                })
+
                 break
             case 'editar':
+                this.vbloques = false
                 this.displayDialog = true
-                this.horario = item
-                this.titulo =
-                    'Distribucion de horarios Grado: ' + item.cGradoNombre
-                this.formDistribucion.get('iGradoId')?.setValue(item.iGradoId)
-                this.formDistribucion
-                    .get('iSeccionId')
-                    ?.setValue(item.iSeccionId)
-                this.formDistribucion
-                    .get('iConfBloqueId')
-                    ?.setValue(item.iConfBloqueId)
-                this.iGradoId = item.iGradoId
-                this.iSeccionId = item.iSeccionId
+
                 this.getConfDetalleBloques()
-                console.log(this.horario, 'horario item', item)
+
                 break
             default:
                 break
@@ -171,6 +213,81 @@ export class ConfiguracionHorarioComponent implements OnInit {
         //     (item) =>
         //         item.iGradoId === this.formDistribucion.get('iGradoId')?.value
         // )
+    }
+
+    actualizarHoras() {
+        if (!this.horario) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje del Sistema',
+                detail: 'Error al asignar fechas al calendario: Horario no válido',
+            })
+            return
+        }
+
+        this.query
+            .updateCalAcademico({
+                json: JSON.stringify({
+                    iHorarioIeId: this.horario,
+                }),
+                _opcion: 'updBloqueHorario',
+            })
+            .subscribe({
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al asignar horas a los bloques: ' +
+                            error.message,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Se actualizaron los registros del bloque correctamente',
+                    })
+                    this.getHorasAsignadas(this.horario)
+                },
+            })
+    }
+
+    actualizarCalendario() {
+        if (!this.horario) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje del Sistema',
+                detail: 'Error al asignar fechas al calendario: Horario no válido',
+            })
+            return
+        }
+        this.query
+            .updateCalAcademico({
+                json: JSON.stringify({
+                    iHorarioIeId: this.horario,
+                    iSesionId: this.iCredId,
+                }),
+                _opcion: 'updFechasHorario',
+            })
+            .subscribe({
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al asignar fechas al calendario: ' +
+                            error.message,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Se actualizaron los registros del bloque correctamente',
+                    })
+                },
+            })
     }
 
     guardarHorario() {
@@ -330,6 +447,38 @@ export class ConfiguracionHorarioComponent implements OnInit {
 
         // this.iSeccionId = this.formDistribucion.get('iSeccionId')?.value
     }
+    //consulta la lista de horas asignadas
+    getHorasAsignadas(iHorarioId: number) {
+        this.query
+            .searchCalendario({
+                json: JSON.stringify({
+                    iHorarioIeId: iHorarioId,
+                }),
+                _opcion: 'getBloqueHorario',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.lista_horas = data.data
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al cargar los datos de distribucion de bloques: ' +
+                            error.message,
+                    })
+                },
+                complete: () => {
+                    console.log(this.lista_horas)
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje del Sistema',
+                        detail: 'Carga exitosa de distribución de horas',
+                    })
+                },
+            })
+    }
 
     obtenerCursosxiGradoIdxiSeccionId() {
         const data = {
@@ -362,6 +511,32 @@ export class ConfiguracionHorarioComponent implements OnInit {
             },
         })
     }
+
+    asignarHoras() {
+        const num = this.lista_horas.length
+
+        this._confirmService.openConfiSave({
+            message: 'La I.E. contiene ' + num + ' registros. ¿Desea procesar?',
+            header: 'Advertencia de Procesamiento',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Mensaje del sistema',
+                    detail: 'Se procesó petición',
+                })
+            },
+            reject: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
+
+    //this.btnInvalido = true
 
     removeDuplicatesByiGradoId(array: any[]): any[] {
         const seen = new Set<number>()
@@ -407,9 +582,9 @@ export class ConfiguracionHorarioComponent implements OnInit {
             accion: 'bloques',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-            isVisible: (rowData) => {
+            /*  isVisible: (rowData) => {
                 return rowData.iEstado === '1' // Mostrar solo si el estado es 1 (activo)
-            },
+            },*/
         },
         {
             labelTooltip: 'Editar',
@@ -530,6 +705,56 @@ export class ConfiguracionHorarioComponent implements OnInit {
             width: '5rem',
             field: 'tBloqueFin',
             header: 'Fin de Bloque',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
+    columnsBloque = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: 'N°',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '2rem',
+            field: 'iBloque',
+            header: 'Bloque',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'cDiaNombre',
+            header: 'Dia',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'cCursoNombre',
+            header: 'Dia',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'time',
+            width: '3rem',
+            field: 'tHoraInicio',
+            header: 'inicio',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'time',
+            width: '3rem',
+            field: 'tHoraFin',
+            header: 'fin',
             text_header: 'center',
             text: 'center',
         },

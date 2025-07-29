@@ -9,7 +9,7 @@ import {
 } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
-import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
+import { BuzonSugerenciasEstudianteService } from '../services/buzon-sugerencias-estudiante.service'
 import { MessageService } from 'primeng/api'
 import { ReactiveFormsModule } from '@angular/forms'
 import { EditorModule } from 'primeng/editor'
@@ -54,7 +54,7 @@ export class VerSugerenciaComponent implements OnInit, OnChanges {
     }*/
     constructor(
         private fb: FormBuilder,
-        private buzonSugerenciasService: BuzonSugerenciasService,
+        private buzonSugerenciasService: BuzonSugerenciasEstudianteService,
         private messageService: MessageService
     ) {}
 

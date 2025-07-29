@@ -7,7 +7,7 @@ import {
     ViewChild,
 } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
+import { BuzonSugerenciasEstudianteService } from '../services/buzon-sugerencias-estudiante.service'
 import { MessageService } from 'primeng/api'
 import { FileUpload } from 'primeng/fileupload'
 
@@ -29,7 +29,7 @@ export class RegistrarSugerenciaComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private buzonSugerenciasService: BuzonSugerenciasService,
+        private BuzonSugerenciasEstudianteService: BuzonSugerenciasEstudianteService,
         private messageService: MessageService
     ) {}
 
@@ -60,7 +60,7 @@ export class RegistrarSugerenciaComponent implements OnInit {
     }
 
     obtenerPrioridades() {
-        this.buzonSugerenciasService.obtenerPrioridades().subscribe({
+        this.BuzonSugerenciasEstudianteService.obtenerPrioridades().subscribe({
             next: (response: any) => {
                 this.prioridades = response.data
                 this.form.patchValue({
@@ -90,7 +90,9 @@ export class RegistrarSugerenciaComponent implements OnInit {
         this.uploadedFiles.forEach((file, index) => {
             formData.append(`fArchivos[${index}]`, file)
         })
-        this.buzonSugerenciasService.registrarSugerencia(formData).subscribe({
+        this.BuzonSugerenciasEstudianteService.registrarSugerencia(
+            formData
+        ).subscribe({
             next: (data: any) => {
                 this.eventSugerenciaRegistrada.emit(true)
                 this.messageService.add({

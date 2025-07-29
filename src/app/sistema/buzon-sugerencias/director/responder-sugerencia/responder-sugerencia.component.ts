@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core'
+import {
+    Component,
+    Input,
+    OnInit,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    OnChanges,
+} from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -8,6 +16,8 @@ import {
 import { PrimengModule } from '@/app/primeng.module'
 import { MessageService } from 'primeng/api'
 import { CommonModule } from '@angular/common'
+import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-director.service'
+import { BuzonSugerenciasEstudianteService } from '../../estudiante/services/buzon-sugerencias-estudiante.service'
 
 @Component({
     selector: 'app-responder-sugerencia',
@@ -16,10 +26,12 @@ import { CommonModule } from '@angular/common'
     templateUrl: './responder-sugerencia.component.html',
     styleUrls: ['./responder-sugerencia.component.scss'],
 })
-export class ResponderSugerenciaComponent implements OnInit {
+export class ResponderSugerenciaComponent implements OnInit, OnChanges {
     form: FormGroup
+    @Input() visible: boolean = false
     private _selectedItem: any
     @Output() eventSugerenciaRespondida = new EventEmitter<boolean>()
+    @Output() eventCerrarResponderSugerencia = new EventEmitter<boolean>()
     archivos: any
 
     @Input()
@@ -42,6 +54,8 @@ export class ResponderSugerenciaComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
+        private buzonSugerenciasDirectorService: BuzonSugerenciasDirectorService,
+        private buzonSugerenciasEstudianteService: BuzonSugerenciasEstudianteService,
         private messageService: MessageService
     ) {}
 
@@ -56,9 +70,18 @@ export class ResponderSugerenciaComponent implements OnInit {
         })
     }
 
+    obtenerArchivosSugerencia() {
+        this.buzonSugerenciasEstudianteService
+            .obtenerListaArchivosSugerencia(this.selectedItem?.iSugerenciaId)
+            .subscribe((response: any) => {
+                this.archivos = response.data
+            })
+    }
+
     cerrarDialog() {
+        this.archivos = []
         this.form.reset()
-        this.eventSugerenciaRespondida.emit(false)
+        this.eventCerrarResponderSugerencia.emit(false)
     }
 
     cancelarResponderSugerencia() {
@@ -67,13 +90,68 @@ export class ResponderSugerenciaComponent implements OnInit {
 
     enviarRespuesta() {
         if (this.form.valid) {
-            // Como estás usando datos hardcoded:
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Respuesta enviada correctamente',
-            })
-            this.eventSugerenciaRespondida.emit(true)
+            this.buzonSugerenciasDirectorService
+                .responderSugerencia(
+                    this.selectedItem?.iSugerenciaId,
+                    this.form.get('cRespuesta')?.value
+                )
+                .subscribe({
+                    next: (data: any) => {
+                        this.eventSugerenciaRespondida.emit(true)
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: data.message,
+                        })
+                    },
+                    error: (error) => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        })
+                    },
+                })
         }
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['visible'] && changes['visible'].currentValue === true) {
+            this.form.patchValue({
+                cNombreEstudiante: this.selectedItem?.cNombreEstudiante,
+                dtFechaCreacion: this.selectedItem?.dtFechaCreacion,
+                cAsunto: this.selectedItem?.cAsunto,
+                cPrioridadNombre: this.selectedItem?.cPrioridadNombre,
+                cSugerencia: this.selectedItem?.cSugerencia,
+                cRespuesta: this.selectedItem?.cRespuesta,
+            })
+            this.obtenerArchivosSugerencia()
+        }
+    }
+
+    descargarArchivo(event: Event, archivo: string) {
+        event.preventDefault()
+        this.buzonSugerenciasEstudianteService
+            .descargarArchivoSugerencia(
+                this.selectedItem?.iSugerenciaId,
+                archivo
+            )
+            .subscribe({
+                next: (response: Blob) => {
+                    const url = window.URL.createObjectURL(response)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = archivo
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al descargar el archivo',
+                        detail: error.message,
+                    })
+                },
+            })
     }
 }

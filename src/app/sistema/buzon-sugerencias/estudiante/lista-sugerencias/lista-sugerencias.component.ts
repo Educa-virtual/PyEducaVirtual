@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core' //inject,
 //import { MessageService } from 'primeng/api'
 //import { Router } from '@angular/router'
 import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-sugerencia.component'
-import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
+import { BuzonSugerenciasEstudianteService } from '../services/buzon-sugerencias-estudiante.service'
 import { MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.component'
@@ -104,7 +104,7 @@ export class ListaSugerenciasComponent implements OnInit {
     ]
 
     constructor(
-        private buzonSugerenciasService: BuzonSugerenciasService,
+        private buzonSugerenciasEstudianteService: BuzonSugerenciasEstudianteService,
         private messageService: MessageService,
         private confirmationModalService: ConfirmationModalService
     ) {}
@@ -141,18 +141,20 @@ export class ListaSugerenciasComponent implements OnInit {
     }*/
 
     obtenerListaSugerencias() {
-        this.buzonSugerenciasService.obtenerListaSugerencias().subscribe({
-            next: (data: any) => {
-                this.dataSugerencias = data.data
-            },
-            error: (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Problema al obtener sugerencias',
-                    detail: error.error.message,
-                })
-            },
-        })
+        this.buzonSugerenciasEstudianteService
+            .obtenerListaSugerencias()
+            .subscribe({
+                next: (data: any) => {
+                    this.dataSugerencias = data.data
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al obtener sugerencias',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     /**
@@ -160,7 +162,7 @@ export class ListaSugerenciasComponent implements OnInit {
      * @param item sugerencia a eliminar
      */
     eliminarSugerencia(item: any) {
-        this.buzonSugerenciasService
+        this.buzonSugerenciasEstudianteService
             .eliminarSugerencia(item.iSugerenciaId)
             .subscribe({
                 next: () => {

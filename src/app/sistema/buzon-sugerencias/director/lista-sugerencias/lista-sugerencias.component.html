@@ -32,36 +32,12 @@
     </app-table-primeng>
 </p-panel>
 
-<p-dialog
-    [draggable]="false"
-    [maximizable]="true"
-    [header]="formularioVerHeader"
-    [(visible)]="mostrarFormularioVer"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
->
-    <app-ver-sugerencia> </app-ver-sugerencia>
-    <!--<app-ver-sugerencia
-        (cerrarDialogVerSugerenciaEvent)="listenDialogVerSugerencia($event)"
-        [selectedItem]="selectedItem"
-        #verSugerenciaComponent
-    ></app-ver-sugerencia>-->
-</p-dialog>
-<p-dialog
-    [draggable]="false"
-    [maximizable]="true"
-    [header]="formularioResponderHeader"
-    [(visible)]="mostrarFormularioResponder"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
->
-    <app-responder-sugerencia
-        (eventSugerenciaRespondida)="listenSugerenciaRespondida($event)"
-        [selectedItem]="selectedItem"
-        #responderSugerenciaComponent
-    ></app-responder-sugerencia>
-</p-dialog>
+<app-responder-sugerencia
+    (eventSugerenciaRespondida)="listenSugerenciaRespondida($event)"
+    (eventCerrarResponderSugerencia)="listenCerrarResponderSugerencia($event)"
+    [selectedItem]="selectedItem"
+    #responderSugerenciaComponent
+    [visible]="mostrarFormularioResponder"
+></app-responder-sugerencia>
+
+<p-toast></p-toast>

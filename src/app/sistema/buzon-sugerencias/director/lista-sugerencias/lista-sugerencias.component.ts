@@ -7,8 +7,7 @@ import { Component, OnInit } from '@angular/core'
 import { MenuItem, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ResponderSugerenciaComponent } from '../responder-sugerencia/responder-sugerencia.component'
-import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.component'
-import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
+import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-director.service'
 @Component({
     selector: 'app-lista-sugerencias',
     standalone: true,
@@ -16,7 +15,6 @@ import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
         PrimengModule,
         TablePrimengComponent,
         ResponderSugerenciaComponent,
-        VerSugerenciaComponent,
     ],
     templateUrl: './lista-sugerencias.component.html',
     styleUrl: './lista-sugerencias.component.scss',
@@ -24,9 +22,7 @@ import { BuzonSugerenciasService } from '../services/buzon-sugerencias.service'
 export class ListaSugerenciasComponent implements OnInit {
     title: string = 'Buzón de sugerencias - Director'
     prioridades: any[]
-    formularioVerHeader: string
     mostrarFormularioVer: boolean = false
-    formularioResponderHeader: string
     mostrarFormularioResponder: boolean = false
     perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
     selectedItem: any
@@ -143,20 +139,20 @@ export class ListaSugerenciasComponent implements OnInit {
             text: 'center',
         },
         {
-            type: 'text',
-            width: '8rem',
-            field: 'cRespuesta',
-            header: 'Fecha de respuesta',
+            type: 'date',
+            width: '6rem',
+            field: 'dtFechaRespuesta',
+            header: 'Fecha respuesta',
             text_header: 'center',
             text: 'center',
         },
         {
-            type: 'text',
+            type: 'item-innerHtml',
             width: '8rem',
-            field: '',
+            field: 'cRespuesta',
             header: 'Respuesta',
             text_header: 'center',
-            text: 'center',
+            text: 'left',
         },
         {
             type: 'actions',
@@ -169,7 +165,7 @@ export class ListaSugerenciasComponent implements OnInit {
     ]
 
     constructor(
-        private buzonSugerenciasService: BuzonSugerenciasService,
+        private buzonSugerenciasDirectorService: BuzonSugerenciasDirectorService,
         private messageService: MessageService,
         private confirmationModalService: ConfirmationModalService
     ) {}
@@ -179,28 +175,30 @@ export class ListaSugerenciasComponent implements OnInit {
     }
 
     obtenerListaSugerencias() {
-        this.buzonSugerenciasService.obtenerListaSugerencias().subscribe({
-            next: (data: any) => {
-                this.dataSugerencias = data.data
-            },
-            error: (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Problema al obtener sugerencias',
-                    detail: error.error.message,
-                })
-            },
-        })
+        this.buzonSugerenciasDirectorService
+            .obtenerListaSugerencias()
+            .subscribe({
+                next: (data: any) => {
+                    this.dataSugerencias = data.data
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Problema al obtener sugerencias',
+                        detail: error.error.message,
+                    })
+                },
+            })
     }
 
     actions: IActionTable[] = [
-        {
+        /*{
             labelTooltip: 'Ver sugerencia',
             icon: 'pi pi-eye',
             accion: 'ver',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-        },
+        },*/
         {
             labelTooltip: 'Responder sugerencia',
             icon: 'pi pi-pen-to-square',
@@ -216,10 +214,6 @@ export class ListaSugerenciasComponent implements OnInit {
 
     accionBtnItemTable({ accion, item }) {
         switch (accion) {
-            case 'ver':
-                this.selectedItem = item
-                this.verSugerencia()
-                break
             case 'responder':
                 this.selectedItem = item
                 this.responderSugerencia()
@@ -227,13 +221,7 @@ export class ListaSugerenciasComponent implements OnInit {
         }
     }
 
-    verSugerencia() {
-        this.formularioVerHeader = 'Ver sugerencia'
-        this.mostrarFormularioVer = true
-    }
-
     responderSugerencia() {
-        this.formularioResponderHeader = 'Responder sugerencia'
         this.mostrarFormularioResponder = true
     }
 
@@ -241,7 +229,7 @@ export class ListaSugerenciasComponent implements OnInit {
         if (event == true) {
             this.mostrarFormularioResponder = false
 
-            if (this.selectedItem) {
+            /*if (this.selectedItem) {
                 this.selectedItem.cRespuesta = 'Respuesta enviada'
                 const index = this.dataSugerencias.findIndex(
                     (item) =>
@@ -257,7 +245,13 @@ export class ListaSugerenciasComponent implements OnInit {
                     summary: 'Éxito',
                     detail: 'Respuesta enviada correctamente',
                 })
-            }
+            }*/
+        }
+    }
+
+    listenCerrarResponderSugerencia(event: boolean) {
+        if (event == false) {
+            this.mostrarFormularioResponder = false
         }
     }
 }

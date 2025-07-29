@@ -5,7 +5,7 @@ import { environment } from '@/environments/environment'
 @Injectable({
     providedIn: 'root',
 })
-export class BuzonSugerenciasService {
+export class BuzonSugerenciasDirectorService {
     private urlBackendApi = environment.backendApi
 
     constructor(private http: HttpClient) {}
@@ -13,6 +13,13 @@ export class BuzonSugerenciasService {
     obtenerListaSugerencias() {
         return this.http.get(
             `${this.urlBackendApi}/acad/directores/buzon-sugerencias`
+        )
+    }
+
+    responderSugerencia(iSugerenciaId: number, cRespuesta: string) {
+        return this.http.post(
+            `${this.urlBackendApi}/acad/directores/buzon-sugerencias`,
+            { iSugerenciaId, cRespuesta }
         )
     }
 }

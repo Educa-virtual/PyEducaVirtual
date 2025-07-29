@@ -15,14 +15,12 @@ export class BoletaLogroComponent implements OnInit {
     ngOnInit() {
         console.log('boleta-logro OnInit')
     }
-
     cerrarDialog() {
         this.boletaLogroImprimir.emit(false)
     }
     cancelarPoliticas() {
         this.boletaLogroImprimir.emit(false)
     }
-
     aceptarPoliticas() {
         this.boletaLogroImprimir.emit(false)
     }

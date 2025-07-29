@@ -19,22 +19,11 @@ export class BoletaLogroComponent implements OnInit {
     cerrarDialog() {
         this.boletaLogroImprimir.emit(false)
     }
-    generarPDF(datos: any) {
-        console.log('Generando PDF con datos:', datos)
-    }
-    mostrarModalPoliticas: boolean = false
-
-    abrirModalPoliticas() {
-        this.mostrarModalPoliticas = true
-    }
-
     cancelarPoliticas() {
-        this.mostrarModalPoliticas = false
-        console.log('Políticas canceladas')
+        this.boletaLogroImprimir.emit(false)
     }
 
     aceptarPoliticas() {
-        this.mostrarModalPoliticas = false
-        console.log('Políticas aceptadas - continuar proceso')
+        this.boletaLogroImprimir.emit(false)
     }
 }

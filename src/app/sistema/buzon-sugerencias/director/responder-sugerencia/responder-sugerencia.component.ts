@@ -18,19 +18,28 @@ import { MessageService } from 'primeng/api'
 import { CommonModule } from '@angular/common'
 import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-director.service'
 import { BuzonSugerenciasEstudianteService } from '../../estudiante/services/buzon-sugerencias-estudiante.service'
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 
 @Component({
     selector: 'app-responder-sugerencia',
     standalone: true,
-    imports: [PrimengModule, ReactiveFormsModule, CommonModule],
+    imports: [
+        PrimengModule,
+        ReactiveFormsModule,
+        CommonModule,
+        EditorComponent,
+    ],
     templateUrl: './responder-sugerencia.component.html',
     styleUrls: ['./responder-sugerencia.component.scss'],
+    providers: [
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
 })
 export class ResponderSugerenciaComponent implements OnInit, OnChanges {
     form: FormGroup
     @Input() visible: boolean = false
     private _selectedItem: any
-    @Output() eventSugerenciaRespondida = new EventEmitter<boolean>()
+    @Output() eventSugerenciaRespondida = new EventEmitter<any>()
     @Output() eventCerrarResponderSugerencia = new EventEmitter<boolean>()
     archivos: any
 
@@ -50,6 +59,24 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
     }
     get selectedItem(): any {
         return this._selectedItem
+    }
+
+    initEnunciado: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escribe aqui...',
+        height: 200,
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist',
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
+        editable_root: true,
+        paste_as_text: true,
+        branding: false,
+        statusbar: false,
     }
 
     constructor(
@@ -96,12 +123,16 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
                     this.form.get('cRespuesta')?.value
                 )
                 .subscribe({
-                    next: (data: any) => {
-                        this.eventSugerenciaRespondida.emit(true)
+                    next: (respuesta: any) => {
+                        const enviar = {
+                            respuesta: this.form.get('cRespuesta')?.value,
+                            fecha: respuesta.data.fecha,
+                        }
+                        this.eventSugerenciaRespondida.emit(enviar)
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Éxito',
-                            detail: data.message,
+                            detail: respuesta.message,
                         })
                     },
                     error: (error) => {

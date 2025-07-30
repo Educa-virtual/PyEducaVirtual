@@ -24,7 +24,7 @@ export class ListaSugerenciasComponent implements OnInit {
     prioridades: any[]
     mostrarFormularioVer: boolean = false
     mostrarFormularioResponder: boolean = false
-    perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
+    //perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
     selectedItem: any
     cerrarResponderSugerencia: boolean = false
     //breadcrumb
@@ -225,28 +225,20 @@ export class ListaSugerenciasComponent implements OnInit {
         this.mostrarFormularioResponder = true
     }
 
-    listenSugerenciaRespondida(event: boolean) {
-        if (event == true) {
-            this.mostrarFormularioResponder = false
-
-            /*if (this.selectedItem) {
-                this.selectedItem.cRespuesta = 'Respuesta enviada'
-                const index = this.dataSugerencias.findIndex(
-                    (item) =>
-                        item.iSugerenciaId === this.selectedItem.iSugerenciaId
-                )
-                if (index !== -1) {
-                    this.dataSugerencias[index] = { ...this.selectedItem }
+    listenSugerenciaRespondida(event: any) {
+        this.mostrarFormularioResponder = false
+        this.selectedItem.cRespuesta = event.respuesta
+        this.selectedItem.dtFechaRespuesta = new Date(event.fecha)
+        this.dataSugerencias = this.dataSugerencias.map((sug) => {
+            if (sug.iSugerenciaId === this.selectedItem.iSugerenciaId) {
+                return {
+                    ...sug,
+                    cRespuesta: event.respuesta,
+                    dtFechaRespuesta: new Date(event.fecha),
                 }
-
-                // Mostramos mensaje de éxito
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Respuesta enviada correctamente',
-                })
-            }*/
-        }
+            }
+            return sug
+        })
     }
 
     listenCerrarResponderSugerencia(event: boolean) {

@@ -102,10 +102,12 @@
 
             <div class="field col-12">
                 <label for="cRespuesta">Respuesta:</label>
-                <p-editor
+                <!--<p-editor
                     formControlName="cRespuesta"
                     [style]="{ height: '200px' }"
-                ></p-editor>
+                ></p-editor>-->
+
+                <editor [init]="initEnunciado" formControlName="cRespuesta" />
                 <small
                     class="p-error"
                     *ngIf="

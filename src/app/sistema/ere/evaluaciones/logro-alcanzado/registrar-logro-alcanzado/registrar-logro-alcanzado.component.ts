@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
+import { MessageService } from 'primeng/api'
 import { FormsModule } from '@angular/forms'
 @Component({
     selector: 'app-registrar-logro-alcanzado',
@@ -7,10 +8,12 @@ import { FormsModule } from '@angular/forms'
     imports: [PrimengModule, FormsModule],
     templateUrl: './registrar-logro-alcanzado.component.html',
     styleUrl: './registrar-logro-alcanzado.component.scss',
+    providers: [MessageService],
 })
 export class RegistrarLogroAlcanzadoComponent implements OnInit {
     @Input() selectedItem: any
     @Output() registraLogroAlcanzado = new EventEmitter<boolean>()
+    mostrarBotonFinalizar: boolean = false
     competenciasMatematica = [
         {
             descripcion:
@@ -217,6 +220,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
             nl_final: '',
         },
     ]
+    constructor(private messageService: MessageService) {}
 
     ngOnInit() {
         console.log('registrar-logro-alcanzado')
@@ -226,7 +230,18 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
         this.registraLogroAlcanzado.emit(false)
     }
 
+    finalizarRegistro() {
+        this.registraLogroAlcanzado.emit(false)
+        this.mostrarBotonFinalizar = false
+    }
+
     guardarLogro() {
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Guardado',
+            detail: 'Guardado Exitosamente',
+            life: 3000,
+        })
         const datosCompletos = {
             estudiante: this.selectedItem,
             matematica: this.competenciasMatematica,
@@ -236,8 +251,10 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
             religiosa: this.competenciasReligiosa,
         }
 
+        this.mostrarBotonFinalizar = true
+
         console.log('Datos a guardar:', datosCompletos)
 
-        this.registraLogroAlcanzado.emit(false)
+        //this.registraLogroAlcanzado.emit(true)
     }
 }

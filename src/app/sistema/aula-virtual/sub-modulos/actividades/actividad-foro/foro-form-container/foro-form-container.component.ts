@@ -123,7 +123,7 @@ export class ForoFormContainerComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error de validación',
-        detail: 'Campos vacios!',
+        detail: '¡Campos vacios!',
       });
       this.isLoading = false;
       return;

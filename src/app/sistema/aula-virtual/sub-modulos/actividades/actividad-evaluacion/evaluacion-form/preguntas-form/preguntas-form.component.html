@@ -14,13 +14,13 @@
     }
     <div class="col-12 md:col-12 lg:col-4">
         <p-inputGroup>
-            <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
+            <p-inputGroupAddon>Tipo de Preguntas</p-inputGroupAddon>
             <p-dropdown
+                [options]="tipoPreguntas"
                 styleClass="w-full"
                 formControlName="iTipoPregId"
                 placeholder="Seleccione Tipo"
                 optionValue="iTipoPregId"
-                [options]="tipoPreguntas"
                 optionLabel="cTipoPregunta"
             />
         </p-inputGroup>

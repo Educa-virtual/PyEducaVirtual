@@ -16,6 +16,7 @@ import { provideIcons } from '@ng-icons/core';
 import { mat10k } from '@ng-icons/material-icons/baseline';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
+import { WebSocketService } from '@/app/servicios/web-socket.service';
 
 @Component({
   selector: 'app-topbar',
@@ -38,6 +39,7 @@ export class AppTopBarComponent implements OnInit {
   private _GeneralService = inject(GeneralService);
   private _MessageService = inject(MessageService);
   private _ConstantesService = inject(ConstantesService);
+  private socketService = inject(WebSocketService);
 
   years = [];
   selectedYear: string;
@@ -88,6 +90,21 @@ export class AppTopBarComponent implements OnInit {
         this.notificacionDocente(user.iDocenteId);
         break;
     }
+    this.socketService.listen('notificacion-nueva').subscribe(notificacion => {
+      const perfilId = this._ConstantesService.iPerfilId;
+      if (
+        (perfilId === DOCENTE && notificacion.para === 'docente') ||
+        (perfilId === ESTUDIANTE && notificacion.para === 'estudiante')
+      ) {
+        this.notificaciones.push(notificacion);
+        this.totalNotificaciones = this.notificaciones.length;
+        this._MessageService.add({
+          severity: 'info',
+          summary: 'Nueva notificación',
+          detail: notificacion.titulo,
+        });
+      }
+    });
   }
 
   changeModulo(value) {

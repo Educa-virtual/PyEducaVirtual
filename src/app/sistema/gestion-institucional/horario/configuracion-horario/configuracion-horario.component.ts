@@ -497,7 +497,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
                     this.dias = horarioIe[0]['dias']
                         ? JSON.parse(horarioIe[0]['dias'])
                         : []
-                    this.horario = horarioIe[0]['horarios']
+                    this.horarios = horarioIe[0]['horarios']
                         ? JSON.parse(horarioIe[0]['horarios'])
                         : []
                     this.bloques = horarioIe[0]['iTotalBloques']

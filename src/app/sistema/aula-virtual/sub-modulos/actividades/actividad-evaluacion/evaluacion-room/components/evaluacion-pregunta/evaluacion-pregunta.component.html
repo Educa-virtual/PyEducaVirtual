@@ -1,17 +1,13 @@
-<ng-template
-    #customAlternative
-    let-alternativa="alternativa"
-    let-pregunta="pregunta"
->
-    <app-evaluacion-pregunta-alternativa
-        [alternativa]="alternativa"
-        [pregunta]="pregunta"
-    ></app-evaluacion-pregunta-alternativa>
+<ng-template #customAlternative let-alternativa="alternativa" let-pregunta="pregunta">
+  <app-evaluacion-pregunta-alternativa
+    [alternativa]="alternativa"
+    [pregunta]="pregunta"
+  ></app-evaluacion-pregunta-alternativa>
 </ng-template>
 
 <ng-template #footerPregunta let-pregunta="pregunta">
-    <footer class="flex justify-content-end mt-2">
-        @if (pregunta.iTipoPregId === 3 && !hideButton) {
+  <footer class="flex justify-content-end mt-2">
+    <!-- @if (pregunta.iTipoPregId === 3 && !hideButton) {
             <button
                 pButton
                 [label]="
@@ -24,18 +20,15 @@
                 icon="pi pi-check"
                 (click)="calificarPreguntaChange.emit(pregunta)"
             ></button>
-        }
-        @if (pregunta.iTipoPregId === 2 || pregunta.iTipoPregId === 1) {
-            <p-tag
-                value="Pregunta Correcta Configurada"
-                styleClass="bg-yellow-100 text-gray-600"
-            />
-        }
-    </footer>
+        } -->
+    @if (pregunta.iTipoPregId === 2 || pregunta.iTipoPregId === 1) {
+      <p-tag value="Pregunta Correcta Configurada" styleClass="bg-yellow-100 text-gray-600" />
+    }
+  </footer>
 </ng-template>
 
 <app-banco-pregunta-preview
-    [customAlternativeTemplate]="customAlternative"
-    [footerPreguntaTemplate]="footerPregunta"
-    [pregunta]="pregunta"
+  [customAlternativeTemplate]="customAlternative"
+  [footerPreguntaTemplate]="footerPregunta"
+  [pregunta]="pregunta"
 ></app-banco-pregunta-preview>

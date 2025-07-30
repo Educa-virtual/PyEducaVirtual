@@ -1,7 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-preguntas/cuestionario-form-preguntas.component';
@@ -9,6 +9,8 @@ import { GeneralService } from '@/app/servicios/general.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 import { TipoPreguntasService } from '@/app/servicios/enc/tipo-preguntas.service';
+import { PreguntasService } from '@/app/servicios/aula/preguntas.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 
 @Component({
   selector: 'app-cuestionario-preguntas',
@@ -18,15 +20,15 @@ import { TipoPreguntasService } from '@/app/servicios/enc/tipo-preguntas.service
   imports: [PrimengModule, NoDataComponent, CuestionarioFormPreguntasComponent],
   providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
 })
-export class CuestionarioPreguntasComponent implements OnInit {
+export class CuestionarioPreguntasComponent extends MostrarErrorComponent implements OnInit {
   @Input() datosGenerales: any;
 
   private _constantesService = inject(ConstantesService);
   private GeneralService = inject(GeneralService);
   private _confirmService = inject(ConfirmationModalService);
-  private messageService = inject(MessageService);
 
   private _TipoPreguntasService = inject(TipoPreguntasService);
+  private _PreguntasService = inject(PreguntasService);
 
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
@@ -89,50 +91,20 @@ export class CuestionarioPreguntasComponent implements OnInit {
       jsonAlternativas: data.jsonAlternativas,
       iCredId: this._constantesService.iCredId,
     };
-    const params = {
-      petition: 'post',
-      group: 'aula-virtual',
-      prefix: 'preguntas',
-      data: datos,
-      params: {
-        iCredId: this._constantesService.iCredId,
-      },
-    };
-    // // Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe({
-      next: response => {
-        if (response.validated) {
-          this.messageService.add({
+    this._PreguntasService.guardarPreguntas(datos).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          this.mostrarMensajeToast({
             severity: 'success',
-            summary: 'Acción exitosa',
-            detail: response.message,
+            summary: '¡Genial!',
+            detail: resp.message,
           });
           this.showModal = false;
           this.obtenerCuestionario();
-          // this.instructorForm.reset()
         }
       },
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
       },
     });
   }

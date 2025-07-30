@@ -1,0 +1,160 @@
+<br />
+
+<form [formGroup]="formVivienda">
+  <div class="grid p-fluid p-2">
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="ocupaciones_vivienda"
+        [dropdownControl]="$any(formVivienda).controls['iTipoOcupaVivId']"
+        addonLabel="Tipo de ocupación de vivienda"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cTipoOcupaVivOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="estados_vivienda"
+        [dropdownControl]="$any(formVivienda).controls['iEstadoVivId']"
+        addonLabel="Estado de vivienda"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cEstadoVivOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-4">
+      <app-input-simple
+        inputType="number"
+        [inputControl]="$any(formVivienda).controls['iViviendaCarNroPisos']"
+        addonLabel="Número de pisos"
+        [inputMin]="1"
+        [inputShowButtons]="true"
+      />
+    </div>
+    <div class="col-12 md:col-4">
+      <app-input-simple
+        inputType="number"
+        [inputControl]="$any(formVivienda).controls['iViviendaCarNroAmbientes']"
+        addonLabel="Número de cuartos"
+        [inputMin]="1"
+        [inputShowButtons]="true"
+        [infoAdicional]="iViviendaCarNroAmbientes"
+      />
+      <ng-template #iViviendaCarNroAmbientes>
+        Aquí puede indicar el número de habitaciones, ambientes o cuartos que tiene en la vivienda,
+        esto puede incluir dormitorios, salas, comedores, cuartos de baño, de cocina, etc.
+      </ng-template>
+    </div>
+    <div class="col-12 md:col-4">
+      <app-input-simple
+        inputType="number"
+        [inputControl]="$any(formVivienda).controls['iViviendaCarNroHabitaciones']"
+        addonLabel="Número de dormitorios"
+        [inputMin]="0"
+        [inputShowButtons]="true"
+        [infoAdicional]="iViviendaCarNroHabitaciones"
+      />
+      <ng-template #iViviendaCarNroHabitaciones>
+        Aquí puede indicar el número de dormitorios que tiene en la vivienda, un cuarto se considera
+        dormitorio si contiene al menos una cama.
+      </ng-template>
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="materiales_techos_vivienda"
+        [dropdownControl]="$any(formVivienda).controls['iMatTecVivId']"
+        addonLabel="Material del techo"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cMatTecVivOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="materiales_pisos_vivienda"
+        [dropdownControl]="$any(formVivienda).controls['iMatPisoVivId']"
+        addonLabel="Material del piso"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cMatPisoVivOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="materiales_paredes_vivienda"
+        [dropdownControl]="$any(formVivienda).controls['iMatPreId']"
+        addonLabel="Material de las paredes *"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cMatPreOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="suministros_agua"
+        [dropdownControl]="$any(formVivienda).controls['iTipoSumAId']"
+        addonLabel="Suministro de agua *"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cTipoSumAOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="tipos_vivienda"
+        [dropdownControl]="$any(formVivienda).controls['iTipoVivId']"
+        addonLabel="Tipo de vivienda"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cTipoVivOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-dropdown-input
+        [dropdownItems]="tipos_sshh"
+        [dropdownControl]="$any(formVivienda).controls['iTiposSsHhId']"
+        addonLabel="Tipo de servicio higiénico *"
+        dropdownPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cTipoSsHhOtro']"
+        inputPlaceholder="Especifique otro"
+      />
+    </div>
+
+    <div class="col-12 md:col-6">
+      <app-multiselect-input
+        [multiselectItems]="tipos_alumbrado"
+        [multiselectControl]="$any(formVivienda).controls['iTipoAlumId']"
+        addonLabel="Tipo de alumbrado *"
+        multiselectPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cTipoAlumOtro']"
+        inputPlaceholder="Especifique otro"
+        inputType="text"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <app-multiselect-input
+        [multiselectItems]="otros_elementos"
+        [multiselectControl]="$any(formVivienda).controls['iEleParaVivId']"
+        addonLabel="Otros elementos en la vivienda del estudiante"
+        multiselectPlaceholder="Seleccione"
+        [inputControl]="$any(formVivienda).controls['cEleParaVivOtro']"
+        inputPlaceholder="Especifique otro"
+        inputType="text"
+      />
+    </div>
+  </div>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+  <p-button label="Salir sin guardar" (onClick)="salir()" severity="secondary" />
+  <p-button
+    type="button"
+    label="Actualizar y continuar"
+    icon="pi pi-save"
+    severity="success"
+    (click)="actualizar()"
+  />
+</div>
+<p-toast></p-toast>

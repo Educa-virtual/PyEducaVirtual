@@ -1,0 +1,68 @@
+<p-dialog
+  [(visible)]="visible"
+  [style]="{ width: '1000px' }"
+  header="Agregar Personal a la Plataforma"
+  [modal]="true"
+  styleClass="p-fluid personal-dialog"
+  [draggable]="false"
+  (onHide)="closeDialog()"
+  >>
+  <div class="personal-container">
+    <form [formGroup]="personalForm">
+      <div class="form-row">
+        <div class="p-inputgroup">
+          <input type="text" pInputText formControlName="dni" placeholder="DNI" />
+        </div>
+
+        <div class="p-inputgroup">
+          <input type="text" pInputText formControlName="numero" placeholder="Número" />
+        </div>
+
+        <p-button label="Validar" [raised]="true" icon="pi pi-search" severity="warning" />
+      </div>
+
+      <div class="form-row">
+        <div class="p-inputgroup">
+          <input
+            type="text"
+            pInputText
+            formControlName="apellidoPaterno"
+            placeholder="Apellido paterno"
+          />
+        </div>
+
+        <div class="p-inputgroup">
+          <input
+            type="text"
+            pInputText
+            formControlName="apellidoMaterno"
+            placeholder="Apellido materno"
+          />
+        </div>
+
+        <div class="p-inputgroup">
+          <input type="text" pInputText formControlName="nombres" placeholder="Apellido materno" />
+        </div>
+
+        <div class="p-inputgroup">
+          <p-dropdown
+            formControlName="sexo"
+            [options]="sexoOptions"
+            placeholder="Sexo"
+            optionLabel="label"
+            optionValue="value"
+          ></p-dropdown>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <p-button
+          label="Agregar y Asignar Rol"
+          [raised]="true"
+          icon="pi pi-check-circle"
+          severity="success"
+        />
+      </div>
+    </form>
+  </div>
+</p-dialog>

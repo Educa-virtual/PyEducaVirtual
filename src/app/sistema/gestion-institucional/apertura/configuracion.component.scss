@@ -1,0 +1,71 @@
+:host ::ng-deep .p-dialog-content {
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .p-dialog-content i {
+  color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+:host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .p-button-label {
+  color: #fff;
+}
+
+:host ::ng-deep .p-dialog-footer .accept {
+  background-color: #c44c5b;
+  border-color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer .reject {
+  background-color: #0e4194;
+  border-color: #0e4194;
+}
+
+div {
+  display: flex;
+  gap: 2rem;
+}
+
+:host ::ng-deep p-dialog .p-dialog-header {
+  background-color: #fff !important;
+}
+
+:host ::ng-deep .p-dialog-content {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem 2rem 1.5rem !important;
+}
+
+:host ::ng-deep .p-dialog-content i {
+  color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+:host ::ng-deep .p-button-label {
+  color: #fff;
+}
+
+:host ::ng-deep .p-dialog-footer .accept {
+  background-color: #c44c5b;
+  border-color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer .reject {
+  background-color: #0e4194;
+  border-color: #0e4194;
+}

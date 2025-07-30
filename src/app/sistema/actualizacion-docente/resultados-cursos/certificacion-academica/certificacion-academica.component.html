@@ -1,0 +1,19 @@
+<app-container-page
+  title="Lista de Alumnos"
+  [actions]="actionsContainer"
+  (accionBtnItem)="accionBnt($event)"
+>
+  <p-dataView #dv [value]="alumnos" [rows]="5" filterBy="">
+    <ng-template let-products pTemplate="listItem">
+      <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="alumnos"
+        [showCaption]="false"
+        (accionBtnItem)="accionBnt($event)"
+        [actions]="accionesTabla"
+      >
+        <!--(accionBtnItem)="accionBnt($event)" -->
+      </app-table-primeng>
+    </ng-template>
+  </p-dataView>
+</app-container-page>

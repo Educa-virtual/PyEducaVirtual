@@ -1,0 +1,26 @@
+<app-container-page title="Registro de Institución Educativa" [actions]="[]" (accionBtnItem)="([])">
+  <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
+    <ng-template pTemplate="header">
+      <img alt="Card" class="w-full" src="assets/images/modulos/administracion.png" />
+    </ng-template>
+
+    <ng-template pTemplate="title"> Procedimieto Avanzado </ng-template>
+    <ng-template pTemplate="subtitle"> Generar apertura de año en IE </ng-template>
+    <p>
+      Este procedimiento genera todas las secciones en todos los grados posibles de todas la
+      Instituciones Educativas.
+      <p-messages [(value)]="mensaje" [enableService]="false" [closable]="true" />
+    </p>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-4 mt-1">
+        <p-button
+          (onClick)="generarInicioAnioMasivo()"
+          label="Generar año escolar {{ dremoYear }}"
+          class="w-full"
+          styleClass="w-full"
+        />
+      </div>
+    </ng-template>
+  </p-card>
+</app-container-page>

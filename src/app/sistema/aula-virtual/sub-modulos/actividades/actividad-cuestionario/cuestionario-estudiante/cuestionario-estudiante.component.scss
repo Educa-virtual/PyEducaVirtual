@@ -1,0 +1,29 @@
+:host ::ng-deep .p-inputtext {
+  box-shadow: none !important;
+}
+::ng-deep .custom-hover-input {
+  border: none;
+  border-bottom: 2px solid rgb(182, 182, 182);
+  transition: border-color 0.3s;
+  caret-color: purple;
+}
+
+::ng-deep .custom-hover-input:hover,
+::ng-deep .custom-hover-input:focus {
+  border-bottom: 2px solid purple;
+  outline: none;
+}
+// para que la etiqueta de comunicado sobresalga del card
+.tag {
+  position: absolute;
+  top: -15px;
+  left: 0; // Alinear exactamente desde el borde izquierdo
+  background-color: #fa8f45;
+  padding: 5px 10px; /* Aumentar padding lateral para aire */
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: white;
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+  width: fit-content; /* Para que no ocupe más de lo necesario */
+}

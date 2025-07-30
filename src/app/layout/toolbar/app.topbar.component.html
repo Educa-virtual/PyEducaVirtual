@@ -1,61 +1,74 @@
-<div class="flex align-items-center">
+<div class="topbar">
+  <div class="topbar__logo display-none">
+    <a routerLink="">
+      <img src="assets/images/dremo.png" alt="logo" />
+    </a>
+  </div>
+  <div class="topbar__bars_modulo">
+    <button #menubutton class="p-link" (click)="layoutService.onMenuToggle()">
+      <i class="pi pi-bars"></i>
+    </button>
+  </div>
+  <div class="topbar__notif_anio_inst_account">
     <button
-        class="p-link display-none"
-        style="color: var(--surface-menu)"
-        (click)="menu.toggle($event)"
+      class="p-link display-none"
+      style="color: var(--surface-menu)"
+      (click)="menu.toggle($event)"
     >
-        <i
-            class="pi pi-bell"
-            pBadge
-            style="font-size: 2rem"
-            [value]="totalNotificaciones"
-            *ngIf="totalNotificaciones !== 0; else alarma"
-        ></i>
-        <ng-template #alarma>
-            <i class="pi pi-bell" style="font-size: 2rem"></i>
-        </ng-template>
+      <i
+        class="pi pi-bell"
+        pBadge
+        style="font-size: 2rem"
+        [value]="totalNotificaciones"
+        *ngIf="totalNotificaciones !== 0; else alarma"
+      ></i>
+
+      <ng-template #alarma>
+        <i class="pi pi-bell" style="font-size: 2rem"></i>
+      </ng-template>
     </button>
     <app-anio-escolar
-        class="mx-1"
-        [years]="years"
-        [selectedYear]="selectedYear"
-        (actionTopBar)="actionTopBar($event)"
+      class="ml-5 mr-1"
+      [years]="years"
+      [selectedYear]="selectedYear"
+      (actionTopBar)="actionTopBar($event)"
     />
     <app-roles-dropdown
-        class="mx-1"
-        [perfiles]="perfiles"
-        [selectedPerfil]="selectedPerfil"
-        (actionTopBar)="actionTopBar($event)"
+      class="mr-1"
+      [perfiles]="perfiles"
+      [selectedPerfil]="selectedPerfil"
+      (actionTopBar)="actionTopBar($event)"
     />
+    <!-- [modulos]="modulos" agregar en la linea 36 muestra los modulos debajo del perfil -->
     <app-user-account
-        class="mx-1"
-        (actionTopBar)="actionTopBar($event)"
-        [selectedModulo]="selectedPerfil"
+      class="mr-1"
+      (actionTopBar)="actionTopBar($event)"
+      [selectedModulo]="selectedPerfil"
+      [selectedPerfil]="selectedPerfil"
     ></app-user-account>
+  </div>
 </div>
-<p-menu #menu [model]="items" [popup]="true" styleClass="w-25rem">
-    <ng-template pTemplate="submenuheader" let-item>
-        <div class="flex justify-content-between flex-wrap">
-            <div
-                class="flex align-items-center justify-content-center font-bold mx-2"
-            >
-                {{ item.label }}
-            </div>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="item" let-item>
-        <div pRipple class="flex align-items-center p-menuitem-link text-sm">
-            <span [class]="item.icon" style="color: #3e67a9"></span>
-            <span class="mx-3 text-none">{{
-                item.label.length > 100
-                    ? (item.label | slice: 0 : 100) + '...'
-                    : item.label
-            }}</span>
-            <span
-                *ngIf="item.sublabel"
-                class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1"
-                >{{ item.sublabel }}</span
-            >
-        </div>
-    </ng-template>
+<div class="banderines"></div>
+
+<p-menu #menu [model]="items" [popup]="true" styleClass="w-29rem">
+  <ng-template pTemplate="submenuheader" let-item>
+    <div class="flex justify-content-between flex-wrap">
+      <div class="flex align-items-center justify-content-center font-bold mx-2">
+        {{ item.label }}
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="item" let-item>
+    <div pRipple class="flex align-items-center p-menuitem-link text-sm">
+      <span [class]="item.icon" style="color: #3e67a9"></span>
+      <span class="mx-3 text-none">{{
+        item.label.length > 100 ? (item.label | slice: 0 : 100) + '...' : item.label
+      }}</span>
+      <span
+        *ngIf="item.sublabel"
+        class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1"
+        >{{ item.sublabel }}</span
+      >
+    </div>
+  </ng-template>
 </p-menu>

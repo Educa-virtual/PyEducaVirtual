@@ -1,0 +1,187 @@
+<div *ngIf="usuario?.cPersDocumento || usuario?.nombre_completo; else noData">
+  <app-container-page
+    title="Perfil de usuario"
+    [actions]="accionesPerfil"
+    (accionBtnItem)="accionBtnItemTable($event)"
+  >
+    <p-panel header="Información del Usuario" class="p-mb-3">
+      <div class="p-d-flex p-ai-center">
+        <p-tag severity="info" class="p-mr-2">
+          <span>{{ usuario?.cPersDocumento || 'Sin Documento' }}</span>
+        </p-tag>
+        <p-tag severity="success">
+          <span>{{ usuario?.nombre_completo || 'Sin Nombre' }}</span>
+        </p-tag>
+      </div>
+    </p-panel>
+
+    <form [formGroup]="form_perfil">
+      <div class="field col-12 md:col-12">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_Entidad"
+            [filter]="false"
+            filterBy="cEntNombreLargo"
+            optionLabel="cEntNombreLargo"
+            optionValue="iEntId"
+            formControlName="iEntId"
+            (onChange)="btnItem('entidad', 'Desea seleccionar Entidad')"
+          />
+          <label for="iEntId">Entidad</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-12" *ngIf="iEntidadId.valueOf() >= 1">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="option"
+            [filter]="false"
+            filterBy="label"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="iOption"
+            (onChange)="btnItem('option', 'Desea seleccionar la opción')"
+          />
+          <label for="iOption">Opciones</label>
+        </span>
+      </div>
+
+      <div class="field col-12 md:col-12" *ngIf="iOptionId.valueOf() === 1">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_modulos"
+            [filter]="false"
+            filterBy="cModuloNombre"
+            optionLabel="cModuloNombre"
+            optionValue="iModuloId"
+            formControlName="iDremoId"
+            (onChange)="btnItem('dremo', 'Desea seleccionar la Módulo de la DREMO')"
+          />
+          <label for="iDremoId">Selecionar Módulo Administrativo</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-12" *ngIf="iOptionId.valueOf() === 2">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_ugel"
+            [filter]="false"
+            filterBy="cUgelNombre"
+            optionLabel="cUgelNombre"
+            optionValue="iUgelId"
+            formControlName="iUgelId"
+            (onChange)="btnItem('ugel', 'Desea seleccionar UGEL')"
+          />
+          <label for="iUgelId">Seleccionar UGEL</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-12" *ngIf="iUgelId.valueOf() > 0">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_curso_grado"
+            [filter]="true"
+            filterBy="curso_grado"
+            optionLabel="curso_grado"
+            optionValue="iCursosNivelGradId"
+            formControlName="iCursosNivelGradId"
+            (onChange)="btnItem('CursosNivelGrado', 'Desea seleccionar curso y grado')"
+          />
+          <label for="iCursosNivelGradId">Seleccionar curso a asignar</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-12" *ngIf="iDremoId.valueOf() === 1012">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_curso_grado"
+            [filter]="true"
+            filterBy="curso_grado"
+            optionLabel="curso_grado"
+            optionValue="iCursosNivelGradId"
+            formControlName="iCursosNivelGradId"
+            (onChange)="btnItem('CursosNivelGradoDRE', 'Desea seleccionar curso y grado')"
+          />
+          <label for="iCursosNivelGradId">Seleccionar curso a asignar</label>
+        </span>
+      </div>
+
+      <div class="field col-12 md:col-12" *ngIf="iOptionId.valueOf() === 3">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_iIE"
+            [filter]="true"
+            filterBy="nombre_completo"
+            optionLabel="nombre_completo"
+            optionValue="iIieeId"
+            formControlName="iIieeId"
+            (onChange)="btnItem('ie', 'Desea seleccionar la I.E.')"
+          />
+          <label for="iIieeId">Seleccionar Institucion Educativa</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-12" *ngIf="iIieeId.valueOf() > 0">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="lista_sedes"
+            [filter]="true"
+            filterBy="cSedeNombre"
+            optionLabel="cSedeNombre"
+            optionValue="iSedeId"
+            formControlName="iSedeId"
+            (onChange)="btnItem('sede', 'Desea seleccionar Sede Educativa')"
+          />
+          <label for="iSedeId">Seleccionar Sede</label>
+        </span>
+      </div>
+
+      <div class="grid mt-2" *ngIf="search_perfiles.length > 0">
+        <div class="field col-10 md:col-10">
+          <span class="p-float-label">
+            <p-dropdown
+              [style]="{ width: '100%' }"
+              [options]="search_perfiles"
+              [filter]="false"
+              filterBy="cPerfilNombre"
+              optionLabel="cPerfilNombre"
+              optionValue="iPerfilId"
+              formControlName="iPerfilId"
+            />
+            <label for="iPerfilId">Perfil</label>
+          </span>
+        </div>
+        <div class="field col-2 md:col-2">
+          <p-button
+            pButton
+            type="button"
+            icon="pi pi-plus"
+            class="p-button-rounded p-button-text"
+            (click)="btnItem('perfil', 'Desea asignar perfil')"
+            [disabled]="form_perfil.invalid"
+          />
+        </div>
+      </div>
+    </form>
+
+    <div class="card">
+      <app-table-primeng
+        [columnas]="columa_perfil"
+        [showCaption]="false"
+        [data]="perfil_usuario"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="false"
+        [(selectedRowData)]="selectedItemsPerfil"
+        [actions]="actionsPerfil"
+      >
+        <!-- <ng-container slot="caption-content"> </ng-container> -->
+      </app-table-primeng>
+    </div>
+  </app-container-page>
+</div>
+<ng-template #noData>
+  <p-message severity="warn" text="No hay datos del usuario"></p-message>
+</ng-template>

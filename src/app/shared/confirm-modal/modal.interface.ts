@@ -1,5 +1,7 @@
-import { Confirmation } from 'primeng/api'
+import { Confirmation } from 'primeng/api';
 
 export interface IModal extends Confirmation {
-    severity?: string
+  severity?: string;
+  summary?: string;
+  detail?: string;
 }

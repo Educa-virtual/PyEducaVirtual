@@ -1,17 +1,13 @@
 <app-table-primeng
-    [showCaption]="showCaption"
-    [showPaginator]="showPaginator"
-    [dataKey]="dataKey"
-    [columnas]="columnas"
-    [data]="data"
-    (accionBtnItem)="accionBtnItemTable.emit($event)"
-    [(selectedRowData)]="selectedRowData"
-    [actions]="accionesTabla"
-    [expandedRowKeys]="expandedRowKeys"
-    (selectedRowDataChange)="onSelectionChange($event)"
-    [placeholder]="'Buscar por enunciado de la pregunta'"
+  [showCaption]="showCaption"
+  [showPaginator]="showPaginator"
+  [columnas]="columnas"
+  [data]="data"
+  (accionBtnItem)="accionBtnItemTable.emit($event)"
+  [actions]="accionesTabla"
+  [placeholder]="'Buscar por enunciado de la pregunta'"
 >
-    <!-- <ng-template #rowExpansionTemplate let-data let-columns="columns">
+  <!-- <ng-template #rowExpansionTemplate let-data let-columns="columns">
         <tr class="bg-gray-100">
             <td [attr.colspan]="columns">
                 <app-banco-pregunta-preview [pregunta]="data" />

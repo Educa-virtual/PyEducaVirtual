@@ -1,0 +1,343 @@
+<app-modal-primeng
+  [title]="titulo"
+  [showModal]="showModal"
+  [width]="'55rem'"
+  (accionBtnItem)="accionBtn($event)"
+>
+  <!-- <form [formGroup]="formPreguntas" class="flex flex-column gap-3 w-full"> -->
+  <div class="mt-4">
+    <div class="grid">
+      <div class="flex col-6">
+        <!-- Editor de texto -->
+        <!-- [innerHTML]="cPregunta" -->
+        <textarea
+          #textareaRef
+          pInputTextarea
+          autoResize
+          [(ngModel)]="cPregunta"
+          rows="1"
+          [style]="{ minHeight: '3rem' }"
+          class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
+          placeholder="Escribe tu pregunta aquí..."
+        >
+        </textarea>
+      </div>
+      <div class="col-6">
+        <p-dropdown
+          [options]="tipoPreguntas"
+          optionValue="iTipoPregId"
+          optionLabel="cCodeTipoPreg"
+          placeholder="Tipo de Pregunta"
+          [style]="{ width: '100%' }"
+          [appendTo]="'body'"
+          (onChange)="obtenerCodigoTipoPregunta($event)"
+          [(ngModel)]="iTipoPregId"
+        >
+          <ng-template pTemplate="selectedItem" let-selectedOption>
+            <div class="flex align-items-center gap-2">
+              <i class="pi {{ selectedOption.cIcon }}"></i>
+              <div>{{ selectedOption.cTipoPregunta }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i class="pi {{ item.cIcon }}"></i>
+              <div>{{ item.cTipoPregunta }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col-12 mt-1">
+        @switch (codigoTipoPregunta) {
+          @case ('TIP-PREG-TEXTO') {
+            <div class="flex">
+              <input
+                class="ml-2"
+                type="text"
+                pInputText
+                readonly
+                class="w-full"
+                placeholder="Texto de respuesta corta"
+              />
+            </div>
+          }
+          @case ('TIP-PREG-OPCIONES') {
+            <div *ngFor="let opcion of opciones; let i = index" class="mb-2 ml-2">
+              <p-inputGroup class="mt-1">
+                <p-radioButton
+                  name="grupoOpciones"
+                  [value]="i"
+                  [disabled]="true"
+                  [(ngModel)]="opcionSeleccionada"
+                ></p-radioButton>
+
+                <input
+                  class="mx-5"
+                  type="text"
+                  pInputText
+                  [(ngModel)]="opcion.cAlternativa"
+                  [placeholder]="' ' + 'Opción ' + (i + 1)"
+                  class="input-hover-underline flex-1"
+                />
+
+                <!-- <p-button
+                                    icon="pi pi-image"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    severity="secondary"
+                                    class="p-button-primary btn-file-image m-2"
+                                >
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        (change)="
+                                            onImagenSeleccionada($event, i)
+                                        "
+                                    />
+                                </p-button> -->
+
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  class="btn-trash m-2"
+                  (click)="eliminarOpcion(i)"
+                >
+                </p-button>
+              </p-inputGroup>
+            </div>
+
+            <div class="grid mt-2 ml-2">
+              <div class="">
+                <!-- Botón para agregar nueva opción -->
+                <p-radioButton
+                  name="grupoOpcionesOtro"
+                  [value]="'otro'"
+                  [(ngModel)]="opcionSeleccionada"
+                ></p-radioButton>
+              </div>
+              <div class="ml-2">
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Añadir opción"
+                  readonly
+                  class="input-hover-underline flex-1"
+                  (click)="agregarOpcion()"
+                />
+              </div>
+            </div>
+          }
+          @case ('TIP-PREG-CASILLA') {
+            <div *ngFor="let opcion of opciones; let i = index" class="mb-2 ml-2">
+              <p-inputGroup class="mt-1">
+                <p-checkbox
+                  [binary]="true"
+                  inputId="binary"
+                  name="grupoOpciones"
+                  [disabled]="true"
+                  [value]="i"
+                  [(ngModel)]="opcionSeleccionada"
+                />
+                <input
+                  class="ml-2"
+                  type="text"
+                  pInputText
+                  [(ngModel)]="opcion.cAlternativa"
+                  [placeholder]="' ' + 'Opción ' + (i + 1)"
+                  class="input-hover-underline flex-1"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  class="btn-trash m-2"
+                  (click)="eliminarOpcion(i)"
+                >
+                </p-button>
+              </p-inputGroup>
+            </div>
+            <div class="grid mt-2 ml-2">
+              <div>
+                <!-- Botón para agregar nueva opción -->
+                <p-checkbox
+                  name="grupoOpcionesOtro"
+                  [value]="'otro'"
+                  [(ngModel)]="opcionSeleccionada"
+                />
+              </div>
+              <div class="ml-2">
+                <input
+                  class="ml-2"
+                  type="text"
+                  readonly
+                  pInputText
+                  class="input-hover-underline flex-1"
+                  placeholder="Añadir opción"
+                  (click)="agregarOpcion()"
+                />
+              </div>
+            </div>
+          }
+          @case ('TIP-PREG-DESPLEGABLE') {
+            <div *ngFor="let opcion of opciones; let i = index" class="mb-2 ml-2">
+              <p-inputGroup class="mt-1">
+                <label for="" class="align-content-center mr-2">{{ i + 1 }}</label>
+                <input
+                  class="ml-2"
+                  type="text"
+                  pInputText
+                  [(ngModel)]="opcion.cAlternativa"
+                  [placeholder]="' ' + 'Opción ' + (i + 1)"
+                  class="input-hover-underline flex-1"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  class="btn-trash m-2"
+                  (click)="eliminarOpcion(i)"
+                >
+                </p-button>
+              </p-inputGroup>
+            </div>
+
+            <!-- <label for="" class="align-content-center mr-2"
+                                >1</label
+                            > -->
+            <i class="pi pi-plus mr-3" style="color: slateblue"></i>
+            <input
+              class="ml-4"
+              type="text"
+              pInputText
+              readonly
+              class="input-hover-underline flex-1"
+              placeholder="Añadir opción"
+              (click)="agregarOpcion()"
+            />
+          }
+          @case ('TIP-PREG-ESC-LINEAL') {
+            <div class="flex align-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <label for="" class="mr-2">De</label>
+                <p-dropdown
+                  [(ngModel)]="escalaLine"
+                  [options]="scaleLineI"
+                  optionLabel="id"
+                  optionValue="id"
+                  [appendTo]="'body'"
+                  styleClass="w-5rem h-3rem mr-2"
+                  class="dropdownLineal"
+                  (onChange)="onEscalaLineChange($event)"
+                />
+                <label for="" class="mr-2">a</label>
+                <p-dropdown
+                  [(ngModel)]="escalaLine2"
+                  [options]="scaleLineF"
+                  optionLabel="id"
+                  optionValue="id"
+                  [appendTo]="'body'"
+                  styleClass="w-5rem h-3rem mr-2"
+                  class="dropdownLineal"
+                  (onChange)="cambiarEscalaLine($event)"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="flex col-6">
+                <label for="" class="mr-2 align-content-center">
+                  {{ escalaLine }}
+                </label>
+                <input
+                  class="ml-2"
+                  type="text"
+                  pInputText
+                  class="w-full input-hover-underline"
+                  placeholder="Etiqueta (opcional)"
+                />
+              </div>
+              <div class="flex col-6">
+                <label for="" class="mr-2 align-content-center">
+                  {{ escalaLine2 }}
+                </label>
+                <input
+                  class="ml-2"
+                  type="text"
+                  pInputText
+                  class="w-full input-hover-underline"
+                  placeholder="Etiqueta (opcional)"
+                />
+              </div>
+            </div>
+          }
+          @case ('TIP-PREG-CALIF') {
+            <div class="flex">
+              <p-dropdown
+                [options]="calif"
+                [(ngModel)]="selectNumber"
+                optionValue="id"
+                optionLabel="id"
+                [appendTo]="'body'"
+                styleClass="w-6rem h-3rem mr-2"
+                (onChange)="onSelectNumberChange($event)"
+              />
+              <p-dropdown
+                [options]="icons"
+                [(ngModel)]="selectedIcon"
+                optionValue="icon"
+                optionLabel="icon"
+                [appendTo]="'body'"
+                styleClass="w-6rem h-3rem"
+                (onChange)="selecIcons($event)"
+              >
+                <!-- Plantilla para los ítems del dropdown -->
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <i [class]="item.icon"></i>
+                    <span>{{ item.id }}</span>
+                  </div>
+                </ng-template>
+                <!-- Plantilla para el valor seleccionado (opcional) -->
+                <ng-template let-item pTemplate="selectedItem">
+                  <div class="flex align-items-center gap-2">
+                    <i [class]="item?.icon"></i>
+                    <br />
+                    <span>{{ item?.id }}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            <!-- Vista generada -->
+            <div class="flex justify-content-center mt-2">
+              <div class="number-list">
+                <div *ngFor="let num of getDisplayedNumbers()" class="number-item">
+                  <i [class]="selectedIcon"></i>
+                  <!-- Icono seleccionado -->
+                  <span>{{ num }}</span>
+                  <!-- Número generado dinámicamente -->
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+  <div footer>
+    <p-divider />
+    <div class="flex align-items-center justify-content-end gap-2">
+      <!-- <label for="checked" class="ml-2"> Obligatorio </label>
+            <p-inputSwitch /> -->
+      <p-button
+        [label]="action === 'ACTUALIZAR' ? 'Editar Pregunta' : 'Añadir Pregunta'"
+        icon="pi pi-check"
+        [severity]="action === 'ACTUALIZAR' ? 'warning' : 'success'"
+        (click)="action === 'ACTUALIZAR' ? accionBtn({ accion: 'ACTUALIZAR' }) : guardarPregunta()"
+      />
+    </div>
+  </div>
+  <!-- </form> -->
+</app-modal-primeng>

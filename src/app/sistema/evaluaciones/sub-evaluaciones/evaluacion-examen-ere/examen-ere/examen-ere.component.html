@@ -1,56 +1,49 @@
-<app-container-page
-    [title]="'EVALUACIÓN ERE: ' + (cEvaluacionNombre || '-')"
-    [actions]="[]"
->
-    <div class="container">
-        <article
-            *ngFor="let curso of cursos"
-            class="card p-0 p border-1 flex flex-column surface-border overflow-hidden h-full post-module"
-        >
-            <div class="curso__image-container img-transition">
-                <img
-                    [src]="backend + '/' + curso.cCursoImagen"
-                    [alt]="curso.cCursoNombre"
-                    class="w-full h-full"
-                    (error)="updateUrl(curso)"
-                />
-            </div>
-            <div class="flex flex-column h-13rem justify-content-between pb-3">
-                <div class="p-3">
-                    <h3 class="text-xl">
-                        {{ curso.cGradoAbreviacion }} {{ curso.cCursoNombre }}
-                        <div class="mt-1"></div>
-                        <small style="color: var(--primary-color)">{{
-                            curso.cNivelTipoNombre
-                        }}</small>
-                    </h3>
-                    <div class="mt-2">
-                        <b>Inicio del Examen:</b>
-                        {{ curso.dtExamenFechaInicio | date: 'short' }}
-                    </div>
-                    <div class="mt-1">
-                        <b>Fin del Examen:</b>
-                        {{ curso.dtExamenFechaFin | date: 'short' }}
-                    </div>
-                </div>
-                <div class="flex">
-                    <footer
-                        class="flex w-full justify-content-between align-items-center"
-                    >
-                        <!-- {{curso | json}} -->
-                        <p-button
-                            (onClick)="irMostrarEvaluacion(curso)"
-                            label="Rendir"
-                            styleClass="p-button-link"
-                            [disabled]="
-                                curso.iEstadoExamen === '1' ? false : true
-                            "
-                        ></p-button>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<app-container-page [title]="'Evaluación ERE: ' + (cEvaluacionNombre || '-')" [actions]="[]">
+  <div class="container">
+    <article
+      *ngFor="let curso of cursos"
+      class="card p-0 p border-1 flex flex-column surface-border overflow-hidden h-full post-module"
+    >
+      <div class="curso__image-container img-transition">
+        <img
+          [src]="backend + '/' + curso.cCursoImagen"
+          [alt]="curso.cCursoNombre"
+          class="w-full h-full"
+          (error)="updateUrl(curso)"
+        />
+      </div>
+      <div class="flex flex-column h-13rem justify-content-between pb-3">
+        <div class="p-3">
+          <h3 class="text-xl">
+            {{ curso.cGradoAbreviacion }} {{ curso.cCursoNombre }}
+            <div class="mt-1"></div>
+            <small style="color: var(--primary-color)">{{ curso.cNivelTipoNombre }}</small>
+          </h3>
+          <div class="mt-2">
+            <b>Fecha:</b>
+            {{ curso.dtExamenFechaInicio | date: 'EEEE, d MMMM, y' }}
+          </div>
+          <div class="mt-1">
+            <b>Hora:</b>
+            {{ curso.dtExamenFechaInicio | date: 'HH:mm' }} a
+            {{ curso.dtExamenFechaFin | date: 'HH:mm' }}
+          </div>
+        </div>
+        <div class="flex">
+          <footer class="flex w-full justify-content-between align-items-center">
+            <!-- {{curso | json}} -->
+            <p-button
+              (onClick)="irMostrarEvaluacion(curso)"
+              label="Rendir"
+              styleClass="p-button-link"
+              [disabled]="curso.iEstadoExamen === '1' ? false : true"
+            ></p-button>
 
-                        <!-- <p-button [disabled]="true" label="Resultados" styleClass="p-button-link"></p-button> -->
-                    </footer>
-                </div>
-            </div>
-        </article>
-    </div>
+            <!-- <p-button [disabled]="true" label="Resultados" styleClass="p-button-link"></p-button> -->
+          </footer>
+        </div>
+      </div>
+    </article>
+  </div>
 </app-container-page>

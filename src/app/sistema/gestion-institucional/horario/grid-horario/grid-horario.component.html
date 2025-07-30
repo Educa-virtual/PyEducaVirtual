@@ -1,64 +1,47 @@
 <div class="grid">
-    <div class="xl:col-4 sm:col-12 md:col-12">
-        <div class="card m-2">
-            <div class="grid">
-                <div class="col-12">
-                    <div>
-                        <!-- <div *ngFor="let curricular of curricula" class="flex p-1">
+  <div class="xl:col-4 sm:col-12 md:col-12">
+    <div class="card m-2">
+      <div class="grid">
+        <div class="col-12">
+          <div>
+            <!-- <div *ngFor="let curricular of curricula" class="flex p-1">
 
               <p-chip label="{{curricular.cCursoNombre}}"
                 image="https://primefaces.org/cdn/primeng/images/demo/avatar/xuxuefeng.png" alt="Avatar image"
                 [removable]="true" /> -->
 
-                        <p-orderList
-                            [value]="curricula"
-                            class="listAlumno"
-                            filterBy="cCursoNombre"
-                            filterPlaceholder="Buscar...."
-                        >
-                            <ng-template
-                                let-curricular
-                                of
-                                curricula
-                                pTemplate="listItem"
-                                let-i="index"
-                            >
-                                <!-- (keydown.enter)="
+            <p-orderList
+              [value]="curricula"
+              class="listAlumno"
+              filterBy="cCursoNombre"
+              filterPlaceholder="Buscar...."
+            >
+              <ng-template let-curricular of curricula pTemplate="listItem" let-i="index">
+                <!-- (keydown.enter)="
                                                 obtenerComnt(estudiante)
                                             "  -->
 
-                                <div
-                                    class="perfilesList"
-                                    tabindex="0"
-                                    (click)="eventoCurricular(curricular)"
-                                    (keydown.enter)="
-                                        eventoCurricular(curricula)
-                                    "
-                                >
-                                    <img
-                                        src="assets/demo/images/matemit/perfil.png"
-                                        alt=""
-                                        class="w-3rem btn"
-                                    />
-                                    <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
-                                    <div class="perfil-name">
-                                        {{ curricular.cCursoNombre }}<br />(
-                                        <i
-                                            >{{
-                                                curricular.nombre_completo
-                                            }}
-                                            )</i
-                                        >
-                                    </div>
-                                </div>
-                            </ng-template>
-                        </p-orderList>
-                    </div>
+                <div
+                  class="perfilesList"
+                  tabindex="0"
+                  (click)="eventoCurricular(curricular)"
+                  (keydown.enter)="eventoCurricular(curricula)"
+                >
+                  <img src="assets/demo/images/matemit/perfil.png" alt="" class="w-3rem btn" />
+                  <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
+                  <div class="perfil-name">
+                    {{ curricular.cCursoNombre }}<br />(
+                    <i>{{ curricular.nombre_completo }} )</i>
+                  </div>
                 </div>
-            </div>
+              </ng-template>
+            </p-orderList>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- <div class="horario-container">
+  </div>
+  <!-- <div class="horario-container">
         <h2>Horario Escolar</h2>
 
         <table class="horario">
@@ -86,38 +69,48 @@
           </tbody>
         </table>
       </div> -->
-    <div class="xl:col-8 sm:col-12 md:col-12">
-        <div class="card m-2">
-            <div class="grid">
-                <div class="col-12">
-                    <table class="horario">
-                        <thead>
-                            <tr>
-                                <th>Hora</th>
-                                <th *ngFor="let dia of dias">{{ dia }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let bloque of bloques">
-                                <td>{{ bloque }}</td>
-                                <td *ngFor="let dia of dias">
-                                    <div
-                                        *ngIf="horario[bloque]?.[dia] as evento"
-                                    >
-                                        <div class="evento">
-                                            <strong>{{
-                                                evento.profesor
-                                            }}</strong
-                                            ><br />
-                                            {{ evento.asignatura }}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  <div class="xl:col-8 sm:col-12 md:col-12">
+    <div class="card m-2">
+      <div class="grid">
+        <div class="col-12">
+          <table class="horario">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th *ngFor="let dia of dias">{{ dia }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let bloque of bloques">
+                <td>{{ bloque }}</td>
+                <td *ngFor="let dia of dias">
+                  <div *ngIf="horario?.[bloque]?.[dia] as evento; else noData">
+                    <!-- Aquí puedes acceder a 'evento' -->
+                    <div class="evento">
+                      <strong>{{ evento.profesor }}</strong
+                      ><br />
+                      {{ evento.asignatura }}
+                    </div>
+                  </div>
+
+                  <ng-template #noData>
+                    <!-- <p-button
+                                            icon="pi pi-user"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="info"
+                                            (click)="
+                                                addBloqueAsignatura(bloque, dia)
+                                            "
+                                        /> -->
+                    <!-- Contenido alternativo si no hay datos -->
+                  </ng-template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
+  </div>
 </div>

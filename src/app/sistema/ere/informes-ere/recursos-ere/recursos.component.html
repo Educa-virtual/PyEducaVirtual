@@ -1,0 +1,627 @@
+<!-- Breadcrumb -->
+<p-breadcrumb
+  class="max-w-full mb-4"
+  [model]="breadCrumbItems"
+  [home]="breadCrumbHome"
+></p-breadcrumb>
+
+<!-- Panel de título -->
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
+    </div>
+  </ng-template>
+
+  <!-- Buscador -->
+  <div class="flex align-items-center gap-2" style="flex: 1">
+    <span class="p-input-icon-left" style="width: 100%; max-width: 400px">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="terminoBusqueda"
+        (input)="filtrarRecursos()"
+        placeholder="Buscar por área..."
+        class="w-full"
+        style="padding-left: 2.5rem"
+      />
+    </span>
+    <p-button
+      *ngIf="terminoBusqueda"
+      icon="pi pi-times"
+      [text]="true"
+      (click)="limpiarBusqueda()"
+      pTooltip="Limpiar búsqueda"
+      styleClass="p-button-rounded p-button-text"
+    >
+    </p-button>
+  </div>
+
+  <div class="divider-section mb-4"></div>
+
+  <!--Tabla 2º Grado-->
+  <p-panel>
+    <ng-template pTemplate="header">
+      <div class="flex flex-column gap-2">
+        <h3 class="m-0 text-uppercase text-primary">
+          {{ segundoGrado }}
+        </h3>
+      </div>
+    </ng-template>
+    <p-table
+      [value]="datosRecursosFiltrados"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let col of cols" [style.text-align]="'center'">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recurso>
+        <tr>
+          <td style="text-align: center">{{ recurso.id }}</td>
+          <td>{{ recurso.area }}</td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Cuadernillo', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Hoja de respuestas', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Matriz', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              [label]="estadosRecurso[recurso.estado].label"
+              [icon]="estadosRecurso[recurso.estado].icon"
+              [severity]="estadosRecurso[recurso.estado].severity"
+              size="small"
+              iconPos="right"
+              (click)="ejecutarAccion(estadosRecurso[recurso.estado].accion, recurso)"
+            >
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length" class="text-center p-4">
+            <i class="pi pi-search text-4xl text-400 mb-3"></i>
+            <p class="text-500 m-0">No se encontraron áreas que coincidan con la búsqueda</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-panel>
+
+  <div class="table-separator mb-4"></div>
+
+  <!-- Tabla 4º Grado -->
+  <p-panel class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column gap-2">
+        <h3 class="m-0 text-uppercase text-primary">
+          {{ cuartoGrado }}
+        </h3>
+      </div>
+    </ng-template>
+    <p-table
+      [value]="datosRecursos4toFiltrados"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let col of cols" [style.text-align]="'center'">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recurso>
+        <tr>
+          <td style="text-align: center">{{ recurso.id }}</td>
+          <td>{{ recurso.area }}</td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Cuadernillo', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Hoja de respuestas', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Matriz', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              [label]="estadosRecurso[recurso.estado].label"
+              [icon]="estadosRecurso[recurso.estado].icon"
+              [severity]="estadosRecurso[recurso.estado].severity"
+              size="small"
+              iconPos="right"
+              (click)="ejecutarAccion(estadosRecurso[recurso.estado].accion, recurso)"
+            >
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length" class="text-center p-4">
+            <i class="pi pi-search text-4xl text-400 mb-3"></i>
+            <p class="text-500 m-0">No se encontraron áreas que coincidan con la búsqueda</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-panel>
+
+  <div class="table-separator mb-4"></div>
+
+  <!-- Tabla 6º Grado -->
+  <p-panel class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column gap-2">
+        <h3 class="m-0 text-uppercase text-primary">
+          {{ sextoGrado }}
+        </h3>
+      </div>
+    </ng-template>
+    <p-table
+      [value]="datosRecursos6toFiltrados"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let col of cols" [style.text-align]="'center'">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recurso>
+        <tr>
+          <td style="text-align: center">{{ recurso.id }}</td>
+          <td>{{ recurso.area }}</td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Cuadernillo', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Hoja de respuestas', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Matriz', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              [label]="estadosRecurso[recurso.estado].label"
+              [icon]="estadosRecurso[recurso.estado].icon"
+              [severity]="estadosRecurso[recurso.estado].severity"
+              size="small"
+              iconPos="right"
+              (click)="ejecutarAccion(estadosRecurso[recurso.estado].accion, recurso)"
+            >
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length" class="text-center p-4">
+            <i class="pi pi-search text-4xl text-400 mb-3"></i>
+            <p class="text-500 m-0">No se encontraron áreas que coincidan con la búsqueda</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-panel>
+
+  <!-- Tabla de especialista con botones  -->
+  <p-panel class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column gap-2">
+        <h3 class="m-0 text-uppercase text-primary">Especialistas Asignados</h3>
+      </div>
+    </ng-template>
+    <p-table
+      [value]="datosRecursos6toFiltrados"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let col of cols" [style.text-align]="'center'">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recurso>
+        <tr>
+          <td style="text-align: center">{{ recurso.id }}</td>
+          <td>{{ recurso.area }}</td>
+          <td style="text-align: center">
+            <p-button
+              [label]="estadosRecurso[recurso.estado].label"
+              [icon]="estadosRecurso[recurso.estado].icon"
+              [severity]="estadosRecurso[recurso.estado].severity"
+              size="small"
+              iconPos="right"
+              (click)="ejecutarAccion(estadosRecurso[recurso.estado].accion, recurso)"
+              (click)="abrirDialogoEdicion(recurso)"
+              pTooltip="Editar recurso"
+              tooltipPosition="top"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Hoja de respuestas', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <p-button
+              label="PDF"
+              icon="pi pi-file-pdf"
+              severity="danger"
+              size="small"
+              (click)="descargarPDF('Matriz', recurso)"
+            >
+            </p-button>
+          </td>
+          <td style="text-align: center">
+            <button
+              pButton
+              icon="pi pi-pencil"
+              class="p-button-text p-button-rounded p-button-sm mr-1 transparent-btn"
+              (click)="abrirDialogoEdicion(recurso)"
+              pTooltip="Editar recurso"
+              tooltipPosition="top"
+              aria-label="Editar"
+            ></button>
+
+            <button
+              pButton
+              icon="pi pi-cog"
+              class="p-button-text p-button-rounded p-button-sm transparent-btn"
+              aria-label="Configuración"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length" class="text-center p-4">
+            <i class="pi pi-search text-4xl text-400 mb-3"></i>
+            <p class="text-500 m-0">No se encontraron áreas que coincidan con la búsqueda</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-panel>
+</p-panel>
+
+<p-dialog
+  header="Generar Cuadernillo de Evaluación"
+  [(visible)]="mostrarDialogoEdicion"
+  [modal]="true"
+  [style]="{ width: '800px', height: '600px' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <!-- Scroll Panel para el contenido -->
+    <p-scrollPanel [style]="{ width: '100%', height: '450px' }">
+      <form [formGroup]="cuadernilloFormGroup">
+        <p-stepper #stepper [linear]="true" [(activeStep)]="activeStep">
+          <!-- Paso 1: Descargar WORD -->
+          <p-stepperPanel header="Descargar WORD">
+            <ng-template pTemplate="content" let-nextCallback="nextCallback">
+              <div class="flex flex-column h-full p-4">
+                <!-- Header del paso -->
+                <div class="flex align-items-center gap-3 mb-4">
+                  <div>
+                    <h3 class="m-0 text-700">Descargar archivo WORD</h3>
+                    <p class="m-0 text-600 text-sm">
+                      Genera y descarga el cuadernillo en formato .docx
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Indicaciones -->
+                <div class="mb-4">
+                  <h4 class="text-600 mb-3">Instrucciones:</h4>
+                  <div class="bg-blue-50 border-left-3 border-blue-500 p-3 border-round">
+                    <ol class="text-sm text-700 line-height-3 pl-3 m-0">
+                      <li class="mb-2">
+                        Haz clic en el botón
+                        <span
+                          class="inline-flex align-items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 border-round text-xs mx-1"
+                        >
+                          <i class="pi pi-file-word"></i>
+                          DESCARGAR WORD
+                        </span>
+                        para generar el archivo .docx
+                      </li>
+                      <li class="mb-2">
+                        Revisa que el contenido del archivo esté completo y correcto
+                      </li>
+                      <li class="mb-0">
+                        Convierte el archivo WORD a formato PDF para el siguiente paso
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+
+                <!-- Estado de descarga -->
+                <div class="mb-4" *ngIf="wordDescargado">
+                  <div class="bg-green-50 border-left-3 border-green-500 p-3 border-round">
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-check-circle text-green-600 text-xl"></i>
+                      <span class="text-green-700 font-medium"
+                        >Archivo WORD descargado correctamente</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Botón de descarga -->
+                <div class="mt-auto">
+                  <label for="archivo-input" class="text-600 font-medium mb-3 block"
+                    >Generar archivo:</label
+                  >
+                  <p-button
+                    label="DESCARGAR WORD"
+                    icon="pi pi-file-word"
+                    severity="info"
+                    size="large"
+                    (click)="descargarWord()"
+                    [loading]="loadingActions['download-word']"
+                    styleClass="w-full"
+                  >
+                  </p-button>
+                </div>
+              </div>
+            </ng-template>
+          </p-stepperPanel>
+
+          <!-- Paso 2: Subir archivo PDF -->
+          <p-stepperPanel header="Subir archivo PDF">
+            <ng-template pTemplate="content" let-prevCallback="prevCallback">
+              <div class="flex flex-column h-full p-4">
+                <!-- Header del paso -->
+                <div class="flex align-items-center gap-3 mb-4">
+                  <div
+                    class="flex align-items-center justify-content-center border-circle"
+                    style="width: 50px; height: 50px; font-weight: bold; font-size: 20px"
+                    [class.bg-gray-100]="!archivoSubido"
+                    [class.text-600]="!archivoSubido"
+                    [class.bg-green-100]="archivoSubido"
+                    [class.text-green-600]="archivoSubido"
+                  >
+                    2
+                  </div>
+                  <div>
+                    <h3 class="m-0 text-700">Subir archivo PDF</h3>
+                    <p class="m-0 text-600 text-sm">Sube el cuadernillo convertido a formato PDF</p>
+                  </div>
+                </div>
+
+                <!-- Indicaciones -->
+                <div class="mb-4" *ngIf="!archivoSubido">
+                  <h4 class="text-600 mb-3">Instrucciones:</h4>
+                  <div class="bg-orange-50 border-left-3 border-orange-500 p-3 border-round">
+                    <ol class="text-sm text-700 line-height-3 pl-3 m-0">
+                      <li class="mb-2">Abre el archivo WORD que descargaste en el paso anterior</li>
+                      <li class="mb-2">
+                        Revisa el contenido y realiza las modificaciones necesarias
+                      </li>
+                      <li class="mb-2">Convierte el archivo WORD a formato PDF</li>
+                      <li class="mb-0">
+                        Haz clic en
+                        <i class="pi pi-upload text-blue-600 mx-1"></i>
+                        para subir tu archivo PDF
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+
+                <!-- Estado de archivo subido -->
+                <div class="mb-4" *ngIf="archivoSubido">
+                  <div class="bg-green-50 border-left-3 border-green-500 p-3 border-round">
+                    <div class="flex align-items-center gap-2 mb-2">
+                      <i class="pi pi-check-circle text-green-600 text-xl"></i>
+                      <span class="text-green-700 font-medium"
+                        >Archivo PDF subido correctamente</span
+                      >
+                    </div>
+                    <div class="flex align-items-center gap-2 ml-6">
+                      <i class="pi pi-file-pdf text-red-500"></i>
+                      <span class="text-sm text-600">{{ nombreArchivoSubido }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Upload de archivo -->
+                <div class="mt-auto">
+                  <label for="archivoSubido" class="text-600 font-medium mb-3 block">
+                    {{ archivoSubido ? 'Archivo subido:' : 'Subir archivo en formato .pdf:' }}
+                  </label>
+
+                  <!-- FileUpload cuando no hay archivo -->
+                  <p-fileUpload
+                    *ngIf="!archivoSubido"
+                    mode="basic"
+                    chooseLabel="SELECCIONAR ARCHIVO PDF"
+                    accept=".pdf"
+                    [maxFileSize]="10000000"
+                    (onSelect)="onFileSelect($event)"
+                    [auto]="false"
+                    chooseIcon="pi pi-upload"
+                    severity="info"
+                    styleClass="w-full"
+                  >
+                  </p-fileUpload>
+
+                  <!-- Mostrar archivo subido con opción de cambio -->
+                  <div
+                    *ngIf="archivoSubido"
+                    class="border-1 border-green-200 border-round p-3 bg-green-50"
+                  >
+                    <div class="flex align-items-center justify-content-between">
+                      <div class="flex align-items-center gap-3">
+                        <i class="pi pi-file-pdf text-red-500 text-2xl"></i>
+                        <div>
+                          <div class="font-medium text-700">
+                            {{ nombreArchivoSubido }}
+                          </div>
+                          <div class="text-xs text-600">Archivo PDF listo para procesar</div>
+                        </div>
+                      </div>
+                      <p-button
+                        icon="pi pi-refresh"
+                        [text]="true"
+                        size="small"
+                        (click)="cambiarArchivo()"
+                        pTooltip="Cambiar archivo"
+                        severity="info"
+                      >
+                      </p-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-stepperPanel>
+        </p-stepper>
+      </form>
+    </p-scrollPanel>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-between align-items-center">
+      <!-- Botón Cancelar -->
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        [outlined]="true"
+        (click)="cancelarEdicion()"
+      >
+      </p-button>
+
+      <!-- Botones de navegación -->
+      <div class="flex gap-2">
+        <!-- Botón Atrás -->
+        <p-button
+          label="Atrás"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          [outlined]="true"
+          (click)="handlePrevious()"
+          [className]="activeStep === 0 ? 'hidden' : ''"
+          [disabled]="activeStep === 0"
+        >
+        </p-button>
+
+        <!-- Botón Siguiente -->
+        <p-button
+          label="Siguiente"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          severity="info"
+          *ngIf="!isLastStep"
+          [disabled]="!wordDescargado"
+          (click)="handleNext()"
+        >
+        </p-button>
+
+        <!-- Botón Finalizar -->
+        <p-button
+          label="Finalizar"
+          icon="pi pi-check"
+          iconPos="right"
+          severity="success"
+          *ngIf="isLastStep"
+          [disabled]="!archivoSubido"
+          (click)="finalizarProceso()"
+          [loading]="loadingActions['finalizar']"
+        >
+        </p-button>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast para mensajes -->
+<p-toast></p-toast>

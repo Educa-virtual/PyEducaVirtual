@@ -1,0 +1,9 @@
+:host ::ng-deep {
+  .p-fieldset-legend {
+    color: white;
+    background-color: var(--green-600);
+  }
+  .p-menu {
+    background-color: var(--primary-600);
+  }
+}

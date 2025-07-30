@@ -1,0 +1,19 @@
+<p-tabView
+  [(activeIndex)]="activeIndex"
+  [scrollable]="true"
+  (activeIndexChange)="onActiveIndexChange($event)"
+  [class]="className('VIEW')"
+>
+  <ng-container *ngFor="let tab of tabs; let i = index">
+    <p-tabPanel *ngIf="!tab.isVisible">
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2" [class]="className('PANEL')">
+          <i class="pi {{ tab.icon }}"></i>
+          <span class="font-bold white-space-nowrap m-0">
+            {{ tab.title }}
+          </span>
+        </div>
+      </ng-template>
+    </p-tabPanel>
+  </ng-container>
+</p-tabView>

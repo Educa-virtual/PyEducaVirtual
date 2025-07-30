@@ -1,0 +1,382 @@
+<form [formGroup]="formFamiliar">
+  <br />
+
+  <p-fieldset legend="Identidad">
+    <div class="grid p-fluid">
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Tipo de Documento *"
+          [dropdownItems]="tipos_documentos"
+          [dropdownControl]="$any(formFamiliar.controls['iTipoIdentId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-6 sm:col-6">
+        <p-inputGroup styleClass="vertical-group">
+          <p-inputGroupAddon>
+            <p-button
+              size="small"
+              label="Validar"
+              styleClass="p-button-primary"
+              (onClick)="validarPersona()"
+              severity="success"
+            />
+            Documento *
+          </p-inputGroupAddon>
+          <p-inputMask
+            formControlName="cPersDocumento"
+            [maxlength]="longitud_documento"
+            [mask]="formato_documento"
+            autoClear="false"
+            slotChar=""
+            styleClass="group-element"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Tipo de familiar *"
+          [dropdownItems]="tipos_familiares"
+          [dropdownControl]="$any(formFamiliar.controls['iTipoFamiliarId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-switch-simple
+          [switchControl]="$any(formFamiliar.controls['bFamiliarVivoConEl'])"
+          addonLabel="¿Vive en la misma dirección del estudiante?"
+        />
+      </div>
+
+      <div class="col-6 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Género *"
+          [dropdownItems]="sexos"
+          [dropdownControl]="$any(formFamiliar.controls['cPersSexo'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-6 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Estado Civil"
+          [dropdownItems]="estados_civiles"
+          [dropdownControl]="$any(formFamiliar.controls['iTipoEstCivId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="col-12">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cPersNombre'])"
+          addonLabel="Nombres *"
+          [inputMaxlength]="50"
+          [inputReadonly]="true"
+          [infoAdicional]="cPersNombre"
+        />
+        <ng-template #cPersNombre>
+          Este campo se llena automáticamente al ingresar el tipo y número de documento de identidad
+          y presionar el botón "Validar".
+        </ng-template>
+      </div>
+
+      <div class="col-12 sm:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cPersPaterno'])"
+          addonLabel="Primer Apellido *"
+          [inputMaxlength]="50"
+          [inputReadonly]="true"
+          [infoAdicional]="cPersPaterno"
+        />
+        <ng-template #cPersPaterno>
+          Este campo se llena automáticamente al ingresar el tipo y número de documento de identidad
+          y presionar el botón "Validar".
+        </ng-template>
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cPersMaterno'])"
+          addonLabel="Segundo Apellido"
+          [inputMaxlength]="50"
+          [inputReadonly]="true"
+          [infoAdicional]="cPersMaterno"
+        />
+        <ng-template #cPersMaterno>
+          Este campo se llena automáticamente al ingresar el tipo y número de documento de identidad
+          y presionar el botón "Validar".
+        </ng-template>
+      </div>
+    </div>
+  </p-fieldset>
+
+  <br />
+
+  <p-fieldset legend="Nacimiento">
+    <div class="grid p-fluid">
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Nacionalidad"
+          [dropdownItems]="nacionalidades"
+          [dropdownControl]="$any(formFamiliar.controls['iNacionId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-input-simple
+          inputType="date"
+          [inputControl]="$any(formFamiliar.controls['dPersNacimiento'])"
+          addonLabel="Fecha de nacimiento *"
+          [inputMaxDate]="fecha_actual"
+        />
+      </div>
+    </div>
+  </p-fieldset>
+
+  <br />
+
+  <p-fieldset legend="Dirección del familiar" *ngIf="ver_controles_direccion">
+    <div class="grid p-fluid">
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-dropdown-input
+          [dropdownControl]="$any(formFamiliar.controls['iTipoViaId'])"
+          addonLabel="Tipo de vía *"
+          [dropdownItems]="tipos_vias"
+          placeholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cTipoViaOtro'])"
+          inputPlaceholder="Especifique otro"
+          [inputMaxlength]="100"
+          [infoAdicional]="iTipoViaId"
+        />
+        <ng-template #iTipoViaId>
+          <strong>Obligatoriamente</strong> debe indicar el óvalo del número que identifica el tipo
+          de vía. Otro puede ser: ladera de cerro, acequia, etc., según corresponda.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-8 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionNombreVia'])"
+          addonLabel="Nombre de la vía *"
+          [inputMaxlength]="150"
+          [infoAdicional]="cFamiliarDireccionNombreVia"
+        />
+        <ng-template #cFamiliarDireccionNombreVia>
+          <strong>Obligatoriamente</strong> debe indicar el nombre de la vía donde está ubicada la
+          vivienda. De no tener nombre, anota SN (Sin nombre).
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionNroPuerta'])"
+          addonLabel="Nro. de Puerta"
+          [inputMaxlength]="10"
+        />
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionBlock'])"
+          addonLabel="Bloque"
+          [inputMaxlength]="3"
+          [infoAdicional]="cFamiliarDireccionBlock"
+        />
+        <ng-template #cFamiliarDireccionBlock>
+          Si la vivienda se encuentra ubicada en un block o edificio dentro de un conjunto
+          habitacional entonces indique el número, letra o nombre de éste.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionInterior'])"
+          addonLabel="Interior"
+          [inputMaxlength]="3"
+          [infoAdicional]="cFamiliarDireccionInterior"
+        />
+        <ng-template #cFamiliarDireccionInterior>
+          Indique el número o letra que identifica a la vivienda en el interior de un block,
+          conjunto habitacional, edificio, quinta, casa de vecindad, callejón, etc.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="number"
+          [inputControl]="$any(formFamiliar.controls['iFamiliarDireccionPiso'])"
+          addonLabel="Piso"
+          [inputMin]="1"
+          [inputMax]="2"
+          [inputShowButtons]="true"
+          [infoAdicional]="iFamiliarDireccionPiso"
+        />
+        <ng-template #iFamiliarDireccionPiso>
+          El piso debe tener acceso al exterior de forma directa e independiente. Si la vivienda
+          está en un sótano indique 1.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionManzana'])"
+          addonLabel="Manzana"
+          [inputMaxlength]="10"
+        />
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionLote'])"
+          addonLabel="Lote"
+          [inputMaxlength]="3"
+        />
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionKm'])"
+          addonLabel="Km"
+          [inputMaxlength]="10"
+        />
+      </div>
+
+      <div class="col-12 lg:col-8 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarDireccionReferencia'])"
+          addonLabel="Referencia"
+        />
+      </div>
+    </div>
+  </p-fieldset>
+
+  <br />
+
+  <p-fieldset legend="Ubigeo" [toggleable]="true">
+    <div class="grid p-fluid">
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Departamento"
+          [dropdownItems]="departamentos"
+          [dropdownControl]="$any(formFamiliar.controls['iDptoId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Provincia"
+          [dropdownItems]="provincias"
+          [dropdownControl]="$any(formFamiliar.controls['iPrvnId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Distrito"
+          [dropdownItems]="distritos"
+          [dropdownControl]="$any(formFamiliar.controls['iDsttId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cPersDomicilio'])"
+          addonLabel="Domicilio"
+        />
+      </div>
+    </div>
+  </p-fieldset>
+
+  <br />
+
+  <p-fieldset legend="Adicionales" [toggleable]="true">
+    <div class="grid p-fluid">
+      <div class="col-12">
+        <app-dropdown-simple
+          addonLabel="Ocupación"
+          [dropdownItems]="ocupaciones"
+          [dropdownControl]="$any(formFamiliar.controls['iOcupacionId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="Grado de instrucción"
+          [dropdownItems]="grados_instruccion"
+          [dropdownControl]="$any(formFamiliar.controls['iGradoInstId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+      <div class="col-12 sm:col-6">
+        <app-dropdown-simple
+          addonLabel="I.E. en la que estudió"
+          [dropdownItems]="tipos_ies"
+          [dropdownControl]="$any(formFamiliar.controls['iTipoIeEstId'])"
+          dropdownPlaceholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+        />
+      </div>
+    </div>
+  </p-fieldset>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+  <p-button
+    label="Salir sin guardar"
+    severity="secondary"
+    icon="pi pi-fw pi-arrow-left"
+    (onClick)="salirResetearForm()"
+  />
+  <p-button
+    label="Guardar y salir"
+    severity="success"
+    icon="pi pi-fw pi-save"
+    (onClick)="guardarFamiliar()"
+    [hidden]="familiar_registrado"
+  />
+  <p-button
+    label="Actualizar y salir"
+    severity="success"
+    icon="pi pi-fw pi-save"
+    (onClick)="actualizarFamiliar()"
+    [hidden]="!familiar_registrado"
+  />
+</div>

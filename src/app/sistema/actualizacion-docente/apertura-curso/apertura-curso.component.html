@@ -1,0 +1,684 @@
+<section>
+  <div class="grid">
+    <div class="col card m-1">
+      <app-toolbar-primeng title="Listado de Capacitación Activas"></app-toolbar-primeng>
+      <section>
+        <p-dataView #dv [value]="cursos" [rows]="5" filterBy="">
+          <ng-template let-products pTemplate="listItem">
+            <app-table-primeng
+              [columnas]="columnasTabla"
+              [data]="cursos"
+              [showCaption]="false"
+              (accionBtnItem)="accionBnt($event)"
+              [actions]="accionesTabla"
+            >
+              <!--(accionBtnItem)="accionBnt($event)" -->
+            </app-table-primeng>
+          </ng-template>
+        </p-dataView>
+      </section>
+    </div>
+    <div class="col-7 card">
+      <app-toolbar-primeng
+        [title]="
+          modoFormulario === 'editar' ? 'Actualizar Capacitación' : 'Aperturar Nueva Capacitación'
+        "
+      ></app-toolbar-primeng>
+      <form [formGroup]="formNuevaCapacitacion" class="flex flex-column gap-3 w-full">
+        <section>
+          <div class="col">
+            <p-inputGroup>
+              <p-inputGroupAddon>Tipo de Capacitación:</p-inputGroupAddon>
+              <p-dropdown
+                [options]="tipoCapacitacion"
+                styleClass="w-full"
+                formControlName="iTipoCapId"
+                placeholder="Seleccione el tipo"
+                optionValue="iTipoCapId"
+                optionLabel="cTipoCapNombre"
+                (onChange)="capacitacionExterna($event.value)"
+              ></p-dropdown>
+            </p-inputGroup>
+          </div>
+          <div class="col">
+            <p-inputGroup>
+              <p-inputGroupAddon>Título: </p-inputGroupAddon>
+
+              <input
+                type="text"
+                pInputText
+                placeholder="Ingresar nombre...."
+                formControlName="cCapTitulo"
+                [ngClass]="{
+                  'p-invalid':
+                    formNuevaCapacitacion.get('titulo')?.invalid &&
+                    formNuevaCapacitacion.get('titulo')?.touched,
+                }"
+              />
+            </p-inputGroup>
+            <!-- Mensaje de error -->
+            <small
+              class="p-error"
+              *ngIf="
+                formNuevaCapacitacion.get('titulo')?.invalid &&
+                formNuevaCapacitacion.get('titulo')?.touched
+              "
+            >
+              El título es obligatorio.
+            </small>
+          </div>
+
+          <!-- select p-dropdown -->
+          <div class="col">
+            <div class="grid">
+              <div class="col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Nivel Pedagógico:</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="nivelPedagogico"
+                    styleClass="w-full"
+                    formControlName="iNivelPedId"
+                    optionValue="iNivelPedId"
+                    optionLabel="cNivelPedNombre"
+                    placeholder="Seleccione Nivel"
+                  ></p-dropdown>
+                  <!-- id="modalidad" [options]="modalidades" -->
+                </p-inputGroup>
+              </div>
+              <div class="col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Dirigido para:</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="publicoObjetivo"
+                    styleClass="w-full"
+                    formControlName="iTipoPubId"
+                    placeholder="Seleccione Publico"
+                    optionValue="iTipoPubId"
+                    optionLabel="cTipoPubNombre"
+                  ></p-dropdown>
+                  <!-- id="modalidad" [options]="modalidades" -->
+                </p-inputGroup>
+              </div>
+            </div>
+          </div>
+
+          <!-- Descripción adicional -->
+          <div class="col">
+            <div class="formgrid grid">
+              <div class="field col">
+                <!-- <label for="descripcion" class="mt-1"
+                                    >Descripción
+                                    <span class="text-red-500 text-xs"
+                                        >(*) Obligatorio</span
+                                    ></label
+                                >
+                                <div class="mt-2">
+                                    <textarea
+                                        class="w-full"
+                                        rows="4"
+                                        placeholder="Escribe una Descripción"
+                                        pInputText
+                                        formControlName="cCapDescripcion"
+                                    ></textarea>
+                                </div> -->
+                <label for="descripcion" class="mt-1"
+                  >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+                >
+                <!-- <p-editor formControlName="cCapDescripcion" [style]="{ height: 'auto' }">
+                                    <ng-template pTemplate="header">
+                                        <span class="ql-formats">
+                                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                        </span>
+                                    </ng-template>
+                                </p-editor> -->
+                <!-- <editor
+                                    [init]="initEnunciado"
+                                    formControlName="cCapDescripcion"
+                                
+                                /> -->
+                <p-editor
+                  formControlName="cCapDescripcion"
+                  [style]="{ height: 'auto' }"
+                  placeholder="Escribir una descripción...."
+                />
+              </div>
+            </div>
+          </div>
+          <!-- agregar horas -->
+          <div class="col">
+            <div class="grid">
+              <div class="col-3">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Horas: </p-inputGroupAddon>
+                  <input
+                    type="number"
+                    pInputText
+                    min="1"
+                    placeholder="0"
+                    formControlName="iTotalHrs"
+                    [ngClass]="{
+                      'p-invalid':
+                        formNuevaCapacitacion.get('hora')?.invalid &&
+                        formNuevaCapacitacion.get('hora')?.touched,
+                    }"
+                  />
+                </p-inputGroup>
+                <!-- Mensaje de error -->
+                <small
+                  class="p-error"
+                  *ngIf="
+                    formNuevaCapacitacion.get('hora')?.invalid &&
+                    formNuevaCapacitacion.get('hora')?.touched
+                  "
+                >
+                  El título es obligatorio.
+                </small>
+              </div>
+              <div class="col-5">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
+                  <p-calendar
+                    id="fechaFin"
+                    formControlName="dFechaInicio"
+                    styleClass="w-full"
+                    dateFormat="dd/mm/yy"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="icondisplay"
+                  ></p-calendar>
+                </p-inputGroup>
+              </div>
+              <div class="col-4">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
+                  <p-calendar
+                    id="fechaFin"
+                    formControlName="dFechaFin"
+                    styleClass="w-full"
+                    dateFormat="dd/mm/yy"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="icondisplay"
+                  ></p-calendar>
+                </p-inputGroup>
+              </div>
+            </div>
+          </div>
+          <!-- instructor y pago -->
+          @if (nombreCapacitacion === 'Externo') {
+            <div class="col">
+              <p-inputGroup>
+                <p-inputGroupAddon>Link: </p-inputGroupAddon>
+
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Ingresar url...."
+                  formControlName="cCapTitulo"
+                  [ngClass]="{
+                    'p-invalid':
+                      formNuevaCapacitacion.get('titulo')?.invalid &&
+                      formNuevaCapacitacion.get('titulo')?.touched,
+                  }"
+                />
+              </p-inputGroup>
+              <!-- Mensaje de error -->
+              <small
+                class="p-error"
+                *ngIf="
+                  formNuevaCapacitacion.get('titulo')?.invalid &&
+                  formNuevaCapacitacion.get('titulo')?.touched
+                "
+              >
+                El título es obligatorio.
+              </small>
+            </div>
+          } @else {
+            <div class="col">
+              <div class="grid">
+                <div class="col-7">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Instructor: </p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="instructores"
+                      formControlName="iInstId"
+                      optionLabel="nombreLargo"
+                      optionValue="iInstId"
+                      styleClass="w-full"
+                      [filter]="true"
+                      filterBy="nombreLargo"
+                      [showClear]="true"
+                      placeholder="Seleccionar instructor"
+                    >
+                    </p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col">
+                  <div class="flex align-items-center justify-content-between">
+                    <label for="" class="pr-3">¿Tiene Costo?</label>
+                    <p-inputSwitch formControlName="iCosto" class="pr-3" />
+                    <!-- Input visible solo si iPago está activado -->
+                    <input
+                      *ngIf="formNuevaCapacitacion.get('iCosto')?.value"
+                      type="text"
+                      formControlName="nCosto"
+                      placeholder="S/.0.0"
+                      class="p-inputtext p-component w-10rem"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- agregar imagenes para el curso -->
+          <div class="col">
+            <div class="border-round w-full btnimag">
+              <div class="flex justify-content-between flex-wrap">
+                <div class="flex align-items-center justify-content-center m-2">
+                  Añadir imagen de portada del curso
+                </div>
+                <div class="flex align-items-center justify-content-center m-2">
+                  <p-inputSwitch formControlName="iImageAleatorio" class="pr-3" />
+                </div>
+              </div>
+            </div>
+            <div
+              class="card w-full mt-2 justify-content-center"
+              *ngIf="formNuevaCapacitacion.get('iImageAleatorio')?.value"
+            >
+              <div class="container">
+                <!-- <h2>Selecciona una imagen</h2> -->
+                <!-- (ngSubmit)="onSubmit()" -->
+                <p-carousel
+                  [value]="portada"
+                  [numVisible]="3"
+                  [numScroll]="1"
+                  [circular]="true"
+                  [responsiveOptions]="responsiveOptions"
+                >
+                  <ng-template let-image pTemplate="item">
+                    <div
+                      tabindex="0"
+                      class="image-item"
+                      [class.selected]="isSelected(image)"
+                      (click)="selectImage(image)"
+                      (keyup)="selectImage(null)"
+                    >
+                      <div class="image-container">
+                        <img
+                          [src]="backend + image.url"
+                          [alt]="image.title"
+                          class="carousel-image"
+                        />
+                        <div class="image-title">
+                          {{ image.title }}
+                        </div>
+                        <div *ngIf="isSelected(image)" class="selected-indicator">
+                          <i class="pi pi-check-circle"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-carousel>
+
+                <div class="form-info" *ngIf="selectedImageId">
+                  <p>
+                    Imagen seleccionada: ID
+                    {{ selectedImageId }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Agregar los bottones -->
+          <div class="col">
+            <div class="flex justify-content-between">
+              <div class="grid text-left">
+                <p-button
+                  icon="pi pi-hammer"
+                  label="Limpiar"
+                  severity="danger"
+                  class="m-2"
+                  (click)="limpiarFormulario()"
+                />
+                <br />
+                <div class="m-2">
+                  <p-button
+                    *ngIf="nombreCapacitacion !== 'Externo'"
+                    icon="pi pi-clock   "
+                    label="Configurar horarios"
+                    severity="success"
+                    class="pr-2"
+                    (click)="showHorarios()"
+                  />
+                </div>
+              </div>
+              <div class="grid text-right">
+                <p-button
+                  icon="pi pi-eye"
+                  label="Visualizar"
+                  severity="contrast"
+                  class="m-2"
+                  (click)="showVistaPreviaCurso()"
+                />
+                <div class="m-2">
+                  <p-button
+                    icon="pi pi-check-circle"
+                    [label]="modoFormulario === 'editar' ? 'Actualizar' : 'Guardar'"
+                    severity="success"
+                    (click)="crearCurso()"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </form>
+    </div>
+  </div>
+</section>
+<!-- <app-asignar-horario-capacitacion>
+
+</app-asignar-horario-capacitacion> -->
+<!-- modal de agregar horario al curso -->
+<p-dialog
+  header="Configuración de Horarios"
+  [(visible)]="showModalHorarios"
+  [modal]="true"
+  [style]="{ width: '60rem' }"
+>
+  <!-- agregar de inicio y fin de fechas -->
+  <div class="col-12 mt-3 grid">
+    <div class="col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
+        <p-calendar
+          [(ngModel)]="dFechaInicio"
+          styleClass="w-full"
+          dateFormat="dd/mm/yy"
+          [iconDisplay]="'input'"
+          [showIcon]="true"
+          [disabled]="true"
+        ></p-calendar>
+      </p-inputGroup>
+    </div>
+    <div class="col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
+        <p-calendar
+          [(ngModel)]="dFechaFin"
+          styleClass="w-full"
+          dateFormat="dd/mm/yy"
+          [iconDisplay]="'input'"
+          [showIcon]="true"
+          [disabled]="true"
+        ></p-calendar>
+      </p-inputGroup>
+    </div>
+    <div class="col-2">
+      <div class="flex justify-content-center">
+        <span class="text-2xl font-bold text-primary">
+          {{ iTotalHrs }}
+        </span>
+      </div>
+      <div class="flex justify-content-center">
+        <span class="text-base text-gray-600 mt-2">Horas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seleccionar días -->
+  <div class="card relative mt-4">
+    <samp class="btntag">Seleccionar los días.</samp>
+    <div class="flex my-3 justify-content-center">
+      <div>
+        <p-button
+          *ngFor="let dia of dias; let i = index"
+          [label]="dia.nombre"
+          [severity]="dia.iestado === '1' ? 'warning' : 'primary'"
+          class="p-2"
+          (click)="mostrarHorario(dia.id)"
+        />
+      </div>
+    </div>
+  </div>
+  <!-- Asignar horario -->
+  <div class="card mt-4 relative">
+    <samp class="btnh">Horario</samp>
+    <div class="my-3">
+      <samp>El horario es el mismo todos los días seleccionados?</samp>
+    </div>
+
+    <!-- <div class="grid col" *ngIf="diaSeleccionado">
+            <div class="col-12">
+                <samp
+                    >Horario para:
+                    <samp class="font-bold">{{ nombredia }}</samp>
+                </samp>
+            </div>
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Hora Inicio:</p-inputGroupAddon>
+                    <p-calendar
+                        [iconDisplay]="'input'"
+                        styleClass="w-full"
+                        [showIcon]="true"
+                        [timeOnly]="true"
+                        inputId="templatedisplay"
+                        placeholder="Ingrese hora de inicio"
+                        [(ngModel)]="horaSeleccionadaInicio"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-clock"
+                                (onclick)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </p-inputGroup>
+            </div>
+
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Hora Fin:</p-inputGroupAddon>
+                    <p-calendar
+                        [iconDisplay]="'input'"
+                        styleClass="w-full"
+                        [showIcon]="true"
+                        [timeOnly]="true"
+                        inputId="templatedisplay"
+                        placeholder="Ingrese hora fin"
+                        [(ngModel)]="horaSeleccionadaFin"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-clock"
+                                (onclick)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </p-inputGroup>
+            </div>
+
+            
+        </div> -->
+
+    <!-- Acción para guardar horario -->
+    @if (nombredia) {
+      <div class="grid">
+        <div
+          class="p-3 border-round-left w-3rem h-6rem bg-primary font-bold flex align-items-center justify-content-center vertical-text-container"
+        >
+          <label for="">{{ nombredia }}</label>
+        </div>
+        <div>
+          <div class="mb-1">
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-14rem"
+              [hourFormat]="'12'"
+              [showIcon]="true"
+              [timeOnly]="true"
+              inputId="templatedisplay"
+              placeholder="Ingrese hora de inicio"
+              [(ngModel)]="horaSeleccionadaInicio"
+            >
+              <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+              </ng-template>
+            </p-calendar>
+          </div>
+          <div>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-14rem"
+              [hourFormat]="'12'"
+              [showIcon]="true"
+              [timeOnly]="true"
+              inputId="templatedisplay"
+              placeholder="Ingrese hora fin"
+              [(ngModel)]="horaSeleccionadaFin"
+            >
+              <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+              </ng-template>
+            </p-calendar>
+          </div>
+        </div>
+        <!-- <div class="mx-5 flex align-items-center justify-content-center">
+                    <i class="pi pi-arrow-right"></i>
+                </div> -->
+      </div>
+      <div class="col flex justify-content-end">
+        <p-button
+          label="Añadir Horario"
+          icon="pi pi-plus"
+          severity="success"
+          (click)="guardarDatos()"
+        />
+      </div>
+    }
+
+    <p-divider />
+    <!-- <pre>{{ datosTemporalesLista | json }}</pre> -->
+    <div class="grid grid-nogutter grid-cols-3 gap-2">
+      <div class="mt-2" *ngFor="let item of datosTemporalesLista">
+        <div class="grid mt-3">
+          <div
+            class="p-3 border-round-left w-3rem h-6rem bg-primary font-bold flex align-items-center justify-content-center vertical-text-container"
+          >
+            <label for="">{{ item.dia }}</label>
+          </div>
+          <div>
+            <div class="mb-1">
+              <p-calendar
+                [iconDisplay]="'input'"
+                styleClass="w-14rem"
+                [hourFormat]="'12'"
+                [showIcon]="true"
+                [timeOnly]="true"
+                inputId="templatedisplay"
+                placeholder="Ingrese hora de inicio"
+                [(ngModel)]="item.iHoraInicio"
+              >
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                  <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+                </ng-template>
+              </p-calendar>
+            </div>
+            <div>
+              <p-calendar
+                [iconDisplay]="'input'"
+                styleClass="w-14rem"
+                [hourFormat]="'12'"
+                [showIcon]="true"
+                [timeOnly]="true"
+                inputId="templatedisplay"
+                placeholder="Ingrese hora fin"
+                [(ngModel)]="item.iHoraFin"
+              >
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                  <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+                </ng-template>
+              </p-calendar>
+            </div>
+          </div>
+          <div class="mx-5 flex align-items-center justify-content-center">
+            <i class="pi pi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-content-center py-5">
+    <!-- Botón para guardar los datos -->
+    <p-button label="Guardar" icon="pi pi-check" [loading]="loading" (click)="guardarTodo()" />
+  </div>
+</p-dialog>
+
+<!-- modal de vista previa del curso creado -->
+<p-dialog
+  header="Visualización del curso"
+  [(visible)]="showVistaPrevia"
+  [modal]="true"
+  [style]="{ width: '60rem' }"
+>
+  <div class="card flex justify-content-center">
+    <article
+      class="card p-0 border-1 flex flex-column surface-border overflow-hidden w-23rem h-33rem my-6 post-module"
+    >
+      <div class="curso__image-container img-transition">
+        <img [src]="" alt="{{ '' }}" />
+      </div>
+      <!-- <div class="h-12rem"></div> -->
+      <div class="mb-auto">
+        <div class="text-xl">
+          <small class="text-primary font-bold"></small>
+          <br />
+          <div class="grid row-gap-2">
+            <div class="col-12 title text-center font-bold">
+              {{ datosprevios?.cCapTitulo }}
+            </div>
+            <div class="mx-4 col-12 grid">
+              <div class="col-12 grid column-gap-1 align-items-center">
+                <i class="pi pi-cog"></i>
+                <span>Modalidad: {{ 'Virtual' }}</span>
+              </div>
+              <div class="col-12 grid column-gap-1 align-items-center">
+                <i class="pi pi-clock"></i>
+                <span>Horario: {{ '08:00 am - 09:45 am' }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-3 col-12 grid justify-content-end">
+            <div>
+              <p-button
+                sty
+                label="Ingresar"
+                icon="pi pi-arrow-circle-right"
+                severity="success"
+                iconPos="right"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="flex justify-content-end">
+    <p-button icon="pi pi-check" label="Aceptar" class="m-2" (click)="cerrarModal()" />
+  </div>
+</p-dialog>
+
+<p-toast />

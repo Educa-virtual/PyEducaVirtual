@@ -1,104 +1,88 @@
 <app-container-page
-    title="Información de la Institución"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="confirmar($event)"
+  title="Información de la Institución"
+  [actions]="accionesPrincipal"
+  (accionBtnItem)="confirmar($event)"
 >
-    <p-toast />
+  <p-toast />
 
-    <div class="grid p-fluid mt-3">
-        <p-fieldset
-            legend="Insignia Institucional"
-            [toggleable]="true"
-            [collapsed]="false"
-        >
-            <div class="field col-12">
-                <img
-                    src="assets/images/logo-proyecto.svg"
-                    alt="Logo del proyecto"
-                    height="90"
-                    style="
-                        margin-left: 40%;
-                        border-radius: 50%;
-                        overflow: hidden;
-                    "
+  <div class="grid p-fluid mt-3">
+    <p-fieldset legend="Insignia Institucional" [toggleable]="true" [collapsed]="false">
+      <div class="field col-12">
+        <img
+          src="assets/images/logo-proyecto.svg"
+          alt="Logo del proyecto"
+          height="90"
+          style="margin-left: 40%; border-radius: 50%; overflow: hidden"
+        />
+      </div>
+      <div class="field col-12 md:col-12">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cIieeCodigoModular"
+            readonly="true"
+            [value]="perfil.cIieeCodigoModular"
+            aria-describedby="cIieeCodigoModular-help"
+          />
+          <label for="cIieeCodigoModular">Código modular</label>
+        </span>
+      </div>
+    </p-fieldset>
+
+    <div class="field col-12 md:col-8">
+      <form [formGroup]="form">
+        <p-fieldset legend="Información de la Institución" [toggleable]="true" [collapsed]="false">
+          <div class="grid p-fluid mt-2">
+            <div class="field col-12 md:col-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="cIieeNombre"
+                  formControlName="cIieeNombre"
+                  aria-describedby="cIieeNombre-help"
                 />
+                <label for="cIieeNombre">Nombre de la Institución </label>
+              </span>
             </div>
-            <div class="field col-12 md:col-12">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cIieeCodigoModular"
-                        readonly="true"
-                        [value]="perfil.cIieeCodigoModular"
-                        aria-describedby="cIieeCodigoModular-help"
-                    />
-                    <label for="cIieeCodigoModular">Código modular</label>
-                </span>
+
+            <div class="field col-12 md:col-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="cIieeRUC"
+                  formControlName="cIieeRUC"
+                  aria-describedby="cIieeRUC-help"
+                />
+                <label for="cIieeRUC">RUC</label>
+              </span>
             </div>
+          </div>
+          <div class="grid p-fluid mt-2">
+            <div class="field col-12 md:col-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="cIieeRslCreacion"
+                  formControlName="cIieeRslCreacion"
+                  aria-describedby="cIieeRslCreacion-help"
+                />
+                <label for="cIieeRslCreacion">Resolución de creación</label>
+              </span>
+            </div>
+            <div class="field col-12 md:col-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="cIieeDireccion"
+                  formControlName="cIieeDireccion"
+                  aria-describedby="cIieeDireccion-help"
+                />
+                <label for="cIieeDireccion">Dirección</label>
+              </span>
+            </div>
+          </div>
         </p-fieldset>
-
-        <div class="field col-12 md:col-8">
-            <form [formGroup]="form">
-                <p-fieldset
-                    legend="Información de la Institución"
-                    [toggleable]="true"
-                    [collapsed]="false"
-                >
-                    <div class="grid p-fluid mt-2">
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <input
-                                    pInputText
-                                    id="cIieeNombre"
-                                    formControlName="cIieeNombre"
-                                    aria-describedby="cIieeNombre-help"
-                                />
-                                <label for="cIieeNombre"
-                                    >Nombre de la Institución
-                                </label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <input
-                                    pInputText
-                                    id="cIieeRUC"
-                                    formControlName="cIieeRUC"
-                                    aria-describedby="cIieeRUC-help"
-                                />
-                                <label for="cIieeRUC">RUC</label>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="grid p-fluid mt-2">
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <input
-                                    pInputText
-                                    id="cIieeRslCreacion"
-                                    formControlName="cIieeRslCreacion"
-                                    aria-describedby="cIieeRslCreacion-help"
-                                />
-                                <label for="cIieeRslCreacion"
-                                    >Resolución de creación</label
-                                >
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <input
-                                    pInputText
-                                    id="cIieeDireccion"
-                                    formControlName="cIieeDireccion"
-                                    aria-describedby="cIieeDireccion-help"
-                                />
-                                <label for="cIieeDireccion">Direección</label>
-                            </span>
-                        </div>
-                    </div>
-                </p-fieldset>
-            </form>
-        </div>
+      </form>
     </div>
+  </div>
 </app-container-page>

@@ -1,0 +1,145 @@
+<br />
+
+<form [formGroup]="formEconomico">
+  <div class="grid p-fluid p-2">
+    <div class="col-12 sm:col-6">
+      <app-input-simple
+        inputType="number"
+        [inputControl]="$any(formEconomico.controls['iIngresoEcoFamiliar'])"
+        addonLabel="Ingresos mensuales de la familia del estudiante"
+        [inputMin]="0"
+        [inputShowButtons]="true"
+        [inputUseGrouping]="true"
+        [inputMaxlength]="10"
+        [infoAdicional]="iIngresoEcoFamiliar"
+      />
+      <ng-template #iIngresoEcoFamiliar>
+        Si no desea indicar este dato puede dejarlo en blanco, y en su lugar puede indicar el rango
+        de ingresos de la familia del estudiante.
+      </ng-template>
+    </div>
+    <div class="col-12 sm:col-6">
+      <app-dropdown-simple
+        addonLabel="Rango de ingresos mensuales de la familia del estudiante *"
+        [dropdownItems]="rangos_sueldo"
+        [dropdownControl]="$any(formEconomico.controls['iRangoSueldoId'])"
+        dropdownPlaceholder="Seleccione"
+        [filter]="true"
+        [showClear]="true"
+      />
+    </div>
+    <div class="col-12 sm:col-6">
+      <app-input-simple
+        inputType="text"
+        [inputControl]="$any(formEconomico.controls['cIngresoEcoActividad'])"
+        addonLabel="Actividad económica de la familia del estudiante"
+        [inputMaxlength]="100"
+      />
+    </div>
+    <div class="col-12 sm:col-6">
+      <app-switch-simple
+        [switchControl]="$any(formEconomico.controls['bIngresoEcoTrabaja'])"
+        addonLabel="¿El estudiante trabaja?"
+      />
+    </div>
+    <div class="col-12 sm:col-6">
+      <app-dropdown-simple
+        addonLabel="¿El estudiante recibe algún apoyo económico?"
+        [dropdownItems]="tipos_apoyo_economico"
+        [dropdownControl]="$any(formEconomico.controls['iTipoAEcoId'])"
+        dropdownPlaceholder="Seleccione"
+        [filter]="true"
+        [showClear]="true"
+      />
+    </div>
+    <div class="col-12">
+      <p-fieldset legend="Ingresos del apoderado">
+        <div class="grid p-fluid">
+          <div class="col-12 sm:col-6">
+            <app-input-simple
+              inputType="number"
+              [inputControl]="$any(formEconomico.controls['iIngresoEcoEstudiante'])"
+              addonLabel="Ingresos mensuales del apoderado"
+              [inputMin]="0"
+              [inputShowButtons]="true"
+              [inputUseGrouping]="true"
+              [inputMaxlength]="10"
+              [infoAdicional]="iIngresoEcoEstudiante"
+            />
+            <ng-template #iIngresoEcoEstudiante>
+              Si no desea indicar este dato puede dejarlo en blanco, y en su lugar puede indicar el
+              rango de ingresos del apoderado.
+            </ng-template>
+          </div>
+          <div class="col-12 sm:col-6">
+            <app-dropdown-simple
+              addonLabel="Rango de ingresos mensuales del apoderado"
+              [dropdownItems]="rangos_sueldo"
+              [dropdownControl]="$any(formEconomico.controls['iRangoSueldoIdPersona'])"
+              dropdownPlaceholder="Seleccione"
+              [filter]="true"
+              [showClear]="true"
+            />
+          </div>
+          <div class="col-12 sm:col-6">
+            <app-input-simple
+              inputType="number"
+              [inputControl]="$any(formEconomico.controls['iIngresoEcoTrabajoHoras'])"
+              addonLabel="Cantidad de horas trabajadas al día"
+              [inputMin]="1"
+              [inputShowButtons]="true"
+              [inputUseGrouping]="true"
+              [inputMaxlength]="2"
+            />
+          </div>
+          <div class="col-12 sm:col-6">
+            <app-input-simple
+              inputType="text"
+              [inputControl]="$any(formEconomico.controls['cIngresoEcoDependeDe'])"
+              addonLabel="Actividad económica que brinda ingresos al apoderado"
+              [inputMaxlength]="100"
+            />
+          </div>
+          <div class="col-12 sm:col-6">
+            <app-dropdown-simple
+              addonLabel="¿De quien depende económicamente el apoderado?"
+              [dropdownItems]="dependencias_economicas"
+              [dropdownControl]="$any(formEconomico.controls['iDepEcoId'])"
+              dropdownPlaceholder="Seleccione"
+              [filter]="true"
+              [showClear]="true"
+            />
+            <ng-template #iDepEcoId>
+              En esta pregunta "depender de otros" se refiere a recibir apoyo económico de amigos,
+              familiares o instituciones.
+            </ng-template>
+          </div>
+          <div class="col-12 sm:col-6">
+            <app-dropdown-simple
+              addonLabel="¿Cual es la jornada de trabajo del apoderado?"
+              [dropdownItems]="jornadas_trabajo"
+              [dropdownControl]="$any(formEconomico.controls['iJorTrabId'])"
+              dropdownPlaceholder="Seleccione"
+              [filter]="true"
+              [showClear]="true"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+  </div>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+  <p-button label="Salir sin guardar" (onClick)="salir()" severity="secondary" />
+  <p-button
+    type="button"
+    label="Actualizar y continuar"
+    icon="pi pi-save"
+    severity="success"
+    (onClick)="actualizar()"
+  />
+</div>
+<p-toast></p-toast>

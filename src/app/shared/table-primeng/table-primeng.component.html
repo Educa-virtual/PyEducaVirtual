@@ -1,576 +1,599 @@
 <p-table
-    #dt
-    [columns]="columnas"
-    [value]="data"
-    [loading]="loading"
-    responsiveLayout="scroll"
-    styleClass="p-datatable-sm"
-    [paginator]="showPaginator"
-    [rows]="10"
-    [tableStyle]="tableStyle"
-    [rowGroupMode]="template === 'expandable' ? 'subheader' : undefined"
-    currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    (selectionChange)="onSelectionChange($event)"
-    [sortMode]="sortMode"
-    [groupRowsBy]="groupRowsBy"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
-    [(selection)]="selectedRowData"
-    [scrollable]="scrollable"
-    [scrollHeight]="scrollHeight"
-    class="hoverTable"
-    [dataKey]="dataKey"
-    [expandedRowKeys]="expandedRowKeys"
-    [selectionMode]="selectionMode"
+  #dt
+  [columns]="columnas"
+  [value]="data"
+  [loading]="loading"
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+  [paginator]="showPaginator"
+  [rows]="10"
+  [tableStyle]="tableStyle"
+  [rowGroupMode]="template === 'expandable' ? 'subheader' : undefined"
+  currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  (selectionChange)="onSelectionChange($event)"
+  [sortMode]="sortMode"
+  [groupRowsBy]="groupRowsBy"
+  [sortField]="sortField"
+  [sortOrder]="sortOrder"
+  [(selection)]="selectedRowData"
+  [scrollable]="scrollable"
+  [scrollHeight]="scrollHeight"
+  class="hoverTable"
+  [dataKey]="dataKey"
+  [expandedRowKeys]="expandedRowKeys"
+  [selectionMode]="selectionMode"
 >
-    <ng-container *ngIf="showCaption">
-        <ng-template pTemplate="caption">
-            @if (caption) {
-                <div class="grid">
-                    <div
-                        class="p-2 w-full text-center"
-                        style="background-color: #e6e6ee"
-                    >
-                        {{ caption.toUpperCase() }}
-                    </div>
-                </div>
-            } @else {
-                <div class="grid">
-                    <div class="col-10" style="margin-left: -0.5rem">
-                        <app-search-words
-                            (searchChange)="buscarPalabras($event)"
-                        >
-                        </app-search-words>
-                        <!-- <p-inputGroup>
-                            <p-inputGroupAddon
-                                ><i class="pi pi-search"></i
-                            ></p-inputGroupAddon>
-                            <input
-                                pInputText
-                                [placeholder]="placeholder"
-                                (input)="
-                                    dt.filterGlobal(
-                                        $any($event.target).value,
-                                        'contains'
-                                    )
-                                "
-                            />
-                        </p-inputGroup> -->
-                    </div>
-                    <div class="col-2 align-content-center">
-                        <div class="flex flex-wrap gap-2 justify-content-end">
-                            <ng-content
-                                select="[slot='caption-content']"
-                            ></ng-content>
-                            <app-table-column-filter
-                                [columns]="columnas"
-                                (columnsChange)="onColumnSelected($event)"
-                            ></app-table-column-filter>
-                        </div>
-                    </div>
-                </div>
-            }
-        </ng-template>
-    </ng-container>
-
-    <ng-template pTemplate="header" let-columns>
-        <tr class="text-uppercase">
-            @for (col of columnasSeleccionadas; track $index) {
-                <th
-                    [pSortableColumn]="col.field"
-                    [style.width]="col.width"
-                    [style.padding]="col.padding"
-                    [pSortableColumnDisabled]="enableCellSelection"
-                >
-                    @switch (col.type) {
-                        @case ('actions') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('item') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('checkbox') {
-                            <p-tableHeaderCheckbox />
-                        }
-                        @case ('expansion') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('cell-editor') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @case ('item-checkbox') {
-                            <div [style.text-align]="col.text_header">
-                                {{ col.header }}
-                            </div>
-                        }
-                        @default {
-                            <div [style.text-align]="col.text_header" class="">
-                                <span> {{ col.header }}</span>
-                                @if (showSortIcon) {
-                                    <p-sortIcon
-                                        [field]="col.header"
-                                    ></p-sortIcon>
-                                }
-                                @if (showAdvancedFilter) {
-                                    <p-columnFilter
-                                        [type]="col.type"
-                                        [field]="col.field"
-                                        display="menu"
-                                        matchMode="contains"
-                                        [showMatchModes]="false"
-                                        [showOperator]="false"
-                                        [showAddButton]="false"
-                                    />
-                                }
-                            </div>
-                        }
-                    }
-                </th>
-            }
-        </tr>
-    </ng-template>
-    @if (template === 'body') {
-        <ng-template
-            pTemplate="body"
-            let-rowData
-            let-columns="columns"
-            let-rowIndex="rowIndex"
-            let-expanded="expanded"
-            let-editing="editing"
-        >
-            <tr
-                [pSelectableRow]="rowData"
-                [ngClass]="getClass(rowData, 'class')"
+  <ng-container *ngIf="showCaption">
+    <ng-template pTemplate="caption">
+      @if (caption) {
+        <div class="grid">
+          <div class="p-2 w-full text-center" style="background-color: #e6e6ee">
+            {{ caption.toUpperCase() }}
+          </div>
+        </div>
+      } @else {
+        <div class="grid">
+          <div class="col-10" style="margin-left: -0.5rem">
+            <app-search-words
+              [placeholder]="searchPlaceholder"
+              (searchChange)="buscarPalabras($event)"
+              *ngIf="!showSearchTable"
             >
-                @for (
-                    col of columnasSeleccionadas;
-                    track $index;
-                    let i = $index
-                ) {
-                    <td
-                        (click)="
-                            enableCellSelection &&
-                                selectCell(col, col.field, rowData)
-                        "
-                        [ngClass]="{
-                            'SELECTED-CELL':
-                                (enableViewSelections || enableCellSelection) &&
-                                rowData.values?.[col.field]?.logros !== null,
-                            'cursor-pointer': enableCellSelection,
-                        }"
-                        [pEditableColumn]="rowData[col.field]"
-                        [pEditableColumnField]="col.field"
-                    >
-                        @if (col.type === 'expansion') {
-                            <button
-                                type="button"
-                                pButton
-                                pRipple
-                                [pRowToggler]="rowData"
-                                aria-label="Toggle row expansion"
-                                class="p-button-text p-button-rounded p-button-plain"
-                                [icon]="
-                                    expanded
-                                        ? 'pi pi-chevron-down'
-                                        : 'pi pi-chevron-right'
-                                "
-                            ></button>
-                        }
+            </app-search-words>
+            <p-inputGroup *ngIf="showSearchTable">
+              <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+              <input
+                pInputText
+                [placeholder]="placeholder"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              />
+            </p-inputGroup>
+          </div>
+        </div>
+      }
+    </ng-template>
+  </ng-container>
 
-                        @if (col.type === 'arrayColumn') {
-                            <p-button
-                                [text]="true"
-                                severity="secondary"
-                                class="p-col-12"
-                                (onClick)="accionBtn('select', rowData)"
-                            >
-                                <div
-                                    class="perfiles-list-item text-left"
-                                    tabindex="0"
-                                >
-                                    <i class="pi pi-home"
-                                        ><strong> Aula : </strong
-                                        >{{ rowData[col.field].ambiente }}
-                                        <strong> Ciclo : </strong
-                                        >{{ rowData[col.field].ciclo }}</i
-                                    >
-
-                                    <br /><i class="pi pi-bookmark"
-                                        ><strong> Grado / Seccion : </strong
-                                        >{{ rowData[col.field].grado }} /
-                                        {{ rowData[col.field].seccion }}</i
-                                    >
-
-                                    <i class="pi pi-user"
-                                        ><strong> Estudiantes : </strong
-                                        >{{ rowData[col.field].estudiantes }}</i
-                                    >
-                                </div>
-                            </p-button>
-                        }
-
-                        @if (col.type === 'item') {
-                            <div [style.text-align]="col.text">
-                                <span>{{ rowIndex + 1 }}</span>
-                            </div>
-                        }
-                        @if (col.type === 'cell-editor') {
-                            <p-cellEditor>
-                                <ng-template pTemplate="input">
-                                    <input
-                                        pInputText
-                                        type="text"
-                                        [(ngModel)]="rowData[col.field]"
-                                    />
-                                </ng-template>
-                                <ng-template pTemplate="output">
-                                    {{ rowData[col.field] }}
-                                </ng-template>
-                            </p-cellEditor>
-                        }
-                        @if (col.type === 'p-editor') {
-                            <p-editor
-                                class="custom-editor"
-                                [readonly]="true"
-                                [modules]="{}"
-                                [(ngModel)]="rowData[col.field]"
-                            />
-                        }
-                        @if (col.type === 'text') {
-                            <div [style.text-align]="col.text">
-                                {{ rowData[col.field] }}
-                            </div>
-                        }
-                        @if (col.type === 'date') {
-                            <div [style.text-align]="col.text">
-                                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
-                            </div>
-                        }
-                        @if (col.type === 'checkbox') {
-                            <p-tableCheckbox [value]="rowData" />
-                        }
-                        @if (col.type === 'date') {
-                            <div [style.text-align]="col.text">
-                                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
-                            </div>
-                        }
-                        @if (col.type === 'radio') {
-                            <p-tableRadioButton
-                                [value]="rowData"
-                            ></p-tableRadioButton>
-                        }
-                        @if (col.type === 'radio-action') {
-                            <p-tableRadioButton
-                                [value]="rowData"
-                                (click)="accionBtn('select', rowData)"
-                            ></p-tableRadioButton>
-                        }
-                        @if (col.type === 'trim') {
-                            <p class="truncate-text">
-                                {{ rowData[col.field] }}
-                            </p>
-                        }
-                        @if (col.type === 'icon-tooltip') {
-                            <div [style.text-align]="col.text">
-                                <i
-                                    class="pi pi-info-circle"
-                                    style="color: var(--primary-color)"
-                                    [pTooltip]="rowData[col.field]"
-                                    tooltipPosition="top"
-                                ></i>
-                            </div>
-                        }
-                        @if (col.type === 'actions') {
-                            <div [style.text-align]="col.text">
-                                @for (item of actions; track $index) {
-                                    @if (
-                                        item.type === 'item' && item.isVisible
-                                            ? item.isVisible(rowData)
-                                            : true
-                                    ) {
-                                        <button
-                                            [rounded]="true"
-                                            pButton
-                                            pRipple
-                                            [pTooltip]="item.labelTooltip"
-                                            tooltipPosition="top"
-                                            (click)="
-                                                accionBtn(item.accion, rowData)
-                                            "
-                                            class="p-1"
-                                            [ngClass]="item.class"
-                                        >
-                                            @if (item.icon | isIconType) {
-                                                <app-icon
-                                                    [name]="item.icon.name"
-                                                    [color]="item.icon.color"
-                                                    [size]="item.icon.size"
-                                                ></app-icon>
-                                            } @else {
-                                                <i class="{{ item.icon }}"></i>
-                                            }
-                                        </button>
-                                    }
-                                }
-                            </div>
-                        }
-                        @if (col.type === 'estado') {
-                            <p-tag
-                                [severity]="
-                                    rowData[col.field] ? 'success' : 'danger'
-                                "
-                                [value]="
-                                    rowData[col.field]
-                                        ? col.customFalsy?.trueText
-                                        : col.customFalsy?.falseText
-                                "
-                            >
-                            </p-tag>
-                        }
-                        @if (col.type === 'estado-activo') {
-                            <div [style.text-align]="col.text">
-                                @if (rowData[col.field].toString() === '1') {
-                                    <i
-                                        class="pi pi-check-circle"
-                                        style="color: green"
-                                        [pTooltip]="
-                                            rowData[col.field] + ' - Habilitado'
-                                        "
-                                        tooltipPosition="top"
-                                    ></i>
-                                } @else {
-                                    <i
-                                        class="pi pi-times-circle"
-                                        style="color: red"
-                                        [pTooltip]="
-                                            rowData[col.field] +
-                                            ' - Deshabilitado'
-                                        "
-                                        tooltipPosition="top"
-                                    ></i>
-                                }
-                            </div>
-                        }
-                        @if (col.type === 'list_json_file') {
-                            @if (rowData[col.field].length) {
-                                <div class="flex">
-                                    @for (
-                                        item of rowData[col.field];
-                                        track $index
-                                    ) {
-                                        <div>
-                                            <p-button
-                                                [text]="true"
-                                                severity="secondary"
-                                                class="p-col-12"
-                                                (onClick)="openFile(item)"
-                                            >
-                                                @switch (item.type) {
-                                                    @case (1) {
-                                                        <i
-                                                            [pTooltip]="
-                                                                item.name
-                                                            "
-                                                            tooltipPosition="top"
-                                                            class="pi pi-upload"
-                                                            style="
-                                                                color: #333437;
-                                                            "
-                                                        ></i>
-                                                    }
-                                                    @case (2) {
-                                                        <i
-                                                            [pTooltip]="
-                                                                item.name
-                                                            "
-                                                            tooltipPosition="top"
-                                                            class="pi pi-link"
-                                                            style="
-                                                                color: #333437;
-                                                            "
-                                                        ></i>
-                                                    }
-                                                    @case (3) {
-                                                        <i
-                                                            [pTooltip]="
-                                                                item.name
-                                                            "
-                                                            tooltipPosition="top"
-                                                            class="pi pi-youtube"
-                                                            style="
-                                                                color: #c4302b;
-                                                            "
-                                                        ></i>
-                                                    }
-                                                    @case (4) {
-                                                        <i
-                                                            [pTooltip]="
-                                                                item.name
-                                                            "
-                                                            tooltipPosition="top"
-                                                            class="pi pi-folder"
-                                                            style="
-                                                                color: #ffd04b;
-                                                            "
-                                                        ></i>
-                                                    }
-                                                    @case (5) {
-                                                        <p-image
-                                                            [src]="
-                                                                backend +
-                                                                '/' +
-                                                                item.ruta
-                                                            "
-                                                            alt="Image"
-                                                            width="15"
-                                                            [preview]="true"
-                                                            (onImageError)="
-                                                                updateUrl(item)
-                                                            "
-                                                        />
-                                                    }
-                                                }
-                                            </p-button>
-                                        </div>
-                                    }
-                                </div>
-                            } @else {
-                                -
-                            }
-                        }
-                        @if (col.type === 'item-checkbox') {
-                            <div [style.text-align]="col.text">
-                                <p-checkbox
-                                    [inputId]="rowData[col.field]"
-                                    [value]="rowData"
-                                    [(ngModel)]="rowData[col.field]"
-                                    [binary]="true"
-                                    [trueValue]="1"
-                                    [falseValue]="0"
-                                    (onChange)="
-                                        accionBtn(
-                                            'setearDatax' + col.field,
-                                            rowData
-                                        )
-                                    "
-                                />
-                            </div>
-                        }
-                        @if (col.type === 'tag') {
-                            <p-tag
-                                [severity]="mapTagStyles(rowData, col)"
-                                [value]="rowData[col.field]"
-                            >
-                            </p-tag>
-                        }
-                    </td>
+  <ng-template pTemplate="header" let-columns>
+    @switch (typeHeaderColumn) {
+      @case ('group') {
+        @for (columns of columnsGroupSeleccionadas; track $index) {
+          <tr class="text-uppercase">
+            @for (col of columns; track $index) {
+              <th
+                [pSortableColumn]="col.field"
+                [style.width]="col.width"
+                [style.padding]="col.padding"
+                [colSpan]="col.colspan"
+                [rowSpan]="col.rowspan"
+                [ngStyle]="getStyleColumnGroup(col, $index)"
+                [pSortableColumnDisabled]="enableCellSelection"
+                [class]="col.class"
+              >
+                <div [style.text-align]="col.text_header" class="">
+                  <span> {{ col.header }}</span>
+                  @if (showSortIcon) {
+                    <p-sortIcon [field]="col.header"></p-sortIcon>
+                  }
+                  @if (showAdvancedFilter) {
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.field"
+                      display="menu"
+                      matchMode="contains"
+                      [showMatchModes]="false"
+                      [showOperator]="false"
+                      [showAddButton]="false"
+                    />
+                  }
+                </div>
+              </th>
+            }
+          </tr>
+        }
+      }
+      @default {
+        <tr class="text-uppercase">
+          @for (col of columnasSeleccionadas; track $index) {
+            <th
+              [pSortableColumn]="col.field"
+              [style.width]="col.width"
+              [style.padding]="col.padding"
+              [pSortableColumnDisabled]="enableCellSelection"
+              [class]="col.class"
+            >
+              @switch (col.type) {
+                @case ('actions') {
+                  <div [style.text-align]="col.text_header">
+                    {{ col.header }}
+                  </div>
                 }
-            </tr>
-        </ng-template>
+                @case ('item') {
+                  <div [style.text-align]="col.text_header">
+                    {{ col.header }}
+                  </div>
+                }
+                @case ('checkbox') {
+                  <p-tableHeaderCheckbox />
+                }
+                @case ('expansion') {
+                  <div [style.text-align]="col.text_header">
+                    {{ col.header }}
+                  </div>
+                }
+                @case ('cell-editor') {
+                  <div [style.text-align]="col.text_header">
+                    {{ col.header }}
+                  </div>
+                }
+                @case ('item-checkbox') {
+                  <div [style.text-align]="col.text_header">
+                    {{ col.header }}
+                  </div>
+                }
+                @default {
+                  <div [style.text-align]="col.text_header">
+                    <span> {{ col.header }}</span>
+                    @if (showSortIcon) {
+                      <p-sortIcon [field]="col.header"></p-sortIcon>
+                    }
+                    @if (showAdvancedFilter) {
+                      <p-columnFilter
+                        [type]="col.type"
+                        [field]="col.field"
+                        display="menu"
+                        matchMode="contains"
+                        [showMatchModes]="false"
+                        [showOperator]="false"
+                        [showAddButton]="false"
+                      />
+                    }
+                  </div>
+                }
+              }
+            </th>
+          }
+        </tr>
+      }
     }
-    <ng-template pTemplate="rowexpansion" let-rowData>
-        <ng-container
-            [ngTemplateOutlet]="rowExpansionTemplate"
-            [ngTemplateOutletContext]="{
-                $implicit: rowData,
-                columns: columnasSeleccionadas,
-                colspan: columnasSeleccionadas.length,
+  </ng-template>
+  @if (template === 'body') {
+    <ng-template
+      pTemplate="body"
+      let-rowData
+      let-columns="columns"
+      let-rowIndex="rowIndex"
+      let-expanded="expanded"
+    >
+      <tr
+        [pSelectableRow]="rowData"
+        [ngClass]="getRowClasses(rowData, rowIndex)"
+        (click)="trSelected = rowIndex"
+      >
+        @for (col of columnasSeleccionadas; track $index; let i = $index) {
+          <td
+            (click)="enableCellSelection && selectCell(col, col.field, rowData)"
+            class="text-center"
+            [ngClass]="{
+              'SELECTED-CELL':
+                (enableViewSelections || enableCellSelection) &&
+                rowData.values?.[col.field]?.logros !== null,
+              'cursor-pointer': enableCellSelection,
             }"
+            [pEditableColumn]="rowData[col.field]"
+            [pEditableColumnField]="col.field"
+            [class]="col.class"
+          >
+            @if (col.type === 'expansion') {
+              <button
+                type="button"
+                pButton
+                pRipple
+                [pRowToggler]="rowData"
+                aria-label="Toggle row expansion"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              ></button>
+            }
+
+            @if (col.type === 'arrayColumn') {
+              <p-button
+                [text]="true"
+                severity="secondary"
+                class="p-col-12"
+                (onClick)="accionBtn('select', rowData)"
+              >
+                <div class="perfiles-list-item text-left" tabindex="0">
+                  <i class="pi pi-home"
+                    ><strong> Aula : </strong>{{ rowData[col.field].ambiente }}
+                    <strong> Ciclo : </strong>{{ rowData[col.field].ciclo }}</i
+                  >
+
+                  <br /><i class="pi pi-bookmark"
+                    ><strong> Grado / Seccion : </strong>{{ rowData[col.field].grado }} /
+                    {{ rowData[col.field].seccion }}</i
+                  >
+
+                  <i class="pi pi-user"
+                    ><strong> Estudiantes : </strong>{{ rowData[col.field].estudiantes }}</i
+                  >
+                </div>
+              </p-button>
+            }
+
+            @if (col.type === 'item') {
+              <div [style.text-align]="col.text">
+                <span>{{ rowIndex + 1 }}</span>
+              </div>
+            }
+            @if (col.type === 'cell-editor') {
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  @switch (col.inputType) {
+                    @case ('dropdown') {
+                      <p-dropdown
+                        [options]="col.options"
+                        appendTo="body"
+                        [(ngModel)]="rowData[col.field]"
+                        [placeholder]="col.placeholder"
+                        [style]="{
+                          width: '100%',
+                        }"
+                      />
+                    }
+                    <!-- Cambio de tamaño del input -->
+                    @default {
+                      <input
+                        [ngStyle]="{ width: width }"
+                        pInputText
+                        [type]="col.inputType ?? 'text'"
+                        [(ngModel)]="rowData[col.field]"
+                        (input)="soloUnaLetra ? validarUnaLetra($event, rowData, col.field) : null"
+                      />
+                    }
+                  }
+                </ng-template>
+
+                <ng-template pTemplate="output">
+                  @switch (col.outputType) {
+                    @case ('tag') {
+                      <p-tag
+                        [value]="rowData[col.field]"
+                        [severity]="col.severity(rowData[col.field])"
+                      />
+                    }
+                    @default {
+                      {{ rowData[col.field] }}
+                    }
+                  }
+                </ng-template>
+              </p-cellEditor>
+            }
+            @if (col.type === 'p-editor') {
+              <p-editor
+                class="custom-editor"
+                [readonly]="true"
+                [modules]="{}"
+                [(ngModel)]="rowData[col.field]"
+              />
+            }
+            @if (col.type === 'text') {
+              <div [style.text-align]="col.text">
+                {{ rowData[col.field] }}
+              </div>
+            }
+            @if (col.type === 'date') {
+              <div [style.text-align]="col.text">
+                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+              </div>
+            }
+            @if (col.type === 'checkbox') {
+              <p-tableCheckbox [value]="rowData" />
+            }
+            @if (col.type === 'radio') {
+              <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
+            }
+            @if (col.type === 'radio-action') {
+              <p-tableRadioButton
+                [value]="rowData"
+                (click)="accionBtn('select', rowData)"
+              ></p-tableRadioButton>
+            }
+            @if (col.type === 'trim') {
+              <p class="truncate-text">
+                {{ rowData[col.field] }}
+              </p>
+            }
+            @if (col.type === 'icon-tooltip') {
+              <div [style.text-align]="col.text">
+                <i
+                  class="pi pi-info-circle"
+                  style="color: var(--primary-color)"
+                  [pTooltip]="rowData[col.field]"
+                  tooltipPosition="top"
+                ></i>
+              </div>
+            }
+            @if (col.type === 'item-checkList') {
+              <div [style.text-align]="col.text">
+                <i
+                  *ngIf="rowData[col.field] === '1'"
+                  class="pi pi-check"
+                  style="color: var(--green-500)"
+                ></i>
+                <i
+                  *ngIf="rowData[col.field] === '0'"
+                  class="pi pi-times"
+                  style="color: var(--red-500)"
+                ></i>
+              </div>
+            }
+            @if (col.type === 'item-innerHtml') {
+              <div [style.text-align]="col.text" class="text-innerHtml">
+                <div [innerHTML]="rowData[col.field]"></div>
+              </div>
+            }
+            @if (col.type === 'actions') {
+              <div [style.text-align]="col.text">
+                @for (item of actions; track $index) {
+                  @if (item.type === 'item' && item.isVisible ? item.isVisible(rowData) : true) {
+                    <button
+                      [rounded]="true"
+                      pButton
+                      pRipple
+                      [pTooltip]="item.labelTooltip"
+                      tooltipPosition="top"
+                      (click)="accionBtn(item.accion, rowData)"
+                      class="p-1"
+                      [ngClass]="item.class"
+                    >
+                      @if (item.icon | isIconType) {
+                        <app-icon
+                          [name]="item.icon.name"
+                          [color]="item.icon.color"
+                          [size]="item.icon.size"
+                        ></app-icon>
+                      } @else {
+                        <i class="{{ item.icon }}"></i>
+                      }
+                    </button>
+                  }
+                }
+              </div>
+            }
+            @if (col.type === 'estado') {
+              <p-tag
+                [severity]="rowData[col.field] ? 'success' : 'danger'"
+                [value]="
+                  rowData[col.field] ? col.customFalsy?.trueText : col.customFalsy?.falseText
+                "
+              >
+              </p-tag>
+            }
+            @if (col.type === 'estado-activo') {
+              <div [style.text-align]="col.text">
+                @if (rowData[col.field]?.toString() === '1') {
+                  <i
+                    class="pi pi-check-circle"
+                    [style.color]="getColorEstado(rowData, rowIndex, 'check')"
+                    [pTooltip]="rowData[col.field] + ' - Habilitado'"
+                    tooltipPosition="top"
+                  ></i>
+                } @else {
+                  <i
+                    class="pi pi-times-circle"
+                    [style.color]="getColorEstado(rowData, rowIndex, 'times')"
+                    [pTooltip]="rowData[col.field] + ' - Deshabilitado'"
+                    tooltipPosition="top"
+                  ></i>
+                }
+              </div>
+            }
+            @if (col.type === 'list_json_file') {
+              @if (rowData[col.field].length) {
+                <div class="flex">
+                  @for (item of rowData[col.field]; track $index) {
+                    <div>
+                      <p-button
+                        [text]="true"
+                        severity="secondary"
+                        class="p-col-12"
+                        (onClick)="openFile(item)"
+                      >
+                        @switch (item.type) {
+                          @case (1) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-upload"
+                              style="color: #333437"
+                            ></i>
+                          }
+                          @case (2) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-link"
+                              style="color: #333437"
+                            ></i>
+                          }
+                          @case (3) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-youtube"
+                              style="color: #c4302b"
+                            ></i>
+                          }
+                          @case (4) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-folder"
+                              style="color: #ffd04b"
+                            ></i>
+                          }
+                          @case (5) {
+                            <p-image
+                              [src]="backend + '/' + item.ruta"
+                              alt="Image"
+                              width="15"
+                              [preview]="true"
+                              (onImageError)="updateUrl(item)"
+                            />
+                          }
+                        }
+                      </p-button>
+                    </div>
+                  }
+                </div>
+              } @else {
+                -
+              }
+            }
+            @if (col.type === 'item-checkbox') {
+              <div [style.text-align]="col.text">
+                <p-checkbox
+                  [inputId]="rowData[col.field]"
+                  [value]="rowData"
+                  [(ngModel)]="rowData[col.field]"
+                  [binary]="true"
+                  [trueValue]="1"
+                  [falseValue]="0"
+                  (onChange)="accionBtn('setearDatax' + col.field, rowData)"
+                />
+              </div>
+            }
+            @if (col.type === 'tag') {
+              <p-tag [severity]="mapTagStyles(rowData, col)" [value]="rowData[col.field]"> </p-tag>
+            }
+          </td>
+        }
+      </tr>
+    </ng-template>
+  }
+  <ng-template pTemplate="rowexpansion" let-rowData>
+    <ng-container
+      [ngTemplateOutlet]="rowExpansionTemplate"
+      [ngTemplateOutletContext]="{
+        $implicit: rowData,
+        columns: columnasSeleccionadas,
+        colspan: columnasSeleccionadas.length,
+      }"
+    >
+    </ng-container>
+  </ng-template>
+
+  @if (template === 'expandable') {
+    <tr>
+      <td>Expandable</td>
+    </tr>
+    <ng-template
+      pTemplate="groupheader"
+      let-columns="columns"
+      let-rowData
+      let-rowIndex="rowIndex"
+      let-expanded="expanded"
+    >
+      <!-- @for (row of rowData; track $index; let i = $index) { -->
+      <tr>
+        <td
+          [attr.colspan]="
+            isAction(columns) ? columnasSeleccionadas.length - 1 : columnasSeleccionadas.length
+          "
         >
-        </ng-container>
+          <div class="flex align-items-center gap-2">
+            <button
+              type="button"
+              pButton
+              pRipple
+              [pRowToggler]="rowData"
+              text
+              rounded
+              plain
+              class="mr-2"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            >
+              <i><!-- Esto elemento esta aquí por el eslint --></i>
+            </button>
+            <span class="font-bold ml-2 h-full">{{ formatGroupHeader(groupHeader, rowData) }}</span>
+          </div>
+        </td>
+        @if (isAction(columns)) {
+          <td>
+            <div [style.text-align]="isAction(columns).text">
+              @for (item of actions; track $index) {
+                @if (item.type === 'item' && item.isVisible ? item.isVisible(rowData) : true) {
+                  <button
+                    [rounded]="true"
+                    pButton
+                    pRipple
+                    [pTooltip]="item.labelTooltip"
+                    tooltipPosition="top"
+                    (click)="accionBtn(item.accion, selectedValue[rowData[groupRowsBy]])"
+                    class="p-1"
+                    [ngClass]="item.class"
+                  >
+                    @if (item.icon | isIconType) {
+                      <app-icon
+                        [name]="item.icon.name"
+                        [color]="item.icon.color"
+                        [size]="item.icon.size"
+                      ></app-icon>
+                    } @else {
+                      <i class="{{ item.icon }}"></i>
+                    }
+                  </button>
+                }
+              }
+            </div>
+          </td>
+        }
+      </tr>
+
+      <!-- } -->
     </ng-template>
 
-    @if (template === 'expandable') {
-        <tr>
-            <td>Expandable</td>
-        </tr>
-        <ng-template
-            pTemplate="groupheader"
-            let-columns
-            let-rowData
-            let-rowIndex="rowIndex"
-            let-expanded="expanded"
-        >
-            <!-- @for (row of rowData; track $index; let i = $index) { -->
-            <tr>
-                <td [attr.colspan]="columnasSeleccionadas.length">
-                    <div class="flex align-items-center gap-2">
-                        <button
-                            type="button"
-                            pButton
-                            pRipple
-                            [pRowToggler]="rowData"
-                            text
-                            rounded
-                            plain
-                            class="mr-2"
-                            [icon]="
-                                expanded
-                                    ? 'pi pi-chevron-down'
-                                    : 'pi pi-chevron-right'
-                            "
-                        >
-                            <i
-                                ><!-- Esto elemento esta aquí por el eslint --></i
-                            >
-                        </button>
-                        <span class="font-bold ml-2 h-full"
-                            >{{ rowData.cPersDocumento }} -
-                            {{ rowData.cPersPaterno }}
-                            {{ rowData.cPersMaterno }}
-                            {{ rowData.cPersNombre }}</span
-                        >
-                    </div>
-                </td>
-            </tr>
-            <!-- } -->
-        </ng-template>
+    <!-- {{debug(groupfooter)}} -->
 
-        <ng-template pTemplate="groupfooter">
-            <tr class="p-rowgroup-footer">
-                <td
-                    [attr.colspan]="columnasSeleccionadas.length - 1"
-                    style="text-align: right"
-                >
-                    Total Customers
-                </td>
-                <td>total</td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="rowexpansion" let-rowData let-columns>
-            <tr>
-                @for (
-                    col of columnasSeleccionadas;
-                    track $index;
-                    let i = $index
-                ) {
-                    <td>
-                        <div class="flex items-center gap-2">
-                            <span>{{ rowData[col.field] }}</span>
-                        </div>
-                    </td>
+    <ng-template pTemplate="groupfooter" let-rowData>
+      <tr class="p-rowgroup-footer">
+        @for (col of columnasSeleccionadas; track $index; let i = $index) {
+          <td>
+            <div [style.text-align]="col.text">
+              @for (row of groupfooter; track $index; let i = $index) {
+                @if (row[groupRowsBy] === rowData[groupRowsBy]) {
+                  {{ row[col.field] }}
                 }
-                <!-- <td>
-                    </td>
-                    <td>
-                        {{ col.field }}
-                    </td>
-                    <td>
-                        <p-tag [value]="'Warn'" [severity]="'warning'" />
-                    </td>
-                    <td>
-                        {{ col.field }}
-                    </td> -->
-            </tr>
-        </ng-template>
-    }
+              }
+            </div>
+          </td>
+        }
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns>
+      <tr>
+        @for (col of columnasSeleccionadas; track $index; let i = $index) {
+          <td>
+            @switch (col.type) {
+              @case ('radio') {
+                <p-radioButton
+                  [(ngModel)]="selectedValue[rowData[groupRowsBy]]"
+                  [value]="rowData"
+                  [inputId]="rowData"
+                />
+              }
+              @case ('actions') {}
+              @default {
+                <div [style.text-align]="col.text">
+                  {{ rowData[col.field] }}
+                </div>
+              }
+            }
+          </td>
+        }
+      </tr></ng-template
+    >
+  }
 </p-table>

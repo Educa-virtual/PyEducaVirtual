@@ -1,15 +1,13 @@
 <app-banco-pregunta-lista
-    [columnas]="columnas"
-    [data]="bancoPreguntas"
-    [expandedRowKeys]="expandedRowKeys"
-    [accionesTabla]="actionsTable"
-    (accionBtnItemTable)="handleAcciones($event)"
-    (selectedRowDataChange)="selectedRowDataChange.emit($event)"
+  [columnas]="columnas"
+  [data]="bancoPreguntas"
+  [accionesTabla]="actionsTable"
+  (accionBtnItemTable)="handleAcciones($event)"
 />
 
 <app-view-preguntas
-    [showDetallePregunta]="showDetallePregunta"
-    [detallePreguntas]="detallePreguntas"
-    [titulo]="tituloDetallePregunta"
-    (accionBtnItem)="accionBtnItem($event)"
+  [showDetallePregunta]="showDetallePregunta"
+  [detallePreguntas]="detallePreguntas"
+  [titulo]="tituloDetallePregunta"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-view-preguntas>

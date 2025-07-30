@@ -1,0 +1,69 @@
+<app-toolbar-primeng [title]="'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')">
+</app-toolbar-primeng>
+<div class="card">
+  <div class="grid">
+    <div class="col-12 md:col-8">
+      <span class="font-bold text-xl flex gap-2">
+        <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
+        Fecha de Inicio:
+      </span>
+      <p class="pl-5">
+        {{ data?.dtTareaInicio | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
+        {{ data?.dtTareaInicio | date: 'h:mm a' }}
+      </p>
+      <span class="font-bold text-xl flex gap-2 mt-3">
+        <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
+        Fecha Fin:
+      </span>
+      <p class="pl-5">
+        {{ data?.dtTareaFin | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
+        {{ data?.dtTareaFin | date: 'h:mm a' }}
+      </p>
+      @if (data?.iEstado === '1') {
+        <span class="mt-2 ml-1 font-bold text-3xl text-orange-500">BORRADOR</span>
+      }
+      @if (data?.iEstado === '2') {
+        <span class="mt-2 ml-1 font-bold text-3xl text-green-500">PUBLICADO</span>
+      }
+    </div>
+
+    <div class="col-12 md:col-4">
+      <h3 class="text-lg m-0">Instrucciones:</h3>
+      <div class="bg-blue-100 p-3 border-round">
+        {{ data?.cTareaDescripcion }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Esta tarjeta se muestra solo si iPerfilId es 8, lo que indica que solo ciertos usuarios pueden ver este contenido -->
+  <div class="flex flex-column my-4 gap-4">
+    <div class="card">
+      <div class="col-12 md:col-6 flex flex-column gap-2 align-items-start">
+        <!-- <app-rubricas [title]="'Rúbricas'" mode="SELECTION" [params]="params"
+          (rubricaSelectedChange)="accionRubrica($event)"></app-rubricas> -->
+      </div>
+    </div>
+
+    <!-- carde de mostrar recursos -->
+    <div class="card">
+      <h2>Recursos</h2>
+      <p-accordion>
+        <p-accordionTab header="Recursos Adjuntos">
+          <!-- Verifica si no hay archivos adjuntos -->
+
+          <app-empty-section
+            *ngIf="getListFiles(data?.cTareaArchivoAdjunto).length === 0; else resourcesList"
+            class="w-full"
+            [message]="'Sin recursos asignados'"
+          ></app-empty-section>
+
+          <!-- Si hay recursos adjuntos -->
+          <ng-template #resourcesList>
+            <app-recursos-lista [files]="getListFiles(data?.cTareaArchivoAdjunto)">
+            </app-recursos-lista>
+          </ng-template>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+  </div>
+</div>

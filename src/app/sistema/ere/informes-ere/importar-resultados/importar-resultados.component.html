@@ -1,0 +1,53 @@
+<p-dialog
+  [header]="titulo"
+  [(visible)]="visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (onHide)="resetearInput()"
+  (onShow)="resetearResultados()"
+  (accionBtnItem)="accionBtn($event)"
+>
+  <ng-content>
+    <form [formGroup]="form" (ngSubmit)="handleFormSubmit()">
+      @if (!exito) {
+        <div class="grid p-fluid mt-3">
+          <div class="field col-12">
+            <p-inputGroup class="mt-1">
+              <app-input-file-upload
+                class="w-full"
+                label="Seleccionar archivo"
+                acceptTypes=".xls,.xlsx,.xlsm"
+                formControlName="archivo"
+                (change)="handleArchivo($event)"
+                [canViewLocalFile]="false"
+              />
+            </p-inputGroup>
+          </div>
+        </div>
+        <div class="grid p-fluid mt-3">
+          <div class="field col-12">
+            <p-button type="submit" label="Cargar" styleClass="p-button-primary" />
+          </div>
+        </div>
+      }
+      @if (exito) {
+        <h4>Se subieron todos los resultados con éxito. Puede cerrar esta ventana.</h4>
+      }
+      <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="resultados"
+        [showPaginator]="true"
+        sortMode="single"
+        sortField="resultado_importado"
+        [sortOrder]="1"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showCaption]="false"
+        [hidden]="!hay_excluidos"
+      />
+    </form>
+  </ng-content>
+</p-dialog>
+<p-toast></p-toast>

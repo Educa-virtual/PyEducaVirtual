@@ -1,15 +1,15 @@
 <app-container-page
-    title="Registrar secciones"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+  title="Registrar secciones"
+  [actions]="accionesPrincipal"
+  (accionBtnItem)="accionBtnItemTable($event)"
 >
-    <div class="card">
-        <p-steps [model]="items" [readonly]="true"></p-steps>
-    </div>
+  <div class="card">
+    <p-steps [model]="items" [readonly]="true"></p-steps>
+  </div>
 </app-container-page>
 
 <!--Bloque para estructura-->
-<p-splitter
+<!-- <p-splitter
     [panelSizes]="[30, 70]"
     [style]="{ height: '400px' }"
     styleClass="mb-5"
@@ -22,8 +22,8 @@
                 <div class="align-items-left">
                     <p><strong>ESTRUCTURA DE GRADOS/EDADES</strong></p>
                 </div>
-                <!-- <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
-                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" /> -->
+                <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
+                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" />
                 <div class="scrollable-panel">
                     <app-tree-view-primeng
                         [treeDataRaw]="rawData"
@@ -32,251 +32,232 @@
                 </div>
             </div>
         </div>
-    </ng-template>
+    </ng-template> -->
 
-    <!--Bloque para buscador-->
-    <ng-template pTemplate>
-        <div class="col flex align-items-top justify-content-center">
-            <div [style]="{ width: '100%' }" class="field col-12 md:col-12">
-                <div class="card">
-                    <app-table-primeng
-                        [columnas]="columns"
-                        [showCaption]="true"
-                        [data]="seccionesAsignadas"
-                        [scrollable]="true"
-                        scrollHeight="200px"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="true"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actions"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
-                    <ng-container slot="caption-content"> </ng-container>
-                </div>
-            </div>
-        </div>
-    </ng-template>
-</p-splitter>
+<!--Bloque para buscador-->
+<!-- <ng-template pTemplate> -->
+<div class="col flex align-items-top justify-content-center">
+  <div [style]="{ width: '100%' }" class="field col-12 md:col-12">
+    <div class="card">
+      <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="seccionesAsignadas"
+        [scrollable]="true"
+        scrollHeight="200px"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+      >
+        <!-- <ng-container slot="caption-content"> </ng-container> -->
+      </app-table-primeng>
+      <ng-container slot="caption-content"> </ng-container>
+    </div>
+  </div>
+</div>
+<!-- </ng-template>
+</p-splitter> -->
 
 <p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '80rem' }"
-    [modal]="true"
+  header="{{ caption }}"
+  [(visible)]="visible"
+  [style]="{ width: '80rem' }"
+  [modal]="true"
+  [resizable]="true"
+  [maximizable]="true"
 >
-    <form [formGroup]="form">
-        <div class="grid p-fluid mt-3">
-            <input
-                pInputText
-                type="hidden"
-                formControlName="iConfigId"
-                class="p-inputtext-sm"
-            />
-            <input
-                pInputText
-                type="hidden"
-                formControlName="iDetConfId"
-                class="p-inputtext-sm"
-            />
-            <input
-                pInputText
-                type="hidden"
-                formControlName="iModalServId"
-                class="p-inputtext-sm"
-            />
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <input pInputText type="hidden" formControlName="iConfigId" class="p-inputtext-sm" />
+      <input pInputText type="hidden" formControlName="iDetConfId" class="p-inputtext-sm" />
+      <input pInputText type="hidden" formControlName="iModalServId" class="p-inputtext-sm" />
 
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cYAcadNombre"
-                        formControlName="cYAcadNombre"
-                        aria-describedby="cYAcadNombre-help"
-                    />
-                    <label for="cYAcadNombre">Año escolar:</label>
-                </span>
-            </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cYAcadNombre"
+            formControlName="cYAcadNombre"
+            aria-describedby="cYAcadNombre-help"
+          />
+          <label for="cYAcadNombre">Año escolar:</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cPrograma"
-                        formControlName="cPrograma"
-                        aria-describedby="cPrograma-help"
-                    />
-                    <label for="cPrograma">Programa:</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cFase"
-                        formControlName="cFase"
-                        aria-describedby="cFase-help"
-                    />
-                    <label for="cFase">Fase regular:</label>
-                </span>
-            </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cPrograma"
+            formControlName="cPrograma"
+            aria-describedby="cPrograma-help"
+          />
+          <label for="cPrograma">Programa:</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <input pInputText id="cFase" formControlName="cFase" aria-describedby="cFase-help" />
+          <label for="cFase">Fase regular:</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="serv_atencion"
-                        formControlName="iServEdId"
-                        optionLabel="cServEdNombre"
-                        [checkmark]="true"
-                        optionValue="iServEdId"
-                        [showClear]="true"
-                    />
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="serv_atencion"
+            formControlName="iServEdId"
+            optionLabel="cServEdNombre"
+            [checkmark]="true"
+            optionValue="iServEdId"
+            [showClear]="true"
+          />
 
-                    <label for="iServEdId"
-                        >Modelo de servicio de atención</label
-                    >
-                </span>
-            </div>
+          <label for="iServEdId">Modelo de servicio de atención</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="grados"
-                        formControlName="iNivelGradoId"
-                        optionLabel="cGradoNombre"
-                        [checkmark]="true"
-                        optionValue="iNivelGradoId"
-                        [showClear]="true"
-                        (onChange)="onChange($event, 'grado')"
-                    />
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="grados"
+            formControlName="iNivelGradoId"
+            optionLabel="cGradoNombre"
+            [checkmark]="true"
+            optionValue="iNivelGradoId"
+            [showClear]="true"
+            (onChange)="onChange($event, 'grado')"
+          />
 
-                    <label for="iNivelGradoId">Grados</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cCicloNombre"
-                        formControlName="cCicloNombre"
-                        aria-describedby="cCicloNombre-help"
-                    />
-                    <label for="cCicloNombre">Ciclo</label>
-                </span>
-            </div>
+          <label for="iNivelGradoId">Grados</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cCicloNombre"
+            formControlName="cCicloNombre"
+            aria-describedby="cCicloNombre-help"
+          />
+          <label for="cCicloNombre">Ciclo</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cNivelNombre"
-                        formControlName="cNivelNombre"
-                        aria-describedby="cNivelNombre-help"
-                    />
-                    <label for="cNivelNombre">Modalidad regular :</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cNivelTipoNombre"
-                        formControlName="cNivelTipoNombre"
-                        aria-describedby="cNivelTipoNombre-help"
-                    />
-                    <label for="cNivelTipoNombre">Nivel modular :</label>
-                </span>
-            </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cNivelNombre"
+            formControlName="cNivelNombre"
+            aria-describedby="cNivelNombre-help"
+          />
+          <label for="cNivelNombre">Modalidad regular :</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cNivelTipoNombre"
+            formControlName="cNivelTipoNombre"
+            aria-describedby="cNivelTipoNombre-help"
+          />
+          <label for="cNivelTipoNombre">Nivel modular :</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="ambientes"
-                        formControlName="iIieeAmbienteId"
-                        optionLabel="cAmbienteNombre"
-                        [checkmark]="true"
-                        optionValue="iIieeAmbienteId"
-                        (onChange)="onChange($event, 'ambiente')"
-                        [filter]="true"
-                        filterBy="cAmbienteNombre"
-                    />
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="ambientes"
+            formControlName="iIieeAmbienteId"
+            optionLabel="cAmbienteNombre"
+            [checkmark]="true"
+            optionValue="iIieeAmbienteId"
+            (onChange)="onChange($event, 'ambiente')"
+            [filter]="true"
+            filterBy="cAmbienteNombre"
+          />
 
-                    <label for="iIieeAmbienteId">Asignar ambientes</label>
-                </span>
-            </div>
+          <label for="iIieeAmbienteId">Asignar ambientes</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cAmbienteDescripcion"
-                        formControlName="cAmbienteDescripcion"
-                        aria-describedby="cAmbienteDescripcion-help"
-                    />
-                    <label for="cAmbienteDescripcion"
-                        >Descripción de ambiente :</label
-                    >
-                </span>
-            </div>
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="iAmbienteAforo"
-                        formControlName="iAmbienteAforo"
-                        aria-describedby="iAmbienteAforo-help"
-                    />
-                    <label for="iAmbienteAforo">Aforo de ambiente :</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="uso"
-                        formControlName="iUsoAmbId"
-                        optionLabel="cUsoAmbNombre"
-                        [checkmark]="true"
-                        optionValue="iUsoAmbId"
-                    />
-                    <label for="iUsoAmbId">Uso de ambiente</label>
-                </span>
-            </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cAmbienteDescripcion"
+            formControlName="cAmbienteDescripcion"
+            aria-describedby="cAmbienteDescripcion-help"
+          />
+          <label for="cAmbienteDescripcion">Descripción de ambiente :</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="iAmbienteAforo"
+            formControlName="iAmbienteAforo"
+            aria-describedby="iAmbienteAforo-help"
+          />
+          <label for="iAmbienteAforo">Aforo de ambiente :</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="uso"
+            formControlName="iUsoAmbId"
+            optionLabel="cUsoAmbNombre"
+            [checkmark]="true"
+            optionValue="iUsoAmbId"
+          />
+          <label for="iUsoAmbId">Uso de ambiente</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="turnos"
-                        formControlName="iTurnoId"
-                        optionLabel="cTurnoNombre"
-                        (onChange)="onChange($event, 'turno')"
-                        [checkmark]="true"
-                        optionValue="iTurnoId"
-                        [showClear]="true"
-                        (onChange)="onChange($event, 'turno')"
-                    />
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="turnos"
+            formControlName="iTurnoId"
+            optionLabel="cTurnoNombre"
+            (onChange)="onChange($event, 'turno')"
+            [checkmark]="true"
+            optionValue="iTurnoId"
+            [showClear]="true"
+            (onChange)="onChange($event, 'turno')"
+          />
 
-                    <label for="iTurnoId">Turno</label>
-                </span>
-            </div>
+          <label for="iTurnoId">Turno</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="modalidad"
-                        formControlName="cModalServId"
-                        optionLabel="cModalServNombre"
-                        [checkmark]="true"
-                        optionValue="iModalServId"
-                        [showClear]="true"
-                    />
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="modalidad"
+            formControlName="cModalServId"
+            optionLabel="cModalServNombre"
+            [checkmark]="true"
+            optionValue="iModalServId"
+            [showClear]="true"
+          />
 
-                    <label for="cModalServId">Forma de atención</label>
-                </span>
-            </div>
+          <label for="cModalServId">Forma de atención</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-multiSelect
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label">
+          @for (dia of dias; track dia.iDiaId) {
+            <p-tag severity="info" [value]="dia.cDiaNombre" [rounded]="true"></p-tag>
+          }
+          <!-- <p-multiSelect
                         [options]="dias"
                         formControlName="iDiasLaborables"
                         optionLabel="cDiaNombre"
@@ -285,90 +266,88 @@
                         display="chip"
                         (onChange)="onChange($event, 'dia')"
                         [showClear]="true"
+                        [maxSelectedLabels]="7"
                     >
-                    </p-multiSelect>
-                </span>
-            </div>
+                    </p-multiSelect> -->
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="secciones"
-                        formControlName="iSeccionId"
-                        optionLabel="cSeccionDescripcion"
-                        [checkmark]="true"
-                        optionValue="iSeccionId"
-                        [showClear]="true"
-                        [filter]="true"
-                        filterBy="cSeccionDescripcion"
-                    />
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="secciones"
+            formControlName="iSeccionId"
+            optionLabel="cSeccionDescripcion"
+            [checkmark]="true"
+            optionValue="iSeccionId"
+            [showClear]="true"
+            [filter]="true"
+            filterBy="cSeccionDescripcion"
+          />
 
-                    <label for="iSeccionId">Nombre sección </label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <p-inputNumber
-                        formControlName="iDetConfCantEstudiantes"
-                        aria-describedby="iDetConfCantEstudiantes-help"
-                    />
-                    <label for="iDetConfCantEstudiantes"
-                        >Cantidad de estudiantes</label
-                    >
-                </span>
-            </div>
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cDetConfNombreSeccion"
-                        formControlName="cDetConfNombreSeccion"
-                        aria-describedby="cDetConfNombreSeccion-help"
-                    />
-                    <label for="cDetConfNombreSeccion">Descripción </label>
-                </span>
-            </div>
+          <label for="iSeccionId">Nombre sección </label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <p-inputNumber
+            formControlName="iDetConfCantEstudiantes"
+            aria-describedby="iDetConfCantEstudiantes-help"
+          />
+          <label for="iDetConfCantEstudiantes">Cantidad de estudiantes</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cDetConfNombreSeccion"
+            formControlName="cDetConfNombreSeccion"
+            aria-describedby="cDetConfNombreSeccion-help"
+          />
+          <label for="cDetConfNombreSeccion">Descripción </label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tutores"
-                        formControlName="iPersIeIdTutor"
-                        optionLabel="nombreCompleto"
-                        [checkmark]="true"
-                        optionValue="iPersIeId"
-                        [showClear]="true"
-                        [filter]="true"
-                        filterBy="nombreCompleto"
-                    />
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="tutores"
+            formControlName="iPersIeIdTutor"
+            optionLabel="nombreCompleto"
+            [checkmark]="true"
+            optionValue="iPersIeId"
+            [showClear]="true"
+            [filter]="true"
+            filterBy="nombreCompleto"
+          />
 
-                    <label for="iPersIeIdTutor">Tutor asignado</label>
-                </span>
-            </div>
+          <label for="iPersIeIdTutor">Tutor asignado</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-12">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cDetConfObs"
-                        formControlName="cDetConfObs"
-                        [value]="
-                            this.form.get('cDetConfObs')?.value | uppercase
-                        "
-                        aria-describedby="cDetConfObs-help"
-                    />
-                    <label for="cDetConfObs">Observacion:</label>
-                </span>
-            </div>
-        </div>
-        <p-button
-            label="Guardar"
-            [disabled]="form.invalid"
-            (onClick)="accionBtnItem('guardar')"
-            styleClass="p-button-primary"
-        /><p-toast />
-    </form>
+      <div class="field col-12 md:col-12">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cDetConfObs"
+            formControlName="cDetConfObs"
+            [value]="this.form.get('cDetConfObs')?.value | uppercase"
+            aria-describedby="cDetConfObs-help"
+          />
+          <label for="cDetConfObs">Observacion:</label>
+        </span>
+      </div>
+    </div>
+    <p-button
+      label="Guardar"
+      [disabled]="form.invalid"
+      (onClick)="accionBtnItem('guardar')"
+      styleClass="p-button-primary"
+    />
+  </form>
 </p-dialog>
 <div class="flex justify-content-end">
-    <p-button (onClick)="confirm()" label="Siguiente" />
+  <p-button (onClick)="confirm()" label="Siguiente" />
 </div>
+<p-toast />

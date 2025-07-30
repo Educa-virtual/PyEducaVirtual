@@ -1,0 +1,116 @@
+<app-modal-primeng
+  [title]="'Cambiar contraseña'"
+  [showModal]="showModal"
+  [width]="'55rem'"
+  (accionBtnItem)="accionCloseItem.emit()"
+>
+  <div class="grid mx-3 my-3">
+    <div class="col-12">
+      <p class="text-color-secondary mb-3">
+        Elige una contraseña segura y no la uses para otras cuentas.
+      </p>
+
+      <form [formGroup]="form" class="flex flex-column gap-4">
+        <div class="p-field">
+          <label for="contrasenaActual" class="block mb-2">Contraseña actual</label>
+          <p-password
+            formControlName="contrasenaActual"
+            [feedback]="false"
+            [toggleMask]="true"
+            placeholder="Ingrese su contraseña actual"
+            styleClass="w-full"
+          ></p-password>
+          <small
+            class="p-error"
+            *ngIf="form.get('contrasenaActual')?.invalid && form.get('contrasenaActual')?.touched"
+          >
+            La contraseña actual es requerida
+          </small>
+        </div>
+
+        <div class="p-field">
+          <label for="contrasenaNueva" class="block mb-2">Contraseña nueva</label>
+          <p-password
+            formControlName="contrasenaNueva"
+            [toggleMask]="true"
+            placeholder="Contraseña nueva"
+            styleClass="w-full"
+          >
+            <ng-template pTemplate="footer">
+              <p-divider />
+
+              <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                <li>Al menos una minúscula o mayuscula</li>
+                <li>Al menos un número</li>
+                <li>Mínimo 8 caracteres</li>
+              </ul>
+            </ng-template>
+          </p-password>
+
+          <div class="mt-2">
+            <p class="text-700 text-sm mb-1">Seguridad de la contraseña:</p>
+            <p class="text-700 text-sm">
+              Evita utilizar contraseñas reutilizadas de otros sitios o palabras demasiado
+              predecibles, como el nombre de tu mascota.
+            </p>
+          </div>
+
+          <small
+            class="p-error"
+            *ngIf="
+              form.get('contrasenaNueva')?.errors?.['required'] &&
+              form.get('contrasenaNueva')?.touched
+            "
+          >
+            La nueva contraseña es requerida
+          </small>
+          <small
+            class="p-error"
+            *ngIf="
+              form.get('contrasenaNueva')?.errors?.['minlength'] &&
+              form.get('contrasenaNueva')?.touched
+            "
+          >
+            La contraseña debe tener al menos 8 caracteres
+          </small>
+        </div>
+
+        <div class="p-field">
+          <label for="contrasenaNueva" class="block mb-2">Confirma la contraseña nueva</label>
+          <p-password
+            formControlName="confirmarContrasena"
+            [feedback]="false"
+            [toggleMask]="true"
+            placeholder="Confirma la contraseña nueva"
+            styleClass="w-full"
+          >
+          </p-password>
+          <small
+            class="p-error"
+            *ngIf="
+              form.get('confirmarContrasena')?.errors?.['required'] &&
+              form.get('confirmarContrasena')?.touched
+            "
+          >
+            Confirme la nueva contraseña
+          </small>
+          <small
+            class="p-error"
+            *ngIf="
+              form.get('confirmarContrasena')?.errors?.['noCoinciden'] &&
+              form.get('confirmarContrasena')?.touched
+            "
+          >
+            Las contraseñas no coinciden
+          </small>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div footer class="flex justify-content-end gap-2">
+    <p-button label="Cancelar" severity="secondary" (onClick)="accionCloseItem.emit()" />
+    <p-button [label]="'Guardar'" [disabled]="!this.form.valid" (onClick)="enviarFormulario()" />
+  </div>
+</app-modal-primeng>
+
+<p-toast></p-toast>

@@ -1,172 +1,171 @@
-import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit } from '@angular/core'
-import { Message } from 'primeng/api'
-import { ImageUploadPrimengComponent } from '../../../shared/image-upload-primeng/image-upload-primeng.component'
-import { ConstantesService } from '@/app/servicios/constantes.service'
-import { GeneralService } from '@/app/servicios/general.service'
-import { FormBuilder, Validators } from '@angular/forms'
-import { DatePipe } from '@angular/common'
-import { FormVerificarCorreoComponent } from './components/form-verificar-correo/form-verificar-correo.component'
+import { PrimengModule } from '@/app/primeng.module';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ImageUploadPrimengComponent } from '../../../shared/image-upload-primeng/image-upload-primeng.component';
+import { ConstantesService } from '@/app/servicios/constantes.service';
+import { GeneralService } from '@/app/servicios/general.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { FormVerificarCorreoComponent } from './components/form-verificar-correo/form-verificar-correo.component';
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
+import { MessageService } from 'primeng/api';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { NgIf } from '@angular/common';
+import { PersonasService } from '@/app/servicios/grl/personas.service';
 
 @Component({
-    selector: 'app-perfil',
-    standalone: true,
-    imports: [
-        PrimengModule,
-        ImageUploadPrimengComponent,
-        FormVerificarCorreoComponent,
-    ],
-    templateUrl: './perfil.component.html',
-    styleUrl: './perfil.component.scss',
+  selector: 'app-perfil',
+  standalone: true,
+  imports: [
+    PrimengModule,
+    ImageUploadPrimengComponent,
+    FormVerificarCorreoComponent,
+    ModalPrimengComponent,
+    NgIf,
+  ],
+  templateUrl: './perfil.component.html',
+  styleUrl: './perfil.component.scss',
 })
 export class PerfilComponent implements OnInit {
-    private _ConstantesService = inject(ConstantesService)
-    private _GeneralService = inject(GeneralService)
-    private fb = inject(FormBuilder)
-    mensaje: Message[] = [
-        {
-            severity: 'info',
-            detail: 'En esta sección podrá actualizar su información básica',
-        },
-    ]
-    pipe = new DatePipe('es-ES')
-    date = new Date()
-    formPersonas = this.fb.group({
-        iPersId: [this._ConstantesService.iPersId, Validators.required],
+  @Output() accionCloseItem = new EventEmitter();
+  @Input() showModal: boolean = false;
 
-        cPersNombre: [''],
-        cPersPaterno: [''],
-        cPersMaterno: [''],
-        dPersNacimiento: [],
-        cPersFotografia: [''],
-        cPersDomicilio: [''],
-        cPersCorreo: [''],
-        cPersCorreoValidado: [],
-        cPersCelular: [''],
-        cPersCelularValidado: [],
+  private _ConstantesService = inject(ConstantesService);
+  private _GeneralService = inject(GeneralService);
+  private fb = inject(FormBuilder);
+  private _MessageService = inject(MessageService);
+  private _LocalStoreService = inject(LocalStoreService);
+  private _PersonasService = inject(PersonasService);
 
-        cPersPassword: [],
-    })
+  formPersonas = this.fb.group({
+    iPersId: [this._ConstantesService.iPersId, Validators.required],
 
-    ngOnInit() {
-        this.getPersonasxiPersId()
+    cPersNombre: [''],
+    cPersPaterno: [''],
+    cPersMaterno: [''],
+    cPersFotografia: [''],
+    cPersDomicilio: [''],
+    cPersCorreo: ['', [Validators.required, Validators.email]],
+    cPersCorreoValidado: [],
+    cPersCelular: [''],
+    cPersCelularValidado: [],
+
+    cPersPassword: [],
+  });
+  iPersConId;
+  ngOnInit() {
+    this.getPersonasxiPersId();
+  }
+  accionBtnItem(elemento): void {
+    const { accion } = elemento;
+    const { item } = elemento;
+    switch (accion) {
+      case 'subir-archivo-users':
+        this.formPersonas.controls.cPersFotografia.setValue(item.imagen.data);
+        break;
     }
-    accionBtnItem(elemento): void {
-        const { accion } = elemento
-        const { item } = elemento
-        console.log
-        switch (accion) {
-            case 'subir-archivo-users':
-                this.formPersonas.controls.cPersFotografia.setValue(
-                    item.imagen.data
-                )
-                break
-            case 'close-modal':
-                this.showModalVerificarCorreo = false
-                this.formPersonas.controls.cPersCorreoValidado.setValue(true)
-                this.guardarPersonasxDatosPersonales()
-                break
+  }
+  getPersonasxiPersId() {
+    const params = {
+      iPersId: this._ConstantesService.iPersId,
+    };
+    this._PersonasService.obtenerPersonasxiPersId(params).subscribe({
+      next: (response: any) => {
+        if (response.validated) {
+          this.formPersonas.patchValue(response.data.length ? response.data[0] : null);
         }
-    }
-    getPersonasxiPersId() {
-        const params = {
-            petition: 'post',
-            group: 'grl',
-            prefix: 'personas',
-            ruta: 'obtenerPersonasxiPersId',
-            seleccion: 1,
-            data: {
-                opcion: 'CONSULTARxiPersId',
-                iPersId: this._ConstantesService.iPersId,
-            },
-            params: { skipSuccessMessage: true },
+      },
+      error: error => {
+        console.error('Error al obtener:', error);
+      },
+    });
+  }
+  showModalVerificarCorreo: boolean = false;
+
+  guardarPersonasxDatosPersonales() {
+    if (!this.formPersonas.valid) return;
+    const params = {
+      petition: 'post',
+      group: 'grl',
+      prefix: 'personas',
+      ruta: 'guardarPersonasxDatosPersonales',
+      data: this.formPersonas.value,
+    };
+
+    this._GeneralService.getGralPrefix(params).subscribe({
+      next: response => {
+        if (response.validated) {
+          this._MessageService.add({
+            severity: 'success',
+            summary: 'Exitoso!',
+            detail: 'Se ha guardado exitosamente su información',
+          });
+          const user = this._LocalStoreService.getItem('dremoUser');
+          user.cPersFotografia = this.formPersonas.value.cPersFotografia;
+          this._LocalStoreService.setItem('dremoUser', user);
+          this.accionCloseItem.emit();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
+      },
+      complete: () => {},
+      error: error => {
+        console.log('Error completo:', error);
 
-        this._GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                if (response.validated) {
-                    this.formPersonas.patchValue(
-                        response.data.length ? response.data[0] : null
-                    )
-                    const date = new DatePipe('es-PE').transform(
-                        this.formPersonas.value.dPersNacimiento,
-                        'yyyy/MM/dd'
-                    )
-                    this.formPersonas.controls.dPersNacimiento.setValue(
-                        new Date(date)
-                    )
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
-    }
-    showModalVerificarCorreo: boolean = false
+        // Acceder a errores del backend
+        const errores = error?.error?.errors;
 
-    guardarPersonasxDatosPersonales() {
-        if (this.formPersonas.value.cPersCorreoValidado) {
-            let fechaNacimiento =
-                this.formPersonas.value.dPersNacimiento.toLocaleString(
-                    'en-GB',
-                    { timeZone: 'America/Lima' }
-                )
-            fechaNacimiento = fechaNacimiento.replace(',', '')
-            this.formPersonas.controls.dPersNacimiento.setValue(fechaNacimiento)
-            const params = {
-                petition: 'post',
-                group: 'grl',
-                prefix: 'personas',
-                ruta: 'guardarPersonasxDatosPersonales',
-                data: this.formPersonas.value,
-            }
-
-            this._GeneralService.getGralPrefix(params).subscribe({
-                next: (response) => {
-                    if (response.validated) {
-                        this.getPersonasxiPersId()
-                    }
-                },
-                complete: () => {},
-                error: (error) => {
-                    console.log(error)
-                },
-            })
+        if (error.status === 422 && errores) {
+          // Recorre y muestra cada mensaje de error
+          Object.keys(errores).forEach(campo => {
+            errores[campo].forEach((mensaje: string) => {
+              this._MessageService.add({
+                severity: 'error',
+                summary: 'Error de validación',
+                detail: mensaje,
+              });
+            });
+          });
         } else {
-            this.enviarCodVerificarCorreo()
+          // Error genérico si no hay errores específicos
+          this._MessageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error?.error?.message || 'Ocurrió un error inesperado',
+          });
         }
-    }
-    iPersConId
-    enviarCodVerificarCorreo() {
-        const params = {
-            petition: 'post',
-            group: 'grl',
-            prefix: 'personas-contactos',
-            ruta: 'enviarCodVerificarCorreo',
-            data: {
-                iPersId: this._ConstantesService.iPersId,
-                cPersCorreo: this.formPersonas.value.cPersCorreo,
-                iTipoConId: 1,
-                iPersConId: null,
-                cPersConCodigoValidacion: null,
-            },
-        }
+      },
+    });
+  }
 
-        this._GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                if (response.validated) {
-                    this.iPersConId = response.data
-                    this.showModalVerificarCorreo = true
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
-    }
-    verificarCorreo() {
-        this.showModalVerificarCorreo = true
-    }
+  enviarCodVerificarCorreo() {
+    const params = {
+      petition: 'post',
+      group: 'grl',
+      prefix: 'personas-contactos',
+      ruta: 'enviarCodVerificarCorreo',
+      data: {
+        iPersId: this._ConstantesService.iPersId,
+        cPersCorreo: this.formPersonas.value.cPersCorreo,
+        iTipoConId: 1,
+        iPersConId: null,
+        cPersConCodigoValidacion: null,
+      },
+    };
+
+    this._GeneralService.getGralPrefix(params).subscribe({
+      next: response => {
+        if (response.validated) {
+          this.iPersConId = response.data;
+          this.showModalVerificarCorreo = true;
+        }
+      },
+      complete: () => {},
+      error: error => {
+        console.log(error);
+      },
+    });
+  }
+  verificarCorreo() {
+    this.showModalVerificarCorreo = true;
+  }
 }

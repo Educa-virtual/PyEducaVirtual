@@ -1,185 +1,187 @@
 <app-modal-primeng
-    [title]="'REPORTE DE ASISTENCIA'"
-    [showModal]="showModal"
-    [width]="'50rem'"
-    (accionBtnItem)="accionBtn($event)"
+  [title]="'REPORTE DE ASISTENCIA'"
+  [showModal]="showModal"
+  [width]="'50rem'"
+  (accionBtnItem)="accionBtn($event)"
 >
-    <div class="grid mt-4">
-        <div class="col-12">
-            <span class="font-bold white-space-nowrap m-0">
-                Detalle del {{ cNivelNombreCursos }}
-            </span>
-        </div>
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    {{ cNivelNombreCursos }}
-                </p-inputGroupAddon>
-                <input pInputText disabled [value]="cCursoNombre" />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Nivel
-                </p-inputGroupAddon>
-                <input pInputText disabled [value]="cNivelTipoNombre" />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Ciclo
-                </p-inputGroupAddon>
-                <input pInputText disabled value="I" />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Grado
-                </p-inputGroupAddon>
-                <input pInputText disabled [value]="cGradoAbreviacion" />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Sección
-                </p-inputGroupAddon>
-                <input pInputText disabled [value]="cSeccion" />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 mt-1">
-            <span class="font-bold white-space-nowrap m-0">
-                Seleccione el Tipo de Reporte de Asistencia
-            </span>
-        </div>
-        <div class="col-3">
-            <p-radioButton
-                [(ngModel)]="tipoReporte"
-                label="Diario"
-                value="1"
-                (onClick)="solicitarFecha = 1"
-            />
-        </div>
-        <div class="col-3">
-            <p-radioButton
-                [(ngModel)]="tipoReporte"
-                label="Mensual"
-                value="3"
-                (onClick)="solicitarFecha = 3"
-            />
-        </div>
-        <div class="col-3">
-            <p-radioButton
-                [(ngModel)]="tipoReporte"
-                label="Personalizado"
-                value="4"
-                (onClick)="solicitarFecha = 4"
-            />
-        </div>
-        <div class="col-12 flex justify-content-center">
-            @switch (solicitarFecha) {
-                @case (1) {
-                    <div>
-                        <p-inputGroup>
-                            <p-inputGroupAddon
-                                [ngStyle]="{
-                                    backgroundColor: 'var(--primary-700)',
-                                    color: 'var(--primary-color-text)',
-                                }"
-                            >
-                                Seleccione el día
-                            </p-inputGroupAddon>
-                            <p-calendar
-                                [(ngModel)]="inputDia"
-                                appendTo="body"
-                            ></p-calendar>
-                        </p-inputGroup>
-                    </div>
-                }
-                @case (3) {
-                    <div>
-                        <p-inputGroup>
-                            <p-inputGroupAddon
-                                [ngStyle]="{
-                                    backgroundColor: 'var(--primary-700)',
-                                    color: 'var(--primary-color-text)',
-                                }"
-                                >Seleccione Mes
-                            </p-inputGroupAddon>
-                            <p-dropdown
-                                appendTo="body"
-                                styleClass="flex-auto w-auto"
-                                [options]="meses"
-                                placeholder="Seleccionar Mes"
-                                optionValue="iMesId"
-                                optionLabel="nombre"
-                                [(ngModel)]="iMesId"
-                            />
-                        </p-inputGroup>
-                    </div>
-                }
-                @case (4) {
-                    <p-inputGroup>
-                        <p-inputGroupAddon
-                            [ngStyle]="{
-                                backgroundColor: 'var(--primary-700)',
-                                color: 'var(--primary-color-text)',
-                            }"
-                            >Seleccione un rango de fechas</p-inputGroupAddon
-                        >
-                        <p-calendar
-                            appendTo="body"
-                            styleClass="w-full"
-                            selectionMode="range"
-                            [readonlyInput]="true"
-                            [(ngModel)]="iDateRango"
-                        ></p-calendar>
-                    </p-inputGroup>
-                }
-                @default {}
-            }
-        </div>
-        <div class="col-12">
-            <p-divider></p-divider>
-        </div>
-
-        <div class="col-12">
-            <div class="flex justify-content-end gap-2">
-                <p-button
-                    icon="pi pi-download"
-                    [label]="'Descargar'"
-                    severity="danger"
-                    (click)="verReporte()"
-                />
-            </div>
-        </div>
+  <div class="grid mt-4">
+    <div class="col-12">
+      <span class="font-bold white-space-nowrap m-0"> Detalle del {{ cNivelNombreCursos }} </span>
     </div>
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          {{ cNivelNombreCursos }}
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="cCursoNombre" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Nivel
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="cNivelTipoNombre" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Ciclo
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="cCicloRomanos" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Grado
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="cGradoAbreviacion" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Sección
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="cSeccionNombre" />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 mt-1">
+      <span class="font-bold white-space-nowrap m-0">
+        Seleccione el Tipo de Reporte de Asistencia
+      </span>
+    </div>
+    <div class="col-3">
+      <p-radioButton
+        [(ngModel)]="tipoReporte"
+        label="Diario"
+        value="1"
+        (onClick)="solicitarFecha = 1"
+      />
+    </div>
+    <div class="col-3">
+      <p-radioButton
+        [(ngModel)]="tipoReporte"
+        label="Mensual"
+        value="3"
+        (onClick)="solicitarFecha = 3"
+      />
+    </div>
+    <div class="col-3">
+      <p-radioButton
+        [(ngModel)]="tipoReporte"
+        label="Personalizado"
+        value="4"
+        (onClick)="solicitarFecha = 4"
+      />
+    </div>
+    <div class="col-12 flex justify-content-center">
+      @switch (solicitarFecha) {
+        @case (1) {
+          <div>
+            <p-inputGroup>
+              <p-inputGroupAddon
+                [ngStyle]="{
+                  backgroundColor: 'var(--primary-700)',
+                  color: 'var(--primary-color-text)',
+                }"
+              >
+                Seleccione el día
+              </p-inputGroupAddon>
+              <p-calendar
+                [(ngModel)]="inputDia"
+                appendTo="body"
+                [minDate]="minimo"
+                [maxDate]="maximo"
+              ></p-calendar>
+            </p-inputGroup>
+          </div>
+        }
+        @case (3) {
+          <div>
+            <p-inputGroup>
+              <p-inputGroupAddon
+                [ngStyle]="{
+                  backgroundColor: 'var(--primary-700)',
+                  color: 'var(--primary-color-text)',
+                }"
+                >Seleccione Mes
+              </p-inputGroupAddon>
+              <p-dropdown
+                appendTo="body"
+                styleClass="flex-auto w-auto"
+                [options]="meses"
+                placeholder="Seleccionar Mes"
+                optionValue="iMesId"
+                optionLabel="nombre"
+                [(ngModel)]="iMesId"
+              />
+            </p-inputGroup>
+          </div>
+        }
+        @case (4) {
+          <p-inputGroup>
+            <p-inputGroupAddon
+              [ngStyle]="{
+                backgroundColor: 'var(--primary-700)',
+                color: 'var(--primary-color-text)',
+              }"
+              >Seleccione un rango de fechas</p-inputGroupAddon
+            >
+            <p-calendar
+              appendTo="body"
+              styleClass="w-full"
+              selectionMode="range"
+              [readonlyInput]="true"
+              [(ngModel)]="iDateRango"
+              [minDate]="minimo"
+              [maxDate]="maximo"
+            ></p-calendar>
+          </p-inputGroup>
+        }
+        @default {}
+      }
+    </div>
+    <div class="col-12">
+      <p-divider></p-divider>
+    </div>
+
+    <div class="col-12">
+      <div class="flex justify-content-end gap-2">
+        <p-button
+          icon="pi pi-download"
+          [label]="'Descargar'"
+          severity="danger"
+          (click)="verReporte()"
+        />
+      </div>
+    </div>
+  </div>
 </app-modal-primeng>

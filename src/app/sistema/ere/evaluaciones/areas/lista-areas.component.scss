@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.cursos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/*.p-dropdown {
+    width: 100%;
+}*/
+
+:host ::ng-deep .p-dataview-emptymessage {
+  display: none !important;
+}

@@ -1,18 +1,32 @@
 .container {
-    max-width: 100%;
-    background-color: #e4effd;
+  max-width: 100%;
+  background-color: #e4effd;
 }
 .p-d-flex {
-    display: flex;
+  display: flex;
 }
 
 .p-jc-center {
-    justify-content: center;
+  justify-content: center;
 }
 
 .p-ai-center {
-    align-items: center;
+  align-items: center;
 }
 :host ::ng-deep p-message .p-inline-message {
-    justify-content: start !important;
+  justify-content: start !important;
+}
+
+.tag {
+  position: absolute;
+  top: -15px;
+  left: 0; // Alinear exactamente desde el borde izquierdo
+  background-color: var(--blue-500); //#fa8f45;
+  padding: 5px 10px; /* Aumentar padding lateral para aire */
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: white;
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+  width: fit-content; /* Para que no ocupe más de lo necesario */
 }

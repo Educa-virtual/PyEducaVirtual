@@ -1,0 +1,42 @@
+<div class="grid">
+  <div class="formgrid grid">
+    <div class="field col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fecha: </p-inputGroupAddon>
+        <input type="date" pInputText />
+        <p-inputGroupAddon><i class="pi pi-calendar"></i></p-inputGroupAddon>
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fecha: </p-inputGroupAddon>
+        <p-dropdown
+          [options]="roles"
+          [(ngModel)]="selectedRol"
+          optionLabel="name"
+          placeholder="Seleccionar Rol"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+  </div>
+  <div class="col-12">
+    <p-table [value]="personal" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let header of headers">
+            {{ header.campo }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>{{ product.code }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.category }}</td>
+          <td>{{ product.quantity }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

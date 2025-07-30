@@ -1,0 +1,24 @@
+<p-panel>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase"> Gestionar fichas socioeconómicas </span>
+  </ng-template>
+
+  <form [formGroup]="form">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+          <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <app-table-primeng
+    [columnas]="columnasTabla"
+    [data]="fichas_filtradas"
+    (accionBtnItem)="accionBnt($event)"
+    [actions]="accionesTabla"
+    [showCaption]="false"
+  />
+</p-panel>

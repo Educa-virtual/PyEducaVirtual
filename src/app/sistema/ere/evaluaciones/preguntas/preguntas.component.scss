@@ -1,0 +1,143 @@
+:host ::ng-deep p-inputGroupAddon {
+  background-color: var(--bg-header-modal) !important;
+  color: var(--primary-color-text) !important;
+  i {
+    color: var(--primary-color-text) !important;
+  }
+}
+
+:host ::ng-deep .tox .tox-statusbar .tox-statusbar__path-item {
+  display: none !important;
+}
+
+:host ::ng-deep .tox .tox-statusbar a {
+  display: none !important;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-panel {
+  width: 300px !important;
+}
+
+.pulse {
+  animation: pulse-black 1s infinite;
+}
+@keyframes pulse-black {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+
+  // Vertically space out multiple block buttons
+  + .btn-block {
+    margin-top: 0.5rem;
+  }
+}
+
+::ng-deep .p-accordion-header-link {
+  background-color: var(--bg-header-modal) !important; //your choice colour
+  height: 40px !important;
+  color: white;
+}
+
+::ng-deep .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+  width: 100% !important;
+}
+
+::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  white-space: normal !important;
+}
+
+.btn-file-image {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file-image input[type='file'] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+.border-img {
+  border-top: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.indexTab ::ng-deep .p-accordion-header-link {
+  //background-color: var(--green-100) !important;
+}
+
+::ng-deep .p-button.p-button-icon-only.p-button-rounded {
+  height: 2rem !important;
+  width: 2rem !important;
+}
+
+::ng-deep .p-panel .p-panel-header {
+  background: var(--bg-header-modal) !important;
+  color: white !important;
+}
+
+::ng-deep .text-primary {
+  color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+  gap: 0px !important;
+}
+/* Estilos para resaltar la nueva pregunta */
+.nueva-pregunta {
+  animation: highlightNewQuestion 2s ease-in-out;
+
+  .p-accordion-header {
+    background: linear-gradient(90deg, #e3f2fd 0%, #bbdefb 100%) !important;
+    border-left: 4px solid #2196f3 !important;
+  }
+}
+
+/* Animación para resaltar nueva pregunta */
+@keyframes highlightNewQuestion {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(33, 150, 243, 0);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(33, 150, 243, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(33, 150, 243, 0);
+  }
+}
+
+/* Transición suave para los accordions */
+.p-accordion-tab {
+  transition: all 0.3s ease;
+}
+
+// editor input

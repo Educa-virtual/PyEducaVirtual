@@ -1,0 +1,118 @@
+<app-container-page [title]="'Asignar credenciales'" [actions]="[]" (accionBtnItem)="([])">
+  <form [formGroup]="form_user">
+    <div class="grid p-fluid mt-2">
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="data"
+            filterBy="cTipoIdentSigla"
+            filterBy="cTipoIdentSigla"
+            optionLabel="cTipoIdentSigla"
+            optionValue="iTipoIdentId"
+            formControlName="iTipoIdentId"
+            (onChange)="accionBtn($event.value, 'Validar')"
+            [appendTo]="'body'"
+          />
+          <label for="iTipoIdentId">Documento</label>
+        </span>
+      </div>
+
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cPersDocumento"
+            formControlName="cPersDocumento"
+            aria-describedby="cPersDocumento-help"
+          />
+          <label for="cPersDocumento">Número</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <p-dropdown
+            [style]="{ width: '100%' }"
+            [options]="search_perfiles"
+            [filter]="false"
+            filterBy="cPerfilNombre"
+            optionLabel="cPerfilNombre"
+            optionValue="iPerfilId"
+            formControlName="iPerfilId"
+            [appendTo]="'body'"
+          />
+          <label for="iPerfilId">Perfil</label>
+        </span>
+      </div>
+      @if (btnValidar) {
+        <div class="field col-12 md:col-2">
+          <button
+            pButton
+            [label]="'Validar información'"
+            icon="pi pi-search"
+            size="small"
+            class="p-button-success"
+            (click)="accionBtn(1, 'nuevo_perfil_generado')"
+          ></button>
+          <!-- (click)="guardarActualizarRubrica()" -->
+        </div>
+
+        <div class="field col-12 md:col-2">
+          <div *ngIf="form_user.valid">
+            <p-button
+              [label]="'Registrar usuario'"
+              icon="pi pi-check"
+              size="small"
+              (click)="generarCredencialesIE()"
+              [disabled]="form_user.invalid"
+            />
+          </div>
+        </div>
+      } @else {
+        <div class="field col-12 md:col-4"></div>
+      }
+    </div>
+
+    <div class="grid p-fluid mt-3">
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText type="text" formControlName="cPersPaterno" class="p-inputtext-sm" />
+
+          <label for="cPersPaterno">Apellido paterno</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText type="text" formControlName="cPersMaterno" class="p-inputtext-sm" />
+
+          <label for="cPersMaterno">Apellido materno</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText type="text" formControlName="cPersNombre" class="p-inputtext-sm" />
+
+          <label for="cPersNombre">Nombre completo</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="sexo"
+            formControlName="cPersSexo"
+            optionLabel="label"
+            [checkmark]="true"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [appendTo]="'body'"
+          />
+          <label for="cPersSexo">Sexo *</label>
+        </span>
+      </div>
+    </div>
+
+    <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+    <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+  </form>
+</app-container-page>

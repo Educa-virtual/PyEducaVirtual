@@ -1,287 +1,280 @@
-import {
-    Component,
-    EventEmitter,
-    inject,
-    Output,
-    Input,
-    OnChanges,
-} from '@angular/core'
-import { FormBuilder, Validators } from '@angular/forms'
-import { GeneralService } from '@/app/servicios/general.service'
-import { PrimengModule } from '@/app/primeng.module'
-import { Message } from 'primeng/api'
-import { ConstantesService } from '@/app/servicios/constantes.service'
-import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
-import { DatePipe } from '@angular/common'
-import { TypesFilesUploadPrimengComponent } from '../../../../../../shared/types-files-upload-primeng/types-files-upload-primeng.component'
-import { TooltipModule } from 'primeng/tooltip'
-
+import { Component, EventEmitter, inject, Input, Output, OnChanges } from '@angular/core';
+import { ConstantesService } from '@/app/servicios/constantes.service';
+import { GeneralService } from '@/app/servicios/general.service';
+import { Message } from 'primeng/api';
+import { PrimengModule } from '@/app/primeng.module';
+import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
+import { TAREA } from '@/app/sistema/aula-virtual/interfaces/actividad.interface';
+import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
+import { TareasService } from '@/app/servicios/aula/tareas.service';
+import { DatePipe } from '@angular/common';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+// Selector que se utiliza para referenciar este componente en la plantilla de otros componentes.
 @Component({
-    selector: 'app-tarea-form',
-    standalone: true,
-    imports: [PrimengModule, TypesFilesUploadPrimengComponent, TooltipModule],
-    templateUrl: './tarea-form.component.html',
-    styleUrl: './tarea-form.component.scss',
+  selector: 'app-tarea-form',
+  standalone: true,
+  imports: [PrimengModule, TypesFilesUploadPrimengComponent, ModalPrimengComponent],
+  templateUrl: './tarea-form.component.html',
+  styleUrl: './tarea-form.component.scss',
 })
-export class TareaFormComponent implements OnChanges {
-    // Crea una instancia de la clase DatePipe para formatear fechas en español
-    pipe = new DatePipe('es-ES')
-    date = this.ajustarAHorarioDeMediaHora(new Date())
-    // Indica que el tipo de archivo "file" está habilitado o permitido.
-    typesFiles = {
-        file: true,
-        url: true,
-        youtube: true,
-        repository: false,
-        image: false,
+// Clase principal que gestiona el contenedor del formulario de tareas.
+export class TareaFormComponent extends MostrarErrorComponent implements OnChanges {
+  @Output() accionCloseForm = new EventEmitter<void>();
+  @Output() accionRefresh = new EventEmitter<void>();
+
+  @Input() showModal: boolean = false;
+  @Input() accionTarea: string;
+  @Input() semanaTarea;
+  @Input() iTareaId: string | number | null;
+
+  private _formBuilder = inject(FormBuilder);
+  private _ConstantesService = inject(ConstantesService);
+  private _GeneralService = inject(GeneralService);
+  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
+  private _TareasService = inject(TareasService);
+
+  pipe = new DatePipe('es-ES');
+  date = this.ajustarAHorarioDeMediaHora(new Date());
+  // Indica que el tipo de archivo "file" está habilitado o permitido.
+  typesFiles = {
+    file: true,
+    url: true,
+    youtube: true,
+    repository: false,
+    image: false,
+  };
+
+  semana: Message[] = [];
+  filesUrl = [];
+
+  ngOnChanges(changes) {
+    if (changes.showModal.currentValue) {
+      this.showModal = changes.showModal.currentValue;
     }
-    @Output() submitEvent = new EventEmitter<any>()
-    @Output() cancelEvent = new EventEmitter<void>()
+    if (changes.accionTarea.currentValue) {
+      this.accionTarea = changes.accionTarea.currentValue;
+    }
+    if (changes.semanaTarea.currentValue) {
+      this.semanaTarea = changes.semanaTarea.currentValue;
+      this.semana = [
+        {
+          severity: 'info',
+          detail: this.semanaTarea?.cContenidoSemTitulo || '-',
+        },
+      ];
+    }
+    if (changes.iTareaId.currentValue) {
+      this.iTareaId = changes.iTareaId.currentValue;
+      this.getTareasxiTareaId(this.iTareaId);
+    }
+  }
 
-    @Input() contenidoSemana
-    @Input() tarea
+  isLoading: boolean = false;
 
-    semana: Message[] = []
-    tareas = []
-    filteredTareas: any[] | undefined
-    nameEnlace: string = ''
-    titleFileTareas: string = ''
-    showModal: boolean = false
+  public formTareas = this._formBuilder.group({
+    iTareaId: [''],
+    iDocenteId: ['', Validators.required],
+    cTareaTitulo: ['', Validators.required],
+    cTareaDescripcion: ['', Validators.required],
+    cTareaArchivoAdjunto: [''],
+    bTareaEsGrupal: [false],
+    dtTareaInicio: [this.date, Validators.required],
+    dtTareaFin: [
+      new Date(this.ajustarAHorarioDeMediaHora(new Date()).setHours(this.date.getHours() + 1)),
+      Validators.required,
+    ],
+    iContenidoSemId: ['', Validators.required],
+    iActTipoId: [0, Validators.required],
+    idDocCursoId: ['', Validators.required],
+    iCredId: ['', Validators.required],
+  });
 
-    private _formBuilder = inject(FormBuilder)
-    private GeneralService = inject(GeneralService)
-    private ConstantesService = inject(ConstantesService)
+  // Método para obtener una tarea específica por su ID (iTareaId)
+  getTareasxiTareaId(iTareaId) {
+    if (this.accionTarea !== 'ACTUALIZAR') return;
+    const params = {
+      petition: 'post',
+      group: 'aula-virtual',
+      prefix: 'tareas',
+      ruta: 'list',
+      data: {
+        opcion: 'CONSULTARxiTareaId',
+        iTareaId: iTareaId,
+      },
+      params: { skipSuccessMessage: true },
+    };
+    this._GeneralService.getGralPrefix(params).subscribe({
+      next: resp => {
+        const [data] = resp.data;
 
-    ngOnChanges(changes): void {
-        if (changes.contenidoSemana?.currentValue) {
-            this.contenidoSemana = changes.contenidoSemana.currentValue
-            this.semana = [
-                {
-                    severity: 'info',
-                    detail:
-                        this.contenidoSemana.cContenidoSemNumero +
-                        ' SEMANA - ' +
-                        this.contenidoSemana.cContenidoSemTitulo,
-                },
-            ]
+        this.formTareas.patchValue({
+          iTareaId: data.iTareaId,
+          iDocenteId: data.iDocenteId,
+          cTareaTitulo: data.cTareaTitulo,
+          cTareaDescripcion: data.cTareaDescripcion,
+          dtTareaInicio: new Date(data.dtTareaInicio),
+          dtTareaFin: new Date(data.dtTareaFin),
+          bTareaEsGrupal: data.bTareaEsGrupal,
+        });
+
+        this.filesUrl = data.cTareaArchivoAdjunto ? JSON.parse(data.cTareaArchivoAdjunto) : [];
+      },
+    });
+  }
+
+  ajustarAHorarioDeMediaHora(fecha) {
+    const minutos = fecha.getMinutes(); // Obtener los minutos actuales
+    const minutosAjustados = minutos <= 30 ? 30 : 0; // Decidir si ajustar a 30 o 0 (hora siguiente)
+    if (minutos > 30) {
+      fecha.setHours(fecha.getHours() + 1); // Incrementar la hora si los minutos pasan de 30
+    }
+    fecha.setMinutes(minutosAjustados); // Ajustar los minutos
+    fecha.setSeconds(0); // Opcional: Resetear los segundos a 0
+    fecha.setMilliseconds(0); // Opcional: Resetear los milisegundos a 0
+    return fecha;
+  }
+
+  accionBtnItem(elemento): void {
+    const { accion } = elemento;
+    const { item } = elemento;
+    switch (accion) {
+      case 'subir-file-tareas':
+        this.filesUrl.push({
+          type: 1, //1->file
+          nameType: 'file',
+          name: item.file.name,
+          size: item.file.size,
+          ruta: item.name,
+        });
+        break;
+      case 'url-tareas':
+        this.filesUrl.push({
+          type: 2, //2->url
+          nameType: 'url',
+          name: item.name,
+          size: '',
+          ruta: item.ruta,
+        });
+        break;
+      case 'youtube-tareas':
+        this.filesUrl.push({
+          type: 3, //3->youtube
+          nameType: 'youtube',
+          name: item.name,
+          size: '',
+          ruta: item.ruta,
+        });
+        break;
+    }
+  }
+
+  enviarFormulario() {
+    if (this.isLoading) return; // evitar doble clic
+    this.isLoading = true;
+
+    this.formTareas.patchValue({
+      iContenidoSemId: this.semanaTarea?.iContenidoSemId,
+      idDocCursoId: this.semanaTarea?.idDocCursoId,
+      iDocenteId: this._ConstantesService.iDocenteId,
+      iActTipoId: TAREA,
+      iCredId: this._ConstantesService.iCredId,
+      cTareaArchivoAdjunto: JSON.stringify(this.filesUrl),
+    });
+
+    const nombresCampos: Record<string, string> = {
+      iDocenteId: 'Docente',
+      cTareaTitulo: 'Título de la tarea',
+      cTareaDescripcion: 'Descripción',
+      dtTareaInicio: 'Fecha de inicio',
+      dtTareaFin: 'Fecha de fin',
+      iContenidoSemId: 'Semana de contenido',
+      iActTipoId: 'Tipo de actividad',
+      idDocCursoId: 'Curso',
+      iCredId: 'Credencial',
+    };
+    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
+      this.formTareas,
+      nombresCampos
+    );
+
+    if (!valid) {
+      if (message) {
+        // Mostrar solo el mensaje generado por el servicio
+        this.mostrarMensajeToast({
+          severity: 'error',
+          detail: '',
+          summary: '¡Error!',
+        });
+      }
+      this.isLoading = false;
+      return;
+    }
+
+    const data = {
+      ...this.formTareas.value,
+      dtTareaInicio: this.formTareas.value.dtTareaInicio
+        ? this.pipe.transform(this.formTareas.value.dtTareaInicio, 'dd/MM/yyyy HH:mm:ss')
+        : null,
+
+      dtTareaFin: this.formTareas.value.dtTareaFin
+        ? this.pipe.transform(this.formTareas.value.dtTareaFin, 'dd/MM/yyyy HH:mm:ss')
+        : null,
+    };
+
+    if (this.iTareaId) {
+      this.actualizarTarea(data);
+    } else {
+      this.guardarTarea(data);
+    }
+  }
+  guardarTarea(data) {
+    this._TareasService.guardarTareas(data).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          this.mostrarMensajeToast({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: resp.message,
+          });
+          setTimeout(() => {
+            this.accionRefresh.emit();
+            this.accionCloseForm.emit();
+          }, 500);
         }
-        if (changes.tarea?.currentValue) {
-            this.tarea = changes.tarea.currentValue
-            this.formTareas.patchValue(this.tarea)
-            this.filesUrl = this.formTareas.value.cTareaArchivoAdjunto
-                ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
-                : []
-            if (this.tarea.iTareaId) {
-                this.formTareas.controls.dtFin.setValue(
-                    new Date(this.formTareas.value.dtTareaFin)
-                )
-                this.formTareas.controls.dtInicio.setValue(
-                    new Date(this.formTareas.value.dtTareaInicio)
-                )
-            }
+        this.isLoading = false;
+      },
+      error: error => {
+        this.mostrarErrores(error);
+        this.isLoading = false;
+      },
+    });
+  }
+  actualizarTarea(data) {
+    const params = {
+      ...data,
+      iCredId: this._ConstantesService.iCredId,
+    };
+    this._TareasService.actualizarTareasxiTareaId(this.iTareaId, params).subscribe({
+      next: resp => {
+        if (resp.validated) {
+          this.mostrarMensajeToast({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: resp.message,
+          });
+          setTimeout(() => {
+            this.accionRefresh.emit();
+            this.accionCloseForm.emit();
+          }, 500);
         }
-    }
-    // Declaración de un formulario reactivo con el uso de FormBuilder para la creación y configuración de los controles.
-    public formTareas = this._formBuilder.group({
-        bReutilizarTarea: [false],
-        dtInicio: [this.date, Validators.required],
-        dtFin: [
-            new Date(
-                this.ajustarAHorarioDeMediaHora(new Date()).setHours(
-                    this.date.getHours() + 1
-                )
-            ),
-            Validators.required,
-        ],
-
-        iTareaId: [],
-        cTareaTitulo: ['', [Validators.required]],
-        cTareaDescripcion: ['', [Validators.required]],
-
-        dtTareaInicio: ['', [Validators.required]],
-        dtTareaFin: ['', [Validators.required]],
-
-        cTareaArchivoAdjunto: [],
-        cTareaIndicaciones: [''],
-        dFechaEvaluacionPublicacion: [''],
-        tHoraEvaluacionPublicacion: [''],
-        dFechaEvaluacionPublicacionInicio: [],
-        tHoraEvaluacionPublicacionInicio: [''],
-        dFechaEvaluacionPublicacionFin: [],
-        tHoraEvaluacionPublicacionFin: [''],
-
-        //TABLA: PROGRACION_ACTIVIDADES
-        iProgActId: [],
-        iContenidoSemId: [],
-        iActTipoId: [],
-        dtProgActInicio: [],
-        dtProgActFin: [],
-        cProgActTituloLeccion: [''],
-        cProgActDescripcion: [''],
-        dtProgActPublicacion: [],
-    })
-
-    ajustarAHorarioDeMediaHora(fecha) {
-        const minutos = fecha.getMinutes() // Obtener los minutos actuales
-        const minutosAjustados = minutos <= 30 ? 30 : 0 // Decidir si ajustar a 30 o 0 (hora siguiente)
-        if (minutos > 30) {
-            fecha.setHours(fecha.getHours() + 1) // Incrementar la hora si los minutos pasan de 30
-        }
-        fecha.setMinutes(minutosAjustados) // Ajustar los minutos
-        fecha.setSeconds(0) // Opcional: Resetear los segundos a 0
-        fecha.setMilliseconds(0) // Opcional: Resetear los milisegundos a 0
-        return fecha
-    }
-
-    getTareasxiCursoId() {
-        // Verifica si la opción "bReutilizarTarea" en el formulario es verdadera
-        if (this.formTareas.value.bReutilizarTarea) {
-            // Si es verdadera, se crea un objeto de configuración para realizar una petición de tipo 'post'
-            const params = {
-                petition: 'post',
-                group: 'aula-virtual',
-                prefix: 'tareas',
-                ruta: 'getTareasxiCursoId',
-                data: {
-                    opcion: 'CONSULTAR-TAREASxiCursoId',
-                    iCredId: this.ConstantesService.iCredId,
-                    iCursoId: this.contenidoSemana.iCursoId,
-                },
-                params: { skipSuccessMessage: true },
-            }
-            this.getInformation(params, 'get_tareas_reutilizadas')
-        } else {
-            this.formTareas.controls.cTareaTitulo.setValue(null)
-        }
-    }
-
-    filterTareas(event: AutoCompleteCompleteEvent) {
-        // Método que filtra las tareas de acuerdo con la consulta del usuario.
-        const filtered: any[] = []
-        const query = event.query
-        for (let i = 0; i < (this.tareas as any[]).length; i++) {
-            const tareas = (this.tareas as any[])[i]
-            if (
-                tareas.cTareaTitulo
-                    .toLowerCase()
-                    .indexOf(query.toLowerCase()) == 0
-            ) {
-                filtered.push(tareas)
-            }
-        }
-        this.filteredTareas = filtered
-    }
-
-    getFilterIndicaciones(event) {
-        // Verifica si 'event' no es nulo o indefinido
-        if (event) {
-            this.formTareas.controls.cTareaDescripcion.setValue(
-                event.cTareaDescripcion ? event.cTareaDescripcion : ''
-            )
-            // Asigna el valor de 'event.iProgActId' al control 'iProgActId' del formulario.
-            // Si 'event.iProgActId' es nulo o indefinido, asigna 'null'.
-            this.formTareas.controls.iProgActId.setValue(
-                event.iProgActId ? event.iProgActId : null
-            )
-        }
-    }
-    /*Obtiene información general desde el servicio GeneralService.*/
-    getInformation(params, accion) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.accionBtnItem({ accion, item: response?.data })
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
-    }
-    filesUrl = []
-    accionBtnItem(elemento): void {
-        const { accion } = elemento
-        const { item } = elemento
-        // let params
-        switch (accion) {
-            case 'get_tareas_reutilizadas':
-                this.tareas = item
-                this.filteredTareas = item
-                break
-            case 'close-modal':
-                this.showModal = false
-                break
-            case 'subir-file-tareas':
-                this.filesUrl.push({
-                    type: 1, //1->file
-                    nameType: 'file',
-                    name: item.file.name,
-                    size: item.file.size,
-                    ruta: item.name,
-                })
-                break
-            case 'url-tareas':
-                this.filesUrl.push({
-                    type: 2, //2->url
-                    nameType: 'url',
-                    name: item.name,
-                    size: '',
-                    ruta: item.ruta,
-                })
-                break
-            case 'youtube-tareas':
-                this.filesUrl.push({
-                    type: 3, //3->youtube
-                    nameType: 'youtube',
-                    name: item.name,
-                    size: '',
-                    ruta: item.ruta,
-                })
-                break
-        }
-    }
-    /*Esta función se encarga de formatear y establecer los valores de ciertos campos
- de un formulario, ajustando las fechas y horas a una zona horaria específica
-  y asignando ciertos valores de campos a otros.*/
-    submit() {
-        let horaInicio = this.formTareas.value.dtInicio.toLocaleString(
-            'en-GB',
-            { timeZone: 'America/Lima' }
-        )
-        let horaFin = this.formTareas.value.dtFin.toLocaleString('en-GB', {
-            timeZone: 'America/Lima',
-        })
-        horaInicio = horaInicio.replace(',', '')
-        horaFin = horaFin.replace(',', '')
-        this.formTareas.controls.dtTareaInicio.setValue(horaInicio)
-        this.formTareas.controls.dtTareaFin.setValue(horaFin)
-        this.formTareas.controls.dtProgActInicio.setValue(horaInicio)
-        this.formTareas.controls.dtProgActFin.setValue(horaFin)
-        this.formTareas.controls.cProgActTituloLeccion.setValue(
-            this.formTareas.value.cTareaTitulo
-        )
-        // Funcion para limpiar la etiqueta de p-editor
-        const rawDescripcion =
-            this.formTareas.controls.cTareaDescripcion.value || ''
-        const tempElement = document.createElement('div')
-        tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
-        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
-
-        this.formTareas.controls.cTareaDescripcion.setValue(cleanDescripcion)
-
-        this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
-        this.formTareas.controls.cTareaArchivoAdjunto.setValue(
-            JSON.stringify(this.filesUrl)
-        )
-        const value = this.formTareas.value
-
-        if (this.formTareas.invalid) {
-            this.formTareas.markAllAsTouched()
-            return
-        }
-        this.submitEvent.emit(value)
-    }
-    imports: [
-        TooltipModule,
-        // otros módulos necesarios
-    ]
+        this.isLoading = false;
+      },
+      error: error => {
+        this.mostrarErrores(error);
+        this.isLoading = false;
+      },
+    });
+  }
 }

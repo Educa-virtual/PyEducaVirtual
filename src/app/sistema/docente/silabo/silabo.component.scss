@@ -1,17 +1,22 @@
 h6 {
-    font-size: 1rem !important;
+  font-size: 1rem !important;
 }
 
 input {
-    font-size: 1rem !important;
+  font-size: 1rem !important;
 }
 
 textarea {
-    font-size: 1rem !important;
+  font-size: 1rem !important;
 }
 :host ::ng-deep .tox .tox-statusbar .tox-statusbar__path-item {
-    display: none !important;
+  display: none !important;
 }
 :host ::ng-deep .tox .tox-statusbar a {
-    display: none !important;
+  display: none !important;
+}
+:host ::ng-deep {
+  .p-stepper .p-stepper-header .p-stepper-action {
+    border-radius: 100px;
+  }
 }

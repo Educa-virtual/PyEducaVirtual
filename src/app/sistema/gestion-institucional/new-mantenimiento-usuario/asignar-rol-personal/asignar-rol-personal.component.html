@@ -1,0 +1,114 @@
+<p-dialog
+  [(visible)]="visible"
+  [style]="{ width: '1000px' }"
+  header="Asignar Rol al Personal"
+  [modal]="true"
+  styleClass="p-fluid roles-dialog"
+  [draggable]="false"
+  (onHide)="closeDialog()"
+>
+  <div class="asignar-rol-container">
+    <div class="grid">
+      <div class="col-12">
+        <div class="card">
+          <div class="filtros-row">
+            <div class="filtro-item">
+              <label for="instituciones">Instituciones:</label>
+              <p-dropdown
+                [options]="instituciones"
+                [(ngModel)]="institucionSeleccionada"
+                placeholder="Seleccione Institución"
+                optionLabel="nombre"
+                styleClass="dropdown-field"
+              >
+              </p-dropdown>
+            </div>
+
+            <div class="filtro-item">
+              <label for="niveles">Nivel:</label>
+              <p-dropdown
+                [options]="niveles"
+                [(ngModel)]="nivelSeleccionado"
+                placeholder="Seleccione Nivel"
+                optionLabel="nombre"
+                styleClass="dropdown-field"
+              >
+              </p-dropdown>
+            </div>
+
+            <div class="filtro-item">
+              <label for="modulos">Módulo/Institución:</label>
+              <p-dropdown
+                [options]="modulos"
+                [(ngModel)]="moduloSeleccionado"
+                placeholder="Seleccione I.E."
+                optionLabel="nombre"
+                styleClass="dropdown-field"
+              >
+              </p-dropdown>
+            </div>
+
+            <div class="filtro-item">
+              <label for="modulos">Rol:</label>
+              <p-dropdown
+                [options]="roles"
+                [(ngModel)]="rolSeleccionado"
+                placeholder="Seleccione Rol"
+                optionLabel="nombre"
+                styleClass="dropdown-field"
+              >
+              </p-dropdown>
+            </div>
+
+            <div class="agregar-btn-container">
+              <button pButton pRipple label="+ Agregar" class="p-button-success"></button>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <p-table
+              [value]="asignaciones"
+              [tableStyle]="{ 'min-width': '50rem' }"
+              [rows]="10"
+              [showCurrentPageReport]="true"
+              styleClass="p-datatable-sm"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%; text-align: center">#</th>
+                  <th style="width: 20%">Rol</th>
+                  <th style="width: 20%">Nivel</th>
+                  <th style="width: 35%">Institución</th>
+                  <th style="width: 15%">Fecha Asignación</th>
+                  <th style="width: 5%; text-align: center">Acciones</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-asignacion let-i="rowIndex">
+                <tr [ngClass]="{ 'row-even': i % 2 === 0 }">
+                  <td style="text-align: center">
+                    {{ asignacion.id }}
+                  </td>
+                  <td>{{ asignacion.rol }}</td>
+                  <td>{{ asignacion.nivel }}</td>
+                  <td>{{ asignacion.institucion }}</td>
+                  <td>{{ asignacion.fechaAsignacion }}</td>
+                  <td style="text-align: center">
+                    <button
+                      pButton
+                      pRipple
+                      icon="pi pi-trash"
+                      class="p-button-rounded p-button-danger delete-button"
+                      pTooltip="Eliminar"
+                      tooltipPosition="top"
+                      (click)="eliminarUsuario(asignacion.id)"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>

@@ -1,0 +1,73 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome"> </p-breadcrumb>
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">
+        {{ title }}
+      </h3>
+    </div>
+  </ng-template>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="dataSugerencias"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    sortMode="single"
+    sortField="dtFechaCreacion"
+    [sortOrder]="-1"
+    [(selectedRowData)]="selectedItem"
+    [actions]="actions"
+    [showAdvancedFilter]="true"
+    [indiceColumnaBuscar]="3"
+    [showAdvancedFilter]="false"
+    [searchPlaceholder]="'Buscar por sugerencia...'"
+  >
+  </app-table-primeng>
+</p-panel>
+
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="formularioVerHeader"
+  [(visible)]="mostrarFormularioVer"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+  <app-ver-sugerencia
+    (cerrarDialogVerSugerenciaEvent)="listenDialogVerSugerencia($event)"
+    [selectedItem]="selectedItem"
+    #verSugerenciaComponent
+  ></app-ver-sugerencia>
+</p-dialog>
+
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="formularioResponderHeader"
+  [(visible)]="mostrarFormularioResponder"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+</p-dialog>
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="formularioResponderHeader"
+  [(visible)]="mostrarFormularioResponder"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+  <app-responder-sugerencia
+    (eventSugerenciaRespondida)="listenSugerenciaRespondida($event)"
+    [selectedItem]="selectedItem"
+    #responderSugerenciaComponent
+  ></app-responder-sugerencia>
+</p-dialog>

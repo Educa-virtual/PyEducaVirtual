@@ -1,0 +1,18 @@
+:host ::ng-deep p-inputGroupAddon {
+  background-color: #3e67a9;
+  color: #fff;
+}
+
+:host ::ng-deep p-button.download-template button {
+  background: #64748b;
+}
+
+:host ::ng-deep p-button.import button {
+  background: #1fb356;
+  border: none;
+}
+
+:host ::ng-deep app-btn-file-upload {
+  background: #3676e0;
+  border-radius: 10px;
+}

@@ -1,125 +1,85 @@
 <div [ngClass]="{ 'disabled-div': isDisabled }">
-    <p-accordion [activeIndex]="0">
-        <p-accordionTab
-            *ngFor="let nivel of lista; let nivelIndex = index"
-            [header]="nivel.nivel"
-        >
-            <div
-                *ngFor="
-                    let grado of objectKeys(nivel.grados);
-                    let gradoIndex = index
-                "
-                class="flex flex-column gap-2"
-            >
-                @if (gradoIndex === 0) {
-                    <div class="grid">
-                        <p-table
-                            [value]="nivel.grados[grado]"
-                            class="col-12 hoverTable"
-                        >
-                            <ng-template pTemplate="header">
-                                <tr>
-                                    <th style="width: 1rem">#</th>
-                                    <th style="width: 15rem">Nombre de Área</th>
-                                    <th
-                                        style="width: 1rem"
-                                        *ngFor="
-                                            let grado of objectKeys(
-                                                nivel.grados
-                                            )
-                                        "
-                                    >
-                                        {{ grado }}
-                                    </th>
-                                    <th style="width: 30%">
-                                        Fecha de Evaluación
-                                    </th>
-                                    <th style="width: 30%">Cant. Preguntas</th>
-                                </tr>
-                            </ng-template>
+  <p-accordion [activeIndex]="0">
+    <p-accordionTab *ngFor="let nivel of lista; let nivelIndex = index" [header]="nivel.nivel">
+      <div
+        *ngFor="let grado of objectKeys(nivel.grados); let gradoIndex = index"
+        class="flex flex-column gap-2"
+      >
+        @if (gradoIndex === 0) {
+          <div class="grid">
+            <p-table [value]="nivel.grados[grado]" class="col-12 hoverTable">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 1rem">#</th>
+                  <th style="width: 15rem">Nombre del área</th>
+                  <th style="width: 1rem" *ngFor="let grado of objectKeys(nivel.grados)">
+                    {{ grado }}
+                  </th>
+                  <th style="width: 30%">Fecha de evaluación</th>
+                  <th style="width: 15%">Cant. preguntas</th>
+                  <!--<th style="width: 15%">Duración eval. (minutos)</th>-->
+                </tr>
+              </ng-template>
 
-                            <ng-template
-                                pTemplate="body"
-                                let-curso
-                                let-i="rowIndex"
-                            >
-                                <tr>
-                                    <td class="font-bold">{{ i + 1 }}</td>
-                                    <td>{{ curso.cCursoNombre }}</td>
+              <ng-template pTemplate="body" let-curso let-i="rowIndex">
+                <tr>
+                  <td class="font-bold">{{ i + 1 }}</td>
+                  <td>{{ curso.cCursoNombre }}</td>
 
-                                    <td
-                                        *ngFor="
-                                            let grado of objectKeys(
-                                                nivel.grados
-                                            )
-                                        "
-                                    >
-                                        <div
-                                            *ngFor="
-                                                let item of nivel.grados[grado]
-                                            "
-                                        >
-                                            @if (
-                                                item.cGrado === grado &&
-                                                item.cCursoNombre ===
-                                                    curso.cCursoNombre
-                                            ) {
-                                                <p-checkbox
-                                                    [(ngModel)]="
-                                                        item.isSelected
-                                                    "
-                                                    [binary]="true"
-                                                    [disabled]="isDisabled"
-                                                    [value]="item"
-                                                    [inputId]="
-                                                        item.iCursoNivelGradId
-                                                    "
-                                                    (onChange)="
-                                                        onCursoSelect(item)
-                                                    "
-                                                ></p-checkbox>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p-calendar
-                                            appendTo="body"
-                                            [(ngModel)]="
-                                                curso.dtExamenFechaInicio
-                                            "
-                                            dateFormat="dd/mm/yy"
-                                            placeholder="Seleccionar Fecha"
-                                            [showIcon]="true"
-                                            [iconDisplay]="'input'"
-                                            (onSelect)="
-                                                guardarFechaCantidadExamenCursos(
-                                                    curso
-                                                )
-                                            "
-                                            [style]="{ width: '180px' }"
-                                            [disabled]="
-                                                !nivel.grados ||
-                                                !habiltarButton(
-                                                    nivel.grados,
-                                                    curso
-                                                )
-                                            "
-                                        >
-                                        </p-calendar>
-                                    </td>
-                                    <td>
+                  <td *ngFor="let grado of objectKeys(nivel.grados)">
+                    <div *ngFor="let item of nivel.grados[grado]">
+                      @if (item.cGrado === grado && item.cCursoNombre === curso.cCursoNombre) {
+                        <p-checkbox
+                          [(ngModel)]="item.isSelected"
+                          [binary]="true"
+                          [disabled]="isDisabled"
+                          [value]="item"
+                          [inputId]="item.iCursoNivelGradId"
+                          (onChange)="onCursoSelect(item, curso)"
+                        ></p-checkbox>
+                      }
+                    </div>
+                  </td>
+                  <td>
+                    <p-calendar
+                      appendTo="body"
+                      [(ngModel)]="curso.dtExamenFechaInicio"
+                      dateFormat="dd/mm/yy"
+                      placeholder="Seleccione fecha"
+                      [showIcon]="true"
+                      [iconDisplay]="'input'"
+                      (onSelect)="guardarFechaCantidadExamenCursos(curso, 'fecha')"
+                      [style]="{ width: '180px' }"
+                      [disabled]="!nivel.grados || !habiltarButton(nivel.grados, curso)"
+                    >
+                    </p-calendar>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      pInputText
+                      [(ngModel)]="curso.iExamenCantidadPreguntas"
+                      min="1"
+                      placeholder="0"
+                      style="width: 65px"
+                      (focusout)="guardarFechaCantidadExamenCursos(curso, 'preguntas')"
+                      [disabled]="!nivel.grados || !habiltarButton(nivel.grados, curso)"
+                    />
+                  </td>
+                  <!--<td>
                                         <input
                                             type="number"
                                             pInputText
                                             [(ngModel)]="
-                                                curso.iExamenCantidadPreguntas
+                                                curso.iExamenDuracionMinutos
                                             "
                                             min="1"
                                             placeholder="0"
                                             style="width: 65px"
                                             (input)="
                                                 guardarFechaCantidadExamenCursos(
-                                                    curso
+                                                    curso,
+                                                    'duracion'
                                                 )
                                             "
                                             [disabled]="
@@ -130,13 +90,13 @@
                                                 )
                                             "
                                         />
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                }
-            </div>
-        </p-accordionTab>
-    </p-accordion>
+                                    </td>-->
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        }
+      </div>
+    </p-accordionTab>
+  </p-accordion>
 </div>

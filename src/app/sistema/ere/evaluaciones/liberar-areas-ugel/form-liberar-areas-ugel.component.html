@@ -1,0 +1,33 @@
+<app-modal-primeng
+  [title]="titulo + (data?.cEvaluacionNombre || '-') + ' - ' + (data?.cTipoEvalDescripcion || '-')"
+  [showModal]="showModal"
+  [width]="'80rem'"
+  (accionBtnItem)="accionBtn($event)"
+>
+  <div class="mt-4">
+    <div class="grid">
+      <div class="col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha de la Evaluación</p-inputGroupAddon>
+          <input
+            pInputText
+            [placeholder]="
+              (data?.dtEvaluacionFechaInicio || '-') + ' al ' + (data?.dtEvaluacionFechaFin || '-')
+            "
+            disabled
+            class="opacity-100"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon> Cantidades de I.E. participantes </p-inputGroupAddon>
+          <input pInputText disabled class="opacity-100" />
+
+          <p-button icon="pi pi-eye" [rounded]="true" [text]="true" />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 mt-1"></div>
+    </div>
+  </div>
+</app-modal-primeng>

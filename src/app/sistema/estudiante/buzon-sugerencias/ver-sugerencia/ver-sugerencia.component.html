@@ -1,0 +1,113 @@
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="titulo"
+  [(visible)]="visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  (onHide)="cerrarDialog()"
+>
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <div class="field col-12 md:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Asunto</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            formControlName="cAsunto"
+            [readonly]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            [value]="form.get('dtFechaCreacion')?.value | date: 'dd/MM/yyyy HH:mm'"
+            [readonly]="true"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            formControlName="cPrioridadNombre"
+            [readonly]="true"
+          />
+        </p-inputGroup>
+      </div>
+
+      <!--<div class="field col-12 md:col-8">
+            <p-inputGroup>
+                <p-inputGroupAddon>Alumno</p-inputGroupAddon>
+                <input pInputText type="text" formControlName="cNombreEstudiante" [readonly]="true" />
+            </p-inputGroup>
+        </div>-->
+
+      <div class="field col-12">
+        <label for="cSugerencia">Sugerencia del alumno</label>
+        <!--<p-editor [readonly]="true" formControlName="cSugerencia" [style]="{ height: '160px' }" [modules]="{ toolbar: false }" ></p-editor>-->
+        <div class="p-inputgroup p-fluid estilo-editor disabled">
+          <div id="cSugerencia" [innerHTML]="form.get('cSugerencia')?.value"></div>
+        </div>
+      </div>
+      <div class="field col-12">
+        <label for="cArchivosSubidos">Archivos subidos</label>
+        @if (archivos?.length > 0) {
+          <div class="estilo-editor">
+            <ul>
+              <li *ngFor="let archivo of archivos">
+                <a href="#" (click)="descargarArchivo($event, archivo.nombreArchivo)">{{
+                  archivo.nombreArchivo
+                }}</a>
+              </li>
+            </ul>
+          </div>
+        } @else {
+          <p-message severity="info" text="No se han subido archivos." />
+        }
+        <div>
+          <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Director</p-inputGroupAddon>
+                <input class="disabled" pInputText type="text" [readOnly]="true" disabled />
+              </p-inputGroup>
+            </div>
+            <div class="field col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Fecha respuesta</p-inputGroupAddon>
+                <input class="disabled" pInputText type="text" [readOnly]="true" disabled />
+              </p-inputGroup>
+            </div>
+            <div class="field col-12">
+              <label for="cRespuesta">Respuesta del director</label>
+              <!--<p-editor [readonly]="true" formControlName="cRespuesta" [style]="{ height: '160px' }"
+                                [modules]="{ toolbar: false }"></p-editor>-->
+              <div class="p-inputgroup p-fluid estilo-editor disabled">
+                <div id="cRespuesta" [innerHTML]="form.get('cRespuesta')?.value"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--*ngIf="!disable_form" (onClick)="guardarSugerencia()"-->
+    <div class="flex justify-content-end">
+      <p-button label="Cerrar" severity="secondary" (click)="cerrarDialog()" />
+    </div>
+  </form>
+</p-dialog>
+<p-toast />

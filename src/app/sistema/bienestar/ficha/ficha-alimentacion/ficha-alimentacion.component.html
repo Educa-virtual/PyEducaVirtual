@@ -1,0 +1,134 @@
+<br />
+
+<form [formGroup]="formAlimentacion">
+  <div class="grid p-fluid p-2">
+    <div class="col-12">
+      <app-multiselect-simple
+        [multiselectItems]="programas_alimentarios"
+        [multiselectControl]="$any(formAlimentacion).controls['iProgAlimId']"
+        addonLabel="Programas de alimentación"
+        multiselectPlaceholder="Seleccione"
+      />
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-fieldset legend="Lugar de alimentación del estudiante durante la semana">
+        <div class="grid mt-3">
+          <div class="col-12">
+            <app-dropdown-input
+              [dropdownItems]="lugares_alimentacion"
+              [dropdownControl]="$any(formAlimentacion).controls['iLugarAlimIdDesayuno']"
+              addonLabel="¿Donde suele consumir el desayuno? *"
+              dropdownPlaceholder="Seleccione"
+              [inputControl]="$any(formAlimentacion).controls['cLugarAlimDesayuno']"
+              inputPlaceholder="Especifique otro"
+            />
+          </div>
+          <div class="col-12">
+            <app-dropdown-input
+              [dropdownItems]="lugares_alimentacion"
+              [dropdownControl]="$any(formAlimentacion).controls['iLugarAlimIdAlmuerzo']"
+              addonLabel="¿Donde suele consumir el almuerzo? *"
+              dropdownPlaceholder="Seleccione"
+              [inputControl]="$any(formAlimentacion).controls['cLugarAlimAlmuerzo']"
+              inputPlaceholder="Especifique otro"
+            />
+          </div>
+          <div class="col-12">
+            <app-dropdown-input
+              [dropdownItems]="lugares_alimentacion"
+              [dropdownControl]="$any(formAlimentacion).controls['iLugarAlimIdCena']"
+              addonLabel="¿Donde suele consumir la cena? *"
+              dropdownPlaceholder="Seleccione"
+              [inputControl]="$any(formAlimentacion).controls['cLugarAlimCena']"
+              inputPlaceholder="Especifique otro"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+
+    <div class="col-12 lg:col-6">
+      <p-fieldset legend="Información alimenticia adicional sobre el estudiante">
+        <div class="grid">
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Tiene una dieta especial?"
+              inputPlaceholder="Especifique *"
+              inputType="textarea"
+              [inputInitRows]="1"
+              [switchControl]="$any(formAlimentacion).controls['bDietaEspecial']"
+              [inputControl]="$any(formAlimentacion).controls['cDietaEspecialObs']"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Tiene alergias alimenticias?"
+              inputPlaceholder="Especifique *"
+              inputType="textarea"
+              [inputInitRows]="1"
+              [switchControl]="$any(formAlimentacion).controls['bFichaDGAlergiaAlimentos']"
+              [inputControl]="$any(formAlimentacion).controls['cFichaDGAlergiaAlimentos']"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Tiene intolerancias alimenticias?"
+              inputPlaceholder="Especifique *"
+              inputType="textarea"
+              [inputInitRows]="1"
+              [switchControl]="$any(formAlimentacion).controls['bIntoleranciaAlim']"
+              [inputControl]="$any(formAlimentacion).controls['cIntoleranciaAlimObs']"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Consume suplementos alimenticios?"
+              inputPlaceholder="Especifique *"
+              inputType="textarea"
+              [inputInitRows]="1"
+              [switchControl]="$any(formAlimentacion).controls['bSumplementosAlim']"
+              [inputControl]="$any(formAlimentacion).controls['cSumplementosAlimObs']"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Tiene dificultades para conseguir alimentos?"
+              inputPlaceholder="Explique *"
+              inputType="textarea"
+              [inputInitRows]="1"
+              [switchControl]="$any(formAlimentacion).controls['bDificultadAlim']"
+              [inputControl]="$any(formAlimentacion).controls['cDificultadAlimObs']"
+              [infoAdicional]="bDificultadAlim"
+            />
+            <ng-template #bDificultadAlim>
+              Marque esta opción si el estudiante suele tener dificultades para conseguir alimentos
+              ya sea por falta de dinero, tiempo, transporte, etc. y explique brevemente el motivo.
+            </ng-template>
+          </div>
+          <div class="col-12">
+            <app-input-simple
+              inputType="textarea"
+              [inputInitRows]="1"
+              [inputControl]="$any(formAlimentacion).controls['cAlimObs']"
+              addonLabel="Información adicional"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+  </div>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+  <p-button label="Salir sin guardar" (onClick)="salir()" severity="secondary" />
+  <p-button
+    type="button"
+    label="Actualizar y continuar"
+    icon="pi pi-save"
+    severity="success"
+    (click)="actualizar()"
+  />
+</div>
+<p-toast></p-toast>

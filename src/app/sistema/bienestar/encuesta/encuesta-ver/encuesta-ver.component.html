@@ -1,0 +1,119 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase">
+      <div class="flex flex-column">
+        <div class="flex text-xl">RESPONDER ENCUESTA</div>
+        <div class="flex text-sm">{{ encuesta?.cEncuNombre }}</div>
+      </div>
+    </span>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <span>Hasta: {{ encuesta?.dEncuHasta | date: 'dd/MM/yyyy' }}</span>
+  </ng-template>
+
+  <div class="grid p-fluid">
+    <div class="col-12 md:col-4">
+      <div class="grid p-fluid">
+        <div class="col-12">
+          <p-messages severity="info" class="my-0">
+            <ng-template pTemplate>
+              <ul class="list-none p-0 m-0">
+                <li class="flex py-3">
+                  <i class="pi pi-pen-to-square text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Descripción</span>
+                    <span class="m-0 text-secondary">{{ encuesta?.cEncuDescripcion }}</span>
+                  </span>
+                </li>
+                <li class="flex py-3">
+                  <i class="pi pi-lock text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Permisos</span>
+                    <span class="m-0 text-secondary"></span>
+                  </span>
+                </li>
+              </ul>
+            </ng-template>
+          </p-messages>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 md:col-8">
+      <div class="grid p-fluid" *ngFor="let pregunta of preguntas; let i = index">
+        @switch (+pregunta.iEncuPregTipoId) {
+          <!-- Pregunta cerrada Si/No -->
+          @case (1) {
+            <div class="col-12">
+              <app-pregunta-cerrada
+                [addonLabel]="pregunta.cEncuPregContenido"
+                [switchControl]="$any(preguntasFormArray.at(i).get('cEncuRptaContenido'))"
+                [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
+                [iEncuPregId]="pregunta.iEncuPregId"
+                [controlDisabled]="!puede_editar"
+              ></app-pregunta-cerrada>
+              <ng-template #infoAdicional>
+                {{ pregunta.cEncuPregAdicional }}
+              </ng-template>
+            </div>
+          }
+          <!-- Pregunta de texto -->
+          @case (2) {
+            <div class="col-12">
+              <app-pregunta-abierta
+                [addonLabel]="pregunta.cEncuPregContenido"
+                [inputControl]="$any(preguntasFormArray.at(i).get('cEncuRptaContenido'))"
+                [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
+                [controlDisabled]="!puede_editar"
+              />
+              <ng-template #infoAdicional>
+                {{ pregunta.cEncuPregAdicional }}
+              </ng-template>
+            </div>
+          }
+          <!-- Pregunta de escalas 1 a 5 -->
+          @case (3) {
+            <div class="col-12">
+              <app-pregunta-escala
+                [addonLabel]="pregunta.cEncuPregContenido"
+                [ratingControl]="$any(preguntasFormArray.at(i).get('cEncuRptaContenido'))"
+                [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
+                [iEncuPregId]="pregunta.iEncuPregId"
+                [controlDisabled]="!puede_editar"
+              />
+              <ng-template #infoAdicional>
+                {{ pregunta.cEncuPregAdicional }}
+              </ng-template>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      label="Salir sin guardar"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      (onClick)="salir()"
+    />
+    <p-button
+      label="Guardar"
+      (onClick)="guardarRespuesta()"
+      styleClass="p-button-success"
+      icon="pi pi-save"
+      *ngIf="!respuesta_registrada && puede_editar"
+    />
+    <p-button
+      label="Actualizar"
+      (onClick)="actualizarRespuesta()"
+      styleClass="p-button-success"
+      icon="pi pi-save"
+      *ngIf="respuesta_registrada && puede_editar"
+    />
+  </div>
+</p-panel>
+
+<p-toast></p-toast>

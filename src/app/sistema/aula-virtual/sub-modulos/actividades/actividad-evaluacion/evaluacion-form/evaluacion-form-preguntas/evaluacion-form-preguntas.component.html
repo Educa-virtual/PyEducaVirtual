@@ -1,92 +1,83 @@
-<div
-    class="flex flex-column md:flex-row gap-2 justify-content-between items-center mb-4"
->
-    <h2 class="text-2xl font-bold text-left">
-        Preguntas {{ tituloEvaluacion }}
-    </h2>
-    <div class="flex gap-2">
-        <button
-            pButton
-            type="button"
-            class="p-button p-button-primary gap-2"
-            (click)="generarWordEvaluacion()"
-        >
-            <i class="pi pi-upload"></i>
-            <span class="text-md">Exportar Word</span>
-        </button>
+<div class="flex flex-column md:flex-row gap-2 justify-content-between items-center mb-4">
+  <h2 class="text-2xl font-bold text-left">Preguntas {{ tituloEvaluacion }}</h2>
+  <div class="flex gap-2">
+    <button
+      pButton
+      type="button"
+      class="p-button p-button-primary gap-2"
+      (click)="generarWordEvaluacion()"
+    >
+      <i class="pi pi-upload"></i>
+      <span class="text-md">Exportar Word</span>
+    </button>
 
-        <button
-            pButton
-            class="p-button-primary gap-2"
-            (click)="menuAgregacionPreguntas.toggle($event)"
-            size="small"
-        >
-            <i class="pi pi-plus"></i>
-            <span class="text-md">Agregar Preguntas</span>
-        </button>
-    </div>
+    <button
+      pButton
+      class="p-button-primary gap-2"
+      (click)="menuAgregacionPreguntas.toggle($event)"
+      size="small"
+    >
+      <i class="pi pi-plus"></i>
+      <span class="text-md">Agregar Preguntas</span>
+    </button>
+  </div>
 </div>
 
 <app-banco-pregunta-lista
-    [data]="preguntas"
-    [showCaption]="false"
-    [showPaginator]="false"
-    [accionesTabla]="acciones"
-    (accionBtnItemTable)="accionBtnItemTable($event)"
-    [columnas]="columnasEvaluacionLista"
+  [data]="preguntas"
+  [showCaption]="false"
+  [showPaginator]="false"
+  [accionesTabla]="acciones"
+  (accionBtnItemTable)="accionBtnItemTable($event)"
+  [columnas]="columnasEvaluacionLista"
 ></app-banco-pregunta-lista>
 
-<p-menu
-    #menuAgregacionPreguntas
-    [popup]="true"
-    [model]="tiposAgrecacionPregunta"
-    appendTo="body"
->
+<p-menu #menuAgregacionPreguntas [popup]="true" [model]="tiposAgrecacionPregunta" appendTo="body">
 </p-menu>
 
 <p-dialog
-    #dialogBancoPreguntas
-    [header]="'Agregar Preguntas del Banco de preguntas'"
-    [modal]="true"
-    [(visible)]="showModalBancoPreguntas"
-    [position]="'top'"
-    [maximizable]="true"
-    [style]="{ width: '100%' }"
+  #dialogBancoPreguntas
+  [header]="'Agregar Preguntas del Banco de preguntas'"
+  [modal]="true"
+  [(visible)]="showModalBancoPreguntas"
+  [position]="'top'"
+  [maximizable]="true"
+  [style]="{ width: '100%' }"
 >
-    @defer (when showModalBancoPreguntas) {
-        <!-- las preguntas seleccionadas -->
-        <app-aula-banco-preguntas
-            [mode]="'SELECTION'"
-            [iEvaluacionId]="iEvaluacionId"
-            [iCursoId]="iCursoId"
-            (selectedRowDataChange)="selectedRowDataChange($event)"
-        />
-    }
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-end gap-2 pt-3">
-            <button
-                pButton
-                pRipple
-                label="Cancelar"
-                icon="pi pi-times"
-                class="p-button-secondary"
-                type="button"
-                size="small"
-                (click)="closeModalBancoPreguntas()"
-            ></button>
-            <button
-                pButton
-                pRipple
-                label="Agregar preguntas seleccionadas"
-                icon="pi pi-check"
-                size="small"
-                class="p-button-primary"
-                (click)="agregarPreguntas()"
-            ></button>
-        </div>
-    </ng-template>
+  @defer (when showModalBancoPreguntas) {
+    <!-- las preguntas seleccionadas -->
+    <app-aula-banco-preguntas
+      [mode]="'SELECTION'"
+      [iEvaluacionId]="iEvaluacionId"
+      [iCursoId]="iCursoId"
+      (selectedRowDataChange)="selectedRowDataChange($event)"
+    />
+  }
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2 pt-3">
+      <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        type="button"
+        size="small"
+        (click)="closeModalBancoPreguntas()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Agregar preguntas seleccionadas"
+        icon="pi pi-check"
+        size="small"
+        class="p-button-primary"
+        (click)="agregarPreguntas()"
+      ></button>
+    </div>
+  </ng-template>
 </p-dialog>
-<app-preguntas-form
+<!-- <app-preguntas-form
     [showModalPreguntas]="showModalPreguntas"
     (accionBtnItem)="accionBtnItem($event)"
-></app-preguntas-form>
+></app-preguntas-form> -->

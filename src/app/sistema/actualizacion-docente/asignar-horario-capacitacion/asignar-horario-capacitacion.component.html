@@ -1,0 +1,155 @@
+<!-- // weekly-schedule.component.html -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+  <!-- Header -->
+  <div class="text-center mb-6">
+    <h1 class="text-4xl font-bold text-gray-800 mb-2">Horario Semanal</h1>
+    <p class="text-gray-600">Haz clic en un día para agregar clases</p>
+    <p-chip
+      [label]="'Total de clases: ' + getTotalClasses()"
+      icon="pi pi-calendar"
+      styleClass="mt-2"
+    >
+    </p-chip>
+  </div>
+  <!-- Schedule Grid -->
+  <div class="grid grid-nogutter gap-3 mb-6">
+    <div *ngFor="let dia of dias" class="col-12 md:col-6 lg:col-3 xl:col" [ngClass]="dia.color">
+      <p-card
+        class="h-full min-h-20rem border-2 border-solid transition-all duration-300 hover:shadow-lg"
+      >
+        <!-- Card Header -->
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center p-3">
+            <h3 class="text-lg font-semibold text-gray-800 m-0">
+              {{ dia.nombre }}
+            </h3>
+            <p-button
+              icon="pi pi-plus"
+              [rounded]="true"
+              [outlined]="true"
+              size="small"
+              (onClick)="openDialog(dia.id)"
+              pTooltip="Agregar clase"
+              tooltipPosition="top"
+            >
+            </p-button>
+            <!-- (onClick)="openDialog(dia.key)" -->
+          </div>
+        </ng-template>
+
+        <!-- Card Content -->
+        <div class="p-3">
+          <div *ngIf="schedule[dia.id].length === 0" class="text-center text-gray-500 py-4">
+            <i class="pi pi-calendar text-3xl mb-2 block"></i>
+            <p class="text-sm">Sin clases programadas</p>
+          </div>
+
+          <div *ngFor="let class of schedule[dia.id]" class="mb-3">
+            <p-card class="border-left-4 border-blue-500">
+              <div class="flex justify-content-between align-items-start mb-2">
+                <h4 class="text-sm font-medium text-gray-800 m-0">
+                  {{ class.subject }}
+                </h4>
+                <p-button
+                  icon="pi pi-times"
+                  severity="danger"
+                  [text]="true"
+                  size="small"
+                  pTooltip="Eliminar clase"
+                >
+                </p-button>
+                <!-- (onClick)="removeClass(dia.id, class.id)" -->
+              </div>
+
+              <div class="flex align-items-center text-xs text-gray-600 mb-1">
+                <i class="pi pi-clock mr-1"></i>
+                {{ class.startTime }}-{{ class.endTime }}
+                <!-- {{ formatTime(class.startTime) }} - {{ formatTime(class.endTime) }} -->
+              </div>
+
+              <div *ngIf="class.location" class="text-xs text-gray-500">
+                <i class="pi pi-map-marker mr-1"></i>
+                {{ class.location }}
+              </div>
+            </p-card>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>
+
+<!-- Add Class Dialog -->
+<p-dialog
+  header="Agregar Clase - {{ activeDayName }}"
+  [(visible)]="displayDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-11 md:w-6 lg:w-4"
+  (onHide)="closeDialog()"
+>
+  <div class="grid formgrid p-fluid">
+    <!-- Subject Field -->
+    <div class="field col-12">
+      <label for="subject" class="font-semibold">Materia/Asignatura *</label>
+      <input
+        pInputText
+        id="subject"
+        [(ngModel)]="newClass.subject"
+        placeholder="Ej: Matemáticas"
+        class="w-full"
+      />
+    </div>
+
+    <!-- Time Fields -->
+    <div class="field col-6">
+      <label for="startTime" class="font-semibold">Hora de Inicio *</label>
+      <p-calendar
+        [(ngModel)]="newClass.startTime"
+        [timeOnly]="true"
+        [stepMinute]="15"
+        hourFormat="24"
+        placeholder="00:00"
+        inputId="startTime"
+        styleClass="w-full"
+      >
+      </p-calendar>
+    </div>
+
+    <div class="field col-6">
+      <label for="endTime" class="font-semibold">Hora de Fin *</label>
+      <p-calendar
+        [(ngModel)]="newClass.endTime"
+        [timeOnly]="true"
+        [stepMinute]="15"
+        hourFormat="24"
+        placeholder="00:00"
+        inputId="endTime"
+        styleClass="w-full"
+      >
+      </p-calendar>
+    </div>
+
+    <!-- Location Field -->
+    <div class="field col-12">
+      <label for="location" class="font-semibold">Ubicación/Aula</label>
+      <input
+        pInputText
+        id="location"
+        [(ngModel)]="newClass.location"
+        placeholder="Ej: Aula 101"
+        class="w-full"
+      />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="closeDialog()">
+      </p-button>
+      <p-button label="Agregar Clase" icon="pi pi-plus" (onClick)="anadirClase()"> </p-button>
+    </div>
+  </ng-template>
+</p-dialog>

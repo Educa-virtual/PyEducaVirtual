@@ -1,116 +1,92 @@
-<form [formGroup]="formTareas">
+<app-modal-primeng
+  *ngIf="showModal"
+  [title]="accionTarea === 'ACTUALIZAR' ? 'ACTUALIZAR TAREA' : 'GUARDAR TAREA'"
+  [showModal]="showModal"
+  (accionBtnItem)="this.accionCloseForm.emit($event)"
+  width="55rem"
+>
+  <form [formGroup]="formTareas" *ngIf="formTareas" class="mt-1">
     <div class="grid">
-        <div class="col-12">
-            <p-messages
-                [(value)]="semana"
-                [enableService]="false"
-                [closable]="false"
-            />
-            @if (!formTareas.value.iTareaId) {
-                <!-- es boton que activa y descativa la tarea-->
-                <!-- <div class="flex align-items-center justify-content-end mb-2">
-                    ¿Deseas reutilizar tarea? &nbsp;&nbsp;
-                    <p-inputSwitch
-                        (ngModelChange)="getTareasxiCursoId()"
-                        formControlName="bReutilizarTarea"
-                    />
-                </div> -->
-            }
-            <p-inputGroup>
-                <p-inputGroupAddon> Título </p-inputGroupAddon>
-
-                @if (this.formTareas.value.bReutilizarTarea) {
-                    <!-- Si la propiedad bReutilizarTarea es verdadera, se muestra un componente de autocompletado -->
-                    <p-autoComplete
-                        formControlName="cTareaTitulo"
-                        [dropdown]="
-                            this.formTareas.value.bReutilizarTarea
-                                ? true
-                                : false
-                        "
-                        [showClear]="
-                            this.formTareas.value.bReutilizarTarea
-                                ? true
-                                : false
-                        "
-                        optionLabel="cTareaTitulo"
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '87%' }"
-                        [suggestions]="filteredTareas"
-                        (completeMethod)="filterTareas($event)"
-                        [showClear]="true"
-                        [emptyMessage]="' '"
-                        (ngModelChange)="getFilterIndicaciones($event)"
-                    >
-                        <ng-template let-item pTemplate="item">
-                            <div>{{ item.cTareaTitulo }}</div>
-                        </ng-template>
-                    </p-autoComplete>
-                } @else {
-                    <input
-                        pInputText
-                        class="flex-auto w-full"
-                        formControlName="cTareaTitulo"
-                    />
-                }
-            </p-inputGroup>
+      <div class="col-12">
+        <p-messages [(value)]="semana" [enableService]="false" [closable]="false" />
+        <p-inputGroup>
+          <p-inputGroupAddon> Título </p-inputGroupAddon>
+          <input
+            pInputText
+            class="flex-auto w-full"
+            formControlName="cTareaTitulo"
+            placeholder="Ingrese el título de la tarea"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <label for="descripcion" class="mt-1"
+          >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+        >
+        <!-- Componente de editor de texto de PrimeNG -->
+        <div class="mt-2">
+          <p-editor
+            id="descripcion"
+            formControlName="cTareaDescripcion"
+            [style]="{ height: 'auto', overflow: 'hidden' }"
+            placeholder="Escribe una Descripción "
+          />
         </div>
-
-        <div class="col-12">
-            <label for="descripcion" class="mt-1"
-                >Descripción
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <!-- Componente de editor de texto de PrimeNG -->
-
-            <div class="mt-2">
-                <p-editor
-                    id="descripcion"
-                    formControlName="cTareaDescripcion"
-                    [style]="{ height: '80px', width: '100%' }"
-                />
-            </div>
-        </div>
-        <div class="col-12 md:col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
-                <!-- Componente de calendario para seleccionar una fecha y hora -->
-                <p-calendar
-                    formControlName="dtInicio"
-                    [iconDisplay]="'input'"
-                    styleClass="w-full"
-                    [showIcon]="true"
-                    [showTime]="true"
-                    [hourFormat]="'24'"
-                    inputId="dtInicio"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 md:col-6">
-            <!-- Este componente es un grupo de entrada que encapsula un `p-inputGroupAddon` y un `p-calendar` -->
-            <p-inputGroup>
-                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
-                <p-calendar
-                    formControlName="dtFin"
-                    [iconDisplay]="'input'"
-                    styleClass="w-full"
-                    [showIcon]="true"
-                    [showTime]="true"
-                    [hourFormat]="'24'"
-                    inputId="dtFin"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 mt-1">
-            <!-- Componente personalizado para la carga de archivos con PrimeNG -->
-            <!-- Propiedad de entrada que define una opción asociada al componente -->
-            <app-types-files-upload-primeng
-                [nameFile]="'tareas'"
-                [nameOption]="'tareas'"
-                [typesFiles]="typesFiles"
-                (actionTypesFileUpload)="accionBtnItem($event)"
-                [filesUrl]="filesUrl"
-            ></app-types-files-upload-primeng>
-        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+          <!-- Componente de calendario para seleccionar una fecha y hora -->
+          <p-calendar
+            formControlName="dtTareaInicio"
+            [iconDisplay]="'input'"
+            styleClass="w-full"
+            [showIcon]="true"
+            [showTime]="true"
+            [hourFormat]="'24'"
+            inputId="dtTareaInicio"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <!-- Este componente es un grupo de entrada que encapsula un `p-inputGroupAddon` y un `p-calendar` -->
+        <p-inputGroup>
+          <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+          <p-calendar
+            formControlName="dtTareaFin"
+            [iconDisplay]="'input'"
+            styleClass="w-full"
+            [showIcon]="true"
+            [showTime]="true"
+            [hourFormat]="'24'"
+            inputId="dtTareaFin"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 mt-1">
+        <!-- Componente personalizado para la carga de archivos con PrimeNG -->
+        <!-- Propiedad de entrada que define una opción asociada al componente -->
+        <app-types-files-upload-primeng
+          [nameFile]="'tareas'"
+          [nameOption]="'tareas'"
+          [typesFiles]="typesFiles"
+          (actionTypesFileUpload)="accionBtnItem($event)"
+          [filesUrl]="filesUrl"
+        ></app-types-files-upload-primeng>
+      </div>
     </div>
-</form>
+  </form>
+
+  <!-- Contenedor para los botones de acción al final del formulario -->
+  <div footer class="flex justify-content-end gap-2">
+    <p-button label="Cancelar" severity="secondary" (onClick)="this.accionCloseForm.emit()" />
+    <p-button
+      [label]="accionTarea === 'ACTUALIZAR' ? 'ACTUALIZAR' : 'GUARDAR'"
+      (onClick)="enviarFormulario()"
+      [loading]="isLoading"
+      [disabled]="isLoading"
+    />
+  </div>
+</app-modal-primeng>

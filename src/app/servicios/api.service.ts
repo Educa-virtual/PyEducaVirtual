@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core'
-import { httpService } from '@/app/servicios/httpService'
+import { Injectable } from '@angular/core';
+import { httpService } from '@/app/servicios/httpService';
 import {
-    IGetTableService,
-    IInsertTableService,
-    IUpdateTableService,
-    IDeleteTableService,
-} from '@/app/interfaces/api.interface'
+  IGetTableService,
+  IInsertTableService,
+  IUpdateTableService,
+  IDeleteTableService,
+} from '@/app/interfaces/api.interface';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class ApiService {
-    constructor(private http: httpService) {}
+  constructor(private http: httpService) {}
 
-    /**
+  /**
      * Obtiene datos de una API remota y procesa la respuesta.
      * 
      * Realiza una solicitud HTTP a un servicio remoto para obtener los datos
@@ -71,139 +71,142 @@ export class ApiService {
      *
      * ```
      */
-    async getData(queryPayload: IGetTableService | IGetTableService[]) {
-        // Realizar la solicitud HTTP y obtener los datos.
-        return await this.formatData(
-            this.http.getData('virtual/getData', queryPayload)
-        )
+  async getData(queryPayload: IGetTableService | IGetTableService[]) {
+    // Realizar la solicitud HTTP y obtener los datos.
+    return await this.formatData(this.http.getData('virtual/getData', queryPayload));
+  }
+
+  getDataObs(queryPayload: IGetTableService | IGetTableService[]) {
+    // Realizar la solicitud HTTP y obtener los datos.
+    return this.http.getDataObs('virtual/getData', queryPayload);
+  }
+
+  /**
+   * Realiza una solicitud HTTP POST para insertar nuevos datos en el
+   * servidor.
+   *
+   * @param queryPayload - Un objeto o arreglo de objetos que puede ser
+   * de tipo `ITableService` o `IDataService[]`.
+   *
+   * Estos contienen los datos a insertar en
+   * el servidor.
+   * @returns Una promesa que resuelve la respuesta del servidor, indicando * * si la operación fue exitosa.
+   * @example Uso básico:
+   * ```php
+   * $query = $this->selDesdeTablaOVista('grl', 'personas');
+   * ```
+   */
+  async insertData(queryPayload: IInsertTableService | IInsertTableService[]) {
+    if (Array.isArray(queryPayload)) {
+      queryPayload.forEach(item => {
+        if (typeof item['campos'] === 'object') {
+          item['campos'] = JSON.stringify(item['campos']);
+        }
+      });
     }
 
-    /**
-     * Realiza una solicitud HTTP POST para insertar nuevos datos en el
-     * servidor.
-     *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser
-     * de tipo `ITableService` o `IDataService[]`.
-     *
-     * Estos contienen los datos a insertar en
-     * el servidor.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando * * si la operación fue exitosa.
-     * @example Uso básico:
-     * ```php
-     * $query = $this->selDesdeTablaOVista('grl', 'personas');
-     * ```
-     */
-    async insertData(
-        queryPayload: IInsertTableService | IInsertTableService[]
-    ) {
-        if (Array.isArray(queryPayload)) {
-            queryPayload.forEach((item) => {
-                if (typeof item['campos'] === 'object') {
-                    item['campos'] = JSON.stringify(item['campos'])
-                }
-            })
-        }
-
-        if (typeof queryPayload['campos'] === 'object') {
-            queryPayload['campos'] = JSON.stringify(queryPayload['campos'])
-        }
-
-        return await this.formatData(
-            this.http.postData('virtual/insertData', queryPayload)
-        )
+    if (typeof queryPayload['campos'] === 'object') {
+      queryPayload['campos'] = JSON.stringify(queryPayload['campos']);
     }
 
-    /**
-     * Realiza una solicitud HTTP PUT para actualizar datos existentes en el servidor.
-     *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
-     *                       Estos contienen los datos a actualizar.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de actualización fue exitosa.
-     */
-    async updateData(
-        queryPayload: IUpdateTableService | IUpdateTableService[]
-    ) {
-        if (Array.isArray(queryPayload)) {
-            queryPayload.forEach((item) => {
-                if (typeof item['campos'] === 'object') {
-                    item['campos'] = JSON.stringify(item['campos'])
-                }
-                if (typeof item['where'] === 'object') {
-                    item['where'] = JSON.stringify(item['where'])
-                }
-            })
-        }
+    return await this.formatData(this.http.postData('virtual/insertData', queryPayload));
+  }
 
-        if (typeof queryPayload['campos'] === 'object') {
-            queryPayload['campos'] = JSON.stringify(queryPayload['campos'])
+  insertDataObs(queryPayload: IInsertTableService | IInsertTableService[]) {
+    if (Array.isArray(queryPayload)) {
+      queryPayload.forEach(item => {
+        if (typeof item['campos'] === 'object') {
+          item['campos'] = JSON.stringify(item['campos']);
         }
-        if (typeof queryPayload['where'] === 'object') {
-            queryPayload['where'] = JSON.stringify(queryPayload['where'])
-        }
-
-        return await this.formatData(
-            this.http.postData('virtual/updateData', queryPayload)
-        )
+      });
     }
 
-    /**
-     * Realiza una solicitud HTTP DELETE para eliminar datos del servidor.
-     *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
-     *                       Estos contienen los datos o identificadores necesarios para eliminar los registros.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de eliminación fue exitosa.
-     */
-    async deleteData(
-        queryPayload: IDeleteTableService | IDeleteTableService[]
-    ) {
-        return await this.formatData(
-            this.http.postData('virtual/deleteData', queryPayload)
-        )
+    if (typeof queryPayload['campos'] === 'object') {
+      queryPayload['campos'] = JSON.stringify(queryPayload['campos']);
     }
 
-    async formatData(data: any) {
-        const res = await data
+    return this.http.postDataObs('virtual/insertData', queryPayload);
+  }
 
-        // Verificar si la respuesta contiene datos válidos.
-        if (res?.data?.length > 0) {
-            console.log('Datos obtenidos:', res.data)
+  /**
+   * Realiza una solicitud HTTP PUT para actualizar datos existentes en el servidor.
+   *
+   * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
+   *                       Estos contienen los datos a actualizar.
+   * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de actualización fue exitosa.
+   */
+  async updateData(queryPayload: IUpdateTableService | IUpdateTableService[]) {
+    if (Array.isArray(queryPayload)) {
+      queryPayload.forEach(item => {
+        if (typeof item['campos'] === 'object') {
+          item['campos'] = JSON.stringify(item['campos']);
+        }
+        if (typeof item['where'] === 'object') {
+          item['where'] = JSON.stringify(item['where']);
+        }
+      });
+    }
 
-            // Procesar los datos y decodificar valores JSON en los registros.
-            return res.data.map((item) => {
-                const decodedItem: Record<string, any> = {}
+    if (typeof queryPayload['campos'] === 'object') {
+      queryPayload['campos'] = JSON.stringify(queryPayload['campos']);
+    }
+    if (typeof queryPayload['where'] === 'object') {
+      queryPayload['where'] = JSON.stringify(queryPayload['where']);
+    }
 
-                // Asegurarse de que `item` no sea null o undefined antes de usar Object.entries
-                if (item && typeof item === 'object') {
-                    // Iterar sobre cada propiedad del objeto de datos.
-                    Object.entries(item).forEach(([key, value]) => {
-                        try {
-                            // Decodificar el valor si es una cadena JSON válida.
-                            decodedItem[key] =
-                                typeof value === 'string' &&
-                                value.startsWith('[{')
-                                    ? JSON.parse(value) // Decodificar JSON.
-                                    : value // Mantener el valor original si no es JSON.
-                        } catch (e) {
-                            // Si ocurre un error al decodificar, mantener el valor original.
-                            decodedItem[key] = value
-                            console.error(
-                                `Error al decodificar el campo ${key}:`,
-                                e
-                            )
-                        }
-                    })
-                } else {
-                    // Si `item` es nulo o no es un objeto, dejarlo como está.
-                    console.warn('Elemento no válido en los datos:', item)
-                    return item
-                }
+    return await this.formatData(this.http.postData('virtual/updateData', queryPayload));
+  }
 
-                return decodedItem
-            })
+  /**
+   * Realiza una solicitud HTTP DELETE para eliminar datos del servidor.
+   *
+   * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
+   *                       Estos contienen los datos o identificadores necesarios para eliminar los registros.
+   * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de eliminación fue exitosa.
+   */
+  async deleteData(queryPayload: IDeleteTableService | IDeleteTableService[]) {
+    return await this.formatData(this.http.postData('virtual/deleteData', queryPayload));
+  }
+
+  async formatData(data: any) {
+    const res = await data;
+
+    // Verificar si la respuesta contiene datos válidos.
+    if (res?.data?.length > 0) {
+      console.log('Datos obtenidos:', res.data);
+
+      // Procesar los datos y decodificar valores JSON en los registros.
+      return res.data.map(item => {
+        const decodedItem: Record<string, any> = {};
+
+        // Asegurarse de que `item` no sea null o undefined antes de usar Object.entries
+        if (item && typeof item === 'object') {
+          // Iterar sobre cada propiedad del objeto de datos.
+          Object.entries(item).forEach(([key, value]) => {
+            try {
+              // Decodificar el valor si es una cadena JSON válida.
+              decodedItem[key] =
+                typeof value === 'string' && value.startsWith('[{')
+                  ? JSON.parse(value) // Decodificar JSON.
+                  : value; // Mantener el valor original si no es JSON.
+            } catch (e) {
+              // Si ocurre un error al decodificar, mantener el valor original.
+              decodedItem[key] = value;
+              console.error(`Error al decodificar el campo ${key}:`, e);
+            }
+          });
         } else {
-            // Si no hay datos o la respuesta está vacía, devolver los datos tal como están.
-            console.log('No se encontraron datos o la respuesta está vacía')
-            return res.data
+          // Si `item` es nulo o no es un objeto, dejarlo como está.
+          console.warn('Elemento no válido en los datos:', item);
+          return item;
         }
+
+        return decodedItem;
+      });
+    } else {
+      // Si no hay datos o la respuesta está vacía, devolver los datos tal como están.
+      console.log('No se encontraron datos o la respuesta está vacía');
+      return res.data;
     }
+  }
 }

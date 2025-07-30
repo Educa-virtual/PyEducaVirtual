@@ -1,0 +1,55 @@
+<div class="flex justify-content-start">
+  <p-breadcrumb class="max-w-full" [model]="items" [home]="home" />
+</div>
+<section class="flex flex-column gap-4">
+  <p-tabView styleClass="actividad-tabs">
+    <!-- mostrar información general -->
+    <p-tabPanel>
+      <ng-template pTemplate="header" class="header-fixed">
+        <div class="flex align-items-center flex-column gap-2">
+          <app-icon name="matListAlt"></app-icon>
+          <span class="font-bold white-space-nowrap m-0"> Cuestionario </span>
+        </div>
+      </ng-template>
+      <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo"> </app-toolbar-primeng>
+      <app-descripcion-actividades [data]="cuestionario" [isDocente]="isDocente">
+      </app-descripcion-actividades>
+    </p-tabPanel>
+    <p-tabPanel *ngIf="iPerfilId === DOCENTE">
+      <ng-template pTemplate="header" class="header-fixed">
+        <div class="flex align-items-center flex-column gap-2">
+          <app-icon name="matListAlt"></app-icon>
+          <span class="font-bold white-space-nowrap m-0"> Preguntas </span>
+        </div>
+      </ng-template>
+      <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo"> </app-toolbar-primeng>
+      <!-- Componente cuestionario-preguntas -->
+      <app-cuestionario-preguntas
+        *ngIf="cuestionario"
+        [datosGenerales]="cuestionario"
+      ></app-cuestionario-preguntas>
+    </p-tabPanel>
+    <p-tabPanel *ngIf="iPerfilId === DOCENTE">
+      <ng-template pTemplate="header" class="header-fixed">
+        <div class="flex align-items-center flex-column gap-2">
+          <app-icon name="matAutoGraph"></app-icon>
+          <span class="font-bold white-space-nowrap m-0"> Resultados </span>
+        </div>
+      </ng-template>
+      <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo"> </app-toolbar-primeng>
+      <app-cuestionario-resultados
+        [iCuestionarioId]="cuestionario?.iCuestionarioId"
+      ></app-cuestionario-resultados>
+    </p-tabPanel>
+    <p-tabPanel *ngIf="iPerfilId === ESTUDIANTE">
+      <ng-template pTemplate="header" class="header-fixed">
+        <div class="flex align-items-center flex-column gap-2">
+          <app-icon name="matQuestionAnswerOutline"></app-icon>
+          <span class="font-bold white-space-nowrap m-0"> Cuestionario </span>
+        </div>
+      </ng-template>
+      <app-toolbar-primeng [title]="'Título: ' + cuestionario?.cTitulo"> </app-toolbar-primeng>
+      <app-cuestionario-estudiante [cuestionario]="cuestionario"></app-cuestionario-estudiante>
+    </p-tabPanel>
+  </p-tabView>
+</section>

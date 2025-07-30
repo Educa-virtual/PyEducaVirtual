@@ -1,0 +1,210 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <span class="text-2xl">
+      <div class="flex flex-column">
+        <div class="flex text-xl">GESTIONAR EXCLUSIONES</div>
+        <div class="flex text-sm">
+          {{ evaluacion?.cEvaluacionNombre }}
+        </div>
+      </div>
+    </span>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center" *ngIf="es_director">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <button
+        size="small"
+        pButton
+        pTooltip="Registrar exclusión"
+        tooltipPosition="top"
+        (click)="agregarExclusion()"
+        severity="success"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Registrar exclusión</span>
+      </button>
+    </div>
+  </ng-template>
+  <div class="grid mb-3">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro type="text" pInputText (input)="filtrarExclusiones()" />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  <app-table-primeng
+    [columnas]="columnasTabla"
+    [data]="exclusiones_filtradas"
+    (accionBtnItem)="accionBnt($event)"
+    [actions]="accionesTabla"
+    [showCaption]="false"
+  />
+</p-panel>
+
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="dialog_header"
+  [(visible)]="dialog_visible"
+  [style]="{ width: '60vw' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (onHide)="salir()"
+  [breakpoints]="{ '1080px': '75vw', '640px': '100vw' }"
+>
+  <ng-content>
+    <p-messages severity="info" *ngIf="!exclusion_bloqueada">
+      <ng-template pTemplate>
+        Puede buscar al estudiante por su código o por su documento de identidad, al realizar la
+        búsqueda se completará el campo de datos del estudiante. Para proceder debe llenar todos los
+        campos requeridos (*).
+      </ng-template>
+    </p-messages>
+    <form [formGroup]="formExclusion">
+      <div class="grid mt-3">
+        <div class="col-12" *ngIf="!es_director">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon>
+              <span>Institución Educativa</span>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cIieeDatos"
+              [style]="{ flex: '1', width: '100%' }"
+              appenTo="body"
+              class="group-element"
+              readonly
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-6">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon> Tipo Documento </p-inputGroupAddon>
+            <p-dropdown
+              formControlName="iTipoIdentId"
+              [options]="tipos_documentos"
+              placeholder="Tipo de documento"
+              [showClear]="false"
+              [filter]="true"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+              styleClass="group-element"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-6">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon>
+              <p-button
+                *ngIf="!exclusion_bloqueada"
+                size="small"
+                label="Buscar"
+                styleClass="p-button-primary"
+                (onClick)="buscarMatricula()"
+                severity="success"
+              />
+              Documento
+            </p-inputGroupAddon>
+            <p-inputMask
+              formControlName="cPersDocumento"
+              [maxlength]="longitud_documento"
+              [mask]="formato_documento"
+              autoClear="false"
+              slotChar=""
+              styleClass="group-element"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon>
+              <span>Datos del Estudiante *</span>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cPersDatos"
+              [style]="{ flex: '1', width: '100%' }"
+              appenTo="body"
+              class="group-element"
+              readonly
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon>
+              <span>Motivo y justificación de la exclusión *</span>
+            </p-inputGroupAddon>
+            <textarea
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              formControlName="cEvalExcluMotivo"
+              pInputTextarea
+              placeholder="Especifique el motivo y justificación de la exclusión"
+              [rows]="3"
+              class="group-element"
+              [style.minHeight]="3"
+              [style.maxHeight]="6"
+              [cdkAutosizeMinRows]="3 + 1.5"
+              [cdkAutosizeMaxRows]="6"
+            ></textarea>
+          </p-inputGroup>
+        </div>
+        <!-- <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Justificación de la exclusión *</span>
+                        </p-inputGroupAddon>
+                        <p-fileUpload
+                            name="demo[]"
+                            (onUpload)="handleArchivo($event)"
+                            [multiple]="false"
+                            accept="image/*,.pdf"
+                            fileLimit="1"
+                            invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
+                            invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
+                            invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
+                            invalidFileTypeMessageDetail="los tipos de archivos permitidos son: {0}."
+                            invalidFileLimitMessageDetail="solo debe subir {0} archivo."
+                            invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
+                            maxFileSize="10485760"
+                        >
+                        </p-fileUpload>
+                    </p-inputGroup>
+                </div> -->
+      </div>
+    </form>
+
+    <!-- Botón Guardar y Seguir -->
+    <div class="flex justify-content-end gap-2">
+      <p-button
+        *ngIf="!exclusion_registrada && !exclusion_bloqueada"
+        type="button"
+        label="Guardar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="guardarExclusion()"
+      />
+      <p-button
+        *ngIf="exclusion_registrada && !exclusion_bloqueada"
+        type="button"
+        label="Actualizar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="actualizarExclusion()"
+      />
+      <p-button
+        type="button"
+        label="Salir"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (click)="resetear()"
+      />
+    </div>
+  </ng-content>
+</p-dialog>
+
+<p-toast></p-toast>

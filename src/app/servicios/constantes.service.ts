@@ -172,17 +172,6 @@ const estudiante = [
                     },
                 ],
             },
-            {
-                label: 'Informes y Estadísticas',
-                icon: 'pi pi-chart-line',
-                items: [
-                    {
-                        label: 'Logros Alcanzados',
-                        icon: 'pi pi-trophy',
-                        routerLink: 'ere/logro-alcanzado',
-                    },
-                ],
-            },
         ],
     },
 ]

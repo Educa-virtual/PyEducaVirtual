@@ -1,51 +1,45 @@
 <app-toolbar-primeng
-    [title]="
-        (curso?.cNivelNombreCursos.toUpperCase() || '') +
-        ': ' +
-        (curso?.cCursoNombre || '')
-    "
+  [title]="(curso?.cNivelNombreCursos.toUpperCase() || '') + ': ' + (curso?.cCursoNombre || '')"
 >
-    <div class="text-white font-bold block">
-        Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo:
-        {{ curso?.cCicloRomanos }} | Grado: {{ curso?.cGradoAbreviacion }} |
-        Seccion:
-        {{ curso?.cSeccionNombre }}
-    </div>
+  <div class="text-white font-bold block">
+    Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo: {{ curso?.cCicloRomanos }} | Grado:
+    {{ curso?.cGradoAbreviacion }} | Seccion:
+    {{ curso?.cSeccionNombre }}
+  </div>
 </app-toolbar-primeng>
 <div class="grid">
-    <app-tabs-primeng
-        class="col-12"
-        [activeIndex]="selectTab"
-        [tabs]="tabs"
-        (updateTab)="updateTab($event)"
-    >
-    </app-tabs-primeng>
-    <div class="col-12">
-        @switch (selectTab) {
-            @case (0) {
-                <app-tab-inicio
-                    [_iSilaboId]="iSilaboId"
-                    [iCursoId]="curso?.iCursoId"
-                    [idDocCursoId]="curso?.idDocCursoId"
-                    [curso]="curso"
-                ></app-tab-inicio>
-            }
-            @case (1) {
-                <app-tab-contenido
-                    [_iSilaboId]="iSilaboId"
-                    [iCursoId]="curso?.iCursoId"
-                    [idDocCursoId]="curso?.idDocCursoId"
-                    [curso]="curso"
-                ></app-tab-contenido>
-            }
-            @case (2) {
-                <app-tab-resultados
-                    [_iSilaboId]="iSilaboId"
-                    [iCursoId]="curso?.iCursoId"
-                    [idDocCursoId]="curso?.idDocCursoId"
-                    [curso]="curso"
-                ></app-tab-resultados>
-            }
-        }
-    </div>
+  <app-tabs-primeng
+    class="col-12"
+    [activeIndex]="selectTab"
+    [tabs]="tabs"
+    (updateTab)="updateTab($event)"
+  >
+  </app-tabs-primeng>
+  <div class="col-12">
+    <app-tab-inicio
+      *ngIf="selectTab === 0"
+      [iCursoId]="curso?.iCursoId"
+      [idDocCursoId]="curso?.idDocCursoId"
+      [curso]="curso"
+    ></app-tab-inicio>
+
+    <app-tab-contenido
+      *ngIf="selectTab === 1"
+      [iCursoId]="curso?.iCursoId"
+      [idDocCursoId]="curso?.idDocCursoId"
+      [curso]="curso"
+      [contenidoSemanas]="contenidoSemanas"
+      (recargarContenidoSemanas)="obtenerContenidoSemanasxidDocCursoIdxiYAcadId(true)"
+    ></app-tab-contenido>
+
+    <app-tab-resultados
+      *ngIf="selectTab === 2"
+      [iSilaboId]="iSilaboId"
+      [iCursoId]="curso?.iCursoId"
+      [idDocCursoId]="curso?.idDocCursoId"
+      [curso]="curso"
+      [contenidoSemanas]="contenidoSemanas"
+    ></app-tab-resultados>
+  </div>
 </div>
+<p-toast />

@@ -1,35 +1,30 @@
-<p-breadcrumb
-    class="max-w-full"
-    [model]="breadCrumbItems"
-    [home]="breadCrumbHome"
-/>
-
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 <app-container-page-accionb
-    [title]="'Lista de evaluaciones ERE'"
-    [titleBtn]="'Nueva'"
-    [actions]="accionesPrincipal"
-    [showActions]="showActions"
-    (accionBtnItem)="accionBtnItem($event)"
-    class="custom-container-page"
+  [title]="'Lista de evaluaciones ERE'"
+  [titleBtn]="'Nueva'"
+  [actions]="accionesPrincipal"
+  [showActions]="showActions"
+  (accionBtnItem)="accionBtnItem($event)"
+  class="custom-container-page"
 >
-    <app-table-primeng
-        [columnas]="columnas"
-        [data]="data"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [(selectedRowData)]="selectedItems"
-        [actions]="accionesTabla"
-        [showPaginator]="true"
-        [showCaption]="true"
-    >
-        <input type="text" />
-    </app-table-primeng>
+  <app-table-primeng
+    [columnas]="columnas"
+    [data]="data"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [(selectedRowData)]="selectedItems"
+    [actions]="accionesTabla"
+    [showPaginator]="true"
+    [showCaption]="true"
+  >
+    <input type="text" />
+  </app-table-primeng>
 </app-container-page-accionb>
 <p-toast> </p-toast>
 
 <app-asignar-horas-areas></app-asignar-horas-areas>
 
 <app-form-liberar-areas-ugel
-    [showModal]="showModalLiberarUgel"
-    [data]="areas"
-    [titulo]="'Liberar áreas para la evaluación: '"
+  [showModal]="showModalLiberarUgel"
+  [data]="areas"
+  [titulo]="'Liberar áreas para la evaluación: '"
 ></app-form-liberar-areas-ugel>

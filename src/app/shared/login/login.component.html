@@ -1,179 +1,157 @@
 <div class="login d-flex justify-content-center align-items-center">
-    <div class="login__banner">
-        <img src="assets/images/logins.svg" alt="logo" width="100%" />
-    </div>
-    <div class="login__form">
-        <div class="p-4">
-            <div class="login_card">
-                <div class="p-4 border-1 border-round-2xl border-gray-300">
-                    <div class="text-center">
-                        <h4 class="text-center mb-4 text-danger">
-                            <b>Dirección Regional de Educación Moquegua</b>
-                        </h4>
-                        <img
-                            src="assets/images/dremo.png"
-                            alt="logo"
-                            class="logo_dremo"
-                        />
-                    </div>
-                    <!-- <h5 class="text-center"><b>Proyecto Virtual</b></h5> -->
-                    <h5 class="text-center text-primary">Iniciar Sesión</h5>
-                    <form class="flex flex-column" [formGroup]="formLogin">
-                        <div class="mb-3 flex flex-column gap-2">
-                            <label for="usuario">Usuario</label>
-                            <input
-                                type="text"
-                                pInputText
-                                placeholder="Ingresar su Usuario"
-                                name="usuario"
-                                formControlName="user"
-                            />
-                        </div>
-
-                        <div class="mb-5 flex flex-column gap-2">
-                            <label for="clave">Contraseña</label>
-                            <div class="flex">
-                                <input
-                                    pInputText
-                                    [type]="!showPassword ? 'password' : 'text'"
-                                    class="flex-1 border-noround-right w-full"
-                                    [placeholder]="
-                                        !showPassword ? '********' : ''
-                                    "
-                                    formControlName="pass"
-                                />
-                                <button
-                                    class="p-button-outlined p-button-secondary border-noround-left"
-                                    type="button"
-                                    pButton
-                                    (click)="showPassword = !showPassword"
-                                >
-                                    @if (showPassword) {
-                                        <i class="pi pi-eye"></i>
-                                    } @else {
-                                        <i class="pi pi-eye-slash"></i>
-                                    }
-                                </button>
-                            </div>
-                        </div>
-                        <p class="small" align="center">
-                            <p-button
-                                class="text-primary"
-                                (onClick)="showModal = true"
-                                [text]="true"
-                                >¿Has olvidado tu contraseña? / ¿Contraseña
-                                vencida?</p-button
-                            >
-                        </p>
-                        <button
-                            pButton
-                            size="small"
-                            label="Iniciar Sesión"
-                            [loading]="loading"
-                            (click)="onSubmit()"
-                            [disabled]="this.formLogin.invalid"
-                        ></button>
-                    </form>
-                </div>
-            </div>
+  <div class="login__banner">
+    <img src="assets/images/logins.svg" alt="logo" width="100%" />
+  </div>
+  <div class="login__form">
+    <div class="login_card">
+      <div class="p-4 border-1 border-round-2xl border-gray-300">
+        <div class="text-center">
+          <h4 class="text-center mb-4 text-danger">
+            <b>Dirección Regional de Educación Moquegua</b>
+          </h4>
+          <img src="assets/images/dremo.png" alt="logo" class="logo_dremo" />
         </div>
+        <!-- <h5 class="text-center"><b>Proyecto Virtual</b></h5> -->
+        <h5 class="text-center text-primary">Iniciar Sesión</h5>
+        <form class="flex flex-column" [formGroup]="formLogin">
+          <div class="mb-3 flex flex-column gap-2">
+            <label for="usuario">Usuario</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Ingresar su Usuario"
+              name="usuario"
+              formControlName="user"
+            />
+          </div>
+
+          <div class="mb-5 flex flex-column gap-2">
+            <label for="clave">Contraseña</label>
+            <div class="flex">
+              <input
+                pInputText
+                [type]="!showPassword ? 'password' : 'text'"
+                class="flex-1 border-noround-right w-full"
+                [placeholder]="!showPassword ? '********' : ''"
+                formControlName="pass"
+              />
+              <button
+                class="p-button-outlined p-button-secondary border-noround-left"
+                type="button"
+                pButton
+                (click)="showPassword = !showPassword"
+              >
+                @if (showPassword) {
+                  <i class="pi pi-eye"></i>
+                } @else {
+                  <i class="pi pi-eye-slash"></i>
+                }
+              </button>
+            </div>
+          </div>
+          <p class="small" align="center">
+            <p-button class="text-primary" (onClick)="showModal = true" [text]="true"
+              >¿Has olvidado tu contraseña? / ¿Contraseña vencida?</p-button
+            >
+          </p>
+          <button
+            pButton
+            size="small"
+            label="Iniciar Sesión"
+            [loading]="loading"
+            (click)="onSubmit()"
+            [disabled]="this.formLogin.invalid"
+          ></button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-<app-recover-password
-    [showModal]="showModal"
-    (accionBtnItem)="accionBtnItem($event)"
->
+<app-recover-password [showModal]="showModal" (accionBtnItem)="accionBtnItem($event)">
 </app-recover-password>
 
-<app-sin-rol-asignado
-    [visible]="modalSinRolVisible"
-    (visibleChange)="modalSinRolVisible = $event"
->
+<app-sin-rol-asignado [visible]="modalSinRolVisible" (visibleChange)="modalSinRolVisible = $event">
 </app-sin-rol-asignado>
 <p-toast />
 
 <p-dialog
-    [header]="'DIÁLOGO INFORMATIVO DE EDUCA VIRTUAL'"
-    [(visible)]="anuncio"
-    [maximizable]="true"
-    [modal]="true"
-    [closable]="true"
-    [style]="{ width: '80vw' }"
-    styleClass="dialog-con-header-normal"
+  [header]="'DIÁLOGO INFORMATIVO DE EDUCA VIRTUAL'"
+  [(visible)]="anuncio"
+  [maximizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '80vw' }"
+  styleClass="dialog-con-header-normal"
 >
-    <div class="content-grid">
-        <!-- Video lado izquierdo -->
-        <div class="video-section">
-            <div class="video-container">
-                <iframe
-                    [src]="
-                        sanitizer.bypassSecurityTrustResourceUrl(
-                            'https://www.youtube.com/embed/WMmiaV7lJJw'
-                        )
-                    "
-                    frameborder="0"
-                    allowfullscreen
-                ></iframe>
-            </div>
-        </div>
-
-        <!-- Documentación lado derecho -->
-        <div class="doc-section">
-            <h3>📄 Documentación</h3>
-            <p>Consulta los manuales y guías rápidas aquí:</p>
-            <ul>
-                <li>
-                    <a
-                        href="https://drive.google.com/file/d/10oSCdI5CZbLxHaQhRRTrumFLuTE2-BYG/view?usp=drive_link"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        👉 Configurar hora de exámen ERE
-                    </a>
-                </li>
-                <!-- Añade más manuales si deseas -->
-            </ul>
-            <ul>
-                <li>
-                    <a
-                        href="https://drive.google.com/file/d/1aDUDtom3XQcIbKy_PcM17dFChplm4YfQ/view?usp=drive_link"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        👉 Rendir Exámen ERE
-                    </a>
-                </li>
-                <!-- Añade más manuales si deseas -->
-            </ul>
-            <ul>
-                <li>
-                    <a
-                        href="https://www.youtube.com/@ProyectoVirtualDREMO/playlists"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        👉 Videos Tutoriales
-                    </a>
-                </li>
-                <!-- Añade más manuales si deseas -->
-            </ul>
-
-            <br />
-            <br />
-            <br />
-            <br />
-            <h3>📄 Contactos para soporte</h3>
-            <div style="text-align: center">
-                Atención en horario de oficina DREMO
-            </div>
-            <ul>
-                <li>👉 Wilmar Garibaldi Valdez(ERE) 953653788</li>
-                <li>👉 Daniel Catachura Palacion 966635379</li>
-                <li>👉 Maria Ramirez Chipana 995252993</li>
-                <li>👉 Fernando Flores Coayla 942493488</li>
-                <li>👉 Nicolle Puma Zapata 916106180</li>
-                <li>👉 Alvaro Fernandez Flores 940892689</li>
-            </ul>
-        </div>
+  <div class="content-grid">
+    <!-- Video lado izquierdo -->
+    <div class="video-section">
+      <div class="video-container">
+        <iframe
+          [src]="
+            sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/WMmiaV7lJJw')
+          "
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
     </div>
+
+    <!-- Documentación lado derecho -->
+    <div class="doc-section">
+      <h3>📄 Documentación</h3>
+      <p>Consulta los manuales y guías rápidas aquí:</p>
+      <ul>
+        <li>
+          <a
+            href="https://drive.google.com/file/d/10oSCdI5CZbLxHaQhRRTrumFLuTE2-BYG/view?usp=drive_link"
+            target="_blank"
+            rel="noopener"
+          >
+            👉 Configurar hora de exámen ERE
+          </a>
+        </li>
+        <!-- Añade más manuales si deseas -->
+      </ul>
+      <ul>
+        <li>
+          <a
+            href="https://drive.google.com/file/d/1aDUDtom3XQcIbKy_PcM17dFChplm4YfQ/view?usp=drive_link"
+            target="_blank"
+            rel="noopener"
+          >
+            👉 Rendir Exámen ERE
+          </a>
+        </li>
+        <!-- Añade más manuales si deseas -->
+      </ul>
+      <ul>
+        <li>
+          <a
+            href="https://www.youtube.com/@ProyectoVirtualDREMO/playlists"
+            target="_blank"
+            rel="noopener"
+          >
+            👉 Videos Tutoriales
+          </a>
+        </li>
+        <!-- Añade más manuales si deseas -->
+      </ul>
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <h3>📄 Contactos para soporte</h3>
+      <div style="text-align: center">Atención en horario de oficina DREMO</div>
+      <ul>
+        <li>👉 Wilmar Garibaldi Valdez(ERE) 953653788</li>
+        <li>👉 Daniel Catachura Palacion 966635379</li>
+        <li>👉 Maria Ramirez Chipana 995252993</li>
+        <li>👉 Fernando Flores Coayla 942493488</li>
+        <li>👉 Nicolle Puma Zapata 916106180</li>
+        <li>👉 Alvaro Fernandez Flores 940892689</li>
+      </ul>
+    </div>
+  </div>
 </p-dialog>

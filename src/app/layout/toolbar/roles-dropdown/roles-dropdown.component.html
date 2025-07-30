@@ -1,56 +1,45 @@
 <!-- roles-dropdown.component.html -->
 <p-button [text]="true" severity="secondary" (onClick)="showModal = true">
-    <div class="flex align-items-center gap-2">
-        @if (selectedPerfil?.cIieeLogo) {
-            <p-avatar
-                size="large"
-                [image]="selectedPerfil?.cIieeLogo"
-                alt="Logo de la institución"
-            />
+  <div class="flex align-items-center gap-2">
+    @if (selectedPerfil?.cIieeLogo) {
+      <p-avatar size="large" [image]="selectedPerfil?.cIieeLogo" alt="Logo de la institución" />
 
-            <div class="flex flex-column text-xs text-left">
-                @if (!isAdminOrEspecialistaDremo()) {
-                    <span class="block p-0 font-bold"
-                        >IE: {{ selectedPerfil.cIieeNombre }}</span
-                    >
-                    <span class="p-0 display-none"
-                        >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} -
-                        Nivel:{{ selectedPerfil.cNivelTipoNombre }} - UGEL:
-                        {{ selectedPerfil.cUgelNombre }}
-                    </span>
-                } @else {
-                    <span class="block p-0 font-bold">{{
-                        selectedPerfil.cPerfilNombre
-                    }}</span>
-                }
-            </div>
+      <div class="flex flex-column text-xs text-left">
+        @if (!isAdminOrEspecialistaDremo()) {
+          <span class="block p-0 font-bold">IE: {{ selectedPerfil.cIieeNombre }}</span>
+          <span class="p-0 display-none"
+            >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} - Nivel:{{
+              selectedPerfil.cNivelTipoNombre
+            }}
+            - UGEL:
+            {{ selectedPerfil.cUgelNombre }}
+          </span>
         } @else {
-            <i
-                class="pi pi-graduation-cap"
-                style="color: var(--surface-menu); font-size: 1.5rem"
-            ></i>
-
-            <div class="flex flex-column text-xs text-left">
-                @if (!isAdminOrEspecialistaDremo()) {
-                    <span class="block p-0 font-bold"
-                        >IE: {{ selectedPerfil.cIieeNombre }}</span
-                    >
-                    <span class="p-0 display-none"
-                        >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} -
-                        Nivel:{{ selectedPerfil.cNivelTipoNombre }} - UGEL:
-                        {{ selectedPerfil.cUgelNombre }}
-                    </span>
-                } @else {
-                    <span class="block p-0 font-bold">{{
-                        selectedPerfil.cPerfilNombre
-                    }}</span>
-                }
-            </div>
+          <span class="block p-0 font-bold">{{ selectedPerfil.cPerfilNombre }}</span>
         }
-    </div>
+      </div>
+    } @else {
+      <i class="pi pi-graduation-cap" style="color: var(--surface-menu); font-size: 1.5rem"></i>
+
+      <div class="flex flex-column text-xs text-left">
+        @if (!isAdminOrEspecialistaDremo()) {
+          <span class="block p-0 font-bold">IE: {{ selectedPerfil.cIieeNombre }}</span>
+          <span class="p-0 display-none"
+            >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} - Nivel:{{
+              selectedPerfil.cNivelTipoNombre
+            }}
+            - UGEL:
+            {{ selectedPerfil.cUgelNombre }}
+          </span>
+        } @else {
+          <span class="block p-0 font-bold">{{ selectedPerfil.cPerfilNombre }}</span>
+        }
+      </div>
+    }
+  </div>
 </p-button>
 
 <app-form-perfiles
-    [showModal]="showModal"
-    (accionBtnItem)="accionBtnItem($event)"
+  [showModal]="showModal"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-form-perfiles>

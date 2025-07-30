@@ -1,12 +1,15 @@
 @if (!bCredVerificado) {
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 } @else {
-    @if (!isLoggedIn) {
-        <div class="container-fluid">
-            <router-outlet></router-outlet>
-        </div>
-    } @else {
-        <app-layout></app-layout>
-        <router-outlet></router-outlet>
-    }
+  @if (!isLoggedIn) {
+    <router-outlet></router-outlet>
+  } @else {
+    <!-- <app-layout></app-layout> -->
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <app-breadcrumb-primeng></app-breadcrumb-primeng>
+    <router-outlet> </router-outlet>
+  }
 }
+
+<app-global-loader></app-global-loader>

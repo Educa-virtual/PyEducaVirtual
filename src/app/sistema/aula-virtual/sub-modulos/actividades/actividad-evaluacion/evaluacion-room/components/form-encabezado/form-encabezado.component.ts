@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/api';
 })
 export class FormEncabezadoComponent implements OnChanges {
   @Output() accionForm = new EventEmitter();
+  @Output() accionCloseForm = new EventEmitter<void>();
 
   @Input() data;
 

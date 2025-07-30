@@ -26,6 +26,7 @@ export interface IBancoAlternativas {
 })
 export class PreguntasFormComponent implements OnChanges {
   @Output() accionForm = new EventEmitter();
+  @Output() accionCloseForm = new EventEmitter<void>();
 
   @Input() data;
 

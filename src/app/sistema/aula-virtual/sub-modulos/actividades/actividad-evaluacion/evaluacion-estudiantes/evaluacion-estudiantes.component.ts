@@ -152,8 +152,8 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 });
               }
 
-              if (Number(pregunta.iTipoPregId) === 3 && rpta?.rptaLibre) {
-                pregunta.cRptaTexto = rpta.rptaLibre;
+              if (Number(pregunta.iTipoPregId) === 3 && rpta?.rptaAbierta) {
+                pregunta.cRptaTexto = rpta.rptaAbierta;
               }
 
               // PASO 7: Si jsonPreguntas es un array (caso de encabezado), iterar e inicializar campos
@@ -205,14 +205,14 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                   }
 
                   // F. Respuesta libre hija
-                  if (Number(jsonPregunta.iTipoPregId) === 3 && rptaHija?.rptaLibre) {
-                    jsonPregunta.cRptaTexto = rptaHija.rptaLibre;
+                  if (Number(jsonPregunta.iTipoPregId) === 3 && rptaHija?.rptaAbierta) {
+                    jsonPregunta.cRptaTexto = rptaHija.rptaAbierta;
                   }
                 });
               }
             });
 
-            console.log(this.preguntas);
+            //console.log(this.preguntas);
           }
         },
         error: error => {
@@ -300,13 +300,13 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         this.itemPreguntas['alternativas'].forEach(i => {
           i.cRptaCheck = null;
         });
-        console.log(this.itemPreguntas['alternativas']);
+        // console.log(this.itemPreguntas['alternativas']);
         break;
       case 3:
         this.itemPreguntas['cRptaTexto'] = null;
         break;
     }
-    console.log(this.itemPreguntas);
+    // console.log(this.itemPreguntas);
   }
   //Enviando Respuesta unica,multiple,libre
   enviarRpta(tipoRpta, pregunta, item) {
@@ -349,7 +349,9 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         //fin
         break;
       case 'libre':
-        if (pregunta.cRptaTexto != '') {
+        console.log(item);
+        console.log(pregunta);
+        if (item.cRptaTexto != '') {
           params = {
             petition: 'post',
             group: 'evaluaciones',
@@ -357,9 +359,9 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
             ruta: 'guardarRespuestaxiEstudianteId',
             data: {
               iEstudianteId: this._ConstantesService.iEstudianteId,
-              iEvalPregId: pregunta.iEvalPregId,
+              iEvalPregId: item.iEvalPregId,
               iEvaluacionId: pregunta.iEvaluacionId,
-              jEvalRptaEstudiante: '{"rptaAbierta":"' + pregunta.cRptaTexto + '"}',
+              jEvalRptaEstudiante: '{"rptaAbierta":"' + item.cRptaTexto + '"}',
             },
             params: { skipSuccessMessage: true },
           };

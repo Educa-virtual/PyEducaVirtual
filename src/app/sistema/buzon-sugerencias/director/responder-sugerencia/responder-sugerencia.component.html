@@ -1,138 +1,120 @@
 <p-dialog
-    [draggable]="false"
-    [maximizable]="true"
-    [header]="'Responder sugerencia'"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-    (onHide)="cerrarDialog()"
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="'Responder sugerencia'"
+  [(visible)]="visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  (onHide)="cerrarDialog()"
 >
-    <form [formGroup]="form">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-8">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Alumno</p-inputGroupAddon>
-                    <input
-                        class="disabled"
-                        pInputText
-                        type="text"
-                        formControlName="cNombreEstudiante"
-                        [readonly]="true"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="field col-12 md:col-4">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Fecha</p-inputGroupAddon>
-                    <input
-                        class="disabled"
-                        pInputText
-                        type="text"
-                        [value]="
-                            form.get('dtFechaCreacion')?.value
-                                | date: 'dd/MM/yyyy HH:mm'
-                        "
-                        readonly
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="field col-12 md:col-8">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Asunto</p-inputGroupAddon>
-                    <input
-                        class="disabled"
-                        pInputText
-                        type="text"
-                        formControlName="cAsunto"
-                        [readonly]="true"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="field col-12 md:col-4">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
-                    <input
-                        class="disabled"
-                        pInputText
-                        type="text"
-                        formControlName="cPrioridadNombre"
-                        [readonly]="true"
-                    />
-                </p-inputGroup>
-            </div>
-            <div class="field col-12">
-                <label for="cSugerencia">Sugerencia del alumno:</label>
-                <div class="p-inputgroup p-fluid estilo-editor disabled">
-                    <div
-                        id="cSugerencia"
-                        [innerHTML]="form.get('cSugerencia')?.value"
-                    ></div>
-                </div>
-            </div>
-            <!--aqui-->
-            <div class="field col-12">
-                <label for="cSugerencia">Archivos subidos</label>
-                @if (archivos?.length > 0) {
-                    <div class="estilo-editor">
-                        <ul>
-                            <li *ngFor="let archivo of archivos">
-                                <a
-                                    href="#"
-                                    (click)="
-                                        descargarArchivo(
-                                            $event,
-                                            archivo.nombreArchivo
-                                        )
-                                    "
-                                    >{{ archivo.nombreArchivo }}</a
-                                >
-                            </li>
-                        </ul>
-                    </div>
-                } @else {
-                    <p-message
-                        severity="info"
-                        text="No se han subido archivos."
-                    />
-                }
-            </div>
-            <!--aqui-->
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <div class="field col-12 md:col-8">
+        <p-inputGroup>
+          <p-inputGroupAddon>Alumno</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            formControlName="cNombreEstudiante"
+            [readonly]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            [value]="form.get('dtFechaCreacion')?.value | date: 'dd/MM/yyyy HH:mm'"
+            readonly
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-8">
+        <p-inputGroup>
+          <p-inputGroupAddon>Asunto</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            formControlName="cAsunto"
+            [readonly]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
+          <input
+            class="disabled"
+            pInputText
+            type="text"
+            formControlName="cPrioridadNombre"
+            [readonly]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12">
+        <label for="cSugerencia">Sugerencia del alumno:</label>
+        <div class="p-inputgroup p-fluid estilo-editor disabled">
+          <div id="cSugerencia" [innerHTML]="form.get('cSugerencia')?.value"></div>
+        </div>
+      </div>
+      <!--aqui-->
+      <div class="field col-12">
+        <label for="cSugerencia">Archivos subidos</label>
+        @if (archivos?.length > 0) {
+          <div class="estilo-editor">
+            <ul>
+              <li *ngFor="let archivo of archivos">
+                <a href="#" (click)="descargarArchivo($event, archivo.nombreArchivo)">{{
+                  archivo.nombreArchivo
+                }}</a>
+              </li>
+            </ul>
+          </div>
+        } @else {
+          <p-message severity="info" text="No se han subido archivos." />
+        }
+      </div>
+      <!--aqui-->
 
-            <div class="field col-12">
-                <label for="cRespuesta">Respuesta:</label>
-                <!--<p-editor
+      <div class="field col-12">
+        <label for="cRespuesta">Respuesta:</label>
+        <!--<p-editor
                     formControlName="cRespuesta"
                     [style]="{ height: '200px' }"
                 ></p-editor>-->
+        <ng-container *ngIf="form">
+          <editor *ngIf="visible" [init]="initEnunciado" formControlName="cRespuesta"></editor>
+        </ng-container>
+        <small
+          class="p-error"
+          *ngIf="form.get('cRespuesta')?.invalid && form.get('cRespuesta')?.touched"
+        >
+          La respuesta es requerida
+        </small>
+      </div>
+    </div>
 
-                <editor [init]="initEnunciado" formControlName="cRespuesta" />
-                <small
-                    class="p-error"
-                    *ngIf="
-                        form.get('cRespuesta')?.invalid &&
-                        form.get('cRespuesta')?.touched
-                    "
-                >
-                    La respuesta es requerida
-                </small>
-            </div>
-        </div>
-
-        <div class="flex justify-content-end">
-            <p-button
-                label="Cancelar"
-                severity="secondary"
-                class="mr-2"
-                (click)="cancelarResponderSugerencia()"
-            ></p-button>
-            <p-button
-                label="Enviar respuesta"
-                severity="success"
-                [disabled]="form.invalid"
-                (click)="enviarRespuesta()"
-            ></p-button>
-        </div>
-    </form>
+    <div class="flex justify-content-end">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        class="mr-2"
+        (click)="cerrarDialog()"
+      ></p-button>
+      <p-button
+        label="Enviar respuesta"
+        severity="success"
+        [disabled]="form.invalid"
+        (click)="enviarRespuesta()"
+      ></p-button>
+    </div>
+  </form>
 </p-dialog>

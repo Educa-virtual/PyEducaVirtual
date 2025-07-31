@@ -19,6 +19,7 @@
   [action]="accion"
   [tiposIdentificaciones]="tiposIdentificaciones"
   (accionCloseForm)="showModal = false"
+  (accionRefresh)="obtenerInstructores()"
 ></app-instructor-form>
 
 <p-toast />

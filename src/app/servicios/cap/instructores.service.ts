@@ -14,4 +14,8 @@ export class InstructoresService {
   guardarInstructores(data): Observable<any> {
     return this.http.post(`${baseUrl}/cap/instructores`, data);
   }
+
+  actualizarInstructoresxiInstId(iInstId: string | number, params): Observable<any> {
+    return this.http.put(`${baseUrl}/cap/instructores/${iInstId}`, params);
+  }
 }

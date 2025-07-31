@@ -143,7 +143,7 @@ export class InstructoresComponent extends MostrarErrorComponent implements OnIn
     const data = item;
     this._confirmService.openConfirm({
       header:
-        '¿Esta seguro de eliminar instructor:  ' +
+        '¿Estás seguro de eliminar instructor:  ' +
         data.cPersNombre +
         ' ' +
         data.cPersPaterno +
@@ -188,11 +188,6 @@ export class InstructoresComponent extends MostrarErrorComponent implements OnIn
   }
   // metodo para obtener instructores
   obtenerInstructores() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Guardado',
-      detail: 'Los datos fueron guardados correctamente.',
-    });
     const params = {
       petition: 'get',
       group: 'cap',

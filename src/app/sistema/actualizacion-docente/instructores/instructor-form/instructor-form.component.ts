@@ -16,6 +16,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-instructor-form',
@@ -26,7 +27,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class InstructorFormComponent extends MostrarErrorComponent implements OnChanges {
   @Output() accionCloseForm = new EventEmitter<void>();
-  @Output() accionBtnItem = new EventEmitter();
+  @Output() accionRefresh = new EventEmitter();
 
   @Input() instructor: any = {};
   @Input() tiposIdentificaciones: any[] = [];
@@ -76,14 +77,17 @@ export class InstructorFormComponent extends MostrarErrorComponent implements On
     cPersPaterno: new FormControl(null, Validators.required),
     cPersMaterno: new FormControl(null, Validators.required),
     cPersDireccion: new FormControl(null, Validators.required),
-    cPersCorreo: new FormControl(null, Validators.required),
+    cPersCorreo: new FormControl([null, Validators.required, Validators.email]),
     cPersCelular: new FormControl(null, Validators.required),
     iPersId: new FormControl(null),
     iCredId: new FormControl(this._constantesService.iCredId),
+    iInstId: new FormControl(null),
+    cOpcion: new FormControl(null),
   });
 
   // metodo para buscar x dni
   buscarDni() {
+    if (this.action === 'editar') return;
     const idtipoDocumento = Number(this.instructorForm.get('iTipoIdentId')?.value);
     const dni = this.instructorForm.get('cPersDocumento')?.value;
     if (this.loadingBuscar) return; // evitar doble clic
@@ -198,62 +202,82 @@ export class InstructorFormComponent extends MostrarErrorComponent implements On
       this.loading = false;
       return;
     }
-    // Servicio para obtener los instructores
-    this._InstructoresService.guardarInstructores(this.instructorForm.value).subscribe({
-      next: resp => {
-        if (resp.validated) {
-          this.mostrarMensajeToast({
-            severity: 'success',
-            summary: 'Acción exitosa',
-            detail: resp.message,
-          });
-          this.showModal = false;
-          this.instructorForm.reset();
-        }
-      },
-      error: error => {
-        this.mostrarErrores(error);
-      },
-    });
+
+    this._InstructoresService
+      .guardarInstructores(this.instructorForm.value)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.mostrarMensajeToast({
+              severity: 'success',
+              summary: '¡Guardado!',
+              detail: resp.message,
+            });
+            this.accionRefresh.emit();
+            this.accionCloseForm.emit();
+          }
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
   // Metodo para actualizar instructor
   actualizarInstructor() {
-    const id = this.instructor;
-    const docn = this.instructorForm.value;
+    if (this.loading) return; // evitar doble clic
+    this.loading = true;
 
-    const data = {
-      cOpcion: 'ACTUALIZAR',
-      cPersCelular: docn.cPersCelular,
-      cPersCorreo: docn.cPersCorreo,
-      cPersDireccion: docn.cPersDireccion,
+    this.instructorForm.patchValue({
+      iInstId: this.instructor.iInstId,
       iCredId: this._constantesService.iCredId,
-    };
-    const params = {
-      petition: 'put',
-      group: 'cap',
-      prefix: 'instructores',
-      ruta: id.iInstId,
-      data: data,
-      params: {
-        iCredId: this._constantesService.iCredId,
-      },
-    };
-    // console.log(params)
-    // Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe({
-      next: resp => {
-        if (resp.validated) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Acción exitosa',
-            detail: resp.message,
-          });
-          this.showModal = false;
-        }
-      },
-      error: error => {
-        this.mostrarErrores(error);
-      },
+      cOpcion: 'ACTUALIZAR',
     });
+
+    const nombresCampos: Record<string, string> = {
+      iInstId: 'Identificador del instructor',
+      iTipoIdentId: 'Tipo de identificación',
+      cPersDocumento: 'Número de documento',
+      cPersNombre: 'Nombre(s)',
+      cPersPaterno: 'Apellido Paterno',
+      cPersMaterno: 'Apellido Materno',
+      cPersCelular: 'Celular',
+      cPersCorreo: 'Correo electrónico',
+      cPersDireccion: 'Dirección',
+      iCredId: 'Credencial',
+      cOpcion: 'Acción a realizar',
+    };
+    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
+      this.instructorForm,
+      nombresCampos
+    );
+
+    if (!valid && message) {
+      this.mostrarMensajeToast({
+        summary: message.summary,
+        detail: message.detail,
+        severity: message.severity,
+      });
+      this.loading = false;
+      return;
+    }
+    this._InstructoresService
+      .actualizarInstructoresxiInstId(this.instructorForm.value.iInstId, this.instructorForm.value)
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.messageService.add({
+              severity: 'success',
+              summary: '¡Actualizado!',
+              detail: resp.message,
+            });
+            this.accionRefresh.emit();
+            this.accionCloseForm.emit();
+          }
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
 }

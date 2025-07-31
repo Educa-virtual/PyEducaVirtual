@@ -1,93 +1,82 @@
 <app-toolbar-primeng [title]="'Gestionar preguntas de ' + (data?.cTitle || '')">
 </app-toolbar-primeng>
 <p-card>
-    <!-- Encabezado responsive -->
-    <div class="grid align-items-center" style="margin-top: -2rem">
-        <!-- Total de Preguntas -->
-        <div class="col-12 sm:col-6 flex align-items-center gap-2 mb-2 sm:mb-0">
-            <span class="font-semibold text-lg text-color"
-                >Total Preguntas:</span
-            >
-            <p-badge
-                [value]="preguntas.length"
-                severity="success"
-                size="large"
-            ></p-badge>
-        </div>
-
-        <!-- Botón Agregar -->
-        <div
-            class="col-12 sm:col-6 flex justify-content-start sm:justify-content-end"
-        >
-            <ng-container *ngIf="data?.iEstado === 1">
-                <button
-                    pButton
-                    type="button"
-                    class="p-button p-button-danger gap-2"
-                    (click)="generarWordEvaluacion()"
-                >
-                    <i class="pi pi-upload"></i>
-                    <span class="text-md">Exportar Word</span>
-                </button>
-
-                <button
-                    pButton
-                    class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
-                    (click)="menuAgregarPreguntas.toggle($event)"
-                    type="button"
-                >
-                    <i class="pi pi-plus"></i>
-                    <span>Agregar</span>
-                </button>
-
-                <p-menu
-                    #menuAgregarPreguntas
-                    [popup]="true"
-                    [model]="tiposAgregarPregunta"
-                    appendTo="body"
-                    styleClass="w-20rem"
-                ></p-menu>
-            </ng-container>
-        </div>
-        <!-- Mensaje sin preguntas -->
-        @if (showModalPreguntas || showModalEncabezado) {
-            <app-preguntas-form
-                *ngIf="showModalPreguntas"
-                [data]="data"
-                (accionForm)="accionForm($event)"
-            ></app-preguntas-form>
-            <app-form-encabezado
-                *ngIf="showModalEncabezado"
-                [data]="data"
-                (accionForm)="accionForm($event)"
-            ></app-form-encabezado>
-        } @else {
-            @if (!preguntas.length) {
-                <div
-                    class="col-12 border-dashed border-2 border-300 surface-50 border-round text-center"
-                >
-                    <app-no-data
-                        [showIcon]="'NO-DATA'"
-                        [mensaje]="
-                            'No se encontraron preguntas en esta evaluación'
-                        "
-                    ></app-no-data>
-                </div>
-            } @else {
-                <app-evaluacion-list-preguntas
-                    class="col-12"
-                    [preguntas]="preguntas"
-                    [bloquearButton]="data?.iEstado === 10 ? true : false"
-                    (accionBtn)="accionBtn($event)"
-                    (accionForm)="accionForm($event)"
-                ></app-evaluacion-list-preguntas>
-            }
-        }
+  <!-- Encabezado responsive -->
+  <div class="grid align-items-center" style="margin-top: -2rem">
+    <!-- Total de Preguntas -->
+    <div class="col-12 sm:col-6 flex align-items-center gap-2 mb-2 sm:mb-0">
+      <span class="font-semibold text-lg text-color">Total Preguntas:</span>
+      <p-badge [value]="preguntas.length" severity="success" size="large"></p-badge>
     </div>
+
+    <!-- Botón Agregar -->
+    <div class="col-12 sm:col-6 flex justify-content-start sm:justify-content-end">
+      <ng-container *ngIf="data?.iEstado === 1">
+        <button
+          pButton
+          type="button"
+          class="p-button p-button-danger gap-2"
+          (click)="generarWordEvaluacion()"
+        >
+          <i class="pi pi-upload"></i>
+          <span class="text-md">Exportar Word</span>
+        </button>
+
+        <button
+          pButton
+          class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
+          (click)="menuAgregarPreguntas.toggle($event)"
+          type="button"
+        >
+          <i class="pi pi-plus"></i>
+          <span>Agregar</span>
+        </button>
+
+        <p-menu
+          #menuAgregarPreguntas
+          [popup]="true"
+          [model]="tiposAgregarPregunta"
+          appendTo="body"
+          styleClass="w-20rem"
+        ></p-menu>
+      </ng-container>
+    </div>
+    <!-- Mensaje sin preguntas -->
+    @if (showModalPreguntas || showModalEncabezado) {
+      <app-preguntas-form
+        *ngIf="showModalPreguntas"
+        [showModal]="showModalPreguntas"
+        [data]="data"
+        (accionForm)="accionForm($event)"
+      ></app-preguntas-form>
+      <app-form-encabezado
+        *ngIf="showModalEncabezado"
+        [data]="data"
+        (accionForm)="accionForm($event)"
+      ></app-form-encabezado>
+    } @else {
+      @if (!preguntas.length) {
+        <div class="col-12 border-dashed border-2 border-300 surface-50 border-round text-center">
+          <app-no-data
+            [showIcon]="'NO-DATA'"
+            [mensaje]="'No se encontraron preguntas en esta evaluación'"
+          ></app-no-data>
+        </div>
+      } @else {
+        <app-evaluacion-list-preguntas
+          class="col-12"
+          [preguntas]="preguntas"
+          [bloquearButton]="data?.iEstado === 10 ? true : false"
+          (accionBtn)="accionBtn($event)"
+          (accionForm)="accionForm($event)"
+        ></app-evaluacion-list-preguntas>
+      }
+    }
+  </div>
 </p-card>
 <app-importar-banco-preguntas
-    *ngIf="showModalBancoPreguntas"
-    [showModal]="showModalBancoPreguntas"
-    [data]="data"
-    (accionForm)="accionForm($event)"
+  *ngIf="showModalBancoPreguntas"
+  [showModal]="showModalBancoPreguntas"
+  [data]="data"
+  (accionForm)="accionForm($event)"
 ></app-importar-banco-preguntas>

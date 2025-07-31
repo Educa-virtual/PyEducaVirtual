@@ -6,6 +6,7 @@ import { MessageService } from 'primeng/api';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
 
 export interface IBancoAlternativas {
   id: string;
@@ -20,7 +21,7 @@ export interface IBancoAlternativas {
 @Component({
   selector: 'app-preguntas-form',
   standalone: true,
-  imports: [PrimengModule],
+  imports: [PrimengModule, ModalPrimengComponent],
   templateUrl: './preguntas-form.component.html',
   styleUrl: './preguntas-form.component.scss',
 })
@@ -28,6 +29,7 @@ export class PreguntasFormComponent implements OnChanges {
   @Output() accionForm = new EventEmitter();
 
   @Input() data;
+  @Input() showModal: boolean = false;
 
   private _FormBuilder = inject(FormBuilder);
   private _MessageService = inject(MessageService);

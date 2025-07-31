@@ -6,12 +6,13 @@ import {
   IColumn,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { InstructorFormComponent } from './instructor-form/instructor-form.component';
 import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identificaciones.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { MessageService } from 'primeng/api';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { InstructoresService } from '@/app/servicios/cap/instructores.service';
+import { InstructorFormComponent } from './instructor-form/instructor-form.component';
 
 @Component({
   selector: 'app-instructores',
@@ -20,19 +21,18 @@ import { MessageService } from 'primeng/api';
   templateUrl: './instructores.component.html',
   styleUrl: './instructores.component.scss',
 })
-export class InstructoresComponent implements OnInit {
+export class InstructoresComponent extends MostrarErrorComponent implements OnInit {
   private _TiposIdentificacionesService = inject(TiposIdentificacionesService);
   private _constantesService = inject(ConstantesService);
   private GeneralService = inject(GeneralService);
   private _confirmService = inject(ConfirmationModalService);
+  private _InstructoresService = inject(InstructoresService);
 
   data: any[] = [];
   tiposIdentificaciones: any[] = [];
   showModal: boolean = false;
   instructor; // obtene datos del instructor
   accion; //variable para las acciones en el modal
-
-  constructor(private messageService: MessageService) {}
 
   public columnasTabla: IColumn[] = [
     {
@@ -118,7 +118,6 @@ export class InstructoresComponent implements OnInit {
         break;
       case 'editar':
         this.accion = accion;
-        console.log(item);
         this.instructor = item;
         this.showModal = true;
         break;
@@ -136,7 +135,7 @@ export class InstructoresComponent implements OnInit {
         this.tiposIdentificaciones = response.data;
       },
       error: error => {
-        console.error('Error al obtener tipos de identificaciones:', error);
+        this.mostrarErrores(error);
       },
     });
   }
@@ -189,6 +188,11 @@ export class InstructoresComponent implements OnInit {
   }
   // metodo para obtener instructores
   obtenerInstructores() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Guardado',
+      detail: 'Los datos fueron guardados correctamente.',
+    });
     const params = {
       petition: 'get',
       group: 'cap',

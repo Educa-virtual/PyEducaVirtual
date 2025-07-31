@@ -1,37 +1,37 @@
 <app-toolbar-primeng title="Banco de Preguntas"></app-toolbar-primeng>
 <div class="card">
-    <div class="grid">
-        <!-- Filtros -->
-        <div class="col-12 lg:col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon>Área Curricular</p-inputGroupAddon>
-                <p-dropdown
-                    [(ngModel)]="params.iCursoId"
-                    optionValue="iCursoId"
-                    [options]="cursos"
-                    optionLabel="cCursoNombre"
-                    styleClass="w-full"
-                    (onChange)="obtenerBancoPreguntas()"
-                />
-            </p-inputGroup>
-        </div>
+  <div class="grid">
+    <!-- Filtros -->
+    <div class="col-12 lg:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Área Curricular</p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="params.iCursoId"
+          optionValue="iCursoId"
+          [options]="cursos"
+          optionLabel="cCursoNombre"
+          styleClass="w-full"
+          (onChange)="obtenerBancoPreguntas()"
+        />
+      </p-inputGroup>
+    </div>
 
-        <div class="col-12 lg:col-3">
-            <p-inputGroup>
-                <p-inputGroupAddon> Grado </p-inputGroupAddon>
-                <p-dropdown
-                    [(ngModel)]="params.iGradoId"
-                    optionValue="iGradoId"
-                    [options]="grados"
-                    optionLabel="cGrado"
-                    styleClass="w-full"
-                    (onChange)="obtenerBancoPreguntas()"
-                />
-            </p-inputGroup>
-        </div>
-        <!-- Botón Agregar Preguntas alineado a la derecha -->
-        <div class="col-12 lg:col-3 flex justify-content-end">
-            <!-- <button
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon> Grado </p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="params.iGradoId"
+          optionValue="iGradoId"
+          [options]="grados"
+          optionLabel="cGrado"
+          styleClass="w-full"
+          (onChange)="obtenerBancoPreguntas()"
+        />
+      </p-inputGroup>
+    </div>
+    <!-- Botón Agregar Preguntas alineado a la derecha -->
+    <div class="col-12 lg:col-3 flex justify-content-end">
+      <!-- <button
                 [disabled]="params.iCursoId === 0"
                 pButton
                 type="button"
@@ -40,51 +40,51 @@
                 icon="pi pi-plus"
                 (click)="agregarPreguntas()"
             ></button> -->
-            <button
-                [disabled]="params.iCursoId === 0"
-                pButton
-                class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
-                (click)="menuAgregarPreguntas.toggle($event)"
-                type="button"
-            >
-                <i class="pi pi-plus"></i>
-                <span>Agregar</span>
-            </button>
+      <button
+        [disabled]="params.iCursoId === 0"
+        pButton
+        class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
+        (click)="menuAgregarPreguntas.toggle($event)"
+        type="button"
+      >
+        <i class="pi pi-plus"></i>
+        <span>Agregar</span>
+      </button>
 
-            <p-menu
-                #menuAgregarPreguntas
-                [popup]="true"
-                [model]="tiposAgregarPregunta"
-                appendTo="body"
-                styleClass="w-20rem"
-            ></p-menu>
-        </div>
+      <p-menu
+        #menuAgregarPreguntas
+        [popup]="true"
+        [model]="tiposAgregarPregunta"
+        appendTo="body"
+        styleClass="w-20rem"
+      ></p-menu>
     </div>
+  </div>
 
-    <!-- Tabla Banco de Preguntas -->
-    <div class="col-12" *ngIf="!showModalPreguntas">
-        <app-aula-banco-preguntas
-            [iCursoId]="params.iCursoId"
-            [params]="params"
-            (actionBtnItem)="accionBtnItem($event)"
-        ></app-aula-banco-preguntas>
-    </div>
+  <!-- Tabla Banco de Preguntas -->
+  <div class="col-12" *ngIf="!showModalPreguntas">
+    <app-aula-banco-preguntas
+      [iCursoId]="params.iCursoId"
+      [params]="params"
+      (actionBtnItem)="accionBtnItem($event)"
+    ></app-aula-banco-preguntas>
+  </div>
 </div>
 
 <app-banco-preguntas-form
-    *ngIf="showModalPreguntas"
-    [showModal]="showModalPreguntas"
-    [curso]="itemCurso"
-    [data]="itemData"
-    (accionBtnItem)="accionBtnItem($event)"
+  *ngIf="showModalPreguntas"
+  [showModal]="showModalPreguntas"
+  [curso]="itemCurso"
+  [data]="itemData"
+  (accionBtnItem)="accionBtnItem($event)"
 >
 </app-banco-preguntas-form>
 <app-banco-encabezado-form
-    *ngIf="showModalEncabezado"
-    [showModal]="showModalEncabezado"
-    [curso]="itemCurso"
-    [data]="itemData"
-    (accionBtnItem)="accionBtnItemEncabezado($event)"
+  *ngIf="showModalEncabezado"
+  [showModal]="showModalEncabezado"
+  [curso]="itemCurso"
+  [data]="itemData"
+  (accionBtnItem)="accionBtnItemEncabezado($event)"
 ></app-banco-encabezado-form>
 <p-toast></p-toast>
 <!-- <app-form-encabezado *ngIf="showModalEncabezado" [data]="data" (accionForm)="accionForm($event)"></app-form-encabezado> -->

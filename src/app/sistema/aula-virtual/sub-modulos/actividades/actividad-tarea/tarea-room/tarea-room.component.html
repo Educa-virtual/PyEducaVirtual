@@ -1,425 +1,587 @@
 <div class="flex justify-content-start">
-    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" />
+  <p-breadcrumb class="max-w-full" [model]="items" [home]="home" />
 </div>
 <section class="flex flex-column gap-4">
-    <p-tabView styleClass="actividad-tabs">
-        <p-tabPanel>
-            <ng-template pTemplate="header" class="header-fixed">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matListAlt"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Tarea
-                    </span>
+  <p-tabView styleClass="actividad-tabs">
+    <p-tabPanel>
+      <ng-template pTemplate="header" class="header-fixed">
+        <div class="flex align-items-center flex-column gap-2">
+          <app-icon name="matListAlt"></app-icon>
+          <span class="font-bold white-space-nowrap m-0"> Tarea </span>
+        </div>
+      </ng-template>
+      <app-tab-descripcion-actividades [data]="data">
+        <div estado-actividad>
+          <div class="flex justify-content-center align-items-center">
+            @if (isDocente) {
+              @if (data?.iEstado === 1) {
+                <div class="border-1 border-orange-200 border-round bg-orange-50 p-3 text-center">
+                  <span class="font-bold text-3xl text-orange-600">BORRADOR</span>
                 </div>
-            </ng-template>
-            <app-toolbar-primeng
-                [title]="
-                    'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')
-                "
-            >
-            </app-toolbar-primeng>
-            <app-descripcion-actividades [data]="data" [isDocente]="isDocente">
-            </app-descripcion-actividades>
-        </p-tabPanel>
-
-        @if (iPerfilId !== ESTUDIANTE) {
-            <p-tabPanel>
-                <ng-template pTemplate="header" class="header-fixed">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matPeople"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Actividad de los alumnos
-                        </span>
+              }
+              @if (data?.iEstado === 2) {
+                <div class="border-1 border-green-200 border-round bg-green-50 p-3 text-center">
+                  <span class="font-bold text-3xl text-green-600">PUBLICADO</span>
+                </div>
+              }
+            }
+            @if (data?.iEstado === 10) {
+              <div class="border-1 border-red-200 border-round bg-red-50 p-3 text-center">
+                <span class="font-bold text-3xl text-red-600">FINALIZADO</span>
+              </div>
+            }
+          </div>
+        </div>
+        @if (iPerfilId === ESTUDIANTE) {
+          <div section class="col-12">
+            @if (!bTareaEsGrupal) {
+              @if (!iEvaluado) {
+                @if (data?.iEstado === 2) {
+                  <div class="card-body m-3">
+                    <h4>Entregar Tareas</h4>
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <app-file-upload-primeng
+                        [nameFile]="'tareas-estudiantes'"
+                        [nameOption]="'tareas-estudiantes'"
+                        (actionFileUpload)="accionBtnItem($event)"
+                      ></app-file-upload-primeng>
                     </div>
-                </ng-template>
-                <app-toolbar-primeng
-                    [title]="
-                        'Tarea: ' +
-                        (data?.cTareaTitulo || 'Título no disponible')
-                    "
-                >
-                </app-toolbar-primeng>
-                <!--Es un contenedor de nivel de bloque en HTML que se usa comúnmente para agrupar y organizar otros elementos.-->
-                <div class="flex flex-column gap-4 tab-content">
-                    <div class="grid">
-                        <div class="col-12 md:col-5">
-                            <p-toolbar>
-                                <div class="p-toolbar-group-start">
-                                    <h4 class="text-primary font-bold">
-                                        Asignar a:
-                                    </h4>
-                                </div>
-                                <div class="p-toolbar-group-center">
-                                    <!-- Componente de botón de selección de PrimeNG -->
-                                    <!-- Enlace bidireccional a la variable 'tareaAsignar', para reflejar el valor seleccionado -->
-                                    <p-selectButton
-                                        [options]="tareaOptions"
-                                        [(ngModel)]="tareaAsignar"
-                                        [multiple]="false"
-                                        optionLabel="name"
-                                        optionValue="value"
-                                        (onChange)="updateTareas()"
-                                    />
-                                </div>
-                                <div class="p-toolbar-group-end">
-                                    <!-- estes boto esta desactivado-->
-                                    <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Listas" tooltipPosition="top"
+                    @if (FilesTareasEstudiantes.length) {
+                      <div class="col-12">
+                        <label for="" class="mt-2">Lista de Adjuntos</label>
+
+                        @for (item of FilesTareasEstudiantes; track item; let idx = $index) {
+                          <p-inputGroup class="mt-1">
+                            <p-inputGroupAddon>
+                              @switch (item.type) {
+                                @case (1) {
+                                  <i class="pi pi-upload" style="color: #333437"></i>
+                                }
+                              }
+                            </p-inputGroupAddon>
+                            <input type="text" pInputText [placeholder]="item.name" disabled />
+                            <button
+                              type="button"
+                              pButton
+                              icon="pi pi-trash"
+                              (click)="FilesTareasEstudiantes.splice(idx, 1)"
+                              class="p-button-danger"
+                            >
+                              &nbsp;
+                            </button>
+                          </p-inputGroup>
+                        }
+                      </div>
+                    }
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <p-button
+                        label="Enviar Tarea"
+                        icon="pi pi-check"
+                        iconPos="right"
+                        (onClick)="entregarEstudianteTarea()"
+                        raised
+                        severity="success"
+                      ></p-button>
+                    </div>
+                  </div>
+                  @if (miTarea) {
+                    <div>{{ miTarea }}</div>
+                  }
+                }
+              } @else {
+                <div class="grid">
+                  <div class="col-12 mt-2">
+                    <div class="text-xl font-medium text-900 mb-2">
+                      <span class="text-blue-500"
+                        ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                      >
+                      <p-divider></p-divider>
+                      <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                    </div>
+                    <div
+                      class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                    >
+                      <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                      <div [innerHTML]="comentarioTareaEstudiante || '-'"></div>
+                    </div>
+                  </div>
+                </div>
+              }
+            } @else {
+              @if (!iEvaluado) {
+                @if (data?.iEstado === 2) {
+                  <div class="card-body m-3">
+                    <h3>Trabajo Grupal</h3>
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <app-file-upload-primeng
+                        [nameFile]="'tarea-cabecera-grupos'"
+                        [nameOption]="'tarea-cabecera-grupos'"
+                        (actionFileUpload)="accionBtnItem($event)"
+                      ></app-file-upload-primeng>
+                    </div>
+                    @if (FilesTareasEstudiantesGrupal.length) {
+                      <div class="col-12">
+                        <label for="" class="mt-2">Lista de Adjuntos</label>
+                        @for (item of FilesTareasEstudiantesGrupal; track item; let idx = $index) {
+                          <p-inputGroup class="mt-1">
+                            <p-inputGroupAddon>
+                              @switch (item.type) {
+                                @case (1) {
+                                  <i class="pi pi-upload" style="color: #333437"></i>
+                                }
+                              }
+                            </p-inputGroupAddon>
+                            <input type="text" pInputText [placeholder]="item.name" disabled />
+                            <button
+                              type="button"
+                              pButton
+                              icon="pi pi-trash"
+                              (click)="FilesTareasEstudiantesGrupal.splice(idx, 1)"
+                              class="p-button-danger"
+                            >
+                              &nbsp;
+                            </button>
+                          </p-inputGroup>
+                        }
+                      </div>
+                    }
+                    <p-divider></p-divider>
+                    <div class="flex align-items-center justify-content-center">
+                      <p-button
+                        label="Enviar Tareass"
+                        icon="pi pi-check"
+                        iconPos="right"
+                        (onClick)="entregarEstudianteTareaGrupal()"
+                        raised
+                        severity="success"
+                      ></p-button>
+                    </div>
+                  </div>
+                  @if (miTareaGrupal) {
+                    <div>{{ miTareaGrupal }}</div>
+                  }
+                }
+              } @else {
+                <div class="grid">
+                  <div class="col-12 mt-2">
+                    <div class="text-xl font-medium text-900 mb-2">
+                      <span class="text-blue-500"
+                        ><i class="pi pi-check"></i>&nbsp;El Trabajo grupal ya ha sido
+                        evaluado</span
+                      >
+                      <p-divider></p-divider>
+                      <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                    </div>
+                    <div
+                      class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                    >
+                      <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                      <div [innerHTML]="comentarioTareaEstudianteGrupal || '-'"></div>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+          <!-- <div section class="col-12">
+           
+            @if (iEstadoEstudianteTarea !== '' && !iEstadoEstudianteTareaGrupal) {
+              <div class="card-body m-3" [hidden]="iEstadoEstudianteTarea !== '0'">
+                <h4>Entregar Tareas</h4>
+                <p-divider></p-divider>
+                <div class="flex align-items-center justify-content-center">
+                  <app-file-upload-primeng
+                    [nameFile]="'tareas-estudiantes'"
+                    [nameOption]="'tareas-estudiantes'"
+                    (actionFileUpload)="accionBtnItem($event)"
+                  ></app-file-upload-primeng>
+                </div>
+               @if (FilesTareasEstudiantes.length) {
+                  <div class="col-12">
+                    <label for="" class="mt-2">Lista de Adjuntos</label>
+                   
+                    @for (item of FilesTareasEstudiantes; track item; let idx = $index) {
+                      <p-inputGroup class="mt-1">
+                        <p-inputGroupAddon>
+                          @switch (item.type) {
+                            @case (1) {
+                              <i class="pi pi-upload" style="color: #333437"></i>
+                            }
+                          }
+                        </p-inputGroupAddon>
+                        <input type="text" pInputText [placeholder]="item.name" disabled />
+                        <button
+                          type="button"
+                          pButton
+                          icon="pi pi-trash"
+                          (click)="FilesTareasEstudiantes.splice(idx, 1)"
+                          class="p-button-danger"
+                        >
+                          &nbsp;
+                           </button>
+                      </p-inputGroup>
+                    }
+                  </div>
+                }
+                <p-divider></p-divider>
+
+                <div>
+                  <p-toast></p-toast>
+                </div>
+
+                <div class="flex align-items-center justify-content-center">
+                  <p-button
+                    label="Enviar Tarea"
+                    icon="pi pi-check"
+                    iconPos="right"
+                    (onClick)="entregarEstudianteTarea()"
+                    raised
+                    severity="success"
+                  ></p-button>
+                </div>
+              </div>
+
+              @if (miTarea) {
+                <div>{{ miTarea }}</div>
+              }
+
+             
+              <div class="grid" [hidden]="iEstadoEstudianteTarea !== '1'">
+                <div class="col-12 mt-2">
+                  <div class="text-xl font-medium text-900 mb-2">
+                    <span class="text-blue-500"
+                      ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                    >
+                    <p-divider></p-divider>
+                    <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                  </div>
+                  <div
+                    class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                  >
+                    <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                    <div [innerHTML]="comentarioTareaEstudiante || '-'"></div>
+                  </div>
+                </div>
+              </div>
+            }
+            @if (!iEstadoEstudianteTarea && iEstadoEstudianteTareaGrupal !== '') {
+              <div class="card-body m-3" [hidden]="iEstadoEstudianteTareaGrupal !== '0'">
+                <h3>Trabajo Grupal</h3>
+                <p-divider></p-divider>
+                <div class="flex align-items-center justify-content-center">
+                  <app-file-upload-primeng
+                    [nameFile]="'tarea-cabecera-grupos'"
+                    [nameOption]="'tarea-cabecera-grupos'"
+                    (actionFileUpload)="accionBtnItem($event)"
+                  ></app-file-upload-primeng>
+                </div>
+               @if (FilesTareasEstudiantesGrupal.length) {
+                  <div class="col-12">
+                    <label for="" class="mt-2">Lista de Adjuntos</label>
+                    @for (item of FilesTareasEstudiantesGrupal; track item; let idx = $index) {
+                      <p-inputGroup class="mt-1">
+                        <p-inputGroupAddon>
+                          @switch (item.type) {
+                            @case (1) {
+                              <i class="pi pi-upload" style="color: #333437"></i>
+                            }
+                          }
+                          </p-inputGroupAddon>
+                        <input type="text" pInputText [placeholder]="item.name" disabled />
+                         <button
+                          type="button"
+                          pButton
+                          icon="pi pi-trash"
+                          (click)="FilesTareasEstudiantesGrupal.splice(idx, 1)"
+                          class="p-button-danger"
+                        >
+                          &nbsp;
+                        </button>
+                      </p-inputGroup>
+                    }
+                  </div>
+                }
+                 <p-divider></p-divider>
+                <p-toast></p-toast>
+                <div class="flex align-items-center justify-content-center">
+                  <p-button
+                    label="Enviar Tareass"
+                    icon="pi pi-check"
+                    iconPos="right"
+                    (onClick)="entregarEstudianteTareaGrupal()"
+                    raised
+                    severity="success"
+                  ></p-button>
+                </div>
+              </div>
+              <div class="grid" [hidden]="iEstadoEstudianteTareaGrupal !== '1'">
+                <div class="col-12 mt-2">
+                  <div class="text-xl font-medium text-900 mb-2">
+                    <span class="text-blue-500"
+                      ><i class="pi pi-check"></i>&nbsp;El Trabajo grupal ya ha sido evaluado</span
+                    >
+                    <p-divider></p-divider>
+                    <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                  </div>
+                  <div
+                    class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
+                  >
+                    <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                    <div [innerHTML]="comentarioTareaEstudianteGrupal || '-'"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div> -->
+        }
+      </app-tab-descripcion-actividades>
+    </p-tabPanel>
+
+    @if (iPerfilId !== ESTUDIANTE) {
+      <p-tabPanel>
+        <ng-template pTemplate="header" class="header-fixed">
+          <div class="flex align-items-center flex-column gap-2">
+            <app-icon name="matPeople"></app-icon>
+            <span class="font-bold white-space-nowrap m-0"> Actividad de los alumnos </span>
+          </div>
+        </ng-template>
+        <app-toolbar-primeng [title]="'Tarea: ' + (data?.cTareaTitulo || 'Título no disponible')">
+        </app-toolbar-primeng>
+        <!--Es un contenedor de nivel de bloque en HTML que se usa comúnmente para agrupar y organizar otros elementos.-->
+        <div class="flex flex-column gap-4 tab-content">
+          <div class="grid">
+            <div class="col-12 md:col-5">
+              <p-toolbar>
+                <div class="p-toolbar-group-start">
+                  <h4 class="text-primary font-bold">Asignar a:</h4>
+                </div>
+                <div class="p-toolbar-group-center">
+                  <!-- Componente de botón de selección de PrimeNG -->
+                  <!-- Enlace bidireccional a la variable 'tareaAsignar', para reflejar el valor seleccionado -->
+                  <p-selectButton
+                    [options]="tareaOptions"
+                    [(ngModel)]="tareaAsignar"
+                    [multiple]="false"
+                    optionLabel="name"
+                    optionValue="value"
+                    (onChange)="updateTareas()"
+                  />
+                </div>
+                <div class="p-toolbar-group-end">
+                  <!-- estes boto esta desactivado-->
+                  <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Listas" tooltipPosition="top"
                                     [rounded]="true" [text]="true" severity="danger" /> -->
-                                </div>
-                            </p-toolbar>
-                            <!-- Este componente de PrimeNG se usa para crear una línea divisoria horizontal -->
-                            <p-divider></p-divider>
-                            <!-- Verifica si la variable 'tareaAsignar' no está indefinida -->
-                            <!-- Aquí se puede agregar código para ejecutar si 'tareaAsignar' no es indefinido -->
-                            @if (tareaAsignar !== undefined) {
-                                <p-accordion [activeIndex]="0">
-                                    @if (!tareaAsignar) {
-                                        <p-accordionTab header="Individual">
-                                            <!-- Contenedor principal para la grilla -->
-                                            <div class="grid">
-                                                <!-- Sección de leyenda para mostrar tareas faltantes -->
+                </div>
+              </p-toolbar>
+              <!-- Este componente de PrimeNG se usa para crear una línea divisoria horizontal -->
+              <p-divider></p-divider>
+              <!-- Verifica si la variable 'tareaAsignar' no está indefinida -->
+              <!-- Aquí se puede agregar código para ejecutar si 'tareaAsignar' no es indefinido -->
+              @if (tareaAsignar !== undefined) {
+                <p-accordion [activeIndex]="0">
+                  @if (!tareaAsignar) {
+                    <p-accordionTab header="Individual">
+                      <!-- Contenedor principal para la grilla -->
+                      <div class="grid">
+                        <!-- Sección de leyenda para mostrar tareas faltantes -->
 
-                                                <div
-                                                    class="col-6 leyenda-tareas"
-                                                >
-                                                    <div
-                                                        class="flex align-items-center"
-                                                    >
-                                                        <div
-                                                            class="w-1rem h-1rem border-circle"
-                                                            [ngClass]="
-                                                                'bg-red-500'
-                                                            "
-                                                        ></div>
-                                                        <div>
-                                                            <b
-                                                                style="
-                                                                    font-size: 1.5rem;
-                                                                "
-                                                                >&nbsp;{{
-                                                                    tareasFalta
-                                                                }}</b
-                                                            ><small
-                                                                >&nbsp;
-                                                                Falta</small
-                                                            >
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Contenedor principal para la leyenda de tareas, ocupa la mitad de la columna en un sistema de rejilla de 12 columnas. -->
-                                                <div
-                                                    class="col-6 leyenda-tareas"
-                                                >
-                                                    <div
-                                                        class="flex align-items-center"
-                                                    >
-                                                        <div
-                                                            class="w-1rem h-1rem border-circle"
-                                                            [ngClass]="
-                                                                'bg-green-500'
-                                                            "
-                                                        ></div>
-                                                        <div>
-                                                            <b
-                                                                style="
-                                                                    font-size: 1.5rem;
-                                                                "
-                                                                >&nbsp;{{
-                                                                    tareasCulminado
-                                                                }}</b
-                                                            ><small
-                                                                >&nbsp;Culminado
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
-                                                <app-card-orderlist
-                                                    class="col-12"
-                                                    [data]="estudiantes"
-                                                    (datoSeleccionado)="
-                                                        obtenerEstudianteSeleccionado(
-                                                            $event
-                                                        )
-                                                    "
-                                                >
-                                                    <!-- (datoSeleccionado)="updateSelectedEstudiante($event)" -->
-                                                </app-card-orderlist>
-                                            </div>
-                                        </p-accordionTab>
-                                    } @else {
-                                        <p-accordionTab header="Grupal">
-                                            <div class="grid text-center">
-                                                <div
-                                                    class="col-6 leyenda-tareas"
-                                                >
-                                                    <div
-                                                        class="flex align-items-center"
-                                                    >
-                                                        <div
-                                                            class="w-1rem h-1rem border-circle"
-                                                            [ngClass]="
-                                                                'bg-red-500'
-                                                            "
-                                                        ></div>
-                                                        <div>
-                                                            <b
-                                                                style="
-                                                                    font-size: 1.5rem;
-                                                                "
-                                                                >&nbsp;{{
-                                                                    tareasFalta
-                                                                }}</b
-                                                            ><small
-                                                                >&nbsp;
-                                                                Falta</small
-                                                            >
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Contenedor flex para alinear los elementos en línea y centrarlos -->
+                        <div class="col-6 leyenda-tareas">
+                          <div class="flex align-items-center">
+                            <div class="w-1rem h-1rem border-circle" [ngClass]="'bg-red-500'"></div>
+                            <div>
+                              <b style="font-size: 1.5rem">&nbsp;{{ tareasFalta }}</b
+                              ><small>&nbsp; Falta</small>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Contenedor principal para la leyenda de tareas, ocupa la mitad de la columna en un sistema de rejilla de 12 columnas. -->
+                        <div class="col-6 leyenda-tareas">
+                          <div class="flex align-items-center">
+                            <div
+                              class="w-1rem h-1rem border-circle"
+                              [ngClass]="'bg-green-500'"
+                            ></div>
+                            <div>
+                              <b style="font-size: 1.5rem">&nbsp;{{ tareasCulminado }}</b
+                              ><small>&nbsp;Culminado </small>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
+                        <app-card-orderlist
+                          class="col-12"
+                          [data]="estudiantes"
+                          (datoSeleccionado)="obtenerEstudianteSeleccionado($event)"
+                        >
+                          <!-- (datoSeleccionado)="updateSelectedEstudiante($event)" -->
+                        </app-card-orderlist>
+                      </div>
+                    </p-accordionTab>
+                  } @else {
+                    <p-accordionTab header="Grupal">
+                      <div class="grid text-center">
+                        <div class="col-6 leyenda-tareas">
+                          <div class="flex align-items-center">
+                            <div class="w-1rem h-1rem border-circle" [ngClass]="'bg-red-500'"></div>
+                            <div>
+                              <b style="font-size: 1.5rem">&nbsp;{{ tareasFalta }}</b
+                              ><small>&nbsp; Falta</small>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Contenedor flex para alinear los elementos en línea y centrarlos -->
 
-                                                <div
-                                                    class="col-6 leyenda-tareas"
-                                                >
-                                                    <div
-                                                        class="flex align-items-center"
-                                                    >
-                                                        <div
-                                                            class="w-1rem h-1rem border-circle"
-                                                            [ngClass]="
-                                                                'bg-green-500'
-                                                            "
-                                                        ></div>
-                                                        <div>
-                                                            <b
-                                                                style="
-                                                                    font-size: 1.5rem;
-                                                                "
-                                                                >&nbsp;{{
-                                                                    tareasCulminado
-                                                                }}</b
-                                                            ><small
-                                                                >&nbsp;
-                                                                Culminado</small
-                                                            >
-                                                        </div>
-                                                    </div>
-                                                </div>
+                        <div class="col-6 leyenda-tareas">
+                          <div class="flex align-items-center">
+                            <div
+                              class="w-1rem h-1rem border-circle"
+                              [ngClass]="'bg-green-500'"
+                            ></div>
+                            <div>
+                              <b style="font-size: 1.5rem">&nbsp;{{ tareasCulminado }}</b
+                              ><small>&nbsp; Culminado</small>
+                            </div>
+                          </div>
+                        </div>
 
-                                                <!-- Contenedor de la columna que ocupa todo el ancho disponible (12 columnas) y alinea el contenido a la derecha -->
+                        <!-- Contenedor de la columna que ocupa todo el ancho disponible (12 columnas) y alinea el contenido a la derecha -->
 
-                                                <div class="col-12 text-right">
-                                                    <p-button
-                                                        label="Crear Grupo"
-                                                        icon="pi pi-plus"
-                                                        (onClick)="
-                                                            grupoSeleccionado =
-                                                                null;
-                                                            showModal = true
-                                                        "
-                                                        iconPos="left"
-                                                    />
-                                                </div>
-                                                <!-- Se utiliza para crear un acordeón en el que cada pestaña representa un grupo de estudiantes.-->
-                                                <div class="col-12">
-                                                    <!-- Contenedor de la columna principal -->
-                                                    <p-accordion
-                                                        [activeIndex]="0"
-                                                        class="w-full"
-                                                        expandIcon="pi pi-plus"
-                                                        collapseIcon="pi pi-minus"
-                                                    >
-                                                        <!-- Recorremos la lista de grupos para crear un p-accordionTab por cada grupo -->
+                        <div class="col-12 text-right">
+                          <p-button
+                            label="Crear Grupo"
+                            icon="pi pi-plus"
+                            (onClick)="grupoSeleccionado = null; showModal = true"
+                            iconPos="left"
+                          />
+                        </div>
+                        <!-- Se utiliza para crear un acordeón en el que cada pestaña representa un grupo de estudiantes.-->
+                        <div class="col-12">
+                          <!-- Contenedor de la columna principal -->
+                          <p-accordion
+                            [activeIndex]="0"
+                            class="w-full"
+                            expandIcon="pi pi-plus"
+                            collapseIcon="pi pi-minus"
+                          >
+                            <!-- Recorremos la lista de grupos para crear un p-accordionTab por cada grupo -->
 
-                                                        @for (
-                                                            item of grupos;
-                                                            track item;
-                                                            let idx = $index
-                                                        ) {
-                                                            <p-accordionTab
-                                                                (click)="
-                                                                    seleccionarGrupo(
-                                                                        item
-                                                                    );
-                                                                    nGrupal =
-                                                                        idx
-                                                                "
-                                                                [ngClass]="{
-                                                                    grupal:
-                                                                        nGrupal ===
-                                                                        idx,
-                                                                }"
-                                                            >
-                                                                <!-- Encabezado del tab de acordeón -->
-                                                                <ng-template
-                                                                    pTemplate="header"
-                                                                >
-                                                                    <!-- Contenedor principal que usa diseño de flexbox para alinear elementos y establecer un espacio entre ellos -->
-                                                                    <div
-                                                                        class="flex align-items-center gap-2 w-full"
-                                                                    >
-                                                                        <!-- Texto estático que indica que la siguiente parte es el nombre del grupo -->
-                                                                        Grupo:
-                                                                        {{
-                                                                            item.cTareaGrupoNombre
-                                                                        }}
-                                                                        &nbsp;
-                                                                    </div>
-                                                                    <div
-                                                                        class="flex align-items-center"
-                                                                    >
-                                                                        <!-- <b>Calif: </b>
+                            @for (item of grupos; track item; let idx = $index) {
+                              <p-accordionTab
+                                (click)="seleccionarGrupo(item); nGrupal = idx"
+                                [ngClass]="{
+                                  grupal: nGrupal === idx,
+                                }"
+                              >
+                                <!-- Encabezado del tab de acordeón -->
+                                <ng-template pTemplate="header">
+                                  <!-- Contenedor principal que usa diseño de flexbox para alinear elementos y establecer un espacio entre ellos -->
+                                  <div class="flex align-items-center gap-2 w-full">
+                                    <!-- Texto estático que indica que la siguiente parte es el nombre del grupo -->
+                                    Grupo:
+                                    {{ item.cTareaGrupoNombre }}
+                                    &nbsp;
+                                  </div>
+                                  <div class="flex align-items-center">
+                                    <!-- <b>Calif: </b>
                                                                         {{
                                                                         item.cEscalaCalifNombre ||
                                                                         '-'
                                                                         }} -->
-                                                                        <div
-                                                                            class="w-1rem h-1rem border-circle ml-3"
-                                                                            [ngClass]="
-                                                                                item.cEstado ===
-                                                                                '0'
-                                                                                    ? 'bg-red-500'
-                                                                                    : item.cEstado ===
-                                                                                        '2'
-                                                                                      ? 'bg-yellow-500'
-                                                                                      : 'bg-green-500'
-                                                                            "
-                                                                        ></div>
-                                                                        <!-- Este botón, al ser clicado, se utiliza para seleccionar un grupo representado por item y mostrar un modal-->
-                                                                        <p-button
-                                                                            icon="pi pi-pencil"
-                                                                            [rounded]="
-                                                                                true
-                                                                            "
-                                                                            [text]="
-                                                                                true
-                                                                            "
-                                                                            class="ml-3"
-                                                                            severity="info"
-                                                                            (onClick)="
-                                                                                grupoSeleccionado =
-                                                                                    item;
-                                                                                showModal = true
-                                                                            "
-                                                                        />
-                                                                        <p-button
-                                                                            icon="pi pi-trash"
-                                                                            [rounded]="
-                                                                                true
-                                                                            "
-                                                                            [text]="
-                                                                                true
-                                                                            "
-                                                                            severity="danger"
-                                                                            (onClick)="
-                                                                                eliminarTareaCabeceraGrupos(
-                                                                                    item
-                                                                                )
-                                                                            "
-                                                                        />
-                                                                    </div>
-                                                                </ng-template>
-                                                                <!-- Componente p-table de PrimeNG para mostrar una tabla con funcionalidad de paginación y filtrado -->
-                                                                <div>
-                                                                    <p-table
-                                                                        #dv
-                                                                        class="col-12 hoverTable"
-                                                                        [value]="
-                                                                            item.json_estudiantes_asignado
-                                                                        "
-                                                                        paginator="false"
-                                                                        styleClass="p-datatable-sm"
-                                                                        [globalFilterFields]="[
-                                                                            'cPersPaterno',
-                                                                            'cPersMaterno',
-                                                                            'cPersNombre',
-                                                                        ]"
-                                                                    >
-                                                                        <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
-                                                                        <ng-template
-                                                                            pTemplate="caption"
-                                                                        >
-                                                                            <div
-                                                                                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
-                                                                            >
-                                                                                <p-iconField
-                                                                                    iconPosition="left"
-                                                                                >
-                                                                                    <p-inputIcon
-                                                                                        styleClass="pi pi-search text-md"
-                                                                                    />
-                                                                                    <input
-                                                                                        pInputText
-                                                                                        type="text"
-                                                                                        class="py-2"
-                                                                                        (input)="
-                                                                                            onGlobalFilter(
-                                                                                                dv,
-                                                                                                $event
-                                                                                            )
-                                                                                        "
-                                                                                        placeholder="Buscar por apellidos y nombres"
-                                                                                    />
-                                                                                </p-iconField>
-                                                                            </div>
-                                                                        </ng-template>
+                                    <div
+                                      class="w-1rem h-1rem border-circle ml-3"
+                                      [ngClass]="
+                                        item.cEstado === '0'
+                                          ? 'bg-red-500'
+                                          : item.cEstado === '2'
+                                            ? 'bg-yellow-500'
+                                            : 'bg-green-500'
+                                      "
+                                    ></div>
+                                    <!-- Este botón, al ser clicado, se utiliza para seleccionar un grupo representado por item y mostrar un modal-->
+                                    <p-button
+                                      icon="pi pi-pencil"
+                                      [rounded]="true"
+                                      [text]="true"
+                                      class="ml-3"
+                                      severity="info"
+                                      (onClick)="grupoSeleccionado = item; showModal = true"
+                                    />
+                                    <p-button
+                                      icon="pi pi-trash"
+                                      [rounded]="true"
+                                      [text]="true"
+                                      severity="danger"
+                                      (onClick)="eliminarTareaCabeceraGrupos(item)"
+                                    />
+                                  </div>
+                                </ng-template>
+                                <!-- Componente p-table de PrimeNG para mostrar una tabla con funcionalidad de paginación y filtrado -->
+                                <div>
+                                  <p-table
+                                    #dv
+                                    class="col-12 hoverTable"
+                                    [value]="item.json_estudiantes_asignado"
+                                    paginator="false"
+                                    styleClass="p-datatable-sm"
+                                    [globalFilterFields]="[
+                                      'cPersPaterno',
+                                      'cPersMaterno',
+                                      'cPersNombre',
+                                    ]"
+                                  >
+                                    <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
+                                    <ng-template pTemplate="caption">
+                                      <div
+                                        class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                                      >
+                                        <p-iconField iconPosition="left">
+                                          <p-inputIcon styleClass="pi pi-search text-md" />
+                                          <input
+                                            pInputText
+                                            type="text"
+                                            class="py-2"
+                                            (input)="onGlobalFilter(dv, $event)"
+                                            placeholder="Buscar por apellidos y nombres"
+                                          />
+                                        </p-iconField>
+                                      </div>
+                                    </ng-template>
 
-                                                                        <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
+                                    <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
 
-                                                                        <ng-template
-                                                                            pTemplate="header"
-                                                                        >
-                                                                            <tr
-                                                                                class="sticky-header"
-                                                                            >
-                                                                                <th>
-                                                                                    #
-                                                                                </th>
-                                                                                <th>
-                                                                                    Apellidos
-                                                                                </th>
-                                                                                <th>
-                                                                                    Nombres
-                                                                                </th>
-                                                                                <th>
-                                                                                    Acciones
-                                                                                </th>
-                                                                            </tr>
-                                                                        </ng-template>
-                                                                        <!-- Esta etiqueta define una plantilla con el nombre "header" que se usa en una tabla con PrimeNG -->
+                                    <ng-template pTemplate="header">
+                                      <tr class="sticky-header">
+                                        <th>#</th>
+                                        <th>Apellidos</th>
+                                        <th>Nombres</th>
+                                        <th>Acciones</th>
+                                      </tr>
+                                    </ng-template>
+                                    <!-- Esta etiqueta define una plantilla con el nombre "header" que se usa en una tabla con PrimeNG -->
 
-                                                                        <ng-template
-                                                                            pTemplate="body"
-                                                                            let-estudiante
-                                                                            let-rowIndex="rowIndex"
-                                                                        >
-                                                                            <!-- Verifica si un estudiante tiene la propiedad bAsignado establecida en true y, si es así, genera una fila en una tabla HTML que muestra su información y un botón para eliminarlo-->
-                                                                            @if (
-                                                                                estudiante.bAsignado
-                                                                            ) {
-                                                                                <tr>
-                                                                                    <td>
-                                                                                        {{
-                                                                                            rowIndex +
-                                                                                                1
-                                                                                        }}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        {{
-                                                                                            estudiante.cPersPaterno
-                                                                                        }}
-                                                                                        {{
-                                                                                            estudiante.cPersMaterno
-                                                                                        }}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        {{
-                                                                                            estudiante?.cPersNombre
-                                                                                        }}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <!-- <p-button icon="pi pi-reply" [rounded]="
+                                    <ng-template
+                                      pTemplate="body"
+                                      let-estudiante
+                                      let-rowIndex="rowIndex"
+                                    >
+                                      <!-- Verifica si un estudiante tiene la propiedad bAsignado establecida en true y, si es así, genera una fila en una tabla HTML que muestra su información y un botón para eliminarlo-->
+                                      @if (estudiante.bAsignado) {
+                                        <tr>
+                                          <td>
+                                            {{ rowIndex + 1 }}
+                                          </td>
+                                          <td>
+                                            {{ estudiante.cPersPaterno }}
+                                            {{ estudiante.cPersMaterno }}
+                                          </td>
+                                          <td>
+                                            {{ estudiante?.cPersNombre }}
+                                          </td>
+                                          <td>
+                                            <!-- <p-button icon="pi pi-reply" [rounded]="
                                                                                                 true
                                                                                             " [text]="
                                                                                                 true
@@ -429,503 +591,310 @@
                                                                                                     estudiante
                                                                                                 )
                                                                                             " /> -->
-                                                                                        <p-button
-                                                                                            icon="pi pi-trash"
-                                                                                            [rounded]="
-                                                                                                true
-                                                                                            "
-                                                                                            [text]="
-                                                                                                true
-                                                                                            "
-                                                                                            severity="danger"
-                                                                                            (onClick)="
-                                                                                                eliminarEstudiante(
-                                                                                                    estudiante
-                                                                                                )
-                                                                                            "
-                                                                                        />
-                                                                                    </td>
-                                                                                </tr>
-                                                                            }
-                                                                        </ng-template>
+                                            <p-button
+                                              icon="pi pi-trash"
+                                              [rounded]="true"
+                                              [text]="true"
+                                              severity="danger"
+                                              (onClick)="eliminarEstudiante(estudiante)"
+                                            />
+                                          </td>
+                                        </tr>
+                                      }
+                                    </ng-template>
 
-                                                                        <!-- Este bloque define un template para mostrar un mensaje personalizado
+                                    <!-- Este bloque define un template para mostrar un mensaje personalizado
                                                                             cuando no hay datos disponibles en la tabla -->
-                                                                        <ng-template
-                                                                            pTemplate="emptymessage"
-                                                                            let-columns
-                                                                        >
-                                                                            <tr>
-                                                                                <td
-                                                                                    [attr.colspan]="
-                                                                                        4
-                                                                                    "
-                                                                                >
-                                                                                    No
-                                                                                    se
-                                                                                    encontraron
-                                                                                    resultados.
-                                                                                </td>
-                                                                            </tr>
-                                                                        </ng-template>
-                                                                    </p-table>
-                                                                </div>
-                                                            </p-accordionTab>
-                                                        }
-                                                    </p-accordion>
-                                                </div>
-                                            </div>
-                                        </p-accordionTab>
-                                    }
-                                </p-accordion>
+                                    <ng-template pTemplate="emptymessage" let-columns>
+                                      <tr>
+                                        <td [attr.colspan]="4">No se encontraron resultados.</td>
+                                      </tr>
+                                    </ng-template>
+                                  </p-table>
+                                </div>
+                              </p-accordionTab>
                             }
+                          </p-accordion>
                         </div>
-                        <div class="col-12 md:col-7">
-                            <!-- Grupo de elementos alineados a la izquierda -->
-                            <p-toolbar>
-                                <div class="p-toolbar-group-start">
-                                    <h4>
-                                        <div class="text-primary font-bold">
-                                            <i class="pi pi-pen-to-square"></i
-                                            >&nbsp; Desarrollo de la tarea
-                                        </div>
-                                    </h4>
-                                </div>
-                                <div class="p-toolbar-group-end">
-                                    <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Tarea" tooltipPosition="top"
+                      </div>
+                    </p-accordionTab>
+                  }
+                </p-accordion>
+              }
+            </div>
+            <div class="col-12 md:col-7">
+              <!-- Grupo de elementos alineados a la izquierda -->
+              <p-toolbar>
+                <div class="p-toolbar-group-start">
+                  <h4>
+                    <div class="text-primary font-bold">
+                      <i class="pi pi-pen-to-square"></i>&nbsp; Desarrollo de la tarea
+                    </div>
+                  </h4>
+                </div>
+                <div class="p-toolbar-group-end">
+                  <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Tarea" tooltipPosition="top"
                                     [rounded]="true" [text]="true" severity="danger" /> -->
-                                </div>
-                            </p-toolbar>
-                            <p-divider></p-divider>
-                            @if (this.tareaAsignar !== null) {
-                                <div [hidden]="this.tareaAsignar">
-                                    @if (!estudianteSeleccionado) {
-                                        <div align="center">
-                                            <span
-                                                class="pi pi-folder-open"
-                                                style="font-size: 8rem"
-                                            ></span>
-                                        </div>
-                                        <p class="text-center mt-2">
-                                            Seleccione un estudiante para ver el
-                                            desarrollo de su tarea
-                                        </p>
-                                    } @else {
-                                        <p-message
-                                            severity="info"
-                                            [text]="
-                                                'Estudiante: ' +
-                                                estudianteSeleccionado.cPersNombre +
-                                                ' ' +
-                                                estudianteSeleccionado.cPersPaterno +
-                                                ' ' +
-                                                estudianteSeleccionado.cPersMaterno
-                                            "
-                                            styleClass="p-mr-2 w-full"
-                                        ></p-message>
-                                        <p-divider></p-divider>
-                                        <p-fieldset
-                                            [legend]="cTareaTitulo"
-                                            [toggleable]="true"
-                                        >
-                                            <div
-                                                class="grid"
-                                                *ngIf="
-                                                    cTareaEstudianteUrlEstudiante
-                                                "
-                                            >
-                                                @if (
-                                                    cTareaEstudianteUrlEstudiante.length
-                                                ) {
-                                                    <div class="col-12">
-                                                        <label
-                                                            for=""
-                                                            class="mt-2"
-                                                            >Lista de
-                                                            Adjuntos</label
-                                                        >
+                </div>
+              </p-toolbar>
+              <p-divider></p-divider>
+              @if (this.tareaAsignar !== null) {
+                <div [hidden]="this.tareaAsignar">
+                  @if (!estudianteSeleccionado) {
+                    <div align="center">
+                      <span class="pi pi-folder-open" style="font-size: 8rem"></span>
+                    </div>
+                    <p class="text-center mt-2">
+                      Seleccione un estudiante para ver el desarrollo de su tarea
+                    </p>
+                  } @else {
+                    <p-message
+                      severity="info"
+                      [text]="
+                        'Estudiante: ' +
+                        estudianteSeleccionado.cPersNombre +
+                        ' ' +
+                        estudianteSeleccionado.cPersPaterno +
+                        ' ' +
+                        estudianteSeleccionado.cPersMaterno
+                      "
+                      styleClass="p-mr-2 w-full"
+                    ></p-message>
+                    <p-divider></p-divider>
+                    <p-fieldset [legend]="cTareaTitulo" [toggleable]="true">
+                      <div class="grid" *ngIf="cTareaEstudianteUrlEstudiante">
+                        @if (cTareaEstudianteUrlEstudiante.length) {
+                          <div class="col-12">
+                            <label for="" class="mt-2">Lista de Adjuntos</label>
 
-                                                        @for (
-                                                            item of cTareaEstudianteUrlEstudiante;
-                                                            track item;
-                                                            let idx = $index
-                                                        ) {
-                                                            <p-inputGroup
-                                                                class="mt-1"
-                                                            >
-                                                                <p-inputGroupAddon>
-                                                                    @switch (
-                                                                        item.type
-                                                                    ) {
-                                                                        @case (
-                                                                            1
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-upload"
-                                                                                style="
-                                                                                    color: #333437;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                        @case (
-                                                                            2
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-link"
-                                                                                style="
-                                                                                    color: #333437;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                        @case (
-                                                                            3
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-youtube"
-                                                                                style="
-                                                                                    color: #c4302b;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                        @case (
-                                                                            4
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-folder"
-                                                                                style="
-                                                                                    color: #ffd04b;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                    }
-                                                                </p-inputGroupAddon>
-                                                                <input
-                                                                    type="text"
-                                                                    pInputText
-                                                                    [placeholder]="
-                                                                        item.name
-                                                                    "
-                                                                    disabled
-                                                                />
-                                                                <button
-                                                                    type="button"
-                                                                    pButton
-                                                                    icon="pi pi-eye"
-                                                                    (click)="
-                                                                        goLinkDocumento(
-                                                                            item.ruta
-                                                                        )
-                                                                    "
-                                                                    class="p-button-info"
-                                                                >
-                                                                    &nbsp;
-                                                                </button>
-                                                            </p-inputGroup>
-                                                        }
-                                                    </div>
-                                                } @else {
-                                                    <p class="text-danger">
-                                                        Todavía el estudiante no
-                                                        ha entregado su tarea
-                                                    </p>
-                                                }
-                                            </div>
-                                        </p-fieldset>
-                                        <p-divider></p-divider>
-                                        <p-fieldset
-                                            legend="Calificación"
-                                            [toggleable]="true"
-                                        >
-                                            <div class="grid">
-                                                <div class="col-12">
-                                                    <p-inputGroup>
-                                                        <p-inputGroupAddon
-                                                            >Escala de
-                                                            calificación</p-inputGroupAddon
-                                                        >
-                                                        <p-dropdown
-                                                            [(ngModel)]="
-                                                                iEscalaCalifId
-                                                            "
-                                                            [options]="
-                                                                escalaCalificaciones
-                                                            "
-                                                            optionValue="iEscalaCalifId"
-                                                            optionLabel="cEscalaCalifNombre"
-                                                            placeholder="Seleccione calificación"
-                                                            [style]="{
-                                                                width: '100%',
-                                                            }"
-                                                        ></p-dropdown>
-                                                    </p-inputGroup>
-                                                </div>
-                                                <div class="col-12">
-                                                    <p-inputGroup>
-                                                        <p-inputGroupAddon>
-                                                            Conclusión
-                                                            Descriptiva
-                                                        </p-inputGroupAddon>
-                                                        <textarea
-                                                            pInputText
-                                                            [(ngModel)]="
-                                                                cTareaEstudianteComentarioDocente
-                                                            "
-                                                        ></textarea>
-                                                    </p-inputGroup>
-                                                </div>
-                                            </div>
-                                        </p-fieldset>
-                                        <div class="grid">
-                                            <div
-                                                class="col-12 text-right text-center"
-                                            >
-                                                <p-toast></p-toast>
-                                                <p-button
-                                                    severity="success"
-                                                    label="Guardar"
-                                                    icon="pi pi-plus"
-                                                    iconPos="left"
-                                                    (onClick)="
-                                                        guardarTareaEstudiantesxDocente()
-                                                    "
-                                                />
-                                            </div>
-                                        </div>
+                            @for (
+                              item of cTareaEstudianteUrlEstudiante;
+                              track item;
+                              let idx = $index
+                            ) {
+                              <p-inputGroup class="mt-1">
+                                <p-inputGroupAddon>
+                                  @switch (item.type) {
+                                    @case (1) {
+                                      <i class="pi pi-upload" style="color: #333437"></i>
                                     }
-                                </div>
-                                <div [hidden]="!this.tareaAsignar">
-                                    <!-- {{grupoSeleccionadoCalificar  | json}} -->
-                                    @if (!grupoSeleccionadoCalificar.length) {
-                                        <div align="center">
-                                            <span
-                                                class="pi pi-folder-open"
-                                                style="font-size: 8rem"
-                                            ></span>
-                                        </div>
-                                        <p class="text-center mt-2">
-                                            Seleccione un grupo para ver el
-                                            desarrollo de su tarea
-                                        </p>
-                                    } @else {
-                                        <p-message
-                                            severity="info"
-                                            [text]="
-                                                grupoSeleccionadoCalificar[0]
-                                                    .cTareaGrupoNombre
-                                            "
-                                            styleClass="p-mr-2 w-full"
-                                        ></p-message>
-                                        <div class="mt-1">
-                                            <b>Integrantes:</b>
-                                        </div>
-                                        @for (
-                                            item of grupoSeleccionadoCalificar[0]
-                                                .json_estudiantes;
-                                            track item
-                                        ) {
-                                            @if (item.bAsignado) {
-                                                <div>
-                                                    - {{ item.cPersNombre }}
-                                                    {{ item.cPersPaterno }}
-                                                    {{ item.cPersMaterno }}
-                                                </div>
-                                            }
-                                            <!-- <p-message severity="info"
+                                    @case (2) {
+                                      <i class="pi pi-link" style="color: #333437"></i>
+                                    }
+                                    @case (3) {
+                                      <i class="pi pi-youtube" style="color: #c4302b"></i>
+                                    }
+                                    @case (4) {
+                                      <i class="pi pi-folder" style="color: #ffd04b"></i>
+                                    }
+                                  }
+                                </p-inputGroupAddon>
+                                <input type="text" pInputText [placeholder]="item.name" disabled />
+                                <button
+                                  type="button"
+                                  pButton
+                                  icon="pi pi-eye"
+                                  (click)="goLinkDocumento(item.ruta)"
+                                  class="p-button-info"
+                                >
+                                  &nbsp;
+                                </button>
+                              </p-inputGroup>
+                            }
+                          </div>
+                        } @else {
+                          <p class="text-danger">Todavía el estudiante no ha entregado su tarea</p>
+                        }
+                      </div>
+                    </p-fieldset>
+                    <p-divider></p-divider>
+                    <p-fieldset legend="Calificación" [toggleable]="true">
+                      <div class="grid">
+                        <!-- Deshabilitado x el momento de calificar estudiante -->
+                        <!-- <div class="col-12">
+                          <p-inputGroup>
+                            <p-inputGroupAddon>Escala de calificación</p-inputGroupAddon>
+                            <p-dropdown
+                              [(ngModel)]="iEscalaCalifId"
+                              [options]="escalaCalificaciones"
+                              optionValue="iEscalaCalifId"
+                              optionLabel="cEscalaCalifNombre"
+                              placeholder="Seleccione calificación"
+                              [style]="{
+                                width: '100%',
+                              }"
+                            ></p-dropdown>
+                          </p-inputGroup>
+                        </div> -->
+                        <div class="col-12">
+                          <p-inputGroup>
+                            <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
+                            <textarea
+                              pInputText
+                              [(ngModel)]="cTareaEstudianteComentarioDocente"
+                            ></textarea>
+                          </p-inputGroup>
+                        </div>
+                      </div>
+                    </p-fieldset>
+                    <div class="grid">
+                      <div class="col-12 text-right text-center">
+                        <p-toast></p-toast>
+                        <p-button
+                          severity="success"
+                          label="Guardar"
+                          icon="pi pi-plus"
+                          iconPos="left"
+                          (onClick)="guardarTareaEstudiantesxDocente()"
+                        />
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div [hidden]="!this.tareaAsignar">
+                  <!-- {{grupoSeleccionadoCalificar  | json}} -->
+                  @if (!grupoSeleccionadoCalificar.length) {
+                    <div align="center">
+                      <span class="pi pi-folder-open" style="font-size: 8rem"></span>
+                    </div>
+                    <p class="text-center mt-2">
+                      Seleccione un grupo para ver el desarrollo de su tarea
+                    </p>
+                  } @else {
+                    <p-message
+                      severity="info"
+                      [text]="grupoSeleccionadoCalificar[0].cTareaGrupoNombre"
+                      styleClass="p-mr-2 w-full"
+                    ></p-message>
+                    <div class="mt-1">
+                      <b>Integrantes:</b>
+                    </div>
+                    @for (item of grupoSeleccionadoCalificar[0].json_estudiantes; track item) {
+                      @if (item.bAsignado) {
+                        <div>
+                          - {{ item.cPersNombre }}
+                          {{ item.cPersPaterno }}
+                          {{ item.cPersMaterno }}
+                        </div>
+                      }
+                      <!-- <p-message severity="info"
                                 [text]="'Estudiante: '+ item.cPersNombre +' '+ item.cPersPaterno +' '+ item.cPersMaterno"
                                 styleClass="p-mr-2"></p-message> -->
-                                        }
-                                        <p-divider></p-divider>
-                                        <!--Permite que el campo se pueda expandir o contraer-->
-                                        <p-fieldset
-                                            [legend]="cTareaTitulo"
-                                            [toggleable]="true"
-                                        >
-                                            <div class="grid">
-                                                @if (cTareaGrupoUrl.length) {
-                                                    <div class="col-12">
-                                                        <label
-                                                            for=""
-                                                            class="mt-2"
-                                                            >Lista de
-                                                            Adjuntos</label
-                                                        >
+                    }
+                    <p-divider></p-divider>
+                    <!--Permite que el campo se pueda expandir o contraer-->
+                    <p-fieldset [legend]="cTareaTitulo" [toggleable]="true">
+                      <div class="grid">
+                        @if (cTareaGrupoUrl.length) {
+                          <div class="col-12">
+                            <label for="" class="mt-2">Lista de Adjuntos</label>
 
-                                                        @for (
-                                                            item of cTareaGrupoUrl;
-                                                            track item;
-                                                            let idx = $index
-                                                        ) {
-                                                            <p-inputGroup
-                                                                class="mt-1"
-                                                            >
-                                                                <p-inputGroupAddon>
-                                                                    @switch (
-                                                                        item.type
-                                                                    ) {
-                                                                        @case (
-                                                                            1
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-upload"
-                                                                                style="
-                                                                                    color: #333437;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                        @case (
-                                                                            2
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-link"
-                                                                                style="
-                                                                                    color: #333437;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                        @case (
-                                                                            3
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-youtube"
-                                                                                style="
-                                                                                    color: #c4302b;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                        @case (
-                                                                            4
-                                                                        ) {
-                                                                            <i
-                                                                                class="pi pi-folder"
-                                                                                style="
-                                                                                    color: #ffd04b;
-                                                                                "
-                                                                            ></i>
-                                                                        }
-                                                                    }
-                                                                    <!-- Elemento de adición para el grupo de entrada -->
-                                                                </p-inputGroupAddon>
-                                                                <input
-                                                                    type="text"
-                                                                    pInputText
-                                                                    [placeholder]="
-                                                                        item.name
-                                                                    "
-                                                                    disabled
-                                                                />
-                                                                <button
-                                                                    type="button"
-                                                                    pButton
-                                                                    icon="pi pi-eye"
-                                                                    (click)="
-                                                                        goLinkDocumento(
-                                                                            item.ruta
-                                                                        )
-                                                                    "
-                                                                    class="p-button-info"
-                                                                >
-                                                                    &nbsp;
-                                                                </button>
-                                                            </p-inputGroup>
-                                                        }
-                                                    </div>
-                                                    <!-- Si 'cTareaGrupoUrl' está vacío, muestra un mensaje de error -->
-                                                } @else {
-                                                    <p class="text-danger">
-                                                        Todavía el grupo no ha
-                                                        entregado su tarea
-                                                    </p>
-                                                }
-                                            </div>
-                                        </p-fieldset>
-                                        <p-divider></p-divider>
-                                        <p-fieldset
-                                            legend="Calificación"
-                                            [toggleable]="true"
-                                        >
-                                            <div class="grid">
-                                                <div class="col-12">
-                                                    <p-inputGroup>
-                                                        <!-- Componente de grupo de entrada que permite incluir elementos de entrada relacionados de manera conjunta -->
-                                                        <p-inputGroupAddon
-                                                            >Escala de
-                                                            calificación</p-inputGroupAddon
-                                                        >
-                                                        <p-dropdown
-                                                            [(ngModel)]="
-                                                                iEscalaCalifId
-                                                            "
-                                                            [options]="
-                                                                escalaCalificaciones
-                                                            "
-                                                            optionValue="iEscalaCalifId"
-                                                            optionLabel="cEscalaCalifNombre"
-                                                            placeholder="Seleccione calificación"
-                                                            [style]="{
-                                                                width: '100%',
-                                                            }"
-                                                        ></p-dropdown>
-                                                    </p-inputGroup>
-                                                </div>
-                                                <div class="col-12">
-                                                    <p-inputGroup>
-                                                        <!-- p-inputGroupAddon: Un componente de PrimeNG que se usa para agregar elementos al principio o al final de un grupo de entrada. -->
-                                                        <p-inputGroupAddon>
-                                                            Conclusión
-                                                            Descriptiva
-                                                        </p-inputGroupAddon>
-                                                        <!-- textarea: Un elemento de formulario de HTML que permite a los usuarios introducir texto en múltiples líneas. -->
-                                                        <textarea
-                                                            pInputText
-                                                            [(ngModel)]="
-                                                                cTareaGrupoComentarioDocente
-                                                            "
-                                                        ></textarea>
-                                                    </p-inputGroup>
-                                                </div>
-                                            </div>
-                                        </p-fieldset>
-                                        <div class="grid">
-                                            <div
-                                                class="col-12 text-right text-center"
-                                            >
-                                                <p-toast></p-toast>
-                                                <!-- Bonton guardarTareaCabeceraGruposxDocente -->
-                                                <p-button
-                                                    severity="success"
-                                                    label="Guardar"
-                                                    icon="pi pi-plus"
-                                                    iconPos="left"
-                                                    (onClick)="
-                                                        guardarTareaCabeceraGruposxDocente()
-                                                    "
-                                                    type="button"
-                                                ></p-button>
-                                            </div>
-                                        </div>
+                            @for (item of cTareaGrupoUrl; track item; let idx = $index) {
+                              <p-inputGroup class="mt-1">
+                                <p-inputGroupAddon>
+                                  @switch (item.type) {
+                                    @case (1) {
+                                      <i class="pi pi-upload" style="color: #333437"></i>
                                     }
-                                </div>
+                                    @case (2) {
+                                      <i class="pi pi-link" style="color: #333437"></i>
+                                    }
+                                    @case (3) {
+                                      <i class="pi pi-youtube" style="color: #c4302b"></i>
+                                    }
+                                    @case (4) {
+                                      <i class="pi pi-folder" style="color: #ffd04b"></i>
+                                    }
+                                  }
+                                  <!-- Elemento de adición para el grupo de entrada -->
+                                </p-inputGroupAddon>
+                                <input type="text" pInputText [placeholder]="item.name" disabled />
+                                <button
+                                  type="button"
+                                  pButton
+                                  icon="pi pi-eye"
+                                  (click)="goLinkDocumento(item.ruta)"
+                                  class="p-button-info"
+                                >
+                                  &nbsp;
+                                </button>
+                              </p-inputGroup>
                             }
+                          </div>
+                          <!-- Si 'cTareaGrupoUrl' está vacío, muestra un mensaje de error -->
+                        } @else {
+                          <p class="text-danger">Todavía el grupo no ha entregado su tarea</p>
+                        }
+                      </div>
+                    </p-fieldset>
+                    <p-divider></p-divider>
+                    <p-fieldset legend="Calificación" [toggleable]="true">
+                      <div class="grid">
+                        <!-- <div class="col-12">
+                          <p-inputGroup>
+                            <p-inputGroupAddon>Escala de calificación</p-inputGroupAddon>
+                            <p-dropdown
+                              [(ngModel)]="iEscalaCalifId"
+                              [options]="escalaCalificaciones"
+                              optionValue="iEscalaCalifId"
+                              optionLabel="cEscalaCalifNombre"
+                              placeholder="Seleccione calificación"
+                              [style]="{
+                                width: '100%',
+                              }"
+                            ></p-dropdown>
+                          </p-inputGroup>
+                        </div> -->
+                        <div class="col-12">
+                          <p-inputGroup>
+                            <!-- p-inputGroupAddon: Un componente de PrimeNG que se usa para agregar elementos al principio o al final de un grupo de entrada. -->
+                            <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
+                            <!-- textarea: Un elemento de formulario de HTML que permite a los usuarios introducir texto en múltiples líneas. -->
+                            <textarea
+                              pInputText
+                              [(ngModel)]="cTareaGrupoComentarioDocente"
+                            ></textarea>
+                          </p-inputGroup>
                         </div>
+                      </div>
+                    </p-fieldset>
+                    <div class="grid">
+                      <div class="col-12 text-right text-center">
+                        <p-toast></p-toast>
+                        <!-- Bonton guardarTareaCabeceraGruposxDocente -->
+                        <p-button
+                          severity="success"
+                          label="Guardar"
+                          icon="pi pi-plus"
+                          iconPos="left"
+                          (onClick)="guardarTareaCabeceraGruposxDocente()"
+                          type="button"
+                        ></p-button>
+                      </div>
                     </div>
+                  }
                 </div>
-            </p-tabPanel>
-        }
-    </p-tabView>
-    <!--Input property que pasa el valor de 'iTareaId' al componente hijo 'app-form-grupo'.-->
-    <app-form-grupo
-        [iTareaId]="iTareaId"
-        [data]="grupoSeleccionado"
-        [showModal]="showModal"
-        (accionBtnItem)="accionBtnItem($event)"
-    ></app-form-grupo>
+              }
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+    }
+  </p-tabView>
+  <!--Input property que pasa el valor de 'iTareaId' al componente hijo 'app-form-grupo'.-->
+  <app-form-grupo
+    [iTareaId]="iTareaId"
+    [data]="grupoSeleccionado"
+    [showModal]="showModal"
+    (accionBtnItem)="accionBtnItem($event)"
+  ></app-form-grupo>
 </section>
 <!-- Input que pasa una lista de grupos disponibles para la transferencia-->
 <app-form-transferir-grupo
-    [showModalTransferir]="showModalTransferir"
-    [grupos]="grupos"
-    [iTareaEstudianteId]="iTareaEstudianteIdGrupo"
-    [iEstudianteId]="iEstudianteIdGrupo"
-    (accionBtnItem)="accionBtnItem($event)"
+  [showModalTransferir]="showModalTransferir"
+  [grupos]="grupos"
+  [iTareaEstudianteId]="iTareaEstudianteIdGrupo"
+  [iEstudianteId]="iEstudianteIdGrupo"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-form-transferir-grupo>
 <p-confirmDialog></p-confirmDialog>

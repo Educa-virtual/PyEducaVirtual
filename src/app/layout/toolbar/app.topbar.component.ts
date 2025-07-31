@@ -42,6 +42,8 @@ export class AppTopBarComponent implements OnInit {
 
     perfiles = []
     selectedPerfil: string
+    mostrarBanderines: boolean = false
+    mostrarBanderinesMoquegua: boolean = false
 
     modulos = []
     selectedModulo: string
@@ -85,6 +87,17 @@ export class AppTopBarComponent implements OnInit {
             // this.notificacionEstudiante(user.iEstudianteId)
             console.log(1)
         }
+        //Bandarines por fiestas patrias
+        const hoy = new Date()
+        const limite_banderin = new Date(hoy.getFullYear(), 6, 31) // 31 de julio
+        const limite_banderin_moquegua = new Date(hoy.getFullYear(), 10, 30) // 31 de julio
+        this.mostrarBanderines =
+            hoy.getMonth() === limite_banderin.getMonth() &&
+            hoy.getFullYear() === limite_banderin.getFullYear()
+
+        this.mostrarBanderinesMoquegua =
+            hoy.getMonth() === limite_banderin_moquegua.getMonth() &&
+            hoy.getFullYear() === limite_banderin_moquegua.getFullYear()
     }
 
     changeModulo(value) {

@@ -35,6 +35,13 @@ const routes: Routes = [
                 './gestion-usuarios/lista-usuarios/lista-usuarios.component'
             ).then((m) => m.ListaUsuariosComponent),
     },
+    {
+        path: 'logro-alcanzado',
+        loadComponent: () =>
+            import(
+                '../ere/evaluaciones/logro-alcanzado/logro-alcanzado.component'
+            ).then((m) => m.LogroAlcanzadoComponent),
+    },
     /*{
         path: 'gestion-usuarios',
         loadComponent: () =>

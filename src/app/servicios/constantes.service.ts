@@ -208,6 +208,29 @@ const administrador = [
                 routerLink: ['/administrador/gestion-usuarios'],
             },
             {
+                label: 'Informes y Estadísticas',
+                icon: 'pi pi-chart-line',
+                items: [
+                    {
+                        label: 'Logros Alcanzados',
+                        icon: 'pi pi-trophy',
+                        routerLink: ['/administrador/logro-alcanzado'],
+                    },
+                ],
+            },
+
+            // {
+            //     label: 'Informes y Estadísticas',
+            //     icon: 'pi pi-chart-line',
+            //     items: [
+            //         {
+            //             label: 'Logros Alcanzados',
+            //             icon: 'pi pi-trophy',
+            //             routerLink: ['/ere/logro-alcanzado'],
+            //         },
+            //     ],
+            // },
+            {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],

@@ -461,6 +461,11 @@ const administracion = [
                         routerLink: ['/bienestar/recordario-fechas'],
                     },
                     {
+                        label: 'Seguimiento de bienestar',
+                        icon: 'pi pi-fw pi-eye',
+                        routerLink: ['/bienestar/seguimiento-bienestar'],
+                    },
+                    {
                         label: 'Informes y estadística',
                         icon: 'pi pi-fw pi-chart-line',
                         routerLink: ['/bienestar/informe-estadistico'],
@@ -628,6 +633,11 @@ const asistente_social = [
                 label: 'Recordatorios de cumpleaños',
                 icon: 'pi pi-fw pi-bell',
                 routerLink: ['/bienestar/recordario-fechas'],
+            },
+            {
+                label: 'Seguimiento de bienestar',
+                icon: 'pi pi-fw pi-eye',
+                routerLink: ['/bienestar/seguimiento-bienestar'],
             },
             {
                 label: 'Informes y estadística',

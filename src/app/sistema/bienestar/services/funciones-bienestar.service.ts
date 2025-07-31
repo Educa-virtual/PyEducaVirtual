@@ -63,6 +63,26 @@ export class FuncionesBienestarService implements OnDestroy {
         }
     }
 
+    formatearFormNumero(value: any) {
+        if (!value || isNaN(Number(value))) {
+            value = null
+        } else {
+            value = +value
+        }
+        return value
+    }
+
+    formatearFormBoolean(value: any) {
+        if (!value || isNaN(Number(value))) value = 0
+        return value == 1 ? true : false
+    }
+
+    formaterarFormFecha(value: any) {
+        let fecha = new Date(value + 'T00:00:00')
+        if (!value) fecha = null
+        return fecha
+    }
+
     /**
      * Funcion para guardar los datos de un grupo de controles en un control de json
      * @param form El nombre del formulario

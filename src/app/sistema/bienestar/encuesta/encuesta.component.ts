@@ -179,7 +179,6 @@ export class EncuestaComponent implements OnInit {
                 this.sexos = this.datosEncuestas.getSexos()
                 this.estados = this.datosEncuestas.getEstados()
                 this.datosEncuestas.getNivelesGrados(data?.nivel_grados)
-                this.datosEncuestas.getAreas(data?.areas)
                 if (!this.es_especialista) {
                     const nivel_tipo =
                         this.nivel_tipos && this.nivel_tipos.length > 0
@@ -244,10 +243,6 @@ export class EncuestaComponent implements OnInit {
     filterNivelesGrados(iNivelTipoId: number) {
         this.nivel_grados =
             this.datosEncuestas.filterNivelesGrados(iNivelTipoId)
-    }
-
-    filterAreas(iNivelTipoId: number) {
-        this.areas = this.datosEncuestas.filterAreas(iNivelTipoId)
     }
 
     filterDistritos(iUgelId: number) {
@@ -594,7 +589,7 @@ export class EncuestaComponent implements OnInit {
         this.poblacion = [...this.poblacion, form]
         this.formEncuesta.get('poblacion')?.setValue(this.poblacion)
         this.formPoblacion.reset()
-        if (!this.es_especialista) {
+        if (!this.es_especialista && this.nivel_tipos && this.ies) {
             this.formPoblacion
                 .get('iNivelTipoId')
                 ?.setValue(this.nivel_tipos[0]['value'])
@@ -743,7 +738,10 @@ export class EncuestaComponent implements OnInit {
             },
         ]
 
-        if (!this.encuesta || this.encuesta?.iEstado === this.ESTADO_BORRADOR) {
+        if (
+            !this.encuesta ||
+            Number(this.encuesta?.iEstado) === this.ESTADO_BORRADOR
+        ) {
             this.columns_poblacion.push({
                 type: 'actions',
                 width: '20%',
@@ -781,7 +779,10 @@ export class EncuestaComponent implements OnInit {
             },
         ]
 
-        if (!this.encuesta || this.encuesta?.iEstado === this.ESTADO_BORRADOR) {
+        if (
+            !this.encuesta ||
+            Number(this.encuesta?.iEstado) === this.ESTADO_BORRADOR
+        ) {
             this.columns_permisos.push({
                 type: 'actions',
                 width: '20%',

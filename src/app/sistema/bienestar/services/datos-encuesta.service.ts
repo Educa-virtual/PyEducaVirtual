@@ -209,7 +209,7 @@ export class DatosEncuestaService implements OnDestroy {
     }
 
     filterDistritos(iUgelId: any) {
-        if (!iUgelId) return this.distritos
+        if (!iUgelId || !this.distritos) return this.distritos
         return this.distritos.filter((distrito: any) => {
             const pertenece_ugel = distrito.ugeles.find(
                 (ugel: any) => ugel.iUgelId === iUgelId
@@ -251,33 +251,10 @@ export class DatosEncuestaService implements OnDestroy {
     }
 
     filterNivelesGrados(iNivelTipoId: any) {
-        if (!iNivelTipoId) return null
+        if (!iNivelTipoId || !this.nivel_grados) return null
         return this.nivel_grados.filter((nivel_grado: any) => {
             if (nivel_grado.iNivelTipoId === iNivelTipoId) {
                 return nivel_grado
-            }
-            return null
-        })
-    }
-
-    getAreas(data: any) {
-        if (!this.areas && data) {
-            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
-            this.areas = items.map((area) => ({
-                value: area.iCursoId,
-                label: area.cCursoNombre,
-                iNivelTipoId: area.iNivelTipoId,
-            }))
-            return this.areas
-        }
-        return this.areas
-    }
-
-    filterAreas(iNivelTipoId: any) {
-        if (!iNivelTipoId) return null
-        return this.areas.filter((area: any) => {
-            if (area.iNivelTipoId === iNivelTipoId) {
-                return area
             }
             return null
         })
@@ -369,7 +346,7 @@ export class DatosEncuestaService implements OnDestroy {
         iUgelId: any
     ) {
         let ies_tmp: Array<object> = this.instituciones_educativas
-        if (!iNivelTipoId) {
+        if (!iNivelTipoId || !this.instituciones_educativas) {
             return null
         }
         if (iNivelTipoId) {

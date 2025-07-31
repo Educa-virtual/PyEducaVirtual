@@ -27,6 +27,7 @@ import { InformeFamiliaComponent } from './informe-estadistico/informe-familia/i
 import { InformeDiscapacidadComponent } from './informe-estadistico/informe-discapacidad/informe-discapacidad.component'
 import { InformeRecreacionComponent } from './informe-estadistico/informe-recreacion/informe-recreacion.component'
 import { InformeDemograficoComponent } from './informe-estadistico/informe-demografico/informe-demografico.component'
+import { SeguimientoBienestarComponent } from './seguimiento-bienestar/seguimiento-bienestar.component'
 
 const routes: Routes = [
     { path: 'gestion-fichas', component: GestionFichasComponent },
@@ -75,6 +76,7 @@ const routes: Routes = [
             { path: 'demografico', component: InformeDemograficoComponent },
         ],
     },
+    { path: 'seguimiento-bienestar', component: SeguimientoBienestarComponent },
 ]
 
 export class AppRoutingModule {}

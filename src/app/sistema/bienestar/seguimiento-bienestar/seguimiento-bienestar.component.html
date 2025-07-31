@@ -1,0 +1,346 @@
+<p-breadcrumb
+    class="max-w-full"
+    [model]="breadCrumbItems"
+    [home]="breadCrumbHome"
+/>
+
+<p-panel>
+    <ng-template pTemplate="header">
+        <span class="text-2xl text-uppercase"> Seguimiento de bienestar </span>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex justify-content-center">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                pButton
+                pTooltip="Registrar encuesta"
+                tooltipPosition="top"
+                (click)="agregarSeguimiento()"
+                severity="success"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="ml-2 hidden sm:block">Registrar</span>
+            </button>
+        </div>
+    </ng-template>
+
+    <div class="grid">
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Tipo de seguimiento </p-inputGroupAddon>
+                <p-dropdown
+                    #filtro_tipo
+                    [options]="tipos_seguimiento"
+                    [showClear]="false"
+                    placeholder="Seleccione un tipo de seguimiento"
+                    styleClass="group-element"
+                    appendTo="body"
+                    (onChange)="filtrarTabla()"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+                <input
+                    #filtro
+                    type="text"
+                    pInputText
+                    (input)="filtrarTabla()"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
+
+    <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="seguimientos_filtrados"
+        (accionBtnItem)="accionBnt($event)"
+        [actions]="accionesTabla"
+        [showCaption]="false"
+    />
+</p-panel>
+
+<p-dialog
+    header="Seguimiento"
+    [(visible)]="visibleDialog"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onClose)="clearForm()"
+>
+    <ng-content>
+        <p-messages severity="info" *ngIf="!seguimiento_bloqueado">
+            <ng-template pTemplate>
+                Puede buscar a la persona por su documento de identidad, al
+                realizar la búsqueda se completará el campo de datos de la
+                persona. Para proceder debe llenar todos los campos requeridos
+                (*).
+            </ng-template>
+        </p-messages>
+        <form [formGroup]="formSeguimiento">
+            <div class="grid p-fluid mt-3">
+                <div class="col-12 md:col-6">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Tipo de seguimiento *
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="tipos_seguimiento"
+                            formControlName="iTipoSeguimId"
+                            filter="false"
+                            showClear="false"
+                            appendTo="body"
+                            placeholder="Seleccione"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                            [readonly]="seguimiento_registrado"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-inputGroup>
+                        <p-inputGroupAddon> Prioridad * </p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="prioridades"
+                            formControlName="iPrioridad"
+                            filter="false"
+                            showClear="false"
+                            appendTo="body"
+                            placeholder="Seleccione"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            <span>Fecha *</span>
+                        </p-inputGroupAddon>
+                        <p-calendar
+                            formControlName="dSeguimFecha"
+                            iconDisplay="input"
+                            showIcon="true"
+                            appendTo="body"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            <span>Nivel Tipo *</span>
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iNivelTipoId"
+                            [options]="nivel_tipos"
+                            placeholder="Seleccione"
+                            [showClear]="false"
+                            [filter]="true"
+                            appendTo="body"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                            [readonly]="seguimiento_registrado"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Institución *</span>
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iSedeId"
+                            [options]="ies"
+                            placeholder="Seleccione"
+                            [showClear]="false"
+                            [filter]="true"
+                            appendTo="body"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                            [readonly]="seguimiento_registrado"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon
+                            >Tipo de Documento *</p-inputGroupAddon
+                        >
+                        <p-dropdown
+                            formControlName="iTipoIdentId"
+                            [options]="tipos_documentos"
+                            placeholder="Tipo de documento"
+                            [showClear]="false"
+                            [filter]="true"
+                            appendTo="body"
+                            [style]="{ flex: '1', width: '100%' }"
+                            styleClass="group-element"
+                            [readonly]="seguimiento_registrado"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <p-button
+                                *ngIf="
+                                    !seguimiento_bloqueado &&
+                                    !seguimiento_registrado
+                                "
+                                size="small"
+                                label="Buscar"
+                                styleClass="p-button-primary"
+                                (onClick)="buscarPersona()"
+                                severity="success"
+                            />
+                            Número de Documento *
+                        </p-inputGroupAddon>
+                        <p-inputMask
+                            formControlName="cPersDocumento"
+                            [maxlength]="longitud_documento"
+                            [mask]="formato_documento"
+                            autoClear="false"
+                            slotChar=""
+                            styleClass="group-element"
+                            [readonly]="seguimiento_registrado"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span>Datos de la persona *</span>
+                        </p-inputGroupAddon>
+                        <input
+                            pInputText
+                            formControlName="cPersDatos"
+                            [style]="{ flex: '1', width: '100%' }"
+                            appenTo="body"
+                            class="group-element"
+                            readonly
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12">
+                    <p-inputGroup styleClass="vertical-group">
+                        <p-inputGroupAddon>
+                            <span
+                                >Descripción opcional (hasta 500
+                                caracteres)</span
+                            >
+                        </p-inputGroupAddon>
+                        <textarea
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            formControlName="cSeguimDescripcion"
+                            pInputTextarea
+                            placeholder="Especifique una breve descripción"
+                            [rows]="3"
+                            class="group-element"
+                            maxlength="500"
+                            [style.minHeight]="3"
+                            [style.maxHeight]="6"
+                            [cdkAutosizeMinRows]="3 + 1.5"
+                            [cdkAutosizeMaxRows]="6"
+                        ></textarea>
+                    </p-inputGroup>
+                </div>
+                @if (seguimiento_bloqueado) {
+                    <div class="col-12">
+                        <p-card>
+                            <a href="#" class="p-button-link p-button-text"
+                                >Descargar</a
+                            >
+                        </p-card>
+                    </div>
+                } @else {
+                    <div class="col-12">
+                        <p-inputGroup styleClass="vertical-group">
+                            <p-inputGroupAddon>
+                                <span
+                                    >Cargar ficha de seguimiento (PDF máximo
+                                    10MB) *</span
+                                >
+                            </p-inputGroupAddon>
+                            <p-fileUpload
+                                name="cSeguimArchivo"
+                                (onUpload)="handleArchivo($event)"
+                                [multiple]="false"
+                                accept=".pdf"
+                                fileLimit="1"
+                                invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
+                                invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
+                                invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
+                                invalidFileTypeMessageDetail="el tipo de archivo permitido es: {0}."
+                                invalidFileLimitMessageDetail="solo debe subir {0} archivo."
+                                invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
+                                maxFileSize="10485760"
+                            >
+                            </p-fileUpload>
+                        </p-inputGroup>
+                    </div>
+                }
+            </div>
+        </form>
+
+        <div class="flex justify-content-end gap-2">
+            <p-button
+                icon="pi pi-left-arrow"
+                label="Cancelar"
+                (onClick)="salir()"
+                styleClass="p-button-secondary"
+            />
+            <p-button
+                *ngIf="!seguimiento_registrado && !seguimiento_bloqueado"
+                icon="pi pi-save"
+                label="Registrar"
+                (onClick)="guardarSeguimiento()"
+                styleClass="p-button-success"
+            />
+            <p-button
+                *ngIf="seguimiento_registrado && !seguimiento_bloqueado"
+                icon="pi pi-save"
+                label="Actualizar"
+                (onClick)="actualizarSeguimiento()"
+                styleClass="p-button-success"
+            />
+        </div>
+    </ng-content>
+</p-dialog>
+
+<p-dialog
+    header="Historial de Seguimiento"
+    [(visible)]="visibleDialogPersona"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <ng-content>
+        <br />
+        <div class="grid">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+                    <input
+                        #filtro_persona
+                        type="text"
+                        pInputText
+                        (input)="filtrarTablaPersona()"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+        <app-table-primeng
+            [columnas]="columnasTablaPersona"
+            [data]="seguimientos_persona_filtrados"
+            (accionBtnItem)="accionBnt($event)"
+            [actions]="accionesTablaPersona"
+            [showCaption]="false"
+        />
+    </ng-content>
+</p-dialog>
+
+<p-toast></p-toast>

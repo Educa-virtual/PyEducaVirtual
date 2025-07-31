@@ -85,6 +85,9 @@ export class GestionarEncuestasComponent implements OnInit {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
         this.breadCrumbItems = [
             {
+                label: 'Bienestar social',
+            },
+            {
                 label: 'Gestionar encuestas',
             },
         ]

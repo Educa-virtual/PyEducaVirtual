@@ -109,6 +109,27 @@ export const administradorDremo = [
             // },
             //reportesEre,
             {
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Recordatorios de cumpleaños',
+                        icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/bienestar/recordario-fechas'],
+                    },
+                    {
+                        label: 'Seguimiento de bienestar',
+                        icon: 'pi pi-fw pi-eye',
+                        routerLink: ['/bienestar/seguimiento-bienestar'],
+                    },
+                    {
+                        label: 'Informes y estadística',
+                        icon: 'pi pi-fw pi-chart-line',
+                        routerLink: ['/bienestar/informe-estadistico'],
+                    },
+                ],
+            },
+            {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
@@ -155,6 +176,11 @@ export const especialistaDremo = [
                         label: 'Recordatorios de cumpleaños',
                         icon: 'pi pi-fw pi-bell',
                         routerLink: ['/bienestar/recordario-fechas'],
+                    },
+                    {
+                        label: 'Seguimiento de bienestar',
+                        icon: 'pi pi-fw pi-eye',
+                        routerLink: ['/bienestar/seguimiento-bienestar'],
                     },
                     {
                         label: 'Informes y estadística',
@@ -216,6 +242,11 @@ export const especialistaUgel = [
                         label: 'Recordatorios de cumpleaños',
                         icon: 'pi pi-fw pi-bell',
                         routerLink: ['/bienestar/recordario-fechas'],
+                    },
+                    {
+                        label: 'Seguimiento de bienestar',
+                        icon: 'pi pi-fw pi-eye',
+                        routerLink: ['/bienestar/seguimiento-bienestar'],
                     },
                     {
                         label: 'Informes y estadística',

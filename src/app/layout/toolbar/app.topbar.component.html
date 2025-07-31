@@ -53,8 +53,18 @@
     </div>
 </div>
 <div class="banderines banderines-animado" *ngIf="mostrarBanderines"></div>
-
-<div class="liston-moquegua" *ngIf="mostrarBanderinesMoquegua"></div>
+<div
+    class="liston-moquegua banderines-animado"
+    *ngIf="mostrarBanderinesMoquegua"
+></div>
+<div
+    class="banderines_morado banderines-animado"
+    *ngIf="mostrarBanderinesMorado"
+></div>
+<div
+    class="banderines_navidad banderines-animado"
+    *ngIf="mostrarBanderinesNavidad"
+></div>
 
 <p-menu #menu [model]="items" [popup]="true" styleClass="w-29rem">
     <ng-template pTemplate="submenuheader" let-item>

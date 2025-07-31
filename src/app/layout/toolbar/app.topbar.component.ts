@@ -43,6 +43,8 @@ export class AppTopBarComponent implements OnInit {
     perfiles = []
     selectedPerfil: string
     mostrarBanderines: boolean = false
+    mostrarBanderinesMorado: boolean = false
+    mostrarBanderinesNavidad: boolean = false
     mostrarBanderinesMoquegua: boolean = false
 
     modulos = []
@@ -89,15 +91,21 @@ export class AppTopBarComponent implements OnInit {
         }
         //Bandarines por fiestas patrias
         const hoy = new Date()
-        const limite_banderin = new Date(hoy.getFullYear(), 6, 31) // 31 de julio
-        const limite_banderin_moquegua = new Date(hoy.getFullYear(), 10, 30) // 31 de julio
-        this.mostrarBanderines =
-            hoy.getMonth() === limite_banderin.getMonth() &&
-            hoy.getFullYear() === limite_banderin.getFullYear()
+        const limite_banderin = new Date(hoy.getFullYear(), 6) // 31 de julio
+        const limite_banderin_navidad = new Date(hoy.getFullYear(), 11) // 31 de Agosto
+        const limite_banderin_morado = new Date(hoy.getFullYear(), 9) // 31 de Octubre
+        const limite_banderin_moquegua = new Date(hoy.getFullYear(), 10) // 31 de Noviembre
+
+        this.mostrarBanderines = hoy.getMonth() === limite_banderin.getMonth()
 
         this.mostrarBanderinesMoquegua =
-            hoy.getMonth() === limite_banderin_moquegua.getMonth() &&
-            hoy.getFullYear() === limite_banderin_moquegua.getFullYear()
+            hoy.getMonth() === limite_banderin_moquegua.getMonth()
+
+        this.mostrarBanderinesNavidad =
+            hoy.getMonth() === limite_banderin_navidad.getMonth()
+
+        this.mostrarBanderinesMorado =
+            hoy.getMonth() === limite_banderin_morado.getMonth()
     }
 
     changeModulo(value) {

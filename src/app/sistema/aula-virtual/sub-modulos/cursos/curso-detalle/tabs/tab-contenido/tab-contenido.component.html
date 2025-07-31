@@ -1,138 +1,145 @@
 <div class="grid col">
-    <div class="card col-4 mr-2">
-        <app-toolbar-primeng
-            title="Lista de Semanas / Clases"
-        ></app-toolbar-primeng>
-        <div class="flex flex-column">
-            @if (contenidoSemanas.length > 0) {
-                <app-card-orderlist
-                    [data]="contenidosList"
-                    [inputSearch]="false"
-                    (datoSeleccionado)="mostrarDetalleSemana($event)"
-                >
-                </app-card-orderlist>
-                <p-divider></p-divider>
-            }
-            @if (!loadingContenidoSemanas && contenidoSemanas.length === 0) {
-                <div class="card">
-                    <app-no-data
-                        [showIcon]="'NO-DATA'"
-                        [mensaje]="'No hay lista de semanas'"
-                    ></app-no-data>
-                </div>
-            }
+  <div class="card col-4 mr-2">
+    <app-toolbar-primeng title="Sesiones de Aprendizaje"></app-toolbar-primeng>
+    @if (iPerfilId === DOCENTE) {
+      <div class="flex justify-content-end ml-auto mb-2 mx-4 mr-5">
+        <button
+          size="small"
+          icon="pi pi-plus"
+          label="Agregar Sesión de Aprendizaje"
+          [rounded]="true"
+          class="p-button-success"
+          pButton
+          pRipple
+          (click)="showModalSesionAprendizaje = true"
+        ></button>
+      </div>
+    }
+    <div class="flex flex-column">
+      @if (contenidoSemanas.length > 0) {
+        <app-card-orderlist
+          [data]="contenidoSemanas"
+          (datoSeleccionado)="obtenerActividadesxiContenidoSemId($event)"
+        >
+        </app-card-orderlist>
+        <p-divider></p-divider>
+      }
+      @if (contenidoSemanas.length === 0) {
+        <div class="card">
+          <app-no-data [showIcon]="'NO-DATA'" [mensaje]="'No hay lista de semanas'"></app-no-data>
         </div>
-
-        <p-menu #menuContenido [model]="accionesContenido" [popup]="true">
-            <ng-template pTemplate="item" let-item>
-                <a
-                    pRipple
-                    class="flex align-items-center gap-2 p-2 px-3 text-color"
-                >
-                    <span>
-                        {{ item.label }}
-                    </span>
-                </a>
-            </ng-template>
-        </p-menu>
-
-        <app-form-evaluacion
-            [showModalEvaluacion]="showModalEvaluacion"
-            [semanaEvaluacion]="semanaEvaluacion"
-            [tituloEvaluacion]="tituloEvaluacion"
-            [opcionEvaluacion]="opcionEvaluacion"
-            [iEvaluacionId]="iEvaluacionId"
-            (accionBtnItem)="accionBtnItem($event)"
-        ></app-form-evaluacion>
+      }
     </div>
-    <div class="card col">
-        <ng-container *ngIf="semanaSeleccionada">
-            <app-toolbar-primeng
-                title="{{ semanaSeleccionada.cContenidoSemNumero }} {{
-                    semanaSeleccionada.cContenidoSemTitulo
-                }}"
-            >
-                @if (iPerfilId === DOCENTE) {
-                    <div class="flex align-items-end justify-content-end mx-4">
-                        <button
-                            size="small"
-                            [rounded]="true"
-                            class="btn"
-                            pButton
-                            pRipple
-                            (click)="
-                                $event.stopPropagation();
-                                menuContenido.toggle($event)
-                            "
-                            ngClass="p-button-primary"
-                        >
-                            <i class="pi pi-plus"></i>
-                            &nbsp;Crear Actividad
-                        </button>
-                    </div>
-                }
-            </app-toolbar-primeng>
-        </ng-container>
-        <div class="grid" *ngIf="semanaSeleccionada">
-            <div class="col md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon>Tipo:</p-inputGroupAddon>
-                    <p-dropdown
-                        [options]="tipoActivadedes"
-                        styleClass="w-full"
-                        placeholder="Seleccione el tipo"
-                        optionValue="iActTipoId"
-                        optionLabel="cActTipoNombre"
-                        [(ngModel)]="iActTipoId"
-                        (onChange)="filtrarSemanaSeleccionada($event)"
-                    ></p-dropdown>
-                </p-inputGroup>
+
+    <p-menu #menuContenido [model]="accionesContenido" [popup]="true">
+      <ng-template pTemplate="item" let-item>
+        <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
+          <span>
+            {{ item.label }}
+          </span>
+        </a>
+      </ng-template>
+    </p-menu>
+  </div>
+  <div class="card col">
+    <ng-container *ngIf="datos">
+      <app-toolbar-primeng
+        [header]="datos.cTitulo + ':'"
+        [title]="datos.cContenidoSemTitulo"
+        [butons]="btnAccion"
+        [customStyle]="false"
+      >
+      </app-toolbar-primeng>
+    </ng-container>
+    <div class="grid mt-1" *ngIf="datos">
+      <div class="col md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Tipo:</p-inputGroupAddon>
+          <p-dropdown
+            [options]="tipoActivadedes"
+            styleClass="w-full"
+            placeholder="Seleccione el tipo"
+            optionValue="iActTipoId"
+            optionLabel="cActTipoNombre"
+            [(ngModel)]="iActTipoId"
+            (onChange)="filtrarSemanaSeleccionada($event)"
+          ></p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col md:col-6">
+        @if (iPerfilId === DOCENTE) {
+          <div class="flex justify-content-end mx-4 mr-5">
+            <div class="flex align-content-center">
+              <button
+                size="small"
+                icon="pi pi-plus"
+                label="Crear Actividad"
+                [rounded]="true"
+                class="p-button-success"
+                pButton
+                pRipple
+                (click)="$event.stopPropagation(); menuContenido.toggle($event)"
+              >
+                <!-- <i class="pi pi-plus"></i> -->
+                <!-- &nbsp;Crear Actividad -->
+              </button>
             </div>
-            <div class="col md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon
-                        ><i class="pi pi-search"></i
-                    ></p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscar nombre de la actividad"
-                    />
-                    <!--  [(ngModel)]="buscarText" -->
-                </p-inputGroup>
-            </div>
-        </div>
-
-        <div class="col">
-            <ng-container *ngIf="semanaSeleccionada">
-                <div class="text-primary text-lg font-bold pb-2">
-                    Detalle de Semana
-                    {{ semanaSeleccionada.cContenidoSemNumero }}
-                    <p-divider></p-divider>
-                </div>
-
-                <!-- <p class="mb-2"><strong>Tema:</strong> {{ semanaSeleccionada.cContenidoSemTitulo }}</p> -->
-
-                @for (fecha of semanaSeleccionada.fechas; track $index) {
-                    <!-- <h4 class="mt-3">{{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}</h4> -->
-
-                    <app-actividad-lista
-                        [actividades]="fecha.actividades"
-                        (actionSelected)="actionSelected($event)"
-                    >
-                    </app-actividad-lista>
-                }
-            </ng-container>
-            <!-- para mostrar cuando no tiene una semana seleccionado -->
-            <ng-container *ngIf="!semanaSeleccionada">
-                <app-no-data
-                    [showIcon]="'NO-DATA'"
-                    [mensaje]="
-                        'Debe seleccionar una semana de la lista para ver las actividades'
-                    "
-                ></app-no-data>
-                <!-- <p class="text-gray-500">Selecciona una semana para ver los detalles.</p> -->
-            </ng-container>
-        </div>
+          </div>
+        }
+      </div>
     </div>
+
+    <div class="col">
+      <ng-container *ngIf="semanaSeleccionada.length; else noData">
+        <div class="text-primary text-lg font-bold pb-2">
+          Detalle de Semana
+          <p-divider></p-divider>
+        </div>
+        @for (actividad of semanaSeleccionada; track $index) {
+          <app-actividad-lista [actividades]="actividad" (actionSelected)="actionSelected($event)">
+          </app-actividad-lista>
+        }
+      </ng-container>
+      <!-- para mostrar cuando no tiene una semana seleccionado -->
+      <ng-template #noData>
+        <app-no-data
+          [showIcon]="'NO-DATA'"
+          [mensaje]="'No hay actividades para esta sesión de aprendizaje'"
+        ></app-no-data>
+        <!-- <p class="text-gray-500">Selecciona una semana para ver los detalles.</p> -->
+      </ng-template>
+    </div>
+  </div>
 </div>
+
+<app-form-evaluacion
+  *ngIf="showModalEvaluacion"
+  [showModalEvaluacion]="showModalEvaluacion"
+  [semanaEvaluacion]="semanaEvaluacion"
+  [tituloEvaluacion]="tituloEvaluacion"
+  [opcionEvaluacion]="opcionEvaluacion"
+  [iEvaluacionId]="iEvaluacionId"
+  (accionCloseForm)="showModalEvaluacion = false"
+  (accionRefresh)="recargarData()"
+></app-form-evaluacion>
+
+<app-sesion-aprendizaje-form
+  *ngIf="showModalSesionAprendizaje"
+  [showModal]="showModalSesionAprendizaje"
+  [datosSesion]="datosSesion"
+  [accion]="accion"
+  [idSesion]="contenidoSemanas.length + 1"
+  (dataSesion)="guardarSesionDeAprendizaje($event)"
+  (editarSesion)="actualizarSesionDeAprendizaje($event)"
+  (accionCloseForm)="showModalSesionAprendizaje = false; datosSesion = null; accion = null"
+></app-sesion-aprendizaje-form>
+
+<app-tarea-form
+  *ngIf="showModalTarea"
+  [showModal]="showModalTarea"
+  [accionTarea]="accionTarea"
+  [semanaTarea]="semanaTarea"
+  [iTareaId]="iTareaId"
+  (accionCloseForm)="showModalTarea = false"
+  (accionRefresh)="recargarData()"
+></app-tarea-form>

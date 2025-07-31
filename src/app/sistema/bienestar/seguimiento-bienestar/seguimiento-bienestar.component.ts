@@ -173,7 +173,6 @@ export class SeguimientoBienestarComponent implements OnInit {
     this.formSeguimiento.get('iTipoSeguimId').valueChanges.subscribe(value => {
       this.obtenerTiposDocumento(value);
     });
-
     this.verSeguimientos();
   }
 
@@ -204,15 +203,14 @@ export class SeguimientoBienestarComponent implements OnInit {
   }
 
   obtenerTiposDocumento(tipo_seguimiento: any) {
+    this.tipos_documentos = this.tipos_documentos.filter((doc: any) => {
+      return doc.value !== 0;
+    });
     if (tipo_seguimiento === this.datosSeguimiento.SEGUIMIENTO_ESTUDIANTE) {
       this.tipos_documentos.unshift({
         value: 0,
         label: 'CODIGO DE ESTUDIANTE',
         longitud: 15,
-      });
-    } else {
-      this.tipos_documentos = this.tipos_documentos.filter((doc: any) => {
-        return doc.value !== 0;
       });
     }
   }
@@ -362,8 +360,8 @@ export class SeguimientoBienestarComponent implements OnInit {
         iSedeId: this.formSeguimiento.value.iSedeId,
         iTipoPers: this.formSeguimiento.value.iTipoSeguimId,
         cEstCodigo: tipo_doc === 0 ? this.formSeguimiento.value.cPersDocumento : null,
-        iTipoIdentId: tipo_doc > 0 ? this.formSeguimiento.value.iTipoIdentId : null,
-        cPersDocumento: tipo_doc > 0 ? this.formSeguimiento.value.cPersDocumento : null,
+        iTipoIdentId: this.formSeguimiento.value.iTipoIdentId,
+        cPersDocumento: this.formSeguimiento.value.cPersDocumento,
       })
       .subscribe({
         next: (data: any) => {
@@ -386,15 +384,18 @@ export class SeguimientoBienestarComponent implements OnInit {
                 datos_persona = data.data ? data.data?.cPersNombreApellidos : null;
                 break;
             }
-            console.log(datos_persona, 'persona');
             this.formSeguimiento.patchValue({
               cPersDatos: datos_persona,
               iPersId: data.data?.iPersId,
+              iMatrId: data.data?.iMatrId,
+              iPersIeId: data.data?.iPersIeId,
             });
           } else {
             this.formSeguimiento.patchValue({
               iPersId: null,
               cPersDatos: null,
+              iMatrId: null,
+              iPersIeId: null,
             });
             this._messageService.add({
               severity: 'error',
@@ -404,7 +405,12 @@ export class SeguimientoBienestarComponent implements OnInit {
           }
         },
         error: error => {
-          this.setFormSeguimiento(null);
+          this.formSeguimiento.patchValue({
+            iPersId: null,
+            cPersDatos: null,
+            iMatrId: null,
+            iPersIeId: null,
+          });
           console.error('Error obteniendo datos de la persona:', error);
           this._messageService.add({
             severity: 'error',
@@ -594,13 +600,12 @@ export class SeguimientoBienestarComponent implements OnInit {
       class: 'hidden md:table-cell',
     },
     {
-      field: 'CTipoSeguimNombre',
+      field: 'cTipoSeguimNombre',
       header: 'Tipo',
       type: 'text',
       width: '15%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       field: 'cPersDocumento',
@@ -609,7 +614,6 @@ export class SeguimientoBienestarComponent implements OnInit {
       width: '15%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       field: 'cPersNombreApellidos',
@@ -626,7 +630,6 @@ export class SeguimientoBienestarComponent implements OnInit {
       width: '15%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       type: 'actions',
@@ -686,16 +689,19 @@ export class SeguimientoBienestarComponent implements OnInit {
       width: '10%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       field: 'cSeguimPrioridad',
       header: 'Prioridad',
-      type: 'text',
+      type: 'tag',
       width: '10%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
+      styles: {
+        NORMAL: 'success',
+        ALERTA: 'warning',
+        URGENTE: 'danger',
+      },
     },
     {
       field: 'cSeguimDescripcion',

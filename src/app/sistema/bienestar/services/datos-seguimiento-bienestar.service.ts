@@ -138,7 +138,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     if (!this.tipos_documentos && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.tipos_documentos = items.map(doc => ({
-        vvalue: doc.iTipoIdentId,
+        value: doc.iTipoIdentId,
         label: doc.cTipoIdentSigla + ' - ' + doc.cTipoIdentNombre,
         longitud: doc.iTipoIdentLongitud,
       }));

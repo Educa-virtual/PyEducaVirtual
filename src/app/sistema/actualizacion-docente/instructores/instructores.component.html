@@ -1,28 +1,23 @@
 <div class="grid">
-    <div class="col-12">
-        <app-toolbar-primeng [title]="'Lista de Instructores'">
-            <p-button
-                icon="pi pi-plus"
-                label="Nuevo Instructor"
-                (onClick)="accionBnt({ accion: 'guardar' })"
-            ></p-button>
-        </app-toolbar-primeng>
-        <app-table-primeng
-            [columnas]="columnasTabla"
-            [data]="data"
-            (accionBtnItem)="accionBnt($event)"
-            [actions]="accionesTabla"
-        >
-        </app-table-primeng>
-    </div>
+  <div class="col-12">
+    <app-toolbar-primeng [title]="'Lista de Instructores'" [butons]="btnAccion">
+    </app-toolbar-primeng>
+    <app-table-primeng
+      [columnas]="columnasTabla"
+      [data]="data"
+      (accionBtnItem)="accionBnt($event)"
+      [actions]="accionesTabla"
+    >
+    </app-table-primeng>
+  </div>
 </div>
 
 <app-instructor-form
-    [showModal]="showModal"
-    [instructor]="instructor"
-    [action]="accion"
-    [tiposIdentificaciones]="tiposIdentificaciones"
-    (accionBtnItem)="accionBnt($event)"
+  [showModal]="showModal"
+  [instructor]="instructor"
+  [action]="accion"
+  [tiposIdentificaciones]="tiposIdentificaciones"
+  (accionBtnItem)="accionBnt($event)"
 ></app-instructor-form>
 
 <p-toast />

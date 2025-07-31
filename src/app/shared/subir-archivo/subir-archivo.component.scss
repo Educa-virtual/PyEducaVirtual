@@ -1,0 +1,232 @@
+$border-color-base: #8e8e8e;
+$border-color-hover: blue;
+$width-file: 13rem;
+$height-file: 13rem;
+$color-label: #5a5a5a;
+
+.d-none {
+  display: none;
+}
+
+.input-file-label {
+  font-weight: 500;
+  color: $color-label;
+}
+
+.input-file-redondo {
+  width: 9.25rem;
+  height: 10.25rem;
+  overflow: hidden;
+  position: relative;
+  border-radius: 4px;
+  margin: 0 auto;
+}
+
+.input-file {
+  position: relative;
+  overflow: hidden;
+  border: 1px dotted $border-color-base;
+  border-radius: 4px;
+  color: $border-color-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+
+  &.compacto {
+    width: 100%;
+    height: 5rem;
+  }
+
+  &.cuadrado {
+    width: 9.25rem;
+    height: 9.25rem;
+    margin: 0 auto;
+  }
+
+  &.redondo {
+    width: 9.25rem;
+    height: 9.25rem;
+    border-radius: 100%;
+
+    input {
+      border-radius: 100%;
+    }
+  }
+
+  i {
+    font-size: 2.5rem;
+    padding-bottom: 0.4rem;
+  }
+
+  &:hover {
+    border-color: $border-color-hover;
+  }
+
+  input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    margin: 1px;
+    z-index: 10;
+  }
+
+  .input-file-text {
+    text-align: center;
+    position: absolute;
+    z-index: 1;
+  }
+}
+
+.progress {
+  width: 100%;
+  height: 6px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #007bff;
+  transition: width 0.3s ease-in-out;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.25rem, 1fr));
+  grid-gap: 0.7rem;
+
+  .card-grid-item {
+    width: 9.25rem;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+
+    .image {
+      max-height: 5rem;
+    }
+  }
+}
+
+.image-avatar {
+  border: 1px dotted $border-color-base;
+  border-radius: 4px;
+  width: $width-file;
+  height: $height-file;
+  object-fit: contain;
+
+  &:hover {
+    border-color: $border-color-hover;
+  }
+}
+
+.file-name {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.hide-text {
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.card-input-compact {
+  position: relative;
+  border: 1px solid #c0ccda;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: #fff;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    .card-estado {
+      background: #e91e63;
+
+      .show-check {
+        display: none;
+      }
+
+      .show-close {
+        display: block;
+      }
+    }
+  }
+
+  .contenido {
+    display: flex;
+    align-items: center;
+  }
+
+  .imagen {
+    flex-shrink: 0;
+    margin-right: 1rem;
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+  }
+
+  .info {
+    flex-grow: 1;
+
+    .texto {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      padding-right: 2rem; // evita que el icono se superponga al texto
+    }
+
+    .barra-progreso {
+      width: 100%;
+      margin-top: 4px;
+      transition: width 0.1s ease-in-out;
+    }
+  }
+
+  .card-estado {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #13ce66;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+
+    .material-icons {
+      font-size: 16px;
+      color: white;
+    }
+
+    .show-check {
+      display: block;
+    }
+
+    .show-close {
+      display: none;
+    }
+  }
+}

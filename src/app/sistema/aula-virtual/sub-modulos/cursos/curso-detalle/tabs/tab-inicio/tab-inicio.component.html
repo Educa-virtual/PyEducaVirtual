@@ -1,225 +1,167 @@
 <div class="card">
-    <div class="grid">
-        <div class="col-4" [hidden]="iPerfilId !== DOCENTE">
-            <div class="borde">
-                <p-panel class="custom-header-panel">
-                    <ng-template pTemplate="header">
-                        <h5
-                            class="p-2 m-0 font-bold text-white w-full text-center"
-                        >
-                            Información del Área
-                        </h5>
-                    </ng-template>
-                    <div>
-                        <p>
-                            <strong>N° Estudiantes:</strong>
-                            {{ curso.cantidad || 0 }}
-                        </p>
-                        <p><strong>Docente:</strong> {{ cNombres }}</p>
-                        <!-- <p><strong>Tutor:</strong> Juan Manuel</p> -->
-                        <p>
-                            <strong>Grado:</strong>
-                            {{ curso.cGradoAbreviacion || '-' }}
-                        </p>
-                        <p>
-                            <strong>Sección:</strong>
-                            {{ curso.cSeccionNombre || '-' }}
-                        </p>
-                        <p>
-                            <strong>Ciclo:</strong>
-                            {{ curso.cCicloRomanos || '-' }}
-                        </p>
-                    </div>
-                </p-panel>
-            </div>
-            <br />
-            <div class="">
-                <p-panel class="custom-header-panel">
-                    <ng-template pTemplate="header">
-                        <h5
-                            class="p-2 m-0 font-bold text-white w-full text-center"
-                        >
-                            Crear un Anuncio
-                        </h5>
-                    </ng-template>
-                    <div class="pb-2">
-                        <form [formGroup]="guardarComunicado" action="">
-                            <!-- numeración de anucios publicados -->
-                            <p-inputGroup class="font-bold">
-                                <!-- Nº: {{data.length + 1}} -->
-                                <p-inputGroupAddon>
-                                    Anuncio Nº:
-                                </p-inputGroupAddon>
-                                <input
-                                    type="text"
-                                    pInputText
-                                    readonly
-                                    value="{{ data?.length + 1 }}"
-                                />
-                            </p-inputGroup>
-                            <br />
-                            <!-- título de anuncio -->
-                            <div class="textarea-wrapper">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon class="font-bold">
-                                        Título:
-                                    </p-inputGroupAddon>
-                                    <input
-                                        type="text"
-                                        pInputText
-                                        placeholder="Ingrese el título del anuncio ..."
-                                        formControlName="titulo"
-                                        maxlength="100"
-                                    />
-                                </p-inputGroup>
-                                <span
-                                    class="flex justify-content-end text-xs"
-                                    [ngClass]="asignarColorTitulo()"
-                                    >{{ tituloremainingText }}/100</span
-                                >
-                            </div>
-                            <!-- Agregar descripción del anunciado -->
-                            <label for="descripcion" class="mt-1"
-                                >Descripción
-                                <span class="text-red-500 text-xs"
-                                    >(*) Obligatorio</span
-                                ></label
-                            >
-                            <div class="textarea-wrapper mt-2">
-                                <textarea
-                                    class="w-full"
-                                    placeholder="Escribe una Descripción"
-                                    pInputText
-                                    formControlName="descripcion"
-                                    [style]="{
-                                        height: '230px',
-                                    }"
-                                    maxlength="500"
-                                ></textarea>
-                                <span
-                                    class="remaning"
-                                    [ngClass]="getColorClass()"
-                                    >{{ remainingText }}/500</span
-                                >
-                            </div>
-                        </form>
-                        <p-toast></p-toast>
-                    </div>
-                    <div class="flex justify-content-end">
-                        <p-button
-                            label="Publicar"
-                            icon="pi pi-send"
-                            iconPos="right"
-                            (click)="guardarComunicadoSubmit()"
-                            [disabled]="guardarComunicado.invalid"
-                        />
-                    </div>
-                </p-panel>
-            </div>
-        </div>
-        <div
-            class="col-8"
-            [class]="iPerfilId === DOCENTE ? 'col-12 md:col-8' : 'col-12'"
-        >
-            <div>
-                <p-panel
-                    class="custom-header-panel h-10rem margenAnuncios"
-                    styleClass="scroll-panel"
+  <div class="grid">
+    <div class="col-4" [hidden]="iPerfilId !== DOCENTE">
+      <div class="borde">
+        <p-panel class="custom-header-panel">
+          <ng-template pTemplate="header">
+            <h5 class="p-2 m-0 font-bold text-white w-full text-center">Información del Área</h5>
+          </ng-template>
+          <div>
+            <p>
+              <strong>N° Estudiantes:</strong>
+              {{ curso.cantidad || 0 }}
+            </p>
+            <p><strong>Docente:</strong> {{ cNombres }}</p>
+            <!-- <p><strong>Tutor:</strong> Juan Manuel</p> -->
+            <p>
+              <strong>Grado:</strong>
+              {{ curso.cGradoAbreviacion || '-' }}
+            </p>
+            <p>
+              <strong>Sección:</strong>
+              {{ curso.cSeccionNombre || '-' }}
+            </p>
+            <p>
+              <strong>Ciclo:</strong>
+              {{ curso.cCicloRomanos || '-' }}
+            </p>
+          </div>
+        </p-panel>
+      </div>
+      <br />
+      <div class="">
+        <p-panel class="custom-header-panel">
+          <ng-template pTemplate="header">
+            <h5 class="p-2 m-0 font-bold text-white w-full text-center">Crear un Anuncio</h5>
+          </ng-template>
+          <div class="pb-2">
+            <form [formGroup]="guardarComunicado" action="">
+              <!-- numeración de anucios publicados -->
+              <p-inputGroup class="font-bold">
+                <!-- Nº: {{data.length + 1}} -->
+                <p-inputGroupAddon> Anuncio Nº: </p-inputGroupAddon>
+                <input type="text" pInputText readonly value="{{ data?.length + 1 }}" />
+              </p-inputGroup>
+              <br />
+              <!-- título de anuncio -->
+              <div class="textarea-wrapper">
+                <p-inputGroup>
+                  <p-inputGroupAddon class="font-bold"> Título: </p-inputGroupAddon>
+                  <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese el título del anuncio ..."
+                    formControlName="titulo"
+                    maxlength="100"
+                  />
+                </p-inputGroup>
+                <span class="flex justify-content-end text-xs" [ngClass]="asignarColorTitulo()"
+                  >{{ tituloremainingText }}/100</span
                 >
-                    <ng-template pTemplate="header" class="">
-                        <h5
-                            class="p-2 m-0 font-bold text-white w-full text-center"
-                        >
-                            Anuncios del Curso
-                        </h5>
-                    </ng-template>
-                    <div class="p-3 sticky-search">
-                        <!-- input de busqueda -->
-                        <p-inputGroup>
-                            <p-inputGroupAddon
-                                ><i class="pi pi-search"></i
-                            ></p-inputGroupAddon>
-                            <input
-                                type="text"
-                                pInputText
-                                placeholder="Buscar por título del anuncio ..."
-                                [(ngModel)]="buscarText"
-                            />
-                        </p-inputGroup>
-                    </div>
-                    <!-- mostrar comentarios -->
-                    <div class="pt-5">
-                        <p-card
-                            *ngFor="let card of dataFiltrada(); let i = index"
-                            class="pt-20 relative overflow-visible"
-                        >
-                            <ng-template pTemplate="header">
-                                <div class="flex justify-content-end">
-                                    <div class="tag ml-3 font-bold">
-                                        Anuncio: #{{ data.length - i }}
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="grid flex flex-row-reverse md:flex-row gap-2"
-                                        >
-                                            <p-button
-                                                icon="pi pi-thumbtack"
-                                                [rounded]="true"
-                                                [text]="true"
-                                                severity="secondary"
-                                                (click)="
-                                                    fijarAnuncio(
-                                                        card.iAnuncioId,
-                                                        card.iFijado
-                                                    )
-                                                "
-                                                [severity]="
-                                                    card.iFijado === '0'
-                                                        ? 'secondary'
-                                                        : 'success'
-                                                "
-                                            />
-                                            @if (iPerfilId === DOCENTE) {
-                                                <p-button
-                                                    icon="pi pi-times"
-                                                    [rounded]="true"
-                                                    [text]="true"
-                                                    severity="danger"
-                                                    (click)="
-                                                        eliminarComunicado(card)
-                                                    "
-                                                />
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                <p
-                                    class="ml-4 font-bold text-2xl"
-                                    [class]="
-                                        iPerfilId !== DOCENTE ? 'mt-4' : ''
-                                    "
-                                >
-                                    {{ card.cTitulo }}
-                                </p>
-                            </ng-template>
-                            <textarea
-                                #textareaRef
-                                pInputTextarea
-                                autoResize
-                                [(ngModel)]="card.cContenido"
-                                rows="1"
-                                class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
-                                readonly
-                            >
-                            </textarea>
-                            <div class="flex text-xs justify-content-end mt-5">
-                                {{ card.dtCreado | date: 'HH:mm:ss' }} Hrs
-                                {{ card.dtCreado | date: 'dd/MM/yyyy' }}
-                            </div>
-                        </p-card>
-                    </div>
-                    <!-- Paginador -->
-                    <!-- <p-paginator
+              </div>
+              <!-- Agregar descripción del anunciado -->
+              <label for="descripcion" class="mt-1"
+                >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+              >
+              <div class="textarea-wrapper mt-2">
+                <textarea
+                  class="w-full"
+                  placeholder="Escribe una Descripción"
+                  pInputText
+                  formControlName="descripcion"
+                  [style]="{
+                    height: '230px',
+                  }"
+                  maxlength="500"
+                ></textarea>
+                <span class="remaning" [ngClass]="getColorClass()">{{ remainingText }}/500</span>
+              </div>
+            </form>
+          </div>
+          <div class="flex justify-content-end">
+            <p-button
+              label="Publicar"
+              icon="pi pi-send"
+              iconPos="right"
+              (click)="guardarComunicadoSubmit()"
+              [disabled]="guardarComunicado.invalid"
+            />
+          </div>
+        </p-panel>
+      </div>
+    </div>
+    <div class="col-8" [class]="iPerfilId === DOCENTE ? 'col-12 md:col-8' : 'col-12'">
+      <div>
+        <p-panel class="custom-header-panel margenAnuncios">
+          <ng-template pTemplate="header" class="">
+            <h5 class="p-2 m-0 font-bold text-white w-full text-center">Anuncios del Curso</h5>
+          </ng-template>
+          <div class="p-3 sticky-search">
+            <!-- input de busqueda -->
+            <p-inputGroup>
+              <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+              <input
+                type="text"
+                pInputText
+                placeholder="Buscar por título del anuncio ..."
+                [(ngModel)]="buscarText"
+              />
+            </p-inputGroup>
+          </div>
+          <!-- mostrar comentarios -->
+          <div class="pt-5">
+            <p-card *ngFor="let card of dataFiltrada(); let i = index" class="mb-4 relative">
+              <ng-template pTemplate="header">
+                <div class="flex justify-content-between align-items-center px-2">
+                  <div class="tag font-bold">Anuncio: #{{ data.length - i }}</div>
+                  <div class="flex align-items-center gap-2 ml-auto">
+                    <p-button
+                      icon="pi pi-thumbtack"
+                      [rounded]="true"
+                      [text]="true"
+                      [severity]="card.iFijado === '0' ? 'secondary' : 'success'"
+                      (click)="fijarAnuncio(card.iAnuncioId, card.iFijado)"
+                    />
+                    @if (iPerfilId === DOCENTE) {
+                      <p-button
+                        icon="pi pi-times"
+                        [rounded]="true"
+                        [text]="true"
+                        severity="danger"
+                        (click)="eliminarComunicado(card)"
+                      />
+                    }
+                  </div>
+                </div>
+              </ng-template>
+              <textarea
+                #textareaRef
+                pInputTextarea
+                autoResize
+                [(ngModel)]="card.cTitulo"
+                rows="1"
+                class="w-full border-none bg-transparent text-xl font-bold px-2 py-1 opacity-100"
+                [disabled]="true"
+              >
+              </textarea>
+              <textarea
+                #textareaRef
+                pInputTextarea
+                autoResize
+                [(ngModel)]="card.cContenido"
+                rows="1"
+                class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none opacity-100"
+                [disabled]="true"
+              >
+              </textarea>
+              <div class="flex text-xs justify-content-end mt-5">
+                {{ card.dtCreado | date: 'h:mm a' }} -
+                {{ card.dtCreado | date: 'dd/MM/yyyy' }}
+              </div>
+            </p-card>
+          </div>
+          <!-- Paginador -->
+          <!-- <p-paginator
                         [rows]="itemsPerPage"
                         [totalRecords]="data.length"
                         (onPageChange)="onPageChange($event)"
@@ -227,9 +169,9 @@
                         
                         [showFirstLastIcon]="true"
                     ></p-paginator> -->
-                    <!--  -->
-                </p-panel>
-            </div>
-        </div>
+          <!--  -->
+        </p-panel>
+      </div>
     </div>
+  </div>
 </div>

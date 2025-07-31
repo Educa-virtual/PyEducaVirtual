@@ -1,0 +1,48 @@
+<!-- Carga de archivo -->
+<div class="d-flex justify-content-center my-3">
+  <div class="input-file compacto">
+    <input type="file" (change)="seleccionarArchivo($event)" [accept]="tipos.toString()" />
+    <div class="input-file-text text-center">
+      <app-icon name="matCloudUpload" class="mb-1" color="#454545" size="32"></app-icon>
+      <span>Haz clic o suelta el archivo aquí</span>
+    </div>
+  </div>
+</div>
+
+<!-- Archivos cargados -->
+<div class="card-input-compact" *ngFor="let archivo of archivos">
+  <!-- Icono check o close -->
+  <div
+    *ngIf="archivo.progreso === 100"
+    class="card-estado"
+    (click)="removerArchivo(archivo)"
+    role="button"
+    tabindex="0"
+    (keydown.enter)="removerArchivo(archivo)"
+    (keydown.space)="removerArchivo(archivo)"
+    aria-label="Eliminar archivo"
+  >
+    <span class="material-icons show-check">done</span>
+    <span class="material-icons show-close">close</span>
+  </div>
+
+  <div class="contenido">
+    <div class="imagen">
+      <img [src]="'assets/images/isPDF.png'" alt="archivo" />
+    </div>
+
+    <div class="info">
+      <div class="texto">
+        <small class="text-muted">{{ archivo.nombre }}</small>
+        <small>{{ archivo.peso }}</small>
+      </div>
+
+      <p-progressBar
+        [value]="archivo.progreso"
+        styleClass="p-progress-success barra-progreso"
+        [style]="{ height: '15px' }"
+      ></p-progressBar>
+    </div>
+  </div>
+</div>
+<p-toast></p-toast>

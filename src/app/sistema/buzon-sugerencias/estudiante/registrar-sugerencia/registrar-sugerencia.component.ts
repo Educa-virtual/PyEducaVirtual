@@ -21,6 +21,7 @@ export class RegistrarSugerenciaComponent implements OnInit {
   form: FormGroup;
   disable_form: boolean = false;
   uploadedFiles: any[] = [];
+  nombreArchivo: string | null = null;
   @ViewChild('uploader') uploader: FileUpload;
   prioridades: any[];
   @Input() visible: boolean = false;
@@ -131,6 +132,6 @@ export class RegistrarSugerenciaComponent implements OnInit {
   }
 
   /*actualizarSugerencia() {
-        this.disable_form = true
-    }*/
+          this.disable_form = true
+      }*/
 }

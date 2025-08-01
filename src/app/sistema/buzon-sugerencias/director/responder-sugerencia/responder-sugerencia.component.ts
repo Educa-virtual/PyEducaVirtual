@@ -13,6 +13,7 @@ import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-director.service';
 import { BuzonSugerenciasEstudianteService } from '../../estudiante/services/buzon-sugerencias-estudiante.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 @Component({
@@ -30,7 +31,7 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
   @Output() eventSugerenciaRespondida = new EventEmitter<any>();
   @Output() eventCerrarResponderSugerencia = new EventEmitter<boolean>();
   archivos: any;
-  editorKey = 0;
+  sugerenciaHtml: SafeHtml = '';
 
   @Input()
   set selectedItem(value: any) {
@@ -42,7 +43,7 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
         cAsunto: this._selectedItem?.cAsunto,
         cPrioridadNombre: this._selectedItem?.cPrioridadNombre,
         cSugerencia: this._selectedItem?.cSugerencia,
-        cRespuesta: '',
+        cRespuesta: this._selectedItem?.cRespuesta,
       });
     }
   }
@@ -71,7 +72,8 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private buzonSugerenciasDirectorService: BuzonSugerenciasDirectorService,
     private buzonSugerenciasEstudianteService: BuzonSugerenciasEstudianteService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -131,8 +133,8 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['visible'] && changes['visible'].currentValue === true) {
-      this.editorKey++;
-
+      //this.editorKey++;
+      this.sugerenciaHtml = this.sanitizer.bypassSecurityTrustHtml(this.selectedItem?.cSugerencia);
       this.form.patchValue({
         cNombreEstudiante: this.selectedItem?.cNombreEstudiante,
         dtFechaCreacion: this.selectedItem?.dtFechaCreacion,
@@ -141,6 +143,7 @@ export class ResponderSugerenciaComponent implements OnInit, OnChanges {
         cSugerencia: this.selectedItem?.cSugerencia,
         cRespuesta: this.selectedItem?.cRespuesta,
       });
+
       this.obtenerArchivosSugerencia();
     }
   }

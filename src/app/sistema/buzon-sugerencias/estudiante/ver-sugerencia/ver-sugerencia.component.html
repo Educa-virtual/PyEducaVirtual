@@ -60,7 +60,7 @@
         <label for="cSugerencia">Sugerencia del alumno</label>
         <!--<p-editor [readonly]="true" formControlName="cSugerencia" [style]="{ height: '160px' }" [modules]="{ toolbar: false }" ></p-editor>-->
         <div class="p-inputgroup p-fluid estilo-editor disabled">
-          <div id="cSugerencia" [innerHTML]="form.get('cSugerencia')?.value"></div>
+          <div id="cSugerencia" [innerHTML]="sugerenciaHtml"></div>
         </div>
       </div>
       <div class="field col-12">
@@ -109,7 +109,7 @@
               <!--<p-editor [readonly]="true" formControlName="cRespuesta" [style]="{ height: '160px' }"
                                 [modules]="{ toolbar: false }"></p-editor>-->
               <div class="p-inputgroup p-fluid estilo-editor disabled">
-                <div id="cRespuesta" [innerHTML]="form.get('cRespuesta')?.value"></div>
+                <div id="cRespuesta" [innerHTML]="respuestaHtml"></div>
               </div>
             </div>
           </div>

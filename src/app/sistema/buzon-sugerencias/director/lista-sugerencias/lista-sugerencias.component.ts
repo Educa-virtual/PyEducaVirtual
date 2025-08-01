@@ -110,15 +110,16 @@ export class ListaSugerenciasComponent implements OnInit {
     this.obtenerListaSugerencias();
   }
 
+  recortarRespuesta(respuesta: string) {
+    return respuesta?.length > 200 ? respuesta.substring(0, 200) + '...' : respuesta;
+  }
+
   obtenerListaSugerencias() {
     this.buzonSugerenciasDirectorService.obtenerListaSugerencias().subscribe({
       next: (data: any) => {
         this.dataSugerencias = data.data.map((item: any) => ({
           ...item,
-          cRespuestaCorta:
-            item.cRespuesta?.length > 200
-              ? item.cRespuesta.substring(0, 200) + '...'
-              : item.cRespuesta,
+          cRespuestaCorta: this.recortarRespuesta(item.cRespuesta),
         }));
       },
       error: error => {
@@ -163,6 +164,7 @@ export class ListaSugerenciasComponent implements OnInit {
         return {
           ...sug,
           cRespuesta: event.respuesta,
+          cRespuestaCorta: this.recortarRespuesta(event.respuesta),
           dtFechaRespuesta: new Date(event.fecha),
         };
       }

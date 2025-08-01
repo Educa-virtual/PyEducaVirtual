@@ -1,220 +1,195 @@
 <div class="card">
-    <label for="" class="mt-1">Adjuntar:</label>
-    <div class="d-flex align-items-center text-center mt-1">
-        <button
-            *ngIf="typesFiles.file"
-            pButton
-            type="button"
-            class="p-button-rounded p-button-outlined mx-2 btn-file-image"
-        >
-            <!--pRipple-->
-            <i
-                class="pi pi-upload my-2"
-                style="color: #333437; font-size: 3rem"
-                pTooltip="Subir Archivo"
-                tooltipPosition="bottom"
-            ></i
-            ><input
-                type="file"
-                accept=".pdf, "
-                (change)="onUploadChange($event, 'file')"
-            />
-        </button>
+  <label for="" class="mt-1">Adjuntar:</label>
+  <div class="d-flex align-items-center text-center mt-1">
+    <button
+      *ngIf="typesFiles.file"
+      pButton
+      type="button"
+      class="p-button-rounded p-button-outlined mx-2 btn-file-image"
+    >
+      <!--pRipple-->
+      <i
+        class="pi pi-upload my-2"
+        style="color: #333437; font-size: 3rem"
+        pTooltip="Subir Archivo"
+        tooltipPosition="bottom"
+      ></i
+      ><input type="file" accept=".pdf, " (change)="onUploadChange($event, 'file')" />
+    </button>
 
-        <button
-            *ngIf="typesFiles.url"
-            pButton
-            type="button"
-            class="p-button-rounded p-button-outlined mx-2"
-            (click)="openUpload('url')"
-        >
-            <i
-                class="pi pi-link my-2"
-                style="color: #333437; font-size: 3rem"
-                pTooltip="Subir Enlace"
-                tooltipPosition="bottom"
-            ></i>
-        </button>
+    <button
+      *ngIf="typesFiles.url"
+      pButton
+      type="button"
+      class="p-button-rounded p-button-outlined mx-2"
+      (click)="openUpload('url')"
+    >
+      <i
+        class="pi pi-link my-2"
+        style="color: #333437; font-size: 3rem"
+        pTooltip="Subir Enlace"
+        tooltipPosition="bottom"
+      ></i>
+    </button>
 
-        <button
-            *ngIf="typesFiles.youtube"
-            pButton
-            type="button"
-            class="p-button-rounded p-button-outlined mx-2"
-            (click)="openUpload('youtube')"
-        >
-            <i
-                class="pi pi-youtube my-2"
-                style="color: #c4302b; font-size: 3rem"
-                pTooltip="Subir Enlace Youtube"
-                tooltipPosition="bottom"
-            ></i>
-        </button>
-        <button
-            *ngIf="typesFiles.repository"
-            pButton
-            type="button"
-            class="p-button-rounded p-button-outlined mx-2"
-            (click)="openUpload('repository')"
-        >
-            <i
-                class="pi pi-upload my-2"
-                style="color: #ffd04b; font-size: 3rem"
-                pTooltip="Subir Rubrica"
-                tooltipPosition="bottom"
-            ></i>
-        </button>
-        <button
-            *ngIf="typesFiles.image"
-            pButton
-            type="button"
-            class="p-button-rounded p-button-outlined mx-2 btn-file-image"
-            (click)="openUpload('image')"
-        >
-            <i
-                class="pi pi-images my-2"
-                style="color: #ff844b; font-size: 3rem"
-                pTooltip="Subir Foto"
-                tooltipPosition="bottom"
-            ></i
-            ><input
-                type="file"
-                accept=".png, .jpg, .jpeg, "
-                (change)="onUploadChange($event, 'image')"
-            />
-        </button>
-    </div>
-    @if (filesUrl.length) {
-        <div class="col-12">
-            <label for="" class="mt-2">Lista de Adjuntos</label>
-            @for (item of filesUrl; track item; let idx = $index) {
-                <p-inputGroup class="mt-1">
-                    <p-inputGroupAddon>
-                        @switch (item.type) {
-                            @case (1) {
-                                <i
-                                    class="pi pi-upload"
-                                    style="color: #333437"
-                                ></i>
-                            }
-                            @case (2) {
-                                <i
-                                    class="pi pi-link"
-                                    style="color: #333437"
-                                ></i>
-                            }
-                            @case (3) {
-                                <i
-                                    class="pi pi-youtube"
-                                    style="color: #c4302b"
-                                ></i>
-                            }
-                            @case (4) {
-                                <i
-                                    class="pi pi-folder"
-                                    style="color: #ffd04b"
-                                ></i>
-                            }
-                            @case (5) {
-                                <p-image
-                                    [src]="backend + '/' + item.ruta"
-                                    alt="Image"
-                                    width="35"
-                                    [preview]="true"
-                                    (error)="updateUrl(item)"
-                                />
-                            }
-                        }
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        [placeholder]="item.name"
-                        disabled
-                        class="w-full p-inputtext-sm opacity-100"
-                        pInputText
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-trash"
-                        (click)="filesUrl.splice(idx, 1)"
-                        class="p-button-danger"
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
+    <button
+      *ngIf="typesFiles.youtube"
+      pButton
+      type="button"
+      class="p-button-rounded p-button-outlined mx-2"
+      (click)="openUpload('youtube')"
+    >
+      <i
+        class="pi pi-youtube my-2"
+        style="color: #c4302b; font-size: 3rem"
+        pTooltip="Subir Enlace Youtube"
+        tooltipPosition="bottom"
+      ></i>
+    </button>
+    <button
+      *ngIf="typesFiles.repository"
+      pButton
+      type="button"
+      class="p-button-rounded p-button-outlined mx-2"
+      (click)="openUpload('repository')"
+    >
+      <i
+        class="pi pi-upload my-2"
+        style="color: #ffd04b; font-size: 3rem"
+        pTooltip="Subir Rubrica"
+        tooltipPosition="bottom"
+      ></i>
+    </button>
+    <button
+      *ngIf="typesFiles.image"
+      pButton
+      type="button"
+      class="p-button-rounded p-button-outlined mx-2 btn-file-image"
+      (click)="openUpload('image')"
+    >
+      <i
+        class="pi pi-images my-2"
+        style="color: #ff844b; font-size: 3rem"
+        pTooltip="Subir Foto"
+        tooltipPosition="bottom"
+      ></i
+      ><input type="file" accept=".png, .jpg, .jpeg, " (change)="onUploadChange($event, 'image')" />
+    </button>
+  </div>
+  @if (filesUrl.length) {
+    <div class="col-12">
+      <label for="" class="mt-2">Lista de Adjuntos</label>
+      @for (item of filesUrl; track item; let idx = $index) {
+        <p-inputGroup class="mt-1">
+          <p-inputGroupAddon>
+            @switch (item.type) {
+              @case (1) {
+                <i class="pi pi-upload" style="color: #333437"></i>
+              }
+              @case (2) {
+                <i class="pi pi-link" style="color: #333437"></i>
+              }
+              @case (3) {
+                <i class="pi pi-youtube" style="color: #c4302b"></i>
+              }
+              @case (4) {
+                <i class="pi pi-folder" style="color: #ffd04b"></i>
+              }
+              @case (5) {
+                <p-image
+                  [src]="backend + '/' + item.ruta"
+                  alt="Image"
+                  width="35"
+                  [preview]="true"
+                  (error)="updateUrl(item)"
+                />
+              }
             }
-        </div>
-    }
+          </p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            [placeholder]="item.name"
+            disabled
+            class="w-full p-inputtext-sm opacity-100"
+            pInputText
+          />
+          <button
+            type="button"
+            pButton
+            icon="pi pi-trash"
+            (click)="filesUrl.splice(idx, 1)"
+            class="p-button-danger"
+          >
+            &nbsp;
+          </button>
+        </p-inputGroup>
+      }
+    </div>
+  }
 </div>
 
 <app-modal-primeng
-    [title]="titleFileTareas"
-    [showModal]="showModal"
-    [width]="'45rem'"
-    (accionBtnItem)="accionBtnItem($event)"
+  [title]="titleFileTareas"
+  [showModal]="showModal"
+  [width]="'45rem'"
+  (accionBtnItem)="accionBtnItem($event)"
 >
-    <div class="grid mt-4">
-        @if (typeUpload === 'url') {
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-link"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Pegar la URL"
-                        [(ngModel)]="urlName"
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-check"
-                        class="p-button-succes"
-                        (click)="
-                            accionBtnItem({
-                                accion: 'subir-url',
-                                item: [],
-                            })
-                        "
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
-        @if (typeUpload === 'youtube') {
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-youtube" style="color: #c4302b"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscaer en Youtube o pegar la URL"
-                        [(ngModel)]="youtubeName"
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-check"
-                        class="p-button-danger"
-                        (click)="
-                            accionBtnItem({
-                                accion: 'subir-youtube',
-                                item: [],
-                            })
-                        "
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
-        <!-- @if (typeUpload === 'repository') {
+  <div class="grid mt-4">
+    @if (typeUpload === 'url') {
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-link"></i>
+          </p-inputGroupAddon>
+          <input type="text" pInputText placeholder="Pegar la URL" [(ngModel)]="urlName" />
+          <button
+            type="button"
+            pButton
+            icon="pi pi-check"
+            class="p-button-succes"
+            (click)="
+              accionBtnItem({
+                accion: 'subir-url',
+                item: [],
+              })
+            "
+          >
+            &nbsp;
+          </button>
+        </p-inputGroup>
+      </div>
+    }
+    @if (typeUpload === 'youtube') {
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-youtube" style="color: #c4302b"></i>
+          </p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            placeholder="Buscaer en Youtube o pegar la URL"
+            [(ngModel)]="youtubeName"
+          />
+          <button
+            type="button"
+            pButton
+            icon="pi pi-check"
+            class="p-button-danger"
+            (click)="
+              accionBtnItem({
+                accion: 'subir-youtube',
+                item: [],
+              })
+            "
+          >
+            &nbsp;
+          </button>
+        </p-inputGroup>
+      </div>
+    }
+    <!-- @if (typeUpload === 'repository') {
             <div class="col-12">
                 <app-table-primeng
                     [columnas]="columns"
@@ -227,16 +202,14 @@
 
             </div>
         } -->
-    </div>
+  </div>
 </app-modal-primeng>
 
+<p-toast />
+
 <!-- modal para mostrar el material educativo -->
-<app-modal-primeng
-    [title]="titleFileTareas"
-    [showModal]="showModalPreview"
-    [width]="'45rem'"
->
-    <div class="mt-4">
-        <!-- <app-material-educativo /> -->
-    </div>
+<app-modal-primeng [title]="titleFileTareas" [showModal]="showModalPreview" [width]="'45rem'">
+  <div class="mt-4">
+    <!-- <app-material-educativo /> -->
+  </div>
 </app-modal-primeng>

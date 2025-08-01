@@ -1,20 +1,21 @@
-import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { environment } from '@/environments/environment'
-import { Observable } from 'rxjs'
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '@/environments/environment';
+import { Observable } from 'rxjs';
 
-const baseUrl = environment.backendApi
+const baseUrl = environment.backendApi;
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class TiposIdentificacionesService {
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-    obtenerTipoIdentificaciones(): Observable<any[]> {
-        return this.http.post<any[]>(
-            `${baseUrl}/grl/listTipoIdentificaciones`,
-            null
-        )
-    }
+  obtenerTipoIdentificaciones(params): Observable<any> {
+    const headers = new HttpHeaders().set('x-cache', 'true').set('x-cache-duration', '3600000'); // 60 minutos
+    return this.http.get(`${baseUrl}/grl/listTipoIdentificaciones`, {
+      params,
+      headers,
+    });
+  }
 }

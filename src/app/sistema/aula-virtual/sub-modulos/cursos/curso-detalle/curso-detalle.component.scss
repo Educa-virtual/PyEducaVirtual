@@ -1,7 +1,18 @@
 .curso-detalle {
-    &__content {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+::ng-deep .p-toast-message {
+  white-space: normal !important;
+  max-height: none !important;
+  overflow: visible !important;
+  word-break: break-word !important;
+}
+
+::ng-deep .p-toast-detail {
+  white-space: normal !important;
+  word-break: break-word !important;
 }

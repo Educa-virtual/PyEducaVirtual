@@ -8,25 +8,27 @@
   <div class="title mt-2 font-bold text-center">
     {{ capacitacion?.cCapTitulo }}
   </div>
-  @if (descripcion) {
-    <div class="mx-4 col-12 grid">
-      <div class="col-12 grid column-gap-1 align-items-center">
-        <i class="pi pi-file-check mr-2"></i>
-        <span>{{ capacitacion.iAprobadas }} Solicitudes Aprobadas</span>
+  <div *ngIf="idPerfil !== 251">
+    @if (descripcion) {
+      <div class="mx-4 col-12 grid">
+        <div class="col-12 grid column-gap-1 align-items-center">
+          <i class="pi pi-file-check mr-2"></i>
+          <span>{{ capacitacion.iAprobadas }} Solicitudes Aprobadas</span>
+        </div>
+        <div class="col-12 grid column-gap-1 align-items-center">
+          <i class="pi pi-info-circle mr-2"></i>
+          <span>{{ capacitacion.iPendientes }} Solicitudes Pendientes</span>
+        </div>
       </div>
-      <div class="col-12 grid column-gap-1 align-items-center">
-        <i class="pi pi-info-circle mr-2"></i>
-        <span>{{ capacitacion.iPendientes }} Solicitudes Pendientes</span>
+    } @else {
+      <div class="mx-4 col-12 grid">
+        <div class="col-12 grid column-gap-1 align-items-center">
+          <i class="pi pi-file-check mr-2"></i>
+          <span>{{ capacitacion.iMatriculados }} Estudiantes matriculados</span>
+        </div>
       </div>
-    </div>
-  } @else {
-    <div class="mx-4 col-12 grid">
-      <div class="col-12 grid column-gap-1 align-items-center">
-        <i class="pi pi-file-check mr-2"></i>
-        <span>{{ capacitacion.iMatriculados }} Estudiantes matriculados</span>
-      </div>
-    </div>
-  }
+    }
+  </div>
 
   <div class="flex mx-3 mt-2 mb-3 justify-content-end">
     <p-button

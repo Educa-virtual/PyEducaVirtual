@@ -13,6 +13,7 @@ export class CardCapacitacionesComponent {
   backend = environment.backend;
   @Input() capacitacion;
   @Input() descripcion = false; // Para mostrar u ocultar la descripción
+  @Input() idPerfil: number; // ID del perfil del usuario
   @Output() verDetalle = new EventEmitter<string>();
 
   updateUrl(item) {

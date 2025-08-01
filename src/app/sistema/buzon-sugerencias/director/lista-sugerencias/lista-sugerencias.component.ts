@@ -85,7 +85,7 @@ export class ListaSugerenciasComponent implements OnInit {
     {
       type: 'item-innerHtml',
       width: '8rem',
-      field: 'cRespuesta',
+      field: 'cRespuestaCorta',
       header: 'Respuesta',
       text_header: 'center',
       text: 'left',
@@ -113,7 +113,13 @@ export class ListaSugerenciasComponent implements OnInit {
   obtenerListaSugerencias() {
     this.buzonSugerenciasDirectorService.obtenerListaSugerencias().subscribe({
       next: (data: any) => {
-        this.dataSugerencias = data.data;
+        this.dataSugerencias = data.data.map((item: any) => ({
+          ...item,
+          cRespuestaCorta:
+            item.cRespuesta?.length > 200
+              ? item.cRespuesta.substring(0, 200) + '...'
+              : item.cRespuesta,
+        }));
       },
       error: error => {
         this.messageService.add({
@@ -126,23 +132,12 @@ export class ListaSugerenciasComponent implements OnInit {
   }
 
   actions: IActionTable[] = [
-    /*{
-            labelTooltip: 'Ver sugerencia',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
-        },*/
     {
       labelTooltip: 'Responder sugerencia',
       icon: 'pi pi-pen-to-square',
       accion: 'responder',
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
-      // se mantiene visible para que se pueda responder sugerencia  solo si no tiene respuesta
-      //isVisible: (row) => {
-      //return !row.cRespuesta || row.cRespuesta === ''
-      //},
     },
   ];
 

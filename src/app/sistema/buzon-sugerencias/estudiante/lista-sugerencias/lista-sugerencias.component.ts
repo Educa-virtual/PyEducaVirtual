@@ -34,6 +34,7 @@ export class ListaSugerenciasComponent implements OnInit {
   mostrarFormularioVer: boolean = false;
   perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'));
   usuarioEstudiante: boolean = this.perfil.iPerfilId == 80;
+  visible: false;
   //form: FormGroup
   dataSugerencias: any[];
   selectedItem: any;
@@ -88,7 +89,7 @@ export class ListaSugerenciasComponent implements OnInit {
     {
       type: 'item-innerHtml',
       width: '8rem',
-      field: 'cRespuesta',
+      field: 'cRespuestaCorta',
       header: 'Respuesta del director',
       text_header: 'center',
       text: 'left',
@@ -120,6 +121,12 @@ export class ListaSugerenciasComponent implements OnInit {
     }
   }
 
+  listenCerrarNuevaSugerencia(event: boolean) {
+    if (event == false) {
+      this.mostrarFormularioNuevo = false;
+    }
+  }
+
   listenDialogVerSugerencia(event: boolean) {
     if (event == false) {
       this.mostrarFormularioVer = false;
@@ -137,13 +144,19 @@ export class ListaSugerenciasComponent implements OnInit {
   }
 
   /*resetearInputs() {
-        this.form.reset()
-    }*/
+          this.form.reset()
+      }*/
 
   obtenerListaSugerencias() {
     this.buzonSugerenciasEstudianteService.obtenerListaSugerencias().subscribe({
       next: (data: any) => {
-        this.dataSugerencias = data.data;
+        this.dataSugerencias = data.data.map((item: any) => ({
+          ...item,
+          cRespuestaCorta:
+            item.cRespuesta?.length > 200
+              ? item.cRespuesta.substring(0, 200) + '...'
+              : item.cRespuesta,
+        }));
       },
       error: error => {
         this.messageService.add({
@@ -182,64 +195,6 @@ export class ListaSugerenciasComponent implements OnInit {
     });
   }
 
-  /**
-   * Mostrar modal para editar sugerencia
-   * @param item sugerencia seleccionada en tabla
-   */
-  /*editarSugerencia(item: any) {
-        this.formularioHeader = 'Editar sugerencia'
-        this.disable_form = false
-        this.setFormSugerencia(item)
-        this.registrar_visible = true
-    }*/
-
-  /**
-   * Mostrar modal para ver sugerencia
-   * @param item sugerencia seleccionada en tabla
-   */
-  /*mostrarSugerencia(item: any) {
-        this.formularioHeader = 'Ver sugerencia'
-        this.disable_form = true
-        this.setFormSugerencia(item)
-        this.registrar_visible = true
-        this.disableForm(true)
-    }*/
-
-  /**
-   * Limpiar formulario
-   */
-
-  /**
-   * Deshabilitar inputs de formulario
-   * @param disable booleano para deshabilitar o habilitar
-   */
-  /*disableForm(disable: boolean) {
-        if (disable) {
-            this.form.get('cAsunto')?.disable()
-            this.form.get('cSugerencia')?.enable()
-            this.form.get('iDestinoId')?.disable()
-            this.form.get('iPrioridadId')?.disable()
-        } else {
-            this.form.get('cAsunto')?.enable()
-            this.form.get('cSugerencia')?.enable()
-            this.form.get('iDestinoId')?.enable()
-            this.form.get('iPrioridadId')?.enable()
-        }
-    }*/
-
-  /**
-   * Rellenar formulario con datos de sugerencia
-   * @param item sugerencia seleccionada en tabla
-   */
-  /*setFormSugerencia(item: any) {
-        this.form.get('cAsunto')?.setValue(item.asunto)
-        this.form.get('cSugerencia')?.setValue(item.sugerencia)
-        this.form.get('iDestinoId')?.setValue(item.destino_id)
-        this.form.get('iPrioridadId')?.setValue(item.prioridad_id)
-        this.registrar_visible = true
-    }
-*/
-
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'eliminar':
@@ -272,8 +227,8 @@ export class ListaSugerenciasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
       /*isVisible: (row) => {
-                return row.iEstado === 1 && 2 == this.perfil.iCredId
-            },*/
+                      return row.iEstado === 1 && 2 == this.perfil.iCredId
+                  },*/
     },
   ];
 }

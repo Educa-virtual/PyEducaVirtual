@@ -29,22 +29,21 @@ export class LogroAlcanzadoComponent implements OnInit {
         {
             item: 1,
             iLogroAlcanzadoId: 1,
-            dtFechaCreacion: new Date('2025-04-20'),
             cAsunto: 'Mejora en materiales de clase',
             cNombreEstudiante: 'Gómez Torres Luis Alberto',
-            cRespuesta: '',
-            cSugerencia:
-                'Sería bueno tener acceso a más material digital para las clases de matemáticas.',
+            cNivelLogroAlcanzado: '4to',
+            cSeccion: 'c',
+            docuento_identidad: '48783215',
         },
         {
             item: 2,
             iLogroAlcanzadoId: 2,
-            dtFechaCreacion: new Date('2025-04-20'),
+            //dtFechaCreacion: new Date('2025-04-20'),
             cAsunto: 'Mejora en materiales de clase',
-            cNombreEstudiante: 'Ana Lopez',
-            cRespuesta: '',
-            cSugerencia:
-                'Sería bueno tener acceso a más material digital para las clases de matemáticas.',
+            cNombreEstudiante: 'perez perez luis fernando',
+            cNivelLogroAlcanzado: '4to',
+            cSeccion: 'A',
+            docuento_identidad: '46983215',
         },
     ]
 
@@ -58,18 +57,17 @@ export class LogroAlcanzadoComponent implements OnInit {
             text: 'center',
         },
         {
-            type: 'date',
-            width: '3rem',
-            field: 'dtFechaCreacion',
+            type: 'text',
+            width: '5rem',
+            field: 'cNombreEstudiante',
             header: 'Apellidos y Nombre',
             text_header: 'center',
             text: 'center',
         },
-
         {
             type: 'text',
             width: '5rem',
-            field: 'cNombreEstudiante',
+            field: 'cNivelLogroAlcanzado',
             header: 'Nivel',
             text_header: 'center',
             text: 'center',
@@ -77,7 +75,7 @@ export class LogroAlcanzadoComponent implements OnInit {
         {
             type: 'text',
             width: '12rem',
-            field: 'cAsunto',
+            field: 'cSeccion',
             header: 'Sección',
             text_header: 'center',
             text: 'center',
@@ -85,15 +83,7 @@ export class LogroAlcanzadoComponent implements OnInit {
         {
             type: 'text',
             width: '8rem',
-            field: 'cRespuesta',
-            header: 'Nivel',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '8rem',
-            field: '',
+            field: 'docuento_identidad',
             header: 'DNI/CE',
             text_header: 'center',
             text: 'center',

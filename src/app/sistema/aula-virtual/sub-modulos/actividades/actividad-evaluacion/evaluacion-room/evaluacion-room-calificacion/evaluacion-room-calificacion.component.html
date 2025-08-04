@@ -1,54 +1,44 @@
 <app-toolbar-primeng
-    [title]="
-        'Evaluación Formativa: ' +
-        (evaluacion?.cHeader || 'Título no disponible')
-    "
+  [title]="'Evaluación Formativa: ' + (evaluacion?.cHeader || 'Título no disponible')"
 ></app-toolbar-primeng>
 <app-evaluacion-header
-    [selectedEstudianteValue]="estudianteSeleccionado"
-    [showListaEstudiantes]="showListaEstudiantes"
-    (accionBtnItem)="accionBtnItem($event)"
+  [selectedEstudianteValue]="estudianteSeleccionado"
+  [showListaEstudiantes]="showListaEstudiantes"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-evaluacion-header>
 <div class="grid mt-3">
-    <div class="col-12 grid">
-        <!-- Panel Izquierdo -->
-        <div class="col-12 md:col-4">
-            <app-card-orderlist
-                [data]="estudianteMatriculadosxGrado"
-                (datoSeleccionado)="updateSelectedEstudiante($event)"
-            >
-            </app-card-orderlist>
-        </div>
+  <div class="col-12 grid">
+    <!-- Panel Izquierdo -->
+    <div class="col-12 md:col-4">
+      <app-card-orderlist
+        [data]="estudianteMatriculadosxGrado"
+        (datoSeleccionado)="updateSelectedEstudiante($event)"
+      >
+      </app-card-orderlist>
+    </div>
 
-        <!-- Panel Derecho -->
-        <div class="col-12 md:col-8">
-            <p-accordion
-                [activeIndex]="1"
-                class="mt-3 shadow-1 border-round"
-                [collapseIcon]="'pi pi-chevron-up'"
-                [expandIcon]="'pi pi-chevron-down'"
-                *ngIf="preguntasEstudiante.length; else emptySection"
-            >
-                <p-accordionTab header="Rúbricas">
+    <!-- Panel Derecho -->
+    <div class="col-12 md:col-8">
+      <p-accordion
+        [activeIndex]="1"
+        class="mt-3 shadow-1 border-round"
+        [collapseIcon]="'pi pi-chevron-up'"
+        [expandIcon]="'pi pi-chevron-down'"
+        *ngIf="preguntasEstudiante.length; else emptySection"
+      >
+        <!-- <p-accordionTab header="Rúbricas">
                     <app-rubrica-calificar
                         [enableCellSelection]="true"
                         class="w-full"
                     >
                     </app-rubrica-calificar>
-                </p-accordionTab>
-                <p-accordionTab header="Preguntas">
-                    <ng-container
-                        *ngFor="
-                            let pregunta of preguntasEstudiante;
-                            let i = index
-                        "
-                    >
-                        <div class="relative mt-2 py-3">
-                            <div class="tag ml-3 font-bold">
-                                #{{ i + 1 }} Pregunta:
-                            </div>
-                        </div>
-                        <!-- <div class="ellipsis">
+                </p-accordionTab> -->
+        <p-accordionTab header="Preguntas">
+          <ng-container *ngFor="let pregunta of preguntasEstudiante; let i = index">
+            <div class="relative mt-2 py-3">
+              <div class="tag ml-3 font-bold">#{{ i + 1 }} Pregunta:</div>
+            </div>
+            <!-- <div class="ellipsis">
                             <span *ngIf="pregunta['idEncabPregId'] > 0; else sinEncabezado">
                                 {{ pregunta['cEncabPregTitulo'] }}
                             </span>
@@ -57,18 +47,16 @@
                             </ng-template>
                         </div> -->
 
-                        <app-evaluacion-pregunta
-                            class="overflow-auto break-words whitespace-pre-line"
-                            (calificarPreguntaChange)="
-                                calificarPregunta($event)
-                            "
-                            [pregunta]="pregunta"
-                        ></app-evaluacion-pregunta>
-                        <br />
-                    </ng-container>
-                </p-accordionTab>
-            </p-accordion>
-            <!-- <div *ngIf="preguntasEstudiante?.length > 0">
+            <app-evaluacion-pregunta
+              class="overflow-auto break-words whitespace-pre-line"
+              (calificarPreguntaChange)="calificarPregunta($event)"
+              [pregunta]="pregunta"
+            ></app-evaluacion-pregunta>
+            <br />
+          </ng-container>
+        </p-accordionTab>
+      </p-accordion>
+      <!-- <div *ngIf="preguntasEstudiante?.length > 0">
                 <p-accordion [multiple]="true">
                     <p-accordionTab *ngFor="let pregunta of preguntasEstudiante" [selected]="true">
                         <ng-template pTemplate="header">
@@ -80,7 +68,7 @@
                     </p-accordionTab>
                 </p-accordion>
             </div> -->
-            <!-- <div class="flex flex-column flex-1 gap-4 m-3">
+      <!-- <div class="flex flex-column flex-1 gap-4 m-3">
                 <ng-container *ngIf="preguntasEstudiante.length; else emptySection">
                     <p-tabView>
                         <p-tabPanel>
@@ -141,14 +129,14 @@
                 </ng-container>
               
             </div> -->
-        </div>
     </div>
+  </div>
 </div>
 <ng-template #emptySection>
-    <div align="center" class="">
-        <app-no-data
-            [showIcon]="'NO-DATA'"
-            [mensaje]="'No ha seleccionado a ningún estudiante para calificar'"
-        ></app-no-data>
-    </div>
+  <div align="center" class="">
+    <app-no-data
+      [showIcon]="'NO-DATA'"
+      [mensaje]="'No ha seleccionado a ningún estudiante para calificar'"
+    ></app-no-data>
+  </div>
 </ng-template>

@@ -1,183 +1,159 @@
-<p-breadcrumb
-    class="max-w-full"
-    [model]="breadCrumbItems"
-    [home]="breadCrumbHome"
-/>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 
 <app-container-page
-    [title]="
-        evaluacion === null
-            ? 'Lista de áreas'
-            : 'Lista de áreas de ' +
-              evaluacion.cEvaluacionNombre +
-              ' - nivel ' +
-              evaluacion.cNivelEvalNombre
-    "
-    [actions]="[]"
+  [title]="
+    evaluacion === null
+      ? 'Lista de áreas'
+      : 'Lista de áreas de ' +
+        evaluacion.cEvaluacionNombre +
+        ' - nivel ' +
+        evaluacion.cNivelEvalNombre
+  "
+  [actions]="[]"
 >
-    @if (mostrarMensajeVacio) {
-        <p-messages
-            [(value)]="mensajeInfo"
-            [enableService]="false"
-            [closable]="false"
-        />
-    } @else {
-        @if (modoCard) {
-            <p-dataView
-                #dv
-                [value]="cursos"
-                [paginator]="false"
-                [rows]="10"
-                filterBy="cCursoNombre"
-                [sortField]="sortField"
-                [sortOrder]="sortOrder"
-                [layout]="layout"
-            >
-                <ng-template pTemplate="header">
-                    <div
-                        class="flex flex-column md:flex-row md:justify-content-between gap-2"
-                    >
-                        <p-iconField iconPosition="left">
-                            <p-inputIcon styleClass="pi pi-search" />
-                            <input
-                                pInputText
-                                type="text"
-                                (input)="onFilter(dv, $event)"
-                                placeholder="Buscar por área..."
-                            />
-                        </p-iconField>
-                        <div class="flex gap-1">
-                            <!-- Botón para cambiar a vista tabla -->
-                            <button
-                                pButton
-                                icon="pi pi-bars"
-                                class="p-button-text p-button-rounded p-button-sm"
-                                [class.p-button-outlined]="!modoCard"
-                                pTooltip="Vista tabla"
-                                tooltipPosition="top"
-                                aria-label="Vista tabla"
-                                [disabled]="!modoCard"
-                                (click)="cambiarVista()"
-                            ></button>
+  @if (mostrarMensajeVacio) {
+    <p-messages [(value)]="mensajeInfo" [enableService]="false" [closable]="false" />
+  } @else {
+    @if (modoCard) {
+      <p-dataView
+        #dv
+        [value]="cursos"
+        [paginator]="false"
+        [rows]="10"
+        filterBy="cCursoNombre"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+        [layout]="layout"
+      >
+        <ng-template pTemplate="header">
+          <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+            <p-iconField iconPosition="left">
+              <p-inputIcon styleClass="pi pi-search" />
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter(dv, $event)"
+                placeholder="Buscar por área..."
+              />
+            </p-iconField>
+            <div class="flex gap-1">
+              <!-- Botón para cambiar a vista tabla -->
+              <button
+                pButton
+                icon="pi pi-bars"
+                class="p-button-text p-button-rounded p-button-sm"
+                [class.p-button-outlined]="!modoCard"
+                pTooltip="Vista tabla"
+                tooltipPosition="top"
+                aria-label="Vista tabla"
+                [disabled]="!modoCard"
+                (click)="cambiarVista()"
+              ></button>
 
-                            <!-- Botón para mantener vista cards -->
-                            <button
-                                pButton
-                                icon="pi pi-th-large"
-                                class="p-button-text p-button-rounded p-button-sm"
-                                [class.p-button-outlined]="modoCard"
-                                pTooltip="Vista cards"
-                                tooltipPosition="top"
-                                aria-label="Vista cards"
-                                [disabled]="modoCard"
-                                (click)="cambiarVista()"
-                            ></button>
-                        </div>
-                    </div>
-                </ng-template>
-
-                <ng-template let-products pTemplate="gridItem">
-                    <div class="cursos gap-4 py-2">
-                        @for (curso of cursos; track curso) {
-                            <app-area-card
-                                [curso]="curso"
-                                [iEvaluacionIdHashed]="iEvaluacionIdHashed"
-                                (dialogSubirArchivoEvent)="
-                                    recibirDatosParaSubirArchivo($event)
-                                "
-                                (dialogConfigurarNivelLogroEvent)="
-                                    recibirDatosParaConfigurarNivelLogro($event)
-                                "
-                                (dialogImportarResultados)="
-                                    importarResultados($event)
-                                "
-                                (dialogGuardarResultadosOnline)="
-                                    guardarResultadosOnline($event)
-                                "
-                            ></app-area-card>
-                        }
-                    </div>
-                </ng-template>
-            </p-dataView>
-        }
-        @if (!modoCard) {
-            <div
-                class="flex flex-column md:flex-row md:justify-content-between gap-2 mb-4"
-            >
-                <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search" />
-                    <input
-                        pInputText
-                        type="text"
-                        placeholder="Buscar por área..."
-                        class="w-full md:w-20rem"
-                        (input)="onFilterTable($event)"
-                    />
-                </p-iconField>
-
-                <div class="flex gap-1">
-                    <button
-                        pButton
-                        icon="pi pi-bars"
-                        class="p-button-text p-button-rounded p-button-sm"
-                        [class.p-button-outlined]="!modoCard"
-                        pTooltip="Vista tabla"
-                        tooltipPosition="top"
-                        [disabled]="!modoCard"
-                        aria-label="Vista tabla"
-                        (click)="cambiarVista()"
-                    ></button>
-
-                    <button
-                        pButton
-                        icon="pi pi-th-large"
-                        class="p-button-text p-button-rounded p-button-sm"
-                        [class.p-button-outlined]="modoCard"
-                        pTooltip="Vista cards"
-                        tooltipPosition="top"
-                        [disabled]="modoCard"
-                        aria-label="Vista cards"
-                        (click)="cambiarVista()"
-                    ></button>
-                </div>
+              <!-- Botón para mantener vista cards -->
+              <button
+                pButton
+                icon="pi pi-th-large"
+                class="p-button-text p-button-rounded p-button-sm"
+                [class.p-button-outlined]="modoCard"
+                pTooltip="Vista cards"
+                tooltipPosition="top"
+                aria-label="Vista cards"
+                [disabled]="modoCard"
+                (click)="cambiarVista()"
+              ></button>
             </div>
+          </div>
+        </ng-template>
 
-            <app-simple-lista-areas
+        <ng-template let-products pTemplate="gridItem">
+          <div class="cursos gap-4 py-2">
+            @for (curso of cursos; track curso) {
+              <app-area-card
+                [curso]="curso"
                 [iEvaluacionIdHashed]="iEvaluacionIdHashed"
-                [cursosFromParent]="cursos"
                 (dialogSubirArchivoEvent)="recibirDatosParaSubirArchivo($event)"
-                (dialogConfigurarNivelLogroEvent)="
-                    recibirDatosParaConfigurarNivelLogro($event)
-                "
+                (dialogConfigurarNivelLogroEvent)="recibirDatosParaConfigurarNivelLogro($event)"
                 (dialogImportarResultados)="importarResultados($event)"
-                (dialogGuardarResultadosOnline)="
-                    guardarResultadosOnline($event)
-                "
-                (dialogGuardarResultadosOnline)="
-                    guardarResultadosOnline($event)
-                "
-                (solicitudActualizacion)="
-                    obtenerAreasPorEvaluacionyEspecialista()
-                "
-            ></app-simple-lista-areas>
-        }
+                (dialogGuardarResultadosOnline)="guardarResultadosOnline($event)"
+              ></app-area-card>
+            }
+          </div>
+        </ng-template>
+      </p-dataView>
     }
+    @if (!modoCard) {
+      <div class="flex flex-column md:flex-row md:justify-content-between gap-2 mb-4">
+        <p-iconField iconPosition="left">
+          <p-inputIcon styleClass="pi pi-search" />
+          <input
+            pInputText
+            type="text"
+            placeholder="Buscar por área..."
+            class="w-full md:w-20rem"
+            (input)="onFilterTable($event)"
+          />
+        </p-iconField>
+
+        <div class="flex gap-1">
+          <button
+            pButton
+            icon="pi pi-bars"
+            class="p-button-text p-button-rounded p-button-sm"
+            [class.p-button-outlined]="!modoCard"
+            pTooltip="Vista tabla"
+            tooltipPosition="top"
+            [disabled]="!modoCard"
+            aria-label="Vista tabla"
+            (click)="cambiarVista()"
+          ></button>
+
+          <button
+            pButton
+            icon="pi pi-th-large"
+            class="p-button-text p-button-rounded p-button-sm"
+            [class.p-button-outlined]="modoCard"
+            pTooltip="Vista cards"
+            tooltipPosition="top"
+            [disabled]="modoCard"
+            aria-label="Vista cards"
+            (click)="cambiarVista()"
+          ></button>
+        </div>
+      </div>
+
+      <app-simple-lista-areas
+        [iEvaluacionIdHashed]="iEvaluacionIdHashed"
+        [cursosFromParent]="cursos"
+        (dialogSubirArchivoEvent)="recibirDatosParaSubirArchivo($event)"
+        (dialogConfigurarNivelLogroEvent)="recibirDatosParaConfigurarNivelLogro($event)"
+        (dialogImportarResultados)="importarResultados($event)"
+        (dialogGuardarResultadosOnline)="guardarResultadosOnline($event)"
+        (dialogGuardarResultadosOnline)="guardarResultadosOnline($event)"
+        (solicitudActualizacion)="obtenerAreasPorEvaluacionyEspecialista()"
+        (dialogActivarDescarga)="recibirDatosParaActivarDescarga($event)"
+      >
+        ></app-simple-lista-areas
+      >
+    }
+  }
 </app-container-page>
 
 <app-subir-archivo-preguntas
-    #subirArchivoPreguntasRef
-    (archivoSubidoEvent)="actualizarEstadoArchivoSubido($event)"
+  #subirArchivoPreguntasRef
+  (archivoSubidoEvent)="actualizarEstadoArchivoSubido($event)"
 ></app-subir-archivo-preguntas>
 
 <app-importar-resultados
-    #importarResultadosRef
-    (archivoSubidoEvent)="actualizarEstadoResultadosImportados($event)"
+  #importarResultadosRef
+  (archivoSubidoEvent)="actualizarEstadoResultadosImportados($event)"
 ></app-importar-resultados>
 
-<app-guardar-resultados-online
-    #guardarResultadosOnlineRef
-></app-guardar-resultados-online>
+<app-guardar-resultados-online #guardarResultadosOnlineRef></app-guardar-resultados-online>
 
-<app-configurar-nivel-logro
-    #configurarNivelLogroRef
-></app-configurar-nivel-logro>
+<app-configurar-nivel-logro #configurarNivelLogroRef></app-configurar-nivel-logro>
+
+<app-activar-descarga
+  #activarDescargaRef
+  (actualizarEstadoDescargaEvent)="actualizarEstadoDescarga($event)"
+></app-activar-descarga>

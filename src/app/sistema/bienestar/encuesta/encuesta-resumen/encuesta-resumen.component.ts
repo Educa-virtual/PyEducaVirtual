@@ -1,13 +1,22 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { DatosEncuestaService } from '../../services/datos-encuesta.service';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
 import { WordcloudChartComponent } from './wordcloud-chart/wordcloud-chart.component';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-encuesta-resumen',
@@ -16,14 +25,30 @@ import { WordcloudChartComponent } from './wordcloud-chart/wordcloud-chart.compo
   templateUrl: './encuesta-resumen.component.html',
   styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
-export class EncuestaResumenComponent implements OnInit {
+export class EncuestaResumenComponent implements OnInit, AfterViewInit {
+  @ViewChild('filtros') filtros: OverlayPanel;
+  @ViewChild('overlayAnchor') overlayAnchorRef: ElementRef;
+
   perfil: any;
   iEncuId: number;
   cEncuNombre: string;
   preguntas: Array<any>;
   tipos_reportes: Array<object>;
   tipos_graficos: Array<object>;
-  a;
+  es_especialista: boolean = false;
+
+  formFiltros: FormGroup;
+  nivel_tipos: Array<object>;
+  nivel_grados: Array<object>;
+  tipo_sectores: Array<object>;
+  zonas: Array<object>;
+  ugeles: Array<object>;
+  distritos: Array<object>;
+  ies: Array<object>;
+  secciones: Array<object>;
+  sexos: Array<object>;
+  filtros_aplicados: number = 0;
+
   formResumen: FormGroup;
   formResumenArray: FormArray;
 
@@ -49,14 +74,18 @@ export class EncuestaResumenComponent implements OnInit {
     private funcionesBienestar: FuncionesBienestarService,
     private store: LocalStoreService,
     private route: ActivatedRoute,
-    private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cf: ChangeDetectorRef
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.id || 0;
     });
     this.breadCrumbItems = [
+      {
+        label: 'Bienestar social',
+      },
       {
         label: 'Gestionar encuestas',
         routerLink: '/bienestar/gestionar-encuestas',
@@ -83,56 +112,171 @@ export class EncuestaResumenComponent implements OnInit {
         iEncuPregId: [null],
         iTipoGrafico: [this.GRAFICO_BARRA],
         iTipoReporte: [this.TIPO_REPORTE_INDIVIDUAL],
-        ilimitePalabras: [null],
-        jsonEtiquetas: [null],
-        cEtiqueta: [null],
+      });
+      this.formFiltros = this.fb.group({
+        iNivelTipoId: [null],
+        iTipoSectorId: [null],
+        iZonaId: [null],
+        iUgelId: [null],
+        iDsttId: [null],
+        iIieeId: [null],
+        iNivelGradoId: [null],
+        iSeccionId: [null],
+        cPersSexo: [null],
       });
     } catch (error) {
       console.error('Error creando formulario:', error);
     }
 
+    this.datosEncuestas
+      .getEncuestaParametros({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+      })
+      .subscribe((data: any) => {
+        this.distritos = this.datosEncuestas.getDistritos(data?.distritos);
+        this.secciones = this.datosEncuestas.getSecciones(data?.secciones);
+        this.zonas = this.datosEncuestas.getZonas(data?.zonas);
+        this.tipo_sectores = this.datosEncuestas.getTipoSectores(data?.tipo_sectores);
+        this.ugeles = this.datosEncuestas.getUgeles(data?.ugeles);
+        this.nivel_tipos = this.datosEncuestas.getNivelesTipos(data?.nivel_tipos);
+        this.ies = this.datosEncuestas.getInstitucionesEducativas(data?.instituciones_educativas);
+        this.distritos = this.datosEncuestas.getDistritos(data?.distritos);
+        this.sexos = this.datosEncuestas.getSexos();
+        this.datosEncuestas.getNivelesGrados(data?.nivel_grados);
+        if (this.nivel_tipos && this.nivel_tipos.length == 1) {
+          const nivel_tipo = this.nivel_tipos[0]['value'];
+          this.formFiltros.get('iNivelTipoId')?.setValue(nivel_tipo);
+          this.filterInstitucionesEducativas();
+        }
+      });
+
     if (this.iEncuId) {
       this.verEncuesta();
     }
 
+    this.formFiltros.get('iNivelTipoId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iNivelGradoId')?.setValue(null);
+      this.nivel_grados = null;
+      this.filterNivelesGrados(value);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iDsttId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iZonaId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iTipoSectorId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iUgelId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iDsttId')?.setValue(null);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.distritos = null;
+      this.filterInstitucionesEducativas();
+      this.filterDistritos(value);
+    });
+
     this.tipos_reportes = this.datosEncuestas.getTiposReportes();
     this.tipos_graficos = this.datosEncuestas.getTiposGraficos();
 
-    this.datosEncuestas.verResumen(this.formResumen.value).subscribe({
-      next: (data: any) => {
-        if (data.data.length) {
-          this.preguntas = data.data;
-          this.preguntas.forEach((pregunta: any) => {
-            if (!pregunta.resumen) {
-              pregunta.resumen = this.formatearDataVacia();
-            } else {
-              pregunta.resumen = JSON.parse(pregunta.resumen);
-              pregunta.resumen_grafico = this.formatearDataPrimeChart(pregunta.resumen);
-              pregunta.resumen_wordcloud = this.formatearDataWordcloud(pregunta.resumen);
-            }
-          });
-          this.formResumenArray = this.fb.array(
-            this.preguntas.map((pregunta: any) =>
-              this.fb.group({
-                iCredEntPerfId: [this.perfil.iCredEntPerfId, Validators.required],
-                iEncuId: [this.iEncuId, Validators.required],
-                iEncuPregId: [pregunta.iEncuPregId],
-                iTipoGrafico: [this.GRAFICO_BARRA], // valor por defecto
-                iTipoReporte: [this.TIPO_REPORTE_INDIVIDUAL], // valor por defecto
-                ilimitePalabras: [null],
-                jsonEtiquetas: [null],
-                cEtiqueta: [null],
-              })
-            )
-          );
-        }
-      },
-      error: error => {
-        console.error('Error obteniendo encuesta:', error);
-      },
-    });
-
+    this.verResumen();
     this.formatearGraficos();
+  }
+
+  filterNivelesTipos() {
+    this.nivel_tipos = this.datosEncuestas.filterNivelesTipos();
+  }
+
+  filterNivelesGrados(iNivelTipoId: number) {
+    this.nivel_grados = this.datosEncuestas.filterNivelesGrados(iNivelTipoId);
+  }
+
+  filterDistritos(iUgelId: number) {
+    this.distritos = this.datosEncuestas.filterDistritos(iUgelId);
+  }
+
+  filterInstitucionesEducativas() {
+    this.ies = null;
+    const iNivelTipoId = this.formFiltros.get('iNivelTipoId')?.value;
+    const iDsttId = this.formFiltros.get('iDsttId')?.value;
+    const iZonaId = this.formFiltros.get('iZonaId')?.value;
+    const iTipoSectorId = this.formFiltros.get('iTipoSectorId')?.value;
+    const iUgelId = this.formFiltros.get('iUgelId')?.value;
+    this.ies = this.datosEncuestas.filterInstitucionesEducativas(
+      iNivelTipoId,
+      iDsttId,
+      iZonaId,
+      iTipoSectorId,
+      iUgelId
+    );
+    if (this.ies && this.ies.length === 1) {
+      this.formFiltros.get('iIieeId')?.setValue(this.ies[0]['value']);
+    }
+  }
+
+  verResumen() {
+    this.datosEncuestas
+      .verResumen({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iEncuId: this.iEncuId,
+        iTipoReporte: this.TIPO_REPORTE_INDIVIDUAL,
+        iNivelTipoId: this.formFiltros.get('iNivelTipoId')?.value,
+        iTipoSectorId: this.formFiltros.get('iTipoSectorId')?.value,
+        iZonaId: this.formFiltros.get('iZonaId')?.value,
+        iUgelId: this.formFiltros.get('iUgelId')?.value,
+        iDsttId: this.formFiltros.get('iDsttId')?.value,
+        iIieeId: this.formFiltros.get('iIieeId')?.value,
+        iNivelGradoId: this.formFiltros.get('iNivelGradoId')?.value,
+        iSeccionId: this.formFiltros.get('iSeccionId')?.value,
+        cPersSexo: this.formFiltros.get('cPersSexo')?.value,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.contarFiltros();
+          if (data.data.length) {
+            this.preguntas = data.data;
+            this.preguntas.forEach((pregunta: any) => {
+              if (!pregunta.resumen) {
+                pregunta.resumen = this.formatearDataVacia();
+              } else {
+                pregunta.resumen = JSON.parse(pregunta.resumen);
+                pregunta.resumen_grafico = this.formatearDataPrimeChart(pregunta.resumen);
+                pregunta.resumen_wordcloud = this.formatearDataWordcloud(pregunta.resumen);
+              }
+            });
+            this.formResumenArray = this.fb.array(
+              this.preguntas.map((pregunta: any) =>
+                this.fb.group({
+                  iCredEntPerfId: [this.perfil.iCredEntPerfId, Validators.required],
+                  iEncuId: [this.iEncuId, Validators.required],
+                  iEncuPregId: [pregunta.iEncuPregId],
+                  iTipoGrafico: [this.GRAFICO_BARRA], // valor por defecto
+                  iTipoReporte: [this.TIPO_REPORTE_INDIVIDUAL], // valor por defecto
+                })
+              )
+            );
+          }
+        },
+        error: error => {
+          this.contarFiltros();
+          console.error('Error obteniendo encuesta:', error);
+        },
+      });
+  }
+
+  contarFiltros() {
+    this.filtros_aplicados = Object.values(this.formFiltros.value).filter(
+      (value: any) => value !== null && value !== ''
+    ).length;
+  }
+
+  ngAfterViewInit() {
+    this.cf.detectChanges();
   }
 
   formatearGraficos() {
@@ -163,15 +307,25 @@ export class EncuestaResumenComponent implements OnInit {
       },
     };
     this.options_wordcloud = {
+      elements: {
+        word: {
+          size: ctx => {
+            const weight = ctx.parsed.y;
+            return Math.max(20, weight);
+          },
+          padding: 5,
+          rotate: 0,
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
       layout: {
         padding: 10,
       },
       fit: true,
-      minRotation: 0,
-      maxRotation: 0,
       autoGrow: {
-        maxTries: 2,
-        scalingFactor: 1.7,
+        maxTries: 300,
+        scalingFactor: () => 1.5,
       },
       plugins: {
         legend: {

@@ -62,6 +62,9 @@ export class EncuestaPreguntasComponent implements OnInit {
     });
     this.breadCrumbItems = [
       {
+        label: 'Bienestar social',
+      },
+      {
         label: 'Gestionar encuestas',
         routerLink: '/bienestar/gestionar-encuestas',
       },

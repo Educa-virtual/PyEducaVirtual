@@ -76,6 +76,9 @@ export class EncuestaVerComponent implements OnInit {
     if (this.puede_editar) {
       this.breadCrumbItems = [
         {
+          label: 'Bienestar social',
+        },
+        {
           label: 'Gestionar encuestas',
           routerLink: '/bienestar/gestionar-encuestas',
         },
@@ -85,6 +88,9 @@ export class EncuestaVerComponent implements OnInit {
       ];
     } else {
       this.breadCrumbItems = [
+        {
+          label: 'Bienestar social',
+        },
         {
           label: 'Gestionar encuestas',
           routerLink: '/bienestar/gestionar-encuestas',

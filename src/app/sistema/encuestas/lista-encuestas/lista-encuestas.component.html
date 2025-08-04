@@ -1,10 +1,8 @@
 <p-panel class="lista-categoria">
-    <ng-template pTemplate="header">
-        <div class="flex justify-content-between align-items-center w-full">
-            <span class="text-xl font-bold text-primary">{{
-                categoria?.cNombre
-            }}</span>
-            <!--<button
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center w-full">
+      <span class="text-xl font-bold text-primary">{{ categoria?.cNombre }}</span>
+      <!--<button
                 pButton
                 pRipple
                 label="Nueva"
@@ -12,34 +10,34 @@
                 class="p-button-success"
             ></button>
         -->
-            <button
-                pButton
-                pRipple
-                label="Nueva"
-                icon="pi pi-plus"
-                class="p-button-success"
-                (click)="abrirDialogoNuevaEncuesta()"
-            ></button>
-        </div>
-    </ng-template>
+      <button
+        pButton
+        pRipple
+        label="Nueva"
+        icon="pi pi-plus"
+        class="p-button-success"
+        (click)="abrirDialogoNuevaEncuesta()"
+      ></button>
+    </div>
+  </ng-template>
 
-    <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="true"
-        [data]="dataEncuestas"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        sortMode="single"
-        sortField="dtFechaInicio"
-        [sortOrder]="-1"
-        [(selectedRowData)]="selectedItem"
-        [actions]="actions"
-        [showAdvancedFilter]="true"
-        [indiceColumnaBuscar]="1"
-        [showAdvancedFilter]="false"
-        [searchPlaceholder]="'Buscar por título de encuesta...'"
-    >
-    </app-table-primeng>
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="dataEncuestas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    sortMode="single"
+    sortField="dtFechaInicio"
+    [sortOrder]="-1"
+    [(selectedRowData)]="selectedItem"
+    [actions]="actions"
+    [showAdvancedFilter]="true"
+    [indiceColumnaBuscar]="1"
+    [showAdvancedFilter]="false"
+    [searchPlaceholder]="'Buscar por título de encuesta...'"
+  >
+  </app-table-primeng>
 </p-panel>
 
 <p-toast></p-toast>
@@ -50,16 +48,17 @@
 </app-gestion-encuesta-configuracion>-->
 
 <app-accesos-encuesta
-    [visible]="mostrarDialogoAccesosEncuesta"
-    [encuesta]="selectedItem"
-    (visibleChange)="cerrarDialogoAccesosEncuesta()"
-    (mostrarDialogoAccesosEncuesta)="abrirDialogoAccesosEncuesta()"
+  [visible]="mostrarDialogoAccesosEncuesta"
+  [encuesta]="selectedItem"
+  (visibleChange)="cerrarDialogoAccesosEncuesta()"
+  (mostrarDialogoAccesosEncuesta)="abrirDialogoAccesosEncuesta()"
 >
 </app-accesos-encuesta>
 
 <app-nueva-encuesta
-    [visible]="mostrarDialogoNuevaEncuesta"
-    (visibleChange)="cerrarDialogoNuevaEncuesta()"
-    (mostrarDialogoNuevaEncuesta)="abrirDialogoNuevaEncuesta()"
+  [visible]="mostrarDialogoNuevaEncuesta"
+  [categoria]="categoria"
+  (visibleChange)="cerrarDialogoNuevaEncuesta()"
+  (mostrarDialogoNuevaEncuesta)="abrirDialogoNuevaEncuesta()"
 >
 </app-nueva-encuesta>

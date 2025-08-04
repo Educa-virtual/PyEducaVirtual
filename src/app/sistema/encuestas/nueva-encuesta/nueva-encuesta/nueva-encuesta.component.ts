@@ -1,86 +1,90 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { PrimengModule } from '@/app/primeng.module'
-import { MenuItem } from 'primeng/api'
-import { InformacionGeneralComponent } from '../informacion-general/informacion-general.component'
-import { PoblacionObjetivoComponent } from '../poblacion-objetivo/poblacion-objetivo.component'
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PrimengModule } from '@/app/primeng.module';
+import { MenuItem } from 'primeng/api';
+import { InformacionGeneralComponent } from '../informacion-general/informacion-general.component';
+import { PoblacionObjetivoComponent } from '../poblacion-objetivo/poblacion-objetivo.component';
 @Component({
-    selector: 'app-nueva-encuesta',
-    standalone: true,
-    imports: [
-        PrimengModule,
-        CommonModule,
-        InformacionGeneralComponent,
-        PoblacionObjetivoComponent,
-    ],
-    templateUrl: './nueva-encuesta.component.html',
-    styleUrls: ['./nueva-encuesta.component.scss'],
+  selector: 'app-nueva-encuesta',
+  standalone: true,
+  imports: [PrimengModule, CommonModule, InformacionGeneralComponent, PoblacionObjetivoComponent],
+  templateUrl: './nueva-encuesta.component.html',
+  styleUrls: ['./nueva-encuesta.component.scss'],
 })
 export class NuevaEncuestaComponent implements OnInit {
-    @Input() visible: boolean = false
-    @Output() visibleChange = new EventEmitter<boolean>()
-    @Output() mostrarDialogoNuevaEncuesta = new EventEmitter<any>()
-    title: string = 'Nueva Encuesta'
-    items: MenuItem[] = []
-    activeIndex: number = 0
+  @Input() visible: boolean = false;
+  @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() mostrarDialogoNuevaEncuesta = new EventEmitter<any>();
+  @ViewChild(InformacionGeneralComponent) informacionGeneral!: InformacionGeneralComponent;
+  @Input() categoria: any = null;
+  //title: string = 'Nueva Encuesta'
+  items: MenuItem[] = [];
+  activeIndex: number = 0;
 
-    ngOnInit() {
-        this.items = [
-            {
-                label: 'Información General',
-            },
-            {
-                label: 'Población Objetivo',
-            },
-        ]
-    }
+  ngOnInit() {
+    this.items = [
+      {
+        label: 'Información general',
+      },
+      {
+        label: 'Población objetivo',
+      },
+    ];
+  }
 
-    nextStep() {
-        if (this.activeIndex < this.items.length - 1) {
-            this.activeIndex++
-        }
-    }
-
-    prevStep() {
-        if (this.activeIndex > 0) {
-            this.activeIndex--
-        }
+  async nextStep() {
+    if (this.activeIndex == 0) {
+      const result = await this.informacionGeneral.guardarConfiguracion();
+      if (result === false) {
+        return;
+      }
     }
 
-    goToStep(index: number) {
-        if (index >= 0 && index < this.items.length) {
-            this.activeIndex = index
-        }
+    if (this.activeIndex < this.items.length - 1) {
+      this.activeIndex++;
     }
+  }
 
-    isFirstStep(): boolean {
-        return this.activeIndex === 0
+  prevStep() {
+    if (this.activeIndex > 0) {
+      this.activeIndex--;
     }
+  }
 
-    isLastStep(): boolean {
-        return this.activeIndex === this.items.length - 1
+  goToStep(index: number) {
+    if (index >= 0 && index < this.items.length) {
+      this.activeIndex = index;
     }
+  }
 
-    getCurrentStep(): number {
-        return this.activeIndex
-    }
+  isFirstStep(): boolean {
+    return this.activeIndex === 0;
+  }
 
-    getTotalSteps(): number {
-        return this.items.length
-    }
+  isLastStep(): boolean {
+    return this.activeIndex === this.items.length - 1;
+  }
 
-    onNextFromInfoGeneral() {
-        this.nextStep()
-    }
+  getCurrentStep(): number {
+    return this.activeIndex;
+  }
 
-    onFinish() {
-        this.onHide()
-    }
-    onHide() {
-        this.visible = false
-        this.visibleChange.emit(this.visible)
-    }
-    onNextFromPoblacionObjetivo() {
-        this.nextStep()
-    }
+  getTotalSteps(): number {
+    return this.items.length;
+  }
+
+  onNextFromInfoGeneral() {
+    this.nextStep();
+  }
+
+  onFinish() {
+    this.onHide();
+  }
+  onHide() {
+    this.visible = false;
+    this.visibleChange.emit(this.visible);
+  }
+  onNextFromPoblacionObjetivo() {
+    this.nextStep();
+  }
 }

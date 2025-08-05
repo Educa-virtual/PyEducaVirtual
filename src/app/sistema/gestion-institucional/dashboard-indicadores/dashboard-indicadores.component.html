@@ -1,3 +1,15 @@
-<p-chart [type]="chartType" [data]="chartData" [options]="chartOptions"> </p-chart>
+<app-container-page [title]="'DASHBOARD - Indicadores'" [actions]="[]" (accionBtnItem)="([])"
+  ><p-toast />
 
-<button (click)="chartType = 'line'">Cambiar a línea</button>
+  <div class="dashboard">
+    <div class="indicator-card" *ngFor="let indicador of indicadores">
+      <h3>{{ indicador.titulo }}</h3>
+      <p-chart
+        [type]="indicador.chartType"
+        [data]="indicador.chartData"
+        [options]="indicador.chartOptions"
+        styleClass="chart"
+      ></p-chart>
+    </div>
+  </div>
+</app-container-page>

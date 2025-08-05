@@ -1,115 +1,117 @@
 import { Component } from '@angular/core';
 
-import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { ChartOptions } from 'chart.js';
 
 import { PrimengModule } from '@/app/primeng.module';
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 
 @Component({
   selector: 'app-dashboard-indicadores',
   standalone: true,
-  imports: [PrimengModule],
+  imports: [PrimengModule, ContainerPageComponent],
   templateUrl: './dashboard-indicadores.component.html',
   styleUrl: './dashboard-indicadores.component.scss',
 })
 export class DashboardIndicadoresComponent {
-  options_bar: ChartOptions;
-  options_pie: any;
-  options_wordcloud: any;
-
-  chartType: any = 'bar';
-
-  chartData: ChartConfiguration['data'] = {
-    labels: ['Enero', 'Febrero', 'Marzo'],
-    datasets: [
-      {
-        label: 'Ventas 2025',
-        data: [150, 200, 170],
-        backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726'],
+  indicadores: {
+    titulo: string;
+    chartType: 'bar' | 'line' | 'scatter' | 'bubble' | 'pie' | 'doughnut' | 'polarArea' | 'radar';
+    chartData: any;
+    chartOptions: any;
+  }[] = [
+    {
+      titulo: 'Indicador de Desempeño',
+      chartType: 'bar',
+      chartData: {
+        labels: ['Alto', 'Medio', 'Bajo'],
+        datasets: [
+          {
+            label: 'Estudiantes',
+            data: [45, 30, 25],
+            backgroundColor: ['#4caf50', '#ffc107', '#f44336'],
+          },
+        ],
       },
-    ],
-  };
-
-  chartOptions: ChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Ventas por Mes',
-      },
+      chartOptions: this.getDefaultOptions('Desempeño Académico'),
     },
-  };
+    {
+      titulo: 'Indicador de Faltas y Tardanzas',
+      chartType: 'doughnut',
+      chartData: {
+        labels: ['Faltas', 'Tardanzas'],
+        datasets: [
+          {
+            data: [70, 30],
+            backgroundColor: ['#f44336', '#ff9800'],
+          },
+        ],
+      },
+      chartOptions: this.getDefaultOptions('Faltas y Tardanzas'),
+    },
+    {
+      titulo: 'Indicador de Rendimiento',
+      chartType: 'line',
+      chartData: {
+        labels: ['Bimestre 1', 'Bimestre 2', 'Bimestre 3', 'Bimestre 4'],
+        datasets: [
+          {
+            label: 'Promedio General',
+            data: [13.5, 14.2, 14.8, 15.1],
+            fill: false,
+            borderColor: '#42A5F5',
+            tension: 0.4,
+          },
+        ],
+      },
+      chartOptions: this.getDefaultOptions('Rendimiento Académico'),
+    },
+    {
+      titulo: 'Indicador de Deserción',
+      chartType: 'pie',
+      chartData: {
+        labels: ['Matriculados', 'Desertores'],
+        datasets: [
+          {
+            data: [95, 5],
+            backgroundColor: ['#2196f3', '#e91e63'],
+          },
+        ],
+      },
+      chartOptions: this.getDefaultOptions('Deserción Escolar'),
+    },
+    {
+      titulo: 'Indicador de Matriculados',
+      chartType: 'bar',
+      chartData: {
+        labels: ['Inicial', 'Primaria', 'Secundaria'],
+        datasets: [
+          {
+            label: 'Estudiantes',
+            data: [120, 300, 250],
+            backgroundColor: ['#3f51b5', '#009688', '#8bc34a'],
+          },
+        ],
+      },
+      chartOptions: this.getDefaultOptions('Estudiantes Matriculados'),
+    },
+  ];
 
-  formatearGraficos() {
-    this.options_bar = {
+  getDefaultOptions(title: string): ChartOptions {
+    return {
       responsive: true,
-      maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: false,
+          display: true,
+          position: 'top',
         },
-      },
-      scales: {
-        y: {
-          grace: 5,
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1,
+        title: {
+          display: true,
+          text: title,
+          font: {
+            size: 16,
           },
         },
       },
-    };
-    this.options_pie = {
-      radius: '50%',
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-    };
-    this.options_wordcloud = {
-      layout: {
-        padding: 10,
-      },
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-    };
-  }
-
-  formatearDataPrimeChart(resumen: any) {
-    const documentStyle = getComputedStyle(document.documentElement);
-    resumen = resumen.slice(0, 15); // Limitar a 15 palabras
-
-    const alternativas = resumen.map((item: any) => item.alternativa);
-    const cantidad = resumen.map((item: any) => item.cantidad);
-
-    const colorVars = ['--red-500', '--yellow-500', '--green-500', '--cyan-500', '--blue-500'];
-
-    const hoverColorVars = ['--red-400', '--yellow-400', '--green-400', '--cyan-400', '--blue-400'];
-
-    // Genera el array de colores según la cantidad de alternativas
-    const backgroundColors = alternativas.map((_: any, idx: number) =>
-      documentStyle.getPropertyValue(colorVars[idx % colorVars.length])
-    );
-    const hoverBackgroundColors = alternativas.map((_: any, idx: number) =>
-      documentStyle.getPropertyValue(hoverColorVars[idx % colorVars.length])
-    );
-
-    return {
-      labels: alternativas,
-      datasets: [
-        {
-          label: 'Respuestas',
-          backgroundColor: backgroundColors,
-          hoverBackgroundColor: hoverBackgroundColors,
-          data: cantidad,
-        },
-      ],
     };
   }
 }

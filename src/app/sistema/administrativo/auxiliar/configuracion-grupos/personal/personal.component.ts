@@ -1,4 +1,10 @@
-import { Component, inject, Input } from '@angular/core'
+import {
+    Component,
+    inject,
+    Input,
+    SimpleChanges,
+    OnChanges,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
@@ -13,8 +19,9 @@ import { MessageService } from 'primeng/api'
     templateUrl: './personal.component.html',
     styleUrl: './personal.component.scss',
 })
-export class PersonalComponent {
+export class PersonalComponent implements OnChanges {
     @Input() personal: any[] = []
+    @Input() datosGrupos: any[] = []
     inicio: Date = new Date()
     fin: Date = new Date()
     seleccionarTodo = false
@@ -33,6 +40,15 @@ export class PersonalComponent {
         this.iSedeId = this.constantesService.iSedeId
         this.iYAcadId = this.constantesService.iYAcadId
     }
+    ngOnChanges(changes: SimpleChanges): void {
+        // if (changes['datosGrupos']) {
+        //     console.log('dato cambió:', changes['datosGrupos'].currentValue);
+        // }
+        if (changes['personal']) {
+            console.log('personal cambió:', changes['personal'].currentValue)
+            this.personal = [...changes['personal'].currentValue]
+        }
+    }
 
     // Agregar grupo Seleccionado
     cambiarSeleccion(lista: any) {
@@ -42,7 +58,7 @@ export class PersonalComponent {
 
         if (!encontrado) {
             lista.seleccionar = 1
-            this.grupoSeleccionado.push(lista)
+            this.grupoSeleccionado = [...this.grupoSeleccionado, lista]
         }
 
         this.personal = this.personal.filter(
@@ -58,7 +74,7 @@ export class PersonalComponent {
 
         if (!encontrado) {
             lista.seleccionar = 0
-            this.personal.push(lista)
+            this.personal = [...this.personal, lista]
         }
 
         this.grupoSeleccionado = this.grupoSeleccionado.filter(
@@ -67,7 +83,8 @@ export class PersonalComponent {
     }
 
     guardarPersonal() {
-        if (!this.iGrupoId || this.grupoSeleccionado.length == 0) return
+        console.log(this.grupoSeleccionado)
+        /*if (!this.iGrupoId || this.grupoSeleccionado.length == 0) return
 
         const grupoPersona = JSON.stringify(this.grupoSeleccionado)
         const params = {
@@ -80,7 +97,7 @@ export class PersonalComponent {
                 grupoPersonal: grupoPersona,
             },
         }
-        this.getInformation(params, 'guardar_persona_grupo')
+        this.getInformation(params, 'guardar_persona_grupo')*/
     }
 
     getInformation(params, accion) {
@@ -110,7 +127,29 @@ export class PersonalComponent {
                     console.log(item)
                 }
                 break
+            case 'guardar_persona_grupo':
+                const resultado = item.respuesta
+                if (resultado == 1) {
+                    const nuevoPersonal = item.persona
+                    this.grupoSeleccionado.push(nuevoPersonal)
+                    this.datosGrupos.forEach((item) => {
+                        if (item.iGrupoId == this.iGrupoId) {
+                            item.personal = this.grupoSeleccionado
+                        }
+                    })
+
+                    this.reestablecerValores()
+                    this.mensajeExito('Se registraron los personales')
+                } else {
+                    this.mensajeAlerta('No se pudo registrar el personal')
+                }
+                break
         }
+    }
+
+    reestablecerValores() {
+        this.iGrupoId = null
+        this.grupoSeleccionado = []
     }
 
     /**
@@ -128,9 +167,26 @@ export class PersonalComponent {
         }
     }
 
+    // Captura el grupo seleccionado
     verPersonal(personal: any) {
         this.iGrupoId = Number(personal.iGrupoId)
         const persona = JSON.parse(personal.personal || '[]')
         this.grupoSeleccionado = persona
+    }
+
+    mensajeExito(mensaje: any) {
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Existo en el Registro',
+            detail: mensaje,
+        })
+    }
+
+    mensajeAlerta(mensaje: any) {
+        this.messageService.add({
+            severity: 'error',
+            summary: 'Error de Registro',
+            detail: mensaje,
+        })
     }
 }

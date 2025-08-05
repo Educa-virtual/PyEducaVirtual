@@ -88,6 +88,13 @@ const routes: Routes = [
         c => c.DescargaPlantillasComponent
       ),
   },
+  {
+    path: 'dashboard-indicadores',
+    loadComponent: () =>
+      import('./dashboard-indicadores/dashboard-indicadores.component').then(
+        c => c.DashboardIndicadoresComponent
+      ),
+  },
 
   {
     path: 'ciclo',

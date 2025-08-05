@@ -260,132 +260,94 @@ const registro_asistencia = [
 ];
 
 const administracion = [
+  //Del modulo de gestion institucional
   {
     label: 'Administración',
     items: [
       {
-        label: 'Comunicados',
-        icon: 'pi pi-fw pi-bell',
-        routerLink: ['/docente/comunicados'],
+        label: 'Información de la Institución',
+        icon: 'pi pi-home',
+        routerLink: ['/gestion-institucional/Informacion-ie'],
       },
+
       {
-        label: 'Administracion de tablas maestras',
-        icon: 'pi pi-fw pi-cog',
+        label: 'Registro de condiciones operativas',
+        icon: 'pi pi-briefcase',
         items: [
           {
-            label: 'Comunicados',
-            icon: 'pi pi-fw pi-bell',
-            routerLink: ['/docente/comunicados'],
+            label: 'Gestion de Ambientes y Grados',
+            icon: 'pi pi-building-columns',
+            routerLink: ['/gestion-institucional/configGradoSeccion'],
           },
           {
-            label: 'Administracion de tablas maestras',
-            icon: 'pi pi-fw pi-cog',
-            items: [
-              // {
-              //     label: 'Registro de año escolar',
-              //     icon: 'pi pi-wrench',
-              //     routerLink: [
-              //         '/gestion-institucional/calendarioAcademico',
-              //     ],
-              // },
-              {
-                label: 'Fechas importantes',
-                icon: 'pi pi-calendar',
-                routerLink: ['/gestion-institucional/fechas-importantes'],
-              },
-              {
-                label: 'Información de la Institución',
-                icon: 'pi pi-wrench',
-                routerLink: ['/gestion-institucional/Informacion-ie'],
-              },
-              {
-                label: 'Sincronizar archivos',
-                icon: 'pi pi-wrench',
-                routerLink: ['/gestion-institucional/sincronizar-archivo'],
-              },
-              {
-                label: 'Mantenimiento de usuarios',
-                icon: 'pi pi-wrench',
-                routerLink: ['/gestion-institucional/mantenimiento-usuario'],
-              },
-            ],
+            label: 'Personal de IE',
+            icon: 'pi pi-user-plus',
+            routerLink: ['/gestion-institucional/IesPersonal'],
           },
 
           {
-            label: 'Configurar Calendario escolar',
+            label: 'Fechas importantes',
+            icon: 'pi pi-calendar',
+            routerLink: ['/gestion-institucional/fechas-importantes'],
+          },
+          {
+            label: 'Configurar calendario escolar',
+            icon: 'pi pi-lock-open',
+            routerLink: ['/gestion-institucional/apertura'],
+          },
+
+          {
+            label: 'Gestión de horarios y asignaciones',
             icon: 'pi pi-calendar',
             items: [
               {
-                label: 'Apertura de año escolar',
-                icon: 'pi pi-lock-open',
-                routerLink: ['/gestion-institucional/apertura'],
+                label: 'Configuracion de horarios',
+                icon: 'pi pi-calendar-clock',
+                routerLink: ['/horario/configurar-horario'],
+              },
+              {
+                label: 'Registro de horarios',
+                icon: 'pi pi-calendar-times',
+                routerLink: ['/horario/horario'],
               },
             ],
           },
+        ],
+      },
+      {
+        label: 'Sincronizar archivos y descarga de plantillas',
+        icon: 'pi pi-wrench',
+        routerLink: ['/gestion-institucional/sincronizar-archivo'],
+      },
 
+      {
+        label: 'Gestión de estudiantes',
+        icon: 'pi pi-fw pi-cog',
+        items: [
           {
-            label: 'Registro de condiciones operativas',
-            icon: 'pi pi-briefcase',
-            items: [
-              {
-                label: 'Gestion de Ambientes y Grados',
-                icon: 'pi pi-building-columns',
-                routerLink: ['/gestion-institucional/configGradoSeccion'],
-              },
-
-              {
-                label: 'Gestión de Personal',
-                icon: 'pi pi-users',
-                items: [
-                  {
-                    label: 'Personal de IE',
-                    icon: 'pi pi-user-plus',
-                    routerLink: ['/gestion-institucional/IesPersonal'],
-                  },
-                  // {
-                  //     label: 'Cargos',
-                  //     icon: 'pi pi-wrench',
-                  //     routerLink: ['/gestion-institucional/apertura'],
-                  // },
-                ],
-                //ConfigGradoSeccion
-              },
-              {
-                label: 'Gestión de horarios y asignaciones',
-                icon: 'pi pi-calendar',
-                items: [
-                  {
-                    label: 'Configuracion de horarios',
-                    icon: 'pi pi-calendar-clock',
-                    routerLink: ['/horario/configurar-horario'],
-                  },
-                  {
-                    label: 'horarios',
-                    icon: 'pi pi-calendar-times',
-                    routerLink: ['/horario/horario'],
-                  },
-                ],
-              },
-            ],
+            label: 'Ingresar estudiante',
+            icon: 'pi pi-fw pi-circle',
+            badge: 'NEW',
+            routerLink: ['/gestion-institucional/estudiante/registro'],
           },
           {
-            label: 'Gestión de estudiantes',
-            icon: 'pi pi-fw pi-cog',
-            items: [
-              {
-                label: 'Ingresar estudiante',
-                icon: 'pi pi-fw pi-circle',
-                badge: 'NEW',
-                routerLink: ['/gestion-institucional/estudiante/registro'],
-              },
-              {
-                label: 'Buzon de Sugerencias',
-                icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/gestion-institucional/gestionar-sugerencias'],
-              },
-            ],
+            label: 'Buzon de Sugerencias',
+            icon: 'pi pi-fw pi-envelope',
+            routerLink: ['/gestion-institucional/gestionar-sugerencias'],
           },
-          {
+        ],
+      },
+      {
+        label: 'Gestión de traslado',
+        icon: 'pi pi-folder-open',
+        routerLink: ['/gestion-institucional/gestion-traslados'],
+      },
+      {
+        label: 'Registro de vacantes',
+        icon: 'pi pi-file-import',
+        routerLink: ['/gestion-institucional/gestion-vacantes'],
+      },
+      /* {
             label: 'Gestión de Matrículas',
             icon: 'pi pi-folder',
             items: [
@@ -407,292 +369,12 @@ const administracion = [
                 badge: '',
                 routerLink: ['/gestion-institucional/matricula-masiva'],
               },
-              {
-                label: 'Gestión de traslado',
-                icon: 'pi pi-folder-open',
-                routerLink: ['/gestion-institucional/gestion-traslados'],
-              },
+              
 
-              {
-                label: 'Registro de vacantes',
-                icon: 'pi pi-file-import',
-                routerLink: ['/gestion-institucional/gestion-vacantes'],
-              },
+              
             ],
           },
-
-          {
-            label: 'Bienestar Social',
-            icon: 'pi pi-fw pi-check-square',
-            items: [
-              {
-                label: 'Consultar Fichas Socioeconómicas',
-                icon: 'pi pi-fw pi-user-edit',
-                routerLink: ['/bienestar/gestion-fichas'],
-              },
-              {
-                label: 'Gestionar encuestas',
-                icon: 'pi pi-fw pi-list-check',
-                routerLink: ['/bienestar/gestionar-encuestas'],
-              },
-              {
-                label: 'Recordatorios de cumpleaños',
-                icon: 'pi pi-fw pi-bell',
-                routerLink: ['/bienestar/recordario-fechas'],
-              },
-              {
-                label: 'Reportes e informes',
-                icon: 'pi pi-fw pi-chart-bar',
-              },
-            ],
-          },
-
-          // {
-          //     label: 'Generación de Reportes y estadísticas',
-          //     icon: 'pi pi-chart-bar',
-          //     items: [
-          //         {
-          //             label: 'Reportes',
-          //             icon: 'pi pi-book',
-          //             routerLink: ['/gestion-institucional/apertura'],
-          //         },
-          //         {
-          //             label: 'Estadisticas',
-          //             icon: 'pi pi-chart-scatter',
-          //             routerLink: ['/gestion-institucional/apertura'],
-          //         },
-          //         {
-          //             label: 'Indicadores',
-          //             icon: 'pi pi-chart-line',
-          //             routerLink: ['/gestion-institucional/apertura'],
-          //         },
-          //         {
-          //             label: 'Plantillas',
-          //             icon: 'pi pi-download',
-          //             routerLink: ['/gestion-institucional/apertura'],
-          //         },
-          //     ],
-          //     //ConfigGradoSeccion
-          // },
-
-          {
-            label: 'ERE',
-            icon: 'pi pi-pen-to-square',
-            items: [
-              // {
-              //     label: 'Configuración de ERE',
-              //     icon: 'pi pi-wrench',
-              //     routerLink: ['/gestion-institucional/apertura'],
-              // },
-              {
-                label: 'Resultados',
-                icon: 'pi pi-chart-bar',
-                routerLink: ['/ere/informes-ere'],
-              },
-              {
-                label: 'Evaluaciones',
-                icon: 'pi pi-list-check',
-                routerLink: ['/ere/evaluaciones'],
-              },
-            ],
-            //ConfigGradoSeccion
-          },
-
-          {
-            label: 'Enlaces de ayuda',
-            icon: 'pi pi-fw pi-share-alt',
-            routerLink: ['ayuda'],
-          },
-          // {
-          //     label: 'Generar Reportes y Estadisticas',
-          //     icon: 'pi pi-chart-scatter',
-          //     items: [
-          //         {
-          //             label: 'Reportes Academicos',
-          //             icon: 'pi pi-fw pi-circle',
-          //             routerLink: ['/gestion-institucional/reporte'],
-          //         },
-          //         {
-          //             label: 'Reportes Orden de Mérito',
-          //             icon: 'pi pi-fw pi-circle',
-          //             routerLink: ['/gestion-institucional/estadistica'],
-          //         },
-          //     ],
-          // },
-
-          //director buzon
-
-          {
-            label: 'Buzón de sugerencias',
-            icon: 'pi pi-fw pi-envelope',
-            routerLink: ['/buzon-director'],
-          },
-          // {
-          //     label: 'Registro de año escolar',
-          //     icon: 'pi pi-wrench',
-          //     routerLink: [
-          //         '/gestion-institucional/calendarioAcademico',
-          //     ],
-          // },
-          {
-            label: 'Información de la Institución',
-            icon: 'pi pi-wrench',
-            routerLink: ['/gestion-institucional/Informacion-ie'],
-          },
-          {
-            label: 'Sincronizar archivos',
-            icon: 'pi pi-wrench',
-            routerLink: ['/gestion-institucional/sincronizar-archivo'],
-          },
-          {
-            label: 'Mantenimiento de usuarios',
-            icon: 'pi pi-wrench',
-            routerLink: ['/gestion-institucional/mantenimiento-usuario'],
-          },
-        ],
-      },
-
-      {
-        label: 'Configurar Calendario escolar',
-        icon: 'pi pi-calendar',
-        items: [
-          {
-            label: 'Apertura de año escolar',
-            icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/apertura'],
-          },
-        ],
-      },
-
-      {
-        label: 'Registro de condiciones operativas',
-        icon: 'pi pi-briefcase',
-        items: [
-          {
-            label: 'Gestion de Ambientes y Grados',
-            icon: 'pi pi-building-columns',
-            routerLink: ['/gestion-institucional/configGradoSeccion'],
-          },
-
-          {
-            label: 'Gestión de Personal',
-            icon: 'pi pi-users',
-            items: [
-              {
-                label: 'Personal de IE',
-                icon: 'pi pi-user-plus',
-                routerLink: ['/gestion-institucional/IesPersonal'],
-              },
-              // {
-              //     label: 'Cargos',
-              //     icon: 'pi pi-wrench',
-              //     routerLink: ['/gestion-institucional/apertura'],
-              // },
-            ],
-            //ConfigGradoSeccion
-          },
-          {
-            label: 'Gestión de horarios y asignaciones',
-            icon: 'pi pi-calendar',
-            items: [
-              {
-                label: 'Configuracion de horarios',
-                icon: 'pi pi-calendar-clock',
-                routerLink: ['/horario/configurar-horario'],
-              },
-              {
-                label: 'horarios',
-                icon: 'pi pi-calendar-times',
-                routerLink: ['/horario/horario'],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        label: 'Gestión de estudiantes',
-        icon: 'pi pi-fw pi-cog',
-        items: [
-          {
-            label: 'Ingresar estudiante',
-            icon: 'pi pi-fw pi-circle',
-            badge: 'NEW',
-            routerLink: ['/gestion-institucional/estudiante/registro'],
-          },
-          {
-            label: 'Buzon de Sugerencias',
-            icon: 'pi pi-fw pi-envelope',
-            routerLink: ['/gestion-institucional/gestionar-sugerencias'],
-          },
-        ],
-      },
-      {
-        label: 'Gestión de Matrículas',
-        icon: 'pi pi-folder',
-        items: [
-          {
-            label: 'Gestionar matriculas',
-            icon: 'pi pi-fw pi-file-edit',
-            badge: '',
-            routerLink: ['/gestion-institucional/gestion-matriculas'],
-          },
-          {
-            label: 'Matrícula Individual',
-            icon: 'pi pi-fw pi-file-plus',
-            badge: '',
-            routerLink: ['/gestion-institucional/matricula-individual'],
-          },
-          {
-            label: 'Matrícula Masiva',
-            icon: 'pi pi-fw pi-file-import',
-            badge: '',
-            routerLink: ['/gestion-institucional/matricula-masiva'],
-          },
-          {
-            label: 'Gestión de traslado',
-            icon: 'pi pi-folder-open',
-            routerLink: ['/gestion-institucional/gestion-traslados'],
-          },
-
-          {
-            label: 'Registro de vacantes',
-            icon: 'pi pi-file-import',
-            routerLink: ['/gestion-institucional/gestion-vacantes'],
-          },
-        ],
-      },
-
-      {
-        label: 'Bienestar Social',
-        icon: 'pi pi-fw pi-check-square',
-        items: [
-          {
-            label: 'Consultar Fichas Socioeconómicas',
-            icon: 'pi pi-fw pi-user-edit',
-            routerLink: ['/bienestar/gestion-fichas'],
-          },
-          {
-            label: 'Gestionar encuestas',
-            icon: 'pi pi-fw pi-list-check',
-            routerLink: ['/bienestar/gestionar-encuestas'],
-          },
-          {
-            label: 'Recordatorios de cumpleaños',
-            icon: 'pi pi-fw pi-bell',
-            routerLink: ['/bienestar/recordario-fechas'],
-          },
-          {
-            label: 'Seguimiento de bienestar',
-            icon: 'pi pi-fw pi-eye',
-            routerLink: ['/bienestar/seguimiento-bienestar'],
-          },
-          {
-            label: 'Informes y estadística',
-            icon: 'pi pi-fw pi-chart-line',
-            routerLink: ['/bienestar/informe-estadistico'],
-          },
-        ],
-      },
+        */
 
       // {
       //     label: 'Generación de Reportes y estadísticas',
@@ -723,6 +405,56 @@ const administracion = [
       // },
 
       {
+        label: 'Generar Reportes y Estadisticas',
+        icon: 'pi pi-chart-scatter',
+        items: [
+          {
+            label: 'Reportes Orden de Mérito',
+            icon: 'pi pi-fw pi-circle',
+            routerLink: ['/gestion-institucional/estadistica'],
+          },
+
+          {
+            label: 'Reportes Academicos',
+            icon: 'pi pi-fw pi-circle',
+            routerLink: ['/gestion-institucional/reporte'],
+          },
+        ],
+      },
+
+      {
+        label: 'Validación de horas',
+        icon: 'pi pi-fw pi-check',
+        routerLink: ['/gestion-institucional/estadistica'],
+      },
+
+      //director buzon
+
+      // {
+      //     label: 'Registro de año escolar',
+      //     icon: 'pi pi-wrench',
+      //     routerLink: [
+      //         '/gestion-institucional/calendarioAcademico',
+      //     ],
+      // },
+
+      //director buzon
+    ],
+  },
+  {
+    label: 'Otros Módulos',
+    items: [
+      {
+        label: 'Comunicados',
+        icon: 'pi pi-fw pi-bell',
+        routerLink: ['/docente/comunicados'],
+      },
+      {
+        label: 'Buzón de sugerencias',
+        icon: 'pi pi-fw pi-envelope',
+        routerLink: ['/buzon-director'],
+      },
+      {
         label: 'ERE',
         icon: 'pi pi-pen-to-square',
         items: [
@@ -744,35 +476,41 @@ const administracion = [
         ],
         //ConfigGradoSeccion
       },
+      {
+        label: 'Mantenimiento de usuarios',
+        icon: 'pi pi-wrench',
+        routerLink: ['/gestion-institucional/mantenimiento-usuario'],
+      },
 
+      {
+        label: 'Bienestar Social',
+        icon: 'pi pi-fw pi-check-square',
+        items: [
+          {
+            label: 'Consultar Fichas Socioeconómicas',
+            icon: 'pi pi-fw pi-user-edit',
+            routerLink: ['/bienestar/gestion-fichas'],
+          },
+          {
+            label: 'Gestionar encuestas',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/bienestar/gestionar-encuestas'],
+          },
+          {
+            label: 'Recordatorios de cumpleaños',
+            icon: 'pi pi-fw pi-bell',
+            routerLink: ['/bienestar/recordario-fechas'],
+          },
+          {
+            label: 'Reportes e informes',
+            icon: 'pi pi-fw pi-chart-bar',
+          },
+        ],
+      },
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
-      },
-      // {
-      //     label: 'Generar Reportes y Estadisticas',
-      //     icon: 'pi pi-chart-scatter',
-      //     items: [
-      //         {
-      //             label: 'Reportes Academicos',
-      //             icon: 'pi pi-fw pi-circle',
-      //             routerLink: ['/gestion-institucional/reporte'],
-      //         },
-      //         {
-      //             label: 'Reportes Orden de Mérito',
-      //             icon: 'pi pi-fw pi-circle',
-      //             routerLink: ['/gestion-institucional/estadistica'],
-      //         },
-      //     ],
-      // },
-
-      //director buzon
-
-      {
-        label: 'Buzón de sugerencias',
-        icon: 'pi pi-fw pi-envelope',
-        routerLink: ['/buzon-director'],
       },
     ],
   },

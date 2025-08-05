@@ -375,52 +375,51 @@ const administracion = [
             ],
           },
         */
-
-      // {
-      //     label: 'Generación de Reportes y estadísticas',
-      //     icon: 'pi pi-chart-bar',
-      //     items: [
-      //         {
-      //             label: 'Reportes',
-      //             icon: 'pi pi-book',
-      //             routerLink: ['/gestion-institucional/apertura'],
-      //         },
-      //         {
-      //             label: 'Estadisticas',
-      //             icon: 'pi pi-chart-scatter',
-      //             routerLink: ['/gestion-institucional/apertura'],
-      //         },
-      //         {
-      //             label: 'Indicadores',
-      //             icon: 'pi pi-chart-line',
-      //             routerLink: ['/gestion-institucional/apertura'],
-      //         },
-      //         {
-      //             label: 'Plantillas',
-      //             icon: 'pi pi-download',
-      //             routerLink: ['/gestion-institucional/apertura'],
-      //         },
-      //     ],
-      //     //ConfigGradoSeccion
-      // },
-
       {
-        label: 'Generar Reportes y Estadisticas',
-        icon: 'pi pi-chart-scatter',
+        label: 'Indicadores',
+        icon: 'pi pi-chart-line',
+        routerLink: ['/gestion-institucional/apertura'],
+      },
+      {
+        label: 'Generación de Reportes y estadísticas',
+        icon: 'pi pi-chart-bar',
         items: [
           {
-            label: 'Reportes Orden de Mérito',
-            icon: 'pi pi-fw pi-circle',
-            routerLink: ['/gestion-institucional/estadistica'],
+            label: 'Reportes',
+            icon: 'pi pi-book',
+            routerLink: ['/gestion-institucional/apertura'],
           },
-
           {
-            label: 'Reportes Academicos',
-            icon: 'pi pi-fw pi-circle',
-            routerLink: ['/gestion-institucional/reporte'],
+            label: 'Estadisticas',
+            icon: 'pi pi-chart-scatter',
+            routerLink: ['/gestion-institucional/apertura'],
           },
         ],
+        //ConfigGradoSeccion
       },
+      {
+        label: 'Descarga de Plantillas',
+        icon: 'pi pi-download',
+        routerLink: ['/gestion-institucional/descargar-plantillas'],
+      },
+
+      // {
+      //   label: 'Generar Reportes y Estadisticas',
+      //   icon: 'pi pi-chart-scatter',
+      //   items: [
+      //     {
+      //       label: 'Reportes Orden de Mérito',
+      //       icon: 'pi pi-fw pi-circle',
+      //       routerLink: ['/gestion-institucional/estadistica'],
+      //     },
+
+      //     {
+      //       label: 'Reportes Academicos',
+      //       icon: 'pi pi-fw pi-circle',
+      //       routerLink: ['/gestion-institucional/reporte'],
+      //     },
+      //   ],
+      // },
 
       {
         label: 'Validación de horas',

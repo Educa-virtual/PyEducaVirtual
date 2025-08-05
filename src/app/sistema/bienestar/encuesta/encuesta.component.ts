@@ -34,6 +34,7 @@ export class EncuestaComponent implements OnInit {
   ultima_fecha_anio: Date = new Date(new Date().getFullYear(), 11, 31);
   fecha_actual: Date = new Date();
   es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   formEncuesta: FormGroup;
   formPoblacion: FormGroup;
@@ -83,7 +84,10 @@ export class EncuestaComponent implements OnInit {
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId);
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.id || null;
     });
@@ -167,6 +171,9 @@ export class EncuestaComponent implements OnInit {
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {
           const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formPoblacion.get('iNivelTipoId')?.setValue(nivel_tipo);
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          this.formPoblacion.get('iUgelId')?.setValue(this.ugeles[0]['value']);
         }
       });
 

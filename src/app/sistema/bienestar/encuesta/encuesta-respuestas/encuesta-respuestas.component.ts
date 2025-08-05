@@ -11,7 +11,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
+import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 
@@ -33,6 +33,7 @@ export class EncuestaRespuestasComponent implements OnInit {
   respuestas: Array<object>;
   respuestas_filtradas: Array<object>;
   es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
@@ -61,7 +62,10 @@ export class EncuestaRespuestasComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId);
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.id || 0;
     });
@@ -119,6 +123,9 @@ export class EncuestaRespuestasComponent implements OnInit {
           const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formFiltros.get('iNivelTipoId')?.setValue(nivel_tipo);
           this.filterInstitucionesEducativas();
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          this.formFiltros.get('iUgelId')?.setValue(this.ugeles[0]['value']);
         }
       });
 

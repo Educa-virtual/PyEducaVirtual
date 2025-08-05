@@ -16,7 +16,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
 import { WordcloudChartComponent } from './wordcloud-chart/wordcloud-chart.component';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
+import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-encuesta-resumen',
@@ -36,6 +36,7 @@ export class EncuestaResumenComponent implements OnInit, AfterViewInit {
   tipos_reportes: Array<object>;
   tipos_graficos: Array<object>;
   es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   formFiltros: FormGroup;
   nivel_tipos: Array<object>;
@@ -78,7 +79,10 @@ export class EncuestaResumenComponent implements OnInit, AfterViewInit {
     private cf: ChangeDetectorRef
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId);
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.id || 0;
     });
@@ -147,6 +151,9 @@ export class EncuestaResumenComponent implements OnInit, AfterViewInit {
           const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formFiltros.get('iNivelTipoId')?.setValue(nivel_tipo);
           this.filterInstitucionesEducativas();
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          this.formFiltros.get('iUgelId')?.setValue(this.ugeles[0]['value']);
         }
       });
 
@@ -220,6 +227,9 @@ export class EncuestaResumenComponent implements OnInit, AfterViewInit {
   }
 
   verResumen() {
+    if (this.ugeles && this.ugeles.length === 1) {
+      this.formFiltros.get('iUgelId')?.setValue(this.ugeles[0]['value']);
+    }
     this.datosEncuestas
       .verResumen({
         iCredEntPerfId: this.perfil.iCredEntPerfId,

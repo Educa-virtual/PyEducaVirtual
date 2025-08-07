@@ -175,6 +175,28 @@ const docente = [
         routerLink: ['/aula-virtual/banco-preguntas'],
       },
       // {
+      //   label: 'Informes y Estadisticas ',
+      //   icon: '',
+      //   items: [
+      //     {
+      //       label: 'Capacitate',
+      //       icon: 'pi pi-book',
+      //       routerLink: [''],
+      //     },
+      //   ]
+      // },
+      {
+        label: 'Informes y Estadisticas',
+        icon: 'pi pi-chart-line', // Agregué el icono que faltaba
+        items: [
+          {
+            label: 'Logro Alcanzado',
+            icon: 'pi pi-trophy',
+            routerLink: ['/ere/logro-alcanzado'],
+          },
+        ],
+      },
+      // {
       //     label: 'Comunicados',
       //     icon: 'pi pi-fw pi-folder',
       //     routerLink: ['/comunicados/principal'],

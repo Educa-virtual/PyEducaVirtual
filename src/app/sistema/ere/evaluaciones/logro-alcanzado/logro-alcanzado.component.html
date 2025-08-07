@@ -1,98 +1,91 @@
 <p-panel>
-    <ng-template pTemplate="header" class="encabezado">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-uppercase text-primary">
-                Registrar Logros Alcanzados
-            </h3>
-        </div>
-    </ng-template>
-    <div
-        style="
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        "
-    >
-        <div>
-            <p-inputGroup>
-                <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
-                <p-dropdown
-                    id="nivel"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccionar"
-                    styleClass="w-full"
-                >
-                </p-dropdown>
-            </p-inputGroup>
-        </div>
-        <div>
-            <p-inputGroup>
-                <p-inputGroupAddon> Sección: </p-inputGroupAddon>
-                <p-dropdown
-                    id="seccion"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccionar"
-                    styleClass="w-full"
-                >
-                </p-dropdown>
-            </p-inputGroup>
-        </div>
-        <div>
-            <p-inputGroup>
-                <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
-                <p-dropdown
-                    id="periodo"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccionar"
-                    styleClass="w-full"
-                >
-                </p-dropdown>
-            </p-inputGroup>
-        </div>
+  <ng-template pTemplate="header" class="encabezado">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Registrar Logros Alcanzados</h3>
+    </div>
+  </ng-template>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
+        <p-dropdown
+          id="nivel"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar"
+          styleClass="w-full"
+        >
+        </p-dropdown>
+      </p-inputGroup>
     </div>
     <div>
-        <app-table-primeng
-            [data]="dataSugerencias"
-            [columnas]="columns"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [searchPlaceholder]="'Buscar...'"
-            [actions]="actions"
-        ></app-table-primeng>
-    </div>
-    <!-- Registrar Logro Alcanzado-->
-    <p-dialog
-        [draggable]="false"
-        [maximizable]="true"
-        [header]="registroTitleModal"
-        [(visible)]="dialogRegistrarLogroAlcanzado"
-        [style]="{ width: '90rem', height: '870px' }"
-        [modal]="true"
-        [contentStyle]="{ overflow: 'auto' }"
-        [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-    >
-        <app-registrar-logro-alcanzado
-            (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)"
-            [selectedItem]="selectedItem"
-        ></app-registrar-logro-alcanzado>
-    </p-dialog>
-    <p-dialog
-        [draggable]="false"
-        [maximizable]="true"
-        [header]="boletaTitleModal"
-        [(visible)]="dialogBoletaLogroAlcanzado"
-        [style]="{ width: '60rem', height: '670px' }"
-        [modal]="true"
-        [contentStyle]="{ overflow: 'auto' }"
-        [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-    >
-        <app-boleta-logro
-            [selectedItem]="selectedItem"
-            (boletaLogroImprimir)="listenDialogBoleta($event)"
+      <p-inputGroup>
+        <p-inputGroupAddon> Sección: </p-inputGroupAddon>
+        <p-dropdown
+          id="seccion"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar"
+          styleClass="w-full"
         >
-        </app-boleta-logro>
-    </p-dialog>
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="cargarPeriodosEvaluacion"
+          [options]="opcionesPeriodo"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar"
+          styleClass="w-full"
+          [loading]="cargandoPeriodos"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+  </div>
+  <div>
+    <app-table-primeng
+      [data]="estudiantes"
+      [columnas]="columns"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [searchPlaceholder]="'Buscar...'"
+      [actions]="actions"
+    ></app-table-primeng>
+  </div>
+  <!-- Registrar Logro Alcanzado-->
+  <p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="registroTitleModal"
+    [(visible)]="dialogRegistrarLogroAlcanzado"
+    [style]="{ width: '90rem', height: '870px' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  >
+    <app-registrar-logro-alcanzado
+      (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)"
+      [selectedItem]="selectedItem"
+    ></app-registrar-logro-alcanzado>
+  </p-dialog>
+  <p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="boletaTitleModal"
+    [(visible)]="dialogBoletaLogroAlcanzado"
+    [style]="{ width: '60rem', height: '670px' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  >
+    <app-boleta-logro
+      [selectedItem]="selectedItem"
+      (boletaLogroImprimir)="listenDialogBoleta($event)"
+    >
+    </app-boleta-logro>
+  </p-dialog>
 </p-panel>

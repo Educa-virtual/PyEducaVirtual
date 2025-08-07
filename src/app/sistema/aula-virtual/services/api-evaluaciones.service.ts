@@ -218,4 +218,7 @@ export class ApiEvaluacionesService {
       )
       .pipe(map(resp => resp.data));
   }
+  getPeriodosEvaluacion() {
+    return this.http.get<any>('/api/evaluaciones/periodos-evaluacion');
+  }
 }

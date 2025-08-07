@@ -126,6 +126,11 @@ const estudiante = [
         icon: 'pi pi-pen-to-square',
         routerLink: ['/ere/evaluacion-practica'],
       },
+      {
+        label: 'Horario',
+        icon: 'pi pi-pen-to-square',
+        routerLink: ['/estudiante/horario'],
+      },
       /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
             {
                 label: 'Buzón de sugerencias',

@@ -387,7 +387,7 @@ const administracion = [
           {
             label: 'Reportes',
             icon: 'pi pi-book',
-            routerLink: ['/gestion-institucional/reporte-academico'],
+            routerLink: ['/gestion-institucional/reporte'],
           },
           {
             label: 'Estadisticas y ranking de mérito',

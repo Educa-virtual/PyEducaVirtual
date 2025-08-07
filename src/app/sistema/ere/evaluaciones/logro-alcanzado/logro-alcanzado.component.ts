@@ -134,6 +134,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   ) {}
   ngOnInit() {
     console.log('Logro alcanzado');
+    this.obtenerGradoSeccion();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
     //this.cargarPeriodosEvaluacion();
   }

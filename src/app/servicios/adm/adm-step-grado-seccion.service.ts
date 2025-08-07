@@ -119,231 +119,29 @@ export class AdmStepGradoSeccionService {
     iSedeId: number
     iYAcadId: number
     iNivelTipoId: number
+    iCredId: number
+
+    //Variables requeridas para el step de ambientes
+    tipo_ambiente: any[] = []
+    tipo_ubicacion: any[] = []
+    uso_ambientes: any[] = []
+    condicion_ambiente: any[] = []
+    piso_ambiente: any[] = []
+
+    //variables de secciones
+    secciones: any[] = []
+    secciones_asignadas: any[] = []
+    dias_laborables: any[] = []
+
+    //variables de plan de estudios
+    servicio_educativo: any[] = []
+    programacion_curricular: any[] = []
+
+    //variables de horas del docente
+    docentes: any = []
 
     constructor() {
-        this.initializeData()
-    }
-
-    private initializeData(): void {
-        this.grados = [
-            {
-                iConfigGradoId: 1,
-                iCicloId: 3,
-                iGradoId: 1,
-                iFasesPromId: 1,
-                iYAcadId: 3,
-                iSedeId: 1,
-                bConfigGradoEstado: 1,
-                cConfigGradoObs: '',
-                cYAcadNombre: '2024',
-                cFase: 'Fase Regular',
-                cCiclo: 'CICLO III',
-                cGrado: 'PRIMERO',
-            },
-            {
-                iConfigGradoId: 2,
-                iCicloId: 3,
-                iGradoId: 2,
-                iFasesPromId: 1,
-                iYAcadId: 3,
-                iSedeId: 1,
-                bConfigGradoEstado: 1,
-                cConfigGradoObs: '',
-                cYAcadNombre: '2024',
-                cFase: 'Fase Regular',
-                cCiclo: 'CICLO III',
-                cGrado: 'SEGUNDO',
-            },
-            {
-                iConfigGradoId: 3,
-                iCicloId: 4,
-                iGradoId: 3,
-                iFasesPromId: 1,
-                iYAcadId: 3,
-                iSedeId: 1,
-                bConfigGradoEstado: 1,
-                cConfigGradoObs: '',
-                cYAcadNombre: '2024',
-                cFase: 'Fase Regular',
-                cCiclo: 'CICLO IV',
-                cGrado: 'TERCERO',
-            },
-            {
-                iConfigGradoId: 4,
-                iCicloId: 4,
-                iGradoId: 4,
-                iFasesPromId: 1,
-                iYAcadId: 3,
-                iSedeId: 1,
-                bConfigGradoEstado: 1,
-                cConfigGradoObs: '',
-                cYAcadNombre: '2024',
-                cFase: 'Fase Regular',
-                cCiclo: 'CICLO IV',
-                cGrado: 'CUARTO',
-            },
-            {
-                iConfigGradoId: 5,
-                iCicloId: 5,
-                iGradoId: 5,
-                iFasesPromId: 1,
-                iYAcadId: 3,
-                iSedeId: 1,
-                bConfigGradoEstado: 1,
-                cConfigGradoObs: '',
-                cYAcadNombre: '2024',
-                cFase: 'Fase Regular',
-                cCiclo: 'CICLO V',
-                cGrado: 'QUINTO',
-            },
-            {
-                iConfigGradoId: 6,
-                iCicloId: 5,
-                iGradoId: 6,
-                iFasesPromId: 1,
-                iYAcadId: 3,
-                iSedeId: 1,
-                bConfigGradoEstado: 1,
-                cConfigGradoObs: '',
-                cYAcadNombre: '2024',
-                cFase: 'Fase Regular',
-                cCiclo: 'CICLO V',
-                cGrado: 'SEXTO',
-            },
-            // Agregar los demás grados aquí...
-        ]
-    }
-
-    getTreeNodesPrimaria() {
-        return [
-            {
-                key: '0',
-                label: 'Fase Regular-Primaria',
-                data: 'Documents Folder',
-                expanded: true,
-                icon: 'pi pi-fw pi-folder',
-                children: [
-                    {
-                        key: '3',
-                        label: 'CICLO III',
-                        data: 'Documents Folder',
-                        icon: 'pi pi-fw pi-folder',
-                        children: [
-                            {
-                                key: '3-I',
-                                label: '1° Grado (2)',
-                                data: 'Work Folder',
-                                icon: 'pi pi-fw pi-cog',
-                                children: [
-                                    {
-                                        key: '0-0-0',
-                                        label: 'Seccion A',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Expenses Document',
-                                    },
-                                    {
-                                        key: '0-0-1',
-                                        label: 'Seccion B',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Resume Document',
-                                    },
-                                ],
-                            },
-                            {
-                                key: '3-II',
-                                label: '2° Grado (1)',
-                                data: 'Home Folder',
-                                icon: 'pi pi-fw pi-home',
-                                children: [
-                                    {
-                                        key: '0-1-0',
-                                        label: 'Seccion A',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Invoices for this month',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        key: '4',
-                        label: 'CICLO IV',
-                        data: 'Events Folder',
-                        icon: 'pi pi-fw pi-folder',
-                        children: [
-                            {
-                                key: '4-III',
-                                label: '3° Grado',
-                                data: 'Work Folder',
-                                icon: 'pi pi-fw pi-cog',
-                                children: [
-                                    {
-                                        key: '0-0-0',
-                                        label: 'Expenses.doc',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Expenses Document',
-                                    },
-                                    {
-                                        key: '0-0-1',
-                                        label: 'Resume.doc',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Resume Document',
-                                    },
-                                ],
-                            },
-                            {
-                                key: '4-IV',
-                                label: '4° Grado',
-                                data: 'Work Folder',
-                                icon: 'pi pi-fw pi-cog',
-                                children: [
-                                    {
-                                        key: '0-0-0',
-                                        label: 'Expenses.doc',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Expenses Document',
-                                    },
-                                    {
-                                        key: '0-0-1',
-                                        label: 'Resume.doc',
-                                        icon: 'pi pi-fw pi-file',
-                                        data: 'Resume Document',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        key: '5',
-                        label: 'CICLO V',
-                        data: 'Movies Folder',
-                        icon: 'pi pi-fw pi-folder',
-                        children: [
-                            {
-                                key: '5-V',
-                                icon: 'pi pi-fw pi-star-fill',
-                                label: 'Al Pacino',
-                                data: 'Pacino Movies',
-                                children: [
-                                    {
-                                        key: '2-0-0',
-                                        label: 'Scarface',
-                                        icon: 'pi pi-fw pi-video',
-                                        data: 'Scarface Movie',
-                                    },
-                                    {
-                                        key: '2-0-1',
-                                        label: 'Serpico',
-                                        icon: 'pi pi-fw pi-video',
-                                        data: 'Serpico Movie',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-        ]
+        //  this.initializeData()
     }
 
     setEstadoConfig(value: any) {
@@ -374,10 +172,6 @@ export class AdmStepGradoSeccionService {
     // Agregar un nuevo grado
     addGrado(newGrado: Grado): void {
         this.grados.push(newGrado)
-    }
-
-    getFilesPrimaria() {
-        return Promise.resolve(this.getTreeNodesPrimaria())
     }
 
     // Actualizar un grado por ID

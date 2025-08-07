@@ -17,6 +17,7 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { AsignarHorasComponent } from './asignar-horas/asignar-horas.component'
 
 @Component({
     selector: 'app-config-plan-estudios',
@@ -27,6 +28,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         ContainerPageComponent,
         TablePrimengComponent,
         TypesFilesUploadPrimengComponent,
+        AsignarHorasComponent,
     ],
     templateUrl: './config-plan-estudios.component.html',
     styleUrl: './config-plan-estudios.component.scss',
@@ -36,6 +38,8 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     planes: []
     form: FormGroup
     formNivelGrado: FormGroup
+    formFiltrado: FormGroup
+
     caption: string
     visible: boolean = false
     configuracion: any[]
@@ -58,6 +62,9 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     dynamicColumns = []
     groupedData = []
     lista: any = []
+
+    //Validaro para actualiza plan curricular
+    bAgregar: boolean = false
 
     private _confirmService = inject(ConfirmationModalService)
     constructor(
@@ -94,14 +101,26 @@ export class ConfigPlanEstudiosComponent implements OnInit {
             this.router.navigate(['/gestion-institucional/configGradoSeccion'])
         }
 
+        this.formFiltrado = this.fb.group({
+            iGradoId: [0],
+            cCurso: [''],
+        })
+
         this.formNivelGrado = this.fb.group({
             //   iNivelGradoId : [0],
             cGradoNombre: [''],
             cCicloNombre: [''],
             cNivelNombre: [''],
             cNivelTipoNombre: [''],
+
+            cDeclaracionJurada: [''],
+
+            cCursoNombre: [''],
+            iHorasSemPresencial: [0],
+            iHorasSemDomicilio: [0],
+            iTotalHoras: [0],
         })
-        this.getCursosNivelGrado()
+        //  this.getCursosNivelGrado()
     }
 
     getCursosNivelGrado() {
@@ -122,21 +141,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
                     console.log(this.nivelesCiclos, 'console data')
                     const grouped = this.nivelesCiclos.reduce((acc, item) => {
-                        //     const ciclo = item.cCicloRomanos;
-
-                        //     if (!acc[ciclo]) {
-                        //       acc[ciclo] = {
-                        //         cNivelNombre: item.cNivelNombre,
-                        //         cNivelTipoNombre: item.cNivelTipoNombre,
-                        //         cCicloNombre: item.cCicloNombre,
-                        //         grades: {},
-                        //       };
-                        //     }
-
-                        //     acc[ciclo].grades[item.cGradoNombre] = item.cGradoAbreviacion;
-                        //     return acc;
-                        //   }, {});
-
                         const curso = item.cCursoNombre
                         const grado =
                             item.cGradoNombre + '(' + item.cCicloRomanos + ')' //item.cGradoNombre; // Nombre ded grado
@@ -144,6 +148,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
                         if (!acc[curso]) {
                             acc[curso] = {
+                                iCursoId: item.iCursoId,
                                 cCursoNombre: item.cCursoNombre,
                                 cNivelNombre: item.cNivelNombre,
                                 cNivelTipoNombre: item.cNivelTipoNombre,
@@ -151,11 +156,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
                                 grades: {},
                             }
                         }
-                        console.log(acc[curso])
-                        acc[curso].grades[grado] = hora + ' hrs'
-
-                        //acc[curso].push(hora)
-                        //acc[curso].horas[item.cGradoNombre]= item.item.iCursoTotalHoras
+                        acc[curso].grades[grado] = <number>hora
                         return acc
                     }, {})
 
@@ -265,16 +266,33 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         }
     }
 
-    accionBtnItemTable({ accion, item }) {
-        this.event = item
-        if (accion === 'retornar') {
-            alert('Desea retornar')
-            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+    accionBtnItemTable(evento: any) {
+        this.event = evento.item
+        if (evento.accion === 'retornar') {
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate(['/gestion-institucional/seccion'])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
         }
-        if (accion === 'agregar') {
+
+        if (evento.accion === 'agregar') {
             this.visible = true
             this.caption = 'Registrar plan de estudios'
-            console.log(item, 'btnTable')
+            console.log(evento.item, 'btnTable')
         }
     }
 
@@ -362,6 +380,49 @@ export class ConfigPlanEstudiosComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
+
+    columns = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: '',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cCursoNombre',
+            header: 'Área curricular',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'iHorasSemPresencial',
+            header: '',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'iHorasSemDomicilio',
+            header: '',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'actions',
+            width: '3rem',
+            field: 'actions',
+            header: 'Acciones',
+            text_header: 'center',
+            text: 'center',
         },
     ]
 }

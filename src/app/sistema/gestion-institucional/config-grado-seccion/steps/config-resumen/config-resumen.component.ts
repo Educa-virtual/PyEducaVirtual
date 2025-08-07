@@ -49,6 +49,15 @@ export class ConfigResumenComponent implements OnInit {
     totalHorasPendientes: number = 0
     total_aulas: number = 0
 
+    tablaPivot: any[] = [] // Inicializar como un array vacío
+    lista_grados: any[] = []
+    docentes_Asignados: number = 0
+    docentes_pendientes: number = 0
+
+    horas_Asignadas: number = 0
+    cantidad_ambientes: number = 0
+    anio: string = ''
+
     private _confirmService = inject(ConfirmationModalService)
     constructor(
         private stepService: AdmStepGradoSeccionService,
@@ -69,6 +78,7 @@ export class ConfigResumenComponent implements OnInit {
             this.reporteSeccionesNivelGrado()
             this.bConfigEsBilingue =
                 this.configuracion[0].bConfigEsBilingue > 0 ? 'SI' : 'NO'
+            this.anio = this.configuracion[0].cYAcadNombre
         } catch (error) {
             this.messageService.add({
                 severity: 'error',
@@ -76,7 +86,6 @@ export class ConfigResumenComponent implements OnInit {
                 detail: 'La conexion excedió tiempo de espera',
             })
             this.router.navigate(['/gestion-institucional/configGradoSeccion'])
-            console.log(error, 'error de variables')
         }
     }
 
@@ -119,43 +128,108 @@ export class ConfigResumenComponent implements OnInit {
             })
             .subscribe({
                 next: (data: any) => {
-                    this.total_aulas = data.data[0].registrados
+                    // this.total_aulas = data.data[0].registrados
                     this.r_horas = data.data
-                    console.log(this.r_horas, 'this.r_horas')
+
+                    // Suponiendo que tu json se llama "registros"
+                    const datos: {
+                        iCursoId: number
+                        iGradoId: number
+                        iTotalHoras?: number
+                        asig_docente?: number
+                    }[] = data.data
+                    //Ordenar registros
+                    const registros = [...datos].sort(
+                        (a, b) => a.iGradoId - b.iGradoId
+                    )
+
+                    //Asignar la cantidad de docentes asignados
+                    this.docentes_Asignados = this.r_horas[0].docentesAsignados
+                    this.docentes_pendientes =
+                        Number(this.r_horas[0].areas) -
+                        Number(this.r_horas[0].docentesAsignados)
+
+                    //Horas asignadas
+                    this.horas_Asignadas = this.r_horas[0].horaAsignadas
+                    this.cantidad_ambientes = this.r_horas[0].cantidadAmbientes
+                    this.total_aulas = this.r_horas[0].registrados
+
+                    // Obtener lista única de cursos y grados
+                    const cursos = [
+                        ...new Map(
+                            registros.map((item) => [item.iCursoId, item])
+                        ).values(),
+                    ]
+                    const grados = [
+                        ...new Map(
+                            registros.map((item) => [
+                                Number(item.iGradoId),
+                                item,
+                            ])
+                        ).values(),
+                    ]
+
+                    this.lista_grados = grados
+
+                    // Crear estructura agrupada
+                    this.tablaPivot = cursos.map((curso) => {
+                        const fila: any = {
+                            iCursoId: (curso as { iCursoId: number }).iCursoId,
+                            cursoNombre:
+                                (curso as { cCursoNombre?: string })
+                                    .cCursoNombre || '', // si tienes campo de nombre de curso
+                        }
+
+                        grados.forEach((grado) => {
+                            // Filtrar registros que coincidan con el curso y grado actual
+                            const registrosFiltrados = registros.filter(
+                                (r) =>
+                                    r.iCursoId === curso.iCursoId &&
+                                    r.iGradoId === grado.iGradoId
+                            )
+
+                            // Sumar las iTotalHoras de esos registros
+                            const sumaHoras = registrosFiltrados.reduce(
+                                (acc, curr) =>
+                                    acc + (Number(curr.iTotalHoras) || 0),
+                                0
+                            )
+
+                            // Sumar las asig_docente de esos registros
+                            const sumaHorasAsignadas =
+                                registrosFiltrados.reduce(
+                                    (acc, curr) =>
+                                        acc + (Number(curr.asig_docente) || 0),
+                                    0
+                                )
+
+                            // Agregar las propiedades dinámicamente a la fila
+                            fila[`grado_${grado.iGradoId}`] = sumaHoras
+                            fila[`asig_${grado.iGradoId}`] = sumaHorasAsignadas
+                        })
+
+                        return fila
+                    })
                 },
                 error: (error) => {
-                    console.error('Error procedimiento BD:', error)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error en conexion al servidor',
-                        detail: 'La conexion excedió tiempo de espera ' + error,
+                        detail:
+                            'La conexion excedió tiempo de espera ' +
+                            error.message,
                     })
                 },
                 complete: () => {
                     const totalHoras = this.r_horas.reduce(
-                        (sum, item) => sum + (Number(item.total_horas) || 0),
+                        (sum, item) => sum + (Number(item.iTotalHoras) || 0),
                         0
                     )
-                    const totalHorasAsignadasPrecencial = this.r_horas.reduce(
-                        (sum, item) => sum + (Number(item.suma_1) || 0),
-                        0
-                    )
-                    const totalHorasAsignadasSemiPrecencial =
-                        this.r_horas.reduce(
-                            (sum, item) => sum + (Number(item.suma_2) || 0),
-                            0
-                        )
-                    const totalHorasAsignadasDistancia = this.r_horas.reduce(
-                        (sum, item) => sum + (Number(item.suma_3) || 0),
-                        0
-                    )
-                    console.log('Request completed')
+
                     this.totalHoras = totalHoras
                     this.totalHorasPendientes =
-                        Number(totalHoras) -
-                        Number(totalHorasAsignadasPrecencial) -
-                        Number(totalHorasAsignadasSemiPrecencial) -
-                        Number(totalHorasAsignadasDistancia)
+                        Number(this.totalHoras) -
+                        Number(this.r_horas[0].horaAsignadas)
                 },
             })
     }
@@ -190,7 +264,11 @@ export class ConfigResumenComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Mensaje del sistema',
+                    detail: 'Error en el procesamiento: ' + error.message,
+                })
             },
         })
     }
@@ -217,13 +295,42 @@ export class ConfigResumenComponent implements OnInit {
         })
     }
 
-    accionBtnItemTable({ accion, item }) {
+    accionBtnItemTable({ accion }) {
+        if (accion === 'retornar') {
+            this._confirmService.openConfiSave({
+                message:
+                    '¿Estás seguro de que deseas regresar al paso anterior?',
+                header: 'Advertencia de autoguardado',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                    this.router.navigate([
+                        '/gestion-institucional/asignar-grado',
+                    ])
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+
         if (accion === 'reporte') {
             this.reportePDFResumenAmbientes()
-            console.log(item, 'btnTable')
         }
     }
     accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
         {
             labelTooltip: 'generar resumen',
             text: 'Generar resumen',
@@ -272,75 +379,6 @@ export class ConfigResumenComponent implements OnInit {
             width: '10rem',
             field: 'parsedSecciones',
             header: 'Secciones',
-            text_header: 'center',
-            text: 'left',
-        },
-    ]
-
-    columnHora = [
-        {
-            type: 'item',
-            width: '1rem',
-            field: 'item',
-            header: 'N°',
-            text_header: 'left',
-            text: 'left',
-        },
-
-        {
-            type: 'text',
-            width: '7rem',
-            field: 'cCursoNombre',
-            header: 'Area curricular',
-            text_header: 'center',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'nCursoTotalHoras',
-            header: 'Hrs lectivas',
-            text_header: 'center',
-            text: 'left',
-        },
-
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'registrados',
-            header: 'Total Hrs lectivas',
-            text_header: 'N° secciones',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'suma_1',
-            header: 'Hrs Asignadas Presencial',
-            text_header: 'center',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'suma_2',
-            header: 'Hrs Asignadas Semi-Presencial',
-            text_header: 'center',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'suma_3',
-            header: 'Hrs Asignadas Distancia',
-            text_header: 'center',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'total_horas',
-            header: 'Total para asignar',
             text_header: 'center',
             text: 'left',
         },

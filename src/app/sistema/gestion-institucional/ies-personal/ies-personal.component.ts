@@ -27,7 +27,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         TablePrimengComponent,
     ],
     templateUrl: './ies-personal.component.html',
-    styleUrl: './ies-personal.component.scss',
+    styleUrls: ['./ies-personal.component.scss'],
 })
 export class IesPersonalComponent implements OnInit {
     form: FormGroup
@@ -42,10 +42,12 @@ export class IesPersonalComponent implements OnInit {
     caption: string = '' // titulo o cabecera de dialogo
     c_accion: string //valos de las acciones
 
+    persona: any
     personas: Array<object>
     docentes: Array<object>
     lista: Array<object>
     cargos: Array<object>
+    mensaje: string
 
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
 
@@ -58,26 +60,25 @@ export class IesPersonalComponent implements OnInit {
         // private confirmationService: ConfirmationService,
     ) {
         const perfil = this.store.getItem('dremoPerfil')
-        console.log(perfil, 'perfil dremo', this.store)
+
         this.iSedeId = perfil.iSedeId
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
     }
 
     ngOnInit(): void {
-        console.log('implemntacion')
-        this.iYAcadId = this.store.getItem('dremoiYAcadId')
-        console.log(this.store)
         this.searchPersonal()
-        this.getPersonas()
+
         this.getDocente()
         this.getCargos()
 
         try {
             this.form = this.fb.group({
                 iPersIeId: [0], // PK tabla acad.personal_ies
-                iPersId: [{ value: 0, disabled: true }], // FK tabla grl.persona
-                iYAcadId: [this.iYAcadId], // FK tabla acad.year_academico
-                iPersCargoId: [0], // FK tabla acad.personal_cargos
-                iSedeId: [this.iSedeId], // FK tabla acad.sedes
+                iPersId: [{ value: 0, disabled: true }, Validators.required], // FK tabla grl.persona
+                dni: [null, Validators.required],
+                iYAcadId: [this.iYAcadId, Validators.required], // FK tabla acad.year_academico
+                iPersCargoId: [null, Validators.required], // FK tabla acad.personal_cargos
+                iSedeId: [this.iSedeId, Validators.required], // FK tabla acad.sedes
                 iHorasLabora: [
                     0,
                     [
@@ -150,6 +151,43 @@ export class IesPersonalComponent implements OnInit {
             this.form.get('iPersId')?.enable()
             this.option = false
         }
+    }
+
+    buscarDni() {
+        const dni = String(this.form.get('dni')?.value)
+        this.query
+            .searchCalendario({
+                json: JSON.stringify({
+                    cPersDocumento: dni,
+                }),
+                _opcion: 'getPersona',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.persona = data.data
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje del Sistema',
+                        detail:
+                            'Error al obtener datos del docuemento: ' +
+                            error.message,
+                    })
+                },
+                complete: () => {
+                    if (this.persona.length > 0) {
+                        this.mensaje = this.persona[0].NombreCompleto
+                        this.form.patchValue({
+                            iPersId: this.persona[0].iPersId,
+                        })
+                    } else {
+                        this.mensaje =
+                            dni +
+                            ' No cuenta con registro comunicarse con el Administrador'
+                    }
+                },
+            })
     }
 
     searchPersonal() {
@@ -303,45 +341,6 @@ export class IesPersonalComponent implements OnInit {
         this.form.get('iPersIeId')?.setValue(0)
         this.form.get('iPersCargoId')?.setValue(0)
         this.form.get('iHorasLabora')?.setValue(0)
-    }
-
-    getPersonas() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'personas',
-                campos: '*',
-                condicion: '1 = 1',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.personas = item.map((persona) => ({
-                        ...persona,
-                        nombre_completo: (
-                            persona.cPersDocumento +
-                            ' ' +
-                            persona.cPersPaterno +
-                            ' ' +
-                            persona.cPersMaterno +
-                            ' ' +
-                            persona.cPersNombre
-                        ).trim(),
-                    }))
-                    console.log(this.personas, 'personas')
-                },
-                error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
     }
 
     getDocente() {

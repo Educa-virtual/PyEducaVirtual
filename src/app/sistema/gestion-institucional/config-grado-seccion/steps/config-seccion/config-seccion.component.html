@@ -44,7 +44,6 @@
                 [showCaption]="true"
                 [data]="seccionesAsignadas"
                 [scrollable]="true"
-                scrollHeight="200px"
                 (accionBtnItem)="accionBtnItemTable($event)"
                 [showPaginator]="true"
                 [(selectedRowData)]="selectedItems"
@@ -79,12 +78,6 @@
                 pInputText
                 type="hidden"
                 formControlName="iDetConfId"
-                class="p-inputtext-sm"
-            />
-            <input
-                pInputText
-                type="hidden"
-                formControlName="iModalServId"
                 class="p-inputtext-sm"
             />
 
@@ -125,18 +118,17 @@
 
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
-                    <p-dropdown
-                        [options]="serv_atencion"
-                        formControlName="iServEdId"
-                        optionLabel="cServEdNombre"
-                        [checkmark]="true"
-                        optionValue="iServEdId"
-                        [showClear]="true"
-                    />
-
-                    <label for="iServEdId"
-                        >Modelo de servicio de atención</label
-                    >
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            id="cServEdNombre"
+                            formControlName="cServEdNombre"
+                            aria-describedby="cServEdNombre-help"
+                        />
+                        <label for="cServEdNombre"
+                            >Modelo de servicio de atención</label
+                        >
+                    </span>
                 </span>
             </div>
 
@@ -246,61 +238,41 @@
 
             <div class="field col-12 md:col-2">
                 <span class="p-float-label">
-                    <p-dropdown
-                        [options]="turnos"
-                        formControlName="iTurnoId"
-                        optionLabel="cTurnoNombre"
-                        (onChange)="onChange($event, 'turno')"
-                        [checkmark]="true"
-                        optionValue="iTurnoId"
-                        [showClear]="true"
-                        (onChange)="onChange($event, 'turno')"
+                    <input
+                        pInputText
+                        id="cTurnoNombre"
+                        formControlName="cTurnoNombre"
+                        aria-describedby="cTurnoNombre-help"
                     />
-
-                    <label for="iTurnoId">Turno</label>
+                    <label for="cTurnoNombre">Turno</label>
                 </span>
             </div>
 
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
-                    <p-dropdown
-                        [options]="modalidad"
+                    <input
+                        pInputText
+                        id="cModalServId"
                         formControlName="cModalServId"
-                        optionLabel="cModalServNombre"
-                        [checkmark]="true"
-                        optionValue="iModalServId"
-                        [showClear]="true"
+                        aria-describedby="cModalServId-help"
                     />
-
-                    <label for="cModalServId">Forma de atención</label>
+                    <label for="cModalServId">Descripción </label>
                 </span>
             </div>
 
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
-                    @for (dia of dias; track dia.iDiaId) {
-                        <p-tag
-                            severity="info"
-                            [value]="dia.cDiaNombre"
-                            [rounded]="true"
-                        ></p-tag>
-                    }
-                    <!-- <p-multiSelect
-                        [options]="dias"
-                        formControlName="iDiasLaborables"
-                        optionLabel="cDiaNombre"
-                        [selectedItemsLabel]="'Días seleccionados'"
-                        optionValue="iDiaId"
-                        display="chip"
-                        (onChange)="onChange($event, 'dia')"
-                        [showClear]="true"
-                        [maxSelectedLabels]="7"
-                    >
-                    </p-multiSelect> -->
+                    <input
+                        pInputText
+                        id="cDiasLaborables"
+                        formControlName="cDiasLaborables"
+                        aria-describedby="cDiasLaborables-help"
+                    />
+                    <label for="cDiasLaborables">Dias laborables </label>
                 </span>
             </div>
 
-            <div class="field col-12 md:col-2">
+            <div class="field col-12 md:col-3">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="secciones"
@@ -316,7 +288,7 @@
                     <label for="iSeccionId">Nombre sección </label>
                 </span>
             </div>
-            <div class="field col-12 md:col-2">
+            <div class="field col-12 md:col-3">
                 <span class="p-float-label">
                     <p-inputNumber
                         formControlName="iDetConfCantEstudiantes"
@@ -327,7 +299,7 @@
                     >
                 </span>
             </div>
-            <div class="field col-12 md:col-2">
+            <div class="field col-12 md:col-6">
                 <span class="p-float-label">
                     <input
                         pInputText
@@ -336,23 +308,6 @@
                         aria-describedby="cDetConfNombreSeccion-help"
                     />
                     <label for="cDetConfNombreSeccion">Descripción </label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tutores"
-                        formControlName="iPersIeIdTutor"
-                        optionLabel="nombreCompleto"
-                        [checkmark]="true"
-                        optionValue="iPersIeId"
-                        [showClear]="true"
-                        [filter]="true"
-                        filterBy="nombreCompleto"
-                    />
-
-                    <label for="iPersIeIdTutor">Tutor asignado</label>
                 </span>
             </div>
 

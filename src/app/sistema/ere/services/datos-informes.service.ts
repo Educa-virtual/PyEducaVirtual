@@ -67,6 +67,7 @@ export class DatosInformesService {
             this.evaluaciones = items.map((evaluacion) => ({
                 value: evaluacion.iEvaluacionId,
                 label: evaluacion.cEvaluacionNombre,
+                bExportarExcel: evaluacion.bExportarExcel,
             }))
             return this.evaluaciones
         }

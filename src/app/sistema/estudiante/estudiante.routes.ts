@@ -3,6 +3,7 @@ import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { Routes } from '@angular/router';
 import { BuzonSugerenciasComponent } from './buzon-sugerencias/buzon-sugerencias.component';
 import { HorarioComponent } from './horario/horario.component';
+import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
 
 const routes: Routes = [
   {
@@ -26,7 +27,17 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ESTUDIANTE],
-      breadcrumb: 'Horario',
+      breadcrumb: 'horario',
+      icon: 'pi pi-share-alt',
+    },
+  },
+  {
+    path: 'calendario',
+    component: CalendarioComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'calendario',
       icon: 'pi pi-share-alt',
     },
   },

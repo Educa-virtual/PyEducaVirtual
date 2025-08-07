@@ -131,6 +131,11 @@ const estudiante = [
         icon: 'pi pi-calendar-clock',
         routerLink: ['/estudiante/horario'],
       },
+      {
+        label: 'Calendario',
+        icon: 'pi pi-calendar',
+        routerLink: ['/estudiante/horario'],
+      },
       /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
             {
                 label: 'Buzón de sugerencias',
@@ -182,7 +187,7 @@ const administrador = [
         icon: 'pi pi-calendar',
         routerLink: ['/gestion-institucional/fechas'],
       },
-      {
+      /*{
         label: 'Backup de BD',
         icon: 'pi pi-fw pi-database',
         routerLink: ['/administrador/backup-bd'],
@@ -192,7 +197,7 @@ const administrador = [
         label: 'Backup de BD',
         icon: 'pi pi-fw pi-database',
         routerLink: ['/administrador/backup-bd'],
-      },
+      },*/
 
       {
         label: 'Gestión de usuarios',

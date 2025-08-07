@@ -181,7 +181,7 @@ const administrador = [
         icon: 'pi pi-calendar',
         routerLink: ['/gestion-institucional/fechas'],
       },
-      {
+      /*{
         label: 'Backup de BD',
         icon: 'pi pi-fw pi-database',
         routerLink: ['/administrador/backup-bd'],
@@ -191,7 +191,7 @@ const administrador = [
         label: 'Backup de BD',
         icon: 'pi pi-fw pi-database',
         routerLink: ['/administrador/backup-bd'],
-      },
+      },*/
 
       {
         label: 'Gestión de usuarios',

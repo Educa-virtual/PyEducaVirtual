@@ -173,7 +173,8 @@ export class EncuestaComponent implements OnInit {
           this.formPoblacion.get('iNivelTipoId')?.setValue(nivel_tipo);
         }
         if (this.ugeles && this.ugeles.length === 1) {
-          this.formPoblacion.get('iUgelId')?.setValue(this.ugeles[0]['value']);
+          const ugel = this.ugeles[0]['value'];
+          this.formPoblacion.get('iUgelId')?.setValue(ugel);
         }
       });
 

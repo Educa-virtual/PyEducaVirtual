@@ -1,252 +1,222 @@
-<p-breadcrumb
-    class="max-w-full"
-    [model]="breadCrumbItems"
-    [home]="breadCrumbHome"
-/>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 
 <p-panel>
-    <ng-template pTemplate="header">
-        <div class="flex justify-between align-center">
-            <span class="text-xl">{{ title }}</span>
-        </div>
-    </ng-template>
+  <ng-template pTemplate="header">
+    <div class="flex justify-between align-center">
+      <span class="text-xl">{{ title }}</span>
+    </div>
+  </ng-template>
 
-    <div>
-        <div class="grid gap-20 mb-20">
-            <div class="col-12 md:col-4">
-                <p-fieldset legend="Totales">
-                    <div class="block mb-4">
-                        <p class="font-bold m-0 p-0">
-                            Estudiantes matriculados
-                        </p>
-                        <div>
-                            <span class="text-4xl font-bold ml-2">
-                                {{ cantidad_matriculados ?? 0 }}
-                            </span>
-                            <i class="pi pi-users text-2xl text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="block mt-4">
-                        <p class="font-bold m-0 p-0">
-                            Fichas socioeconómicas llenadas
-                        </p>
-                        <div>
-                            <span class="text-4xl font-bold ml-2">
-                                {{ cantidad_fichas ?? 0 }}
-                            </span>
-                            <i
-                                class="pi pi-file-check text-2xl text-primary"
-                            ></i>
-                        </div>
-                        <small></small>
-                    </div>
-                </p-fieldset>
+  <div>
+    <div class="grid gap-20 mb-20">
+      <div class="col-12 md:col-4">
+        <p-fieldset legend="Totales">
+          <div class="block mb-4">
+            <p class="font-bold m-0 p-0">Estudiantes matriculados</p>
+            <div>
+              <span class="text-4xl font-bold ml-2">
+                {{ cantidad_matriculados ?? 0 }}
+              </span>
+              <i class="pi pi-users text-2xl text-primary"></i>
             </div>
-
-            <!-- FILTROS -->
-            <div class="col-12 md:col-8">
-                <p-fieldset legend="Filtros" [toggleable]="true">
-                    <form [formGroup]="formReportes">
-                        <div class="grid">
-                            @if (es_especialista) {
-                                <div class="col-12">
-                                    <p-inputGroup title="* Campo obligatorio">
-                                        <p-inputGroupAddon
-                                            >Nivel *</p-inputGroupAddon
-                                        >
-                                        <p-dropdown
-                                            [options]="nivel_tipos"
-                                            [showClear]="true"
-                                            formControlName="iNivelTipoId"
-                                            placeholder="Seleccione un nivel"
-                                            styleClass="group-element"
-                                            appendTo="body"
-                                        ></p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                            }
-                            <div class="col-12">
-                                <p-inputGroup title="* Campo obligatorio">
-                                    <p-inputGroupAddon
-                                        >Grado *</p-inputGroupAddon
-                                    >
-                                    <p-dropdown
-                                        [options]="nivel_grados"
-                                        [showClear]="true"
-                                        formControlName="iNivelGradoId"
-                                        placeholder="Seleccione un grado"
-                                        styleClass="group-element"
-                                        appendTo="body"
-                                        filter="true"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            @if (es_especialista) {
-                                <div class="col-12 md:col-6">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon
-                                            >Gestión</p-inputGroupAddon
-                                        >
-                                        <p-dropdown
-                                            [options]="tipo_sectores"
-                                            [showClear]="true"
-                                            formControlName="iTipoSectorId"
-                                            placeholder="Seleccione un tipo de gestión"
-                                            styleClass="group-element"
-                                            appendTo="body"
-                                        ></p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                                <div class="col-12 md:col-6">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon
-                                            >Zona</p-inputGroupAddon
-                                        >
-                                        <p-dropdown
-                                            [options]="zonas"
-                                            [showClear]="true"
-                                            formControlName="iZonaId"
-                                            placeholder="Seleccione un tipo de zona"
-                                            styleClass="group-element"
-                                            appendTo="body"
-                                        ></p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                                <div class="col-12 md:col-6">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon
-                                            >UGEL</p-inputGroupAddon
-                                        >
-                                        <p-dropdown
-                                            [options]="ugeles"
-                                            [showClear]="true"
-                                            formControlName="iUgelId"
-                                            placeholder="Seleccione una UGEL"
-                                            styleClass="group-element"
-                                            appendTo="body"
-                                        ></p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                                <div class="col-12 md:col-6">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon
-                                            >Distrito</p-inputGroupAddon
-                                        >
-                                        <p-dropdown
-                                            [options]="distritos"
-                                            [showClear]="true"
-                                            formControlName="iDsttId"
-                                            placeholder="Seleccione un distrito"
-                                            styleClass="group-element"
-                                            appendTo="body"
-                                            filter="true"
-                                        ></p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                                <div class="col-12">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon
-                                            >I. E.</p-inputGroupAddon
-                                        >
-                                        <p-dropdown
-                                            [options]="ies"
-                                            [showClear]="true"
-                                            formControlName="iIieeId"
-                                            placeholder="Seleccione una Institución Educativa"
-                                            styleClass="group-element"
-                                            appendTo="body"
-                                            filter="true"
-                                        ></p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                            }
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon
-                                        >Sección</p-inputGroupAddon
-                                    >
-                                    <p-dropdown
-                                        [options]="secciones"
-                                        [showClear]="true"
-                                        formControlName="iSeccionId"
-                                        placeholder="Seleccione una sección"
-                                        styleClass="group-element"
-                                        appendTo="body"
-                                        filter="true"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>Sexo</p-inputGroupAddon>
-                                    <p-dropdown
-                                        [options]="sexos"
-                                        [showClear]="true"
-                                        formControlName="cPersSexo"
-                                        placeholder="Seleccione un sexo"
-                                        styleClass="group-element"
-                                        appendTo="body"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <div class="flex flex-row flex-wrap gap-2 mt-3">
-                                    <div class="flex">
-                                        <p-button
-                                            pRipple
-                                            severity="success"
-                                            label="Filtrar fichas"
-                                            icon="pi pi-fw pi-search"
-                                            (onClick)="verReporte()"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </p-fieldset>
+          </div>
+          <div class="block mt-4">
+            <p class="font-bold m-0 p-0">Fichas socioeconómicas llenadas</p>
+            <div>
+              <span class="text-4xl font-bold ml-2">
+                {{ cantidad_fichas ?? 0 }}
+              </span>
+              <i class="pi pi-file-check text-2xl text-primary"></i>
             </div>
-        </div>
+            <small></small>
+          </div>
+        </p-fieldset>
+      </div>
 
-        <!-- TABS -->
-        <p-tabMenu
-            #tabMenu
-            [model]="tabItems"
-            scrollable="true"
-            [activeItem]="activeItem"
-            (activeItemChange)="scrollToActiveTab(activeItem)"
-        >
-            <ng-template pTemplate="item" let-item>
-                <ng-container *ngIf="item.route">
-                    @if (tabItems[activeItem] === item) {
-                        <a
-                            [routerLink]="item.route"
-                            class="p-menuitem-link"
-                            [title]="item.label"
-                        >
-                            <span [class]="item.icon"></span>
-                            <span class="block ml-2">
-                                {{ item.label }}
-                            </span>
-                        </a>
-                    } @else {
-                        <a
-                            [routerLink]="item.route"
-                            class="p-menuitem-link text-color-secondary"
-                            [title]="item.label"
-                        >
-                            <span [class]="item.icon"></span>
-                            <span class="hidden md:block ml-2">
-                                {{ item.label }}
-                            </span>
-                        </a>
-                    }
-                </ng-container>
-            </ng-template>
-        </p-tabMenu>
+      <!-- FILTROS -->
+      <div class="col-12 md:col-8">
+        <p-fieldset legend="Filtros" [toggleable]="true">
+          <form [formGroup]="formReportes">
+            <div class="grid">
+              @if (es_especialista) {
+                <div class="col-12">
+                  <p-inputGroup title="* Campo obligatorio">
+                    <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="nivel_tipos"
+                      [showClear]="true"
+                      formControlName="iNivelTipoId"
+                      placeholder="Seleccione un nivel"
+                      styleClass="group-element"
+                      appendTo="body"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+              }
+              <div class="col-12">
+                <p-inputGroup title="* Campo obligatorio">
+                  <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="nivel_grados"
+                    [showClear]="true"
+                    formControlName="iNivelGradoId"
+                    placeholder="Seleccione un grado"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              @if (es_especialista) {
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Gestión</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="tipo_sectores"
+                      [showClear]="true"
+                      formControlName="iTipoSectorId"
+                      placeholder="Seleccione un tipo de gestión"
+                      styleClass="group-element"
+                      appendTo="body"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="zonas"
+                      [showClear]="true"
+                      formControlName="iZonaId"
+                      placeholder="Seleccione un tipo de zona"
+                      styleClass="group-element"
+                      appendTo="body"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="ugeles"
+                      [showClear]="!es_especialista_ugel"
+                      formControlName="iUgelId"
+                      placeholder="Seleccione una UGEL"
+                      styleClass="group-element"
+                      appendTo="body"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="distritos"
+                      [showClear]="true"
+                      formControlName="iDsttId"
+                      placeholder="Seleccione un distrito"
+                      styleClass="group-element"
+                      appendTo="body"
+                      filter="true"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="ies"
+                      [showClear]="true"
+                      formControlName="iIieeId"
+                      placeholder="Seleccione una Institución Educativa"
+                      styleClass="group-element"
+                      appendTo="body"
+                      filter="true"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+              }
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="secciones"
+                    [showClear]="true"
+                    formControlName="iSeccionId"
+                    placeholder="Seleccione una sección"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Sexo</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="sexos"
+                    [showClear]="true"
+                    formControlName="cPersSexo"
+                    placeholder="Seleccione un sexo"
+                    styleClass="group-element"
+                    appendTo="body"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <div class="flex flex-row flex-wrap gap-2 mt-3">
+                  <div class="flex">
+                    <p-button
+                      pRipple
+                      severity="success"
+                      label="Filtrar fichas"
+                      icon="pi pi-fw pi-search"
+                      (onClick)="verReporte()"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </p-fieldset>
+      </div>
     </div>
 
-    <router-outlet></router-outlet>
+    <!-- TABS -->
+    <p-tabMenu
+      #tabMenu
+      [model]="tabItems"
+      scrollable="true"
+      [activeItem]="activeItem"
+      (activeItemChange)="scrollToActiveTab(activeItem)"
+    >
+      <ng-template pTemplate="item" let-item>
+        <ng-container *ngIf="item.route">
+          @if (tabItems[activeItem] === item) {
+            <a [routerLink]="item.route" class="p-menuitem-link" [title]="item.label">
+              <span [class]="item.icon"></span>
+              <span class="block ml-2">
+                {{ item.label }}
+              </span>
+            </a>
+          } @else {
+            <a
+              [routerLink]="item.route"
+              class="p-menuitem-link text-color-secondary"
+              [title]="item.label"
+            >
+              <span [class]="item.icon"></span>
+              <span class="hidden md:block ml-2">
+                {{ item.label }}
+              </span>
+            </a>
+          }
+        </ng-container>
+      </ng-template>
+    </p-tabMenu>
+  </div>
+
+  <router-outlet></router-outlet>
 </p-panel>
 
 <p-toast></p-toast>

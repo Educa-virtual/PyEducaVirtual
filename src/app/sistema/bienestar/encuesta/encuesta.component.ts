@@ -171,10 +171,13 @@ export class EncuestaComponent implements OnInit {
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {
           const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formPoblacion.get('iNivelTipoId')?.setValue(nivel_tipo);
+          this.filterNivelesGrados(nivel_tipo);
+          this.filterInstitucionesEducativas();
         }
         if (this.ugeles && this.ugeles.length === 1) {
           const ugel = this.ugeles[0]['value'];
           this.formPoblacion.get('iUgelId')?.setValue(ugel);
+          this.filterInstitucionesEducativas();
         }
       });
 

@@ -23,7 +23,7 @@
         />
         <p-overlayPanel
           #filtros
-          [appendTo]="overlayAnchorRef"
+          [appendTo]="overlayAnchorRef?.nativeElement"
           [dismissable]="false"
           [showCloseIcon]="true"
           [style]="{ width: '100%', maxWidth: '600px' }"
@@ -40,8 +40,7 @@
                       formControlName="iNivelTipoId"
                       placeholder="Seleccione un nivel"
                       styleClass="group-element"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -55,8 +54,7 @@
                       placeholder="Seleccione un grado"
                       styleClass="group-element"
                       filter="true"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -69,8 +67,7 @@
                       formControlName="iTipoSectorId"
                       placeholder="Seleccione un tipo de gestión"
                       styleClass="group-element"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -83,8 +80,7 @@
                       formControlName="iZonaId"
                       placeholder="Seleccione un tipo de zona"
                       styleClass="group-element"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -97,8 +93,7 @@
                       formControlName="iUgelId"
                       placeholder="Seleccione una UGEL"
                       styleClass="group-element"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -112,8 +107,7 @@
                       placeholder="Seleccione un distrito"
                       styleClass="group-element"
                       filter="true"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -127,8 +121,7 @@
                       placeholder="Seleccione una Institución Educativa"
                       styleClass="group-element"
                       filter="true"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -142,8 +135,7 @@
                       placeholder="Seleccione una sección"
                       styleClass="group-element"
                       filter="true"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
@@ -156,8 +148,7 @@
                       formControlName="cPersSexo"
                       placeholder="Seleccione un sexo"
                       styleClass="group-element"
-                      appendTo="body"
-                      (click)="$event.stopPropagation()"
+                      [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>

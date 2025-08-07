@@ -116,6 +116,7 @@ const routes: Routes = [
         ASISTENTE_SOCIAL,
         ESPECIALISTA_DREMO,
         ESPECIALISTA_UGEL,
+        ADMINISTRADOR_DREMO,
         ESTUDIANTE,
         DOCENTE,
       ],

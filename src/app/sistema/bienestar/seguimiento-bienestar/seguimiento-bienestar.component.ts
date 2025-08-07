@@ -128,24 +128,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       .subscribe((data: any) => {
         this.nivel_tipos = this.datosSeguimiento.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.datosSeguimiento.getInstitucionesEducativas(data?.instituciones_educativas);
-        console.log(this.ies, 'ies');
         this.tipos_documentos = this.datosSeguimiento.getTiposDocumentos(data?.tipos_documentos);
-        // if (this.es_director) {
-        //     const nivel_tipo =
-        //         this.nivel_tipos && this.nivel_tipos.length > 0
-        //             ? this.nivel_tipos[0]['value']
-        //             : null
-        //     const ie =
-        //         this.ies && this.ies.length > 0
-        //             ? this.ies[0]['value']
-        //             : null
-        //     this.formSeguimiento
-        //         .get('iNivelTipoId')
-        //         ?.setValue(nivel_tipo)
-        // console.log(ie, 'ie')
-        // this.formSeguimiento.get('iSedeId')?.setValue(ie)
-        // this.cf.detectChanges()
-        // }
       });
 
     this.formSeguimiento.get('iNivelTipoId').valueChanges.subscribe(() => {
@@ -229,7 +212,7 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value.toLowerCase();
-    const filtro_tipo = this.filtro_tipo.value;
+    const filtro_tipo = this.filtro_tipo?.value;
     this.seguimientos_filtrados = this.seguimientos.filter((seguimiento: any) => {
       if (seguimiento?.iTipoSeguimId === filtro_tipo) return seguimiento;
       if (seguimiento?.cPersDocumento.toLowerCase().includes(filtro)) return seguimiento;

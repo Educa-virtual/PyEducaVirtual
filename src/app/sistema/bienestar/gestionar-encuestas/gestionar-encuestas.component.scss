@@ -21,6 +21,10 @@
   border-radius: 0rem;
 }
 
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
+}
+
 :host ::ng-deep .p-inputgroup .group-element:last-child,
 :host ::ng-deep .p-inputgroup .p-inputtextarea,
 :host ::ng-deep .p-inputgroup .group-element.p-inputtext {

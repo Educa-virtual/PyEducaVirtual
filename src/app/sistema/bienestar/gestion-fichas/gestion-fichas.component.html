@@ -1,31 +1,119 @@
 <p-panel>
-    <ng-template pTemplate="header">
-        <span class="text-2xl text-uppercase">
-            Gestionar fichas socioeconómicas
-        </span>
-    </ng-template>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase"> Gestionar fichas socioeconómicas </span>
+  </ng-template>
 
-    <form [formGroup]="form">
-        <div class="grid">
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Buscar </p-inputGroupAddon>
-                    <input
-                        #filtro
-                        type="text"
-                        pInputText
-                        (input)="filtrarTabla()"
-                    />
-                </p-inputGroup>
-            </div>
-        </div>
-    </form>
+  <form [formGroup]="form">
+    <div class="grid">
+      <div class="col-12 md:col-fixed" style="width: auto">
+        <p-button
+          #overlayAnchor
+          (click)="filtros.toggle($event)"
+          icon="pi pi-filter"
+          class="w-full"
+          severity="success"
+          [label]="'Ver filtros aplicados (' + filtros_aplicados + ')'"
+        />
+        <p-overlayPanel
+          #filtros
+          [appendTo]="overlayAnchorRef?.nativeElement"
+          [dismissable]="true"
+          [showCloseIcon]="true"
+          [style]="{ width: '100%', maxWidth: '600px' }"
+        >
+          <ng-template pTemplate="content">
+            <form [formGroup]="formFiltros" class="p-fluid">
+              <div class="grid">
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="nivel_tipos"
+                      [showClear]="es_especialista"
+                      formControlName="iNivelTipoId"
+                      placeholder="Seleccione un nivel"
+                      styleClass="group-element"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Grado</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="nivel_grados"
+                      showClear="true"
+                      formControlName="iNivelGradoId"
+                      placeholder="Seleccione un grado"
+                      styleClass="group-element"
+                      filter="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="ies"
+                      [showClear]="es_especialista"
+                      formControlName="iIieeId"
+                      placeholder="Seleccione una Institución Educativa"
+                      styleClass="group-element"
+                      filter="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="secciones"
+                      showClear="true"
+                      formControlName="iSeccionId"
+                      placeholder="Seleccione una sección"
+                      styleClass="group-element"
+                      filter="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Género</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="sexos"
+                      showClear="true"
+                      formControlName="cPersSexo"
+                      placeholder="Seleccione un sexo"
+                      styleClass="group-element"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12">
+                  <p-button label="Aplicar" severity="success" (click)="listarFichas()" />
+                </div>
+              </div>
+            </form>
+          </ng-template>
+        </p-overlayPanel>
+      </div>
+      <div class="col">
+        <p-inputGroup>
+          <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+          <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
 
-    <app-table-primeng
-        [columnas]="columnasTabla"
-        [data]="fichas_filtradas"
-        (accionBtnItem)="accionBnt($event)"
-        [actions]="accionesTabla"
-        [showCaption]="false"
-    />
+  <app-table-primeng
+    [columnas]="columnasTabla"
+    [data]="fichas_filtradas"
+    (accionBtnItem)="accionBnt($event)"
+    [actions]="accionesTabla"
+    [showCaption]="false"
+  />
 </p-panel>

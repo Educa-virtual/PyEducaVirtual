@@ -8,7 +8,7 @@ import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatosRecordatorioService } from '../services/datos-recordatorio.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { DIRECTOR_IE, DOCENTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
@@ -30,6 +30,9 @@ export class RecordatorioFechasComponent implements OnInit {
   recordatorio_activo: boolean = false;
   visibleDialog: boolean = false;
 
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
+
   es_director_docente: boolean = false;
   tipos_relaciones: Array<object> = [
     { value: 'ESTUDIANTE', label: 'ESTUDIANTE' },
@@ -48,6 +51,18 @@ export class RecordatorioFechasComponent implements OnInit {
     this.perfil = this.store.getItem('dremoPerfil');
     this.es_director_docente = [DIRECTOR_IE, DOCENTE].includes(Number(this.perfil.iPerfilId));
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.breadCrumbItems = [
+      {
+        label: 'Bienestar Social',
+      },
+      {
+        label: 'Recordatorio de cumpleaños',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
   }
 
   ngOnInit(): void {

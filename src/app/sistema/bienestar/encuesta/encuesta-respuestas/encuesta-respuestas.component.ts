@@ -122,10 +122,12 @@ export class EncuestaRespuestasComponent implements OnInit {
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {
           const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formFiltros.get('iNivelTipoId')?.setValue(nivel_tipo);
+          this.filterNivelesGrados(nivel_tipo);
           this.filterInstitucionesEducativas();
         }
         if (this.ugeles && this.ugeles.length === 1) {
           this.formFiltros.get('iUgelId')?.setValue(this.ugeles[0]['value']);
+          this.filterInstitucionesEducativas();
         }
       });
 

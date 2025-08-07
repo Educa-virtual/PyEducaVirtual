@@ -136,8 +136,4 @@ export class RegistrarSugerenciaComponent implements OnInit {
     this.visible = false;
     this.eventCerrarNuevaSugerencia.emit(false);
   }
-
-  /*actualizarSugerencia() {
-            this.disable_form = true
-        }*/
 }

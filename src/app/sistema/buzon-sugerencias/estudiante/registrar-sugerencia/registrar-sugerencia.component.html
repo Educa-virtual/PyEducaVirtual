@@ -50,6 +50,7 @@
           (onSelect)="onFileSelect($event)"
           (onRemove)="reiniciarFileUpload()"
           chooseLabel="Seleccione archivo (opcional)"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
           [maxFileSize]="FILE_MAX_SIZE"
           [showCancelButton]="false"
         >

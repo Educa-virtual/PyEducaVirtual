@@ -1,0 +1,633 @@
+<br />
+
+<!--<div class="grid p-fluid">
+   <div class="field col-12 md:col-6">
+       <p-inputGroup>
+           <p-inputGroupAddon>Estudiante</p-inputGroupAddon>
+           <input
+               pInputText
+               [value]="selectedItem?.cNombreEstudiante"
+               readonly
+           />
+       </p-inputGroup>
+   </div>
+   <div class="field col-12 md:col-6">
+       <p-inputGroup>
+           <p-inputGroupAddon>Fecha</p-inputGroupAddon>
+           <input
+               pInputText
+               [value]="selectedItem?.dtFechaCreacion | date"
+               readonly
+           />
+       </p-inputGroup>
+   </div>-->
+<div class="field col-12">
+  <p-tabView>
+    <!-- Tab Matemática -->
+    <p-tabPanel header="Matemática" [selected]="true">
+      <p-table
+        [value]="competenciasMatematica"
+        [scrollable]="true"
+        scrollDirection="horizontal"
+        [style]="{ 'min-width': '1200px' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th rowspan="2" pFrozenColumn>Competencias</th>
+            <th colspan="2">Primer Perdiodo</th>
+            <th colspan="2">Segundo Perdiodo</th>
+            <th colspan="2">Tercer Perdiodo</th>
+            <th colspan="2">Cuarto Perdiodo</th>
+            <th rowspan="2">NL alcanzado al finalizar al periodo lectivo</th>
+          </tr>
+          <tr>
+            <th>NL</th>
+            <th>Conclusión descriptiva</th>
+            <th>NL</th>
+            <th>Conclusión descriptiva</th>
+            <th>NL</th>
+            <th>Conclusión descriptiva</th>
+            <th>NL</th>
+            <th>Conclusión descriptiva</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-competencia let-i="rowIndex">
+          <tr>
+            <td pFrozenColumn>{{ competencia.descripcion }}</td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b1_nl"
+                name="mat_{{ i }}_b1_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b1_desc"
+                name="mat_{{ i }}_b1_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b2_nl"
+                name="mat_{{ i }}_b2_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b2_desc"
+                name="mat_{{ i }}_b2_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b3_nl"
+                name="mat_{{ i }}_b3_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b3_desc"
+                name="mat_{{ i }}_b3_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b4_nl"
+                name="mat_{{ i }}_b4_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b4_desc"
+                name="mat_{{ i }}_b4_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.nl_final"
+                name="mat_{{ i }}_nl_final"
+                rows="3"
+                style="width: 120px"
+              ></textarea>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
+    <!-- Tab Comunicación -->
+    <p-tabPanel header="Comunicación">
+      <p-table
+        [value]="competenciasComunicacion"
+        [scrollable]="true"
+        scrollDirection="horizontal"
+        [style]="{ 'min-width': '1200px' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th rowspan="2" pFrozenColumn>Competencias</th>
+            <th colspan="2">Primer Periodo</th>
+            <th colspan="2">Segundo Periodo</th>
+            <th colspan="2">Tercer Periodo</th>
+            <th colspan="2">Cuarto Periodo</th>
+            <th rowspan="2">NL Final</th>
+          </tr>
+          <tr>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-competencia let-i="rowIndex">
+          <tr>
+            <td pFrozenColumn>{{ competencia.descripcion }}</td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b1_nl"
+                name="com_{{ i }}_b1_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b1_desc"
+                name="com_{{ i }}_b1_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b2_nl"
+                name="com_{{ i }}_b2_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b2_desc"
+                name="com_{{ i }}_b2_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b3_nl"
+                name="com_{{ i }}_b3_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b3_desc"
+                name="com_{{ i }}_b3_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b4_nl"
+                name="com_{{ i }}_b4_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b4_desc"
+                name="com_{{ i }}_b4_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.nl_final"
+                name="com_{{ i }}_nl_final"
+                rows="3"
+                style="width: 120px"
+              ></textarea>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
+    <!-- Tab Inglés -->
+    <p-tabPanel header="Inglés">
+      <p-table
+        [value]="competenciasIngles"
+        [scrollable]="true"
+        scrollDirection="horizontal"
+        [style]="{ 'min-width': '1200px' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th rowspan="2" pFrozenColumn>Competencias</th>
+            <th colspan="2">Primer Bimestre</th>
+            <th colspan="2">Segundo Bimestre</th>
+            <th colspan="2">Tercer Bimestre</th>
+            <th colspan="2">Cuarto Bimestre</th>
+            <th rowspan="2">NL Final</th>
+          </tr>
+          <tr>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-competencia let-i="rowIndex">
+          <tr>
+            <td pFrozenColumn>{{ competencia.descripcion }}</td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b1_nl"
+                name="ing_{{ i }}_b1_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b1_desc"
+                name="ing_{{ i }}_b1_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b2_nl"
+                name="ing_{{ i }}_b2_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b2_desc"
+                name="ing_{{ i }}_b2_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b3_nl"
+                name="ing_{{ i }}_b3_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b3_desc"
+                name="ing_{{ i }}_b3_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b4_nl"
+                name="ing_{{ i }}_b4_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b4_desc"
+                name="ing_{{ i }}_b4_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.nl_final"
+                name="ing_{{ i }}_nl_final"
+                rows="3"
+                style="width: 120px"
+              ></textarea>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
+    <!-- Tab Personal Social -->
+    <p-tabPanel header="Personal Social">
+      <p-table
+        [value]="competenciasPersonalSocial"
+        [scrollable]="true"
+        scrollDirection="horizontal"
+        [style]="{ 'min-width': '1200px' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th rowspan="2" pFrozenColumn>Competencias</th>
+            <th colspan="2">Primer Bimestre</th>
+            <th colspan="2">Segundo Bimestre</th>
+            <th colspan="2">Tercer Bimestre</th>
+            <th colspan="2">Cuarto Bimestre</th>
+            <th rowspan="2">NL Final</th>
+          </tr>
+          <tr>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-competencia let-i="rowIndex">
+          <tr>
+            <td pFrozenColumn>{{ competencia.descripcion }}</td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b1_nl"
+                name="ps_{{ i }}_b1_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b1_desc"
+                name="ps_{{ i }}_b1_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b2_nl"
+                name="ps_{{ i }}_b2_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b2_desc"
+                name="ps_{{ i }}_b2_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b3_nl"
+                name="ps_{{ i }}_b3_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b3_desc"
+                name="ps_{{ i }}_b3_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b4_nl"
+                name="ps_{{ i }}_b4_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b4_desc"
+                name="ps_{{ i }}_b4_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.nl_final"
+                name="ps_{{ i }}_nl_final"
+                rows="3"
+                style="width: 120px"
+              ></textarea>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
+    <!-- Tab Ed. Religiosa -->
+    <p-tabPanel header="Ed. Religiosa">
+      <p-table
+        [value]="competenciasReligiosa"
+        [scrollable]="true"
+        scrollDirection="horizontal"
+        [style]="{ 'min-width': '1200px' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th rowspan="2" pFrozenColumn>Competencias</th>
+            <th colspan="2">Primer Bimestre</th>
+            <th colspan="2">Segundo Bimestre</th>
+            <th colspan="2">Tercer Bimestre</th>
+            <th colspan="2">Cuarto Bimestre</th>
+            <th rowspan="2">NL Final</th>
+          </tr>
+          <tr>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+            <th>NL</th>
+            <th>Conclusión</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-competencia let-i="rowIndex">
+          <tr>
+            <td pFrozenColumn>{{ competencia.descripcion }}</td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b1_nl"
+                name="rel_{{ i }}_b1_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b1_desc"
+                name="rel_{{ i }}_b1_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b2_nl"
+                name="rel_{{ i }}_b2_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b2_desc"
+                name="rel_{{ i }}_b2_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b3_nl"
+                name="rel_{{ i }}_b3_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b3_desc"
+                name="rel_{{ i }}_b3_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="competencia.b4_nl"
+                name="rel_{{ i }}_b4_nl"
+                style="width: 60px"
+              />
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.b4_desc"
+                name="rel_{{ i }}_b4_desc"
+                rows="2"
+                style="width: 150px"
+              ></textarea>
+            </td>
+            <td>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="competencia.nl_final"
+                name="rel_{{ i }}_nl_final"
+                rows="3"
+                style="width: 120px"
+              ></textarea>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<!-- Botones -->
+<div class="field col-12">
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancelar" severity="secondary" (click)="cerrarDialog()"> </p-button>
+    <p-button
+      *ngIf="!mostrarBotonFinalizar"
+      label="Guardar"
+      severity="primary"
+      (click)="guardarLogro()"
+    >
+    </p-button>
+    <p-button
+      *ngIf="mostrarBotonFinalizar"
+      label="Finalizar"
+      severity="success"
+      (click)="finalizarRegistro()"
+    >
+    </p-button>
+  </div>
+</div>
+<p-toast></p-toast>

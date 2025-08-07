@@ -50,7 +50,21 @@ const docente = [
         icon: 'pi pi-fw pi-list-check',
         routerLink: ['/docente/actividades-no-lectivas'],
       },
+
       {
+        label: 'Informes',
+        icon: 'pi pi-fw pi-objects-column',
+        //routerLink: ['/docente/informes'],
+        // routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
+        items: [
+          {
+            label: 'Logros Alcanzados',
+            icon: 'pi pi-fw pi-share-alt',
+            routerLink: ['/evaluaciones/registro-logro'],
+          },
+        ],
+      },
+      /* {
         label: 'Informes',
         icon: 'pi pi-fw pi-objects-column',
         routerLink: ['/docente/informes'],
@@ -154,6 +168,7 @@ const docente = [
           // },
         ],
       },
+      */
       {
         label: 'Mis capacitaciones',
         icon: 'pi pi-id-card',

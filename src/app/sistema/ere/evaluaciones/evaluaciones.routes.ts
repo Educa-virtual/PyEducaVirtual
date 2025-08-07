@@ -6,6 +6,7 @@ const routes: Routes = [
     redirectTo: 'dashboard',
     pathMatch: 'full',
   },
+  /*
   {
     path: 'dashboard',
     loadChildren: () => import('./sub-evaluaciones/dashboard/dashboard.routes'),
@@ -58,7 +59,7 @@ const routes: Routes = [
       import('./sub-evaluaciones/logro-alcanzado/logro-alcanzado.component').then(
         c => c.LogroAlcanzadoComponent
       ),
-  },
+  }, */
   // {
   //     path: 'logro-alcanzado',
   //     locadComponent: () =>

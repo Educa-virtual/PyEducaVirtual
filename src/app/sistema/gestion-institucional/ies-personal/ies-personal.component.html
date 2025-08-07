@@ -1,203 +1,186 @@
 <app-container-page
-    title="Personal de la Institución educativa"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+  title="Personal de la Institución educativa"
+  [actions]="accionesPrincipal"
+  (accionBtnItem)="accionBtnItemTable($event)"
 >
-    <div class="card">
-        <app-table-primeng
-            [columnas]="columns"
-            [showCaption]="true"
-            [data]="personal_ies"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="true"
-            [(selectedRowData)]="selectedItems"
-            [actions]="actions"
-        >
-            <!-- <ng-container slot="caption-content"> </ng-container> -->
-        </app-table-primeng>
-        <ng-container slot="caption-content"> </ng-container>
-    </div>
-    <div class="card flex justify-content-center gap-2">
-        <p-toast />
-        <!-- <p-confirmDialog /> -->
-    </div>
+  <div class="card">
+    <app-table-primeng
+      [columnas]="columns"
+      [showCaption]="true"
+      [data]="personal_ies"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showPaginator]="true"
+      [(selectedRowData)]="selectedItems"
+      [actions]="actions"
+    >
+      <!-- <ng-container slot="caption-content"> </ng-container> -->
+    </app-table-primeng>
+    <ng-container slot="caption-content"> </ng-container>
+  </div>
+  <div class="card flex justify-content-center gap-2">
+    <p-toast />
+    <!-- <p-confirmDialog /> -->
+  </div>
 </app-container-page>
 
 <p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    [closable]="true"
-    [resizable]="true"
-    [maximizable]="true"
+  header="{{ caption }}"
+  [(visible)]="visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [closable]="true"
+  [resizable]="true"
+  [maximizable]="true"
 >
-    <ng-content>
-        <form [formGroup]="form">
-            <div class="grid p-fluid mt-3">
-                <input
-                    pInputText
-                    type="hidden"
-                    formControlName="iPersIeId"
-                    class="p-inputtext-sm"
-                />
-                <div class="field col-12 md:col-12">
-                    <div class="separator-with-text">
-                        <span>Datos del personal</span>
-                    </div>
-                </div>
+  <ng-content>
+    <form [formGroup]="form">
+      <div class="grid p-fluid mt-3">
+        <input pInputText type="hidden" formControlName="iPersIeId" class="p-inputtext-sm" />
+        <div class="field col-12 md:col-12">
+          <div class="separator-with-text">
+            <span>Datos del personal</span>
+          </div>
+        </div>
 
-                <div class="field col-12 md:col-6">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="cargos"
-                            formControlName="iPersCargoId"
-                            optionLabel="cPersCargoNombre"
-                            [checkmark]="true"
-                            optionValue="iPersCargoId"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            (onChange)="onCargoSeleccionado($event)"
-                        />
+        <div class="field col-12 md:col-6">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="cargos"
+              formControlName="iPersCargoId"
+              optionLabel="cPersCargoNombre"
+              [checkmark]="true"
+              optionValue="iPersCargoId"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              (onChange)="onCargoSeleccionado($event)"
+            />
 
-                        <label for="iPersCargoId">Selecionar cargo</label>
-                    </span>
-                </div>
-                <div class="field col-12 md:col-6">
-                    <span class="p-float-label">
-                        <p-inputNumber
-                            formControlName="iHorasLabora"
-                            aria-describedby="iHorasLabora-help"
-                        />
+            <label for="iPersCargoId">Selecionar cargo</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-6">
+          <span class="p-float-label">
+            <p-inputNumber formControlName="iHorasLabora" aria-describedby="iHorasLabora-help" />
 
-                        <label for="iHorasLabora">Total de horas</label>
-                    </span>
-                    <small
-                        id="iHorasLabora-help"
-                        class="p-error"
-                        *ngIf="
-                            form.get('iHorasLabora')?.invalid &&
-                            form.get('iHorasLabora')?.touched
-                        "
-                    >
-                        Ingrese un número válido mayor de 1 a 40.
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input
-                            pInputText
-                            id="dni"
-                            (onclick)="buscarDni()"
-                            formControlName="dni"
-                            aria-describedby="dni-help"
-                        />
-                        <input type="hidden" formControlName="iPersId" />
+            <label for="iHorasLabora">Total de horas</label>
+          </span>
+          <small
+            id="iHorasLabora-help"
+            class="p-error"
+            *ngIf="form.get('iHorasLabora')?.invalid && form.get('iHorasLabora')?.touched"
+          >
+            Ingrese un número válido mayor de 1 a 40.
+          </small>
+        </div>
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="dni"
+              (onclick)="buscarDni()"
+              formControlName="dni"
+              aria-describedby="dni-help"
+            />
+            <input type="hidden" formControlName="iPersId" />
 
-                        <label for="dni">Documento</label>
-                    </span>
-                </div>
-                <div class="field col-12 md:col-2">
-                    <p-button
-                        label="Validar"
-                        styleClass="w-full"
-                        (onClick)="buscarDni()"
-                    />
-                </div>
+            <label for="dni">Documento</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-2">
+          <p-button label="Validar" styleClass="w-full" (onClick)="buscarDni()" />
+        </div>
 
-                <div class="field col-12 md:col-6">
-                    {{ mensaje }}
-                </div>
+        <div class="field col-12 md:col-6">
+          {{ mensaje }}
+        </div>
 
-                @if (option) {
-                    <div class="field col-12 md:col-12">
-                        <!-- <hr class="custom-separator" /> -->
-                        <div class="separator-with-text">
-                            <span>Información de NEXUS</span>
-                        </div>
-                    </div>
-
-                    <div class="field col-12 md:col-6">
-                        <span class="p-float-label">
-                            <p-calendar
-                                formControlName="dtInicio"
-                                [iconDisplay]="'input'"
-                                [showIcon]="true"
-                                inputId="dtInicio"
-                                [appendTo]="'body'"
-                            />
-
-                            <label for="dtInicio">Fecha inicio</label>
-                        </span>
-                    </div>
-                    <div class="field col-12 md:col-6">
-                        <span class="p-float-label">
-                            <p-calendar
-                                formControlName="dtFin"
-                                [iconDisplay]="'input'"
-                                [showIcon]="true"
-                                inputId="dtFin"
-                                [appendTo]="'body'"
-                            />
-
-                            <label for="dtFin">Fecha fin</label>
-                        </span>
-                    </div>
-                    <div class="field col-12 md:col-4">
-                        <span class="p-float-label">
-                            <input
-                                pInputText
-                                id="iCodigoNexus"
-                                formControlName="iCodigoNexus"
-                                aria-describedby="iCodigoNexus-help"
-                            />
-                            <label for="iCodigoNexus">Nexus</label>
-                        </span>
-                    </div>
-                    <div class="field col-12 md:col-8">
-                        <span class="p-float-label">
-                            <input
-                                pInputText
-                                id="cResolucion"
-                                formControlName="cResolucion"
-                                aria-describedby="cResolucion-help"
-                            />
-                            <label for="cResolucion"
-                                >Documento de aprobación</label
-                            >
-                        </span>
-                    </div>
-                }
-                <div class="field col-12 md:col-12">
-                    <span class="p-float-label">
-                        <input
-                            pInputText
-                            id="cObservacion"
-                            formControlName="cObservacion"
-                            aria-describedby="cObservacion-help"
-                        />
-                        <label for="cObservacion">Observación</label>
-                    </span>
-                </div>
+        @if (option) {
+          <div class="field col-12 md:col-12">
+            <!-- <hr class="custom-separator" /> -->
+            <div class="separator-with-text">
+              <span>Información de NEXUS</span>
             </div>
-            @if (c_accion === 'editar') {
-                <p-button
-                    label="Editar"
-                    [disabled]="form.invalid"
-                    (onClick)="accionBtnItem('editar')"
-                    styleClass="p-button-warning"
-                />
-            }
-            @if (c_accion === 'agregar') {
-                <p-button
-                    label="Guardar"
-                    [disabled]="form.invalid"
-                    (onClick)="accionBtnItem('guardar')"
-                    styleClass="p-button-primary"
-                />
-            }
-        </form>
-    </ng-content>
+          </div>
+
+          <div class="field col-12 md:col-6">
+            <span class="p-float-label">
+              <p-calendar
+                formControlName="dtInicio"
+                [iconDisplay]="'input'"
+                [showIcon]="true"
+                inputId="dtInicio"
+                [appendTo]="'body'"
+              />
+
+              <label for="dtInicio">Fecha inicio</label>
+            </span>
+          </div>
+          <div class="field col-12 md:col-6">
+            <span class="p-float-label">
+              <p-calendar
+                formControlName="dtFin"
+                [iconDisplay]="'input'"
+                [showIcon]="true"
+                inputId="dtFin"
+                [appendTo]="'body'"
+              />
+
+              <label for="dtFin">Fecha fin</label>
+            </span>
+          </div>
+          <div class="field col-12 md:col-4">
+            <span class="p-float-label">
+              <input
+                pInputText
+                id="iCodigoNexus"
+                formControlName="iCodigoNexus"
+                aria-describedby="iCodigoNexus-help"
+              />
+              <label for="iCodigoNexus">Nexus</label>
+            </span>
+          </div>
+          <div class="field col-12 md:col-8">
+            <span class="p-float-label">
+              <input
+                pInputText
+                id="cResolucion"
+                formControlName="cResolucion"
+                aria-describedby="cResolucion-help"
+              />
+              <label for="cResolucion">Documento de aprobación</label>
+            </span>
+          </div>
+        }
+        <div class="field col-12 md:col-12">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="cObservacion"
+              formControlName="cObservacion"
+              aria-describedby="cObservacion-help"
+            />
+            <label for="cObservacion">Observación</label>
+          </span>
+        </div>
+      </div>
+      @if (c_accion === 'editar') {
+        <p-button
+          label="Editar"
+          [disabled]="form.invalid"
+          (onClick)="accionBtnItem('editar')"
+          styleClass="p-button-warning"
+        />
+      }
+      @if (c_accion === 'agregar') {
+        <p-button
+          label="Guardar"
+          [disabled]="form.invalid"
+          (onClick)="accionBtnItem('guardar')"
+          styleClass="p-button-primary"
+        />
+      }
+    </form>
+  </ng-content>
 </p-dialog>

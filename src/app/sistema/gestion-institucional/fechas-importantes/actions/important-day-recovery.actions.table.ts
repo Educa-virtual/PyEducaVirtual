@@ -1,7 +1,7 @@
-import { editar, eliminar } from '@/app/shared/actions/actions.table'
+import { editar, eliminar } from '@/app/shared/actions/actions.table';
 
-const actions = [editar, eliminar]
+const actions = [editar, eliminar];
 
 export const table = {
-    actions,
-}
+  actions,
+};

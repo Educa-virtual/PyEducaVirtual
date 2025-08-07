@@ -163,6 +163,11 @@ const estudiante = [
           },
         ],
       },
+      {
+        label: 'Buzón de sugerencias',
+        icon: 'pi pi-fw pi-envelope',
+        routerLink: ['/buzon-sugerencias/estudiante'],
+      },
     ],
   },
 ];
@@ -178,15 +183,16 @@ const administrador = [
         routerLink: ['/administrador/auditoria'],
       },
       /*{
-                label: 'Componentes',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/administrador/componentes'],
-            },*/
+                      label: 'Componentes',
+                      icon: 'pi pi-fw pi-folder',
+                      routerLink: ['/administrador/componentes'],
+                  },*/
       {
         label: 'Registro de fechas especiales',
         icon: 'pi pi-calendar',
         routerLink: ['/gestion-institucional/fechas'],
       },
+      /*{
       /*{
         label: 'Backup de BD',
         icon: 'pi pi-fw pi-database',
@@ -341,9 +347,9 @@ const administracion = [
             routerLink: ['/gestion-institucional/estudiante/registro'],
           },
           {
-            label: 'Buzon de Sugerencias',
+            label: 'Buzón de sugerencias',
             icon: 'pi pi-fw pi-envelope',
-            routerLink: ['/gestion-institucional/gestionar-sugerencias'],
+            routerLink: ['/buzon-sugerencias/director'],
           },
         ],
       },
@@ -358,33 +364,33 @@ const administracion = [
         routerLink: ['/gestion-institucional/gestion-vacantes'],
       },
       /* {
-            label: 'Gestión de Matrículas',
-            icon: 'pi pi-folder',
-            items: [
-              {
-                label: 'Gestionar matriculas',
-                icon: 'pi pi-fw pi-file-edit',
-                badge: '',
-                routerLink: ['/gestion-institucional/gestion-matriculas'],
-              },
-              {
-                label: 'Matrícula Individual',
-                icon: 'pi pi-fw pi-file-plus',
-                badge: '',
-                routerLink: ['/gestion-institucional/matricula-individual'],
-              },
-              {
-                label: 'Matrícula Masiva',
-                icon: 'pi pi-fw pi-file-import',
-                badge: '',
-                routerLink: ['/gestion-institucional/matricula-masiva'],
-              },
+                  label: 'Gestión de Matrículas',
+                  icon: 'pi pi-folder',
+                  items: [
+                    {
+                      label: 'Gestionar matriculas',
+                      icon: 'pi pi-fw pi-file-edit',
+                      badge: '',
+                      routerLink: ['/gestion-institucional/gestion-matriculas'],
+                    },
+                    {
+                      label: 'Matrícula Individual',
+                      icon: 'pi pi-fw pi-file-plus',
+                      badge: '',
+                      routerLink: ['/gestion-institucional/matricula-individual'],
+                    },
+                    {
+                      label: 'Matrícula Masiva',
+                      icon: 'pi pi-fw pi-file-import',
+                      badge: '',
+                      routerLink: ['/gestion-institucional/matricula-masiva'],
+                    },
 
 
 
-            ],
-          },
-        */
+                  ],
+                },
+              */
       {
         label: 'Indicadores',
         icon: 'pi pi-chart-line',
@@ -459,11 +465,6 @@ const administracion = [
         routerLink: ['/docente/comunicados'],
       },
       {
-        label: 'Buzón de sugerencias',
-        icon: 'pi pi-fw pi-envelope',
-        routerLink: ['/buzon-director'],
-      },
-      {
         label: 'ERE',
         icon: 'pi pi-pen-to-square',
         items: [
@@ -521,6 +522,24 @@ const administracion = [
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
       },
+      // {
+      //     label: 'Generar Reportes y Estadisticas',
+      //     icon: 'pi pi-chart-scatter',
+      //     items: [
+      //         {
+      //             label: 'Reportes Academicos',
+      //             icon: 'pi pi-fw pi-circle',
+      //             routerLink: ['/gestion-institucional/reporte'],
+      //         },
+      //         {
+      //             label: 'Reportes Orden de Mérito',
+      //             icon: 'pi pi-fw pi-circle',
+      //             routerLink: ['/gestion-institucional/estadistica'],
+      //         },
+      //     ],
+      // },
+
+      //director buzon
     ],
   },
 ];

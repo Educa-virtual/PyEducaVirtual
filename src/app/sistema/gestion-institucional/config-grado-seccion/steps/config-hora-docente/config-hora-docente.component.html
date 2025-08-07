@@ -1,42 +1,38 @@
 <p-toast />
 <app-container-page
-    title="Asignar horas"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+  title="Asignar horas"
+  [actions]="accionesPrincipal"
+  (accionBtnItem)="accionBtnItemTable($event)"
 >
-    <div class="card">
-        <p-steps [model]="items" [readonly]="true"></p-steps>
-    </div>
-    <div class="card">
-        <app-table-primeng
-            [columnas]="columns"
-            [showCaption]="true"
-            [data]="docentes"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="true"
-            [(selectedRowData)]="accionBtnItemTable"
-            [actions]="actions"
-        >
-            <ng-container slot="caption-content"> </ng-container>
-        </app-table-primeng>
-        <div class="flex justify-content-end">
-            <p-button
-                (onClick)="confirm()"
-                [disabled]="!form.valid"
-                label="Siguiente"
-            />
-        </div>
-    </div>
-
-    <p-dialog
-        [(visible)]="showFormulario"
-        [modal]="true"
-        [style]="{ width: '50vw' }"
-        [maximizable]="true"
-        [closable]="true"
-        [dismissableMask]="true"
-        [header]="'Agregar Personal'"
+  <div class="card">
+    <p-steps [model]="items" [readonly]="true"></p-steps>
+  </div>
+  <div class="card">
+    <app-table-primeng
+      [columnas]="columns"
+      [showCaption]="true"
+      [data]="docentes"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showPaginator]="true"
+      [(selectedRowData)]="accionBtnItemTable"
+      [actions]="actions"
     >
-        <app-ies-personal></app-ies-personal>
-    </p-dialog>
+      <ng-container slot="caption-content"> </ng-container>
+    </app-table-primeng>
+    <div class="flex justify-content-end">
+      <p-button (onClick)="confirm()" [disabled]="!form.valid" label="Siguiente" />
+    </div>
+  </div>
+
+  <p-dialog
+    [(visible)]="showFormulario"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [maximizable]="true"
+    [closable]="true"
+    [dismissableMask]="true"
+    [header]="'Agregar Personal'"
+  >
+    <app-ies-personal></app-ies-personal>
+  </p-dialog>
 </app-container-page>

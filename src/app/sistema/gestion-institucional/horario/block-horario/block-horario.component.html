@@ -1,15 +1,15 @@
 <div class="grid" *ngIf="formGenerador">
-    <div class="xl:col-4 sm:col-12 md:col-12" *ngIf="iConfBloqueId.length > 0">
-        <form [formGroup]="formGenerador">
-            <div class="card m-2" style="padding: 12px">
-                @if (iEstado) {
-                    <p-message
-                        severity="info"
-                        text="El bloque se encuentra activo,por lo que no puede ser modificado"
-                    ></p-message>
-                } @else {
-                    <p-card header="Generar bloque">
-                        <!-- <div class="grid" style="padding: 10px">
+  <div class="xl:col-4 sm:col-12 md:col-12" *ngIf="iConfBloqueId.length > 0">
+    <form [formGroup]="formGenerador">
+      <div class="card m-2" style="padding: 12px">
+        @if (iEstado) {
+          <p-message
+            severity="info"
+            text="El bloque se encuentra activo,por lo que no puede ser modificado"
+          ></p-message>
+        } @else {
+          <p-card header="Generar bloque">
+            <!-- <div class="grid" style="padding: 10px">
                         <div class="field col-12 md:col-12">
                             <span class="p-float-label">
                                 <input pInputText id="cHorarioIeNombre" formControlName="cHorarioIeNombre"
@@ -19,87 +19,87 @@
                         </div>
                     </div> -->
 
-                        <div class="grid" style="padding: 10px">
-                            <div class="col-6">
-                                <span class="p-float-label">
-                                    <p-calendar
-                                        formControlName="tBloqueInicio"
-                                        [iconDisplay]="'input'"
-                                        [showIcon]="true"
-                                        [timeOnly]="true"
-                                        [disabledDays]="[0, 6]"
-                                        inputId="icondisplay"
-                                        (onSelect)="sumarIntervalo()"
-                                    >
-                                    </p-calendar>
+            <div class="grid" style="padding: 10px">
+              <div class="col-6">
+                <span class="p-float-label">
+                  <p-calendar
+                    formControlName="tBloqueInicio"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    [timeOnly]="true"
+                    [disabledDays]="[0, 6]"
+                    inputId="icondisplay"
+                    (onSelect)="sumarIntervalo()"
+                  >
+                  </p-calendar>
 
-                                    <label for="tBloqueinicio">inicio</label>
-                                </span>
-                            </div>
+                  <label for="tBloqueinicio">inicio</label>
+                </span>
+              </div>
 
-                            <div class="col-6">
-                                <span class="p-float-label">
-                                    <p-calendar
-                                        formControlName="tBloqueFin"
-                                        [iconDisplay]="'input'"
-                                        [showIcon]="true"
-                                        [timeOnly]="true"
-                                        [disabledDays]="[0, 6]"
-                                        inputId="icondisplay"
-                                    >
-                                        <!-- (onSelect)="formGenerador.get('tfin')?.updateValueAndValidity()"> -->
-                                    </p-calendar>
+              <div class="col-6">
+                <span class="p-float-label">
+                  <p-calendar
+                    formControlName="tBloqueFin"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    [timeOnly]="true"
+                    [disabledDays]="[0, 6]"
+                    inputId="icondisplay"
+                  >
+                    <!-- (onSelect)="formGenerador.get('tfin')?.updateValueAndValidity()"> -->
+                  </p-calendar>
 
-                                    <label for="tBloqueFin">fin</label>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="grid" style="padding: 10px">
-                            <div class="col-6">
-                                <p>
-                                    Número de bloques: {{ bloque_asignado }} de
-                                    {{ iNumBloque }}
-                                </p>
-                                <!-- <p> iConfBloqueId: {{iConfBloqueId}}</p>
+                  <label for="tBloqueFin">fin</label>
+                </span>
+              </div>
+            </div>
+            <div class="grid" style="padding: 10px">
+              <div class="col-6">
+                <p>
+                  Número de bloques: {{ bloque_asignado }} de
+                  {{ iNumBloque }}
+                </p>
+                <!-- <p> iConfBloqueId: {{iConfBloqueId}}</p>
                             <p> iIntervalo: {{iIntervalo}}</p>
                             <p> iEstado: {{iEstado}}</p> -->
-                            </div>
-                            <div class="col-2"></div>
-                            <div class="col-4" *ngIf="formGenerador">
-                                <p-button
-                                    severity="primary"
-                                    (click)="cerrarBloque()"
-                                    label="Finalizar"
-                                    *ngIf="!formGenerador.value.iEstado"
-                                />
+              </div>
+              <div class="col-2"></div>
+              <div class="col-4" *ngIf="formGenerador">
+                <p-button
+                  severity="primary"
+                  (click)="cerrarBloque()"
+                  label="Finalizar"
+                  *ngIf="!formGenerador.value.iEstado"
+                />
 
-                                <p-button
-                                    severity="secondary"
-                                    (click)="agregarBloque()"
-                                    label="Generar"
-                                    *ngIf="formGenerador.value.iEstado"
-                                    [disabled]="formGenerador.invalid"
-                                />
-                            </div>
-                        </div>
-                    </p-card>
-                }
+                <p-button
+                  severity="secondary"
+                  (click)="agregarBloque()"
+                  label="Generar"
+                  *ngIf="formGenerador.value.iEstado"
+                  [disabled]="formGenerador.invalid"
+                />
+              </div>
             </div>
-        </form>
-    </div>
+          </p-card>
+        }
+      </div>
+    </form>
+  </div>
 
-    <div class="xl:col-8 sm:col-12 md:col-12">
-        <div class="card">
-            <app-table-primeng
-                [columnas]="columnsBloque"
-                [showCaption]="false"
-                [data]="bloques"
-                (accionBtnItem)="accionBtnItemTable($event)"
-                [showPaginator]="false"
-                [(selectedRowData)]="accionBtnItemTable"
-                [actions]="actions"
-            >
-            </app-table-primeng>
-        </div>
+  <div class="xl:col-8 sm:col-12 md:col-12">
+    <div class="card">
+      <app-table-primeng
+        [columnas]="columnsBloque"
+        [showCaption]="false"
+        [data]="bloques"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="false"
+        [(selectedRowData)]="accionBtnItemTable"
+        [actions]="actions"
+      >
+      </app-table-primeng>
     </div>
+  </div>
 </div>

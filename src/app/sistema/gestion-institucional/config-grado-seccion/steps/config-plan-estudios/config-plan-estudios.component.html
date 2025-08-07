@@ -1,162 +1,142 @@
 <app-container-page
-    title="Registrar plan de estudio"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+  title="Registrar plan de estudio"
+  [actions]="accionesPrincipal"
+  (accionBtnItem)="accionBtnItemTable($event)"
 >
+  <div class="card">
+    <p-steps [model]="items" [readonly]="true"></p-steps>
+  </div>
+  <br />
+  @if (bAgregar) {
     <div class="card">
-        <p-steps [model]="items" [readonly]="true"></p-steps>
+      <p-table [value]="groupedData" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm">
+        <!-- Cabecera personalizada -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Asignatura</th>
+            <th>Tipo de Nivel</th>
+            <th *ngFor="let grado of dynamicColumns">
+              {{ grado }}
+            </th>
+            <th>Accion</th>
+          </tr>
+        </ng-template>
+
+        <!-- Filas dinámicas -->
+        <ng-template pTemplate="body" let-rowData>
+          <tr>
+            <td>{{ rowData.cCursoNombre }}</td>
+            <td>{{ rowData.cNivelTipoNombre }}</td>
+
+            <td *ngFor="let grado of dynamicColumns">
+              <input
+                type="number"
+                pInputText
+                id="{{ rowData.iCursoId + '-' + grado }}"
+                name="{{ rowData.iCursoId + '-' + grado }}"
+                style="width: 50px"
+                value="{{ rowData.grades[grado] }}"
+              />
+              <!-- {{ rowData.grades[grado] || '-' }} -->
+            </td>
+            <td>
+              <p-button
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text"
+                (onClick)="accionBtn(rowData)"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
-    <br />
-    @if (bAgregar) {
-        <div class="card">
-            <p-table
-                [value]="groupedData"
-                [responsiveLayout]="'scroll'"
-                styleClass="p-datatable-sm"
-            >
-                <!-- Cabecera personalizada -->
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Asignatura</th>
-                        <th>Tipo de Nivel</th>
-                        <th *ngFor="let grado of dynamicColumns">
-                            {{ grado }}
-                        </th>
-                        <th>Accion</th>
-                    </tr>
-                </ng-template>
+  } @else {
+    <app-asignar-horas></app-asignar-horas>
+  }
 
-                <!-- Filas dinámicas -->
-                <ng-template pTemplate="body" let-rowData>
-                    <tr>
-                        <td>{{ rowData.cCursoNombre }}</td>
-                        <td>{{ rowData.cNivelTipoNombre }}</td>
-
-                        <td *ngFor="let grado of dynamicColumns">
-                            <input
-                                type="number"
-                                pInputText
-                                id="{{ rowData.iCursoId + '-' + grado }}"
-                                name="{{ rowData.iCursoId + '-' + grado }}"
-                                style="width: 50px"
-                                value="{{ rowData.grades[grado] }}"
-                            />
-                            <!-- {{ rowData.grades[grado] || '-' }} -->
-                        </td>
-                        <td>
-                            <p-button
-                                icon="pi pi-pencil"
-                                class="p-button-rounded p-button-text"
-                                (onClick)="accionBtn(rowData)"
-                            ></p-button>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    } @else {
-        <app-asignar-horas></app-asignar-horas>
-    }
-
-    <div class="flex justify-content-end">
-        <p-button (onClick)="confirm()" label="Siguiente" />
-    </div>
+  <div class="flex justify-content-end">
+    <p-button (onClick)="confirm()" label="Siguiente" />
+  </div>
 </app-container-page>
-<p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
->
-    <form [formGroup]="form">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                    <input
-                        type="hidden"
-                        formControlName="iPlanes"
-                        aria-describedby="iConfigId-help"
-                    />
-                    <input
-                        pInputText
-                        formControlName="cYAcadNombre"
-                        readOnly="false"
-                        aria-describedby="cYAcadNombre-help"
-                    />
+<p-dialog header="{{ caption }}" [(visible)]="visible" [style]="{ width: '56rem' }" [modal]="true">
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label">
+          <input type="hidden" formControlName="iPlanes" aria-describedby="iConfigId-help" />
+          <input
+            pInputText
+            formControlName="cYAcadNombre"
+            readOnly="false"
+            aria-describedby="cYAcadNombre-help"
+          />
 
-                    <label for="cYAcadNombre">Año escolar:</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-10">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        formControlName="cPlanes"
-                        readOnly="false"
-                        aria-describedby="cPlanes-help"
-                    />
-                    <label for="cPlanes">Descripcion de planes</label>
-                </span>
-            </div>
+          <label for="cYAcadNombre">Año escolar:</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-10">
+        <span class="p-float-label">
+          <input
+            pInputText
+            formControlName="cPlanes"
+            readOnly="false"
+            aria-describedby="cPlanes-help"
+          />
+          <label for="cPlanes">Descripcion de planes</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-2">
-                <span>
-                    @if (!enlace || enlace.trim() === '') {
-                        <p>No existe archivo adjunto</p>
-                    } @else {
-                        <p>Existe Archivo</p>
-                        <a
-                            [href]="enlace"
-                            download="archivo.pdf"
-                            class="custom-download-link"
-                            target="_blank"
-                        >
-                            <i class="pi pi-download"></i> Descargar Archivo
-                        </a>
-                    }
-                </span>
-            </div>
-            <div class="field col-12 md:col-10">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        formControlName="cObsPlanes"
-                        readOnly="false"
-                        aria-describedby="cObsPlanes-help"
-                    />
+      <div class="field col-12 md:col-2">
+        <span>
+          @if (!enlace || enlace.trim() === '') {
+            <p>No existe archivo adjunto</p>
+          } @else {
+            <p>Existe Archivo</p>
+            <a [href]="enlace" download="archivo.pdf" class="custom-download-link" target="_blank">
+              <i class="pi pi-download"></i> Descargar Archivo
+            </a>
+          }
+        </span>
+      </div>
+      <div class="field col-12 md:col-10">
+        <span class="p-float-label">
+          <input
+            pInputText
+            formControlName="cObsPlanes"
+            readOnly="false"
+            aria-describedby="cObsPlanes-help"
+          />
 
-                    <label for="cObsPlanes">Observaciones</label>
-                </span>
-            </div>
+          <label for="cObsPlanes">Observaciones</label>
+        </span>
+      </div>
 
-            <div class="field col-12 md:col-5">
-                <app-types-files-upload-primeng
-                    [nameFile]="'configuracion-iiee'"
-                    [nameOption]="'configuracion-iiee'"
-                    [typesFiles]="typesFiles"
-                    (actionTypesFileUpload)="accionBtn($event)"
-                    [filesUrl]="filesUrl"
-                >
-                </app-types-files-upload-primeng>
-            </div>
-            <div class="field col-12 md:col-7">
-                <span>
-                    <p>
-                        <strong>Consideraciones al adjuntar archivos</strong>
-                    </p>
-                    <li>
-                        Solo se permite las extensiones : JPG, JPEG, PNG, PDF
-                    </li>
-                    <li>El tamaño maximo permitido es de 10 MB</li>
-                    <li>Puede agregar solo un archivos</li>
-                </span>
-            </div>
-        </div>
-        <p-button
-            label="Guardar"
-            [disabled]="form.invalid"
-            (onClick)="accionBtnItem('guardar')"
-            styleClass="p-button-danger"
-        /><p-toast />
-    </form>
+      <div class="field col-12 md:col-5">
+        <app-types-files-upload-primeng
+          [nameFile]="'configuracion-iiee'"
+          [nameOption]="'configuracion-iiee'"
+          [typesFiles]="typesFiles"
+          (actionTypesFileUpload)="accionBtn($event)"
+          [filesUrl]="filesUrl"
+        >
+        </app-types-files-upload-primeng>
+      </div>
+      <div class="field col-12 md:col-7">
+        <span>
+          <p>
+            <strong>Consideraciones al adjuntar archivos</strong>
+          </p>
+          <li>Solo se permite las extensiones : JPG, JPEG, PNG, PDF</li>
+          <li>El tamaño maximo permitido es de 10 MB</li>
+          <li>Puede agregar solo un archivos</li>
+        </span>
+      </div>
+    </div>
+    <p-button
+      label="Guardar"
+      [disabled]="form.invalid"
+      (onClick)="accionBtnItem('guardar')"
+      styleClass="p-button-danger"
+    /><p-toast />
+  </form>
 </p-dialog>

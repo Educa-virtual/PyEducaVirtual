@@ -128,7 +128,7 @@ const estudiante = [
       },
       {
         label: 'Horario',
-        icon: 'pi pi-pen-to-square',
+        icon: 'pi pi-calendar-clock',
         routerLink: ['/estudiante/horario'],
       },
       /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
@@ -374,9 +374,9 @@ const administracion = [
                 badge: '',
                 routerLink: ['/gestion-institucional/matricula-masiva'],
               },
-              
 
-              
+
+
             ],
           },
         */

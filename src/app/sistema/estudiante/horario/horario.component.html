@@ -1,0 +1,42 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-panel styleClass="container-page">
+  <ng-template pTemplate="header" class="encabezado">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Mi horario</h3>
+    </div>
+  </ng-template>
+
+  <div style="max-width: 500px">
+    <p-inputGroup class="mb-3">
+      <p-inputGroupAddon class="mi-addon-primary"> Matrícula </p-inputGroupAddon>
+      <input pInputText [value]="detalleMatricula" disabled class="input-disabled" />
+    </p-inputGroup>
+  </div>
+
+  <p-table [value]="franjas" [responsiveLayout]="'scroll'" class="p-datatable-sm">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center">Bloque</th>
+        <th class="text-center">Horario</th>
+        <th class="text-center" *ngFor="let d of dias">{{ d.nombre }}</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td class="text-center">{{ row.bloque }}</td>
+        <td class="text-center">{{ row.horario }}</td>
+        <td class="text-center" *ngFor="let d of dias">
+          <ng-container *ngIf="clase(d.id, row.bloque) as c">
+            <div>
+              <b>{{ c.cCursoNombre }}</b>
+            </div>
+            <div>
+              <small>{{ c.cNombreDocente }}</small>
+            </div>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-panel>
+<p-toast></p-toast>

@@ -131,12 +131,6 @@ const estudiante = [
         icon: 'pi pi-calendar-clock',
         routerLink: ['/estudiante/horario'],
       },
-      /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
-            {
-                label: 'Buzón de sugerencias',
-                icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/estudiante/buzon-sugerencias'],
-            },*/
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
@@ -178,10 +172,10 @@ const administrador = [
         routerLink: ['/administrador/auditoria'],
       },
       /*{
-                label: 'Componentes',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/administrador/componentes'],
-            },*/
+                      label: 'Componentes',
+                      icon: 'pi pi-fw pi-folder',
+                      routerLink: ['/administrador/componentes'],
+                  },*/
       {
         label: 'Registro de fechas especiales',
         icon: 'pi pi-calendar',
@@ -341,9 +335,9 @@ const administracion = [
             routerLink: ['/gestion-institucional/estudiante/registro'],
           },
           {
-            label: 'Buzon de Sugerencias',
+            label: 'Buzón de sugerencias',
             icon: 'pi pi-fw pi-envelope',
-            routerLink: ['/gestion-institucional/gestionar-sugerencias'],
+            routerLink: ['/buzon-sugerencias/director'],
           },
         ],
       },
@@ -358,33 +352,33 @@ const administracion = [
         routerLink: ['/gestion-institucional/gestion-vacantes'],
       },
       /* {
-            label: 'Gestión de Matrículas',
-            icon: 'pi pi-folder',
-            items: [
-              {
-                label: 'Gestionar matriculas',
-                icon: 'pi pi-fw pi-file-edit',
-                badge: '',
-                routerLink: ['/gestion-institucional/gestion-matriculas'],
-              },
-              {
-                label: 'Matrícula Individual',
-                icon: 'pi pi-fw pi-file-plus',
-                badge: '',
-                routerLink: ['/gestion-institucional/matricula-individual'],
-              },
-              {
-                label: 'Matrícula Masiva',
-                icon: 'pi pi-fw pi-file-import',
-                badge: '',
-                routerLink: ['/gestion-institucional/matricula-masiva'],
-              },
+                  label: 'Gestión de Matrículas',
+                  icon: 'pi pi-folder',
+                  items: [
+                    {
+                      label: 'Gestionar matriculas',
+                      icon: 'pi pi-fw pi-file-edit',
+                      badge: '',
+                      routerLink: ['/gestion-institucional/gestion-matriculas'],
+                    },
+                    {
+                      label: 'Matrícula Individual',
+                      icon: 'pi pi-fw pi-file-plus',
+                      badge: '',
+                      routerLink: ['/gestion-institucional/matricula-individual'],
+                    },
+                    {
+                      label: 'Matrícula Masiva',
+                      icon: 'pi pi-fw pi-file-import',
+                      badge: '',
+                      routerLink: ['/gestion-institucional/matricula-masiva'],
+                    },
 
 
 
-            ],
-          },
-        */
+                  ],
+                },
+              */
       {
         label: 'Indicadores',
         icon: 'pi pi-chart-line',
@@ -459,11 +453,6 @@ const administracion = [
         routerLink: ['/docente/comunicados'],
       },
       {
-        label: 'Buzón de sugerencias',
-        icon: 'pi pi-fw pi-envelope',
-        routerLink: ['/buzon-director'],
-      },
-      {
         label: 'ERE',
         icon: 'pi pi-pen-to-square',
         items: [
@@ -515,11 +504,6 @@ const administracion = [
             icon: 'pi pi-fw pi-chart-bar',
           },
         ],
-      },
-      {
-        label: 'Buzón de sugerencias',
-        icon: 'pi pi-fw pi-envelope',
-        routerLink: ['/buzon-sugerencias/director'],
       },
       {
         label: 'Enlaces de ayuda',

@@ -25,6 +25,7 @@ export class RegistrarSugerenciaComponent implements OnInit {
   @ViewChild('uploader') uploader: FileUpload;
   prioridades: any[];
   @Input() visible: boolean = false;
+  readonly FILE_MAX_SIZE = 10 * 1024 * 1024;
 
   initEnunciado: EditorComponent['init'] = {
     base_url: '/tinymce', // Root for resources
@@ -93,7 +94,12 @@ export class RegistrarSugerenciaComponent implements OnInit {
   }
 
   onFileSelect(event: { files: any[] }) {
-    this.uploadedFiles = [...event.files];
+    this.uploadedFiles = [];
+    for (const file of event.files as any) {
+      if (file.size <= this.FILE_MAX_SIZE) {
+        this.uploadedFiles = [...event.files];
+      }
+    }
   }
 
   guardarSugerencia() {
@@ -132,6 +138,6 @@ export class RegistrarSugerenciaComponent implements OnInit {
   }
 
   /*actualizarSugerencia() {
-          this.disable_form = true
-      }*/
+            this.disable_form = true
+        }*/
 }

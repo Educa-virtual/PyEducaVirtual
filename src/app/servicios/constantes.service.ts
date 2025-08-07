@@ -506,6 +506,11 @@ const administracion = [
         ],
       },
       {
+        label: 'Buzón de sugerencias',
+        icon: 'pi pi-fw pi-envelope',
+        routerLink: ['/buzon-sugerencias/director'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
@@ -528,12 +533,6 @@ const administracion = [
       // },
 
       //director buzon
-
-      {
-        label: 'Buzón de sugerencias',
-        icon: 'pi pi-fw pi-envelope',
-        routerLink: ['/buzon-sugerencias/director'],
-      },
     ],
   },
 ];

@@ -48,11 +48,13 @@
           name="fArchivos[]"
           showUploadButton="false"
           (onSelect)="onFileSelect($event)"
+          (onRemove)="reiniciarFileUpload()"
           chooseLabel="Seleccione archivo (opcional)"
-          maxFileSize="10240000"
+          [maxFileSize]="FILE_MAX_SIZE"
           [showCancelButton]="false"
         >
         </p-fileUpload>
+
         <small class="text-muted">Máx. 10MB. Sólo documentos o imagenes</small>
       </div>
     </div>

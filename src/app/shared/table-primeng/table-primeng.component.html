@@ -69,7 +69,7 @@
                 [rowSpan]="col.rowspan"
                 [ngStyle]="getStyleColumnGroup(col, $index)"
                 [pSortableColumnDisabled]="enableCellSelection"
-                [class]="col.class"
+                [class]="getCellClass(col)"
               >
                 <div [style.text-align]="col.text_header" class="">
                   <span> {{ col.header }}</span>
@@ -101,7 +101,7 @@
               [style.width]="col.width"
               [style.padding]="col.padding"
               [pSortableColumnDisabled]="enableCellSelection"
-              [class]="col.class"
+              [class]="getCellClass(col)"
             >
               @switch (col.type) {
                 @case ('actions') {
@@ -183,7 +183,7 @@
             }"
             [pEditableColumn]="rowData[col.field]"
             [pEditableColumnField]="col.field"
-            [class]="col.class"
+            [class]="getCellClass(col, rowData)"
           >
             @if (col.type === 'expansion') {
               <button
@@ -286,6 +286,11 @@
             @if (col.type === 'date') {
               <div [style.text-align]="col.text">
                 {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+              </div>
+            }
+            @if (col.type === 'time') {
+              <div [style.text-align]="col.text">
+                {{ rowData[col.field].substring(0, 5) }}
               </div>
             }
             @if (col.type === 'checkbox') {
@@ -593,7 +598,7 @@
             }
           </td>
         }
-      </tr></ng-template
-    >
+      </tr>
+    </ng-template>
   }
 </p-table>

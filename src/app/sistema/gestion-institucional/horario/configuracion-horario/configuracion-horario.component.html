@@ -1,224 +1,222 @@
-<div [style]="{ width: '100%' }" class="card">
-    <form [formGroup]="formSearch">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-10">
-                <div class="separator-with-text">
-                    <span>Datos del área curricular</span>
-                </div>
-                <input
-                    pInputText
-                    type="hidden"
-                    formControlName="iProgId_search"
-                    class="p-inputtext-sm"
-                />
-            </div>
-            <!-- <div class="field col-12 md:col-2" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <p-tag [severity]="formSearch.get('buscador')?.value === 0 ? 'danger' : 'success'"
-                            [value]="formSearch.get('buscador')?.value === 0 ? 'Ocultar' : 'Mostrar'">
-                        </p-tag>
-                        <p-inputSwitch formControlName="buscador" [trueValue]="1" [falseValue]="0">
-                        </p-inputSwitch>
-
-                        
-                    </div> -->
-            <div
-                class="field col-12 md:col-2"
-                style="display: flex; align-items: center; gap: 0.5rem"
-            >
-                <span
-                    [ngStyle]="{
-                        color:
-                            formSearch.get('buscador')?.value === 0
-                                ? 'red'
-                                : 'green',
-                    }"
-                >
-                    {{
-                        formSearch.get('buscador')?.value === 0
-                            ? 'Ocultar'
-                            : 'Mostrar'
-                    }}
-                </span>
-                <p-inputSwitch
-                    formControlName="buscador"
-                    [trueValue]="1"
-                    [falseValue]="0"
-                >
-                </p-inputSwitch>
-            </div>
-
-            <!-- <div class="field col-12 md:col-10" *ngIf="formSearch.get('buscador')?.value === 1">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="planes" formControlName="iProgId_search" optionLabel="cProgNombre"
-                                [checkmark]="true" optionValue="iProgId" [showClear]="true" [appendTo]="'body'"
-                                [showClear]="false" (onChange)="onChange($event, 'searchPlan')" />
-                            <label for="iProgId_search">Plan </label>
-                        </span>
-                    </div> -->
-
-            <div
-                class="field col-12 md:col-2"
-                *ngIf="formSearch.get('buscador')?.value === 1"
-            >
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="configuracion"
-                        formControlName="iConfigId"
-                        optionLabel="cConfigNroRslAprobacion"
-                        [checkmark]="true"
-                        optionValue="iConfigId"
-                        [showClear]="false"
-                        [appendTo]="'body'"
-                        (onChange)="onChange($event, 'configuracion')"
-                    />
-
-                    <label for="iConfigId">Configuración</label>
-                </span>
-            </div>
-
-            <div
-                class="field col-12 md:col-2"
-                *ngIf="formSearch.get('buscador')?.value === 1"
-            >
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="grados"
-                        formControlName="iNivelGradoId_search"
-                        optionLabel="cGradoNombre"
-                        [checkmark]="true"
-                        optionValue="iNivelGradoId"
-                        [showClear]="false"
-                        [appendTo]="'body'"
-                        (onChange)="onChange($event, 'grado')"
-                    />
-
-                    <label for="iNivelGradoId_search">Grado</label>
-                </span>
-            </div>
-            <div
-                class="field col-12 md:col-2"
-                *ngIf="formSearch.get('buscador')?.value === 1"
-            >
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="modalidades"
-                        formControlName="iModalServId_search"
-                        optionLabel="cModalServNombre"
-                        [checkmark]="true"
-                        optionValue="iModalServId"
-                        [showClear]="false"
-                        [appendTo]="'body'"
-                        (onChange)="onChange($event, 'modalidad')"
-                    />
-                    <label for="iModalServId_search">Modalidad </label>
-                </span>
-            </div>
-
-            <div
-                class="field col-12 md:col-2"
-                *ngIf="formSearch.get('buscador')?.value === 1"
-            >
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="turnos"
-                        formControlName="iTurnoId_search"
-                        optionLabel="cTurnoNombre"
-                        [checkmark]="true"
-                        optionValue="iTurnoId"
-                        [showClear]="false"
-                        [appendTo]="'body'"
-                        (onChange)="onChange($event, 'turno')"
-                    />
-                    <label for="iTurnoId_search">Turno</label>
-                </span>
-            </div>
-            <div
-                class="field col-12 md:col-2"
-                *ngIf="formSearch.get('buscador')?.value === 1"
-            >
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="horarios"
-                        formControlName="iHorarioIeId_search"
-                        optionLabel="cHorarioIeNombre"
-                        [checkmark]="true"
-                        optionValue="iHorarioIeId"
-                        [showClear]="false"
-                        (onChange)="onChange($event, 'horario')"
-                    />
-                    <label for="iHorarioIeId_search">Horario</label>
-                </span>
-            </div>
-
-            <div
-                class="field col-12 md:col-2"
-                *ngIf="formSearch.get('buscador')?.value === 1"
-            >
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="secciones"
-                        formControlName="iSeccionId_search"
-                        optionLabel="cSeccionNombre"
-                        [checkmark]="true"
-                        optionValue="iSeccionId"
-                        [filter]="false"
-                        [showClear]="false"
-                        [appendTo]="'body'"
-                        (onChange)="onChange($event, 'seccion')"
-                    />
-                    <label for="iSeccionId_search">Sección</label>
-                </span>
-            </div>
-        </div>
-    </form>
+<app-toolbar-primeng [title]="'Configuración de horarios'"> <p-toast /></app-toolbar-primeng>
+<div class="card">
+  <div class="grid">
+    <div class="col-12">
+      <span class="text-lg text-primary font-bold">Búsqueda de Áreas Curriculares</span>
+    </div>
+    <div class="col-12 md:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Grado</p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iGradoId"
+          styleClass="w-full"
+          placeholder="Seleccione Grado"
+          optionValue="iGradoId"
+          [options]="grados"
+          optionLabel="cGradoNombre"
+          (onChange)="obtenerSecciones()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Sección</p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iSeccionId"
+          styleClass="w-full"
+          placeholder="Seleccione Sección"
+          optionValue="iSeccionId"
+          [options]="secciones"
+          optionLabel="cSeccionNombre"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-2 text-right">
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="p-button-primary"
+        [disabled]="!iGradoId || !iSeccionId"
+        (click)="obtenerCursosxiGradoIdxiSeccionId()"
+      >
+        <i class="pi pi-search"></i>&nbsp;Buscar
+      </button>
+      <p-divider></p-divider>
+    </div>
+    <div class="col-12 md:col-2">
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="p-button-success"
+        [disabled]="!iGradoId"
+        (click)="configurarHorario()"
+      >
+        <i class="pi pi-calendar"></i>&nbsp;Configurar
+      </button>
+    </div>
+    <div class="col-12 md:col-2">
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="p-button-warning"
+        [disabled]="!iGradoId"
+        (click)="configurarHorario()"
+      >
+        <i class="pi pi-check"></i>&nbsp;Procesar
+      </button>
+    </div>
+  </div>
+  <div class="col-12">
+    <app-conf-horario
+      [cursos]="cursos"
+      [dias]="dias"
+      [horario]="horarios"
+      [bloques]="bloques"
+      (accionBtnItem)="accionBtn($event)"
+    ></app-conf-horario>
+  </div>
 </div>
-@if (visible_grid) {
-    <app-grid-horario
-        [events]="1"
-        [curricula]="areas"
-        [bloque_horario]="items"
-        [horarios]="registros"
-        (filtrarCurso)="asignarHorario($event)"
-    >
-    </app-grid-horario>
-}
-@if (visible_bloque) {
-    <app-block-horario
-        [items]="items"
-        [horarios]="horarios"
-        [visible_bloque]="visible_bloque"
-        (addBlockHorario)="addBlockHorario($event)"
-    >
-    </app-block-horario>
-}
-@if (visible_horario) {
-    <app-add-horario
-        [area]="area"
-        [visible_horario]="visible_horario"
-        [titulo]="caption"
-        [docentes]="docentes"
-        [option]="option"
-        (addHorario)="addHorario($event)"
-    >
-    </app-add-horario>
-}
-<app-add-docente
-    [configuracion]="configuracion"
-    [minimo]="minimo"
-    [caption]="caption_docente"
-    [area]="area"
-    [visible_docente]="visible_docente"
-    [turnos]="turnos"
-    [grados]="grados"
-    [secciones]="secciones"
-    [areas]="areas"
-    [docentes]="docentes"
-    [c_accion]="c_accion"
-    [horas_asignadas]="horas_asignadas"
-    [lista_areas_docente]="lista_areas_docente"
-    [iTurnoId]="iTurnoId"
-    [iSeccionId]="iSeccionId"
-    [iModalServId]="iModalServId"
-    (filtrarDocente)="(docente)"
+
+<p-dialog
+  [(visible)]="displayDialog"
+  [header]="titulo"
+  [modal]="true"
+  [style]="{ width: '89vw' }"
+  [baseZIndex]="10000"
+  [dismissableMask]="true"
+  [closable]="true"
+  [resizable]="true"
+  [maximizable]="true"
 >
-</app-add-docente>
+  <p-panel *ngIf="formDistribucion">
+    <form [formGroup]="formDistribucion">
+      <div class="grid">
+        <div class="col-12 md:col-3">
+          <p-inputGroup>
+            <p-inputGroupAddon>Grado</p-inputGroupAddon>
+            <p-dropdown
+              formControlName="iGradoId"
+              styleClass="w-full"
+              placeholder="Seleccione Grado"
+              (onChange)="filtrarGradoHorario()"
+              optionValue="iGradoId"
+              [options]="grados"
+              optionLabel="cGradoNombre"
+            />
+          </p-inputGroup>
+        </div>
+
+        <div class="col-12 md:col-3">
+          <p-inputGroup>
+            <p-inputGroupAddon>Sección</p-inputGroupAddon>
+            <p-dropdown
+              formControlName="iSeccionId"
+              styleClass="w-full"
+              placeholder="Seleccione Sección"
+              optionValue="iSeccionId"
+              [options]="secciones"
+              optionLabel="cSeccionNombre"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>Horario</p-inputGroupAddon>
+            <p-dropdown
+              formControlName="iConfBloqueId"
+              styleClass="w-full"
+              placeholder="Seleccione horario"
+              optionValue="iConfBloqueId"
+              [options]="conf_bloques"
+              optionLabel="cDescripcion"
+              [filter]="true"
+              [filterPlaceholder]="'Buscar Horario...'"
+              [appendTo]="'body'"
+              filterBy="cDescripcion"
+              [showClear]="false"
+              (onChange)="getConfDetalleBloques()"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-2" *ngIf="!vbloques">
+          <button
+            pButton
+            pRipple
+            type="button"
+            class="p-button-primary"
+            [disabled]="formDistribucion.invalid"
+            (click)="guardarHorario()"
+          >
+            <i class="pi pi-save"></i>&nbsp;Actualizar
+          </button>
+        </div>
+        <div class="col-12 md:col-1" *ngIf="vbloques">
+          <button
+            pButton
+            pRipple
+            type="button"
+            class="p-button-warning"
+            (click)="actualizarHoras()"
+            title="Asignar horas"
+          >
+            <i class="pi pi-clock"></i>&nbsp;Horas
+          </button>
+        </div>
+        <div class="col-12 md:col-1" *ngIf="vbloques">
+          <button
+            pButton
+            pRipple
+            type="button"
+            class="p-button-success"
+            (click)="actualizarCalendario()"
+            title="Procesar calendario"
+          >
+            <i class="pi pi-calendar"></i>&nbsp;Fechas
+          </button>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="col-8">
+          <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="false"
+            [data]="filtrar_grado"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            [(selectedRowData)]="accionBtnItemTable"
+            [actions]="actions"
+          >
+          </app-table-primeng>
+        </div>
+        <div class="col-4">
+          @if (vbloques) {
+            <app-table-primeng
+              [columnas]="columnsBloque"
+              [showCaption]="false"
+              [data]="lista_horas"
+              (accionBtnItem)="accionBtnItemTable($event)"
+              [showPaginator]="true"
+              [(selectedRowData)]="accionBtnItemTable"
+              [actions]="actions"
+            >
+            </app-table-primeng>
+          } @else {
+            <app-table-primeng
+              [columnas]="columnsDetalle"
+              [showCaption]="false"
+              [data]="conf_detalle_bloques"
+              (accionBtnItem)="accionBtnItemTable($event)"
+              [showPaginator]="false"
+              [(selectedRowData)]="accionBtnItemTable"
+              [actions]="actions"
+            >
+            </app-table-primeng>
+          }
+        </div>
+      </div>
+    </form>
+  </p-panel>
+</p-dialog>

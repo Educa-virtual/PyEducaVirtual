@@ -39,11 +39,14 @@ export class AppTopBarComponent implements OnInit {
   private _MessageService = inject(MessageService);
   private _ConstantesService = inject(ConstantesService);
 
-  years = [];
-  selectedYear: string;
-
   perfiles = [];
   selectedPerfil: string;
+  mostrarBanderines: boolean = false;
+  mostrarBanderinesMorado: boolean = false;
+  mostrarBanderinesNavidad: boolean = false;
+  mostrarBanderinesMoquegua: boolean = false;
+  years = [];
+  selectedYear: string;
 
   modulos = [];
   selectedModulo: string;
@@ -75,6 +78,28 @@ export class AppTopBarComponent implements OnInit {
     };
     this.selectedPerfil = perfil ? perfil : perfil_data;
 
+    if (user.iDocenteId) {
+      // this.notificacionDocente(user.iDocenteId)
+      console.log(1);
+    }
+    if (user.iEstudianteId) {
+      // this.notificacionEstudiante(user.iEstudianteId)
+      console.log(1);
+    }
+    //Bandarines por fiestas patrias
+    const hoy = new Date();
+    const limite_banderin = new Date(hoy.getFullYear(), 6); // 31 de julio
+    const limite_banderin_navidad = new Date(hoy.getFullYear(), 11); // 31 de Agosto
+    const limite_banderin_morado = new Date(hoy.getFullYear(), 9); // 31 de Octubre
+    const limite_banderin_moquegua = new Date(hoy.getFullYear(), 10); // 31 de Noviembre
+
+    this.mostrarBanderines = hoy.getMonth() === limite_banderin.getMonth();
+
+    this.mostrarBanderinesMoquegua = hoy.getMonth() === limite_banderin_moquegua.getMonth();
+
+    this.mostrarBanderinesNavidad = hoy.getMonth() === limite_banderin_navidad.getMonth();
+
+    this.mostrarBanderinesMorado = hoy.getMonth() === limite_banderin_morado.getMonth();
     const modulo = this.store.getItem('dremoModulo');
     this.modulos = user.modulos;
     this.selectedModulo = modulo ? modulo.iModuloId : null;

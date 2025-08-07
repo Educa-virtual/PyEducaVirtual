@@ -149,6 +149,26 @@
             </iframe>
           </div>
         </p-card>
+        <p-card
+          header="Video 8"
+          subheader="Director - Excluir estudiantes de eevaluación ERE"
+          [style]="{ width: '100%' }"
+        >
+          <div>
+            <iframe
+              width="100%"
+              height="200"
+              [src]="
+                sanitizer.bypassSecurityTrustResourceUrl(
+                  'https://www.youtube.com/embed/W9i6VmzfXr4?si=g44Vs9s8HPS-h9au'
+                )
+              "
+              frameborder="0"
+              allowfullscreen
+            >
+            </iframe>
+          </div>
+        </p-card>
         <!-- <p-card header="Video 8" subheader="Director - Importar evaluaciones ERE desde excel"
                     [style]="{ width: '100%' }">
                     <div>

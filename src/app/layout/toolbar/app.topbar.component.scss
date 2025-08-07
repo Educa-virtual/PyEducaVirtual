@@ -150,13 +150,95 @@
 }
 
 .banderines {
+  position: fixed;
+  /* o absolute si quieres que dependa de un contenedor */
+  // z-index: 100;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 120px;
+  height: 101px;
   /* ajusta según el alto de tu imagen */
   background-image: url('../../../assets/images/banderin.png');
   background-repeat: repeat-x;
   /* se repite horizontalmente */
   background-position: bottom center;
-  background-size: auto 50px;
+  background-size: auto 40px;
+  /* ajusta si necesitas que la altura se adapte */
+}
+
+.banderines_morado {
+  position: fixed;
+  /* o absolute si quieres que dependa de un contenedor */
+  // z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 101px;
+  /* ajusta según el alto de tu imagen */
+  background-image: url('../../../assets/images/banderin_morado.png');
+  background-repeat: repeat-x;
+  /* se repite horizontalmente */
+  background-position: bottom center;
+  background-size: auto 40px;
+  /* ajusta si necesitas que la altura se adapte */
+}
+
+.banderines_navidad {
+  position: fixed;
+  /* o absolute si quieres que dependa de un contenedor */
+  // z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 101px;
+  /* ajusta según el alto de tu imagen */
+  background-image: url('../../../assets/images/banderin_navidad.png');
+  background-repeat: repeat-x;
+  /* se repite horizontalmente */
+  background-position: bottom center;
+  background-size: auto 35px;
+  /* ajusta si necesitas que la altura se adapte */
+}
+
+// @keyframes ondear {
+//     0% {
+//         background-position: left bottom;
+//     }
+
+//     100% {
+//         background-position: right bottom;
+//     }
+// }
+
+@keyframes ondear {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.banderines-animado {
+  display: inline-block;
+  animation: ondear 2s linear infinite;
+}
+
+.liston-moquegua {
+  position: fixed;
+  /* o absolute si quieres que dependa de un contenedor */
+  // z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 101px;
+  /* ajusta según el alto de tu imagen */
+  background-image: url('../../../assets/images/banderin_moquegua.png');
+  background-repeat: repeat-x;
+  /* se repite horizontalmente */
+  background-position: bottom center;
+  background-size: auto 40px;
   /* ajusta si necesitas que la altura se adapte */
 }

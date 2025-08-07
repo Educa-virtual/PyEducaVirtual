@@ -1,326 +1,310 @@
 <p-panel>
-    <ng-template pTemplate="header">
-        <span class="text-2xl text-uppercase"> Resultados ERE </span>
-    </ng-template>
-    <form [formGroup]="formFiltros">
-        <div class="grid">
-            <div class="col-12 lg:col-6">
-                <p-fieldset legend="Filtros obligatorios">
-                    <div class="grid p-fluid">
-                        <div class="col-12">
-                            <p-inputGroup title="* Campo obligatorio">
-                                <p-inputGroupAddon
-                                    >Evaluación *</p-inputGroupAddon
-                                >
-                                <p-dropdown
-                                    [options]="evaluaciones"
-                                    formControlName="iEvaluacionId"
-                                    placeholder="Seleccione una evaluación"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                />
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12">
-                            <p-inputGroup title="* Campo obligatorio">
-                                <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="nivel_tipos"
-                                    formControlName="iNivelTipoId"
-                                    placeholder="Seleccione un nivel"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12">
-                            <p-inputGroup title="* Campo obligatorio">
-                                <p-inputGroupAddon>Grado *</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="nivel_grados"
-                                    formControlName="iNivelGradoId"
-                                    placeholder="Seleccione un grado"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12">
-                            <p-inputGroup title="* Campo obligatorio">
-                                <p-inputGroupAddon>Área *</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="areas"
-                                    formControlName="iCursoId"
-                                    placeholder="Seleccione un área"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                    </div>
-                </p-fieldset>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase"> Resultados ERE </span>
+  </ng-template>
+  <form [formGroup]="formFiltros">
+    <div class="grid">
+      <div class="col-12 lg:col-6">
+        <p-fieldset legend="Filtros obligatorios">
+          <div class="grid p-fluid">
+            <div class="col-12">
+              <p-inputGroup title="* Campo obligatorio">
+                <p-inputGroupAddon>Evaluación *</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="evaluaciones"
+                  formControlName="iEvaluacionId"
+                  placeholder="Seleccione una evaluación"
+                  styleClass="group-element"
+                  [appendTo]="'body'"
+                  filter="true"
+                />
+              </p-inputGroup>
             </div>
-            <div class="col-12 lg:col-6">
-                <p-fieldset legend="Filtros adicionales">
-                    <div class="grid p-fluid">
-                        @if (es_especialista) {
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon
-                                        >Gestión</p-inputGroupAddon
-                                    >
-                                    <p-dropdown
-                                        [options]="tipo_sectores"
-                                        [showClear]="true"
-                                        formControlName="iTipoSectorId"
-                                        placeholder="Seleccione un tipo de gestión"
-                                        styleClass="group-element"
-                                        [appendTo]="'body'"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>Zona</p-inputGroupAddon>
-                                    <p-dropdown
-                                        [options]="zonas"
-                                        [showClear]="true"
-                                        formControlName="iZonaId"
-                                        placeholder="Seleccione un tipo de zona"
-                                        styleClass="group-element"
-                                        [appendTo]="'body'"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>UGEL</p-inputGroupAddon>
-                                    <p-dropdown
-                                        [options]="ugeles"
-                                        [showClear]="true"
-                                        formControlName="iUgelId"
-                                        placeholder="Seleccione una UGEL"
-                                        styleClass="group-element"
-                                        [appendTo]="'body'"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon
-                                        >Distrito</p-inputGroupAddon
-                                    >
-                                    <p-dropdown
-                                        [options]="distritos"
-                                        [showClear]="true"
-                                        formControlName="iDsttId"
-                                        placeholder="Seleccione un distrito"
-                                        styleClass="group-element"
-                                        [appendTo]="'body'"
-                                        filter="true"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                            <div class="col-12">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>I. E.</p-inputGroupAddon>
-                                    <p-dropdown
-                                        [options]="ies"
-                                        [showClear]="true"
-                                        formControlName="iIieeId"
-                                        placeholder="Seleccione una Institución Educativa"
-                                        styleClass="group-element"
-                                        [appendTo]="'body'"
-                                        filter="true"
-                                    ></p-dropdown>
-                                </p-inputGroup>
-                            </div>
-                        }
-                        <div class="col-12 md:col-6">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Sección</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="secciones"
-                                    [showClear]="true"
-                                    formControlName="iSeccionId"
-                                    placeholder="Seleccione una sección"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                    filter="true"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Sexo</p-inputGroupAddon>
-                                <p-dropdown
-                                    [options]="sexos"
-                                    [showClear]="true"
-                                    formControlName="cPersSexo"
-                                    placeholder="Seleccione un sexo"
-                                    styleClass="group-element"
-                                    [appendTo]="'body'"
-                                ></p-dropdown>
-                            </p-inputGroup>
-                        </div>
-                    </div>
-                </p-fieldset>
+            <div class="col-12">
+              <p-inputGroup title="* Campo obligatorio">
+                <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="nivel_tipos"
+                  formControlName="iNivelTipoId"
+                  placeholder="Seleccione un nivel"
+                  styleClass="group-element"
+                  [appendTo]="'body'"
+                ></p-dropdown>
+              </p-inputGroup>
             </div>
-        </div>
-        <div class="flex flex-row flex-wrap gap-2 mt-3">
-            <div class="flex">
-                <p-button
-                    pRipple
-                    severity="success"
-                    label="Buscar datos"
-                    icon="pi pi-fw pi-search"
-                    (onClick)="searchResultados()"
-                />
+            <div class="col-12">
+              <p-inputGroup title="* Campo obligatorio">
+                <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="nivel_grados"
+                  formControlName="iNivelGradoId"
+                  placeholder="Seleccione un grado"
+                  styleClass="group-element"
+                  [appendTo]="'body'"
+                  filter="true"
+                ></p-dropdown>
+              </p-inputGroup>
             </div>
-            <!-- <div class="flex" *ngIf="puede_exportar">
-                <p-toast />
-                <p-menu #menu [model]="btn_exportar" [popup]="true" />
-                <p-button
-                    (onClick)="menu.toggle($event)"
-                    pRipple
-                    severity="success"
-                    label="Exportar"
-                    icon="pi pi-fw pi-print"
-                />
-            </div> -->
-        </div>
-    </form>
-
-    <br />
-
-    @if (!hay_resultados) {
-        <app-no-data
-            [showIcon]="'NO-DATA'"
-            mensaje="No se encontraron resultados"
-        />
-    } @else {
-        <p-tabView>
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex-wrap">Resumen</div>
-                </ng-template>
-                <div class="grid">
-                    <p-chart
-                        type="pie"
-                        [data]="data_doughnut"
-                        [options]="options_doughnut"
-                        [plugins]="piePlugin"
-                        class="col-12 md:col-6"
-                        height="300px"
-                    />
-                    <div class="col-12 md:col-6">
-                        <app-table-primeng
-                            [columnas]="columns_promedio"
-                            [showCaption]="false"
-                            [data]="promedio"
-                            [showPaginator]="false"
-                            [showSortIcon]="false"
-                            [(selectedRowData)]="selectedItems"
-                            [actions]="actions"
-                        />
-                    </div>
-                </div>
-            </p-tabPanel>
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex-wrap">
-                        <span class="hidden lg:inline" style="text-wrap: none"
-                            >Resultados por&nbsp;</span
-                        >Estudiante
-                    </div>
-                </ng-template>
-                <app-table-primeng
-                    [columnas]="columns_estudiantes"
-                    [showCaption]="false"
-                    [data]="resultados"
-                    (accionBtnItem)="accionBtnItemTable($event)"
-                    [showPaginator]="true"
-                    [showSortIcon]="false"
-                    sortMode="multiple"
-                    [(selectedRowData)]="selectedItems"
-                    [actions]="actions"
-                />
-            </p-tabPanel>
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex-wrap">
-                        <span class="hidden lg:inline"
-                            >Resultados por&nbsp;</span
-                        >Pregunta
-                    </div>
-                </ng-template>
-                <app-table-primeng
-                    [columnas]="columns_resumen"
-                    [showCaption]="false"
-                    [enableCellSelection]="false"
-                    [data]="resumen"
-                    [showPaginator]="false"
-                    [showSortIcon]="false"
-                    [(selectedRowData)]="selectedItems"
-                    [actions]="actions"
-                />
-                @if (hay_resultados) {
-                    <div class="grid">
-                        <p-chart
-                            type="bar"
-                            [data]="data_bar"
-                            [options]="options_bar"
-                            class="col"
-                            height="300px"
-                            [plugins]="barPlugin"
-                        />
-                    </div>
-                }
-            </p-tabPanel>
+            <div class="col-12">
+              <p-inputGroup title="* Campo obligatorio">
+                <p-inputGroupAddon>Área *</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="areas"
+                  formControlName="iCursoId"
+                  placeholder="Seleccione un área"
+                  styleClass="group-element"
+                  [appendTo]="'body'"
+                  filter="true"
+                ></p-dropdown>
+              </p-inputGroup>
+            </div>
+          </div>
+        </p-fieldset>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-fieldset legend="Filtros adicionales">
+          <div class="grid p-fluid">
             @if (es_especialista) {
-                <p-tabPanel>
-                    <ng-template pTemplate="header">
-                        <div class="flex-wrap">
-                            <span class="hidden lg:inline"
-                                >Resultados por&nbsp;</span
-                            >{{ tipo_reporte }}
-                        </div>
-                    </ng-template>
-                    <app-table-primeng
-                        [columnas]="columns_group"
-                        [showCaption]="false"
-                        [data]="agrupado"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="true"
-                        [showSortIcon]="false"
-                        sortMode="multiple"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actions"
-                    />
-                </p-tabPanel>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Gestión</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="tipo_sectores"
+                    [showClear]="true"
+                    formControlName="iTipoSectorId"
+                    placeholder="Seleccione un tipo de gestión"
+                    styleClass="group-element"
+                    [appendTo]="'body'"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="zonas"
+                    [showClear]="true"
+                    formControlName="iZonaId"
+                    placeholder="Seleccione un tipo de zona"
+                    styleClass="group-element"
+                    [appendTo]="'body'"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="ugeles"
+                    [showClear]="true"
+                    formControlName="iUgelId"
+                    placeholder="Seleccione una UGEL"
+                    styleClass="group-element"
+                    [appendTo]="'body'"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="distritos"
+                    [showClear]="true"
+                    formControlName="iDsttId"
+                    placeholder="Seleccione un distrito"
+                    styleClass="group-element"
+                    [appendTo]="'body'"
+                    filter="true"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-inputGroup>
+                  <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="ies"
+                    [showClear]="true"
+                    formControlName="iIieeId"
+                    placeholder="Seleccione una Institución Educativa"
+                    styleClass="group-element"
+                    [appendTo]="'body'"
+                    filter="true"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
             }
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex-wrap">
-                        Matriz<span class="hidden lg:inline"
-                            >&nbsp;de evaluación</span
-                        >
-                    </div>
-                </ng-template>
-                <app-table-primeng
-                    [columnas]="columns_matriz"
-                    [showCaption]="false"
-                    [data]="matriz"
-                    [showPaginator]="false"
-                    [showSortIcon]="false"
-                    [(selectedRowData)]="selectedItems"
-                    [actions]="actions"
-                />
-            </p-tabPanel>
-        </p-tabView>
-    }
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="secciones"
+                  [showClear]="true"
+                  formControlName="iSeccionId"
+                  placeholder="Seleccione una sección"
+                  styleClass="group-element"
+                  [appendTo]="'body'"
+                  filter="true"
+                ></p-dropdown>
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Sexo</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="sexos"
+                  [showClear]="true"
+                  formControlName="cPersSexo"
+                  placeholder="Seleccione un sexo"
+                  styleClass="group-element"
+                  [appendTo]="'body'"
+                ></p-dropdown>
+              </p-inputGroup>
+            </div>
+          </div>
+        </p-fieldset>
+      </div>
+    </div>
+    <div class="flex flex-row flex-wrap gap-2 mt-3">
+      <div class="flex">
+        <p-button
+          pRipple
+          severity="success"
+          label="Buscar datos"
+          icon="pi pi-fw pi-search"
+          (onClick)="searchResultados()"
+        />
+      </div>
+      <div class="flex" *ngIf="puede_exportar">
+        <p-toast />
+        <p-menu #menu [model]="btn_exportar" [popup]="true" />
+        <p-button
+          (onClick)="menu.toggle($event)"
+          pRipple
+          severity="success"
+          label="Exportar"
+          icon="pi pi-fw pi-print"
+        />
+      </div>
+    </div>
+  </form>
+
+  <br />
+
+  @if (!hay_resultados) {
+    <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
+  } @else {
+    <p-tabView>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex-wrap">Resumen</div>
+        </ng-template>
+        <div class="grid">
+          <p-chart
+            type="pie"
+            [data]="data_doughnut"
+            [options]="options_doughnut"
+            [plugins]="piePlugin"
+            class="col-12 md:col-6"
+            height="300px"
+          />
+          <div class="col-12 md:col-6">
+            <app-table-primeng
+              [columnas]="columns_promedio"
+              [showCaption]="false"
+              [data]="promedio"
+              [showPaginator]="false"
+              [showSortIcon]="false"
+              [(selectedRowData)]="selectedItems"
+              [actions]="actions"
+            />
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex-wrap">
+            <span class="hidden lg:inline" style="text-wrap: none">Resultados por&nbsp;</span
+            >Estudiante
+          </div>
+        </ng-template>
+        <app-table-primeng
+          [columnas]="columns_estudiantes"
+          [showCaption]="false"
+          [data]="resultados"
+          (accionBtnItem)="accionBtnItemTable($event)"
+          [showPaginator]="true"
+          [showSortIcon]="false"
+          sortMode="multiple"
+          [(selectedRowData)]="selectedItems"
+          [actions]="actions"
+        />
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex-wrap">
+            <span class="hidden lg:inline">Resultados por&nbsp;</span>Pregunta
+          </div>
+        </ng-template>
+        <app-table-primeng
+          [columnas]="columns_resumen"
+          [showCaption]="false"
+          [enableCellSelection]="false"
+          [data]="resumen"
+          [showPaginator]="false"
+          [showSortIcon]="false"
+          [(selectedRowData)]="selectedItems"
+          [actions]="actions"
+        />
+        @if (hay_resultados) {
+          <div class="grid">
+            <p-chart
+              type="bar"
+              [data]="data_bar"
+              [options]="options_bar"
+              class="col"
+              height="300px"
+              [plugins]="barPlugin"
+            />
+          </div>
+        }
+      </p-tabPanel>
+      @if (es_especialista) {
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <div class="flex-wrap">
+              <span class="hidden lg:inline">Resultados por&nbsp;</span>{{ tipo_reporte }}
+            </div>
+          </ng-template>
+          <app-table-primeng
+            [columnas]="columns_group"
+            [showCaption]="false"
+            [data]="agrupado"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            [showSortIcon]="false"
+            sortMode="multiple"
+            [(selectedRowData)]="selectedItems"
+            [actions]="actions"
+          />
+        </p-tabPanel>
+      }
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex-wrap">
+            Matriz<span class="hidden lg:inline">&nbsp;de evaluación</span>
+          </div>
+        </ng-template>
+        <app-table-primeng
+          [columnas]="columns_matriz"
+          [showCaption]="false"
+          [data]="matriz"
+          [showPaginator]="false"
+          [showSortIcon]="false"
+          [(selectedRowData)]="selectedItems"
+          [actions]="actions"
+        />
+      </p-tabPanel>
+    </p-tabView>
+  }
 </p-panel>
 <p-toast></p-toast>

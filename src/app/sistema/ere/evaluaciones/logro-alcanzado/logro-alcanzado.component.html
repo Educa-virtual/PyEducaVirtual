@@ -13,8 +13,10 @@
           styleClass="w-full"
           placeholder="Seleccione Grado"
           optionValue="iGradoId"
+          [filter]="true"
           [options]="grados"
           optionLabel="cGradoNombre"
+          [showClear]="true"
           (onChange)="obtenerSecciones()"
         />
       </p-inputGroup>
@@ -39,9 +41,10 @@
           [(ngModel)]="iPeriodoId"
           [options]="periodos"
           optionLabel="cNombrePeriodo"
-          optionValue="iPeriodoId"
+          optionValue="iNumeroPeriodo"
           placeholder="Seleccionar"
           styleClass="w-full"
+          (onChange)="obtenerValor()"
         >
         </p-dropdown>
       </p-inputGroup>

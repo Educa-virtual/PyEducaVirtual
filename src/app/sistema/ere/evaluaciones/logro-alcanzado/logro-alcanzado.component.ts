@@ -51,7 +51,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   // properties seleccionables
   private nivelSeleccionado: any = null;
   private seccionSeleccionado: any = null;
-  public iPeriodoId: number; //periodoSeleccionado: any = null;
+  public iPeriodoId: string; //periodoSeleccionado: any = null;
 
   private _ConstantesService = inject(ConstantesService);
   private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
@@ -286,9 +286,9 @@ export class LogroAlcanzadoComponent implements OnInit {
         next: resp => {
           if (resp.validated) {
             this.periodos = resp.data;
-            console.log(resp.data);
+            console.log(resp.data, 'periodos obtenidos');
             if (this.periodos.length > 0) {
-              this.iPeriodoId = this.periodos[0].iPeriodoEvalAperId;
+              //this.iPeriodoId = this.periodos[0].iNumeroPeriodo);
             }
           }
         },

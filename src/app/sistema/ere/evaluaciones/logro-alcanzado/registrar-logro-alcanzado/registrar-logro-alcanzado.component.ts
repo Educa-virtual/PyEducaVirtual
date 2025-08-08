@@ -7,6 +7,7 @@ import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calen
 //matricula service
 //import { DetalleMatriculasService } from '@/app/servicios/acad/detalle-matriculas.service'
 import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/services/datos-matricula.service';
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
 //import { ConstantesService } from '@/app/servicios/constantes.service'
 //import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 @Component({
@@ -23,60 +24,61 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   //periodo array
   periodos: any[] = [];
   cargarPeriodo: boolean = true;
-
+  //competencias
+  todasLasCompetencias: any[] = [];
   mostrarBotonFinalizar: boolean = false;
   competenciasMatematica = [
-    {
-      descripcion:
-        'Analiza y aplica procedimientos matemáticos para resolver situaciones que involucran cantidades.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Interpreta y modela relaciones algebraicas y funciones en diversos contextos.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion:
-        'Argumenta afirmaciones sobre propiedades geométricas y transformaciones en el espacio.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion:
-        'Organiza, analiza e interpreta datos para la toma de decisiones bajo condiciones de incertidumbre.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
+    // {
+    //   descripcion:
+    //     'Analiza y aplica procedimientos matemáticos para resolver situaciones que involucran cantidades.',
+    //   b1_nl: '',
+    //   b1_desc: '',
+    //   b2_nl: '',
+    //   b2_desc: '',
+    //   b3_nl: '',
+    //   b3_desc: '',
+    //   b4_nl: '',
+    //   b4_desc: '',
+    //   nl_final: '',
+    // },
+    // {
+    //   descripcion: 'Interpreta y modela relaciones algebraicas y funciones en diversos contextos.',
+    //   b1_nl: '',
+    //   b1_desc: '',
+    //   b2_nl: '',
+    //   b2_desc: '',
+    //   b3_nl: '',
+    //   b3_desc: '',
+    //   b4_nl: '',
+    //   b4_desc: '',
+    //   nl_final: '',
+    // },
+    // {
+    //   descripcion:
+    //     'Argumenta afirmaciones sobre propiedades geométricas y transformaciones en el espacio.',
+    //   b1_nl: '',
+    //   b1_desc: '',
+    //   b2_nl: '',
+    //   b2_desc: '',
+    //   b3_nl: '',
+    //   b3_desc: '',
+    //   b4_nl: '',
+    //   b4_desc: '',
+    //   nl_final: '',
+    // },
+    // {
+    //   descripcion:
+    //     'Organiza, analiza e interpreta datos para la toma de decisiones bajo condiciones de incertidumbre.',
+    //   b1_nl: '',
+    //   b1_desc: '',
+    //   b2_nl: '',
+    //   b2_desc: '',
+    //   b3_nl: '',
+    //   b3_desc: '',
+    //   b4_nl: '',
+    //   b4_desc: '',
+    //   nl_final: '',
+    // },
   ];
 
   competenciasComunicacion = [
@@ -225,7 +227,8 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private calendarioPeriodosService: CalendarioPeriodosEvalacionesService,
-    private DatosMatriculaService: DatosMatriculaService
+    private DatosMatriculaService: DatosMatriculaService,
+    private apiService: ApiEvaluacionesService
     //private DetalleMatriculasServic: DetalleMatriculasService,
     //private ConstantesService: ConstantesService,
   ) {}
@@ -233,6 +236,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   ngOnInit() {
     console.log('registrar-logro-alcanzado');
     this.cargarPeriodo;
+    this.cargarTodasLasCompetencias();
   }
   cerrarDialog() {
     this.registraLogroAlcanzado.emit(false);
@@ -315,35 +319,59 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
       },
     });
   }
-  // Cargar periodos
-  cargarPeriodos() {
-    const iYAcadId = this.selectedItem?.iYAcadId;
-    const iSedeId = this.selectedItem?.iSedeId;
-
-    // Parámetros adicionales
+  // Cargar periodos // eliminar
+  // cargarPeriodos() {
+  //   this.apiService.obtenerTodasLasCompetencias().subscribe({
+  //     next: (data) =>  {
+  //       console.log('datos recibidos', data);
+  //     },
+  //     error: (error) => {
+  //       console.error('error', error);
+  //     }
+  //   })
+  // }
+  cargarTodasLasCompetencias() {
     const params = {
-      iSeccionId: this.selectedItem?.iSeccionId || null,
-      iNivelGradoId: this.selectedItem?.iNivelGradoId || null,
-      //agregando parametros necesitados y usados
-      //iYAcadId: this.selectedItem?.iYAcadId || null,
-      //iSedeId: this.selectedItem?.iSedeId || null
+      iMatriculaId: this.selectedItem?.iMatriculaId,
+      // agrega otros parámetros que necesites
     };
 
-    this.calendarioPeriodosService
-      .obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular(iYAcadId, iSedeId, params)
-      .subscribe({
-        next: response => {
-          console.log('Períodos obtenidos:', response);
-          if (response.validated && response.data) {
-            this.periodos = response.data;
-            this.CompetenciasAPeriodos();
-          } else {
-            console.error('Respuesta inválida:', response.message);
-          }
-        },
-        error: error => {
-          console.error('Error al cargar períodos:', error);
-        },
-      });
+    this.apiService.obtenerTodasLasCompetencias(params).subscribe({
+      next: data => {
+        console.log('Competencias recibidas:', data);
+        this.cargarTodasLasCompetencias = data;
+        // this.competenciasMatematica = data.filter(item =>
+        //   item.materia === 'MATEMATICA' || item.area === 'MAT'
+        // );
+
+        // this.competenciasComunicacion = data.filter(item =>
+        //   item.materia === 'COMUNICACION' || item.area === 'COM'
+        // );
+
+        // this.competenciasIngles = data.filter(item =>
+        //   item.materia === 'INGLES' || item.area === 'ING'
+        // );
+
+        // this.competenciasPersonalSocial = data.filter(item =>
+        //   item.materia === 'PERSONAL_SOCIAL' || item.area === 'PS'
+        // );
+
+        // this.competenciasReligiosa = data.filter(item =>
+        //   item.materia === 'RELIGIOSA' || item.area === 'REL'
+        // );
+      },
+      error: error => {
+        console.error('Error al cargar competencias:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudieron cargar las competencias',
+          life: 3000,
+        });
+      },
+    });
+  }
+  onlyNumbers(event: any): void {
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
   }
 }

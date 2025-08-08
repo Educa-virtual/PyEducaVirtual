@@ -56,27 +56,27 @@ export class LogroAlcanzadoComponent implements OnInit {
   private _ConstantesService = inject(ConstantesService);
   private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
   private _GeneralService = inject(GeneralService);
-  // dataSugerencias = [
-  //   {
-  //     item: 1,
-  //     iLogroAlcanzadoId: 1,
-  //     cAsunto: 'Mejora en materiales de clase',
-  //     cNombreEstudiante: 'Gómez Torres Luis Alberto',
-  //     cNivelLogroAlcanzado: '4to',
-  //     cSeccion: 'c',
-  //     docuento_identidad: '48783215',
-  //   },
-  //   {
-  //     item: 2,
-  //     iLogroAlcanzadoId: 2,
-  //     //dtFechaCreacion: new Date('2025-04-20'),
-  //     cAsunto: 'Mejora en materiales de clase',
-  //     cNombreEstudiante: 'perez perez luis fernando',
-  //     cNivelLogroAlcanzado: '4to',
-  //     cSeccion: 'A',
-  //     docuento_identidad: '46983215',
-  //   },
-  // ];
+  dataSugerencias = [
+    {
+      item: 1,
+      iLogroAlcanzadoId: 1,
+      cAsunto: 'Mejora en materiales de clase',
+      cNombreEstudiante: 'Gómez Torres Luis Alberto',
+      cNivelLogroAlcanzado: '4to',
+      cSeccion: 'c',
+      docuento_identidad: '48783215',
+    },
+    {
+      item: 2,
+      iLogroAlcanzadoId: 2,
+      //dtFechaCreacion: new Date('2025-04-20'),
+      cAsunto: 'Mejora en materiales de clase',
+      cNombreEstudiante: 'perez perez luis fernando',
+      cNivelLogroAlcanzado: '4to',
+      cSeccion: 'A',
+      docuento_identidad: '46983215',
+    },
+  ];
 
   columns = [
     {

@@ -69,8 +69,16 @@ export class LogroAlcanzadoComponent implements OnInit {
     },
     {
       type: 'text',
+      width: '8rem',
+      field: 'cPersDocumento',
+      header: 'DNI/CE',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
       width: '5rem',
-      field: 'cNombreEstudiante',
+      field: 'Estudiante',
       header: 'Apellidos y Nombre',
       text_header: 'center',
       text: 'center',
@@ -78,7 +86,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     {
       type: 'text',
       width: '5rem',
-      field: 'cNivelLogroAlcanzado',
+      field: 'cGradoNombre',
       header: 'Nivel',
       text_header: 'center',
       text: 'center',
@@ -86,19 +94,12 @@ export class LogroAlcanzadoComponent implements OnInit {
     {
       type: 'text',
       width: '12rem',
-      field: 'cSeccion',
+      field: 'cSeccionNombre',
       header: 'Sección',
       text_header: 'center',
       text: 'center',
     },
-    {
-      type: 'text',
-      width: '8rem',
-      field: 'docuento_identidad',
-      header: 'DNI/CE',
-      text_header: 'center',
-      text: 'center',
-    },
+
     {
       type: 'actions',
       width: '3rem',
@@ -180,6 +181,7 @@ export class LogroAlcanzadoComponent implements OnInit {
       iYAcadId: this._ConstantesService.iYAcadId,
       iNivelGradoId: this.iGradoId,
     };
+
     this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
       // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
       next: respuesta => {
@@ -197,6 +199,16 @@ export class LogroAlcanzadoComponent implements OnInit {
           summary: 'Mensaje del sistema',
           detail: 'No se pudo generar la lista de estudiantes' + err.message,
         });
+      },
+      complete: () => {
+        const grado = this.grados.find(g => g.iGradoId === this.iGradoId);
+        const seccion = this.secciones.find(s => s.iSeccionId === this.iSeccionId);
+
+        this.estudiantes = this.estudiantes.map(estudiante => ({
+          ...estudiante, // Mantener todas las propiedades originales
+          cGradoNombre: grado?.cGradoNombre || '', // Evitar error si no encuentra
+          cSeccionNombre: seccion?.cSeccionNombre || '', // Evitar error si no encuentra
+        }));
       },
     });
   }

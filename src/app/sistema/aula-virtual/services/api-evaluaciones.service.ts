@@ -214,7 +214,7 @@ export class ApiEvaluacionesService {
   generarListaEstudiantesSedeSeccionGrado(params: any) {
     return this.http
       .get<any>(
-        `${this.baseUrlApi}/evaluaciones/evaluacion/generarListaEstudiantesSedeSeccionGrado`,
+        `${this.baseUrlApi}/evaluaciones/lista-estudiantes`, // Cambié el endpoint para que coincida con Laravel
         { params }
       )
       .pipe(map(resp => resp.data));

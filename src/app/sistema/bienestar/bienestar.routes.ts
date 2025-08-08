@@ -41,6 +41,15 @@ import {
 } from '@/app/servicios/seg/perfiles';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 
+const roles_directivos = [
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  ASISTENTE_SOCIAL,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  ADMINISTRADOR_DREMO,
+];
+
 const routes: Routes = [
   {
     path: 'gestion-fichas',
@@ -86,15 +95,59 @@ const routes: Routes = [
     path: 'ficha/:id',
     component: FichaComponent,
     children: [
-      { path: '', redirectTo: 'general', pathMatch: 'full' },
-      { path: 'general', component: FichaGeneralComponent },
-      { path: 'familia', component: FichaFamiliaComponent },
-      { path: 'economico', component: FichaEconomicoComponent },
-      { path: 'vivienda', component: FichaViviendaComponent },
-      { path: 'alimentacion', component: FichaAlimentacionComponent },
-      { path: 'discapacidad', component: FichaDiscapacidadComponent },
-      { path: 'salud', component: FichaSaludComponent },
-      { path: 'recreacion', component: FichaRecreacionComponent },
+      {
+        path: '',
+        redirectTo: 'general',
+        pathMatch: 'full',
+      },
+      {
+        path: 'general',
+        component: FichaGeneralComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'familia',
+        component: FichaFamiliaComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'economico',
+        component: FichaEconomicoComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'vivienda',
+        component: FichaViviendaComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'alimentacion',
+        component: FichaAlimentacionComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'discapacidad',
+        component: FichaDiscapacidadComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'salud',
+        component: FichaSaludComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
+      {
+        path: 'recreacion',
+        component: FichaRecreacionComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+      },
     ],
     canActivate: [RoleGuard],
     data: {
@@ -252,28 +305,57 @@ const routes: Routes = [
     path: 'informe-estadistico',
     component: InformeEstadisticoComponent,
     children: [
-      { path: '', redirectTo: 'familia', pathMatch: 'full' },
-      { path: 'familia', component: InformeFamiliaComponent },
-      { path: 'economico', component: InformeEconomicoComponent },
-      { path: 'vivienda', component: InformeViviendaComponent },
-      { path: 'alimentacion', component: InformeAlimentacionComponent },
-      { path: 'discapacidad', component: InformeDiscapacidadComponent },
-      { path: 'salud', component: InformeSaludComponent },
-      { path: 'recreacion', component: InformeRecreacionComponent },
-      { path: 'demografico', component: InformeDemograficoComponent },
+      {
+        path: '',
+        redirectTo: 'familia',
+        pathMatch: 'full',
+      },
+      {
+        path: 'familia',
+        component: InformeFamiliaComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'economico',
+        component: InformeEconomicoComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'vivienda',
+        component: InformeViviendaComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'alimentacion',
+        component: InformeAlimentacionComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'discapacidad',
+        component: InformeDiscapacidadComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'salud',
+        component: InformeSaludComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'recreacion',
+        component: InformeRecreacionComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'demografico',
+        component: InformeDemograficoComponent,
+        data: { expectedRole: roles_directivos },
+      },
     ],
     canActivate: [RoleGuard],
     data: {
       breadcrumb: 'Informe estadístico',
       icon: 'pi pi-chart-line',
-      expectedRole: [
-        DIRECTOR_IE,
-        SUBDIRECTOR_IE,
-        ASISTENTE_SOCIAL,
-        ESPECIALISTA_DREMO,
-        ESPECIALISTA_UGEL,
-        ADMINISTRADOR_DREMO,
-      ],
+      expectedRole: roles_directivos,
     },
   },
   {
@@ -283,14 +365,7 @@ const routes: Routes = [
     data: {
       breadcrumb: 'Seguimiento de bienestar',
       icon: 'pi pi-eye',
-      expectedRole: [
-        DIRECTOR_IE,
-        SUBDIRECTOR_IE,
-        ASISTENTE_SOCIAL,
-        ESPECIALISTA_DREMO,
-        ESPECIALISTA_UGEL,
-        ADMINISTRADOR_DREMO,
-      ],
+      expectedRole: roles_directivos,
     },
   },
 ];

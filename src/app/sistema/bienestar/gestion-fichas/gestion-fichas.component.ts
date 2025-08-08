@@ -13,7 +13,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -50,6 +50,9 @@ export class GestionFichasComponent implements OnInit {
   es_especialista_ugel: boolean = false;
   perfiles_especialista: Array<number> = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL];
 
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
+
   formFiltros: FormGroup;
   filtros_aplicados: number = 0;
   nivel_tipos: any;
@@ -77,6 +80,18 @@ export class GestionFichasComponent implements OnInit {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.es_especialista = this.perfiles_especialista.includes(Number(this.perfil.iPerfilId));
     this.es_especialista_ugel = Number(this.perfil.iPerfilId) == ESPECIALISTA_UGEL;
+    this.breadCrumbItems = [
+      {
+        label: 'Bienestar social',
+      },
+      {
+        label: 'Gestionar fichas socioeconómicas',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
   }
 
   ngOnInit(): void {

@@ -15,7 +15,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 import { RouterModule } from '@angular/router';
 import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { formatDate } from '@angular/common';
 
 @Component({
@@ -38,6 +38,9 @@ export class GestionFichasApoderadoComponent implements OnInit {
   iCredEntPerfId: number = 0;
   iYAcadId: number = 0;
 
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
+
   private _messageService = inject(MessageService);
 
   constructor(
@@ -47,6 +50,18 @@ export class GestionFichasApoderadoComponent implements OnInit {
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.iCredEntPerfId = this.store.getItem('dremoPerfil').iCredEntPerfId;
+    this.breadCrumbItems = [
+      {
+        label: 'Bienestar social',
+      },
+      {
+        label: 'Gestionar fichas socioeconómicas',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
   }
 
   ngOnInit(): void {

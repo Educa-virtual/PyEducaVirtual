@@ -194,12 +194,12 @@ export class LogroAlcanzadoComponent implements OnInit {
     this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado().subscribe({
       next: respuesta => {
         console.log('Servicio respondió con éxito:', respuesta);
-        this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
+        this.estudiantes = respuesta;
         this.cargandoEstudiantes = false;
       },
       error: err => {
         console.error('El servicio falló al generar la lista:', err);
-        this.cargandoEstudiantes = false; // Importante detener la carga también en caso de error.
+        this.cargandoEstudiantes = false;
       },
     });
   }

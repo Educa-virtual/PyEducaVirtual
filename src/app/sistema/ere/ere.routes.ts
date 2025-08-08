@@ -16,7 +16,6 @@ import { RendirExamenComponent } from './evaluaciones/examen/rendir-examen/rendi
 import { AsignarAreasEspecialistaDremoComponent } from '../especialista-dremo/asignar-areas/especialista-dremo.component';
 import { AsignarAreasEspecialistaUgelComponent } from '../especialista-ugel/asignar-areas/asignar-areas.component';
 import { EvaluacionExclusionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaciones/evaluacion-exclusiones/evaluacion-exclusiones.component';
-import { DOCENTE } from '@/app/servicios/perfilesConstantes';
 /*import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
@@ -128,19 +127,19 @@ const routes: Routes = [
       ),
   },
   //logro alcanzado
-  {
-    path: 'logro-alcanzado',
-    loadComponent: () =>
-      import('./evaluaciones/logro-alcanzado/logro-alcanzado.component').then(
-        c => c.LogroAlcanzadoComponent
-      ),
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DOCENTE],
-      breadcrumb: 'Logro Alcanzado',
-      icon: 'pi pi-trophy',
-    },
-  },
+  // {
+  //   path: 'logro-alcanzado',
+  //   loadComponent: () =>
+  //     import('./evaluaciones/logro-alcanzado/logro-alcanzado.component').then(
+  //       c => c.LogroAlcanzadoComponent
+  //     ),
+  //   canActivate: [RoleGuard],
+  //   data: {
+  //     expectedRole: [DOCENTE],
+  //     breadcrumb: 'Logro Alcanzado',
+  //     icon: 'pi pi-trophy',
+  //   },
+  // },
 
   {
     path: 'evaluacion/areas',

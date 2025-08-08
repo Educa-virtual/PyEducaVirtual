@@ -10,6 +10,7 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { GeneralService } from '@/app/servicios/general.service';
+import { MessageService } from 'primeng/api';
 //import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-logro-alcanzado',
@@ -51,32 +52,11 @@ export class LogroAlcanzadoComponent implements OnInit {
   // properties seleccionables
   private nivelSeleccionado: any = null;
   private seccionSeleccionado: any = null;
-  public iPeriodoId: number; //periodoSeleccionado: any = null;
+  public iPeriodoId: string; //periodoSeleccionado: any = null;
 
   private _ConstantesService = inject(ConstantesService);
   private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
   private _GeneralService = inject(GeneralService);
-  // dataSugerencias = [
-  //   {
-  //     item: 1,
-  //     iLogroAlcanzadoId: 1,
-  //     cAsunto: 'Mejora en materiales de clase',
-  //     cNombreEstudiante: 'Gómez Torres Luis Alberto',
-  //     cNivelLogroAlcanzado: '4to',
-  //     cSeccion: 'c',
-  //     docuento_identidad: '48783215',
-  //   },
-  //   {
-  //     item: 2,
-  //     iLogroAlcanzadoId: 2,
-  //     //dtFechaCreacion: new Date('2025-04-20'),
-  //     cAsunto: 'Mejora en materiales de clase',
-  //     cNombreEstudiante: 'perez perez luis fernando',
-  //     cNivelLogroAlcanzado: '4to',
-  //     cSeccion: 'A',
-  //     docuento_identidad: '46983215',
-  //   },
-  // ];
 
   columns = [
     {
@@ -129,11 +109,13 @@ export class LogroAlcanzadoComponent implements OnInit {
     },
   ];
   constructor(
-    private ApiEvaluacionesService: ApiEvaluacionesService
+    private ApiEvaluacionesService: ApiEvaluacionesService,
+    private _messageService: MessageService
     //private http: HttpClient
   ) {}
   ngOnInit() {
-    console.log('Logro alcanzado');
+    // console.log('Logro alcanzado');
+    this.obtenerGradoSeccion();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
     //this.cargarPeriodosEvaluacion();
   }
@@ -192,7 +174,13 @@ export class LogroAlcanzadoComponent implements OnInit {
 
     // 2. Aquí, el método del componente (`generarListaEstudiante`)
     //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
-    this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado().subscribe({
+    const params = {
+      iSedeId: this._ConstantesService.iSedeId,
+      iSeccionId: this.iSeccionId,
+      iYAcadId: this._ConstantesService.iYAcadId,
+      iNivelGradoId: this.iGradoId,
+    };
+    this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
       // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
       next: respuesta => {
         console.log('Servicio respondió con éxito:', respuesta);
@@ -202,37 +190,16 @@ export class LogroAlcanzadoComponent implements OnInit {
 
       // 4. Esto se ejecuta si hubo un error en la llamada.
       error: err => {
-        console.error('El servicio falló al generar la lista:', err);
+        // console.error('El servicio falló al generar la lista:', err);
         this.cargandoEstudiantes = false; // Importante detener la carga también en caso de error.
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: 'No se pudo generar la lista de estudiantes' + err.message,
+        });
       },
     });
   }
-  // getPeriodosEvaluacion() {
-  //   return this.http.get<any>('/api/evaluaciones/periodos-evaluacion');
-  // }
-  /*
-  cargarPeriodosEvaluacion() {
-    this.ApiEvaluacionesService.getPeriodosEvaluacion().subscribe({
-      next: response => {
-        console.log('Response del backend períodos:', response);
-
-        if (response.validated && response.data) {
-          // Transformar los datos para el dropdown
-          this.periodos = response.data.map(periodo => ({
-            label: periodo.iPeriodoEvalCantidad, //   Campo que viene del backend
-            value: periodo.iPeriodoEvalId, // ID del período
-          }));
-
-        }
-
-        this.cargandoPeriodos = false;
-      },
-      error: err => {
-        console.error('Error cargando períodos:', err);
-        this.cargandoPeriodos = false;
-      },
-    });
-  } */
 
   obtenerGradoSeccion() {
     this._GeneralService
@@ -249,10 +216,20 @@ export class LogroAlcanzadoComponent implements OnInit {
           this.grados = this.removeDuplicatesByiGradoId(this.gradosSecciones);
         },
         error: error => {
-          console.error('Error fetching Servicios de Atención:', error);
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error en el procesamiento.' + error.message,
+          });
+
+          //console.error('Error fetching Servicios de Atención:', error);
         },
         complete: () => {
-          //   console.log('Request completed')
+          this._messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Se cargaron los grados y secciones',
+          });
         },
       });
   }
@@ -277,7 +254,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     const iSedeId = this._ConstantesService.iSedeId;
     const params = { iCredId: this._ConstantesService.iCredId };
 
-    this.cargandoPeriodos = true;
+    //this.cargandoPeriodos = true;
 
     this._CalendarioPeriodosEvalacionesService
       .obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular(iYAcadId, iSedeId, params)
@@ -287,7 +264,7 @@ export class LogroAlcanzadoComponent implements OnInit {
             this.periodos = resp.data;
             console.log(resp.data);
             if (this.periodos.length > 0) {
-              this.iPeriodoId = this.periodos[0].iPeriodoEvalAperId;
+              this.iPeriodoId = '1';
             }
           }
         },

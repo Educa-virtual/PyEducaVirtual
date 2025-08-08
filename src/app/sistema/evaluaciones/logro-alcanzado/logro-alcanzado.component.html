@@ -29,6 +29,7 @@
           optionValue="iSeccionId"
           [options]="secciones"
           optionLabel="cSeccionNombre"
+          (onChange)="generarListaEstudiante()"
         />
       </p-inputGroup>
     </div>
@@ -39,7 +40,7 @@
           [(ngModel)]="iPeriodoId"
           [options]="periodos"
           optionLabel="cNombrePeriodo"
-          optionValue="iPeriodoId"
+          optionValue="iNumeroPeriodo"
           placeholder="Seleccionar"
           styleClass="w-full"
         >
@@ -89,5 +90,5 @@
     </app-boleta-logro>
   </p-dialog>
 </p-panel>
-
+<p-toast />
  

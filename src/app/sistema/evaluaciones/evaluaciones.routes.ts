@@ -56,9 +56,7 @@ const routes: Routes = [
   {
     path: 'registro-logro',
     loadComponent: () =>
-      import('../ere/evaluaciones/logro-alcanzado/logro-alcanzado.component').then(
-        c => c.LogroAlcanzadoComponent
-      ),
+      import('./logro-alcanzado/logro-alcanzado.component').then(c => c.LogroAlcanzadoComponent),
   },
   // {
   //     path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',

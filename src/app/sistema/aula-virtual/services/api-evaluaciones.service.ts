@@ -211,13 +211,15 @@ export class ApiEvaluacionesService {
   }
 
   //Generar lista de estudiantes
-  generarListaEstudiantesSedeSeccionGrado() {
+  generarListaEstudiantesSedeSeccionGrado(params: any) {
     return this.http
       .get<any>(
-        `${this.baseUrlApi}/evaluaciones/evaluacion/generarListaEstudiantesSedeSeccionGrado`
+        `${this.baseUrlApi}/evaluaciones/evaluacion/generarListaEstudiantesSedeSeccionGrado`,
+        { params }
       )
       .pipe(map(resp => resp.data));
   }
+
   getPeriodosEvaluacion() {
     return this.http.get<any>('/api/evaluaciones/periodos-evaluacion');
   }

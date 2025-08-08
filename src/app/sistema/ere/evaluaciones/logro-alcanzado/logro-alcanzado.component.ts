@@ -191,17 +191,12 @@ export class LogroAlcanzadoComponent implements OnInit {
     this.cargandoEstudiantes = true;
     this.estudiantes = [];
 
-    // 2. Aquí, el método del componente (`generarListaEstudiante`)
-    //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
     this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado().subscribe({
-      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
       next: respuesta => {
         console.log('Servicio respondió con éxito:', respuesta);
         this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
         this.cargandoEstudiantes = false;
       },
-
-      // 4. Esto se ejecuta si hubo un error en la llamada.
       error: err => {
         console.error('El servicio falló al generar la lista:', err);
         this.cargandoEstudiantes = false; // Importante detener la carga también en caso de error.

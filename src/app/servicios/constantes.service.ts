@@ -134,7 +134,7 @@ const estudiante = [
       {
         label: 'Calendario',
         icon: 'pi pi-calendar',
-        routerLink: ['/estudiante/horario'],
+        routerLink: ['/estudiante/calendario'],
       },
       /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
             {

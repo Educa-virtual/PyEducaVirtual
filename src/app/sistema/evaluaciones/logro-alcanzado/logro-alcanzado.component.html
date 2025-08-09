@@ -4,34 +4,57 @@
       <h3 class="m-0 text-uppercase text-primary">Registrar Logros Alcanzados</h3>
     </div>
   </ng-template>
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
-    <div>
+
+  <div *ngIf="!seleccionar">
+    <div class="grid" *ngIf="data && data.length > 0">
+      <div class="col-12 cursos">
+        @for (curso of cursos; track curso) {
+          <app-curso-card
+            #dv
+            [curso]="curso"
+            [registro]="true"
+            (filtrarCurso)="filtrarCurso($event)"
+          ></app-curso-card>
+        }
+      </div>
+    </div>
+    <div class="grid" *ngIf="!data || data.length === 0">
+      <div class="col-12">
+        <p-message
+          severity="info"
+          text="No hay cursos disponibles para registrar logros alcanzados."
+        ></p-message>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="seleccionar"
+    style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem"
+  >
+    <!-- <div>
       <p-inputGroup>
         <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
-        <p-dropdown
-          [(ngModel)]="iGradoId"
-          styleClass="w-full"
-          placeholder="Seleccione Grado"
-          optionValue="iGradoId"
-          [options]="grados"
-          optionLabel="cGradoNombre"
-          (onChange)="obtenerSecciones()"
-        />
+        <p-dropdown [(ngModel)]="iGradoId" styleClass="w-full" placeholder="Seleccione Grado" optionValue="iGradoId"
+          [options]="grados" optionLabel="cGradoNombre" (onChange)="obtenerSecciones()" />
       </p-inputGroup>
     </div>
     <div>
       <p-inputGroup>
         <p-inputGroupAddon> Sección: </p-inputGroupAddon>
-        <p-dropdown
-          [(ngModel)]="iSeccionId"
-          styleClass="w-full"
-          placeholder="Seleccione Sección"
-          optionValue="iSeccionId"
-          [options]="secciones"
-          optionLabel="cSeccionNombre"
-          (onChange)="generarListaEstudiante()"
-        />
+        <p-dropdown [(ngModel)]="iSeccionId" styleClass="w-full" placeholder="Seleccione Sección"
+          optionValue="iSeccionId" [options]="secciones" optionLabel="cSeccionNombre"
+          (onChange)="generarListaEstudiante()" />
       </p-inputGroup>
+    </div>-->
+    <div>
+      <p-button
+        label="Seleccionar Áreas"
+        icon="pi pi-file-pdf"
+        iconPos="right"
+        class="ml-2"
+        (onClick)="seleccionarCurso()"
+      >
+      </p-button>
     </div>
     <div>
       <p-inputGroup>
@@ -48,7 +71,7 @@
       </p-inputGroup>
     </div>
   </div>
-  <div>
+  <div *ngIf="seleccionar">
     <app-table-primeng
       [data]="estudiantes"
       [columnas]="columns"

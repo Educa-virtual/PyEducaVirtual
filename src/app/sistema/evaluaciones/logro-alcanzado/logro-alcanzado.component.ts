@@ -11,6 +11,12 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { MessageService } from 'primeng/api';
+//import { CursosComponent } from '../../aula-virtual/sub-modulos/cursos/cursos/cursos.component';
+import { CursoCardComponent } from '../../aula-virtual/sub-modulos/cursos/components/curso-card/curso-card.component';
+import { ICurso } from '../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface';
+import { Subject, takeUntil } from 'rxjs';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 //import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-logro-alcanzado',
@@ -20,6 +26,7 @@ import { MessageService } from 'primeng/api';
     TablePrimengComponent,
     RegistrarLogroAlcanzadoComponent,
     BoletaLogroComponent,
+    CursoCardComponent,
   ],
   templateUrl: './logro-alcanzado.component.html',
   styleUrl: './logro-alcanzado.component.scss',
@@ -32,31 +39,26 @@ export class LogroAlcanzadoComponent implements OnInit {
   boletaTitleModal: string;
   selectedItem: any;
 
-  gradosSecciones: any[] = [];
-  grados: any[] = [];
-  secciones: any[] = [];
-  iGradoId: string = '';
-  iSeccionId: string = '';
+  public data: ICurso[] = [];
+  public cursos: ICurso[] = [];
+  public area: any; //area curricular seleccionada
 
   //estudiante,cargando estudiante
   public estudiantes: any[] = [];
-  public cargandoEstudiantes = false;
+
   //dropdowns  properties
-  public opcionesNivel: any[] = [];
-  public opcionesSeccion: any[] = [];
+
   public periodos: any[] = [];
-  // Estados de carga para cada dropdown
-  public cargandoNiveles = false;
-  public cargandoSecciones = false;
-  public cargandoPeriodos = false;
+
   // properties seleccionables
-  private nivelSeleccionado: any = null;
-  private seccionSeleccionado: any = null;
+  public seleccionar: boolean = false;
   public iPeriodoId: string; //periodoSeleccionado: any = null;
 
   private _ConstantesService = inject(ConstantesService);
   private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
   private _GeneralService = inject(GeneralService);
+  private unsubscribe$ = new Subject<boolean>();
+  private _store = inject(LocalStoreService);
 
   columns = [
     {
@@ -86,7 +88,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     {
       type: 'text',
       width: '5rem',
-      field: 'cGradoNombre',
+      field: 'cGradoAbreviacion',
       header: 'Nivel',
       text_header: 'center',
       text: 'center',
@@ -116,7 +118,8 @@ export class LogroAlcanzadoComponent implements OnInit {
   ) {}
   ngOnInit() {
     // console.log('Logro alcanzado');
-    this.obtenerGradoSeccion();
+    this.obtenerPerfil();
+    //this.obtenerGradoSeccion();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
     //this.cargarPeriodosEvaluacion();
   }
@@ -168,51 +171,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     },
   ];
 
-  generarListaEstudiante() {
-    //console.log("Invocando al servicio para generar la lista de estudiantes...");
-    this.cargandoEstudiantes = true;
-    this.estudiantes = [];
-
-    // 2. Aquí, el método del componente (`generarListaEstudiante`)
-    //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
-    const params = {
-      iSedeId: this._ConstantesService.iSedeId,
-      iSeccionId: this.iSeccionId,
-      iYAcadId: this._ConstantesService.iYAcadId,
-      iNivelGradoId: this.iGradoId,
-    };
-
-    this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
-      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
-      next: respuesta => {
-        console.log('Servicio respondió con éxito:', respuesta);
-        this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
-        this.cargandoEstudiantes = false;
-      },
-
-      // 4. Esto se ejecuta si hubo un error en la llamada.
-      error: err => {
-        // console.error('El servicio falló al generar la lista:', err);
-        this.cargandoEstudiantes = false; // Importante detener la carga también en caso de error.
-        this._messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'No se pudo generar la lista de estudiantes' + err.message,
-        });
-      },
-      complete: () => {
-        const grado = this.grados.find(g => g.iGradoId === this.iGradoId);
-        const seccion = this.secciones.find(s => s.iSeccionId === this.iSeccionId);
-
-        this.estudiantes = this.estudiantes.map(estudiante => ({
-          ...estudiante, // Mantener todas las propiedades originales
-          cGradoNombre: grado?.cGradoNombre || '', // Evitar error si no encuentra
-          cSeccionNombre: seccion?.cSeccionNombre || '', // Evitar error si no encuentra
-        }));
-      },
-    });
-  }
-
+  /*
   obtenerGradoSeccion() {
     this._GeneralService
       .searchCalendario({
@@ -259,6 +218,10 @@ export class LogroAlcanzadoComponent implements OnInit {
       seen.add(item.iGradoId);
       return true;
     });
+  } */
+
+  seleccionarCurso() {
+    this.seleccionar = false;
   }
 
   obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular() {
@@ -282,5 +245,128 @@ export class LogroAlcanzadoComponent implements OnInit {
         },
         // error: error => this.mostrarErrores(error),
       });
+  }
+
+  //obtener cursos del docente
+  obtenerPerfil() {
+    const perfil = this._store.getItem('dremoPerfil');
+    switch (Number(perfil.iPerfilId)) {
+      case DOCENTE:
+        this.getCursosDocente();
+        break;
+      case ESTUDIANTE:
+        //this.layout = 'grid';
+        this.getCursosEstudiante();
+        break;
+    }
+  }
+  // muestra en la area curriculares los cursos del docente,grado y seccion
+  getCursosDocente() {
+    const params = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'docente',
+      ruta: 'docente_curso',
+      data: {
+        opcion: 2,
+        iDocenteId: this._ConstantesService.iDocenteId,
+        iYAcadId: this._ConstantesService.iYAcadId,
+        iSedeId: this._ConstantesService.iSedeId,
+        iIieeId: this._ConstantesService.iIieeId,
+      },
+      params: { skipSuccessMessage: true },
+    };
+    this.obtenerCursos(params);
+  }
+
+  getCursosEstudiante() {
+    const params = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'estudiantes',
+      ruta: 'obtenerCursosXEstudianteAnioSemestre',
+      data: {
+        iEstudianteId: this._ConstantesService.iEstudianteId,
+        iYAcadId: this._ConstantesService.iYAcadId,
+        iSedeId: this._ConstantesService.iSedeId,
+        iIieeId: this._ConstantesService.iIieeId,
+      },
+      params: { skipSuccessMessage: true },
+    };
+    this.obtenerCursos(params);
+  }
+
+  obtenerCursos(params) {
+    this._GeneralService
+      .getGralPrefix(params)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          this.cursos = response.data.map(curso => ({
+            iCursoId: curso.idDocCursoId,
+            ...curso,
+          }));
+          this.data = this.cursos;
+        },
+        complete: () => {},
+        error: error => {
+          console.log(error);
+        },
+      });
+  }
+  filtrarCurso($event) {
+    this.generarListaEstudiante($event);
+
+    this.area = $event;
+    console.log('Curso seleccionado:', this.area);
+  }
+
+  generarListaEstudiante(area: any) {
+    //console.log("Invocando al servicio para generar la lista de estudiantes...");
+
+    this.estudiantes = [];
+
+    // 2. Aquí, el método del componente (`generarListaEstudiante`)
+    //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
+    const params = {
+      iSedeId: this._ConstantesService.iSedeId,
+      iSeccionId: area.iSeccionId,
+      iYAcadId: this._ConstantesService.iYAcadId,
+      iNivelGradoId: area.iGradoId,
+    };
+
+    this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
+      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
+      next: respuesta => {
+        // console.log('Servicio respondió con éxito:', respuesta);
+        this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
+      },
+
+      // 4. Esto se ejecuta si hubo un error en la llamada.
+      error: err => {
+        // console.error('El servicio falló al generar la lista:', err);
+
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: 'No se pudo generar la lista de estudiantes' + err.message,
+        });
+      },
+      complete: () => {
+        this.seleccionar = true;
+
+        this.estudiantes = this.estudiantes.map(estudiante => ({
+          ...estudiante, // Mantener todas las propiedades originales
+          cGradoAbreviacion: this.area?.cGradoAbreviacion || '', // Evitar error si no encuentra
+          cSeccionNombre: this.area?.cSeccionNombre || '', // Evitar error si no encuentra
+        }));
+
+        this._messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Se selecciono con exito el área curricular',
+        });
+      },
+    });
   }
 }

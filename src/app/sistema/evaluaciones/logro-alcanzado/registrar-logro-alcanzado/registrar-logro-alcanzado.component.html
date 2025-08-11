@@ -49,6 +49,7 @@
             [(ngModel)]="competencia.b1_nl"
             name="mat_{{ i }}_b1_nl"
             style="width: 60px"
+            (input)="onlyNumbers($event)"
           />
         </td>
         <td>
@@ -57,7 +58,7 @@
             [(ngModel)]="competencia.b1_desc"
             name="mat_{{ i }}_b1_desc"
             rows="2"
-            style="width: 150px"
+            style="width: 115px"
           ></textarea>
         </td>
         <td>
@@ -67,6 +68,7 @@
             [(ngModel)]="competencia.b2_nl"
             name="mat_{{ i }}_b2_nl"
             style="width: 60px"
+            (input)="onlyNumbers($event)"
           />
         </td>
         <td>
@@ -75,7 +77,7 @@
             [(ngModel)]="competencia.b2_desc"
             name="mat_{{ i }}_b2_desc"
             rows="2"
-            style="width: 150px"
+            style="width: 115px"
           ></textarea>
         </td>
         <td>
@@ -85,6 +87,7 @@
             [(ngModel)]="competencia.b3_nl"
             name="mat_{{ i }}_b3_nl"
             style="width: 60px"
+            (input)="onlyNumbers($event)"
           />
         </td>
         <td>
@@ -93,7 +96,7 @@
             [(ngModel)]="competencia.b3_desc"
             name="mat_{{ i }}_b3_desc"
             rows="2"
-            style="width: 150px"
+            style="width: 115px"
           ></textarea>
         </td>
         <td>
@@ -103,6 +106,7 @@
             [(ngModel)]="competencia.b4_nl"
             name="mat_{{ i }}_b4_nl"
             style="width: 60px"
+            (input)="onlyNumbers($event)"
           />
         </td>
         <td>
@@ -111,7 +115,7 @@
             [(ngModel)]="competencia.b4_desc"
             name="mat_{{ i }}_b4_desc"
             rows="2"
-            style="width: 150px"
+            style="width: 115px"
           ></textarea>
         </td>
       </tr>
@@ -130,13 +134,13 @@
         <td></td>
         <td></td>
         <td>
-          <textarea
-            pInputTextarea
+          <input
+            type="text"
+            pInputText
             [(ngModel)]="resumenFinalMatematica.nl_final"
-            name="resumen_nl_final"
-            rows="3"
-            style="width: 150px"
-          ></textarea>
+            style="width: 115px"
+            (input)="onlyNumbers($event)"
+          />
         </td>
       </tr>
     </ng-template>

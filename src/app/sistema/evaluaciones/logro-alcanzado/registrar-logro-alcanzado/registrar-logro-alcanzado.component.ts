@@ -204,4 +204,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
         },
       });
   }
+  onlyNumbers(event: any): void {
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+  }
 }

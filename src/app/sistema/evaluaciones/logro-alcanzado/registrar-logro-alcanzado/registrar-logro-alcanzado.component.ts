@@ -238,6 +238,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   ngOnInit() {
     console.log('registrar-logro-alcanzado');
     this.cargarPeriodo;
+    console.log('selectedItem completo:', this.selectedItem);
   }
   cerrarDialog() {
     this.registraLogroAlcanzado.emit(false);

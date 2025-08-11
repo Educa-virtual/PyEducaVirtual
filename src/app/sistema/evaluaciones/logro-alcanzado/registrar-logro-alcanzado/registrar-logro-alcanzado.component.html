@@ -1,8 +1,14 @@
 <br />
 <div>
   <p-inputGroup>
-    <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
-    <input type="text" pInputText disabled />
+    <p-inputGroupAddon> ÁREA: </p-inputGroupAddon>
+    <input
+      class="disabled"
+      disabled
+      type="text"
+      pInputText
+      [value]="selectedItem?.cCursoNombre || 'sin area seleccionada'"
+    />
   </p-inputGroup>
 </div>
 <!--<div class="grid p-fluid">

@@ -15,7 +15,8 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
   standalone: true,
   imports: [PrimengModule, FormsModule],
   templateUrl: './registrar-logro-alcanzado.component.html',
-  styleUrl: './registrar-logro-alcanzado.component.scss',
+  //styleUrl: './registrar-logro-alcanzado.component.scss',
+  //styleUrls: ['./registrar-logro-alcanzado.component.scss'],
   providers: [MessageService],
 })
 export class RegistrarLogroAlcanzadoComponent implements OnInit {
@@ -373,5 +374,8 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   }
   onlyNumbers(event: any): void {
     event.target.value = event.target.value.replace(/[^0-9]/g, '');
+  }
+  hola() {
+    console.log('hola');
   }
 }

@@ -134,7 +134,9 @@ export class LogroAlcanzadoComponent implements OnInit {
   }
   registroLogroAlcanzado() {
     const nombreEstudiante = this.selectedItem?.Estudiante || 'Estudiante';
-    this.registroTitleModal = `Registro : ${nombreEstudiante}`;
+    const gradoEstudiante = this.selectedItem?.cGradoAbreviacion || 'cGradoAbreviacion';
+    const secciconEstudiante = this.selectedItem?.cSeccionNombre || 'cSeccionNombre';
+    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Seccion: ${secciconEstudiante}`;
     this.dialogRegistrarLogroAlcanzado = true;
   }
   listenDialogRegistrarLogro(event: boolean) {

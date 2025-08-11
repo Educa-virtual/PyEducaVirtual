@@ -58,6 +58,19 @@
     </div>
     <div>
       <p-inputGroup>
+        <p-inputGroupAddon> Área </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cCursoNombre"
+          disabled
+          class="w-full p-inputtext-sm opacity-100"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div>
+      <p-inputGroup>
         <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
         <p-dropdown
           [(ngModel)]="iPeriodoId"

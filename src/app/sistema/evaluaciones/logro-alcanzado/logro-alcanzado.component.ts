@@ -42,6 +42,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   public data: ICurso[] = [];
   public cursos: ICurso[] = [];
   public area: any; //area curricular seleccionada
+  public cCursoNombre: string = ''; //nombre del curso seleccionado
 
   //estudiante,cargando estudiante
   public estudiantes: any[] = [];
@@ -438,11 +439,12 @@ export class LogroAlcanzadoComponent implements OnInit {
       },
       complete: () => {
         this.seleccionar = true;
-
+        this.cCursoNombre = area.cCursoNombre;
         this.estudiantes = this.estudiantes.map(estudiante => ({
           ...estudiante, // Mantener todas las propiedades originales
           cGradoAbreviacion: this.area?.cGradoAbreviacion || '', // Evitar error si no encuentra
           cSeccionNombre: this.area?.cSeccionNombre || '', // Evitar error si no encuentra
+          cCursoNombre: this.area?.cCursoNombre || '', // Evitar error si no encuentra
         }));
 
         this._messageService.add({

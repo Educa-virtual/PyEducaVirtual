@@ -133,7 +133,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     //this.cargarPeriodosEvaluacion();
   }
   registroLogroAlcanzado() {
-    const nombreEstudiante = this.selectedItem?.cNombreEstudiante || 'Estudiante';
+    const nombreEstudiante = this.selectedItem?.Estudiante || 'Estudiante';
     this.registroTitleModal = `Registro : ${nombreEstudiante}`;
     this.dialogRegistrarLogroAlcanzado = true;
   }
@@ -154,6 +154,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'Resistrar':
+        console.log(item, 'item seleccionado');
         this.selectedItem = item;
         this.registroLogroAlcanzado();
         break;

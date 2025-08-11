@@ -199,15 +199,8 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       nombresCampos
     );
 
-    if (!valid) {
-      if (message) {
-        // Mostrar solo el mensaje generado por el servicio
-        this.mostrarMensajeToast({
-          severity: 'error',
-          detail: '',
-          summary: '¡Error!',
-        });
-      }
+    if (!valid && message) {
+      this.mostrarMensajeToast(message);
       this.isLoading = false;
       return;
     }

@@ -16,17 +16,17 @@ export class CardCapacitacionesComponent {
   @Input() idPerfil: number; // ID del perfil del usuario
   @Output() verDetalle = new EventEmitter<string>();
 
+  CAP_EXT = 'CAP-EXT';
+
   updateUrl(item) {
     item.cImagenUrl = '/images/recursos/miss-lesson-animate.svg';
   }
 
   getUrlImg(cImagenUrl: string) {
-    cImagenUrl = cImagenUrl ? JSON.parse(cImagenUrl) : [];
-    return cImagenUrl.length ? cImagenUrl[0]['url'] : '/images/recursos/miss-lesson-animate.svg';
+    const imagen = cImagenUrl ? JSON.parse(cImagenUrl) : [];
+    return imagen.url ? imagen.url : '/images/recursos/miss-lesson-animate.svg';
   }
   mostrarInscritos() {
-    // console.log('mostrarInscritos', this.capacitacion)
-    // this.verDetalle.emit(this.capacitacion.iCapacitacionId.toString())
     this.verDetalle.emit(this.capacitacion);
   }
 }

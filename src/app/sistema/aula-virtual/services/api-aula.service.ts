@@ -272,33 +272,7 @@ export class ApiAulaService {
       params // Enviar los datos como parámetros
     );
   }
-  // consultas para las capacitaciones docentes
-  obtenerTipoCapacitacion(data) {
-    return this._http.post(
-      `${this.baseUrlApi}/cap/tipo-capacitaciones/listarTipoCapacitaciones`,
-      data
-    );
-  }
-  obtenerNivelPedagogico(data) {
-    return this._http.post(`${this.baseUrlApi}/cap/nivel-pedagogicos/listarNivelPedagogicos`, data);
-  }
-  obtenerTipoPublico(data) {
-    return this._http.post(`${this.baseUrlApi}/cap/tipo-publicos/listarTipoPublicos`, data);
-  }
-  guardarCapacitacion(data) {
-    return this._http.post(`${this.baseUrlApi}/cap/capacitaciones/guardarCapacitaciones`, data);
-  }
-  eliminarCapacitacion(data) {
-    return this._http.post(`${this.baseUrlApi}/cap/capacitaciones/eliminarCapacitaciones`, data);
-  }
-  actualizarCapacitacion(data) {
-    return this._http.post(`${this.baseUrlApi}/cap/capacitaciones/actualizarCapacitaciones`, data);
-  }
-  obtenerCapacitacion(params: { iCredId }) {
-    return this._http.get(`${this.baseUrlApi}/cap/capacitaciones/listarCapacitaciones`, {
-      params, // Enviar los datos como parámetros
-    });
-  }
+
   guardarCuestionario(data) {
     return this._http.post(`${this.baseUrlApi}/aula-virtual/programacion-actividades/store`, data);
   }

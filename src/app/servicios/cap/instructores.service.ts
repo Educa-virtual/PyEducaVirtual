@@ -18,4 +18,10 @@ export class InstructoresService {
   actualizarInstructoresxiInstId(iInstId: string | number, params): Observable<any> {
     return this.http.put(`${baseUrl}/cap/instructores/${iInstId}`, params);
   }
+
+  obtenerIntructores(params) {
+    return this.http.get<any>(`${baseUrl}/cap/instructores`, {
+      params,
+    });
+  }
 }

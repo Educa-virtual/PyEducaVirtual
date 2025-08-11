@@ -1,187 +1,194 @@
-<!-- // weekly-schedule.component.html -->
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-    <!-- Header -->
-    <div class="text-center mb-6">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">Horario Semanal</h1>
-        <p class="text-gray-600">Haz clic en un día para agregar clases</p>
-        <p-chip
-            [label]="'Total de clases: ' + getTotalClasses()"
-            icon="pi pi-calendar"
-            styleClass="mt-2"
-        >
-        </p-chip>
-    </div>
-    <!-- Schedule Grid -->
-    <div class="grid grid-nogutter gap-3 mb-6">
-        <div
-            *ngFor="let dia of dias"
-            class="col-12 md:col-6 lg:col-3 xl:col"
-            [ngClass]="dia.color"
-        >
-            <p-card
-                class="h-full min-h-20rem border-2 border-solid transition-all duration-300 hover:shadow-lg"
-            >
-                <!-- Card Header -->
-                <ng-template pTemplate="header">
-                    <div
-                        class="flex justify-content-between align-items-center p-3"
-                    >
-                        <h3 class="text-lg font-semibold text-gray-800 m-0">
-                            {{ dia.nombre }}
-                        </h3>
-                        <p-button
-                            icon="pi pi-plus"
-                            [rounded]="true"
-                            [outlined]="true"
-                            size="small"
-                            (onClick)="openDialog(dia.id)"
-                            pTooltip="Agregar clase"
-                            tooltipPosition="top"
-                        >
-                        </p-button>
-                        <!-- (onClick)="openDialog(dia.key)" -->
-                    </div>
-                </ng-template>
-
-                <!-- Card Content -->
-                <div class="p-3">
-                    <div
-                        *ngIf="schedule[dia.id].length === 0"
-                        class="text-center text-gray-500 py-4"
-                    >
-                        <i class="pi pi-calendar text-3xl mb-2 block"></i>
-                        <p class="text-sm">Sin clases programadas</p>
-                    </div>
-
-                    <div *ngFor="let class of schedule[dia.id]" class="mb-3">
-                        <p-card class="border-left-4 border-blue-500">
-                            <div
-                                class="flex justify-content-between align-items-start mb-2"
-                            >
-                                <h4
-                                    class="text-sm font-medium text-gray-800 m-0"
-                                >
-                                    {{ class.subject }}
-                                </h4>
-                                <p-button
-                                    icon="pi pi-times"
-                                    severity="danger"
-                                    [text]="true"
-                                    size="small"
-                                    pTooltip="Eliminar clase"
-                                >
-                                </p-button>
-                                <!-- (onClick)="removeClass(dia.id, class.id)" -->
-                            </div>
-
-                            <div
-                                class="flex align-items-center text-xs text-gray-600 mb-1"
-                            >
-                                <i class="pi pi-clock mr-1"></i>
-                                {{ class.startTime }}-{{ class.endTime }}
-                                <!-- {{ formatTime(class.startTime) }} - {{ formatTime(class.endTime) }} -->
-                            </div>
-
-                            <div
-                                *ngIf="class.location"
-                                class="text-xs text-gray-500"
-                            >
-                                <i class="pi pi-map-marker mr-1"></i>
-                                {{ class.location }}
-                            </div>
-                        </p-card>
-                    </div>
-                </div>
-            </p-card>
-        </div>
-    </div>
-</div>
-
-<!-- Add Class Dialog -->
-<p-dialog
-    header="Agregar Clase - {{ activeDayName }}"
-    [(visible)]="displayDialog"
-    [modal]="true"
-    [closable]="true"
-    [draggable]="false"
-    [resizable]="false"
-    styleClass="w-11 md:w-6 lg:w-4"
-    (onHide)="closeDialog()"
+<app-modal-primeng
+  *ngIf="showModal"
+  [title]="'Configuración de Horarios'"
+  [showModal]="showModal"
+  (accionBtnItem)="this.accionCloseForm.emit($event)"
+  width="65rem"
 >
-    <div class="grid formgrid p-fluid">
-        <!-- Subject Field -->
-        <div class="field col-12">
-            <label for="subject" class="font-semibold"
-                >Materia/Asignatura *</label
-            >
-            <input
-                pInputText
-                id="subject"
-                [(ngModel)]="newClass.subject"
-                placeholder="Ej: Matemáticas"
-                class="w-full"
-            />
-        </div>
+  <div class="col-12 mt-3 grid">
+    <div class="col-12 md:col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
+        <p-calendar
+          styleClass="w-full opacity-100"
+          dateFormat="dd/mm/yy"
+          [iconDisplay]="'input'"
+          [showIcon]="true"
+          [disabled]="true"
+          [(ngModel)]="data.dFechaInicio"
+        ></p-calendar>
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fecha Fin:</p-inputGroupAddon>
+        <p-calendar
+          styleClass="w-full opacity-100"
+          dateFormat="dd/mm/yy"
+          [iconDisplay]="'input'"
+          [showIcon]="true"
+          [disabled]="true"
+          [(ngModel)]="data.dFechaInicio"
+        ></p-calendar>
+      </p-inputGroup>
+    </div>
+    <!-- <div class="col-12 md:col-2">
+      <div class="flex justify-content-center">
+        <span class="text-2xl font-bold text-primary"> {{ data.iTotalHrs || 0 }} </span>
+      </div>
+      <div class="flex justify-content-center">
+        <span class="text-base text-gray-600 mt-2">Horas</span>
+      </div>
+    </div> -->
+  </div>
 
-        <!-- Time Fields -->
-        <div class="field col-6">
-            <label for="startTime" class="font-semibold"
-                >Hora de Inicio *</label
-            >
-            <p-calendar
-                [(ngModel)]="newClass.startTime"
-                [timeOnly]="true"
-                [stepMinute]="15"
-                hourFormat="24"
-                placeholder="00:00"
-                inputId="startTime"
-                styleClass="w-full"
-            >
-            </p-calendar>
-        </div>
+  <div class="card relative mt-4">
+    <samp class="btn-label-days">Seleccionar los días.</samp>
 
-        <div class="field col-6">
-            <label for="endTime" class="font-semibold">Hora de Fin *</label>
-            <p-calendar
-                [(ngModel)]="newClass.endTime"
-                [timeOnly]="true"
-                [stepMinute]="15"
-                hourFormat="24"
-                placeholder="00:00"
-                inputId="endTime"
-                styleClass="w-full"
-            >
-            </p-calendar>
-        </div>
+    <div class="flex flex-wrap gap-2 justify-content-center my-1">
+      <p-button
+        *ngFor="let dia of dias; let i = index"
+        [label]="dia.cDiaNombre"
+        [severity]="dia.iSeleccionado ? 'primary' : 'contrast'"
+        [class.custom-secondary]="dia.iSeleccionado !== 1"
+        (click)="dia.iSeleccionado = dia.iSeleccionado === 1 ? 0 : 1"
+      />
+    </div>
+  </div>
 
-        <!-- Location Field -->
-        <div class="field col-12">
-            <label for="location" class="font-semibold">Ubicación/Aula</label>
-            <input
-                pInputText
-                id="location"
-                [(ngModel)]="newClass.location"
-                placeholder="Ej: Aula 101"
-                class="w-full"
-            />
-        </div>
+  <div class="card mt-4 relative">
+    <samp class="btn-horario">Horario</samp>
+
+    <!-- Switch -->
+    <div class="flex flex-column sm:flex-row align-items-center justify-content-between gap-2">
+      <span class="pr-3">¿El horario es el mismo todos los días seleccionados?</span>
+      <div class="flex align-items-center gap-2">
+        <p-inputSwitch [(ngModel)]="iHorarioUniforme" class="pr-3" />
+        <span class="font-bold">{{ iHorarioUniforme ? 'Sí' : 'No' }}</span>
+      </div>
     </div>
 
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-end gap-2">
-            <p-button
-                label="Cancelar"
-                severity="secondary"
-                [outlined]="true"
-                (onClick)="closeDialog()"
-            >
-            </p-button>
-            <p-button
-                label="Agregar Clase"
-                icon="pi pi-plus"
-                (onClick)="anadirClase()"
-            >
-            </p-button>
+    <!-- CONTENIDO SEGÚN CONDICIÓN -->
+    <div class="mt-4">
+      @if (!iHorarioUniforme) {
+        <!-- Horario por cada día -->
+        <div class="flex flex-wrap gap-2">
+          <div
+            class="flex flex-column sm:flex-row align-items-center gap-2 border-round p-2"
+            *ngFor="let item of dias"
+          >
+            @if (item.iSeleccionado === 1) {
+              <!-- Día -->
+              <div
+                class="bg-primary text-white font-bold flex align-items-center justify-content-center px-3 py-5 text-center vertical-text sm:vertical-text"
+              >
+                <span>{{ item.cDiaNombre }}</span>
+              </div>
+
+              <!-- Contenedor de horas en columna -->
+              <div class="flex flex-column gap-2 w-full sm:w-auto">
+                <p-calendar
+                  [iconDisplay]="'input'"
+                  styleClass="w-full sm:w-12rem"
+                  [hourFormat]="'24'"
+                  [showIcon]="true"
+                  [timeOnly]="true"
+                  placeholder="Hora de inicio"
+                  appendTo="body"
+                  [(ngModel)]="item.iHoraInicio"
+                >
+                  <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                    <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+                  </ng-template>
+                </p-calendar>
+
+                <p-calendar
+                  [iconDisplay]="'input'"
+                  styleClass="w-full sm:w-12rem"
+                  [hourFormat]="'24'"
+                  [showIcon]="true"
+                  [timeOnly]="true"
+                  placeholder="Hora de fin"
+                  appendTo="body"
+                  [(ngModel)]="item.iHoraFin"
+                >
+                  <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                    <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+                  </ng-template>
+                </p-calendar>
+              </div>
+
+              <!-- Flecha (si no es el último día) -->
+              @if (!esUltimoDiaSeleccionado(item)) {
+                <div>
+                  <i class="pi pi-arrow-right text-xl"></i>
+                </div>
+              }
+            }
+          </div>
         </div>
-    </ng-template>
-</p-dialog>
+      } @else {
+        <!-- Horario uniforme -->
+        <div class="grid align-items-center">
+          <!-- Inicio -->
+          <div class="col-12 md:col-5">
+            <p-inputGroup>
+              <p-inputGroupAddon>Inicio:</p-inputGroupAddon>
+              <p-calendar
+                [iconDisplay]="'input'"
+                styleClass="w-full"
+                [hourFormat]="'24'"
+                [showIcon]="true"
+                [timeOnly]="true"
+                placeholder="Ingrese hora de inicio"
+                appendTo="body"
+                [(ngModel)]="iHoraInicio"
+              >
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                  <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+                </ng-template>
+              </p-calendar>
+            </p-inputGroup>
+          </div>
+
+          <!-- Flecha -->
+          <div class="col-12 md:col-2 text-center">
+            <i class="pi pi-arrow-right text-xl"></i>
+          </div>
+
+          <!-- Fin -->
+          <div class="col-12 md:col-5">
+            <p-inputGroup>
+              <p-inputGroupAddon>Fin:</p-inputGroupAddon>
+              <p-calendar
+                [iconDisplay]="'input'"
+                styleClass="w-full"
+                [hourFormat]="'24'"
+                [showIcon]="true"
+                [timeOnly]="true"
+                placeholder="Ingrese hora de fin"
+                appendTo="body"
+                [(ngModel)]="iHoraFin"
+              >
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                  <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
+                </ng-template>
+              </p-calendar>
+            </p-inputGroup>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div footer class="flex justify-content-end gap-2">
+    <p-button label="Cancelar" severity="secondary" (onClick)="this.accionCloseForm.emit()" />
+    <p-button
+      label="Guardar"
+      severity="success"
+      [loading]="isLoading"
+      [disabled]="isLoading || isValidForm()"
+      (onClick)="guardarHorario()"
+    />
+  </div>
+</app-modal-primeng>

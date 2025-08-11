@@ -12,3 +12,7 @@
     outline-offset: 0px;
     box-shadow: none;
 }
+:host ::ng-deep .p-dropdown {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}

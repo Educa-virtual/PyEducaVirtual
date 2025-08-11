@@ -74,7 +74,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
     item = []
     titulo: string = ''
     opcion: string = ''
-    informacion
+    informacion: any = []
     columns = [
         {
             type: 'item',
@@ -103,8 +103,32 @@ export class ActividadesNoLectivasComponent implements OnInit {
         {
             type: 'text',
             width: '2rem',
+            field: 'cDescripcion',
+            header: 'Descripcion',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'date',
+            width: '2rem',
+            field: 'dtInicio',
+            header: 'Fecha de Registro',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '2rem',
             field: 'nDetCargaNoLectHoras',
             header: 'Duración Horas',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'estado-activo',
+            width: '2rem',
+            field: 'bValidadoDirector',
+            header: 'Estado',
             text_header: 'center',
             text: 'center',
         },
@@ -127,9 +151,10 @@ export class ActividadesNoLectivasComponent implements OnInit {
     ]
 
     ngOnInit() {
-        !this.tiposCargaNoLectivas.length
-            ? this.obtenerTiposCargaNoLectivas()
-            : null
+        if (!this.tiposCargaNoLectivas.length) {
+            this.obtenerTiposCargaNoLectivas()
+        }
+
         this.obtenerCargaNoLectivasxTiposDedicaciones()
         this.obtenerCargaNoLectivas()
     }
@@ -142,7 +167,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
             case 'agregar':
             case 'actualizar':
-                if (Number(this.informacion.iFalta) === 0) {
+                if (Number(this.informacion?.iFalta) === 0) {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -151,6 +176,10 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 } else {
                     this.showModal = true
                     this.item = item
+                    const dtInicio = item.dtInicio
+                        ? item.dtInicio.split(' ')[0]
+                        : null
+                    this.item['dtInicio'] = dtInicio
                     this.titulo =
                         accion === 'agregar'
                             ? 'AGREGAR CARGA NO LECTIVA'
@@ -200,11 +229,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
             case 'CONSULTARxiDocenteIdxTiposDedicaciones':
                 this.informacion = item.length ? item[0] : null
-                this.informacion.iFalta =
-                    this.informacion.iFalta === '.00'
-                        ? '0.00'
-                        : this.informacion.iFalta
-
+                if (this.informacion && this.informacion.iFalta === '.00') {
+                    this.informacion.iFalta = '0.00'
+                }
                 break
         }
     }
@@ -255,6 +282,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
     }
     GuardarActualizarDetalleCargaNoLectivas(item) {
         const iYearId = this._LocalStoreService.getItem('dremoYear')
+        item.dtInicio = item.dtInicio
+            ? new Date(item.dtInicio).toISOString()
+            : null
         item.iDocenteId = this._ConstantesService.iDocenteId
         item.valorBusqueda = iYearId
         const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update'
@@ -301,7 +331,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
                     accion === 'store-carga-no-lectivas' ||
                     accion === 'update-detalle-carga-no-lectivas'
                 ) {
-                    console.log(response)
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Éxito',
@@ -311,7 +340,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',

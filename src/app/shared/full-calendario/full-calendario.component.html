@@ -56,7 +56,7 @@
     <div class="card m-2">
       <div class="grid">
         <div class="col-12">
-          <full-calendar [options]="calendarOptions">
+          <full-calendar #calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
               <div class="fc-event-time">{{ formatTime(arg.event) }}</div>
               <div class="fc-event-title">
@@ -69,3 +69,46 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  header="Eventos - {{ dialogDateLabel }}"
+  [(visible)]="showEventsDialog"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '520px' }"
+>
+  <div *ngIf="dialogEvents.length === 0" class="no-events">No hay eventos.</div>
+
+  <table *ngIf="dialogEvents.length > 0" class="event-table" role="table">
+    <thead>
+      <tr>
+        <th class="col-time">Hora</th>
+        <th class="col-event">Evento</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ev of dialogEvents" class="event-row">
+        <td class="time-cell">
+          <span *ngIf="ev.start">{{ ev.start | date: 'HH:mm' }}</span>
+          <span *ngIf="ev.end"> - {{ ev.end | date: 'HH:mm' }}</span>
+        </td>
+
+        <td class="event-cell">
+          <div class="event-title">{{ ev.title }}</div>
+          <div *ngIf="ev.extendedProps?.['cCursoNombre']" class="event-course">
+            -Área: {{ ev.extendedProps?.['cCursoNombre'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cDocenteNombre']" class="event-course">
+            -Docente: {{ ev.extendedProps?.['cDocenteNombre'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cRVirtualUrlJoin']" class="event-course">
+            -Enlace:
+            <a href="{{ ev.extendedProps?.['cRVirtualUrlJoin'] }}" target="_blank">
+              {{ ev.extendedProps?.['cRVirtualUrlJoin'] }}</a
+            >
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</p-dialog>

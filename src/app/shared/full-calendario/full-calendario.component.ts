@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, EventApi, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -42,12 +42,18 @@ export class FullCalendarioComponent implements OnChanges {
     weekends: true,
     selectable: true,
     dayMaxEvents: true,
+    //navLinks: true,
     height: 600,
     dayCellDidMount: data => {
       // Si el día es sábado o domingo
       if (data.dow === 6 || data.dow === 0) {
         data.el.style.backgroundColor = '#ffd7d7';
       }
+    },
+    eventClick: this.handleEventClick.bind(this),
+    eventDidMount: info => {
+      // tooltip nativo con texto completo al hover (opcional)
+      info.el.setAttribute('title', info.event.title);
     },
     headerToolbar: {
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -86,5 +92,39 @@ export class FullCalendarioComponent implements OnChanges {
     const start = event.start ? formatDate(event.start, fmt) : '';
     const end = event.end ? formatDate(event.end, fmt) : '';
     return start && end ? `${start} - ${end}` : start || '';
+  }
+
+  showEventsDialog = false;
+  dialogDateLabel = '';
+  dialogEvents: EventApi[] = [];
+
+  handleEventClick(info: EventClickArg) {
+    const clickedDate = info.event.start; // Date
+    if (!clickedDate) {
+      return;
+    }
+    const allEvents = info.view.calendar.getEvents();
+    const eventsOnDay = allEvents.filter(e => this.isSameDay(e.start, clickedDate));
+    eventsOnDay.sort((a, b) => {
+      const ta = a.start ? a.start.getTime() : 0;
+      const tb = b.start ? b.start.getTime() : 0;
+      return ta - tb;
+    });
+
+    this.dialogEvents = eventsOnDay;
+    const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+    this.dialogDateLabel = clickedDate.toLocaleDateString('es-PE', opts);
+    //this.dialogDateLabel = clickedDate.toLocaleDateString(); // formato local
+    this.showEventsDialog = true;
+    info.jsEvent?.preventDefault();
+  }
+
+  isSameDay(a?: Date | null, b?: Date | null): boolean {
+    if (!a || !b) return false;
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
   }
 }

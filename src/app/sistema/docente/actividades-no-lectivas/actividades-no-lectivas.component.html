@@ -49,4 +49,17 @@
     [iFalta]="informacion?.iFalta"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-actividades-no-lectivas>
+
+<!-- <p-dialog header="Aprobar Actividad No Lectiva" [(visible)]="showModalAprobarActividad" class="p-fluid" [modal]="true"
+    [closable]="false" [style]="{ width: '450px' }">
+    <div class="row">
+        <div class="col-8">
+            <label for="bAprobacion">¿Aprueba la actividad no lectiva?</label>
+        </div>
+        <div class="col-4">
+            <p-inputSwitch [(ngModel)]="bAprobacion" inputId="bAprobacion" (onChange)="cambioAprobacion($event)" />
+        </div>
+    </div>
+</p-dialog> -->
+
 <p-toast />

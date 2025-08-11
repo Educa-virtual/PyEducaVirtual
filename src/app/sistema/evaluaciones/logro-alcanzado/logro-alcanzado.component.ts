@@ -88,6 +88,15 @@ export class LogroAlcanzadoComponent implements OnInit {
     {
       type: 'text',
       width: '5rem',
+      field: 'cCursoNombre',
+      header: 'Área curricular',
+      text_header: 'center',
+      text: 'center',
+    },
+
+    {
+      type: 'text',
+      width: '5rem',
       field: 'cGradoAbreviacion',
       header: 'Nivel',
       text_header: 'center',

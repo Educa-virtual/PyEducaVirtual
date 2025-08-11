@@ -19,6 +19,11 @@ import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/servi
 })
 export class RegistrarLogroAlcanzadoComponent implements OnInit {
   @Input() selectedItem: any;
+  //variables para las competencias
+  @Input() competencias: any = [];
+  @Input() curso: any = [];
+
+  @Input() mostrarDialog: boolean = false;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
   //periodo array
   periodos: any[] = [];

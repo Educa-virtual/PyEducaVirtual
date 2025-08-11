@@ -51,7 +51,7 @@ export class CalendarioComponent implements OnInit {
   }
 
   obtenerDiasFestivos() {
-    this.calendarioService.obtenerDiasFestivos().subscribe({
+    this.calendarioService.obtenerTiposFechasImportantes().subscribe({
       next: (response: any) => {
         this.festividades = response.data;
         this.festividades.map(caja => {

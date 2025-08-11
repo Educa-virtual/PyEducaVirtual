@@ -50,10 +50,12 @@ export class FullCalendarioComponent implements OnChanges {
         data.el.style.backgroundColor = '#ffd7d7';
       }
     },
+    moreLinkClick: this.handleMoreLinkClick.bind(this),
     eventClick: this.handleEventClick.bind(this),
+    //eventClick: this.handleEventClick.bind(this),
     eventDidMount: info => {
-      // tooltip nativo con texto completo al hover (opcional)
-      info.el.setAttribute('title', info.event.title);
+      info.el.style.cursor = 'pointer';
+      info.el.setAttribute('title', info.event.title || '');
     },
     headerToolbar: {
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -98,25 +100,45 @@ export class FullCalendarioComponent implements OnChanges {
   dialogDateLabel = '';
   dialogEvents: EventApi[] = [];
 
+  // Maneja clic directo en un evento
   handleEventClick(info: EventClickArg) {
-    const clickedDate = info.event.start; // Date
-    if (!clickedDate) {
-      return;
-    }
+    const clickedDate = info.event.start;
+    if (!clickedDate) return;
+
+    // tomar todos los eventos del calendario y filtrar por el mismo día
     const allEvents = info.view.calendar.getEvents();
     const eventsOnDay = allEvents.filter(e => this.isSameDay(e.start, clickedDate));
-    eventsOnDay.sort((a, b) => {
-      const ta = a.start ? a.start.getTime() : 0;
-      const tb = b.start ? b.start.getTime() : 0;
-      return ta - tb;
-    });
+    eventsOnDay.sort((a, b) => (a.start?.getTime() || 0) - (b.start?.getTime() || 0));
 
     this.dialogEvents = eventsOnDay;
-    const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-    this.dialogDateLabel = clickedDate.toLocaleDateString('es-PE', opts);
-    //this.dialogDateLabel = clickedDate.toLocaleDateString(); // formato local
+    this.dialogDateLabel = this.formatDateLabel(clickedDate);
     this.showEventsDialog = true;
+
     info.jsEvent?.preventDefault();
+  }
+
+  handleMoreLinkClick(arg: any) {
+    // arg.date = fecha; arg.allSegs = array de segmentos para ese día (cada seg.event)
+    const segs = arg.allSegs || [];
+    this.dialogEvents = segs.map((s: any) => s.event);
+
+    // arg.date puede ser Date o undefined; si no existe, intentar extraer de primer segmento
+    const fecha: Date | undefined = arg.date || this.dialogEvents[0]?.start || undefined;
+    if (fecha) {
+      this.dialogDateLabel = this.formatDateLabel(fecha);
+    } else {
+      this.dialogDateLabel = '';
+    }
+
+    this.showEventsDialog = true;
+
+    // evita el popover por defecto
+    return 'none';
+  }
+
+  formatDateLabel(d: Date): string {
+    const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+    return d.toLocaleDateString('es-PE', opts);
   }
 
   isSameDay(a?: Date | null, b?: Date | null): boolean {

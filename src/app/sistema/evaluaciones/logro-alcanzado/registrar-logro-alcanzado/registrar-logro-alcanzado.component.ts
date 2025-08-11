@@ -78,10 +78,6 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
       nl_final: '',
     },
   ];
-  resumenFinalMatematica = {
-    nlAlcanzadoFinalPromedio: 'NL alcanzado al finalizar al periodo lectivo',
-    nl_final: '',
-  };
 
   constructor(
     private messageService: MessageService,

@@ -119,13 +119,8 @@
           ></textarea>
         </td>
       </tr>
-    </ng-template>
-
-    <ng-template pTemplate="footer">
       <tr>
-        <td pFrozenColumn style="font-weight: bold">
-          NL alcanzado al finalizar el periodo lectivo
-        </td>
+        <td pFrozenColumn style="font-weight: bold">Promedio final del periodo</td>
         <td></td>
         <td></td>
         <td></td>
@@ -134,13 +129,23 @@
         <td></td>
         <td></td>
         <td>
-          <input
-            type="text"
-            pInputText
-            [(ngModel)]="resumenFinalMatematica.nl_final"
-            style="width: 115px"
-            (input)="onlyNumbers($event)"
-          />
+          <input type="text" pInputTextarea style="width: 115px" (input)="onlyNumbers($event)" />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <tr>
+        <td pFrozenColumn style="font-weight: bold">Resultado final de todos los periodos</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <input type="text" pInputTextarea style="width: 115px" (input)="onlyNumbers($event)" />
         </td>
       </tr>
     </ng-template>

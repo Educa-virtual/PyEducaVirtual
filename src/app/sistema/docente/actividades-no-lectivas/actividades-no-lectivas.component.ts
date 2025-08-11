@@ -127,7 +127,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         {
             type: 'estado-activo',
             width: '2rem',
-            field: 'bValidadoDirector',
+            field: 'iEstado',
             header: 'Estado',
             text_header: 'center',
             text: 'center',

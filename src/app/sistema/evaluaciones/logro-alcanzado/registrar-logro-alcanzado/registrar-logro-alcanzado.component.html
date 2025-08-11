@@ -11,32 +11,10 @@
     />
   </p-inputGroup>
 </div>
-<!--<div class="grid p-fluid">
-   <div class="field col-12 md:col-6">
-       <p-inputGroup>
-           <p-inputGroupAddon>Estudiante</p-inputGroupAddon>
-           <input
-               pInputText
-               [value]="selectedItem?.cNombreEstudiante"
-               readonly
-           />
-       </p-inputGroup>
-   </div>
-   <div class="field col-12 md:col-6">
-       <p-inputGroup>
-           <p-inputGroupAddon>Fecha</p-inputGroupAddon>
-           <input
-               pInputText
-               [value]="selectedItem?.dtFechaCreacion | date"
-               readonly
-           />
-       </p-inputGroup>
-   </div>-->
+
 <div class="field col-12">
-  <!-- <p-tabView>
-    <p-tabPanel header="Matemática" [selected]="true">-->
   <p-table
-    [value]="competenciasMatematica"
+    [value]="competencia"
     [scrollable]="true"
     scrollDirection="horizontal"
     [style]="{ 'min-width': '1200px' }"
@@ -44,11 +22,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th rowspan="2" pFrozenColumn>Competencias</th>
-        <th colspan="2">Primer Perdiodo</th>
-        <th colspan="2">Segundo Perdiodo</th>
-        <th colspan="2">Tercer Perdiodo</th>
-        <th colspan="2">Cuarto Perdiodo</th>
-        <th rowspan="2">NL alcanzado al finalizar al periodo lectivo</th>
+        <th colspan="2">Primer Periodo</th>
+        <th colspan="2">Segundo Periodo</th>
+        <th colspan="2">Tercer Periodo</th>
+        <th colspan="2">Cuarto Periodo</th>
       </tr>
       <tr>
         <th>NL</th>
@@ -61,6 +38,7 @@
         <th>Conclusión descriptiva</th>
       </tr>
     </ng-template>
+
     <ng-template pTemplate="body" let-competencia let-i="rowIndex">
       <tr>
         <td pFrozenColumn>{{ competencia.descripcion }}</td>
@@ -136,40 +114,52 @@
             style="width: 150px"
           ></textarea>
         </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <tr>
+        <td pFrozenColumn style="font-weight: bold">
+          NL alcanzado al finalizar el periodo lectivo
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>
           <textarea
             pInputTextarea
-            [(ngModel)]="competencia.nl_final"
-            name="mat_{{ i }}_nl_final"
+            [(ngModel)]="resumenFinalMatematica.nl_final"
+            name="resumen_nl_final"
             rows="3"
-            style="width: 120px"
+            style="width: 150px"
           ></textarea>
         </td>
       </tr>
     </ng-template>
   </p-table>
-  <!-- </p-tabPanel>
-  </p-tabView> -->
 </div>
 
 <!-- Botones -->
 <div class="field col-12">
   <div class="flex justify-content-end gap-2">
-    <p-button label="Cancelar" severity="secondary" (click)="cerrarDialog()"> </p-button>
+    <p-button label="Cancelar" severity="secondary" (click)="cerrarDialog()"></p-button>
     <p-button
       *ngIf="!mostrarBotonFinalizar"
       label="Guardar"
       severity="primary"
       (click)="guardarLogro()"
-    >
-    </p-button>
+    ></p-button>
     <p-button
       *ngIf="mostrarBotonFinalizar"
       label="Finalizar"
       severity="success"
       (click)="finalizarRegistro()"
-    >
-    </p-button>
+    ></p-button>
   </div>
 </div>
+
 <p-toast></p-toast>

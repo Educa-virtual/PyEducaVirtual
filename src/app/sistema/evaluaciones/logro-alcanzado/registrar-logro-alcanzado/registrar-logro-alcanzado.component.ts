@@ -4,11 +4,7 @@ import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 //periodo Service
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
-//matricula service
-//import { DetalleMatriculasService } from '@/app/servicios/acad/detalle-matriculas.service'
 import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/services/datos-matricula.service';
-//import { ConstantesService } from '@/app/servicios/constantes.service'
-//import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 @Component({
   selector: 'app-registrar-logro-alcanzado',
   standalone: true,
@@ -22,7 +18,6 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   //variables para las competencias
   @Input() competencias: any = [];
   @Input() curso: any = [];
-
   @Input() mostrarDialog: boolean = false;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
   //periodo array
@@ -30,7 +25,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   cargarPeriodo: boolean = true;
 
   mostrarBotonFinalizar: boolean = false;
-  competenciasMatematica = [
+  competencia = [
     {
       descripcion:
         'Analiza y aplica procedimientos matemáticos para resolver situaciones que involucran cantidades.',
@@ -83,150 +78,11 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
       nl_final: '',
     },
   ];
+  resumenFinalMatematica = {
+    nlAlcanzadoFinalPromedio: 'NL alcanzado al finalizar al periodo lectivo',
+    nl_final: '',
+  };
 
-  competenciasComunicacion = [
-    {
-      descripcion: 'Se comunica oralmente en su lengua materna.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Lee diversos tipos de textos escritos en su lengua materna.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Escribe diversos tipos de textos en su lengua materna.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-  ];
-
-  competenciasIngles = [
-    {
-      descripcion: 'Se comunica oralmente en inglés como lengua extranjera.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Lee diversos tipos de textos escritos en inglés como lengua extranjera.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Escribe diversos tipos de textos en inglés como lengua extranjera.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-  ];
-
-  competenciasPersonalSocial = [
-    {
-      descripcion: 'Construye su identidad.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Convive y participa democráticamente en la búsqueda del bien común.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Construye interpretaciones históricas.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-  ];
-
-  competenciasReligiosa = [
-    {
-      descripcion: 'Construye su identidad como persona humana, amada por Dios.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-    {
-      descripcion: 'Asume la experiencia del encuentro personal y comunitario con Dios.',
-      b1_nl: '',
-      b1_desc: '',
-      b2_nl: '',
-      b2_desc: '',
-      b3_nl: '',
-      b3_desc: '',
-      b4_nl: '',
-      b4_desc: '',
-      nl_final: '',
-    },
-  ];
   constructor(
     private messageService: MessageService,
     private calendarioPeriodosService: CalendarioPeriodosEvalacionesService,
@@ -287,11 +143,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
     });
     const datosCompletos = {
       estudiante: this.selectedItem,
-      matematica: this.competenciasMatematica,
-      comunicacion: this.competenciasComunicacion,
-      ingles: this.competenciasIngles,
-      personalSocial: this.competenciasPersonalSocial,
-      religiosa: this.competenciasReligiosa,
+      matematica: this.competencia,
     };
 
     this.mostrarBotonFinalizar = true;

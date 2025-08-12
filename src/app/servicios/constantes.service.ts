@@ -137,11 +137,11 @@ const estudiante = [
         routerLink: ['/estudiante/calendario'],
       },
       /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
-            {
-                label: 'Buzón de sugerencias',
-                icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/estudiante/buzon-sugerencias'],
-            },*/
+                  {
+                      label: 'Buzón de sugerencias',
+                      icon: 'pi pi-fw pi-envelope',
+                      routerLink: ['/estudiante/buzon-sugerencias'],
+                  },*/
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
@@ -168,6 +168,12 @@ const estudiante = [
         icon: 'pi pi-fw pi-envelope',
         routerLink: ['/buzon-sugerencias/estudiante'],
       },
+      {
+        label: 'Mesa de Partes GORE',
+        icon: 'pi pi-external-link',
+        url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
+        target: '_blank',
+      },
     ],
   },
 ];
@@ -183,27 +189,27 @@ const administrador = [
         routerLink: ['/administrador/auditoria'],
       },
       /*{
-                      label: 'Componentes',
-                      icon: 'pi pi-fw pi-folder',
-                      routerLink: ['/administrador/componentes'],
-                  },*/
+                            label: 'Componentes',
+                            icon: 'pi pi-fw pi-folder',
+                            routerLink: ['/administrador/componentes'],
+                        },*/
       {
         label: 'Registro de fechas especiales',
         icon: 'pi pi-calendar',
         routerLink: ['/gestion-institucional/fechas'],
       },
       /*{
-      /*{
-        label: 'Backup de BD',
-        icon: 'pi pi-fw pi-database',
-        routerLink: ['/administrador/backup-bd'],
-      },
+            /*{
+              label: 'Backup de BD',
+              icon: 'pi pi-fw pi-database',
+              routerLink: ['/administrador/backup-bd'],
+            },
 
-      {
-        label: 'Backup de BD',
-        icon: 'pi pi-fw pi-database',
-        routerLink: ['/administrador/backup-bd'],
-      },*/
+            {
+              label: 'Backup de BD',
+              icon: 'pi pi-fw pi-database',
+              routerLink: ['/administrador/backup-bd'],
+            },*/
 
       {
         label: 'Gestión de usuarios',
@@ -364,33 +370,33 @@ const administracion = [
         routerLink: ['/gestion-institucional/gestion-vacantes'],
       },
       /* {
-                  label: 'Gestión de Matrículas',
-                  icon: 'pi pi-folder',
-                  items: [
-                    {
-                      label: 'Gestionar matriculas',
-                      icon: 'pi pi-fw pi-file-edit',
-                      badge: '',
-                      routerLink: ['/gestion-institucional/gestion-matriculas'],
-                    },
-                    {
-                      label: 'Matrícula Individual',
-                      icon: 'pi pi-fw pi-file-plus',
-                      badge: '',
-                      routerLink: ['/gestion-institucional/matricula-individual'],
-                    },
-                    {
-                      label: 'Matrícula Masiva',
-                      icon: 'pi pi-fw pi-file-import',
-                      badge: '',
-                      routerLink: ['/gestion-institucional/matricula-masiva'],
-                    },
+                        label: 'Gestión de Matrículas',
+                        icon: 'pi pi-folder',
+                        items: [
+                          {
+                            label: 'Gestionar matriculas',
+                            icon: 'pi pi-fw pi-file-edit',
+                            badge: '',
+                            routerLink: ['/gestion-institucional/gestion-matriculas'],
+                          },
+                          {
+                            label: 'Matrícula Individual',
+                            icon: 'pi pi-fw pi-file-plus',
+                            badge: '',
+                            routerLink: ['/gestion-institucional/matricula-individual'],
+                          },
+                          {
+                            label: 'Matrícula Masiva',
+                            icon: 'pi pi-fw pi-file-import',
+                            badge: '',
+                            routerLink: ['/gestion-institucional/matricula-masiva'],
+                          },
 
 
 
-                  ],
-                },
-              */
+                        ],
+                      },
+                    */
       {
         label: 'Indicadores',
         icon: 'pi pi-chart-line',

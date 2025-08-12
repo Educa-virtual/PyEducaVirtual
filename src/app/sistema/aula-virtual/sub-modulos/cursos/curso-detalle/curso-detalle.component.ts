@@ -102,6 +102,8 @@ export class CursoDetalleComponent
     const iSeccionId = this._ActivatedRoute.snapshot.queryParams['iSeccionId'];
     const iNivelGradoId = this._ActivatedRoute.snapshot.queryParams['iNivelGradoId'];
     const cantidad = this._ActivatedRoute.snapshot.queryParams['cantidad'];
+    const iCapacitacionId = this._ActivatedRoute.snapshot.queryParams['iCapacitacionId'];
+
     this.curso = {
       cCursoNombre,
       iCursoId,
@@ -117,6 +119,7 @@ export class CursoDetalleComponent
       iSeccionId,
       iNivelGradoId,
       cantidad,
+      iCapacitacionId,
     };
   }
   //función para recorrer el tabs para que filtre segun el perfil
@@ -137,23 +140,48 @@ export class CursoDetalleComponent
   obtenerContenidoSemanasxidDocCursoIdxiYAcadId(recargar: boolean) {
     const iYAcadId = this._ConstantesService.iYAcadId;
 
-    if (!iYAcadId || !this.curso.idDocCursoId) return;
+    if (
+      !iYAcadId ||
+      (!this.curso.idDocCursoId && !this.curso.iCapacitacionId) ||
+      (this.curso.idDocCursoId && this.curso.iCapacitacionId)
+    ) {
+      return;
+    }
     const params = { iCredId: this._ConstantesService.iCredId };
+    if (this.curso.idDocCursoId) {
+      this._ContenidoSemanasService
+        .obtenerContenidoSemanasxidDocCursoIdxiYAcadId(
+          this.curso.idDocCursoId,
+          iYAcadId,
+          params,
+          recargar
+        )
+        .subscribe({
+          next: resp => {
+            if (resp.validated) {
+              this.contenidoSemanas = resp.data || [];
+            }
+          },
+          error: error => this.mostrarErrores(error),
+        });
+    }
 
-    this._ContenidoSemanasService
-      .obtenerContenidoSemanasxidDocCursoIdxiYAcadId(
-        this.curso.idDocCursoId,
-        iYAcadId,
-        params,
-        recargar
-      )
-      .subscribe({
-        next: resp => {
-          if (resp.validated) {
-            this.contenidoSemanas = resp.data || [];
-          }
-        },
-        error: error => this.mostrarErrores(error),
-      });
+    if (this.curso.iCapacitacionId) {
+      this._ContenidoSemanasService
+        .obtenerContenidoSemanasxiCapacitacionIdxiYAcadId(
+          this.curso.iCapacitacionId,
+          iYAcadId,
+          params,
+          recargar
+        )
+        .subscribe({
+          next: resp => {
+            if (resp.validated) {
+              this.contenidoSemanas = resp.data || [];
+            }
+          },
+          error: error => this.mostrarErrores(error),
+        });
+    }
   }
 }

@@ -552,6 +552,11 @@ const apoderado = [
             icon: 'pi pi-fw pi-user-edit',
             routerLink: ['/bienestar/gestion-fichas-apoderado'],
           },
+          {
+            label: 'Gestionar encuestas',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/bienestar/gestionar-encuestas'],
+          },
         ],
       },
       {

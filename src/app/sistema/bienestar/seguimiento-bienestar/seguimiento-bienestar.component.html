@@ -224,7 +224,7 @@
               showIcon="true"
               appendTo="body"
               [style]="{ flex: '1', width: '100%' }"
-              styleClass="group-element"
+              inputStyleClass="group-element"
             />
           </p-inputGroup>
         </div>
@@ -241,11 +241,11 @@
                 <span>Cargar ficha de seguimiento (PDF máximo 10MB) *</span>
               </p-inputGroupAddon>
               <p-fileUpload
-                name="cSeguimArchivo"
-                (onUpload)="handleArchivo($event)"
+                name="archivo"
                 [multiple]="false"
                 accept=".pdf"
                 fileLimit="1"
+                showUploadButton="false"
                 invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
                 invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
                 invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
@@ -253,6 +253,7 @@
                 invalidFileLimitMessageDetail="solo debe subir {0} archivo."
                 invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
                 maxFileSize="10485760"
+                (onSelect)="handleArchivo($event)"
               >
               </p-fileUpload>
             </p-inputGroup>

@@ -67,6 +67,8 @@ export class SeguimientoBienestarComponent implements OnInit {
   FASE_PENDIENTE: number = this.datosSeguimiento.FASE_PENDIENTE;
   FASE_DERIVADO: number = this.datosSeguimiento.FASE_DERIVADO;
 
+  archivoSeleccionado: File | null = null;
+
   private _confirmService = inject(ConfirmationModalService);
   private _messageService = inject(MessageService);
 
@@ -108,7 +110,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       iPrioridad: [null, Validators.required],
       iFase: [null],
       dSeguimFecha: [null, Validators.required],
-      cSeguimArchivo: [null],
+      archivo: [null],
       cSeguimDescripcion: [null],
       cInstitucionDatos: [null],
       iTipoIdentId: [null, Validators.required],
@@ -232,13 +234,6 @@ export class SeguimientoBienestarComponent implements OnInit {
     });
   }
 
-  handleArchivo(event) {
-    const file = (event.target as HTMLInputElement)?.files?.[0];
-    this.formSeguimiento.patchValue({
-      cSeguimArchivo: file,
-    });
-  }
-
   verSeguimiento(item: any) {
     this.datosSeguimiento
       .verSeguimiento({
@@ -305,6 +300,7 @@ export class SeguimientoBienestarComponent implements OnInit {
     this.formSeguimiento.patchValue({
       iSedeId: data?.value,
     });
+    this.formSeguimiento.get('cPersDocumento').setValue(data?.cPersDocumento);
     this.seguimiento_registrado = this.formSeguimiento.value.iSeguimId ? true : false;
     this.funcionesBienestar.formMarkAsDirty(this.formSeguimiento);
     if (this.seguimiento_bloqueado) {
@@ -369,9 +365,9 @@ export class SeguimientoBienestarComponent implements OnInit {
             }
             this.formSeguimiento.patchValue({
               cPersDatos: datos_persona,
-              iPersId: data.data?.iPersId,
-              iMatrId: data.data?.iMatrId,
-              iPersIeId: data.data?.iPersIeId,
+              iPersId: data.data?.iPersId ?? null,
+              iMatrId: data.data?.iMatrId ?? null,
+              iPersIeId: data.data?.iPersIeId ?? null,
             });
           } else {
             this.formSeguimiento.patchValue({
@@ -404,6 +400,11 @@ export class SeguimientoBienestarComponent implements OnInit {
       });
   }
 
+  handleArchivo(event: any) {
+    const file = event.files && event.files.length > 0 ? event.files[0] : null;
+    this.archivoSeleccionado = file;
+  }
+
   guardarSeguimiento() {
     if (this.formSeguimiento.invalid) {
       this._messageService.add({
@@ -415,13 +416,15 @@ export class SeguimientoBienestarComponent implements OnInit {
       return;
     }
     this.datosSeguimiento.guardarSeguimiento(this.formSeguimiento.value).subscribe({
-      next: () => {
+      next: (data: any) => {
         this._messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        this.verSeguimientos();
+        if (this.archivoSeleccionado) {
+          this.actualizarArchivo(data.data?.iSeguimId);
+        }
         this.visibleDialog = false;
       },
       error: error => {
@@ -446,13 +449,15 @@ export class SeguimientoBienestarComponent implements OnInit {
       return;
     }
     this.datosSeguimiento.actualizarSeguimiento(this.formSeguimiento.value).subscribe({
-      next: () => {
+      next: (data: any) => {
         this._messageService.add({
           severity: 'success',
           summary: 'Atualización exitosa',
           detail: 'Se actualizaron los datos',
         });
-        this.verSeguimientos();
+        if (this.archivoSeleccionado) {
+          this.actualizarArchivo(data.data?.iSeguimId);
+        }
         this.visibleDialog = false;
       },
       error: error => {
@@ -466,7 +471,32 @@ export class SeguimientoBienestarComponent implements OnInit {
     });
   }
 
+  actualizarArchivo(iSeguimId: any) {
+    const formData: FormData = new FormData();
+    formData.append('archivo', this.archivoSeleccionado);
+    formData.append('iSeguimId', iSeguimId);
+    formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+    this.datosSeguimiento.actualizarSeguimientoArchivo(formData).subscribe({
+      next: () => {
+        this.verSeguimientos();
+      },
+      error: error => {
+        console.error('Error subiendo archivo:', error);
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message || 'Error al subir archivo',
+        });
+      },
+      complete: () => {
+        console.log('Request completed');
+      },
+    });
+  }
+
   verHistorialSeguimiento(item: any): void {
+    this.seguimientos_persona_filtrados = null;
+    this.seguimientos_persona = null;
     this.datosSeguimiento
       .verSeguimientosPersona({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -495,7 +525,32 @@ export class SeguimientoBienestarComponent implements OnInit {
   }
 
   descargarSeguimiento(item: any) {
-    console.log(item, 'descarga');
+    this.datosSeguimiento
+      .descargarSeguimiento({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iSeguimId: item.iSeguimId,
+        cSeguimArchivo: item.cSeguimArchivo,
+      })
+      .subscribe({
+        next: (response: any) => {
+          const blob = new Blob([response], {
+            type: 'application/pdf',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.click();
+        },
+        error: error => {
+          console.error('Error descargando archivo:', error);
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   clearForm() {
@@ -625,13 +680,6 @@ export class SeguimientoBienestarComponent implements OnInit {
   ];
 
   public accionesTablaPersona: IActionTable[] = [
-    {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-file-edit',
-      accion: 'editar',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-    },
     {
       labelTooltip: 'Eliminar',
       icon: 'pi pi-trash',

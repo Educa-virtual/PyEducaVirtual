@@ -53,12 +53,22 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return this.http.post(`${baseUrl}/bienestar/actualizarSeguimiento`, data);
   }
 
+  actualizarSeguimientoArchivo(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/actualizarSeguimientoArchivo`, data);
+  }
+
   borrarSeguimiento(data: any) {
     return this.http.post(`${baseUrl}/bienestar/borrarSeguimiento`, data);
   }
 
   verDatosPersona(data: any) {
     return this.http.post(`${baseUrl}/bienestar/verDatosPersona`, data);
+  }
+
+  descargarSeguimiento(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/descargarSeguimiento`, data, {
+      responseType: 'blob',
+    });
   }
 
   getTiposSeguimiento() {

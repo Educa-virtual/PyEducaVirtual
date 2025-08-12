@@ -35,4 +35,7 @@ export class CapacitacionesService {
       data
     );
   }
+  obtenerCapacitacionxiCredId(cPerfil, iCredId) {
+    return this._http.get(`${this.baseUrlApi}/cap/capacitaciones/${cPerfil}/${iCredId}`, {});
+  }
 }

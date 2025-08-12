@@ -12,7 +12,7 @@
   <div class="title mt-2 font-bold text-center mx-2">
     {{ capacitacion?.cCapTitulo }}
   </div>
-  <div *ngIf="idPerfil !== 251">
+  <div *ngIf="iPerfilId === ADMINISTRADOR_DREMO">
     <div class="mx-4 col-12 grid">
       @if (descripcion) {
         <div class="col-12 grid column-gap-1 align-items-center">
@@ -37,14 +37,36 @@
       }
     </div>
   </div>
-
+  <div *ngIf="iPerfilId === INSTRUCTOR || iPerfilId === PARTICIPANTE">
+    <div class="mx-4 col-12 grid">
+      <div class="col-12 grid column-gap-1 align-items-center">
+        <i class="pi pi-cog mr-2"></i>
+        <span>Modalidad : Virtual</span>
+      </div>
+      <div class="col-12 grid column-gap-1 align-items-center">
+        <i class="pi pi-clock mr-2"></i>
+        <span>Horario</span>
+      </div>
+      <div class="col-12 flex flex-wrap">
+        @if (capacitacion.jsonHorario) {
+          <div *ngFor="let item of capacitacion.jsonHorario">
+            <p class="ml-2">
+              <b>{{ item.cDiaNombre }}</b>
+              {{ '1970-01-01T' + item.iHoraInicio | date: 'h:mm a' }} -
+              {{ '1970-01-01T' + item.iHoraFin | date: 'h:mm a' }}
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
   <div class="flex mx-3 mt-2 mb-3 justify-content-end">
     <p-button
-      [label]="capacitacion.cTipoCapDesc === CAP_EXT ? 'Ir al sitio' : 'Ver inscritos'"
+      [label]="getBotonLabel()"
       icon="pi pi-arrow-right"
       iconPos="right"
-      [severity]="capacitacion.cTipoCapDesc === CAP_EXT ? 'danger' : 'primary'"
-      (click)="mostrarInscritos()"
+      [severity]="getBotonSeverity()"
+      (click)="irAccionEvento()"
     ></p-button>
   </div>
 </div>

@@ -1,56 +1,85 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { GeneralService } from '@/app/servicios/general.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { CardCapacitacionesComponent } from '../solicitud-Inscripcion/card-capacitaciones/card-capacitaciones.component';
-import { DropdownChangeEvent } from 'primeng/dropdown';
 import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
+import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-capacitaciones',
   standalone: true,
   templateUrl: './capacitaciones.component.html',
   styleUrls: ['./capacitaciones.component.scss'],
-  imports: [PrimengModule, CardCapacitacionesComponent],
+  imports: [PrimengModule, CardCapacitacionesComponent, NoDataComponent, ToolbarPrimengComponent],
 })
-export class CapacitacionesComponent implements OnInit {
-  private GeneralService = inject(GeneralService);
+export class CapacitacionesComponent extends MostrarErrorComponent implements OnInit {
   private _ConstantesService = inject(ConstantesService);
   private _CapacitacionesService = inject(CapacitacionesService);
+  private _Router = inject(Router);
 
   data: any[] = [];
   capacitaciones: any[] = [];
-  idPerfil: number;
-  capacitacionFiltrado: any[] = [];
+  rows = 1;
+  first = 0;
+  pagedData: any[] = [];
 
-  constructor() {}
-
+  iPerfilId: number;
   ngOnInit() {
+    this.iPerfilId = this._ConstantesService.iPerfilId;
     this.obtenerCapacitaciones();
-    this.idPerfil = this._ConstantesService.iPerfilId;
   }
-  // obtener y listar las capacitaciones
+
   obtenerCapacitaciones() {
+    const cPerfil =
+      this.iPerfilId === INSTRUCTOR
+        ? 'INSTRUCTOR'
+        : this.iPerfilId === PARTICIPANTE
+          ? 'PARTICIPANTE'
+          : null;
     const iCredId = this._ConstantesService.iCredId;
-    const params = {
-      iCredId: iCredId,
-    };
-    this._CapacitacionesService.obtenerCapacitacion(params).subscribe((resp: any) => {
-      this.data = resp.data;
-      this.capacitaciones = [...this.data];
+    if (!cPerfil || !iCredId) return;
+    this._CapacitacionesService.obtenerCapacitacionxiCredId(cPerfil, iCredId).subscribe({
+      next: (resp: any) => {
+        this.data = resp.data;
+        this.capacitaciones = [...this.data];
+        this.capacitaciones.forEach(capacitacion => {
+          capacitacion.jsonHorario = capacitacion.jsonHorario
+            ? JSON.parse(capacitacion.jsonHorario)
+            : [];
+        });
+        this.updatePagedData();
+      },
+      complete: () => {},
+      error: error => {
+        this.mostrarErrores(error);
+      },
     });
   }
 
-  filtrarCapacitaciones(event: DropdownChangeEvent) {
-    const iTipoCapId = event.value;
-    this.data = [...this.capacitacionFiltrado];
-    if (!iTipoCapId || !this.data) return;
-    if (iTipoCapId === '0') {
-      this.data = [...this.capacitacionFiltrado]; // Mostrar todas las capacitaciones
-    } else {
-      this.data = this.capacitacionFiltrado.filter(
-        (capacitacion: any) => capacitacion.iTipoCapId === iTipoCapId
-      );
-    }
+  onPageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+    this.updatePagedData();
+  }
+
+  updatePagedData() {
+    const start = this.first;
+    const end = this.first + this.rows;
+    this.pagedData = this.data.slice(start, end);
+  }
+
+  onVerDetalle(capacitacion: any) {
+    this._Router.navigate(['/aula-virtual/areas-curriculares', capacitacion.iSilaboId || 0], {
+      queryParams: {
+        cCursoNombre: capacitacion.cCapTitulo,
+        cNivelNombreCursos: '',
+        iCapacitacionId: capacitacion.iCapacitacionId,
+        cantidad: capacitacion.cantidad,
+      },
+    });
   }
 }

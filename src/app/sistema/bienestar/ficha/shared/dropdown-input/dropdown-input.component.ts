@@ -1,101 +1,101 @@
-import { PrimengModule } from '@/app/primeng.module'
-import { Component, Input, OnInit, TemplateRef } from '@angular/core'
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { PrimengModule } from '@/app/primeng.module';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'app-dropdown-input',
-    standalone: true,
-    imports: [PrimengModule],
-    templateUrl: './dropdown-input.component.html',
-    styleUrl: './dropdown-input.component.scss',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: DropdownInputComponent,
-        },
-    ],
+  selector: 'app-dropdown-input',
+  standalone: true,
+  imports: [PrimengModule],
+  templateUrl: './dropdown-input.component.html',
+  styleUrl: './dropdown-input.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: DropdownInputComponent,
+    },
+  ],
 })
 export class DropdownInputComponent implements OnInit {
-    @Input() dropdownItems: Array<object>
-    @Input() dropdownPlaceholder: string = 'Seleccione'
+  @Input() dropdownItems: Array<object>;
+  @Input() dropdownPlaceholder: string = 'Seleccione';
 
-    @Input() inputControl: FormControl
-    @Input() dropdownControl: FormControl
+  @Input() inputControl: FormControl;
+  @Input() dropdownControl: FormControl;
 
-    @Input() addonLabel: string = 'Campo'
+  @Input() addonLabel: string = 'Campo';
 
-    @Input() inputPlaceholder: string = 'Especifique otro'
-    @Input() inputType: string = 'text'
-    @Input() inputRequired: boolean = false
-    @Input() inputMaxlength: number = null
+  @Input() inputPlaceholder: string = 'Especifique otro';
+  @Input() inputType: string = 'text';
+  @Input() inputRequired: boolean = false;
+  @Input() inputMaxlength: number = null;
 
-    @Input() visibleInput: boolean = false
+  @Input() visibleInput: boolean = false;
 
-    @Input() filter: boolean = true
-    @Input() showClear: boolean = true
-    @Input() showToggleAll: boolean = false
+  @Input() filter: boolean = true;
+  @Input() showClear: boolean = true;
+  @Input() showToggleAll: boolean = false;
 
-    @Input() infoAdicional!: TemplateRef<any>
+  @Input() infoAdicional!: TemplateRef<any>;
 
-    @Input() inputTrigger: number = 1
+  @Input() inputTrigger: number = 1;
 
-    onChange = () => {}
-    onTouched = () => {}
-    touched = false
-    disabled = false
+  onChange = () => {};
+  onTouched = () => {};
+  touched = false;
+  disabled = false;
 
-    ngOnInit() {
-        this.dropdownControl.valueChanges.subscribe((value) => {
-            this.handleDropdownChange({ value: value })
-        })
+  ngOnInit() {
+    this.dropdownControl.valueChanges.subscribe(value => {
+      this.handleDropdownChange({ value: value });
+    });
+  }
+
+  handleDropdownChange(event: any) {
+    if (event?.value === undefined) {
+      this.visibleInput = false;
+      this.inputControl.setValue(null);
+      this.inputControl.clearValidators();
+      this.inputControl.updateValueAndValidity();
+      return null;
     }
-
-    handleDropdownChange(event: any) {
-        if (event?.value === undefined) {
-            this.visibleInput = false
-            this.inputControl.setValue(null)
-            this.inputControl.clearValidators()
-            this.inputControl.updateValueAndValidity()
-            return null
-        }
-        if (event.value == this.inputTrigger) {
-            this.visibleInput = true
-            this.inputControl.markAsTouched()
-            this.inputControl.markAsDirty()
-            this.inputControl.updateValueAndValidity()
-        } else {
-            this.visibleInput = false
-            this.inputControl.setValue(null)
-            this.inputControl.clearValidators()
-            this.inputControl.updateValueAndValidity()
-        }
+    if (event.value == this.inputTrigger) {
+      this.visibleInput = true;
+      this.inputControl.markAsTouched();
+      this.inputControl.markAsDirty();
+      this.inputControl.updateValueAndValidity();
+    } else {
+      this.visibleInput = false;
+      this.inputControl.setValue(null);
+      this.inputControl.clearValidators();
+      this.inputControl.updateValueAndValidity();
     }
+  }
 
-    writeValue(value: any) {
-        if (value) {
-            this.dropdownControl.setValue(value) // Assign the values to the Dropdown
-        } else {
-            this.dropdownControl.setValue(null) // Reset if value is null or undefined
-        }
+  writeValue(value: any) {
+    if (value) {
+      this.dropdownControl.setValue(value); // Assign the values to the Dropdown
+    } else {
+      this.dropdownControl.setValue(null); // Reset if value is null or undefined
     }
+  }
 
-    registerOnChange(onChange: any) {
-        this.onChange = onChange
-    }
+  registerOnChange(onChange: any) {
+    this.onChange = onChange;
+  }
 
-    registerOnTouched(onTouched: any) {
-        this.onTouched = onTouched
-    }
+  registerOnTouched(onTouched: any) {
+    this.onTouched = onTouched;
+  }
 
-    markAsTouched() {
-        if (!this.touched) {
-            this.onTouched()
-            this.touched = true
-        }
+  markAsTouched() {
+    if (!this.touched) {
+      this.onTouched();
+      this.touched = true;
     }
+  }
 
-    setDisabledState(disabled: boolean) {
-        this.disabled = disabled
-    }
+  setDisabledState(disabled: boolean) {
+    this.disabled = disabled;
+  }
 }

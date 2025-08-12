@@ -1,48 +1,48 @@
 <p-inputGroup styleClass="vertical-group">
-    <p-inputGroupAddon>
-        <a
-            *ngIf="infoAdicional"
-            role="button"
-            class="p-button p-button-secondary mr-2"
-            (click)="panel.toggle($event)"
-            (keypress)="panel.toggle($event)"
-            tabindex="0"
-        >
-            <i class="pi pi-question-circle"></i>
-        </a>
-        <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
-            <div class="w-15rem">
-                <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
-            </div>
-        </p-overlayPanel>
-        {{ addonLabel }}
-    </p-inputGroupAddon>
-    <p-multiSelect
-        display="chip"
-        [options]="multiselectItems"
-        [formControl]="multiselectControl"
-        [filter]="filter"
-        [showClear]="showClear"
-        appendTo="body"
-        [placeholder]="multiselectPlaceholder"
-        [maxSelectedLabels]="undefined"
-        (onChange)="handleDropdownChange($event)"
-        (onClear)="handleDropdownChange($event)"
-        [style]="{ flex: '1', width: '100%' }"
-        styleClass="group-element"
-        [showToggleAll]="showToggleAll"
+  <p-inputGroupAddon>
+    <a
+      *ngIf="infoAdicional"
+      role="button"
+      class="p-button p-button-secondary mr-2"
+      (click)="panel.toggle($event)"
+      (keypress)="panel.toggle($event)"
+      tabindex="0"
+    >
+      <i class="pi pi-question-circle"></i>
+    </a>
+    <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+      <div class="w-15rem">
+        <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
+      </div>
+    </p-overlayPanel>
+    {{ addonLabel }}
+  </p-inputGroupAddon>
+  <p-multiSelect
+    display="chip"
+    [options]="multiselectItems"
+    [formControl]="multiselectControl"
+    [filter]="filter"
+    [showClear]="showClear"
+    appendTo="body"
+    [placeholder]="multiselectPlaceholder"
+    [maxSelectedLabels]="undefined"
+    (onChange)="handleDropdownChange($event)"
+    (onClear)="handleDropdownChange($event)"
+    [style]="{ flex: '1', width: '100%' }"
+    styleClass="group-element"
+    [showToggleAll]="showToggleAll"
+  />
+  @if (visibleInput === true) {
+    <input
+      pInputText
+      [formControl]="inputControl"
+      [placeholder]="inputPlaceholder"
+      [type]="inputType"
+      class="group-element"
+      [required]="visibleInput"
+      [value]="inputControl.value"
+      [maxlength]="inputMaxlength"
+      appendTo="body"
     />
-    @if (visibleInput === true) {
-        <input
-            pInputText
-            [formControl]="inputControl"
-            [placeholder]="inputPlaceholder"
-            [type]="inputType"
-            class="group-element"
-            [required]="visibleInput"
-            [value]="inputControl.value"
-            [maxlength]="inputMaxlength"
-            appendTo="body"
-        />
-    }
+  }
 </p-inputGroup>

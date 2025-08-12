@@ -1,33 +1,31 @@
 <br />
 <div class="grid">
-    <div class="col-12 md:col-6">
-        <p-fieldset legend="Total">
-            <div class="block m-2">
-                <p class="font-bold m-0 p-0">Estudiantes con discapacidad</p>
-                <div>
-                    <span class="text-4xl font-bold ml-2">
-                        {{ cantidad_con_discapacidad ?? 0 }}
-                    </span>
-                    <i class="pi pi-heart-fill text-2xl text-primary"></i>
-                </div>
-                <small>Según declaración en fichas socioeconómicas</small>
-            </div>
-        </p-fieldset>
-    </div>
-    <div class="col-12 md:col-6">
-        <p-panel>
-            <ng-template pTemplate="header">
-                <span class="text-uppercase">
-                    <div class="flex flex-column">
-                        <div class="flex text-xl">Tipo de discapacidad</div>
-                    </div>
-                </span>
-            </ng-template>
-            <div>
-                <app-multi-chart
-                    [data_chart]="reportes_discapacidad?.tipos_discapacidades"
-                />
-            </div>
-        </p-panel>
-    </div>
+  <div class="col-12 md:col-6">
+    <p-fieldset legend="Total">
+      <div class="block m-2">
+        <p class="font-bold m-0 p-0">Estudiantes con discapacidad</p>
+        <div>
+          <span class="text-4xl font-bold ml-2">
+            {{ cantidad_con_discapacidad ?? 0 }}
+          </span>
+          <i class="pi pi-heart-fill text-2xl text-primary"></i>
+        </div>
+        <small>Según declaración en fichas socioeconómicas</small>
+      </div>
+    </p-fieldset>
+  </div>
+  <div class="col-12 md:col-6">
+    <p-panel>
+      <ng-template pTemplate="header">
+        <span class="text-uppercase">
+          <div class="flex flex-column">
+            <div class="flex text-xl">Tipo de discapacidad</div>
+          </div>
+        </span>
+      </ng-template>
+      <div>
+        <app-multi-chart [data_chart]="reportes_discapacidad?.tipos_discapacidades" />
+      </div>
+    </p-panel>
+  </div>
 </div>

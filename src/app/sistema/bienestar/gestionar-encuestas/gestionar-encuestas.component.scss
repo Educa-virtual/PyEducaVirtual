@@ -67,6 +67,10 @@
   border-radius: 0rem;
 }
 
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
+}
+
 :host ::ng-deep .p-inputgroup.vertical-group .group-element:last-child,
 :host ::ng-deep .p-inputgroup.vertical-group .p-calendar .group-element.p-inputtext {
   border-top-right-radius: 0rem !important;

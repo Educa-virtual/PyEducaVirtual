@@ -1,6 +1,6 @@
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { Routes } from '@angular/router';
-import { DOCENTE, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
+import { DOCENTE, ESTUDIANTE, INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
     loadChildren: () => import('./sub-modulos/cursos/cursos.routes'),
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [DOCENTE, ESTUDIANTE],
+      expectedRole: [DOCENTE, ESTUDIANTE, INSTRUCTOR, PARTICIPANTE],
       breadcrumb: 'Áreas Curriculares',
       icon: 'pi pi-book',
     },

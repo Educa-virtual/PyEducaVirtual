@@ -1,4 +1,4 @@
-import { ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
+import { ADMINISTRADOR_DREMO, INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { Routes } from '@angular/router';
 import { InstructoresComponent } from './instructores/instructores.component';
@@ -6,14 +6,13 @@ import { SolicitudInscripcionComponent } from './solicitud-Inscripcion/solicitud
 import { AulaCardCapacitacionesComponent } from './aula-virtual-capacitaciones/aulaCard-capacitaciones/aulaCard-capacitaciones.component';
 import { ResultadosCursosComponent } from './resultados-cursos/resultados-cursos.component';
 import { CapacitacionesComponent } from './capacitaciones/capacitaciones.component';
-import { PARTICIPANTE } from '@/app/servicios/perfilesConstantes';
 
 const routes: Routes = [
   {
     path: '',
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO, PARTICIPANTE],
+      expectedRole: [ADMINISTRADOR_DREMO, PARTICIPANTE, INSTRUCTOR],
     },
     children: [
       {
@@ -55,11 +54,11 @@ const routes: Routes = [
       {
         path: 'curso-capacitaciones',
         component: CapacitacionesComponent,
-        // data: {
-        //     expectedRole: [ADMINISTRADOR_DREMO],
-        //     breadcrumb: 'curso-capacitaciones',
-        //     icon: 'pi pi-user',
-        // },
+        data: {
+          expectedRole: [INSTRUCTOR, PARTICIPANTE],
+          breadcrumb: 'curso-capacitaciones',
+          icon: 'pi pi-user',
+        },
       },
     ],
   },

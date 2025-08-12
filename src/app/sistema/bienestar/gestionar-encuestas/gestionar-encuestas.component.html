@@ -4,7 +4,7 @@
   <ng-template pTemplate="header">
     <span class="text-2xl text-uppercase"> Gestionar encuestas de bienestar </span>
   </ng-template>
-  <ng-template pTemplate="icons" class="flex justify-content-center" *ngIf="perfil_permitido">
+  <ng-template pTemplate="icons" class="flex justify-content-center" *ngIf="perfil_administra">
     <div class="flex flex-wrap gap-2 justify-content-end">
       <button
         size="small"
@@ -19,7 +19,7 @@
       </button>
     </div>
   </ng-template>
-  <div *ngIf="perfil_permitido">
+  <div *ngIf="perfil_administra || perfil_consulta">
     <div class="grid mb-3">
       <div class="col-12">
         <p-inputGroup>
@@ -37,7 +37,7 @@
       [showCaption]="false"
     />
   </div>
-  <div *ngIf="!perfil_permitido">
+  <div *ngIf="!perfil_administra && !perfil_consulta">
     @if (!encuestas || encuestas.length === 0) {
       <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay encuestas disponibles" />
     } @else {
@@ -108,7 +108,7 @@
 </p-panel>
 
 <p-dialog
-  *ngIf="perfil_permitido"
+  *ngIf="perfil_administra || perfil_consulta"
   [draggable]="false"
   [maximizable]="true"
   [header]="dialog_header"

@@ -23,6 +23,7 @@ import {
   ESPECIALISTA_UGEL,
 } from '@/app/servicios/perfilesConstantes';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { APODERADO, ASISTENTE_SOCIAL } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-gestionar-encuestas',
@@ -60,10 +61,12 @@ export class GestionarEncuestasComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
-  perfil_permitido: boolean = false;
-  perfiles_permitido: Array<number> = [
+  perfil_administra: boolean = false;
+  perfil_consulta: boolean = false;
+  perfiles_administran: Array<number> = [
     DIRECTOR_IE,
     SUBDIRECTOR_IE,
+    ASISTENTE_SOCIAL,
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
   ];
@@ -98,9 +101,10 @@ export class GestionarEncuestasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.perfil_permitido = this.perfiles_permitido.includes(+this.perfil.iPerfilId);
+    this.perfil_administra = this.perfiles_administran.includes(+this.perfil.iPerfilId);
+    this.perfil_consulta = [APODERADO].includes(+this.perfil.iPerfilId);
     this.listarEncuestas();
-    if (this.perfil_permitido) {
+    if (this.perfil_administra || this.perfil_consulta) {
       this.datosEncuestas
         .getEncuestaParametros({
           iCredEntPerfId: this.perfil.iCredEntPerfId,

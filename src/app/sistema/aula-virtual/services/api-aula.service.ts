@@ -243,35 +243,6 @@ export class ApiAulaService {
       }
     );
   }
-  guardarAnucio(data) {
-    return this._http.post(`${this.baseUrlApi}/aula-virtual/Anuncio/guardarAnuncio`, data);
-  }
-  obtenerAnunciosDocnt(params: { iForoCatId; iDocenteId }) {
-    return this._http.get(`${this.baseUrlApi}/aula-virtual/Anuncio/obtenerAnunciosXDocente`, {
-      params, // Enviar los datos como parámetros
-    });
-  }
-  guardarAnuncio(data: any) {
-    return this._http.post(`${this.baseUrlApi}/aula-virtual/anuncios/guardarAnuncios`, data);
-  }
-  eliminarAnuncio(data: any) {
-    return this._http.post(
-      `${this.baseUrlApi}/aula-virtual/anuncios/eliminarAnuncios`,
-      data // Enviar los datos como parámetros
-    );
-  }
-  fijarAnuncio(data: any) {
-    return this._http.post(
-      `${this.baseUrlApi}/aula-virtual/anuncios/fijarAnuncios`,
-      data // Enviar los datos como parámetros
-    );
-  }
-  obtenerAnuncios(params: any) {
-    return this._http.post(
-      `${this.baseUrlApi}/aula-virtual/anuncios/listarAnuncios`,
-      params // Enviar los datos como parámetros
-    );
-  }
 
   guardarCuestionario(data) {
     return this._http.post(`${this.baseUrlApi}/aula-virtual/programacion-actividades/store`, data);

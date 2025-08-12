@@ -11,8 +11,14 @@ import {
   AUXILIAR,
   PARTICIPANTE,
 } from './perfilesConstantes';
-import { ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from './seg/perfiles';
+import {
+  ADMINISTRADOR_DREMO,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  INSTRUCTOR,
+} from './seg/perfiles';
 import { administradorDremo, especialistaDremo, especialistaUgel } from './seg/menu-ere';
+import { instructor } from './seg/menus/instructor';
 
 const store = new LocalStoreService();
 // const modulo = store.getItem('dremoModulo')
@@ -624,6 +630,8 @@ export class ConstantesService {
         return apoderado;
       case AUXILIAR:
         return first;
+      case INSTRUCTOR:
+        return instructor;
 
       default:
         return first;

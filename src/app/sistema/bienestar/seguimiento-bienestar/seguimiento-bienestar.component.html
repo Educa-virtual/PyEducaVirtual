@@ -230,9 +230,14 @@
         </div>
         @if (seguimiento_bloqueado) {
           <div class="col-12">
-            <p-card>
-              <a href="#" class="p-button-link p-button-text">Descargar</a>
-            </p-card>
+            <p-inputGroup styleClass="vertical-group">
+              <p-inputGroupAddon>
+                <a href="#" class="underline text-white" (click)="descargarSeguimiento()">
+                  <i class="pi pi-fw pi-download mr-2"></i>
+                  <span>Descargar Archivo Adjunto</span>
+                </a>
+              </p-inputGroupAddon>
+            </p-inputGroup>
           </div>
         } @else {
           <div class="col-12">
@@ -265,7 +270,7 @@
     <div class="flex justify-content-end gap-2">
       <p-button
         icon="pi pi-left-arrow"
-        label="Cancelar"
+        label="Salir"
         (onClick)="salir()"
         styleClass="p-button-secondary"
       />

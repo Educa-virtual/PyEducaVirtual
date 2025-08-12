@@ -415,7 +415,27 @@ export class SeguimientoBienestarComponent implements OnInit {
       this.funcionesBienestar.formMarkAsDirty(this.formSeguimiento);
       return;
     }
-    this.datosSeguimiento.guardarSeguimiento(this.formSeguimiento.value).subscribe({
+
+    const formData: FormData = new FormData();
+    formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+    formData.append('iYAcadId', String(this.iYAcadId));
+    formData.append('iNivelTipoId', this.formSeguimiento.value.iNivelTipoId);
+    formData.append('iSedeId', this.formSeguimiento.value.iSedeId);
+    formData.append('iPersId', this.formSeguimiento.value.iPersId);
+    formData.append('iMatrId', this.formSeguimiento.value.iMatrId);
+    formData.append('iPersIeId', this.formSeguimiento.value.iPersIeId);
+    formData.append('iTipoSeguimId', this.formSeguimiento.value.iTipoSeguimId);
+    formData.append('iPrioridad', this.formSeguimiento.value.iPrioridad);
+    formData.append('iFase', this.formSeguimiento.value.iFase);
+    formData.append('dSeguimFecha', this.formSeguimiento.value.dSeguimFecha);
+    formData.append('cSeguimDescripcion', this.formSeguimiento.value.cSeguimDescripcion);
+    formData.append('iTipoIdentId', this.formSeguimiento.value.iTipoIdentId);
+    formData.append('cPersDocumento', this.formSeguimiento.value.cPersDocumento);
+    if (this.archivoSeleccionado) {
+      formData.append('archivo', this.archivoSeleccionado);
+    }
+
+    this.datosSeguimiento.guardarSeguimiento(formData).subscribe({
       next: (data: any) => {
         this._messageService.add({
           severity: 'success',
@@ -524,7 +544,11 @@ export class SeguimientoBienestarComponent implements OnInit {
       });
   }
 
-  descargarSeguimiento(item: any) {
+  descargarSeguimiento(item: any = null) {
+    if (!item) {
+      item.iSeguimId = this.formSeguimiento.value.iSeguimId;
+      item.cSeguimArchivo = this.formSeguimiento.value.cSeguimArchivo;
+    }
     this.datosSeguimiento
       .descargarSeguimiento({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -547,7 +571,7 @@ export class SeguimientoBienestarComponent implements OnInit {
           this._messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error.message,
+            detail: error.error.message ?? 'No se pudo descargar el archivo',
           });
         },
       });

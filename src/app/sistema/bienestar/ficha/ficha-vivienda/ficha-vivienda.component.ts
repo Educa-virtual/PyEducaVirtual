@@ -128,8 +128,6 @@ export class FichaViviendaComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data.length) {
           this.setFormVivienda(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

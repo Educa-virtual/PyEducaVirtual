@@ -93,8 +93,6 @@ export class FichaSaludComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data.length) {
           this.setFormSalud(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

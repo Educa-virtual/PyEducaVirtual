@@ -113,8 +113,6 @@ export class FichaRecreacionComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data.length) {
           this.setFormRecreacion(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

@@ -84,8 +84,6 @@ export class FichaDiscapacidadComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data.length) {
           this.setFormDiscapacidad(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

@@ -101,8 +101,6 @@ export class FichaGeneralComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data.length) {
           this.setFormGeneral(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

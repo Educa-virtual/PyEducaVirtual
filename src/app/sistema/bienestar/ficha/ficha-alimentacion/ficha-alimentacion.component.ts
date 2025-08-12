@@ -106,8 +106,6 @@ export class FichaAlimentacionComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data && data.data.length) {
           this.setFormAlimentacion(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

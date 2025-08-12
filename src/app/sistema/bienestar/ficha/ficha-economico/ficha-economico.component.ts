@@ -96,8 +96,6 @@ export class FichaEconomicoComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.data.length) {
           this.setFormEconomico(data.data[0]);
-        } else {
-          this.router.navigate(['/']);
         }
       });
   }

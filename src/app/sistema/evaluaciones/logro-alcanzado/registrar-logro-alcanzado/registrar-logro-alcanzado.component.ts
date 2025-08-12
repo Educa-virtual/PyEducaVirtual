@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
@@ -13,19 +13,36 @@ import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/servi
   styleUrl: './registrar-logro-alcanzado.component.scss',
   providers: [MessageService],
 })
-export class RegistrarLogroAlcanzadoComponent implements OnInit {
+export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   @Input() selectedItem: any;
   //variables para las competencias
   @Input() competencias: any = [];
-  @Input() curso: any = [];
+  @Input() area: any = [];
+  //@Input() curso: any = [];
+  @Input() iPeriodoId: string = '0'; // Variable para almacenar el periodo seleccionado
   @Input() mostrarDialog: boolean = false;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
   //periodo array
   periodos: any[] = [];
   cargarPeriodo: boolean = true;
+  area_nombre: string = ''; // Variable para almacenar el área del curso seleccionado
 
   mostrarBotonFinalizar: boolean = false;
-  competencia = [
+
+  //variables
+  iCalifIdPeriodo1: string = ''; // Variable para almacenar el periodo seleccionado
+  iCalifIdPeriodo2: string = ''; // Variable para almacenar el periodo seleccionado
+  iCalifIdPeriodo3: string = ''; // Variable para almacenar el periodo seleccionado
+  iCalifIdPeriodo4: string = ''; // Variable para almacenar el periodo seleccionado
+  iPromedio: string = ''; // Variable para almacenar el periodo seleccionado
+
+  cDetMatrConclusionDesc1: string = ''; // Variable para almacenar el periodo seleccionado
+  cDetMatrConclusionDesc2: string = ''; // Variable para almacenar el periodo seleccionado
+  cDetMatrConclusionDesc3: string = ''; // Variable para almacenar el periodo seleccionado
+  cDetMatrConclusionDesc4: string = ''; // Variable para almacenar el periodo seleccionado
+  cDetMatrConclusionDescPromedio: string = ''; // Variable para almacenar el periodo seleccionado
+
+  /* competencia = [
     {
       descripcion:
         'Analiza y aplica procedimientos matemáticos para resolver situaciones que involucran cantidades.',
@@ -78,7 +95,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
       nl_final: '',
     },
   ];
-
+*/
   constructor(
     private messageService: MessageService,
     private calendarioPeriodosService: CalendarioPeriodosEvalacionesService,
@@ -87,14 +104,69 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
     //private ConstantesService: ConstantesService,
   ) {}
 
-  ngOnInit() {
-    console.log('registrar-logro-alcanzado');
-    this.cargarPeriodo;
-    console.log('selectedItem completo:', this.selectedItem);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedItem']) {
+      if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
+        console.log(this.selectedItem, 'selectedItem');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Mensaje del sistema',
+          detail: 'Se detecto cambios en información del estudiante',
+          life: 3000,
+        });
+      }
+      // this.filtrarArea();
+    }
+    if (changes['competencias']) {
+      if (Array.isArray(this.competencias) && this.competencias.length > 0) {
+        this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
+
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Mensaje del sistema',
+          detail: 'Se detecto cambios en información del competencias',
+          life: 3000,
+        });
+      }
+    }
   }
+
+  actualizarArea() {
+    this.iCalifIdPeriodo1 = this.selectedItem[0].iCalifIdPeriodo1 ?? '';
+    this.iCalifIdPeriodo2 = this.selectedItem[0].iCalifIdPeriodo2 ?? '';
+    this.iCalifIdPeriodo3 = this.selectedItem[0].iCalifIdPeriodo3 ?? '';
+    this.iCalifIdPeriodo4 = this.selectedItem[0].iCalifIdPeriodo4 ?? '';
+    this.iPromedio = this.selectedItem[0].iPromedio ?? '';
+
+    this.cDetMatrConclusionDesc1 = this.selectedItem[0].cDetMatrConclusionDesc1 ?? '';
+    this.cDetMatrConclusionDesc2 = this.selectedItem[0].cDetMatrConclusionDesc2 ?? '';
+    this.cDetMatrConclusionDesc3 = this.selectedItem[0].cDetMatrConclusionDesc3 ?? '';
+    this.cDetMatrConclusionDesc4 = this.selectedItem[0].cDetMatrConclusionDesc4 ?? '';
+    this.cDetMatrConclusionDescPromedio = this.selectedItem[0].cDetMatConclusionDescPromedio ?? '';
+  }
+
   cerrarDialog() {
     this.registraLogroAlcanzado.emit(false);
   }
+  /*
+  filtrarArea() {
+    let areas: any[] = [];
+  
+    try {
+      // Parsear el string a un array real
+      areas = JSON.parse(this.selectedItem?.json_cursos || '[]');
+    } catch (e) {
+      console.error('Error parseando json_cursos:', e);
+      return;
+    }
+  
+    // Filtrar por el curso seleccionado
+    const curso = areas.filter((item: any) =>
+      item.cCursoNombre === this.selectedItem.cCursoNombre
+    );
+  
+    console.log('Curso filtrado:', curso);
+  }*/
 
   finalizarRegistro() {
     this.registraLogroAlcanzado.emit(false);
@@ -126,9 +198,9 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
   //             }
   //         })
   // }
-  CompetenciasAPeriodos() {
-    console.log('competenciaPeriodo');
-  }
+  /* CompetenciasAPeriodos() {
+   
+  }*/
 
   guardarLogro() {
     this.messageService.add({
@@ -139,7 +211,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
     });
     const datosCompletos = {
       estudiante: this.selectedItem,
-      matematica: this.competencia,
+      matematica: this.competencias,
     };
 
     this.mostrarBotonFinalizar = true;
@@ -190,7 +262,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit {
           console.log('Períodos obtenidos:', response);
           if (response.validated && response.data) {
             this.periodos = response.data;
-            this.CompetenciasAPeriodos();
+            // this.CompetenciasAPeriodos();
           } else {
             console.error('Respuesta inválida:', response.message);
           }

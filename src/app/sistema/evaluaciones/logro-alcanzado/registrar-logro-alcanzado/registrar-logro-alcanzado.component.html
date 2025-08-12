@@ -7,14 +7,14 @@
       disabled
       type="text"
       pInputText
-      [value]="selectedItem?.cCursoNombre || 'sin area seleccionada'"
+      [value]="selectedItem?.[0]?.cCursoNombre ?? 'sin area seleccionada'"
     />
   </p-inputGroup>
 </div>
 
 <div class="field col-12">
   <p-table
-    [value]="competencia"
+    [value]="competencias"
     [scrollable]="true"
     scrollDirection="horizontal"
     [style]="{ 'min-width': '1200px' }"
@@ -39,14 +39,14 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-competencia let-i="rowIndex">
+    <ng-template pTemplate="body" let-competencias let-i="rowIndex">
       <tr>
-        <td pFrozenColumn>{{ competencia.descripcion }}</td>
+        <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
         <td>
           <input
             type="text"
             pInputText
-            [(ngModel)]="competencia.b1_nl"
+            [(ngModel)]="competencias.cNivelLogro_1"
             name="mat_{{ i }}_b1_nl"
             style="width: 60px"
             (input)="onlyNumbers($event)"
@@ -55,7 +55,7 @@
         <td>
           <textarea
             pInputTextarea
-            [(ngModel)]="competencia.b1_desc"
+            [(ngModel)]="competencias.cDescripcion_1"
             name="mat_{{ i }}_b1_desc"
             rows="2"
             style="width: 115px"
@@ -65,7 +65,7 @@
           <input
             type="text"
             pInputText
-            [(ngModel)]="competencia.b2_nl"
+            [(ngModel)]="competencias.cNivelLogro_2"
             name="mat_{{ i }}_b2_nl"
             style="width: 60px"
             (input)="onlyNumbers($event)"
@@ -74,7 +74,7 @@
         <td>
           <textarea
             pInputTextarea
-            [(ngModel)]="competencia.b2_desc"
+            [(ngModel)]="competencias.cDescripcion_2"
             name="mat_{{ i }}_b2_desc"
             rows="2"
             style="width: 115px"
@@ -84,7 +84,7 @@
           <input
             type="text"
             pInputText
-            [(ngModel)]="competencia.b3_nl"
+            [(ngModel)]="competencias.cNivelLogro_3"
             name="mat_{{ i }}_b3_nl"
             style="width: 60px"
             (input)="onlyNumbers($event)"
@@ -93,7 +93,7 @@
         <td>
           <textarea
             pInputTextarea
-            [(ngModel)]="competencia.b3_desc"
+            [(ngModel)]="competencias.cDescripcion_3"
             name="mat_{{ i }}_b3_desc"
             rows="2"
             style="width: 115px"
@@ -103,7 +103,7 @@
           <input
             type="text"
             pInputText
-            [(ngModel)]="competencia.b4_nl"
+            [(ngModel)]="competencias.cNivelLogro_4"
             name="mat_{{ i }}_b4_nl"
             style="width: 60px"
             (input)="onlyNumbers($event)"
@@ -112,29 +112,95 @@
         <td>
           <textarea
             pInputTextarea
-            [(ngModel)]="competencia.b4_desc"
+            [(ngModel)]="competencias.cDescripcion_4"
             name="mat_{{ i }}_b4_desc"
             rows="2"
             style="width: 115px"
           ></textarea>
         </td>
       </tr>
-      <tr>
-        <td pFrozenColumn style="font-weight: bold">Promedio final del periodo</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>
-          <input type="text" pInputTextarea style="width: 115px" (input)="onlyNumbers($event)" />
-        </td>
-      </tr>
     </ng-template>
 
     <ng-template pTemplate="footer">
+      <tr>
+        <td pFrozenColumn style="font-weight: bold">Promedio final del periodo</td>
+        <td>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="iCalifIdPeriodo1"
+            name="iCalifIdPeriodo1"
+            style="width: 60px"
+            (input)="onlyNumbers($event)"
+          />
+        </td>
+        <td>
+          <textarea
+            pInputTextarea
+            [(ngModel)]="cDetMatrConclusionDesc1"
+            name="cDetMatrConclusionDesc1"
+            rows="2"
+            style="width: 115px"
+          ></textarea>
+        </td>
+        <td>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="iCalifIdPeriodo2"
+            name="iCalifIdPeriodo2"
+            style="width: 60px"
+            (input)="onlyNumbers($event)"
+          />
+        </td>
+        <td>
+          <textarea
+            pInputTextarea
+            [(ngModel)]="cDetMatrConclusionDesc2"
+            name="cDetMatrConclusionDesc2"
+            rows="2"
+            style="width: 115px"
+          ></textarea>
+        </td>
+        <td>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="iCalifIdPeriodo3"
+            name="iCalifIdPeriodo3"
+            style="width: 60px"
+            (input)="onlyNumbers($event)"
+          />
+        </td>
+        <td>
+          <textarea
+            pInputTextarea
+            [(ngModel)]="cDetMatrConclusionDesc3"
+            name="cDetMatrConclusionDesc3"
+            rows="2"
+            style="width: 115px"
+          ></textarea>
+        </td>
+        <td>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="iCalifIdPeriodo4"
+            name="iCalifIdPeriodo4"
+            style="width: 60px"
+            (input)="onlyNumbers($event)"
+          />
+        </td>
+        <td>
+          <textarea
+            pInputTextarea
+            [(ngModel)]="cDetMatrConclusionDesc4"
+            name="cDetMatrConclusionDesc4"
+            rows="2"
+            style="width: 115px"
+          ></textarea>
+        </td>
+      </tr>
       <tr>
         <td pFrozenColumn style="font-weight: bold">Resultado final de todos los periodos</td>
         <td></td>
@@ -143,9 +209,24 @@
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
         <td>
-          <input type="text" pInputTextarea style="width: 115px" (input)="onlyNumbers($event)" />
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="iPromedio"
+            name="iPromedio"
+            style="width: 60px"
+            (input)="onlyNumbers($event)"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            pInputTextarea
+            style="width: 115px"
+            [(ngModel)]="cDetMatrConclusionDescPromedio"
+            (input)="onlyNumbers($event)"
+          />
         </td>
       </tr>
     </ng-template>

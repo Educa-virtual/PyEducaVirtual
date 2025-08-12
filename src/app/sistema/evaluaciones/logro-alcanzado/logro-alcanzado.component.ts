@@ -38,6 +38,10 @@ export class LogroAlcanzadoComponent implements OnInit {
   dialogBoletaLogroAlcanzado: boolean = false;
   boletaTitleModal: string;
   selectedItem: any;
+  estudiante: any; //objeto estudiante seleccionado
+  competencias: any[] = []; //competencias del curso seleccionado
+
+  perfil: any; //perfil del usuario logueado
 
   public data: ICurso[] = [];
   public cursos: ICurso[] = [];
@@ -200,23 +204,69 @@ export class LogroAlcanzadoComponent implements OnInit {
   ) {}
   ngOnInit() {
     // console.log('Logro alcanzado');
+    this.perfil = this._store.getItem('dremoPerfil'); // Initialize perfil after _store is available
     this.obtenerPerfil();
     //this.obtenerGradoSeccion();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
     //this.cargarPeriodosEvaluacion();
   }
+
   registroLogroAlcanzado() {
-    const nombreEstudiante = this.selectedItem?.Estudiante || 'Estudiante';
-    const gradoEstudiante = this.selectedItem?.cGradoAbreviacion || 'cGradoAbreviacion';
-    const secciconEstudiante = this.selectedItem?.cSeccionNombre || 'cSeccionNombre';
-    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Seccion: ${secciconEstudiante}`;
-    this.dialogRegistrarLogroAlcanzado = true;
+    let areas: any[] = [];
+
+    try {
+      // Parsear el string a un array real
+      areas = JSON.parse(this.estudiante?.json_cursos || '[]');
+    } catch (e) {
+      console.error('Error parseando json_cursos:', e);
+      return;
+    }
+
+    // Filtrar por el curso seleccionado
+    const curso = areas.filter((item: any) => item.cCursoNombre === this.area.cCursoNombre);
+
+    this.selectedItem = curso;
+
+    const nombreEstudiante = this.estudiante?.Estudiante || 'Estudiante';
+    const gradoEstudiante = this.estudiante?.cGradoAbreviacion || 'cGradoAbreviacion';
+    const secciconEstudiante = this.estudiante?.cSeccionNombre || 'cSeccionNombre';
+    const areaCurricular = this.estudiante?.cCursoNombre || 'cCursoNombre';
+    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Seccion: ${secciconEstudiante} (Area: ${areaCurricular})`;
+    //Generar competencias
+    this.cargarCompetencias(curso);
   }
   listenDialogRegistrarLogro(event: boolean) {
     if (event == false) {
       this.dialogRegistrarLogroAlcanzado = false;
     }
   }
+
+  cargarCompetencias(curso: any) {
+    console.log(curso, 'curso seleccionado para competencias');
+    const params = {
+      iCursoId: Number(this.area?.iCursoId), // Evitar error si no encuentra
+      iNivelTipoId: Number(this.perfil?.iNivelTipoId), // Evitar error si no encuentra
+      iDetMatrId: Number(curso[0].iDetMatrId),
+    };
+
+    this.ApiEvaluacionesService.competenciasXCursoIdXCurricula(params).subscribe({
+      next: respuesta => {
+        this.competencias = respuesta; // Guardamos los datos en nuestra variable local.
+      },
+      error: err => {
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: 'No se pudo generar competencias asignadas al estudiante' + err.message,
+        });
+      },
+      complete: () => {
+        this.dialogRegistrarLogroAlcanzado = true;
+        console.log(this.competencias, 'this.competencias');
+      },
+    });
+  }
+
   boletaLogroImprimir() {
     this.boletaTitleModal = 'Boleta de Logros de';
     this.dialogBoletaLogroAlcanzado = true;
@@ -229,8 +279,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'Resistrar':
-        console.log(item, 'item seleccionado');
-        this.selectedItem = item;
+        this.estudiante = item;
         this.registroLogroAlcanzado();
         break;
       case 'Imprimir':
@@ -408,9 +457,7 @@ export class LogroAlcanzadoComponent implements OnInit {
 
   generarListaEstudiante(area: any) {
     //console.log("Invocando al servicio para generar la lista de estudiantes...");
-
     this.estudiantes = [];
-
     // 2. Aquí, el método del componente (`generarListaEstudiante`)
     //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
     const params = {
@@ -438,13 +485,16 @@ export class LogroAlcanzadoComponent implements OnInit {
         });
       },
       complete: () => {
+        console.log(this.estudiantes, 'estudiantes generados');
         this.seleccionar = true;
-        this.cCursoNombre = area.cCursoNombre;
+        this.cCursoNombre = area.cCursoNombre || '';
         this.estudiantes = this.estudiantes.map(estudiante => ({
           ...estudiante, // Mantener todas las propiedades originales
           cGradoAbreviacion: this.area?.cGradoAbreviacion || '', // Evitar error si no encuentra
           cSeccionNombre: this.area?.cSeccionNombre || '', // Evitar error si no encuentra
           cCursoNombre: this.area?.cCursoNombre || '', // Evitar error si no encuentra
+          iCursoId: this.area?.iCursoId || '', // Evitar error si no encuentra
+          iNivelTipoId: this.perfil?.iNivelTipoId || '', // Evitar error si no encuentra
         }));
 
         this._messageService.add({

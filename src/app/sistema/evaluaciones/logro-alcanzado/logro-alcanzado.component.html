@@ -105,9 +105,11 @@
     [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
   >
     <app-registrar-logro-alcanzado
-      (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)"
       [selectedItem]="selectedItem"
+      [competencias]="competencias"
+      [iPeriodoId]="iPeriodoId"
     ></app-registrar-logro-alcanzado>
+    <!-- (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)" -->
   </p-dialog>
   <p-dialog
     [draggable]="false"

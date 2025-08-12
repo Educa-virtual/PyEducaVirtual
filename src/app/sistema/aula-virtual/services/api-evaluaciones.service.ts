@@ -220,6 +220,15 @@ export class ApiEvaluacionesService {
       .pipe(map(resp => resp.data));
   }
 
+  competenciasXCursoIdXCurricula(params: any) {
+    return this.http
+      .get<any>(
+        `${this.baseUrlApi}/evaluaciones/competenciasXCursoIdXCurricula`, // Cambié el endpoint para que coincida con Laravel
+        { params }
+      )
+      .pipe(map(resp => resp.data));
+  }
+
   getPeriodosEvaluacion() {
     return this.http.get<any>('/api/evaluaciones/periodos-evaluacion');
   }

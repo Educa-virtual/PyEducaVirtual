@@ -1,50 +1,50 @@
 <p-inputGroup styleClass="vertical-group">
-    <p-inputGroupAddon>
-        <a
-            *ngIf="infoAdicional"
-            role="button"
-            class="p-button p-button-secondary mr-2"
-            (click)="panel.toggle($event)"
-            (keypress)="panel.toggle($event)"
-            tabindex="0"
-        >
-            <i class="pi pi-question-circle"></i>
-        </a>
-        <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
-            <div class="flex w-15rem">
-                <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
-            </div>
-        </p-overlayPanel>
-        <span>{{ addonLabel }}</span>
-    </p-inputGroupAddon>
-    @if (inputControl) {
-        <textarea
-            cdkTextareaAutosize
-            #autosize="cdkTextareaAutosize"
-            pInputTextarea
-            [formControl]="inputControl"
-            placeholder="Responda"
-            [rows]="3"
-            class="group-element"
-            [style.minHeight]="3"
-            [style.maxHeight]="6"
-            [cdkAutosizeMinRows]="3 + 1.5"
-            [cdkAutosizeMaxRows]="6"
-            >{{ inputControl ? inputControl.value : null }}</textarea
-        >
-    } @else {
-        <textarea
-            cdkTextareaAutosize
-            #autosize="cdkTextareaAutosize"
-            pInputTextarea
-            placeholder="Responda"
-            [rows]="3"
-            class="group-element"
-            [style.minHeight]="3"
-            [style.maxHeight]="6"
-            [cdkAutosizeMinRows]="3 + 1.5"
-            [cdkAutosizeMaxRows]="6"
-            [disabled]="controlDisabled"
-        ></textarea>
-    }
+  <p-inputGroupAddon>
+    <a
+      *ngIf="infoAdicional"
+      role="button"
+      class="p-button p-button-secondary mr-2"
+      (click)="panel.toggle($event)"
+      (keypress)="panel.toggle($event)"
+      tabindex="0"
+    >
+      <i class="pi pi-question-circle"></i>
+    </a>
+    <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+      <div class="flex w-15rem">
+        <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
+      </div>
+    </p-overlayPanel>
+    <span>{{ addonLabel }}</span>
+  </p-inputGroupAddon>
+  @if (inputControl) {
+    <textarea
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      pInputTextarea
+      [formControl]="inputControl"
+      placeholder="Responda"
+      [rows]="3"
+      class="group-element"
+      [style.minHeight]="3"
+      [style.maxHeight]="6"
+      [cdkAutosizeMinRows]="3 + 1.5"
+      [cdkAutosizeMaxRows]="6"
+      >{{ inputControl ? inputControl.value : null }}</textarea
+    >
+  } @else {
+    <textarea
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      pInputTextarea
+      placeholder="Responda"
+      [rows]="3"
+      class="group-element"
+      [style.minHeight]="3"
+      [style.maxHeight]="6"
+      [cdkAutosizeMinRows]="3 + 1.5"
+      [cdkAutosizeMaxRows]="6"
+      [disabled]="controlDisabled"
+    ></textarea>
+  }
 </p-inputGroup>

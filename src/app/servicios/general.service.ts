@@ -297,6 +297,13 @@ export class GeneralService {
     );
   }
 
+  //nuevoa
+  obtenerCursosDiasHorarios(data: any) {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/obtenerCursosDiasHorarios`, data);
+  }
+  guardarRemoverCursosDiasHorarios(data: any) {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/CursosDiasHorarios`, data);
+  }
   agregarCurriculas(data: any) {
     return this.http.post(`${baseUrl}/administrador/addCurriculas`, data);
   }

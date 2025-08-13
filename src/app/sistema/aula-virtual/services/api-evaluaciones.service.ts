@@ -237,4 +237,18 @@ export class ApiEvaluacionesService {
       .get<ApiResponse>(`${this.baseUrlApi}/evaluaciones/competencias`, { params })
       .pipe(map(resp => resp.data));
   }
+
+  insertarResultadoXcompetencias(data) {
+    return this.http
+      .post<ApiResponse>(`${this.baseUrlApi}/evaluaciones/insertarResultadoXcompetencias`, data)
+      .pipe(map(resp => resp.data));
+  }
+  actualizarResultadoXperiodoDetMatricula(data) {
+    return this.http
+      .post<ApiResponse>(
+        `${this.baseUrlApi}/evaluaciones/actualizarResultadoXperiodoDetMatricula`,
+        data
+      )
+      .pipe(map(resp => resp.data));
+  }
 }

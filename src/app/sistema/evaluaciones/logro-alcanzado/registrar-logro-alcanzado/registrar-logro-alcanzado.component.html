@@ -22,19 +22,19 @@
     <ng-template pTemplate="header">
       <tr>
         <th rowspan="2" pFrozenColumn>Competencias</th>
-        <th colspan="2">Primer Periodo</th>
-        <th colspan="2">Segundo Periodo</th>
-        <th colspan="2">Tercer Periodo</th>
-        <th colspan="2">Cuarto Periodo</th>
+        <th colspan="3">Primer Periodo</th>
+        <th colspan="3">Segundo Periodo</th>
+        <th colspan="3">Tercer Periodo</th>
+        <th colspan="3">Cuarto Periodo</th>
       </tr>
       <tr>
-        <th>NL</th>
+        <th colspan="2">NL</th>
         <th>Conclusión descriptiva</th>
-        <th>NL</th>
+        <th colspan="2">NL</th>
         <th>Conclusión descriptiva</th>
-        <th>NL</th>
+        <th colspan="2">NL</th>
         <th>Conclusión descriptiva</th>
-        <th>NL</th>
+        <th colspan="2">NL</th>
         <th>Conclusión descriptiva</th>
       </tr>
     </ng-template>
@@ -42,14 +42,28 @@
     <ng-template pTemplate="body" let-competencias let-i="rowIndex">
       <tr>
         <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-        <td>
+
+        <td></td>
+        <td iPeriodoId="1" disabled>
           <input
             type="text"
             pInputText
             [(ngModel)]="competencias.cNivelLogro_1"
             name="mat_{{ i }}_b1_nl"
-            style="width: 60px"
-            (input)="onlyNumbers($event)"
+            style="width: 45px"
+            pattern="^(AD|A|B|C)$"
+            (input)="onlyLetras($event)"
+            maxlength="2"
+            (keyup.enter)="
+              registrarLogro(
+                $event,
+                'cNivelLogro',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
+            [disabled]="iPeriodoId !== '1'"
           />
         </td>
         <td>
@@ -59,16 +73,39 @@
             name="mat_{{ i }}_b1_desc"
             rows="2"
             style="width: 115px"
+            (blur)="
+              registrarLogro(
+                $event,
+                'cDescripcion',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
+            [disabled]="iPeriodoId !== '1'"
           ></textarea>
         </td>
+
+        <td></td>
         <td>
           <input
             type="text"
             pInputText
             [(ngModel)]="competencias.cNivelLogro_2"
             name="mat_{{ i }}_b2_nl"
-            style="width: 60px"
+            (keyup.enter)="
+              registrarLogro(
+                $event,
+                'cNivelLogro',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
+            style="width: 45px"
+            [disabled]="iPeriodoId !== '2'"
             (input)="onlyNumbers($event)"
+            pattern="^(AD|A|B|C)$"
           />
         </td>
         <td>
@@ -78,16 +115,39 @@
             name="mat_{{ i }}_b2_desc"
             rows="2"
             style="width: 115px"
+            (blur)="
+              registrarLogro(
+                $event,
+                'cDescripcion',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
+            [disabled]="iPeriodoId !== '2'"
           ></textarea>
         </td>
+
+        <td></td>
         <td>
           <input
             type="text"
             pInputText
             [(ngModel)]="competencias.cNivelLogro_3"
             name="mat_{{ i }}_b3_nl"
-            style="width: 60px"
+            (keyup.enter)="
+              registrarLogro(
+                $event,
+                'cNivelLogro',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
+            style="width: 45px"
+            [disabled]="iPeriodoId !== '3'"
             (input)="onlyNumbers($event)"
+            pattern="^(AD|A|B|C)$"
           />
         </td>
         <td>
@@ -96,17 +156,40 @@
             [(ngModel)]="competencias.cDescripcion_3"
             name="mat_{{ i }}_b3_desc"
             rows="2"
+            (blur)="
+              registrarLogro(
+                $event,
+                'cDescripcion',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
             style="width: 115px"
+            [disabled]="iPeriodoId !== '3'"
           ></textarea>
         </td>
+
+        <td></td>
         <td>
           <input
             type="text"
             pInputText
             [(ngModel)]="competencias.cNivelLogro_4"
             name="mat_{{ i }}_b4_nl"
-            style="width: 60px"
+            (keyup.enter)="
+              registrarLogro(
+                $event,
+                'cNivelLogro',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
+            style="width: 45px"
+            [disabled]="iPeriodoId !== '4'"
             (input)="onlyNumbers($event)"
+            pattern="^(AD|A|B|C)$"
           />
         </td>
         <td>
@@ -115,7 +198,17 @@
             [(ngModel)]="competencias.cDescripcion_4"
             name="mat_{{ i }}_b4_desc"
             rows="2"
+            (blur)="
+              registrarLogro(
+                $event,
+                'cDescripcion',
+                competencias.iCompetenciaId,
+                competencias.iDetMatrId,
+                iPeriodoId
+              )
+            "
             style="width: 115px"
+            [disabled]="iPeriodoId !== '4'"
           ></textarea>
         </td>
       </tr>
@@ -124,14 +217,30 @@
     <ng-template pTemplate="footer">
       <tr>
         <td pFrozenColumn style="font-weight: bold">Promedio final del periodo</td>
+
+        <td>
+          <p-inputNumber
+            [(ngModel)]="nCalifIdPeriodo1"
+            mode="decimal"
+            [showButtons]="false"
+            inputId="minmax-buttons"
+            [min]="0"
+            [max]="20"
+            [inputStyle]="{ width: '60px' }"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            [disabled]="iPeriodoId !== '1'"
+            (keyup.enter)="convertirLogro('nCalifIdPeriodo1', '1')"
+          />
+        </td>
         <td>
           <input
             type="text"
             pInputText
             [(ngModel)]="iCalifIdPeriodo1"
             name="iCalifIdPeriodo1"
-            style="width: 60px"
-            (input)="onlyNumbers($event)"
+            style="width: 45px"
+            [disabled]="true"
           />
         </td>
         <td>
@@ -141,7 +250,24 @@
             name="cDetMatrConclusionDesc1"
             rows="2"
             style="width: 115px"
+            [disabled]="iPeriodoId !== '1'"
           ></textarea>
+        </td>
+
+        <td>
+          <p-inputNumber
+            [(ngModel)]="nCalifIdPeriodo2"
+            mode="decimal"
+            [showButtons]="false"
+            inputId="minmax-buttons"
+            [min]="0"
+            [max]="20"
+            [inputStyle]="{ width: '60px' }"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            [disabled]="iPeriodoId !== '2'"
+            (keyup.enter)="convertirLogro('nCalifIdPeriodo2', '2')"
+          />
         </td>
         <td>
           <input
@@ -149,8 +275,8 @@
             pInputText
             [(ngModel)]="iCalifIdPeriodo2"
             name="iCalifIdPeriodo2"
-            style="width: 60px"
-            (input)="onlyNumbers($event)"
+            style="width: 45px"
+            [disabled]="true"
           />
         </td>
         <td>
@@ -160,7 +286,24 @@
             name="cDetMatrConclusionDesc2"
             rows="2"
             style="width: 115px"
+            [disabled]="iPeriodoId !== '2'"
           ></textarea>
+        </td>
+
+        <td>
+          <p-inputNumber
+            [(ngModel)]="nCalifIdPeriodo3"
+            mode="decimal"
+            [showButtons]="false"
+            inputId="minmax-buttons"
+            [min]="0"
+            [max]="20"
+            [inputStyle]="{ width: '60px' }"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            [disabled]="iPeriodoId !== '3'"
+            (keyup.enter)="convertirLogro('nCalifIdPeriodo3', '3')"
+          />
         </td>
         <td>
           <input
@@ -168,8 +311,8 @@
             pInputText
             [(ngModel)]="iCalifIdPeriodo3"
             name="iCalifIdPeriodo3"
-            style="width: 60px"
-            (input)="onlyNumbers($event)"
+            style="width: 45px"
+            [disabled]="true"
           />
         </td>
         <td>
@@ -179,16 +322,34 @@
             name="cDetMatrConclusionDesc3"
             rows="2"
             style="width: 115px"
+            [disabled]="iPeriodoId !== '3'"
           ></textarea>
         </td>
+
+        <td>
+          <p-inputNumber
+            [(ngModel)]="nCalifIdPeriodo4"
+            mode="decimal"
+            [showButtons]="false"
+            inputId="minmax-buttons"
+            [min]="0"
+            [max]="20"
+            [inputStyle]="{ width: '60px' }"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            [disabled]="iPeriodoId !== '4'"
+            (keyup.enter)="convertirLogro('nCalifIdPeriodo4', '4')"
+          />
+        </td>
+
         <td>
           <input
             type="text"
             pInputText
             [(ngModel)]="iCalifIdPeriodo4"
             name="iCalifIdPeriodo4"
-            style="width: 60px"
-            (input)="onlyNumbers($event)"
+            style="width: 45px"
+            [disabled]="true"
           />
         </td>
         <td>
@@ -198,6 +359,7 @@
             name="cDetMatrConclusionDesc4"
             rows="2"
             style="width: 115px"
+            [disabled]="iPeriodoId !== '4'"
           ></textarea>
         </td>
       </tr>
@@ -209,24 +371,41 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <p-inputNumber
+            [(ngModel)]="nPromedio"
+            mode="decimal"
+            [showButtons]="false"
+            inputId="minmax-buttons"
+            [min]="0"
+            [max]="20"
+            [inputStyle]="{ width: '55px' }"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            (keyup.enter)="convertirLogro('nPromedio', iPeriodoId)"
+          />
+        </td>
         <td>
           <input
             type="text"
             pInputText
             [(ngModel)]="iPromedio"
             name="iPromedio"
-            style="width: 60px"
-            (input)="onlyNumbers($event)"
+            style="width: 45px"
+            [disabled]="true"
           />
         </td>
         <td>
-          <input
-            type="text"
+          <textarea
             pInputTextarea
             style="width: 115px"
             [(ngModel)]="cDetMatrConclusionDescPromedio"
-            (input)="onlyNumbers($event)"
-          />
+            rows="2"
+            name="cDetMatrConclusionDescPromedio"
+          ></textarea>
         </td>
       </tr>
     </ng-template>
@@ -236,12 +415,18 @@
 <!-- Botones -->
 <div class="field col-12">
   <div class="flex justify-content-end gap-2">
-    <p-button label="Cancelar" severity="secondary" (click)="cerrarDialog()"></p-button>
+    <p-button label="Cancelar" severity="secondary" (onClick)="cerrarDialog()"></p-button>
     <p-button
       *ngIf="!mostrarBotonFinalizar"
-      label="Guardar"
+      label="Guardar por periodo"
       severity="primary"
-      (click)="guardarLogro()"
+      (click)="validarLogro('1')"
+    ></p-button>
+    <p-button
+      *ngIf="!mostrarBotonFinalizar"
+      label="Guardar logro final"
+      severity="primary"
+      (click)="validarLogro('5')"
     ></p-button>
     <p-button
       *ngIf="mostrarBotonFinalizar"

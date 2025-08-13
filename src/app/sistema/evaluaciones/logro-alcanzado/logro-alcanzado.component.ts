@@ -64,79 +64,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   private _GeneralService = inject(GeneralService);
   private unsubscribe$ = new Subject<boolean>();
   private _store = inject(LocalStoreService);
-  // estudiantesPrueba = [
-  //   {
-  //     item: 1,
-  //     cPersDocumento: '12345678',
-  //     Estudiante: 'GARCÍA LÓPEZ, JUAN CARLOS',
-  //     cCursoNombre: 'MATEMÁTICA',
-  //     cGradoAbreviacion: '3° PRIMARIA',
-  //     cSeccionNombre: 'A',
-  //     iEstudianteId: 101,
-  //     iCursoId: 1,
-  //     nivel: 'Primaria'
-  //   },
-  //   {
-  //     item: 2,
-  //     cPersDocumento: '87654321',
-  //     Estudiante: 'RODRIGUEZ PÉREZ, MARÍA ELENA',
-  //     cCursoNombre: 'COMUNICACIÓN',
-  //     cGradoAbreviacion: '4° PRIMARIA',
-  //     cSeccionNombre: 'B',
-  //     iEstudianteId: 102,
-  //     iCursoId: 2,
-  //     nivel: 'Primaria'
-  //   },
-  //   {
-  //     item: 3,
-  //     cPersDocumento: '11223344',
-  //     Estudiante: 'TORRES SILVA, CARLOS ALBERTO',
-  //     cCursoNombre: 'CIENCIAS SOCIALES',
-  //     cGradoAbreviacion: '1° SECUNDARIA',
-  //     cSeccionNombre: 'A',
-  //     iEstudianteId: 201,
-  //     iCursoId: 8,
-  //     nivel: 'Secundaria'
-  //   },
-  //   {
-  //     item: 4,
-  //     cPersDocumento: '55667788',
-  //     Estudiante: 'MARTÍNEZ VEGA, ANA SOFÍA',
-  //     cCursoNombre: 'INGLÉS',
-  //     cGradoAbreviacion: '2° SECUNDARIA',
-  //     cSeccionNombre: 'C',
-  //     iEstudianteId: 202,
-  //     iCursoId: 10,
-  //     nivel: 'Secundaria'
-  //   },
-  //   {
-  //     item: 5,
-  //     cPersDocumento: '99887766',
-  //     Estudiante: 'FERNÁNDEZ CASTRO, LUIS MIGUEL',
-  //     cCursoNombre: 'PERSONAL SOCIAL',
-  //     cGradoAbreviacion: '5° PRIMARIA',
-  //     cSeccionNombre: 'A',
-  //     iEstudianteId: 103,
-  //     iCursoId: 3,
-  //     nivel: 'Primaria'
-  //   }
-  // ];
 
-  // Método para activar datos de prueba
-  // activarDatosPrueba() {
-  //   this.seleccionar = true;
-  //   this.estudiantes = this.estudiantesPrueba;
-
-  //   // Simular área seleccionada
-  //   this.area = {
-  //     iCursoId: 1,
-  //     cCursoNombre: 'MATEMÁTICA',
-  //     iSeccionId: 1,
-  //     cSeccionNombre: 'A',
-  //     iGradoId: 3,
-  //     cGradoAbreviacion: '3° PRIMARIA'
-  //   };
-  //}
   columns = [
     {
       type: 'item',
@@ -197,11 +125,15 @@ export class LogroAlcanzadoComponent implements OnInit {
       text: 'center',
     },
   ];
+
+  iCredId: number;
   constructor(
     private ApiEvaluacionesService: ApiEvaluacionesService,
     private _messageService: MessageService
     //private http: HttpClient
-  ) {}
+  ) {
+    this.iCredId = this._ConstantesService.iCredId; // Initialize iCredId
+  }
   ngOnInit() {
     // console.log('Logro alcanzado');
     this.perfil = this._store.getItem('dremoPerfil'); // Initialize perfil after _store is available

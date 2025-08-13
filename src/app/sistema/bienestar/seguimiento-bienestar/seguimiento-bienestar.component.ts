@@ -110,8 +110,9 @@ export class SeguimientoBienestarComponent implements OnInit {
       iPrioridad: [null, Validators.required],
       iFase: [null],
       dSeguimFecha: [null, Validators.required],
-      archivo: [null],
+      archivo: [null, Validators.required],
       cSeguimDescripcion: [null],
+      cSeguimArchivo: [null],
       cInstitucionDatos: [null],
       iTipoIdentId: [null, Validators.required],
       cPersDocumento: [null, Validators.required],
@@ -438,7 +439,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       this._messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Debe completar los campos requeridos',
+        detail: 'Debe completar los campos requeridos y cargar un archivo PDF',
       });
       this.funcionesBienestar.formMarkAsDirty(this.formSeguimiento);
       return;

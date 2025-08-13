@@ -100,6 +100,7 @@ const docente = [
           {
             label: 'Recordatorios de cumpleaños',
             icon: 'pi pi-fw pi-bell',
+            routerLink: ['/bienestar/recordario-fechas'],
           },
         ],
       },

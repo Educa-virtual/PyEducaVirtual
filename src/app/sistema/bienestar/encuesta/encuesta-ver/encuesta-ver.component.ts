@@ -278,7 +278,7 @@ export class EncuestaVerComponent implements OnInit {
   }
 
   salir() {
-    if (!this.puede_editar) {
+    if (!this.puede_editar && Number(this.perfil.iPerfilId) !== ESTUDIANTE) {
       this.router.navigate(['/bienestar/encuesta/' + this.iEncuId + '/respuestas']);
     } else {
       this.router.navigate(['/bienestar/gestionar-encuestas']);

@@ -220,6 +220,22 @@ export class GestionarEncuestasComponent implements OnInit {
     this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/ver`]);
   }
 
+  getColorEncuesta(encuesta) {
+    if (Number(encuesta.puede_responder) === 0) {
+      return 'card-disabled';
+    }
+    if (Number(encuesta.alerta) === 1) {
+      return 'card-alerta';
+    } else {
+      const respuestas_blanco =
+        Number(encuesta.count_preguntas) - Number(encuesta.count_respuestas);
+      if (respuestas_blanco > 0) {
+        return 'card-warning';
+      }
+      return 'card-regular';
+    }
+  }
+
   accionBnt({ accion, item }) {
     switch (accion) {
       case 'editar':

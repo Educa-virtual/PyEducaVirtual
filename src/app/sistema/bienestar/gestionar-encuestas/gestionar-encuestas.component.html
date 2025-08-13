@@ -45,13 +45,7 @@
         <ng-template pTemplate="list" let-encuestas>
           <div
             *ngFor="let encuesta of encuestas; let first = first"
-            class="card mb-5 relative overflow-visible {{
-              +encuesta.puede_responder === 0
-                ? 'card-disabled'
-                : +encuesta.alerta === 1
-                  ? 'card-alerta'
-                  : 'card-regular'
-            }}"
+            class="card mb-5 relative overflow-visible {{ getColorEncuesta(encuesta) }}"
           >
             <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
               <div class="flex gap-4 font-normal">

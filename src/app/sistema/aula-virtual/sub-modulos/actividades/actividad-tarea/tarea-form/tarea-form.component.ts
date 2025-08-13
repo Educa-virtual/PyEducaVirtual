@@ -75,7 +75,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
 
   public formTareas = this._formBuilder.group({
     iTareaId: [''],
-    iDocenteId: ['', Validators.required],
+    iPersId: ['', Validators.required],
     cTareaTitulo: ['', Validators.required],
     cTareaDescripcion: ['', Validators.required],
     cTareaArchivoAdjunto: [''],
@@ -114,7 +114,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
 
         this.formTareas.patchValue({
           iTareaId: data.iTareaId,
-          iDocenteId: data.iDocenteId,
+          iPersId: data.iPersId,
           cTareaTitulo: data.cTareaTitulo,
           cTareaDescripcion: data.cTareaDescripcion,
           dtTareaInicio: new Date(data.dtTareaInicio),
@@ -181,7 +181,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       iContenidoSemId: this.semanaTarea?.iContenidoSemId,
       idDocCursoId: this.semanaTarea?.idDocCursoId,
       iCapacitacionId: this.semanaTarea?.iCapacitacionId,
-      iDocenteId: this._ConstantesService.iDocenteId,
+      iPersId: this._ConstantesService.iPersId,
       iActTipoId: TAREA,
       iCredId: this._ConstantesService.iCredId,
       cTareaArchivoAdjunto: JSON.stringify(this.filesUrl),
@@ -189,7 +189,6 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
     });
 
     const nombresCampos: Record<string, string> = {
-      iDocenteId: 'Docente',
       cTareaTitulo: 'Título de la tarea',
       cTareaDescripcion: 'Descripción',
       dtTareaInicio: 'Fecha de inicio',
@@ -198,6 +197,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       iActTipoId: 'Tipo de actividad',
       iCredId: 'Credencial',
       iYAcadId: 'Año académico',
+      iPersId: 'Identificador de la persona',
     };
     const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
       this.formTareas,

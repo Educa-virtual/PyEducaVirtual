@@ -33,6 +33,7 @@ import { DescripcionActividadesComponent } from '../../components/descripcion-ac
 import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component';
 import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 @Component({
   selector: 'app-tarea-room',
   standalone: true,
@@ -86,11 +87,14 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   iPerfilId: number;
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
+  public PARTICIPANTE = PARTICIPANTE;
 
   formTareas: any;
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
-  isDocente: boolean = this._constantesService.iPerfilId === DOCENTE;
+  isDocente: boolean =
+    this._constantesService.iPerfilId === DOCENTE ||
+    this._constantesService.iPerfilId === INSTRUCTOR;
 
   form: FormGroup = this.fb.group({
     editor: [''],

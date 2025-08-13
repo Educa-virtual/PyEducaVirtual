@@ -180,7 +180,12 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         cPerfil = 'PARTICIPANTE';
         break;
     }
-    const params = { iCredId: this._ConstantesService.iCredId, cPerfil };
+    const params = {
+      iCredId: this._ConstantesService.iCredId,
+      cPerfil,
+      idDocCursoId: this.idDocCursoId,
+      iCapacitacionId: this.iCapacitacionId,
+    };
     this._ContenidoSemanasService
       .obtenerActividadesxiContenidoSemId(iContenidoSemId, params)
       .subscribe({
@@ -462,9 +467,8 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         break;
       case 'ELIMINAR':
         this._confirmService.openConfirm({
-          header: '¿Esta seguro de eliminar la tarea ' + actividad['cTareaTitulo'] + ' ?',
+          header: '¿Esta seguro de eliminar la tarea ' + actividad['cProgActTituloLeccion'] + ' ?',
           accept: () => {
-            this.obtenerActividadesxiContenidoSemId(this.datos);
             this.deleteTareaxiTareaid(actividad);
           },
         });
@@ -480,11 +484,11 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             '/' +
             actividad.iActTipoId +
             '/' +
-            this.curso.iIeCursoId +
+            (this.curso.iIeCursoId || 0) +
             '/' +
-            this.curso.iSeccionId +
+            (this.curso.iSeccionId || 0) +
             '/' +
-            this.curso.iNivelGradoId,
+            (this.curso.iNivelGradoId || 0),
         ]);
         break;
     }
@@ -770,7 +774,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     this._generalService.getGralPrefix(params).subscribe({
       next: resp => {
         if (resp.validated) {
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          this.obtenerActividadesxiContenidoSemId(this.datos);
         }
       },
     });

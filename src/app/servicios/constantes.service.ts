@@ -500,8 +500,14 @@ const administracion = [
             routerLink: ['/bienestar/recordario-fechas'],
           },
           {
-            label: 'Reportes e informes',
-            icon: 'pi pi-fw pi-chart-bar',
+            label: 'Seguimiento de bienestar',
+            icon: 'pi pi-fw pi-eye',
+            routerLink: ['/bienestar/seguimiento-bienestar'],
+          },
+          {
+            label: 'Informes y estadística',
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: ['/bienestar/informe-estadistico'],
           },
         ],
       },

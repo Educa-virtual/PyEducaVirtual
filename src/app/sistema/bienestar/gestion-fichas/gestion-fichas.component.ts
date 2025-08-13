@@ -282,6 +282,7 @@ export class GestionFichasComponent implements OnInit {
   borrarFicha(item: any): void {
     this.datosFicha
       .borrarFicha({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
         iFichaDGId: item.iFichaDGId,
       })
       .subscribe({
@@ -292,7 +293,7 @@ export class GestionFichasComponent implements OnInit {
             detail: 'Se eliminaron los datos',
           });
           this.fichas = this.fichas.filter((ficha: any) => ficha.iFichaDGId !== item.iFichaDGId);
-          this.fichas_filtradas = this.fichas;
+          this.filtrarTabla();
         },
         error: error => {
           console.error('Error eliminando fichas:', error);

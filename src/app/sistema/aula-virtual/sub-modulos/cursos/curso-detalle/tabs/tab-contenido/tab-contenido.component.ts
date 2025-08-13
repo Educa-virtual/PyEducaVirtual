@@ -41,7 +41,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual';
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component';
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component';
-import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
+import { DOCENTE, ESTUDIANTE, PARTICIPANTE } from '@/app/servicios/perfilesConstantes';
 import { VideoconferenciaFormContainerComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-form-container/videoconferencia-form-container.component';
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
 import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component';
@@ -53,6 +53,7 @@ import { TareaFormComponent } from '../../../../actividades/actividad-tarea/tare
 import { ActividadTiposService } from '@/app/servicios/aula/actividad-tipos.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { ContenidoSemanasService } from '@/app/servicios/acad/contenido-semanas.service';
+import { INSTRUCTOR } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-tab-contenido',
@@ -85,6 +86,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   @Input() idDocCursoId;
   @Input() iCursoId;
   @Input() curso;
+  @Input() iCapacitacionId;
   @Input() contenidoSemanas = [];
 
   @Output() recargarContenidoSemanas = new EventEmitter();
@@ -127,6 +129,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   iPerfilId: number = null;
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
+  public INSTRUCTOR = INSTRUCTOR;
 
   showModalSesionAprendizaje: boolean = false;
 
@@ -170,6 +173,12 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       case DOCENTE:
         cPerfil = 'DOCENTE';
         break;
+      case INSTRUCTOR:
+        cPerfil = 'INSTRUCTOR';
+        break;
+      case PARTICIPANTE:
+        cPerfil = 'PARTICIPANTE';
+        break;
     }
     const params = { iCredId: this._ConstantesService.iCredId, cPerfil };
     this._ContenidoSemanasService
@@ -201,9 +210,11 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   private getData() {
     switch (this.iPerfilId) {
       case ESTUDIANTE:
+      case PARTICIPANTE:
         this.btnAccion = [];
         break;
       case DOCENTE:
+      case INSTRUCTOR:
         this.btnAccion = [
           {
             label: 'Editar',
@@ -248,9 +259,10 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   guardarSesionDeAprendizaje(data: any) {
     const datos = {
       ...data,
-      cTipoUsuario: 'DOCENTE',
+      cTipoUsuario: this.iCapacitacionId ? 'INSTRUCTOR' : 'DOCENTE',
       iYAcadId: this._ConstantesService.iYAcadId,
       idDocCursoId: this.idDocCursoId,
+      iCapacitacionId: this.iCapacitacionId,
       iCredId: this._ConstantesService.iCredId,
     };
     this._ContenidoSemanasService.guardarSesionDeAprendizaje(datos).subscribe({
@@ -274,23 +286,11 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   actualizarSesionDeAprendizaje(data: any) {
     const datos = {
       ...data,
-      cTipoUsuario: 'DOCENTE',
+      cTipoUsuario: this.iCapacitacionId ? 'INSTRUCTOR' : 'DOCENTE',
       iCredId: this._ConstantesService.iCredId,
+      iContenidoSemId: this.datos.iContenidoSemId,
     };
-    const params = {
-      petition: 'put',
-      group: 'acad',
-      prefix: 'contenido-semanas',
-      ruta: this.datos.iContenidoSemId,
-      data: datos,
-      params: {
-        iCredId: this._ConstantesService.iCredId,
-      },
-    };
-
-    // return
-    //Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe({
+    this._ContenidoSemanasService.actualizarContenidoSemanas(datos).subscribe({
       next: response => {
         if (response.validated) {
           this.messageService.add({
@@ -298,39 +298,11 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             summary: 'Acción exitosa',
             detail: response.message,
           });
-          // console.log(data)
           this.recargarContenidoSemanas.emit();
-          this.datos = {
-            ...this.datos,
-            cContenidoSemTitulo: data.cContenidoSemTitulo,
-          };
-          // this.datos = data
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
-          // this.showModal = false
-          // this.instructorForm.reset()
         }
       },
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
       },
     });
   }
@@ -485,6 +457,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         this.accionTarea = action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR';
         this.semanaTarea = this.datos;
         this.semanaTarea.idDocCursoId = this.idDocCursoId;
+        this.semanaTarea.iCapacitacionId = this.iCapacitacionId;
         this.iTareaId = actividad.ixActivadadId;
         break;
       case 'ELIMINAR':

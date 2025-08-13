@@ -171,7 +171,7 @@ export class SeguimientoBienestarComponent implements OnInit {
         next: (data: any) => {
           if (data.data.length) {
             this.seguimientos = data.data;
-            this.seguimientos_filtrados = this.seguimientos;
+            this.filtrarTabla();
           } else {
             this.seguimientos = null;
           }
@@ -216,20 +216,48 @@ export class SeguimientoBienestarComponent implements OnInit {
     const filtro = this.filtro.nativeElement.value.toLowerCase();
     const filtro_tipo = this.filtro_tipo?.value;
     this.seguimientos_filtrados = this.seguimientos.filter((seguimiento: any) => {
-      if (seguimiento?.iTipoSeguimId === filtro_tipo) return seguimiento;
-      if (seguimiento?.cPersDocumento.toLowerCase().includes(filtro)) return seguimiento;
-      if (seguimiento?.cPersNombreApellidos.toLowerCase().includes(filtro)) return seguimiento;
-      if (seguimiento?.dSeguimFechaUltima.toLowerCase().includes(filtro)) return seguimiento;
+      if (
+        !filtro_tipo ||
+        (seguimiento?.iTipoSeguimId && Number(seguimiento?.iTipoSeguimId) === Number(filtro_tipo))
+      ) {
+        if (
+          seguimiento?.cPersDocumento &&
+          seguimiento?.cPersDocumento.toLowerCase().includes(filtro)
+        )
+          return seguimiento;
+        if (
+          seguimiento?.cPersNombreApellidos &&
+          seguimiento?.cPersNombreApellidos.toLowerCase().includes(filtro)
+        )
+          return seguimiento;
+        if (
+          seguimiento?.dSeguimFechaUltima &&
+          seguimiento?.dSeguimFechaUltima.toLowerCase().includes(filtro)
+        )
+          return seguimiento;
+      }
       return null;
     });
   }
 
   filtrarTablaPersona() {
     const filtro_persona = this.filtro_persona.nativeElement.value.toLowerCase();
-    this.seguimientos_persona_filtrados = this.seguimientos.filter((seguimiento: any) => {
-      if (seguimiento?.dSeguimFecha.toLowerCase().includes(filtro_persona)) return seguimiento;
-      if (seguimiento?.cSeguimPrioridad.toLowerCase().includes(filtro_persona)) return seguimiento;
-      if (seguimiento?.cIieeNombre.toLowerCase().includes(filtro_persona)) return seguimiento;
+    this.seguimientos_persona_filtrados = this.seguimientos_persona.filter((seguimiento: any) => {
+      if (
+        seguimiento?.dSeguimFecha &&
+        seguimiento?.dSeguimFecha.toLowerCase().includes(filtro_persona)
+      )
+        return seguimiento;
+      if (
+        seguimiento?.cSeguimPrioridad &&
+        seguimiento?.cSeguimPrioridad.toLowerCase().includes(filtro_persona)
+      )
+        return seguimiento;
+      if (
+        seguimiento?.cIieeNombre &&
+        seguimiento?.cIieeNombre.toLowerCase().includes(filtro_persona)
+      )
+        return seguimiento;
       return null;
     });
   }
@@ -526,12 +554,8 @@ export class SeguimientoBienestarComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data) {
-            this.seguimientos_persona = data.data;
-            this.seguimientos_persona_filtrados = this.seguimientos_persona;
-          } else {
-            this.seguimientos_persona = null;
-          }
+          this.seguimientos_persona = data.data;
+          this.filtrarTablaPersona();
         },
         error: error => {
           console.error('Error obteniendo historial de seguimiento:', error);

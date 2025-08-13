@@ -127,12 +127,8 @@ export class GestionarEncuestasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data.length) {
-            this.encuestas = data.data;
-            this.encuestas_filtradas = this.encuestas;
-          } else {
-            this.encuestas = null;
-          }
+          this.encuestas = data.data;
+          this.filtrarEncuestas();
         },
         error: error => {
           console.error('Error obteniendo encuestas:', error);
@@ -152,11 +148,22 @@ export class GestionarEncuestasComponent implements OnInit {
   filtrarEncuestas() {
     const filtro = this.filtro.nativeElement.value;
     this.encuestas_filtradas = this.encuestas.filter((encuesta: any) => {
-      if (encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.cEncuCateNombre.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.cEstadoNombre.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.dEncuDesde.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.dEncuHasta.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
+      if (encuesta.cEncuNombre && encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
+      if (
+        encuesta.cEncuCateNombre &&
+        encuesta.cEncuCateNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return encuesta;
+      if (
+        encuesta.cEstadoNombre &&
+        encuesta.cEstadoNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return encuesta;
+      if (encuesta.dEncuDesde && encuesta.dEncuDesde.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
+      if (encuesta.dEncuHasta && encuesta.dEncuHasta.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
       return null;
     });
   }

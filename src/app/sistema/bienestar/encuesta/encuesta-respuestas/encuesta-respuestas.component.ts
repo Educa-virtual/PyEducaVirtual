@@ -226,10 +226,8 @@ export class EncuestaRespuestasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data.length) {
-            this.respuestas = data.data;
-            this.respuestas_filtradas = this.respuestas;
-          }
+          this.respuestas = data.data;
+          this.filtrarRespuestas();
         },
         error: error => {
           console.error('Error obteniendo respuestas:', error);
@@ -245,14 +243,33 @@ export class EncuestaRespuestasComponent implements OnInit {
   filtrarRespuestas() {
     const filtro = this.filtro.nativeElement.value;
     this.respuestas_filtradas = this.respuestas.filter((respuesta: any) => {
-      if (respuesta.cEstCodigo.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
-      if (respuesta.cPersNombreApellidos.toLowerCase().includes(filtro.toLowerCase()))
+      if (respuesta.cEstCodigo && respuesta.cEstCodigo.toLowerCase().includes(filtro.toLowerCase()))
         return respuesta;
-      if (respuesta.cGradoNombre.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
-      if (respuesta.cSeccionNombre.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
-      if (respuesta.cIieeCodigoModular.toLowerCase().includes(filtro.toLowerCase()))
+      if (
+        respuesta.cPersNombreApellidos &&
+        respuesta.cPersNombreApellidos.toLowerCase().includes(filtro.toLowerCase())
+      )
         return respuesta;
-      if (respuesta.cIieeNombre.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
+      if (
+        respuesta.cGradoNombre &&
+        respuesta.cGradoNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
+      if (
+        respuesta.cSeccionNombre &&
+        respuesta.cSeccionNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
+      if (
+        respuesta.cIieeCodigoModular &&
+        respuesta.cIieeCodigoModular.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
+      if (
+        respuesta.cIieeNombre &&
+        respuesta.cIieeNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
       return null;
     });
   }

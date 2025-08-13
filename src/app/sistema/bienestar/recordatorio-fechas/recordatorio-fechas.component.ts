@@ -93,7 +93,7 @@ export class RecordatorioFechasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.cumpleanios = data.data;
-          this.cumpleanios_filtrados = this.cumpleanios;
+          this.filtrarTabla();
         },
         error: error => {
           console.error('Error al obtener cumpleanos:', error);
@@ -183,21 +183,15 @@ export class RecordatorioFechasComponent implements OnInit {
     }
     const filtro = this.filtro.nativeElement.value.toLowerCase();
     this.cumpleanios_filtrados = this.cumpleanios.filter((cumple: any) => {
-      if (cumple.iCumpleaniosDiff && cumple.iCumpleaniosDiff.toLowerCase().includes(filtro)) {
+      if (cumple.iCumpleaniosDiff && cumple.iCumpleaniosDiff.toLowerCase().includes(filtro))
         return cumple;
-      }
       if (
         cumple.cCumpleaniosFormateado &&
         cumple.cCumpleaniosFormateado.toLowerCase().includes(filtro)
-      ) {
+      )
         return cumple;
-      }
-      if (
-        cumple.cPersNombreApellidos &&
-        cumple.cPersNombreApellidos.toLowerCase().includes(filtro)
-      ) {
+      if (cumple.cPersNombreApellidos && cumple.cPersNombreApellidos.toLowerCase().includes(filtro))
         return cumple;
-      }
       if (cumple.cRelacionNombre && cumple.cRelacionNombre.toLowerCase().includes(filtro)) {
         return cumple;
       }
@@ -206,8 +200,8 @@ export class RecordatorioFechasComponent implements OnInit {
         return cumple;
       if (cumple.cRecorPeriodoNombre && cumple.cRecorPeriodoNombre.toLowerCase().includes(filtro))
         return cumple;
+      return null;
     });
-    return null;
   }
 
   accionBnt({ accion, item }): void {

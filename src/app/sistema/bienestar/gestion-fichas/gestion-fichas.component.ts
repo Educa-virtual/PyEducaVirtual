@@ -193,7 +193,7 @@ export class GestionFichasComponent implements OnInit {
         next: (data: any) => {
           this.contarFiltros();
           this.fichas = data.data;
-          this.fichas_filtradas = this.fichas;
+          this.filtrarTabla();
         },
         error: error => {
           this.contarFiltros();
@@ -216,14 +216,15 @@ export class GestionFichasComponent implements OnInit {
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value.toLowerCase();
     this.fichas_filtradas = this.fichas.filter((ficha: any) => {
-      if (ficha.cPersApellidos.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cPersNombre.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cGradoNombre.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cSeccionNombre.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cEstadoNombre.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cGradoSeccion.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cIieeNombre.toLowerCase().includes(filtro)) return ficha;
-      if (ficha.cPersNombreApellidos.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cPersApellidos && ficha.cPersApellidos.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cPersNombre && ficha.cPersNombre.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cGradoNombre && ficha.cGradoNombre.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cSeccionNombre && ficha.cSeccionNombre.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cEstadoNombre && ficha.cEstadoNombre.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cGradoSeccion && ficha.cGradoSeccion.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cIieeNombre && ficha.cIieeNombre.toLowerCase().includes(filtro)) return ficha;
+      if (ficha.cPersNombreApellidos && ficha.cPersNombreApellidos.toLowerCase().includes(filtro))
+        return ficha;
       return null;
     });
   }

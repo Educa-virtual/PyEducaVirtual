@@ -329,7 +329,7 @@ export class GestionVacantesComponent implements OnInit {
   }
   addVacante() {
     this.query
-      .updateCalAcademico({
+      .addCalAcademico({
         json: JSON.stringify({
           iSedeId: Number(this.perfil.iSedeId),
           iYAcadId: Number(this.dremoiYAcadId),
@@ -340,7 +340,7 @@ export class GestionVacantesComponent implements OnInit {
           iEstado: Number(this.form.value.iEstado ?? 0),
           iSesionId: Number(this.perfil.iCredId),
         }),
-        _opcion: 'updVacante',
+        _opcion: 'addVacante',
       })
       .subscribe({
         error: error => {
@@ -366,7 +366,7 @@ export class GestionVacantesComponent implements OnInit {
   }
   updVacante() {
     this.query
-      .addCalAcademico({
+      .updateCalAcademico({
         json: JSON.stringify({
           iSedeId: Number(this.perfil.iSedeId),
           iYAcadId: Number(this.dremoiYAcadId),
@@ -378,7 +378,7 @@ export class GestionVacantesComponent implements OnInit {
           iSesionId: Number(this.perfil.iCredId),
           iVacanteIEId: Number(this.form.value.iVancateEId),
         }),
-        _opcion: 'addVacante',
+        _opcion: 'updVacante',
       })
       .subscribe({
         error: error => {

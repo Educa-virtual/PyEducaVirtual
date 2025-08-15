@@ -343,6 +343,11 @@ export class GestionVacantesComponent implements OnInit {
     const printContent = this.generatePrintContent();
     const printWindow = window.open('', '_blank', 'width=800,height=600'); // Definir tamaño de la ventana
 
+    const imagen = ` '<div style="position: relative;">
+            <img src="https://educavirtual.gremoquegua.edu.pe/assets/images/dremo.png" alt="Logo" style="position: absolute; top: 0; left: 0; width: 100px; height: auto;">
+            <h1 style="text-align: center; margin-top: 60px;">Registro de vacantes para el año ${this.anio_actual}</h1>
+        </div>'`;
+    //printWindow.document.querySelector('img');
     printWindow.document.write(`
         <html>
         <head>
@@ -387,35 +392,37 @@ export class GestionVacantesComponent implements OnInit {
         </style>
         </head>
         <body>
-            ${printContent}
+          ${imagen}
+          ${printContent}
         </body>
         </html>
         `);
 
     // Cerrar el documento y preparar la impresión
+    // Lanzamos el diálogo de impresión
+    // printWindow.print();
     printWindow.document.close();
+    printWindow.print();
 
-    // Asegurar que la imagen se cargue antes de imprimir
-    const img = printWindow.document.querySelector('img');
-    if (img) {
-      img.onload = () => {
-        printWindow.print();
-      };
-      img.onerror = () => {
-        console.error('Error: No se pudo cargar el logo.');
-        printWindow.print(); // Imprimir incluso si el logo no se carga
-      };
-    } else {
-      printWindow.print(); // Imprimir si no hay imagen
-    }
+    //  if (imagen) {
+    //   imagen.onload = () => {
+
+    //   };
+    //   // imagen.onerror = () => {
+    //   //   console.error('Error: No se pudo cargar el logo.');
+    //   //   printWindow.print(); // Imprimir incluso si el logo no se carga
+    //   // };
+    // } else {
+    //   printWindow.document.close();
+    //   printWindow.print(); // Imprimir si no hay imagen
+    // }
   }
+
+  // generarImagen(){
+  //   // Asegurar que la imagen se cargue antes de imprimir
 
   generatePrintContent(): string {
     let content = `
-        <div style="position: relative;">
-            <img src="/assets/images/logo.png" alt="Logo" style="position: absolute; top: 0; left: 0; width: 100px; height: auto;">
-            <h1 style="text-align: center; margin-top: 60px;">Registro de vacantes para el año ${this.anio_actual}</h1>
-        </div>
         <table>
             <thead>
                 <tr>

@@ -1,0 +1,18 @@
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ReporteProgresoService {
+  private urlBackendApi = environment.backendApi;
+  private urlBackend = environment.backend;
+  private http = inject(HttpClient);
+
+  constructor() {}
+
+  obtenerReporte() {
+    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso`);
+  }
+}

@@ -111,6 +111,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'validacion-no-lectiva',
+    loadComponent: () =>
+      import('./actividad-no-lectiva/actividad-no-lectiva.component').then(
+        c => c.ActividadNoLectivaComponent
+      ),
+  },
+  {
     path: 'configurar-horario',
     loadComponent: () =>
       import('./horario/configuracion-horario/configuracion-horario.component').then(

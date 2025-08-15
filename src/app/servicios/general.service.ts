@@ -11,6 +11,24 @@ const baseUrlPublic = environment.backend
 export class GeneralService {
     constructor(private http: HttpClient) {}
     url
+    getRecibirDatos(data) {
+        switch (data.petition) {
+            case 'post':
+                this.url = this.http.post(
+                    `${baseUrl}/` +
+                        data.group +
+                        '/' +
+                        data.prefix +
+                        '/' +
+                        data.ruta,
+                    data.data
+                )
+                break
+            default:
+                break
+        }
+        return this.url
+    }
     getRecibirMultimedia(data) {
         switch (data.petition) {
             case 'post':

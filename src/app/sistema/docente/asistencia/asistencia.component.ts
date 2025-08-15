@@ -1,6 +1,4 @@
 import { PrimengModule } from '@/app/primeng.module'
-// import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-// import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import {
     Component,
@@ -11,7 +9,7 @@ import {
     QueryList,
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Subject, takeUntil } from 'rxjs'
+import { Subject } from 'rxjs'
 import { CalendarOptions } from '@fullcalendar/core'
 import { Data } from '../interfaces/asistencia.interface' // * exportando intefaces
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -105,10 +103,9 @@ export class AsistenciaComponent implements OnInit {
                 iSeccionId: this.iSeccionId,
                 iNivelId: this.iNivelId,
             },
-            params: { skipSuccessMessage: true },
         }
 
-        this.getInformation(params, 'get_detalle_curricular')
+        this.getConexion(params, 'get_detalle_curricular')
     }
 
     /**
@@ -538,10 +535,9 @@ export class AsistenciaComponent implements OnInit {
                 iTareaId: this.strId,
                 cTareaTitulo: this.strTitulo,
             },
-            params: { skipSuccessMessage: true },
         }
 
-        this.getInformation(params, 'get_data')
+        this.getConexion(params, 'get_data')
 
         this.strId = ''
         this.strTitulo = ''
@@ -624,7 +620,7 @@ export class AsistenciaComponent implements OnInit {
                 iNivelGradoId: this.iNivelGradoId,
             },
         }
-        this.getInformation(params, 'get_fecha_importante')
+        this.getConexion(params, 'get_fecha_importante')
     }
 
     /**
@@ -650,9 +646,8 @@ export class AsistenciaComponent implements OnInit {
                 idDocCursoId: this.idDocCursoId,
                 iCicloId: this.iCicloId,
             },
-            params: { skipSuccessMessage: true },
         }
-        this.getInformation(params, 'get_curso_horario')
+        this.getConexion(params, 'get_curso_horario')
     }
 
     /**
@@ -680,7 +675,7 @@ export class AsistenciaComponent implements OnInit {
                 dtCtrlAsistencia: fechas,
             },
         }
-        this.getInformation(params, 'get_asistencia')
+        this.getConexion(params, 'get_asistencia')
     }
 
     /**
@@ -704,20 +699,16 @@ export class AsistenciaComponent implements OnInit {
                 iDocenteId: this._ConstantesService.iDocenteId,
                 tipoReporte: tipoReporte,
             },
-            params: { skipSuccessMessage: true },
         }
         this.GeneralService.getGralReporte(params)
     }
-
-    getInformation(params, accion) {
-        this.GeneralService.getGralPrefix(params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (response: Data) => {
-                    this.accionBtnItem({ accion, item: response?.data })
-                },
-                complete: () => {},
-            })
+    getConexion(params, accion) {
+        this.GeneralService.getRecibirDatos(params).subscribe({
+            next: (response: Data) => {
+                this.accionBtnItem({ accion, item: response?.data })
+            },
+            complete: () => {},
+        })
     }
 
     subirDocumento(event: any, index: number, id: FileUpload) {

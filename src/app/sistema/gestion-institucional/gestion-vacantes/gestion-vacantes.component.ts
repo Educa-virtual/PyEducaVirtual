@@ -80,86 +80,13 @@ export class GestionVacantesComponent implements OnInit {
       iNivelGradoId: [null, Validators.required],
       cSeccion: [null, Validators.required],
       iVacantesRegular: [0, Validators.required],
-      iVacanteNEE: [0, Validators.required],
+      iVacantesNEE: [0, Validators.required],
       iEstado: [0],
       iVancateEId: [null],
     });
 
     this.obtenerGradoSeccion();
     this.getVacantes();
-  }
-
-  //----Guardar registro el GRID--------------------------
-  onSubmit() {
-    const valoresFormulario = this.form.value;
-    const nuevoRegistro = {
-      iNivel_grado: Number(valoresFormulario.iNivelGradoId),
-      cVacantesRegular: Number(valoresFormulario.iVacantesRegular),
-      cVacanteNEE: Number(valoresFormulario.iVacanteNEE),
-    };
-
-    // Validacion si el grado ya existe en el array
-    const gradoExistente = this.guardar_vacantes.some(
-      registro => registro.iNivel_grado === nuevoRegistro.iNivel_grado
-    );
-
-    if (!gradoExistente) {
-      this.guardar_vacantes.push(nuevoRegistro);
-      setTimeout(() => {
-        this.guardar_vacantes = [...this.guardar_vacantes];
-      }, 0);
-
-      // **LIMPIAR FORMULARIO Y DROPDOWN**
-      this.form.reset({
-        iNivelGradoId: null, // Limpiar el dropdown
-        cVacantesRegular: 0, // Reiniciar valor numérico
-        cVacanteNEE: 0, // Reiniciar valor numérico
-      });
-    } else {
-      console.warn('El grado ya existe en la lista.');
-    }
-  }
-
-  selectRow(event: any) {
-    // Implementa la lógica para manejar la selección de una fila
-    console.log('Fila seleccionada:', event);
-  }
-
-  // Método para enviar los datos al backend
-  enviarVacantes() {
-    if (this.guardar_vacantes.length === 0) {
-      // Mostrar mensaje de advertencia al usuario
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Cerrar',
-        detail: 'No hay vacantes para enviar.',
-        life: 3000,
-      });
-      return;
-    }
-
-    const url = `${this.backendApi}/acad/vacantes/guardar`;
-
-    this.http.post(url, { vacantes: this.guardar_vacantes }).subscribe({
-      error: () => {
-        // Mostrar mensaje de error al usuario
-        this.messageService.add({
-          detail: 'Error al guardar las vacantes',
-          summary: 'Cerrar',
-          life: 3000,
-          severity: 'warn',
-        });
-      },
-      complete: () => {
-        // Mostrar mensaje de finalización al usuario
-        this.messageService.add({
-          detail: 'Vacantes guardadas correctamente',
-          summary: 'Cerrar',
-          life: 3000,
-          severity: 'info',
-        });
-      },
-    });
   }
 
   //----------------------------------------------
@@ -201,8 +128,8 @@ export class GestionVacantesComponent implements OnInit {
         // chacer que carge despues de procesar this.obtenerSeccionesForm()
 
         this.form.get('iVacantesRegular')?.setValue(elemento.item.iVacantesRegular);
-        this.form.get('iVacanteNEE')?.setValue(elemento.item.iVacantesNEE);
-        this.form.get('iVancateEId')?.setValue(elemento.item.iVancateEId);
+        this.form.get('iVacantesNEE')?.setValue(elemento.item.iVacantesNEE);
+        this.form.get('iVancateEId')?.setValue(elemento.item.iVacanteIEId);
         this.form.get('iEstado')?.setValue(elemento.item.iEstado);
 
         break;
@@ -328,18 +255,19 @@ export class GestionVacantesComponent implements OnInit {
     });
   }
   addVacante() {
+    const params: any = {
+      iSedeId: Number(this.perfil.iSedeId),
+      iYAcadId: Number(this.dremoiYAcadId),
+      iSeccionId: Number(this.form.get('cSeccion')?.value),
+      iNivelGradoId: Number(this.form.get('iNivelGradoId')?.value),
+      iVacantesRegular: Number(this.form.value.iVacantesRegular ?? 0),
+      iVacantesNEE: Number(this.form.value.iVacantesNEE ?? 0),
+      iEstado: Number(this.form.value.iEstado ?? 0),
+      iSesionId: Number(this.perfil.iCredId),
+    };
     this.query
       .addCalAcademico({
-        json: JSON.stringify({
-          iSedeId: Number(this.perfil.iSedeId),
-          iYAcadId: Number(this.dremoiYAcadId),
-          iSeccionId: Number(this.form.value.cSeccion),
-          iNivelGradoId: Number(this.form.value.iNivelGradoId),
-          iVacantesRegular: Number(this.form.value.iVacantesRegular ?? 0),
-          iVacantesNEE: Number(this.form.value.iVacantesNEE ?? 0),
-          iEstado: Number(this.form.value.iEstado ?? 0),
-          iSesionId: Number(this.perfil.iCredId),
-        }),
+        json: JSON.stringify(params),
         _opcion: 'addVacante',
       })
       .subscribe({
@@ -365,19 +293,21 @@ export class GestionVacantesComponent implements OnInit {
       });
   }
   updVacante() {
+    const params: any = {
+      iSedeId: Number(this.perfil.iSedeId),
+      iYAcadId: Number(this.dremoiYAcadId),
+      iSeccionId: Number(this.form.get('cSeccion')?.value),
+      iNivelGradoId: Number(this.form.get('iNivelGradoId')?.value),
+      iVacantesRegular: Number(this.form.value.iVacantesRegular ?? 0),
+      iVacantesNEE: Number(this.form.value.iVacantesNEE ?? 0),
+      iEstado: Number(this.form.value.iEstado ?? 0),
+      iSesionId: Number(this.perfil.iCredId),
+      iVacanteIEId: Number(this.form.value.iVancateEId),
+    };
+
     this.query
       .updateCalAcademico({
-        json: JSON.stringify({
-          iSedeId: Number(this.perfil.iSedeId),
-          iYAcadId: Number(this.dremoiYAcadId),
-          iSeccionId: Number(this.form.value.cSeccion),
-          iNivelGradoId: Number(this.form.value.iNivelGradoId),
-          iVacantesRegular: Number(this.form.value.iVacantesRegular ?? 0),
-          iVacantesNEE: Number(this.form.value.iVacantesNEE ?? 0),
-          iEstado: Number(this.form.value.iEstado ?? 0),
-          iSesionId: Number(this.perfil.iCredId),
-          iVacanteIEId: Number(this.form.value.iVancateEId),
-        }),
+        json: JSON.stringify(params),
         _opcion: 'updVacante',
       })
       .subscribe({

@@ -39,9 +39,6 @@ export class HorarioComponent implements OnInit {
     };
     this.breadCrumbItems = [
       {
-        label: 'Estudiante',
-      },
-      {
         label: 'Horario',
       },
     ];

@@ -129,6 +129,11 @@ export const administradorDremo = [
         ],
       },
       {
+        label: 'Mantenimiento I.E.',
+        icon: 'pi pi-wrench',
+        routerLink: ['manteniemiento-ie'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],

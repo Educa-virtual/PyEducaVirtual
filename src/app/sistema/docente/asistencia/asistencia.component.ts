@@ -2,7 +2,14 @@ import { PrimengModule } from '@/app/primeng.module'
 // import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 // import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Component, OnInit, Input, inject } from '@angular/core'
+import {
+    Component,
+    OnInit,
+    Input,
+    inject,
+    ViewChildren,
+    QueryList,
+} from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
 import { CalendarOptions } from '@fullcalendar/core'
@@ -15,6 +22,7 @@ import { MessageService } from 'primeng/api'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ReporteAsistenciaComponent } from './reporte-asistencia/reporte-asistencia.component'
+import { FileUpload } from 'primeng/fileupload'
 
 @Component({
     selector: 'app-asistencia',
@@ -29,6 +37,8 @@ import { ReporteAsistenciaComponent } from './reporte-asistencia/reporte-asisten
     styleUrl: './asistencia.component.scss',
 })
 export class AsistenciaComponent implements OnInit {
+    @ViewChildren('subirJustificacion') uploaders!: QueryList<FileUpload>
+
     @Input() iCursoId: string
     @Input() idDocCursoId: string
     @Input() iGradoId: string
@@ -48,6 +58,7 @@ export class AsistenciaComponent implements OnInit {
     detalles = [] // guarda los detalles del encabezado
     year: string
     encabezado = []
+    archivo: any = []
 
     private GeneralService = inject(GeneralService)
     private unsubscribe$ = new Subject<boolean>()
@@ -250,7 +261,6 @@ export class AsistenciaComponent implements OnInit {
         this.leyenda.filter((index) => {
             index.contar = 0
         })
-
         this.events.filter((index) => {
             this.captura = index.title.split(' : ')
 
@@ -542,29 +552,45 @@ export class AsistenciaComponent implements OnInit {
 
     storeAsistencia() {
         if (this.limitado != 6 && this.limitado != 0) {
+            const enviar = new FormData()
+            enviar.append('opcion', 'GUARDAR_ASISTENCIA_ESTUDIANTE')
+            enviar.append('iCursoId', this.iCursoId)
+            enviar.append('iSeccionId', this.iSeccionId)
+            enviar.append('iDocenteId', this.iDocenteId)
+            enviar.append('iYAcadId', this.iYAcadId)
+            enviar.append('dtCtrlAsistencia', this.fechaActual)
+            enviar.append('asistencia_json', JSON.stringify(this.data))
+            this.archivo.forEach((item: File, index: number) => {
+                enviar.append(`archivos[${index}]`, item)
+            })
+
             const params = {
                 petition: 'post',
                 group: 'docente',
                 prefix: 'asistencia',
                 ruta: 'guardarAsistencia',
-                data: {
-                    opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
-                    iCursoId: this.iCursoId,
-                    iSeccionId: this.iSeccionId,
-                    iDocenteId: this.iDocenteId,
-                    iYAcadId: this.iYAcadId,
-                    asistencia_json: JSON.stringify(this.data),
-                    dtCtrlAsistencia: this.fechaActual,
-                },
-                params: { skipSuccessMessage: true },
+                data: enviar,
             }
 
-            this.getInformation(params, 'get_data')
-
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje',
-                detail: 'Asistencia Registrada',
+            this.GeneralService.getMultipleMedia(params).subscribe({
+                next: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Asistencia Registrada',
+                    })
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    })
+                },
+                complete: () => {
+                    this.getFechasImportantes()
+                    this.verAsistencia = false
+                },
             })
         } else {
             this.messageService.add({
@@ -683,21 +709,6 @@ export class AsistenciaComponent implements OnInit {
         this.GeneralService.getGralReporte(params)
     }
 
-    // getObtenerAsitencias() {
-    //     const params = {
-    //         petition: 'post',
-    //         group: 'docente',
-    //         prefix: 'asistencia',
-    //         ruta: 'list',
-    //         data: {
-    //             opcion: 'consultar_asistencia_fecha',
-    //             iCursoId: this.iCursoId,
-    //             dtCtrlAsistencia: this.fechaActual,
-    //         },
-    //         params: { skipSuccessMessage: true },
-    //     }
-    //     this.getInformation(params, 'get_asistencia')
-    // }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params)
             .pipe(takeUntil(this.unsubscribe$))
@@ -707,5 +718,46 @@ export class AsistenciaComponent implements OnInit {
                 },
                 complete: () => {},
             })
+    }
+
+    subirDocumento(event: any, index: number, id: FileUpload) {
+        const archivo = event.files?.[0]
+        this.archivo[index] = archivo
+        if (archivo) {
+            id.clear()
+        }
+    }
+
+    // Descargar archivo justificacion
+    descargarArchivo(iDocenteId: string, cJustificar: string) {
+        const params = {
+            petition: 'post',
+            group: 'asi',
+            prefix: 'asistencia',
+            ruta: 'descargar-justificacion',
+            data: {
+                iDocenteId: iDocenteId,
+                cJustificar: cJustificar,
+            },
+        }
+
+        this.GeneralService.getRecibirMultimedia(params).subscribe({
+            next: async (response: Blob) => {
+                const blob = new Blob([response], { type: 'application/pdf' })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.target = '_blank'
+                link.click()
+            },
+            error: (error) => {
+                console.error('Error obteniendo encuesta:', error)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                })
+            },
+        })
     }
 }

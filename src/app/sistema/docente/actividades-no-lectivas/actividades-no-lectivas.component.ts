@@ -260,6 +260,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 opcion: 'CONSULTARxiDocenteIdxTiposDedicaciones',
                 iDocenteId: this._ConstantesService.iDocenteId,
                 valorBusqueda: iYearId,
+                iSedeId: this._ConstantesService.iSedeId,
             },
             params: { skipSuccessMessage: true },
         }

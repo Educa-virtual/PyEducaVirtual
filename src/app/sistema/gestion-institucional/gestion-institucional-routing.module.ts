@@ -27,6 +27,7 @@ import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-us
 import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
+import { ActividadNoLectivaComponent } from './actividad-no-lectiva/actividad-no-lectiva.component'
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
     { path: 'configGradoSeccion', component: ConfigGradoSeccionComponent },
@@ -110,6 +111,10 @@ const routes: Routes = [
     {
         path: 'mantenimiento-usuario',
         component: MantenimientoUsuariosComponent,
+    },
+    {
+        path: 'actividad-no-lectiva',
+        component: ActividadNoLectivaComponent,
     },
 ]
 

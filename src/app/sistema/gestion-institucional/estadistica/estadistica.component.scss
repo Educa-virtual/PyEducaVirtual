@@ -1,19 +1,45 @@
 :host ::ng-deep .p-toolbar {
-    background: var(--bg-header-modal) !important;
-    color: white !important;
+  background: var(--bg-header-modal) !important;
+  color: white !important;
 
-    .p-button {
-        border: 0px;
-        color: white !important;
-        background: var(--bg-header-modal) !important;
-
-        &:hover {
-            background: white !important;
-            color: var(--bg-header-modal) !important;
-        }
-    }
-}
-:host ::ng-deep .p-fieldset .p-fieldset-legend {
-    background-color: #ffffff !important;
+  .p-button {
     border: 0px;
+    color: white !important;
+    background: var(--bg-header-modal) !important;
+
+    &:hover {
+      background: white !important;
+      color: var(--bg-header-modal) !important;
+    }
+  }
+}
+
+:host ::ng-deep .p-fieldset .p-fieldset-legend {
+  //   background-color: #ffffff !important;
+  border: 0px;
+}
+
+::ng-deep .custom-tabview {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;
+  // background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .custom-tabview .p-tabview-nav {
+  //background-color: #f4f4f4;
+  border-bottom: 2px solid #ccc;
+  border-radius: 10px 10px 0 0;
+}
+
+::ng-deep .custom-tabview .p-tabview-nav li.p-highlight a {
+  color: #009688; // color activo
+  font-weight: bold;
+  border-bottom: 3px solid #009688;
+}
+
+::ng-deep .custom-tabview .p-tabview-panels {
+  padding: 1rem;
+  // background-color: #fff;
 }

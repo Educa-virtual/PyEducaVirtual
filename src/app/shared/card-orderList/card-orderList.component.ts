@@ -1,50 +1,47 @@
-import { PrimengModule } from '@/app/primeng.module'
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    OnChanges,
-    SimpleChanges,
-} from '@angular/core'
+import { PrimengModule } from '@/app/primeng.module';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
-    selector: 'app-card-orderlist',
-    standalone: true,
-    templateUrl: './card-orderList.component.html',
-    styleUrls: ['./card-orderList.component.scss'],
-    imports: [PrimengModule],
+  selector: 'app-card-orderlist',
+  standalone: true,
+  templateUrl: './card-orderList.component.html',
+  styleUrls: ['./card-orderList.component.scss'],
+  imports: [PrimengModule],
 })
 export class CardOrderListComponent implements OnChanges {
-    @Input() data: any[] = [] // Lista de datos
-    @Input() inputSearch: boolean = true
-    @Input() mostrarImagen: boolean = false
-    @Output() datoSeleccionado = new EventEmitter<any>() // Evento para el padre
+  @Input() data: any[] = []; // Lista de datos
+  @Input() inputSearch: boolean = true;
+  @Input() mostrarImagen: boolean = false;
+  @Output() datoSeleccionado = new EventEmitter<any>(); // Evento para el padre
 
-    seleccionado: any = null
+  @Input() seleccionado: any = null;
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['data']) {
-            this.data = changes['data']?.currentValue
-        }
-        if (changes['mostrarImagen']) {
-            this.mostrarImagen = changes['mostrarImagen']?.currentValue
-        }
-        if (changes['inputSearch']) {
-            this.inputSearch = changes['inputSearch']?.currentValue
-        }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      this.data = changes['data']?.currentValue;
     }
-    obtenerDatos(data: any) {
-        if (!data) return // Si no hay datos, no hacemos nada
-        this.datoSeleccionado.emit(data) // Emitimos el estudiante seleccionado
+    if (changes['mostrarImagen']) {
+      this.mostrarImagen = changes['mostrarImagen']?.currentValue;
     }
-    // Estructura de datos que se esperaF
-    // data = [
-    //     {cTitulo:'',cImgUrl:'',cDescripcion:''}
-    // ]
-    // en esta forma se puede importar el componente
-    // <app-card-orderlist
-    //     [data]="estudianteMatriculadosxGrado"
-    //     (datoSeleccionado)="obtenerCursoEstudiante($event)"
-    // ></app-card-orderlist>
+    if (changes['inputSearch']) {
+      this.inputSearch = changes['inputSearch']?.currentValue;
+    }
+    if (changes['seleccionado']) {
+      this.seleccionado = changes['seleccionado']?.currentValue;
+    }
+  }
+  obtenerDatos(data: any) {
+    if (!data) return;
+    this.seleccionado = data; // ← Guarda el valor seleccionado localmente
+    this.datoSeleccionado.emit(data); // ← Emite el evento al padre
+  }
+  // Estructura de datos que se esperaF
+  // data = [
+  //     {cTitulo:'',cImgUrl:'',cDescripcion:''}
+  // ]
+  // en esta forma se puede importar el componente
+  // <app-card-orderlist
+  //     [data]="estudianteMatriculadosxGrado"
+  //     (datoSeleccionado)="obtenerCursoEstudiante($event)"
+  // ></app-card-orderlist>
 }

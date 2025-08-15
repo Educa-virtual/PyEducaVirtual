@@ -162,6 +162,11 @@ export class GestionVacantesComponent implements OnInit {
   //     }
   // }
 
+  getVacantesAll() {
+    this.iGradoId = '0';
+    this.form.reset();
+  }
+
   getVacantes() {
     let option: number;
     option = 1;
@@ -415,22 +420,26 @@ export class GestionVacantesComponent implements OnInit {
             <thead>
                 <tr>
                     <th>Nro.</th> 
-                    <th>Grado</th>
+                    <th>Nivel Grado</th>
+                    <th>Sección</th>
                     <th>Vacantes Regulares</th>
                     <th>Vacantes NEE</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
         `;
 
     let contador = 1;
-    this.guardar_vacantes.forEach(vacante => {
+    this.vacantes.forEach(vacante => {
       content += `
                 <tr>
                     <td>${contador}</td>
-                    <td></td>                     
-                    <td>${vacante.cVacantesRegular}</td>
-                    <td>${vacante.cVacanteNEE}</td>
+                    <td>${vacante.cGradoNombre}</td>
+                    <td>${vacante.cSeccionNombre}</td>                     
+                    <td>${vacante.iVacantesRegular}</td>
+                    <td>${vacante.iVacantesNEE}</td>
+                    <td>${vacante.cEstado}</td>
                 </tr>
             `;
       contador++;

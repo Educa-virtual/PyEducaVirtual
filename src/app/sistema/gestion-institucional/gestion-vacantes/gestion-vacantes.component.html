@@ -47,10 +47,20 @@
       >
         <i class="pi pi-search"></i>&nbsp;Buscar
       </button>
-      <p-divider></p-divider>
     </div>
 
-    <div class="col-12 md:col-2"></div>
+    <div class="col-12 md:col-2">
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="p-button-success"
+        [disabled]="!iGradoId"
+        (click)="getVacantesAll()"
+      >
+        <i class="pi pi-search"></i>&nbsp;Mostrar todos
+      </button>
+    </div>
     <div class="col-12 md:col-12">
       <app-table-primeng
         [columnas]="columns"

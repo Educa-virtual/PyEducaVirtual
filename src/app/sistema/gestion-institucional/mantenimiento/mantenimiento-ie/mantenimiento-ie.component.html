@@ -1,7 +1,34 @@
 <p-panel>
-  <ng-template ptamplate="header">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-8 text-uppercase text-primary">Mantenimiento I.E.</h3>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center w-full">
+      <h3 class="m-0 text-uppercase text-primary">Mantenimiento I.E.</h3>
+      <button
+        pButton
+        label="Agregar"
+        pRipple
+        pTooltip="Agregar nuevo mantenimiento"
+        class="p-button-primary"
+        icon="pi pi-plus"
+      ></button>
     </div>
   </ng-template>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [data]="dataMantenimiento"
+    [actions]="actions"
+    [showPaginator]="true"
+    [searchPlaceholder]="'Buscar por nombre...'"
+    [showCaption]="true"
+    [(selectedRowData)]="selectedItem"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    sortMode="single"
+    sortField="fecha"
+    [sortOrder]="1"
+  >
+  </app-table-primeng>
 </p-panel>
+<p-dialog>
+  <app-editar-mantenimiento-ie></app-editar-mantenimiento-ie>
+</p-dialog>
+<p-toast></p-toast>

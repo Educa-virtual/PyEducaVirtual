@@ -131,7 +131,7 @@ export const administradorDremo = [
       {
         label: 'Mantenimiento I.E.',
         icon: 'pi pi-wrench',
-        routerLink: ['manteniemiento-ie'],
+        routerLink: ['/mantenimiento-ie'],
       },
       {
         label: 'Enlaces de ayuda',
@@ -236,3 +236,74 @@ export const especialistaUgel = [
     ],
   },
 ];
+
+/* // app.routes.ts
+
+{
+  label: 'Mantenimiento I.E.',
+  icon: 'pi pi-wrench',
+  routerLink: ['/mantenimiento-ie'], // Agregar la barra inicial
+},
+
+{
+  label: 'Mantenimiento I.E.',
+  icon: 'pi pi-wrench',
+  routerLink: ['/mantenimiento-ie'], // Solo agregar la barra inicial
+},
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  { path: '', redirectTo: '/inicio', pathMatch: 'full' },
+  { path: 'inicio', loadComponent: () => import('./components/inicio/inicio.component').then(m => m.InicioComponent) },
+  
+  // Rutas ERE
+  { path: 'ere/informes-ere', loadComponent: () => import('./components/ere/informes-ere/informes-ere.component').then(m => m.InformesEreComponent) },
+  { path: 'ere/informes-comparar-ere', loadComponent: () => import('./components/ere/comparar-ere/comparar-ere.component').then(m => m.CompararEreComponent) },
+  { path: 'ere/evaluaciones', loadComponent: () => import('./components/ere/evaluaciones/evaluaciones.component').then(m => m.EvaluacionesComponent) },
+  { path: 'ere/reportes', loadComponent: () => import('./components/ere/reportes/reportes.component').then(m => m.ReportesComponent) },
+  { path: 'ere/especialistas-dremo/asignar-areas', loadComponent: () => import('./components/especialistas/dremo-asignar-areas/dremo-asignar-areas.component').then(m => m.DremoAsignarAreasComponent) },
+  { path: 'ere/especialistas-ugel/asignar-areas', loadComponent: () => import('./components/especialistas/ugel-asignar-areas/ugel-asignar-areas.component').then(m => m.UgelAsignarAreasComponent) },
+  
+  // Rutas Actualización Docente
+  { path: 'actualizacion-docente/capacitaciones', loadComponent: () => import('./components/actualizacion-docente/capacitaciones/capacitaciones.component').then(m => m.CapacitacionesComponent) },
+  { path: 'actualizacion-docente/instructores', loadComponent: () => import('./components/actualizacion-docente/instructores/instructores.component').then(m => m.InstructoresComponent) },
+  { path: 'actualizacion-docente/resultados', loadComponent: () => import('./components/actualizacion-docente/resultados/resultados.component').then(m => m.ResultadosComponent) },
+  
+  // Rutas Bienestar Social
+  { path: 'bienestar/recordario-fechas', loadComponent: () => import('./components/bienestar/recordatorio-fechas/recordatorio-fechas.component').then(m => m.RecordatorioFechasComponent) },
+  { path: 'bienestar/seguimiento-bienestar', loadComponent: () => import('./components/bienestar/seguimiento/seguimiento.component').then(m => m.SeguimientoComponent) },
+  { path: 'bienestar/informe-estadistico', loadComponent: () => import('./components/bienestar/informe-estadistico/informe-estadistico.component').then(m => m.InformeEstadisticoComponent) },
+  { path: 'bienestar/gestionar-encuestas', loadComponent: () => import('./components/bienestar/gestionar-encuestas/gestionar-encuestas.component').then(m => m.GestionarEncuestasComponent) },
+  
+  // RUTA PARA MANTENIMIENTO I.E. - AQUÍ ES DONDE LA AGREGAS
+  { path: 'mantenimiento-ie', loadComponent: () => import('./components/mantenimiento-ie/mantenimiento-ie.component').then(m => m.MantenimientoIeComponent) },
+  
+  // Ruta de ayuda
+  { path: 'ayuda', loadComponent: () => import('./components/ayuda/ayuda.component').then(m => m.AyudaComponent) },
+  
+  // Ruta wildcard
+  { path: '**', redirectTo: '/inicio' }
+]; 
+  // Ruta para el componente de mantenimiento existente
+  { 
+    path: 'mantenimiento-ie', 
+    loadComponent: () => import('./sistema/gestion-institucional/mantenimiento/mantenimiento.component').then(m => m.MantenimientoComponent)
+  },
+
+  // app.routes.ts
+export const routes: Routes = [
+  // ... otras rutas
+  
+  { 
+    path: 'mantenimiento-ie', 
+    loadComponent: () => import('./sistema/gestion-institucional/mantenimiento-ie/mantenimiento-ie.component').then(m => m.MantenimientoIeComponent)
+  },
+  
+  // ... resto de rutas
+];
+  {
+  label: 'Mantenimiento I.E.',
+  icon: 'pi pi-wrench',
+  routerLink: ['/mantenimiento-ie'], // Solo agregar la barra inicial
+},
+*/

@@ -124,6 +124,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 1',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -132,6 +133,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 2',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -140,6 +142,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 3',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -148,6 +151,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 4',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -185,8 +189,17 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       isVisible: () => this.iPerfilId === this.DOCENTE,
     },
   ];
+  get columnasVisibles(): IColumn[] {
+    return this.columnasTabla.filter(col => {
+      if (typeof col.isVisible === 'function') {
+        return col.isVisible();
+      }
+      return col.isVisible !== false; // por defecto visible si no se indica
+    });
+  }
 
   ngOnInit() {
+    console.log(this.curso);
     this.iEstudianteId = this._ConstantesService.iEstudianteId;
     this.iPerfilId = this._ConstantesService.iPerfilId;
     this.iDocenteId = this._ConstantesService.iDocenteId;
@@ -301,6 +314,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
         ...item,
         cTitulo: `${index + 1}.- ${item.completoalumno}`,
       }));
+      console.log(this.reporteNotasFinales, this.curso);
     });
   }
 

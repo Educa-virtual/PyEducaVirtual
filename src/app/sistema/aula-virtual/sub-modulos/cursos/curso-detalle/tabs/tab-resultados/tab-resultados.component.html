@@ -11,13 +11,28 @@
     @switch (seleccionarResultado) {
       @case ('1') {
         <div class="col-12 mt-5">
-          <app-table-primeng
-            [columnas]="columnasTabla"
-            [data]="reporteNotasFinales"
-            (accionBtnItem)="accionBnt($event)"
-            [actions]="accionesTabla"
-          >
-          </app-table-primeng>
+          hola{{ !this.curso?.iCapacitacionId }}
+          <!-- mostrar notas de aula virtual estudiantes -->
+          @if (!curso?.iCapacitacionId) {
+            <app-table-primeng
+              [columnas]="columnasVisibles"
+              [data]="reporteNotasFinales"
+              (accionBtnItem)="accionBnt($event)"
+              [actions]="accionesTabla"
+            >
+            </app-table-primeng>
+          }
+          <!-- mostrar notas de capacitaciones -->
+          @else {
+            hola
+            <app-table-primeng
+              [columnas]="columnasVisibles"
+              [data]="reporteNotasFinales"
+              (accionBtnItem)="accionBnt($event)"
+              [actions]="accionesTabla"
+            >
+            </app-table-primeng>
+          }
         </div>
       }
       @case ('2') {
@@ -43,7 +58,7 @@
                 calificar.
               </span>
             </div>
-            <div class="col-8">
+            <div class="col-8" *ngIf="!curso?.iCapacitacionId">
               <p-inputGroup>
                 <p-inputGroupAddon>Periodo:</p-inputGroupAddon>
                 <p-dropdown

@@ -1,0 +1,85 @@
+<app-container-page [title]="'DASHBOARD - Indicadores'" [actions]="[]" (accionBtnItem)="([])"
+  ><p-toast />
+  <div class="card">
+    <div class="grid">
+      <div class="col-12">
+        <span class="text-lg text-primary font-bold">Búsqueda de Áreas Curriculares</span>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-inputGroup>
+          <p-inputGroupAddon>Grado</p-inputGroupAddon>
+          <p-dropdown
+            [(ngModel)]="iGradoId"
+            styleClass="w-full"
+            placeholder="Seleccione Grado"
+            optionValue="iGradoId"
+            [showClear]="true"
+            [options]="grados"
+            optionLabel="cGradoNombre"
+            (onChange)="obtenerSecciones()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sección</p-inputGroupAddon>
+          <p-dropdown
+            [(ngModel)]="iSeccionId"
+            styleClass="w-full"
+            placeholder="Seleccione Sección"
+            [showClear]="true"
+            optionValue="iSeccionId"
+            [options]="secciones"
+            optionLabel="cSeccionNombre"
+            (onChange)="searchListarAsignaturas()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Área curricular</p-inputGroupAddon>
+          <p-dropdown
+            [(ngModel)]="iCursosNivelGradId"
+            styleClass="w-full"
+            placeholder="Seleccione Área curricular"
+            [showClear]="true"
+            optionValue="iCursosNivelGradId"
+            [options]="cursos"
+            optionLabel="cCursoNombre"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-2 text-right">
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="p-button-primary"
+          [disabled]="!iGradoId || !iSeccionId"
+          (click)="obtenerCursosxiGradoIdxiSeccionId()"
+        >
+          <i class="pi pi-search"></i>&nbsp;Buscar
+        </button>
+        <p-divider></p-divider>
+      </div>
+    </div>
+
+    <div *ngIf="!visible">
+      <app-no-data
+        [showIcon]="'NO-DATA'"
+        [mensaje]="'No hay áreas curriculares disponibles'"
+      ></app-no-data>
+    </div>
+    <div class="dashboard" *ngIf="visible">
+      <div class="indicator-card" *ngFor="let indicador of indicadores">
+        <h3>{{ indicador.titulo }}</h3>
+        <p-chart
+          [type]="indicador.chartType"
+          [data]="indicador.chartData"
+          [options]="indicador.chartOptions"
+          styleClass="chart"
+        ></p-chart>
+      </div>
+    </div>
+  </div>
+</app-container-page>

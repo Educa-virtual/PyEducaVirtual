@@ -75,7 +75,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
 
   public formTareas = this._formBuilder.group({
     iTareaId: [''],
-    iPersId: ['', Validators.required],
+    iDocenteId: ['', Validators.required],
     cTareaTitulo: ['', Validators.required],
     cTareaDescripcion: ['', Validators.required],
     cTareaArchivoAdjunto: [''],
@@ -114,7 +114,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
 
         this.formTareas.patchValue({
           iTareaId: data.iTareaId,
-          iPersId: data.iPersId,
+          iDocenteId: data.iDocenteId,
           cTareaTitulo: data.cTareaTitulo,
           cTareaDescripcion: data.cTareaDescripcion,
           dtTareaInicio: new Date(data.dtTareaInicio),
@@ -181,7 +181,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       iContenidoSemId: this.semanaTarea?.iContenidoSemId,
       idDocCursoId: this.semanaTarea?.idDocCursoId,
       iCapacitacionId: this.semanaTarea?.iCapacitacionId,
-      iPersId: this._ConstantesService.iPersId,
+      iDocenteId: this._ConstantesService.iDocenteId,
       iActTipoId: TAREA,
       iCredId: this._ConstantesService.iCredId,
       cTareaArchivoAdjunto: JSON.stringify(this.filesUrl),
@@ -197,7 +197,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       iActTipoId: 'Tipo de actividad',
       iCredId: 'Credencial',
       iYAcadId: 'Año académico',
-      iPersId: 'Identificador de la persona',
+      iDocenteId: 'Docente',
     };
     const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
       this.formTareas,

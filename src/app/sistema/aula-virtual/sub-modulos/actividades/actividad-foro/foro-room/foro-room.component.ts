@@ -34,6 +34,7 @@ import { TabDescripcionActividadesComponent } from '../../components/tab-descrip
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
+import { INSTRUCTOR } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-foro-room',
@@ -123,7 +124,9 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
   selectedCommentIndex: number | null = null; // Para rastrear el comentario seleccionado para responder
   selectedComentario: number | null = null;
   respuestaInput: string = ''; // Para almacenar la respuesta temporal
-  isDocente: boolean = this._constantesService.iPerfilId === DOCENTE;
+  isDocente: boolean =
+    this._constantesService.iPerfilId === DOCENTE ||
+    this._constantesService.iPerfilId === INSTRUCTOR;
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
 
@@ -194,7 +197,7 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
     // this.mostrarCalificacion()
 
     this.obtenerForo();
-    this.getRespuestaF();
+    // this.getRespuestaF();
     //this.getEstudiantesMatricula()
     // this.obtenerResptDocente()
   }

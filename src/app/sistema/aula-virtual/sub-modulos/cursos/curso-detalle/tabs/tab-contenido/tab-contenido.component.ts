@@ -527,7 +527,6 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
           header:
             '¿Esta seguro de eliminar la videoconferencia ' + actividad['cRVirtualTema'] + ' ?',
           accept: () => {
-            this.obtenerActividadesxiContenidoSemId(this.datos);
             this.deleteReunionVirtualxiRVirtualId(actividad);
           },
         });
@@ -549,14 +548,13 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             actividad: actividad,
             action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
             idDocCursoId: this.idDocCursoId,
+            iCapacitacionId: this.iCapacitacionId,
           },
           header: action === 'EDITAR' ? 'Editar Foro' : 'Crear Foro',
         })
         .onClose.subscribe(result => {
           if (result) {
-            // this.semanaSeleccionada
             this.obtenerActividadesxiContenidoSemId(this.datos);
-            //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           } else {
             console.log('Formulario cancelado');
           }
@@ -573,12 +571,12 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             actividad: actividad,
             action: 'guardar',
             idDocCursoId: this.idDocCursoId,
+            iCapacitacionId: this.iCapacitacionId,
           },
         })
         .onClose.subscribe(result => {
           if (result) {
             this.obtenerActividadesxiContenidoSemId(this.datos);
-            //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           } else {
             console.log('Formulario cancelado');
           }
@@ -588,33 +586,28 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       this._confirmService.openConfirm({
         header: '¿Esta seguro de eliminar el Foro: ' + actividad['cProgActTituloLeccion'] + ' ?',
         accept: () => {
-          this.obtenerActividadesxiContenidoSemId(this.datos);
           this.deleteForosxiForoId(actividad);
         },
       });
     }
+
     if (action === 'VER') {
-      this.router.navigate(
-        [
-          '../',
-          'actividad',
-          actividad.iProgActId,
-          actividad.ixActivadadId,
-          actividad.iActTipoId,
-          this.curso.iIeCursoId,
-          this.curso.iSeccionId,
-          this.curso.iNivelGradoId,
-        ],
-        {
-          queryParams: {
-            iEvaluacionId: this.actividadSelected['iForo'],
-            iCursoId: this.iCursoId,
-            idDocCursoId: this.idDocCursoId,
-            iEstudianteId: this._ConstantesService.iEstudianteId ?? undefined,
-          },
-          relativeTo: this._activatedRoute,
-        }
-      );
+      this.router.navigate([
+        'aula-virtual/areas-curriculares/' +
+          'actividad' +
+          '/' +
+          actividad.iProgActId +
+          '/' +
+          actividad.ixActivadadId +
+          '/' +
+          actividad.iActTipoId +
+          '/' +
+          (this.curso.iIeCursoId || 0) +
+          '/' +
+          (this.curso.iSeccionId || 0) +
+          '/' +
+          (this.curso.iNivelGradoId || 0),
+      ]);
     }
   }
 
@@ -649,7 +642,6 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             actividad['cProgActTituloLeccion'] +
             ' ?',
           accept: () => {
-            this.obtenerActividadesxiContenidoSemId(this.datos);
             this.deleteCuestionarioxId(actividad);
           },
         });
@@ -751,7 +743,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             summary: '¡Genial!',
             detail: resp.message,
           });
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          this.obtenerActividadesxiContenidoSemId(this.datos);
         }
       },
       error: error => {
@@ -793,7 +785,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     this._generalService.getGralPrefixx(params).subscribe({
       next: resp => {
         if (resp.validated) {
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          this.obtenerActividadesxiContenidoSemId(this.datos);
         }
       },
     });
@@ -814,7 +806,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     this._generalService.getGralPrefix(params).subscribe({
       next: resp => {
         if (resp.validated) {
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          this.obtenerActividadesxiContenidoSemId(this.datos);
         }
       },
     });
@@ -837,7 +829,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     this._generalService.getGralPrefixx(data).subscribe({
       next: resp => {
         if (resp.validated) {
-          //this.obtenerContenidoSemanas(this.semanaSeleccionada);
+          this.obtenerActividadesxiContenidoSemId(this.datos);
         }
       },
     });

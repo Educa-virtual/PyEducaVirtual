@@ -9,6 +9,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ForoEstudiantesComponent } from '../foro-estudiantes/foro-estudiantes.component';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { MessageService } from 'primeng/api';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-foro-comentarios',
@@ -30,6 +31,8 @@ export class ForoComentariosComponent implements OnInit {
   private unsbscribe$ = new Subject<boolean>();
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
+  public INSTRUCTOR = INSTRUCTOR;
+  public PARTICIPANTE = PARTICIPANTE;
   private _constantesService = inject(ConstantesService);
   private messageService = inject(MessageService);
 
@@ -163,7 +166,7 @@ export class ForoComentariosComponent implements OnInit {
   }
   // guardar comentario de estudiante o Docente foro
   guardarComentario() {
-    if (this.iPerfilId === ESTUDIANTE) {
+    if (this.iPerfilId === ESTUDIANTE || this.iPerfilId === PARTICIPANTE) {
       const data = {
         iForoId: this.ixActivadadId,
         iEstudianteId: this.iEstudianteId,

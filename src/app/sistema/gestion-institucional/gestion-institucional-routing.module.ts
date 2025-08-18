@@ -88,6 +88,13 @@ const routes: Routes = [
         c => c.DescargaPlantillasComponent
       ),
   },
+  {
+    path: 'dashboard-indicadores',
+    loadComponent: () =>
+      import('./dashboard-indicadores/dashboard-indicadores.component').then(
+        c => c.DashboardIndicadoresComponent
+      ),
+  },
 
   {
     path: 'ciclo',
@@ -101,6 +108,13 @@ const routes: Routes = [
     loadComponent: () =>
       import('./gestion-traslados/traslado-interno/traslado-interno.component').then(
         c => c.TrasladoInternoComponent
+      ),
+  },
+  {
+    path: 'validacion-no-lectiva',
+    loadComponent: () =>
+      import('./actividad-no-lectiva/actividad-no-lectiva.component').then(
+        c => c.ActividadNoLectivaComponent
       ),
   },
   {

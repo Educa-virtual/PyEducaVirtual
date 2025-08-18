@@ -589,7 +589,7 @@ const administracion = [
       {
         label: 'Indicadores',
         icon: 'pi pi-chart-line',
-        routerLink: ['/gestion-institucional/apertura'],
+        routerLink: ['/gestion-institucional/dashboard-indicadores'],
       },
       {
         label: 'Generación de Reportes y estadísticas',
@@ -598,12 +598,12 @@ const administracion = [
           {
             label: 'Reportes',
             icon: 'pi pi-book',
-            routerLink: ['/gestion-institucional/apertura'],
+            routerLink: ['/gestion-institucional/reporte'],
           },
           {
-            label: 'Estadisticas',
+            label: 'Estadisticas y ranking de mérito',
             icon: 'pi pi-chart-scatter',
-            routerLink: ['/gestion-institucional/apertura'],
+            routerLink: ['/gestion-institucional/estadistica'],
           },
         ],
         //ConfigGradoSeccion
@@ -635,7 +635,7 @@ const administracion = [
       {
         label: 'Validación de horas',
         icon: 'pi pi-fw pi-check',
-        routerLink: ['/gestion-institucional/estadistica'],
+        routerLink: ['/gestion-institucional/validacion-no-lectiva'],
       },
 
       //director buzon

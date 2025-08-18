@@ -42,6 +42,8 @@ export class FullCalendarioComponent implements OnChanges {
     weekends: true,
     selectable: true,
     dayMaxEvents: true,
+    displayEventTime: true,
+    displayEventEnd: true,
     //navLinks: true,
     height: 600,
     dayCellDidMount: data => {
@@ -52,7 +54,6 @@ export class FullCalendarioComponent implements OnChanges {
     },
     moreLinkClick: this.handleMoreLinkClick.bind(this),
     eventClick: this.handleEventClick.bind(this),
-    //eventClick: this.handleEventClick.bind(this),
     eventDidMount: info => {
       info.el.style.cursor = 'pointer';
       info.el.setAttribute('title', info.event.title || '');
@@ -118,21 +119,44 @@ export class FullCalendarioComponent implements OnChanges {
   }
 
   handleMoreLinkClick(arg: any) {
-    // arg.date = fecha; arg.allSegs = array de segmentos para ese día (cada seg.event)
-    const segs = arg.allSegs || [];
+    // Debug opcional (descomenta si quieres inspeccionar la estructura)
+    // console.log('moreLink arg:', arg);
+
+    // 1) intentar obtener todos los segmentos de eventos (nombres posibles según versión)
+    const segs = arg.allSegs || arg.segs || [];
     this.dialogEvents = segs.map((s: any) => s.event);
 
-    // arg.date puede ser Date o undefined; si no existe, intentar extraer de primer segmento
-    const fecha: Date | undefined = arg.date || this.dialogEvents[0]?.start || undefined;
-    if (fecha) {
-      this.dialogDateLabel = this.formatDateLabel(fecha);
-    } else {
-      this.dialogDateLabel = '';
+    // 2) intentar obtener la fecha "verdadera" del día de la celda
+    let fecha: Date | undefined;
+
+    // a) si el arg.date existe y es Date/ISO, normalizamos usando las partes UTC
+    if (arg && arg.date) {
+      const d = typeof arg.date === 'string' ? new Date(arg.date) : arg.date;
+      if (d instanceof Date && !isNaN(d.getTime())) {
+        // Construir una fecha local con las partes UTC para evitar el desfase de zona horaria
+        fecha = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+      }
+    }
+    // c) finalmente, tomar la fecha desde el primer evento (start) si sigue sin fecha
+    if (!fecha && this.dialogEvents.length > 0) {
+      const firstStart = this.dialogEvents[0].start;
+      if (firstStart instanceof Date && !isNaN(firstStart.getTime())) {
+        fecha = new Date(firstStart.getFullYear(), firstStart.getMonth(), firstStart.getDate());
+      } else if (typeof firstStart === 'string') {
+        const parsed = new Date(firstStart);
+        if (!isNaN(parsed.getTime())) {
+          fecha = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+        }
+      }
     }
 
+    // Formatear label
+    this.dialogDateLabel = fecha ? this.formatDateLabel(fecha) : '';
+
+    // Abrir dialog
     this.showEventsDialog = true;
 
-    // evita el popover por defecto
+    // evitar popup por defecto
     return 'none';
   }
 

@@ -1,0 +1,30 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="flex">
+            <p-dropdown
+                class="mr-1"
+                [options]="cities"
+                [(ngModel)]="datos.idGrado"
+                optionLabel="name"
+                placeholder="Seleccionar Grado"
+            />
+            <p-dropdown
+                class="mr-1"
+                [options]="cities"
+                [(ngModel)]="datos.idSeccion"
+                optionLabel="name"
+                placeholder="Seleccionar Seccion"
+            />
+            <p-button
+                class="mr-1"
+                label="Search"
+                icon="pi pi-check"
+                [loading]="finalizar"
+                (onClick)="buscarGrupo()"
+            />
+        </div>
+    </div>
+    <div class="col-12">
+        <app-table-primeng></app-table-primeng>
+    </div>
+</div>

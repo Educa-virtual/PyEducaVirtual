@@ -30,6 +30,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
   iFichaDGId: any = 0;
   cPersNombreApellidos: string = '';
   perfil: any;
+  iYACadId: any = 0;
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
@@ -48,6 +49,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
       this.iFichaDGId = params.params.id || 0;
     });
     this.perfil = this.store.getItem('dremoPerfil');
+    this.iYACadId = this.store.getItem('dremoiYAcadId');
     this.breadCrumbItems = [
       {
         label: 'Bienestar social',
@@ -153,6 +155,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
     this.datosFichaBienestar
       .descargarFicha({
         iFichaDGId: this.iFichaDGId,
+        iYACadId: this.iYACadId,
       })
       .subscribe({
         next: response => {

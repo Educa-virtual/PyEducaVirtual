@@ -1,168 +1,117 @@
 <form [formGroup]="formConferencia">
-    <div class="flex flex-column gap-3">
-        <div [hidden]="!contenidoSemana">
-            <p-messages
-                [(value)]="semana"
-                [enableService]="false"
-                [closable]="false"
-            />
-            <label for="descripcion" class="mt-1"
-                >Título
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <div class="mt-2">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Título </p-inputGroupAddon>
-                    <input
-                        pInputText
-                        class="flex-auto w-full"
-                        formControlName="cRVirtualTema"
-                        maxlength="250"
-                    />
-                </p-inputGroup>
-                <div
-                    *ngIf="
-                        nombreConferencia?.hasError('maxlength') &&
-                        nombreConferencia?.touched
-                    "
-                    class="text-red-500 text-sm"
-                >
-                    Máximo 250 caracteres permitidos.
-                </div>
-            </div>
+  <div class="flex flex-column gap-3">
+    <div [hidden]="!contenidoSemana">
+      <p-messages [(value)]="semana" [enableService]="false" [closable]="false" />
+      <label for="descripcion" class="mt-1"
+        >Título <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+      >
+      <div class="mt-2">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título </p-inputGroupAddon>
+          <input
+            pInputText
+            class="flex-auto w-full"
+            formControlName="cRVirtualTema"
+            maxlength="250"
+          />
+        </p-inputGroup>
+        <div
+          *ngIf="
+            formConferencia.get('cRVirtualTema')?.hasError('maxlength') &&
+            formConferencia.get('cRVirtualTema')?.touched
+          "
+          class="text-red-500 text-sm"
+        >
+          Máximo 250 caracteres permitidos.
         </div>
-
-        <!-- Agregar fecha y hora de la video conferencia -->
-        <div>
-            <label for="descripcion" class="mt-1"
-                >Horario
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <div class="flex mt-2 gap-3">
-                <div>
-                    <p-inputGroup>
-                        <p-inputGroupAddon> Fecha de inicio </p-inputGroupAddon>
-                        <!-- Componente de calendario para seleccionar una fecha y hora -->
-                        <p-calendar
-                            formControlName="dtRVirtualInicio"
-                            iconDisplay="input"
-                            [showIcon]="true"
-                            [showTime]="true"
-                            dateFormat="dd/mm/yy"
-                            appendTo="body"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div>
-                    <p-inputGroup>
-                        <p-inputGroupAddon> Fecha de fin</p-inputGroupAddon>
-                        <p-calendar
-                            iconDisplay="input"
-                            [showIcon]="true"
-                            [showTime]="true"
-                            formControlName="dtRVirtualFin"
-                            dateFormat="dd/mm/yy"
-                            appendTo="body"
-                        >
-                            <!-- <ng-template
-                                pTemplate="inputicon"
-                                let-clickCallBack="clickCallBack"
-                            >
-                                <i
-                                    class="pi pi-clock"
-                                    (onclick)="clickCallBack($event)"
-                                ></i>
-                            </ng-template> -->
-                        </p-calendar>
-                    </p-inputGroup>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-5">
-            <label for="descripcion" class="mt-1"
-                >Link
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <div class="flex mt-2">
-                <p-inputGroup>
-                    <p-inputGroupAddon class="flex-auto w-25rem">
-                        Link del video Conferencia:</p-inputGroupAddon
-                    >
-
-                    <input
-                        pInputText
-                        class="flex-auto w-full"
-                        formControlName="cRVirtualUrlJoin"
-                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
-                        placeholder="https://meet.google.com/"
-                    />
-                </p-inputGroup>
-            </div>
-            <div
-                *ngIf="
-                    formConferencia.controls.cRVirtualUrlJoin.invalid &&
-                    formConferencia.controls.cRVirtualUrlJoin.touched
-                "
-                class="text-red-500 text-sm"
-            >
-                La URL debe comenzar con http:// o https://
-            </div>
-        </div>
-        <!-- Mostrar descripción -->
-        <!-- <div class="col-12">
-            <label for="descripcion" class="mt-1"
-                >Descripción
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <div class="mt-2">
-                <p-editor
-                    id="descripcion"
-                    placeholder="Escribe una Descripción "
-                    formControlName="cForoDescripcion"
-                    [style]="{ height: 'auto', overflow: 'hidden' }"
-                />
-            </div>
-            
-        </div> -->
-        <!-- Mostrar link de video conferencia -->
+      </div>
     </div>
+
+    <!-- Agregar fecha y hora de la video conferencia -->
+    <div>
+      <label for="descripcion" class="mt-1"
+        >Horario <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+      >
+      <div class="grid mt-1">
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fecha Inicio </p-inputGroupAddon>
+            <!-- Componente de calendario para seleccionar una fecha y hora -->
+            <p-calendar
+              formControlName="dtRVirtualInicio"
+              iconDisplay="input"
+              [showIcon]="true"
+              [showTime]="true"
+              dateFormat="dd/mm/yy"
+              appendTo="body"
+              styleClass="w-full"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fecha Fin</p-inputGroupAddon>
+            <p-calendar
+              iconDisplay="input"
+              [showIcon]="true"
+              [showTime]="true"
+              formControlName="dtRVirtualFin"
+              dateFormat="dd/mm/yy"
+              appendTo="body"
+              styleClass="w-full"
+            >
+            </p-calendar>
+          </p-inputGroup>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <label for="descripcion" class="mt-1"
+        >Link <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+      >
+      <div class="flex mt-2">
+        <p-inputGroup>
+          <p-inputGroupAddon class="flex-auto w-25rem"> Link de la reunión:</p-inputGroupAddon>
+
+          <input
+            pInputText
+            class="flex-auto w-full"
+            formControlName="cRVirtualUrlJoin"
+            pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+            placeholder="https://meet.google.com/"
+          />
+        </p-inputGroup>
+      </div>
+      <div
+        *ngIf="
+          formConferencia.controls.cRVirtualUrlJoin.invalid &&
+          formConferencia.controls.cRVirtualUrlJoin.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        La URL debe comenzar con http:// o https://
+      </div>
+    </div>
+  </div>
 </form>
 <!-- button de cancelar y guardar -->
 <div
-    class="flex justify-content-end gap-2 pt-3"
-    style="
-        position: sticky;
-        bottom: 0;
-        background-color: #fff;
-        padding: 1rem;
-        border-top: 1px solid #ddd;
-    "
+  class="flex justify-content-end gap-2 pt-3"
+  style="
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    padding: 1rem;
+    border-top: 1px solid #ddd;
+  "
 >
-    <button
-        pButton
-        pRipple
-        label="Cancelar"
-        icon="pi pi-times"
-        class="p-button-secondary"
-        type="button"
-        size="small"
-        (click)="closeModal(null)"
-    ></button>
-    <button
-        pButton
-        pRipple
-        [label]="
-            action === 'ACTUALIZAR'
-                ? 'Editar VideoConferencia'
-                : 'Crear VideoConferencia'
-        "
-        icon="pi pi-check"
-        size="small"
-        [class]="
-            action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'
-        "
-        (click)="guardar()"
-    ></button>
+  <p-button label="Cancelar" severity="secondary" (onClick)="closeModal(null)" />
+  <p-button
+    [label]="action === 'ACTUALIZAR' ? 'ACTUALIZAR' : 'GUARDAR'"
+    (onClick)="enviarFormulario()"
+    [loading]="isLoading"
+    [disabled]="isLoading"
+  />
 </div>
 <p-toast />

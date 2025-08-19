@@ -225,6 +225,7 @@
               appendTo="body"
               [style]="{ flex: '1', width: '100%' }"
               inputStyleClass="group-element"
+              [maxDate]="fecha_actual"
             />
           </p-inputGroup>
         </div>
@@ -246,6 +247,7 @@
                 <span>Cargar ficha de seguimiento (PDF máximo 10MB) *</span>
               </p-inputGroupAddon>
               <p-fileUpload
+                #fileUpload
                 name="archivo"
                 [multiple]="false"
                 accept=".pdf"

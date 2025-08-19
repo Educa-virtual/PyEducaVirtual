@@ -14,6 +14,7 @@ import { FuncionesBienestarService } from '../services/funciones-bienestar.servi
 import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
 import { Dropdown } from 'primeng/dropdown';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { FileUpload } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-seguimiento-bienestar',
@@ -26,6 +27,7 @@ export class SeguimientoBienestarComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
   @ViewChild('filtro_tipo') filtro_tipo: Dropdown;
   @ViewChild('filtro_persona') filtro_persona: ElementRef;
+  @ViewChild('fileUpload') fileUpload: FileUpload;
 
   perfil: any;
   iYAcadId: number;
@@ -68,6 +70,7 @@ export class SeguimientoBienestarComponent implements OnInit {
   FASE_DERIVADO: number = this.datosSeguimiento.FASE_DERIVADO;
 
   archivoSeleccionado: File | null = null;
+  fecha_actual: Date = new Date();
 
   private _confirmService = inject(ConfirmationModalService);
   private _messageService = inject(MessageService);
@@ -98,8 +101,8 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   ngOnInit(): void {
     this.formSeguimiento = this.fb.group({
-      iCredEntPerfId: [this.perfil.iCredEntPerfId, Validators.required],
-      iYAcadId: [this.iYAcadId, Validators.required],
+      iCredEntPerfId: [this.perfil.iCredEntPerfId],
+      iYAcadId: [this.iYAcadId],
       iNivelTipoId: [null, Validators.required],
       iSedeId: [null, Validators.required],
       iSeguimId: [null],
@@ -159,10 +162,10 @@ export class SeguimientoBienestarComponent implements OnInit {
     this.formSeguimiento.get('iTipoSeguimId').valueChanges.subscribe(value => {
       this.obtenerTiposDocumento(value);
     });
-    this.verSeguimientos();
+    this.listarSeguimientos();
   }
 
-  verSeguimientos() {
+  listarSeguimientos() {
     this.datosSeguimiento
       .listarSeguimientos({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -170,11 +173,12 @@ export class SeguimientoBienestarComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data.length) {
+          if (data.data.length > 0) {
             this.seguimientos = data.data;
             this.filtrarTabla();
           } else {
             this.seguimientos = null;
+            this.seguimientos_filtrados = null;
           }
         },
         error: error => {
@@ -374,7 +378,6 @@ export class SeguimientoBienestarComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           if (data.data) {
-            console.log(data.data, 'datos');
             let datos_persona: string = '';
             switch (this.formSeguimiento.value.iTipoSeguimId) {
               case this.datosSeguimiento.SEGUIMIENTO_ESTUDIANTE:
@@ -431,7 +434,13 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   handleArchivo(event: any) {
     const file = event.files && event.files.length > 0 ? event.files[0] : null;
-    this.archivoSeleccionado = file;
+    if (file) {
+      this.archivoSeleccionado = file;
+      this.formSeguimiento.get('archivo').setValue(file);
+    } else {
+      this.archivoSeleccionado = null;
+      this.formSeguimiento.get('archivo').setValue(null);
+    }
   }
 
   guardarSeguimiento() {
@@ -465,16 +474,14 @@ export class SeguimientoBienestarComponent implements OnInit {
     }
 
     this.datosSeguimiento.guardarSeguimiento(formData).subscribe({
-      next: (data: any) => {
+      next: () => {
         this._messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        if (this.archivoSeleccionado) {
-          this.actualizarArchivo(data.data?.iSeguimId);
-        }
         this.visibleDialog = false;
+        this.listarSeguimientos();
       },
       error: error => {
         console.error('Error guardando seguimiento:', error);
@@ -527,7 +534,7 @@ export class SeguimientoBienestarComponent implements OnInit {
     formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
     this.datosSeguimiento.actualizarSeguimientoArchivo(formData).subscribe({
       next: () => {
-        this.verSeguimientos();
+        this.listarSeguimientos();
       },
       error: error => {
         console.error('Error subiendo archivo:', error);
@@ -604,6 +611,10 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   clearForm() {
     this.setFormSeguimiento(null);
+    this.fileUpload.clear();
+    this.archivoSeleccionado = null;
+    this.seguimiento_registrado = false;
+    this.seguimiento_bloqueado = false;
   }
 
   borrarSeguimiento(item: any) {
@@ -619,14 +630,24 @@ export class SeguimientoBienestarComponent implements OnInit {
             summary: 'Eliminación exitosa',
             detail: 'Se eliminaron los datos',
           });
-          if (data.data === true) {
-            this.seguimientos_filtrados = this.seguimientos_filtrados.filter(
+          if (data.data) {
+            this.seguimientos_persona = this.seguimientos_persona.filter(
               (seguimiento: any) => item.iSeguimId != seguimiento.iSeguimId
             );
+            this.filtrarTablaPersona();
+            if (this.seguimientos_persona.length === 0) {
+              this.salirHistorial();
+              this.listarSeguimientos();
+            }
           }
-          this.visibleDialog = false;
         },
       });
+  }
+
+  salirHistorial() {
+    this.seguimientos_persona = null;
+    this.seguimientos_persona_filtrados = null;
+    this.visibleDialogPersona = false;
   }
 
   salir() {

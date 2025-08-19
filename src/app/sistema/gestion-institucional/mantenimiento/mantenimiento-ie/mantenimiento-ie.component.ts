@@ -5,6 +5,8 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { EditarMantenimientoIeComponent } from './editar-mantenimiento-ie/editar-mantenimiento-ie.component';
+import { MessageService } from 'primeng/api';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 @Component({
   selector: 'app-mantenimiento-ie',
   standalone: true,
@@ -14,75 +16,8 @@ import { EditarMantenimientoIeComponent } from './editar-mantenimiento-ie/editar
 })
 export class MantenimientoIeComponent implements OnInit {
   selectedItem: any;
-  formularioNuevoHeader: string = '';
-
-  dataMantenimiento = [
-    {
-      id: 1,
-      apellidosNombres: 'García Pérez, Juan Carlos',
-      fecha: '2025-01-15',
-      documento: '12345678',
-      seraLaborable: 'Sí',
-      observacion: 'Mantenimiento preventivo del sistema eléctrico',
-    },
-    {
-      id: 2,
-      apellidosNombres: 'Rodríguez López, María Elena',
-      fecha: '2025-01-20',
-      documento: '87654321',
-      seraLaborable: 'No',
-      observacion: 'Reparación urgente de tuberías en el baño',
-    },
-    {
-      id: 3,
-      apellidosNombres: 'Fernández Castro, Luis Miguel',
-      fecha: '2025-01-25',
-      documento: '11223344',
-      seraLaborable: 'Sí',
-      observacion: 'Pintura de aulas del segundo piso',
-    },
-    {
-      id: 4,
-      apellidosNombres: 'Silva Morales, Ana Lucía',
-      fecha: '2025-02-01',
-      documento: '55667788',
-      seraLaborable: 'Sí',
-      observacion: 'Instalación de nuevas luminarias LED',
-    },
-    {
-      id: 5,
-      apellidosNombres: 'Torres Vega, Carlos Alberto',
-      fecha: '2025-02-05',
-      documento: '99887766',
-      seraLaborable: 'No',
-      observacion: 'Reparación del techo del gimnasio',
-    },
-    // {
-    //   id: 6,
-    //   apellidosNombres: 'Mendoza Ríos, Patricia Isabel',
-    //   fecha: '2025-02-10',
-    //   documento: 'DNI: 44332211',
-    //   seraLaborable: 'Sí',
-    //   observacion: 'Mantenimiento de equipos de cómputo'
-    // },
-    // {
-    //   id: 7,
-    //   apellidosNombres: 'Vargas Huamán, José Antonio',
-    //   fecha: '2025-02-15',
-    //   documento: 'DNI: 66778899',
-    //   seraLaborable: 'Sí',
-    //   observacion: 'Limpieza y desinfección de tanques de agua'
-    // },
-    // {
-    //   id: 8,
-    //   apellidosNombres: 'Chávez Paredes, Rosa María',
-    //   fecha: '2025-02-20',
-    //   documento: 'DNI: 33445566',
-    //   seraLaborable: 'No',
-    //   observacion: 'Reparación de puertas y ventanas'
-    // }
-  ];
-
+  titleEditarMantenimiento: string = 'Editar';
+  mostrarEditarMantenimiento: boolean = false;
   columns = [
     {
       type: 'item',
@@ -146,14 +81,101 @@ export class MantenimientoIeComponent implements OnInit {
     },
   ];
 
-  actions: IActionTable[] = [
+  dataMantenimiento = [
     {
-      labelTooltip: 'Ver mantenimiento',
-      icon: 'pi pi-eye',
-      accion: 'ver',
-      type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      id: 1,
+      apellidosNombres: 'García Pérez, Juan Carlos',
+      fecha: '2025-01-15',
+      documento: '12345678',
+      seraLaborable: 'Sí',
+      observacion: 'Mantenimiento preventivo del sistema eléctrico',
     },
+    {
+      id: 2,
+      apellidosNombres: 'Rodríguez López, María Elena',
+      fecha: '2025-01-20',
+      documento: '87654321',
+      seraLaborable: 'No',
+      observacion: 'Reparación urgente de tuberías en el baño',
+    },
+    {
+      id: 3,
+      apellidosNombres: 'Fernández Castro, Luis Miguel',
+      fecha: '2025-01-25',
+      documento: '11223344',
+      seraLaborable: 'Sí',
+      observacion: 'Pintura de aulas del segundo piso',
+    },
+    {
+      id: 4,
+      apellidosNombres: 'Silva Morales, Ana Lucía',
+      fecha: '2025-02-01',
+      documento: '55667788',
+      seraLaborable: 'Sí',
+      observacion: 'Instalación de nuevas luminarias LED',
+    },
+    {
+      id: 5,
+      apellidosNombres: 'Torres Vega, Carlos Alberto',
+      fecha: '2025-02-05',
+      documento: '99887766',
+      seraLaborable: 'No',
+      observacion: 'Reparación del techo del gimnasio',
+    },
+  ];
+  constructor(
+    private messageService: MessageService,
+    private confirmationModalService: ConfirmationModalService
+  ) {}
+
+  ngOnInit() {
+    console.log('mantenimiento-ie component loaded');
+    console.log('Data:', this.dataMantenimiento);
+  }
+
+  EditarMantenimiento() {
+    this.mostrarEditarMantenimiento = true;
+  }
+
+  eliminarMantenimiento(item: any) {
+    this.confirmationModalService.openConfirm({
+      header: '¿Está seguro de eliminar estos datos del mantenimiento?',
+      accept: () => {
+        this.dataMantenimiento = this.dataMantenimiento.filter(m => m.id !== item.id);
+      },
+    });
+  }
+
+  accionBtnItemTable({ accion, item }) {
+    switch (accion) {
+      case 'editar':
+        this.selectedItem = item;
+        this.EditarMantenimiento();
+        break;
+      case 'eliminar':
+        this.confirmationModalService.openConfirm({
+          header: '¿Está seguro de eliminar estos datos del mantenimiento?',
+          accept: () => {
+            this.dataMantenimiento = this.dataMantenimiento.filter(m => m.id !== item.id);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Eliminado correctamente',
+            });
+          },
+        });
+        break;
+    }
+  }
+
+  actions: IActionTable[] = [
+    // {
+    //   labelTooltip: 'Calendar registro',
+    //   icon: 'pi pi-calendar-plus',
+    //   accion: 'ver',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-primary p-button-text',
+    // },
     {
       labelTooltip: 'Editar mantenimiento',
       icon: 'pi pi-pencil',
@@ -169,40 +191,10 @@ export class MantenimientoIeComponent implements OnInit {
       class: 'p-button-rounded p-button-warning p-button-text',
     },
   ];
-
-  ngOnInit() {
-    console.log('mantenimiento-ie component loaded');
-    console.log('Data:', this.dataMantenimiento);
+  cerrarModalEdicion(estado: boolean) {
+    this.mostrarEditarMantenimiento = estado;
+    if (!estado) {
+      this.selectedItem = null;
+    }
   }
-
-  accionBtnItemTable(event: any) {
-    const { accion, item } = event;
-    console.log('Acción:', accion, 'Item:', item);
-
-    // switch (accion) {
-    //   // case 'ver':
-    //   //   this.verMantenimiento(item);
-    //   //   break;
-    //   // case 'editar':
-    //   //   this.editarMantenimiento(item);
-    //   //   break;
-    //   // case 'eliminar':
-    //   //   this.eliminarMantenimiento(item);
-    //   //   break;
-    // }
-  }
-
-  // verMantenimiento(item: any) {
-  //   console.log('Ver mantenimiento:', item);
-  //   this.selectedItem = item
-  // }
-
-  // editarMantenimiento(item: any) {
-  //   console.log('Editar mantenimiento:', item);
-  //   this.selectedItem = item;
-  // }
-
-  // eliminarMantenimiento(item: any) {
-  //   console.log('Eliminar mantenimiento:', item);
-  // }
 }

@@ -1,8 +1,31 @@
 <div class="grid">
-    <p-toolbar class="col-12">
-        <h2 class="text-white font-bold">
-            {{ title }}
-        </h2>
-        <ng-content></ng-content>
+  <div class="col-12">
+    <p-toolbar
+      class="div"
+      [ngClass]="{ 'custom-toolbar': customStyle, 'no-custom-toolbar': !customStyle }"
+    >
+      <div [class]="butons.length > 0 ? 'col-8' : 'col-12'">
+        <div class="font-bold" [class]="className">
+          <p *ngIf="header" class="text-sm" [class]="customStyle ? 'text-white' : 'text-blue-500'">
+            {{ header }}
+          </p>
+          {{ title }}
+        </div>
+        <div class="text-sm"><ng-content></ng-content></div>
+      </div>
+
+      <div *ngIf="butons.length" class="col ml-auto flex gap-2">
+        <button
+          *ngFor="let button of butons"
+          type="button"
+          pButton
+          [label]="button.label"
+          [icon]="button.icon"
+          [class]="button.class"
+          class="mr-1"
+          (click)="button.action()"
+        ></button>
+      </div>
     </p-toolbar>
+  </div>
 </div>

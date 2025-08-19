@@ -1,0 +1,70 @@
+<p-inputGroup styleClass="vertical-group">
+  <p-inputGroupAddon>
+    <a
+      *ngIf="infoAdicional"
+      role="button"
+      class="p-button p-button-secondary mr-2"
+      (click)="panel.toggle($event)"
+      (keypress)="panel.toggle($event)"
+      tabindex="0"
+    >
+      <i class="pi pi-question-circle"></i>
+    </a>
+    <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+      <div class="w-15rem">
+        <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
+      </div>
+    </p-overlayPanel>
+    <p-inputSwitch [formControl]="switchControl" (onChange)="handleSwitchChange($event)" />
+    <span>{{ addonLabel }}</span>
+  </p-inputGroupAddon>
+  @if (visibleInput === true) {
+    @switch (inputType) {
+      @case ('text') {
+        <input
+          pInputText
+          [formControl]="inputControl"
+          [placeholder]="inputPlaceholder"
+          type="text"
+          class="group-element"
+          [maxlength]="inputMaxlength"
+          required="true"
+          [value]="inputControl.value"
+        />
+      }
+      @case ('number') {
+        <p-inputNumber
+          [formControl]="inputControl"
+          [min]="inputMin"
+          [max]="inputMax"
+          [step]="inputStep"
+          [placeholder]="inputPlaceholder"
+          [maxlength]="inputMaxlength"
+          [useGrouping]="inputUseGrouping"
+          [showButtons]="inputShowButtons"
+          required="true"
+          class="group-element"
+        />
+      }
+      @case ('textarea') {
+        <textarea
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          pInputTextarea
+          [formControl]="inputControl"
+          [maxlength]="inputMaxlength"
+          [placeholder]="inputPlaceholder"
+          [required]="visibleInput"
+          [rows]="inputInitRows"
+          class="group-element"
+          [style.minHeight]="inputMinRowsString"
+          [style.maxHeight]="inputMaxRowsString"
+          [cdkAutosizeMinRows]="inputInitRows + 1.5"
+          [cdkAutosizeMaxRows]="inputMaxRows"
+        >
+                    >{{ inputControl.value }}</textarea
+        >
+      }
+    }
+  }
+</p-inputGroup>

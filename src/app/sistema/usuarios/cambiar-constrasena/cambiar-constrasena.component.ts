@@ -9,8 +9,7 @@ import {
 import { MessageService } from 'primeng/api'
 import { CommonModule } from '@angular/common'
 import { ModalPrimengComponent } from '../../../shared/modal-primeng/modal-primeng.component'
-import { GeneralService } from '@/app/servicios/general.service'
-import { ConstantesService } from '@/app/servicios/constantes.service'
+import { UsuariosService } from '../services/usuarios.service'
 
 @Component({
     selector: 'app-cambiar-constrasena',
@@ -33,96 +32,82 @@ export class CambiarConstrasenaComponent {
 
     constructor(
         private fb: FormBuilder,
-        private _MessageService: MessageService,
-        private _GeneralService: GeneralService,
-        private _ConstantesService: ConstantesService
+        private messageService: MessageService,
+        private usuariosService: UsuariosService
+        //private _GeneralService: GeneralService,
+        //private _ConstantesService: ConstantesService
     ) {
+        // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
         this.form = this.fb.group(
             {
-                contraseniaActual: ['', [Validators.required]],
-                contraseniaNueva: [
+                contrasenaActual: ['', [Validators.required]],
+                contrasenaNueva: [
                     '',
-                    [Validators.required, Validators.minLength(8)],
+                    [
+                        Validators.required,
+                        Validators.minLength(8),
+                        Validators.pattern(passwordPattern),
+                    ],
                 ],
-                confirmacionContrasenia: ['', Validators.required],
-                iCredId: [this._ConstantesService.iCredId],
-                iPersId: [this._ConstantesService.iPersId],
+                confirmarContrasena: ['', Validators.required],
+                //iCredId: [this._ConstantesService.iCredId],
+                //iPersId: [this._ConstantesService.iPersId],
             },
             {
-                validators: this.validadorCoincidenciaContrasenia,
+                validators: this.validadorCoincidenciacontrasena,
             }
         )
     }
 
     // Validador personalizado para comparar contraseñas
-    validadorCoincidenciaContrasenia(formGroup: FormGroup) {
-        const contraseniaNueva = formGroup.get('contraseniaNueva')?.value
-        const confirmacionContrasenia = formGroup.get(
-            'confirmacionContrasenia'
-        )?.value
+    validadorCoincidenciacontrasena(formGroup: FormGroup) {
+        const contrasenaNueva = formGroup.get('contrasenaNueva')?.value
+        const confirmarContrasena = formGroup.get('confirmarContrasena')?.value
 
-        if (contraseniaNueva !== confirmacionContrasenia) {
+        if (contrasenaNueva !== confirmarContrasena) {
             formGroup
-                .get('confirmacionContrasenia')
+                .get('confirmarContrasena')
                 ?.setErrors({ noCoinciden: true })
             return { noCoinciden: true }
         } else {
-            formGroup.get('confirmacionContrasenia')?.setErrors(null)
+            formGroup.get('confirmarContrasena')?.setErrors(null)
             return null
         }
     }
 
     enviarFormulario(): void {
-        if (this.form.valid) {
-            const params = {
-                petition: 'post',
-                group: 'seg',
-                prefix: 'credenciales',
-                ruta: 'updatePassword',
-                data: this.form.value,
-            }
-
-            this._GeneralService.getGralPrefix(params).subscribe({
-                next: (response) => {
-                    if (response.validated) {
-                        this._MessageService.add({
-                            severity: 'success',
-                            summary: 'Exitoso!',
-                            detail: 'Contraseña cambiada correctamente',
-                        })
-                        this.form.reset()
-                        this.accionCloseItem.emit()
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 1000)
-                    }
+        this.usuariosService
+            .cambiarContrasena(
+                this.form.get('contrasenaActual')?.value,
+                this.form.get('contrasenaNueva')?.value
+            )
+            .subscribe({
+                next: (response: any) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Contraseña cambiada',
+                        detail: response.message,
+                    })
+                    this.form.reset()
+                    this.accionCloseItem.emit()
+                    /*setTimeout(() => {
+                        window.location.reload()
+                    }, 1000)*/
                 },
-                complete: () => {},
                 error: (error) => {
-                    const errores = error?.error?.errors
-
-                    if (error.status === 422 && errores) {
-                        // Recorre y muestra cada mensaje de error
-                        Object.keys(errores).forEach((campo) => {
-                            errores[campo].forEach((mensaje: string) => {
-                                this._MessageService.add({
-                                    severity: 'error',
-                                    summary: 'Error de validación',
-                                    detail: mensaje,
-                                })
-                            })
-                        })
-                    } else {
-                        this._MessageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail:
-                                error?.error?.message ||
-                                'Ocurrió un error inesperado',
-                        })
-                    }
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cambiar la contraseña',
+                        detail: error.error.message || 'Error desconocido',
+                    })
                 },
             })
+
+        /*if (this.form.valid) {
+
+
         } else {
             this._MessageService.add({
                 severity: 'error',
@@ -135,6 +120,6 @@ export class CambiarConstrasenaComponent {
                 const control = this.form.get(key)
                 control?.markAsTouched()
             })
-        }
+        }*/
     }
 }

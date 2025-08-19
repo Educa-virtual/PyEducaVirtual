@@ -9,7 +9,7 @@ import { Component, Input, OnChanges } from '@angular/core'
     styleUrl: './no-data.component.scss',
 })
 export class NoDataComponent implements OnChanges {
-    @Input() showIcon: 'NO-DATA' | 'ERROR' = 'ERROR'
+    @Input() showIcon: 'NO-DATA' | 'ERROR' | 'SUCCESSFUL' = 'ERROR'
     @Input() mensaje: string =
         '¡Ups...! Algo salió mal o no encontramos datos en estos momentos'
 

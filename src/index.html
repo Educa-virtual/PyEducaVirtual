@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
     <head>
-        <meta charset="utf-8" />
+        <meta charset="UTF-8" />
         <title>&nbsp;Plataforma Educativa Virtual - DREMO&nbsp;&nbsp;</title>
         <base href="/" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,18 +12,17 @@
             type="text/css"
             href="assets/layout/styles/theme/lara-light-indigo/theme.css"
         />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
     </head>
 
-    <body>
+    <body class="mat-typography">
         <app-root></app-root>
     </body>
-    <script type="text/javascript">
-        var documentTitle = document.title + ' - '
-
-        ;(function titleMarquee() {
-            document.title = documentTitle =
-                documentTitle.substring(1) + documentTitle.substring(0, 1)
-            setTimeout(titleMarquee, 900)
-        })()
-    </script>
 </html>

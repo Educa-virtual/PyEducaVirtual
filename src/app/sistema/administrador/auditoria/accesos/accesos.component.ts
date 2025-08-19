@@ -89,11 +89,14 @@ export class AccesosComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getData(this.form.value)
-
+        this.refrescar()
         this.form.valueChanges.subscribe((curr) => {
             this.getData(curr)
         })
+    }
+
+    refrescar() {
+        this.getData(this.form.value)
     }
 
     getData(curr) {
@@ -104,10 +107,10 @@ export class AccesosComponent implements OnInit {
         if (curr.filtroFecha[0] != null && curr.filtroFecha[1] != null) {
             this.auditoria
                 .getData({
-                    filtroFechaInicio: this.utils.convertToSQLDateTime(
+                    filtroFechaInicio: this.utils.convertirAFechaSegura(
                         this.form.value.filtroFecha[0]
                     ),
-                    filtroFechaFin: this.utils.convertToSQLDateTime(
+                    filtroFechaFin: this.utils.convertirAFechaSegura(
                         this.form.value.filtroFecha[1]
                     ),
                 })
@@ -118,10 +121,6 @@ export class AccesosComponent implements OnInit {
 
                     complete: () => {
                         this.columns = option.columns
-
-                        console.log('this.columns')
-                        console.log(this.columns)
-                        console.log(this.data)
                     },
                 })
         }
@@ -139,6 +138,6 @@ export class AccesosComponent implements OnInit {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos')
 
         // Exportar el archivo Excel
-        XLSX.writeFile(workbook, 'exportacion.xlsx')
+        XLSX.writeFile(workbook, 'Auditoria.xlsx')
     }
 }

@@ -1,0 +1,64 @@
+<br />
+
+<div class="grid p-fluid p-2">
+    <div class="col" style="margin-left: -0.5rem">
+        <p-inputGroup>
+            <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+            <input
+                #filtro
+                pInputText
+                placeholder="Buscar"
+                (input)="filtrarTabla()"
+            />
+        </p-inputGroup>
+    </div>
+    <div class="col-auto align-content-center">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <p-button
+                label="Agregar"
+                (onClick)="agregarFamiliar()"
+                styleClass="p-button-primary"
+            />
+        </div>
+    </div>
+</div>
+
+<app-table-primeng
+    [columnas]="columns"
+    [showCaption]="false"
+    [data]="familiares_filtrados"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="false"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+    [showAdvancedFilter]="false"
+>
+</app-table-primeng>
+
+<p-dialog
+    header="{{ dialogTitle }}"
+    [(visible)]="visibleDialogFamiliar"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="hideDialog()"
+>
+    <app-ficha-familia-registro
+        #fichaFamiliaRegistroRef
+        [iFamiliarId]="iFamiliarId"
+        (esVisibleChange)="visibleDialog($event)"
+    />
+</p-dialog>
+
+<!-- Botón Seguir -->
+<div class="flex justify-content-end gap-2 mt-3">
+    <p-button
+        type="button"
+        label="Continuar"
+        icon="pi pi-save"
+        severity="success"
+        (click)="continuar()"
+    />
+</div>
+
+<p-toast></p-toast>

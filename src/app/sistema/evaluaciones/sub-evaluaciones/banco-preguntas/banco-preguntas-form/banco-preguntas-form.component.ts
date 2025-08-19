@@ -22,7 +22,6 @@ import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { BancoPreguntaInformacionFormComponent } from './banco-pregunta-informacion-form/banco-pregunta-informacion-form.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { MenuItem } from 'primeng/api'
 import { BancoPreguntaEncabezadoFormComponent } from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
@@ -37,7 +36,7 @@ import { matListAlt } from '@ng-icons/material-icons/baseline'
 import { PrimengModule } from '@/app/primeng.module'
 
 const preguntaFormInfoDefaultValues = {
-    iPreguntaId: generarIdAleatorio(),
+    iPreguntaId: 0,
     isDeleted: false,
     iHoras: 0,
     iMinutos: 0,

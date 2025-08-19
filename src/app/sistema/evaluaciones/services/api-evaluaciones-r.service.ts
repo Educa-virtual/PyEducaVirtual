@@ -448,10 +448,10 @@ export class ApiEvaluacionesRService {
         window.open(url, '_blank')
     }
 
-    descargarMatrizPorEvaluacionArea(params) {
+    /*descargarMatrizPorEvaluacionArea(params) {
         const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`
         window.open(url, '_blank')
-    }
+    }*/
 
     guardarFechaCantidadExamenCursos(data: {
         iEvaluacionId: number

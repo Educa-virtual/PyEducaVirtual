@@ -1,0 +1,27 @@
+:host ::ng-deep p-inputGroupAddon {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+    i {
+        color: var(--primary-color-text) !important;
+    }
+}
+.btn {
+    position: absolute;
+    background-color: red;
+    color: white;
+    z-index: 10;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    top: -15px;
+    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+    width: fit-content; /* Para que no ocupe más de lo necesario */
+    font-size: 13px;
+}
+:host ::ng-deep .p-datatable-thead > tr > th,
+:host ::ng-deep .p-datatable-tbody > tr > td {
+    border: 1px solid #ccc;
+}
+:host ::ng-deep .p-datatable-table {
+    border-collapse: collapse;
+}

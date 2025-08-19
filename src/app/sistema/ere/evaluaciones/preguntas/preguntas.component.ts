@@ -17,7 +17,6 @@ import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 import { BancoPreguntasComponent } from '../banco-preguntas/banco-preguntas-ere.component'
 import { PreguntasEreService } from '../services/preguntas-ere.service'
-
 @Component({
     selector: 'app-preguntas',
     standalone: true,
@@ -37,6 +36,9 @@ import { PreguntasEreService } from '../services/preguntas-ere.service'
     ],
 })
 export class PreguntasComponent implements OnInit {
+    @Input() iEvaluacionId
+    @Input() iCursoNivelGradId
+
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private _preguntasService = inject(PreguntasEreService)
@@ -44,20 +46,18 @@ export class PreguntasComponent implements OnInit {
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private http = inject(HttpClient)
     private _ConstantesService = inject(ConstantesService)
-
+    private enunciadosCache = new Map<number, string>()
     private backendApi = environment.backendApi
+    indiceAcordionActivo: number = -1
+    cargaInicial: boolean = true
     backend = environment.backend
     breadCrumbItems: MenuItem[]
     breadCrumbHome: MenuItem
-
-    private enunciadosCache = new Map<number, string>()
-
-    @Input() iEvaluacionId
-    @Input() iCursoNivelGradId
     data
     matrizCompetencia = []
     matrizCapacidad = []
     matrizCapacidadFiltrado = []
+    cantidadMaximaPreguntas: number = 20
     nIndexAcordionTab: number = null
     isSecundaria: boolean = false
     isDisabled: boolean =
@@ -85,10 +85,14 @@ export class PreguntasComponent implements OnInit {
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
         height: 400,
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
+        paste_as_text: true,
+        branding: false,
+        statusbar: false,
     }
     initEnunciado: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -100,9 +104,28 @@ export class PreguntasComponent implements OnInit {
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
             'image table',
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
         editable_root: this.isDisabled,
+        paste_as_text: true,
+        branding: false,
+        statusbar: false,
+    }
+
+    initAlternativa: EditorComponent['init'] = {
+        base_url: '/tinymce',
+        suffix: '.min',
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escribe aqui...',
+        height: 120,
+        toolbar: false,
+        content_style: `body { font-family: 'Comic Sans MS', sans-serif; }`,
+        editable_root: this.isDisabled,
+        paste_as_text: true,
+        branding: false,
+        statusbar: false,
     }
     encabezado = ''
     preguntas = []
@@ -146,6 +169,23 @@ export class PreguntasComponent implements OnInit {
     ngOnInit() {
         this.obtenerMatrizCompetencias()
         this.obtenerMatrizCapacidad()
+        this.obtenerCantidadMaximaPreguntas()
+    }
+
+    obtenerCantidadMaximaPreguntas() {
+        this._apiEre
+            .obtenerCantidadMaximaPreguntas(
+                this.iEvaluacionId,
+                this.iCursoNivelGradId
+            )
+            .subscribe({
+                next: (resp: any) => {
+                    this.cantidadMaximaPreguntas = resp.data
+                },
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
     }
 
     obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId() {
@@ -250,7 +290,7 @@ export class PreguntasComponent implements OnInit {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
             })
@@ -275,7 +315,7 @@ export class PreguntasComponent implements OnInit {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: error,
+                        detail: error.error.message,
                     })
                 },
             })
@@ -285,7 +325,13 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return
         }
-        const orden = this.totalPregunta + 1 // pregunta orden
+        const preguntasConEncabezado = this.preguntas.filter(
+            (p) => p.iEncabPregId === item.iEncabPregId
+        )
+        const preguntas = [...preguntasConEncabezado[0].pregunta].sort(
+            (a, b) => (b.iPreguntaOrden ?? 0) - (a.iPreguntaOrden ?? 0)
+        )
+        const orden = preguntas[0].iPreguntaOrden + 1
 
         if (item.iEncabPregId && item.cEncabPregContenido) {
             this.enunciadosCache.set(
@@ -305,7 +351,7 @@ export class PreguntasComponent implements OnInit {
                 iCursosNivelGradId: this.iCursoNivelGradId,
                 iEncabPregId: item.iEncabPregId,
                 cEncabPregContenido: item.iEncabPregContenido,
-                iPreguntaOrden: orden ?? null, // pregunta orden
+                iPreguntaOrden: orden ?? null,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -353,8 +399,8 @@ export class PreguntasComponent implements OnInit {
     /*guardarPreguntaSinEnunciadoSinData() {
         if (!this.isDisabled) {
             return
-        } 
-        //const orden = this.totalPregunta + 1 // pregunta orden 
+        }
+        //const orden = this.totalPregunta + 1 // pregunta orden
         const orden = this.totalPregunta + 1
 
         const params = {
@@ -408,7 +454,41 @@ export class PreguntasComponent implements OnInit {
         if (!this.isSecundaria && encabezado) {
             pregunta.iPreguntaPeso = 1
         }*/
+        if (encabezado && (contenido == '' || contenido == null)) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ingrese un contenido en el enunciado',
+            })
+            return
+        }
+        let contenidoPregunta
+        let preguntaPeso
+        if (encabezado) {
+            contenidoPregunta = pregunta.cPregunta
+            preguntaPeso = pregunta.iPreguntaPeso
+        } else {
+            contenidoPregunta = pregunta.pregunta[0].cPregunta
+            preguntaPeso = pregunta.pregunta[0].iPreguntaPeso
+        }
 
+        if (contenidoPregunta == '' || contenidoPregunta == null) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ingrese un contenido en la pregunta',
+            })
+            return
+        }
+
+        if (preguntaPeso == '' || preguntaPeso == null) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ingrese un peso a la pregunta',
+            })
+            return
+        }
         const data = !encabezado
             ? preguntas.length
                 ? preguntas[0]
@@ -430,6 +510,7 @@ export class PreguntasComponent implements OnInit {
             })
             return
         }
+
         data.alternativas.forEach((alternativa) => {
             {
                 if (
@@ -444,7 +525,7 @@ export class PreguntasComponent implements OnInit {
             this._MessageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Todas las alternativas debe tener una descripción y/o contenido',
+                detail: 'El texto de las alternativas no puede estar vacío.',
             })
             return
         }
@@ -488,7 +569,7 @@ export class PreguntasComponent implements OnInit {
         if (!this.isDisabled) {
             return;
         }
-        
+
         // Solo permitimos una opción seleccionada a la vez
         alternativas.forEach((alternativa) => {
             if (alternativa.iAlternativaId != iAlternativaId) {
@@ -570,7 +651,7 @@ export class PreguntasComponent implements OnInit {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: error,
+                    detail: error.error.message,
                 })
             },
         })
@@ -591,6 +672,7 @@ export class PreguntasComponent implements OnInit {
         const { item } = elemento
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradId':
+                this.totalPregunta = 0
                 this.breadCrumbItems = [
                     {
                         label: 'ERE',
@@ -622,6 +704,7 @@ export class PreguntasComponent implements OnInit {
                     : []
 
                 if (!evaluaciones) {
+                    this.cargaInicial = false
                     return
                 }
                 evaluaciones.forEach((evaluacion) => {
@@ -658,13 +741,12 @@ export class PreguntasComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Preguntas',
+                            title: 'Pregunta',
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
                             iOrden: key,
                         })
                     }
                 }
-
                 this.preguntas = this.preguntas.filter(
                     (value, index, self) =>
                         value.iEncabPregId === null ||
@@ -673,7 +755,7 @@ export class PreguntasComponent implements OnInit {
                                 (t) => t.iEncabPregId === value.iEncabPregId
                             )
                 )
-                this.totalPregunta = 0
+
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length) {
@@ -717,7 +799,6 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 })
-
                 this.preguntas.forEach((pregunta) => {
                     if (
                         pregunta.iEncabPregId &&
@@ -737,6 +818,11 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 })
+                if (this.cargaInicial) {
+                    this.cargaInicial = false
+                } else {
+                    this.indiceAcordionActivo = this.totalPregunta - 1
+                }
                 break
 
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
@@ -769,7 +855,6 @@ export class PreguntasComponent implements OnInit {
                 break
         }
     }
-
     async onUploadChange(evt: any, alternativa) {
         if (!this.isDisabled) {
             return
@@ -816,6 +901,19 @@ export class PreguntasComponent implements OnInit {
         )
     }
 
+    filtrarCapacidades(item): any[] {
+        return this.matrizCapacidad.filter(
+            (i) => i.iCompetenciaId === item.iCompetenciaId
+        )
+    }
+
+    obtenerIdCompetenciaPorIdCapacidad(iCapacidadId: any): any {
+        const capacidad = this.matrizCapacidad.find(
+            (cap) => cap.iCapacidadId === iCapacidadId
+        )
+        return capacidad ? capacidad.iCompetenciaId : null
+    }
+
     guardarEnunciadoEnCache(id: number, contenido: string): void {
         // Solo almacenamos en caché si es un ID válido y está relacionado con preguntas
         if (id && this.preguntas.some((p) => p.iEncabPregId === id)) {
@@ -825,5 +923,63 @@ export class PreguntasComponent implements OnInit {
 
     limpiarCacheEnunciados(): void {
         this.enunciadosCache.clear()
+    }
+    // copy and paste
+
+    onPasteImage(event: ClipboardEvent, alternativa: any) {
+        const items = event.clipboardData?.items
+        if (items) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile()
+                    if (file) {
+                        this.uploadImageFile(file, alternativa)
+                        event.preventDefault()
+                    }
+                }
+            }
+        }
+    }
+
+    onDragOver(event: DragEvent) {
+        event.preventDefault()
+    }
+
+    onDropImage(event: DragEvent, alternativa: any) {
+        event.preventDefault()
+        const files = event.dataTransfer?.files
+        if (files && files.length > 0) {
+            const file = files[0]
+            if (file.type.startsWith('image/')) {
+                this.uploadImageFile(file, alternativa)
+            }
+        }
+    }
+
+    async uploadImageFile(file: File, alternativa: any) {
+        const dataFile = await this.objectToFormData({
+            file: file,
+            nameFile: 'alternativas',
+        })
+
+        this.http
+            .post(`${this.backendApi}/general/subir-archivo`, dataFile)
+            .subscribe({
+                next: (response: any) => {
+                    if (response.validated) {
+                        alternativa.cAlternativaImagen = response.data
+                        this._MessageService.add({
+                            severity: 'success',
+                            detail: 'Imagen pegada correctamente',
+                        })
+                    }
+                },
+                error: () => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        detail: 'Error al subir la imagen',
+                    })
+                },
+            })
     }
 }

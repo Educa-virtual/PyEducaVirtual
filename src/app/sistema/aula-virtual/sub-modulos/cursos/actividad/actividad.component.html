@@ -1,11 +1,22 @@
 @switch (iActTopId) {
     <!-- tarea -->
     @case (1) {
-        <app-tarea-room [iTareaId]="ixActivadadId"></app-tarea-room>
+        <app-tarea-room
+            [iTareaId]="ixActivadadId"
+            [iIeCursoId]="iIeCursoId"
+            [iSeccionId]="iSeccionId"
+            [iNivelGradoId]="iNivelGradoId"
+        ></app-tarea-room>
     }
     <!-- Foro -->
     @case (2) {
-        <app-foro-room [ixActivadadId]="ixActivadadId" [iActTopId]="iActTopId">
+        <app-foro-room
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+            [iIeCursoId]="iIeCursoId"
+            [iSeccionId]="iSeccionId"
+            [iNivelGradoId]="iNivelGradoId"
+        >
         </app-foro-room>
     }
     <!-- evaluacion -->
@@ -16,5 +27,22 @@
             [iProgActId]="iProgActId"
         ></app-evaluacion-room>
     }
+    <!-- videoconferencia -->
+    @case (4) {
+        <app-videoconferencia-form-container
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+        >
+        </app-videoconferencia-form-container>
+    }
+    <!-- cuestionario -->
+    @case (6) {
+        <app-cuestionario-room
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+            [iProgActId]="iProgActId"
+        ></app-cuestionario-room>
+    }
+
     @default {}
 }

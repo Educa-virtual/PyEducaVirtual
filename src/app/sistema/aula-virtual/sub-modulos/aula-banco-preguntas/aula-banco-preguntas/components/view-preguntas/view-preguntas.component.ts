@@ -40,13 +40,6 @@ export class ViewPreguntasComponent implements OnChanges {
         }
         if (changes.detallePreguntas?.currentValue) {
             this.detallePreguntas = changes.detallePreguntas.currentValue
-
-            this.detallePreguntas.forEach((i) => {
-                i.alternativas = i.alternativas
-                    ? JSON.parse(i.alternativas)
-                    : []
-            })
-            console.log(this.detallePreguntas)
         }
         if (changes.titulo?.currentValue) {
             this.titulo = changes.titulo.currentValue

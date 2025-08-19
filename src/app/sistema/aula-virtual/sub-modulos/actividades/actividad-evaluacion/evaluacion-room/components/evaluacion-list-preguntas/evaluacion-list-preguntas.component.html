@@ -1,0 +1,242 @@
+<div class="card col-12 mb-5 p-3 mt-2 relative" *ngFor="let item of preguntas; let i = index">
+  <div class="tag ml-3 font-bold">
+    #{{ i + 1 }} {{ item.cTipo }}:
+    <ng-container *ngIf="item.idEncabPregId"> &nbsp;{{ item.cEncabPregTitulo }} </ng-container>
+  </div>
+
+  <div
+    class="p-3 border-1 border-blue-200 border-round bg-blue-50 mt-2 overflow-auto break-words estilo-descripcion"
+  >
+    <div [innerHTML]="item.idEncabPregId ? item.cEncabPregContenido : item.cEvalPregPregunta"></div>
+  </div>
+
+  <ng-container *ngIf="item.idEncabPregId">
+    <span class="text-primary font-bold my-1">Lista de Preguntas</span>
+    <div class="mt-2" *ngFor="let pregunta of item.jsonPreguntas">
+      <div
+        class="p-3 border-1 border-orange-200 border-round bg-orange-50 min-h-10rem mt-2 mb-2 estilo-descripcion"
+      >
+        <span class="font-bold">Pregunta:&nbsp;</span>
+        <div [innerHTML]="pregunta.cEvalPregPregunta"></div>
+      </div>
+
+      <ng-container *ngIf="['1', '2', 1, 2].includes(pregunta.iTipoPregId)">
+        <ng-container *ngIf="mostrarListaAlternativas(pregunta)">
+          <p-accordion
+            class="mt-3 shadow-1 border-round"
+            [collapseIcon]="'pi pi-chevron-up'"
+            [expandIcon]="'pi pi-chevron-down'"
+          >
+            <p-accordionTab header="Lista de Alternativas">
+              <ng-container *ngFor="let alternativa of pregunta.jsonAlternativas; let ida = index">
+                <div
+                  class="p-2"
+                  [ngStyle]="{
+                    'border-left': alternativa.bBancoAltRptaCorrecta
+                      ? '4px solid #22c55e'
+                      : 'inherit',
+                    background: alternativa.bBancoAltRptaCorrecta
+                      ? 'rgb(227 253 237)'
+                      : 'transparent',
+                  }"
+                >
+                  <p-inputGroup class="mt-1">
+                    <p-inputGroupAddon>{{ alternativa.cBancoAltLetra }}</p-inputGroupAddon>
+                    <input
+                      pInputText
+                      type="text"
+                      [ngModel]="alternativa.cBancoAltDescripcion"
+                      readonly
+                    />
+                    <p-checkbox
+                      [binary]="true"
+                      [inputId]="alternativa.id"
+                      [value]="alternativa"
+                      class="ml-2"
+                      label="Respuesta correcta"
+                      [ngModel]="alternativa.bBancoAltRptaCorrecta"
+                      disabled="true"
+                    ></p-checkbox>
+                  </p-inputGroup>
+
+                  <p-inputGroup class="mt-1" *ngIf="alternativa.bBancoAltRptaCorrecta">
+                    <p-inputGroupAddon>Explicación</p-inputGroupAddon>
+                    <input
+                      pInputText
+                      type="text"
+                      [ngModel]="alternativa.cBancoAltExplicacionRpta"
+                      readonly
+                    />
+                  </p-inputGroup>
+                </div>
+              </ng-container>
+            </p-accordionTab>
+          </p-accordion>
+        </ng-container>
+      </ng-container>
+
+      <!-- Botones internos de pregunta de encabezado -->
+      @if (!bloquearButton) {
+        <div class="flex align-items-center justify-content-end mt-2">
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            tooltipPosition="bottom"
+            pTooltip="Eliminar pregunta"
+            label="Eliminar pregunta"
+            (onClick)="eliminarPregunta(pregunta)"
+            styleClass="hide-label-on-mobile"
+            [disabled]="bloquearButton"
+          />
+          <p-button
+            icon="pi pi-file-edit"
+            [rounded]="true"
+            [text]="true"
+            severity="warning"
+            tooltipPosition="bottom"
+            pTooltip="Editar pregunta"
+            label="Editar pregunta"
+            (onClick)="editarPregunta(pregunta)"
+            styleClass="hide-label-on-mobile"
+            [disabled]="bloquearButton"
+          />
+        </div>
+      }
+    </div>
+  </ng-container>
+
+  <!-- Si NO es encabezado -->
+  <ng-container *ngIf="!item.idEncabPregId">
+    <ng-container
+      *ngIf="['1', '2', 1, 2].includes(item.iTipoPregId) && mostrarListaAlternativas(item)"
+    >
+      <p-accordion
+        class="mt-3 shadow-1 border-round"
+        [collapseIcon]="'pi pi-chevron-up'"
+        [expandIcon]="'pi pi-chevron-down'"
+      >
+        <p-accordionTab header="Lista de Alternativas">
+          <ng-container *ngFor="let alternativa of item.jsonAlternativas; let ida = index">
+            <div
+              class="p-2"
+              [ngStyle]="{
+                'border-left': alternativa.bBancoAltRptaCorrecta ? '4px solid #22c55e' : 'inherit',
+                background: alternativa.bBancoAltRptaCorrecta ? 'rgb(227 253 237)' : 'transparent',
+              }"
+            >
+              <p-inputGroup class="mt-1">
+                <p-inputGroupAddon>{{ alternativa.cBancoAltLetra }}</p-inputGroupAddon>
+                <input
+                  pInputText
+                  type="text"
+                  [ngModel]="alternativa.cBancoAltDescripcion"
+                  readonly
+                />
+                <p-checkbox
+                  [binary]="true"
+                  [inputId]="alternativa.id"
+                  [value]="alternativa"
+                  class="ml-2"
+                  label="Respuesta correcta"
+                  [ngModel]="alternativa.bBancoAltRptaCorrecta"
+                  disabled="true"
+                ></p-checkbox>
+              </p-inputGroup>
+
+              <p-inputGroup class="mt-1" *ngIf="alternativa.bBancoAltRptaCorrecta">
+                <p-inputGroupAddon>Explicación</p-inputGroupAddon>
+                <input
+                  pInputText
+                  type="text"
+                  [ngModel]="alternativa.cBancoAltExplicacionRpta"
+                  readonly
+                />
+              </p-inputGroup>
+            </div>
+          </ng-container>
+        </p-accordionTab>
+      </p-accordion>
+    </ng-container>
+  </ng-container>
+
+  <p-divider />
+
+  <!-- Botones finales -->
+  @if (!bloquearButton) {
+    <div class="flex align-items-center justify-content-end">
+      <ng-container *ngIf="item.idEncabPregId; else sinEncabezado">
+        <p-button
+          icon="pi pi-plus"
+          [rounded]="true"
+          [disabled]="bloquearButton"
+          [text]="true"
+          severity="primary"
+          tooltipPosition="bottom"
+          pTooltip="Agregar pregunta"
+          label="Agregar pregunta"
+          styleClass="hide-label-on-mobile"
+          (onClick)="
+            accionBtn.emit({
+              accion: 'agregar-pregunta-encabezado',
+              item,
+            })
+          "
+        />
+        <p-button
+          icon="pi pi-trash"
+          [rounded]="true"
+          [disabled]="bloquearButton"
+          [text]="true"
+          severity="danger"
+          tooltipPosition="bottom"
+          pTooltip="Eliminar pregunta múltiple"
+          label="Eliminar pregunta múltiple"
+          styleClass="hide-label-on-mobile"
+          (onClick)="eliminarPregunta(item)"
+        />
+        <p-button
+          icon="pi pi-file-edit"
+          [rounded]="true"
+          [text]="true"
+          severity="warning"
+          tooltipPosition="bottom"
+          pTooltip="Editar pregunta múltiple"
+          label="Editar pregunta múltiple"
+          styleClass="hide-label-on-mobile"
+          (onClick)="editarPregunta(item)"
+          [disabled]="bloquearButton"
+        />
+      </ng-container>
+      <ng-template #sinEncabezado>
+        <p-button
+          icon="pi pi-trash"
+          [rounded]="true"
+          [text]="true"
+          severity="danger"
+          tooltipPosition="bottom"
+          pTooltip="Eliminar pregunta"
+          label="Eliminar pregunta"
+          styleClass="hide-label-on-mobile"
+          (onClick)="eliminarPregunta(item)"
+          [disabled]="bloquearButton"
+        />
+        <p-button
+          icon="pi pi-file-edit"
+          [rounded]="true"
+          [text]="true"
+          severity="warning"
+          tooltipPosition="bottom"
+          pTooltip="Editar pregunta"
+          label="Editar Pregunta"
+          styleClass="hide-label-on-mobile"
+          (onClick)="editarPregunta(item)"
+          [disabled]="bloquearButton"
+        />
+      </ng-template>
+    </div>
+  }
+</div>
+
+<p-toast></p-toast>

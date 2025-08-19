@@ -1,176 +1,121 @@
-<p-dialog
-    [header]="titulo"
-    [modal]="true"
-    [(visible)]="showModalEvaluacion"
-    [style]="{ width: '95%', minWidth: '90%', height: '90%' }"
-    (onHide)="accionBtn({ accion: 'close-modal', item: [] })"
-    [draggable]="false"
-    [resizable]="false"
+<app-modal-primeng
+  *ngIf="showModalEvaluacion"
+  [title]="tituloEvaluacion + ' EVALUACIÓN FORMATIVA'"
+  [showModal]="showModalEvaluacion"
+  (accionBtnItem)="accionBtn({ accion: 'close-modal', item: [] })"
+  width="65rem"
 >
-    <!-- Contenido principal del modal -->
-    <ng-template pTemplate="content">
-        <!-- Controla qué vista mostrar según 'showMostrarVista' -->
-        @switch (showMostrarVista) {
-            @case ('FORM-EVALUACION') {
-                <!-- Formulario de evaluación -->
-                <form
-                    [formGroup]="formEvaluacion"
-                    class="mt-4"
-                    *ngIf="formEvaluacion"
-                >
-                    <div class="grid">
-                        <!-- Mensaje con información de la semana -->
-                        <div class="col-12">
-                            <p-message
-                                styleClass="w-full"
-                                severity="info"
-                                [text]="
-                                    'SEMANA ' +
-                                    semanaEvaluacion?.cContenidoSemNumero +
-                                    ' ' +
-                                    semanaEvaluacion?.cContenidoSemTitulo
-                                "
-                            ></p-message>
-                        </div>
+  <form [formGroup]="formEvaluacion" class="mt-4" *ngIf="formEvaluacion">
+    <div class="grid">
+      <!-- Mensaje con información de la semana -->
+      <div class="col-12">
+        <p-message
+          styleClass="w-full"
+          severity="info"
+          [text]="
+            'SEMANA ' +
+            (semanaEvaluacion?.cContenidoSemNumero || '-') +
+            ' ' +
+            semanaEvaluacion?.cContenidoSemTitulo
+          "
+        ></p-message>
+      </div>
 
-                        <!-- Campo para el nombre de la evaluación -->
-                        <div class="col-12">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Nombre</p-inputGroupAddon>
-                                <input
-                                    type="text"
-                                    pInputText
-                                    placeholder="Ingrese el nombre de la evaluación"
-                                    formControlName="cEvaluacionTitulo"
-                                />
-                            </p-inputGroup>
-                        </div>
+      <!-- Campo para el nombre de la evaluación -->
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            placeholder="Ingrese el nombre de la evaluación"
+            formControlName="cEvaluacionTitulo"
+          />
+        </p-inputGroup>
+      </div>
 
-                        <!-- Campo para la descripción de la evaluación -->
-                        <div class="col-12">
-                            <label for="descripcion" class="mt-1"
-                                >Descripción o Instrucciones
-                                <span class="text-red-500 text-xs"
-                                    >(*) Obligatorio</span
-                                ></label
-                            >
-                            <div class="mt-2">
-                                <p-editor
-                                    styleClass="w-full"
-                                    formControlName="cEvaluacionDescripcion"
-                                    [style]="{ height: '150px' }"
-                                    placeholder="Ingrese la descripción o instrucciones"
-                                />
-                                <!-- Validación del campo requerido -->
-                                @if (
-                                    formEvaluacion
-                                        .get('cEvaluacionDescripcion')
-                                        .hasError('required') &&
-                                    formEvaluacion.get('cEvaluacionDescripcion')
-                                        ?.touched
-                                ) {
-                                    <small class="text-red-500">
-                                        Este campo es requerido.
-                                    </small>
-                                }
-                            </div>
-                        </div>
-
-                        <!-- Componente comentado para seleccionar tipo de evaluación -->
-                        <!--
-                        <div class="col-12 md:col-4">
-                            ...
-                        </div>
-                        -->
-
-                        <!-- Selección de Fecha y Hora de Inicio -->
-                        <div class="col-12 md:col-6">
-                            <p-inputGroup>
-                                <p-inputGroupAddon
-                                    >Fecha - Hora Inicio
-                                </p-inputGroupAddon>
-                                <p-calendar
-                                    appendTo="body"
-                                    formControlName="dtInicio"
-                                    [iconDisplay]="'input'"
-                                    styleClass="w-full"
-                                    [showIcon]="true"
-                                    [showTime]="true"
-                                    [hourFormat]="'24'"
-                                    inputId="dtInicio"
-                                />
-                            </p-inputGroup>
-                        </div>
-
-                        <!-- Selección de Fecha y Hora de Fin -->
-                        <div class="col-12 md:col-6">
-                            <p-inputGroup>
-                                <p-inputGroupAddon
-                                    >Fecha - Hora Fin</p-inputGroupAddon
-                                >
-                                <p-calendar
-                                    appendTo="body"
-                                    formControlName="dtFin"
-                                    [iconDisplay]="'input'"
-                                    styleClass="w-full"
-                                    [showIcon]="true"
-                                    [showTime]="true"
-                                    [hourFormat]="'24'"
-                                    inputId="dtFin"
-                                />
-                            </p-inputGroup>
-                        </div>
-
-                        <!-- Componente para subir archivos -->
-                        <div class="col-12 mt-1">
-                            <app-types-files-upload-primeng
-                                [nameFile]="'evaluacion'"
-                                [nameOption]="'evaluacion'"
-                                [typesFiles]="typesFiles"
-                                (actionTypesFileUpload)="accionBtn($event)"
-                                [filesUrl]="filesUrl"
-                            ></app-types-files-upload-primeng>
-                        </div>
-                    </div>
-                </form>
-            }
-
-            <!-- Vista para la lista de preguntas -->
-            @case ('LIST-PREGUNTAS') {
-                <app-list-preguntas
-                    [data]="this.formEvaluacion.value"
-                    [iEvaluacionId]="this.iEvaluacionId"
-                    [curso]="curso"
-                    (accionBtnItem)="accionBtn($event)"
-                ></app-list-preguntas>
-            }
-        }
-    </ng-template>
-
-    <!-- Pie del modal con botones de acción -->
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-end gap-2">
-            @switch (showMostrarVista) {
-                @case ('FORM-EVALUACION') {
-                    <!-- Botón de cancelar -->
-                    <p-button
-                        label="Cancelar"
-                        severity="secondary"
-                        (onClick)="
-                            accionBtn({ accion: 'close-modal', item: [] })
-                        "
-                    />
-                    <!-- Botón de acción dinámica -->
-                    <p-button
-                        [label]="opcionEvaluacion"
-                        (onClick)="
-                            accionBtn({ accion: opcionEvaluacion, item: [] })
-                        "
-                    />
-                }
-            }
+      <!-- Campo para la descripción de la evaluación -->
+      <div class="col-12">
+        <label for="descripcion" class="mt-1"
+          >Descripción o Instrucciones
+          <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+        >
+        <div class="mt-2">
+          <p-editor
+            styleClass="w-full"
+            formControlName="cEvaluacionDescripcion"
+            [style]="{ height: 'auto', overflow: 'hidden' }"
+            placeholder="Ingrese la descripción o instrucciones"
+          />
+          <!-- Validación del campo requerido -->
+          @if (
+            formEvaluacion.get('cEvaluacionDescripcion').hasError('required') &&
+            formEvaluacion.get('cEvaluacionDescripcion')?.touched
+          ) {
+            <small class="text-red-500"> Este campo es requerido. </small>
+          }
         </div>
-    </ng-template>
-</p-dialog>
+      </div>
+      <!-- Selección de Fecha y Hora de Inicio -->
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha - Hora Inicio </p-inputGroupAddon>
+          <p-calendar
+            appendTo="body"
+            formControlName="dtEvaluacionInicio"
+            [iconDisplay]="'input'"
+            styleClass="w-full"
+            [showIcon]="true"
+            [showTime]="true"
+            [hourFormat]="'24'"
+            inputId="dtInicio"
+          />
+        </p-inputGroup>
+      </div>
 
-<p-toast></p-toast>
+      <!-- Selección de Fecha y Hora de Fin -->
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha - Hora Fin</p-inputGroupAddon>
+          <p-calendar
+            appendTo="body"
+            formControlName="dtEvaluacionFin"
+            [iconDisplay]="'input'"
+            styleClass="w-full"
+            [showIcon]="true"
+            [showTime]="true"
+            [hourFormat]="'24'"
+            inputId="dtFin"
+          />
+        </p-inputGroup>
+      </div>
+
+      <!-- Componente para subir archivos -->
+      <div class="col-12 mt-1">
+        <app-types-files-upload-primeng
+          [nameFile]="'evaluacion'"
+          [nameOption]="'evaluacion'"
+          [typesFiles]="typesFiles"
+          (actionTypesFileUpload)="accionBtn($event)"
+          [filesUrl]="filesUrl"
+        ></app-types-files-upload-primeng>
+      </div>
+    </div>
+  </form>
+  <div footer class="flex justify-content-end gap-2">
+    <!-- Botón de cancelar -->
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+    />
+    <!-- Botón de acción dinámica -->
+    <p-button
+      [label]="opcionEvaluacion"
+      (onClick)="guardarActualizarFormInfo()"
+      [loading]="isLoading"
+      [disabled]="isLoading"
+    />
+  </div>
+</app-modal-primeng>
+<!-- <p-toast /> -->

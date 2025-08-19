@@ -27,7 +27,6 @@ export class EvaluacionHeaderComponent implements OnChanges {
         if (changes.selectedEstudianteValue?.currentValue) {
             this.selectedEstudianteValue =
                 changes.selectedEstudianteValue.currentValue
-            console.log(this.selectedEstudianteValue)
         }
         if (changes.showListaEstudiantes?.currentValue) {
             this.showListaEstudiantes =
@@ -49,14 +48,15 @@ export class EvaluacionHeaderComponent implements OnChanges {
         switch (accion) {
             case 'close-modal-preguntas-form':
                 this.showFormCalificarEvaluacion = false
+                this.accionEvntBtn('recargar-lista-estudiantes', null)
                 break
             case 'abrir-form-calificar-evaluacion':
                 this.name =
-                    this.selectedEstudianteValue?.cEstNombres +
+                    this.selectedEstudianteValue?.cPersNombre +
                     ' ' +
-                    this.selectedEstudianteValue?.cEstPaterno +
+                    this.selectedEstudianteValue?.cPersPaterno +
                     ' ' +
-                    this.selectedEstudianteValue?.cEstMaterno
+                    this.selectedEstudianteValue?.cPersMaterno
                 this.showFormCalificarEvaluacion = true
                 break
         }

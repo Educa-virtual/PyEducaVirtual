@@ -1,0 +1,191 @@
+<br />
+
+<!-- Contenido del Formulario de Datos Generales -->
+<form [formGroup]="formGeneral">
+  <!-- Dirección Actual -->
+  <p-fieldset legend="1. Dirección del estudiante">
+    <div class="grid p-fluid">
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-dropdown-input
+          [dropdownControl]="$any(formGeneral.controls['iTipoViaId'])"
+          addonLabel="Tipo de vía *"
+          [dropdownItems]="tipos_vias"
+          placeholder="Seleccione"
+          [filter]="true"
+          [showClear]="true"
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cTipoViaOtro'])"
+          inputPlaceholder="Especifique otro"
+          [inputMaxlength]="100"
+          [infoAdicional]="iTipoViaId"
+        />
+        <ng-template #iTipoViaId>
+          <strong>Obligatoriamente</strong> debe indicar el óvalo del número que identifica el tipo
+          de vía. Otro puede ser: ladera de cerro, acequia, etc., según corresponda.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-8 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionNombreVia'])"
+          addonLabel="Nombre de la vía *"
+          [inputMaxlength]="150"
+          [infoAdicional]="cFichaDGDireccionNombreVia"
+        />
+        <ng-template #cFichaDGDireccionNombreVia>
+          <strong>Obligatoriamente</strong> debe indicar el nombre de la vía donde está ubicada la
+          vivienda. De no tener nombre, anota SN (Sin nombre).
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="grid p-fluid">
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionNroPuerta'])"
+          addonLabel="Nro. de Puerta"
+          [inputMaxlength]="10"
+        />
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionBlock'])"
+          addonLabel="Bloque"
+          [inputMaxlength]="3"
+          [infoAdicional]="cFichaDGDireccionBlock"
+        />
+        <ng-template #cFichaDGDireccionBlock>
+          Si la vivienda se encuentra ubicada en un block o edificio dentro de un conjunto
+          habitacional entonces indique el número, letra o nombre de éste.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionInterior'])"
+          addonLabel="Interior"
+          [inputMaxlength]="3"
+          [infoAdicional]="cFichaDGDireccionInterior"
+        />
+        <ng-template #cFichaDGDireccionInterior>
+          Indique el número o letra que identifica a la vivienda en el interior de un block,
+          conjunto habitacional, edificio, quinta, casa de vecindad, callejón, etc.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="number"
+          [inputControl]="$any(formGeneral.controls['iFichaDGDireccionPiso'])"
+          addonLabel="Piso"
+          [inputMin]="1"
+          [inputMaxlength]="2"
+          [inputShowButtons]="true"
+          [infoAdicional]="iFichaDGDireccionPiso"
+        />
+        <ng-template #iFichaDGDireccionPiso>
+          El piso debe tener acceso al exterior de forma directa e independiente. Si la vivienda
+          está en un sótano indique 1.
+        </ng-template>
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionManzana'])"
+          addonLabel="Manzana"
+          [inputMaxlength]="10"
+        />
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionLote'])"
+          addonLabel="Lote"
+          [inputMaxlength]="3"
+        />
+      </div>
+
+      <div class="col-12 lg:col-4 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionKm'])"
+          addonLabel="Km"
+          [inputMaxlength]="10"
+        />
+      </div>
+
+      <div class="col-12 lg:col-8 md:col-6">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formGeneral.controls['cFichaDGDireccionReferencia'])"
+          addonLabel="Referencia"
+        />
+      </div>
+    </div>
+  </p-fieldset>
+
+  <br />
+
+  <!-- Relaciones familiares -->
+  <p-fieldset legend="2. Relaciones familiares del estudiante">
+    <div class="grid">
+      <div class="col-12 md:col-4">
+        <app-switch-simple
+          [switchControl]="$any(formGeneral.controls['bFamiliarPadreVive'])"
+          addonLabel="¿El papá del estudiante está vivo?"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <app-switch-simple
+          [switchControl]="$any(formGeneral.controls['bFamiliarMadreVive'])"
+          addonLabel="¿La mamá del estudiante está viva?"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <app-switch-simple
+          [switchControl]="$any(formGeneral.controls['bFamiliarPadresVivenJuntos'])"
+          addonLabel="¿Los padres del estudiante viven juntos?"
+        />
+      </div>
+      <div class="col-12 md:col-4">
+        <app-switch-input
+          [switchControl]="$any(formGeneral.controls['bFichaDGTieneHijos'])"
+          addonLabel="¿El estudiante tiene hijos/as?"
+          inputType="number"
+          inputPlaceholder="¿Cuántos hijos/as?"
+          [inputControl]="$any(formGeneral.controls['iFichaDGNroHijos'])"
+          [inputUseGrouping]="false"
+          [inputShowButtons]="true"
+          [inputMaxlength]="2"
+          [inputMin]="1"
+          [inputStep]="1"
+          [infoAdicional]="bFichaDGTieneHijos"
+        />
+        <ng-template #bFichaDGTieneHijos>
+          Si el estudiante tiene hijos/as, debe indicar el número de hijos/as.
+        </ng-template>
+      </div>
+    </div>
+  </p-fieldset>
+
+  <br />
+
+  <!-- Botón Guardar y Seguir -->
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      type="button"
+      label="Actualizar y continuar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="actualizar()"
+    />
+  </div>
+</form>
+<p-toast></p-toast>

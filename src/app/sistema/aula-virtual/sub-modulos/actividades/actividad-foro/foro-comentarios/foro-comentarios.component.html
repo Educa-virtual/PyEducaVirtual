@@ -1,0 +1,275 @@
+<div class="card grid">
+  <div [class]="iPerfilId === DOCENTE ? 'col-12 md:col-8' : 'col-12'">
+    <div class="pb-2">
+      <label for="" class="" style="font-weight: bold; font-size: 16px">Chats: </label>
+    </div>
+    <div class="mt-3" *ngFor="let comentario of respuestasForo">
+      <p-panel [toggleable]="true">
+        <ng-template pTemplate="header">
+          <div class="flex align-items-center gap-2">
+            <p-avatar image="assets/demo/images/matemit/user.png" size="large" shape="circle" />
+            <span class="font-bold">
+              {{ comentario.cNombres }}
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="flex align-items-center gap-2">
+              <!-- <p-button
+                                icon="pi pi-thumbs-up"
+                                rounded="true"
+                                text="true"
+                            /> -->
+              <!-- pi-thumbs-up-fill -->
+              <!-- <p-button
+                                icon="pi pi-bookmark"
+                                severity="secondary"
+                                rounded="true"
+                                text="true"
+                            /> -->
+
+              <p-button label="Responder" [link]="true" (click)="responderComentario(comentario)" />
+              <p-button [link]="true" icon="pi pi-comments" iconPos="right">
+                <label for="" class="mr-1">
+                  {{ comentario.json_respuestas_comentarios.length || 0 }}
+                </label>
+              </p-button>
+            </div>
+            <span class="p-text-secondary">
+              <!-- Actualizado hace 2 horas -->
+              Publicado el
+              {{ comentario?.dtCreado | date: 'short' }}
+            </span>
+          </div>
+        </ng-template>
+        <!-- <ng-template pTemplate="icons">
+                    <button
+                        class="p-panel-header-icon p-link mr-2"
+                        (click)="menu.toggle($event)"
+                    >
+                        <span class="pi pi-cog"></span>
+                    </button>
+                    <p-menu
+                        #menu
+                        id="config_menu"
+                        [model]="items"
+                        [popup]="true"
+                    />
+                </ng-template> -->
+        <p class="m-0 text-justify">
+          {{ comentario?.cForoRptaRespuesta | removeHTML }}
+        </p>
+      </p-panel>
+      <!-- mostrar respuestas del comentario y poder comentar -->
+      <div class="comentario mt-2 ml-5" *ngIf="selectedCommentIndex === comentario.iForoRptaId">
+        <div class="mb-2" *ngFor="let item of comentario.json_respuestas_comentarios">
+          <!-- @for (item of comentario.json_respuestas_comentarios; track item ) { -->
+          <p-panel [toggleable]="true">
+            <ng-template pTemplate="header">
+              <div class="flex align-items-center gap-2">
+                <p-avatar
+                  image="https://primefaces.org/cdn/primeng/images/primeng.svg"
+                  size="large"
+                  shape="circle"
+                />
+                <span class="font-bold">
+                  {{ item.cNombres }}
+                </span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <div class="flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="flex align-items-center gap-2">
+                  <!-- <p-button
+                                            icon="pi pi-thumbs-up"
+                                            rounded="true"
+                                            text="true"
+                                        /> -->
+                  <!-- pi-thumbs-up-fill -->
+                  <!-- <p-button
+                                            icon="pi pi-bookmark"
+                                            severity="secondary"
+                                            rounded="true"
+                                            text="true"
+                                        /> -->
+                  <!-- <p-button
+                                            label="Responder"
+                                            [link]="true"
+                                            (click)="responderComentario(comentario)"
+                                        /> -->
+                </div>
+                <span class="p-text-secondary">
+                  <!-- Publicado el
+                                        {{comentario?.dtCreado | date: 'short' }} -->
+                </span>
+              </div>
+            </ng-template>
+            <p class="m-0 text-justify">
+              {{ item?.cForoRptaRespuesta | removeHTML }}
+            </p>
+          </p-panel>
+          <!-- } -->
+        </div>
+        <div class="m-3 flex-1 flex gap-2">
+          <!-- <input 
+                            type="text" 
+                            placeholder="Escribe una respuesta..."
+                            
+                            class="flex-1 bg-gray-100 border-round-3xl px-3 py-2 text-sm border-none outline-none"
+                            style="background-color: #f0f2f5;"
+                            value="{{comentario.cNombres}}"
+                        > -->
+          <textarea
+            #textareaRef
+            pInputTextarea
+            autoResize
+            [(ngModel)]="respuestaComentario[comentario.iForoRptaId]"
+            rows="1"
+            class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
+            placeholder="Escribe tu comentario a {{ comentario.cNombres }}"
+          >
+          </textarea>
+          <!-- [(ngModel)]="replyTexts[comment.id]"
+                            (keyup.enter)="addReply(comment.id)"
+                            (click)="addReply(comment.id)"
+                            value="{{ comentario.cNombres }}" -->
+          <button
+            class="p-2 border-none bg-transparent text-primary cursor-pointer hover:bg-primary-50 border-round"
+            (click)="sendCommentPadre(comentario.iForoRptaId)"
+          >
+            <i class="pi pi-send"></i>
+          </button>
+          <button
+            class="p-2 border-none bg-transparent text-primary cursor-pointer hover:bg-primary-50 border-round"
+            (click)="cancelarEdicion()"
+          >
+            <i class="pi pi-times text-gray-700"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- mostrar sms cuando aun no ningun comentario  -->
+    <ng-container *ngIf="!respuestasForo">
+      <app-no-data
+        [showIcon]="'NO-DATA'"
+        [mensaje]="'Aún no hay comentarios sobre este tema. ¡Sé el primero en opinar!'"
+      ></app-no-data>
+      <!-- "Aún no hay comentarios sobre este tema. ¡Sé el primero en opinar!"
+                "Todavía no se ha iniciado ninguna conversación aquí. ¿Qué piensas tú?"
+                "Sin comentarios por el momento. Tu opinión puede abrir el diálogo."
+                "Esperando las primeras ideas... ¿te animas a compartir la tuya?"
+                "Nadie ha comentado aún. Esta es tu oportunidad de empezar la conversación." -->
+    </ng-container>
+    <div class="mt-3">
+      <!-- <div class="flex justify-content-end flex-wrap">
+                <div class="flex justify-content-end mx-5">
+                    <button
+                        class="p-2 border-none bg-transparent text-primary cursor-pointer hover:bg-primary-50 border-round"
+                        >
+                        <i class="pi pi-send"></i>
+                    </button>
+                </div>
+            </div> -->
+      <!-- Component Template (comment-bar.component.html) -->
+      <div
+        class="comment-bar-container bg-gray-400 border-round p-3 mx-auto"
+        style="max-width: auto; background-color: #3a3b3c"
+      >
+        <div class="flex align-items-center gap-3">
+          <!-- Avatar -->
+          <!-- <img
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face"
+                        alt="Avatar"
+                        class="w-3rem h-3rem border-circle flex-shrink-0"
+                    /> -->
+
+          <!-- Input Area -->
+          <textarea
+            #textareaRef
+            pInputTextarea
+            autoResize
+            [(ngModel)]="comentarioPrincipal"
+            rows="1"
+            [style]="{ minHeight: '3rem' }"
+            class="w-full text-justify flex-1 bg-gray-100 border-round-lg px-3 py-3 text-base border-none outline-none"
+            placeholder="Escribe tu comentario...."
+          >
+          </textarea>
+
+          <!-- Action Buttons -->
+          <div class="flex align-items-center gap-2">
+            <!-- Emoji/Sticker Button -->
+            <!-- <button 
+                            class="action-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer"
+                            (click)="toggleEmoji()"
+                            style="background: transparent; border: none; color: #b0b3b8;"
+                        >
+                            <i class="pi pi-face-smile text-lg"></i>
+                        </button> -->
+
+            <!-- Camera Button -->
+            <!-- <button 
+                            class="action-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer"
+                            (click)="openCamera()"
+                            style="background: transparent; border: none; color: #b0b3b8;"
+                        >
+                            <i class="pi pi-camera text-lg"></i>
+                        </button> -->
+
+            <!-- GIF Button -->
+            <!-- <button 
+                            class="action-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer"
+                            (click)="openGifs()"
+                            style="background: transparent; border: none; color: #b0b3b8;"
+                        >
+                            <i class="pi pi-image text-lg"></i>
+                        </button> -->
+
+            <!-- Attachment Button -->
+            <!-- <button 
+                            class="action-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer"
+                            (click)="openAttachment()"
+                            style="background: transparent; border: none; color: #b0b3b8;"
+                        >
+                            <i class="pi pi-paperclip text-lg"></i>
+                        </button> -->
+
+            <!-- More Options Button -->
+            <!-- <button 
+                            class="action-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer"
+                            (click)="openMoreOptions()"
+                            style="background: transparent; border: none; color: #b0b3b8;"
+                        >
+                            <i class="pi pi-ellipsis-h text-lg"></i>
+                        </button> -->
+          </div>
+
+          <!-- Send Button (click)="submitComment()" [disabled]="!commentText.trim()" [style.color]="commentText.trim() ? '#1877f2' : '#65676b'"-->
+          <button
+            class="send-btn flex align-items-center justify-content-center w-2rem h-2rem border-round cursor-pointer ml-2"
+            style="background: transparent; border: none"
+            (click)="guardarComentario()"
+          >
+            <i class="pi pi-send text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (iPerfilId === DOCENTE) {
+    <div class="col-4">
+      <app-foro-estudiantes
+        [id]="id"
+        [iEstadoForo]="iEstadoForo"
+        [iIeCursoId]="iIeCursoId"
+        [iSeccionId]="iSeccionId"
+        [iNivelGradoId]="iNivelGradoId"
+        [iForoId]="ixActivadadId"
+      >
+      </app-foro-estudiantes>
+    </div>
+  }
+</div>
+
+<p-toast></p-toast>

@@ -29,55 +29,14 @@
             <div class="card col-12">
                 <div class="grid">
                     <!-- lista de participantes... -->
-                    <div class="col-12 md:col-4">
-                        <div class="pb-2">
-                            <label
-                                for=""
-                                class=""
-                                style="font-weight: bold; font-size: 16px"
-                                >Seleccionar estudiante:
-                            </label>
-                        </div>
-                        <!-- [value]="reporteNotasFinales" -->
-                        <p-orderList
-                            [value]="estudianteMatriculadosxGrado"
-                            class="listAlumno"
-                            filterBy="Estudiante"
-                            filterPlaceholder="Buscar...."
-                        >
-                            <ng-template
-                                let-estudiante
-                                of
-                                comentarios
-                                pTemplate="listItem"
-                                let-i="index"
-                            >
-                                <!-- (keydown.enter)="
-                                        obtenerComnt(estudiante)
-                                    "  -->
-                                <div
-                                    class="perfilesList"
-                                    tabindex="0"
-                                    (click)="obtenerCursoEstudiante(estudiante)"
-                                    (keydown.enter)="
-                                        obtenerCursoEstudiante(estudiante)
-                                    "
-                                >
-                                    <img
-                                        src="assets/demo/images/matemit/perfil.png"
-                                        alt=""
-                                        class="w-3rem btn"
-                                    />
-                                    <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
-                                    <div class="perfil-name">
-                                        {{ estudiante?.Estudiante | uppercase }}
-                                    </div>
-                                </div>
-                            </ng-template>
-                        </p-orderList>
+                    <div class="col-4">
+                        <app-card-orderlist
+                            [data]="estudianteMatriculadosxGrado"
+                            (datoSeleccionado)="obtenerCursoEstudiante($event)"
+                        ></app-card-orderlist>
                     </div>
                     <!-- lista de reporte final de logros -->
-                    <div class="md:col-8">
+                    <div class="col-8">
                         <div class="pb-2">
                             <label
                                 for=""

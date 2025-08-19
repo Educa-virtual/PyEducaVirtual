@@ -1,40 +1,64 @@
-<article
-    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
->
-    <div class="curso__image-container img-transition">
+<div class="clash-card">
+    <div class="clash-card__image clash-card__image--barbarian img-transition">
         <img
-            [src]="backend + '/' + curso.cCursoImagen"
-            [alt]="curso.cCursoNombre"
-            class="w-full h-full"
-            (error)="updateUrl(curso)"
+            [src]="backend + getUrlImg(curso?.cCursoImagen)"
+            [alt]="curso?.cCursoNombre"
         />
     </div>
-    <div class="p-3 mb-auto">
-        <h3 class="text-xl">
-            {{ curso.cCursoNombre }} {{ curso.cGradoAbreviacion }}
-            {{ curso.cSeccionNombre }}
-        </h3>
-        <p class="">
-            {{ curso.descripcion }}
-        </p>
+    <div
+        class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max"
+    >
+        <span>{{
+            curso?.cCursoNombre.length > 30
+                ? (curso?.cCursoNombre | slice: 0 : 30) + '...'
+                : curso?.cCursoNombre
+        }}</span>
     </div>
-    <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-        <span>{{ curso.cantidad }} Estudiantes</span>
+    <div
+        *ngIf="curso.bEstudiante === '1'"
+        class="title mt-4 font-bold text-center"
+    >
+        <span
+            >Docente: <br />{{
+                curso.bDocente === '1' ? curso.cDocente : '-'
+            }}</span
+        >
+    </div>
+    <div class="mx-4 mt-3 col-12 grid">
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-bookmark mr-2"></i>
+            <span
+                >{{ curso.cGradoAbreviacion }} Grado
+                {{ curso.cSeccionNombre || curso.cSeccion }}</span
+            >
+        </div>
+        <div class="col-12 grid column-gap-1 align-items-center">
+            <i class="pi pi-info-circle mr-2"></i>
+            <span>{{ curso.cantidad }} alumnos</span>
+        </div>
+    </div>
+
+    <div class="flex mx-3 mt-2 pb-4 justify-content-end">
         <p-button
-            [routerLink]="['./', curso.iSilaboId]"
+            label="Ingresar"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [routerLink]="['./', curso.iSilaboId || 0]"
             [queryParams]="{
                 cCursoNombre: curso.cCursoNombre,
                 cNivelTipoNombre: curso.cNivelTipoNombre,
                 cGradoAbreviacion: curso.cGradoAbreviacion,
-                cSeccionNombre: curso.cSeccionNombre,
+                cSeccionNombre: curso.cSeccionNombre || curso.cSeccion,
                 cCicloRomanos: curso.cCicloRomanos,
                 cNivelNombreCursos: curso.cNivelNombreCursos,
                 iCursoId: curso.iCursoId,
                 idDocCursoId: curso.idDocCursoId,
                 iNivelCicloId: curso.iNivelCicloId,
+                iIeCursoId: curso.iIeCursoId,
+                iSeccionId: curso.iSeccionId,
+                iNivelGradoId: curso.iNivelGradoId,
+                cantidad: curso.cantidad,
             }"
-            label="Ver más"
-            styleClass="p-button-link"
         ></p-button>
-    </footer>
-</article>
+    </div>
+</div>

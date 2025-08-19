@@ -1,0 +1,54 @@
+<app-toolbar-primeng [title]="'Resultados'" />
+<!-- *ngIf="!detalleVisible" -->
+<div class="grid" *ngIf="!detalleVisible" #gridContainer>
+  <div class="col-12">
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-search"></i>
+      </p-inputGroupAddon>
+      <p-dropdown
+        [ngClass]="{
+          dropdownStyle: tipoCapacitacionSearch,
+        }"
+        [options]="tipoCapacitacionSearch"
+        styleClass="w-full"
+        placeholder="Buscar por tipo"
+        optionValue="iTipoCapId"
+        optionLabel="cTipoCapNombre"
+        [(ngModel)]="iTipoCapId"
+        (onChange)="filtrarCapacitaciones($event)"
+      >
+      </p-dropdown>
+    </p-inputGroup>
+  </div>
+  <div class="col-12 mb-7 cursos" *ngIf="data && data.length > 0">
+    @for (capacitacion of data; track capacitacion) {
+      <app-card-capacitaciones
+        [capacitacion]="capacitacion"
+        (verDetalle)="onVerDetalle($event)"
+        [descripcion]="false"
+      ></app-card-capacitaciones>
+      <!-- (verDetalle)="onVerDetalle($event)" -->
+    }
+  </div>
+  <div class="col-12 mt-5" *ngIf="data && data.length > 0">
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="paginator.first"
+      [rows]="paginator.rows"
+      [totalRecords]="paginator.total"
+      [rowsPerPageOptions]="paginator.rowsPerPage"
+    />
+  </div>
+</div>
+<!-- *ngIf="detalleVisible" -->
+<div *ngIf="detalleVisible">
+  <!-- <app-detalle-inscripcion
+        [id]="idSeleccionado"
+        (volver)="volverALista()"
+    ></app-detalle-inscripcion> -->
+  <app-certificacion-academica
+    [id]="idSeleccionado"
+    (volver)="volverALista()"
+  ></app-certificacion-academica>
+</div>

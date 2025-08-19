@@ -1,0 +1,98 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase">
+      <div class="flex flex-column">
+        <div class="flex text-xl">RESUMEN DE ENCUESTA</div>
+        <div class="flex text-sm">{{ cEncuNombre }}</div>
+      </div>
+    </span>
+  </ng-template>
+
+  <form>
+    <div class="grid">
+      <div class="col-12" *ngFor="let pregunta of preguntas; let i = index">
+        <p-fieldset
+          [legend]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
+          [toggleable]="true"
+          [collapsed]="false"
+          [style]="{ width: '100%' }"
+        >
+          <ng-container *ngIf="pregunta.resumen">
+            <div class="grid text-panel" [formGroup]="getFormResumenPregunta(i)">
+              <div class="col-12 md:col-6" *ngIf="+pregunta.iEncuPregTipoId !== PREGUNTA_ABIERTA">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Tipo de gráfico</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="tipos_graficos"
+                    formControlName="iTipoGrafico"
+                    [filter]="true"
+                    [showClear]="false"
+                    appendTo="body"
+                    placeholder="Seleccione"
+                    [style]="{ flex: '1', width: '100%' }"
+                    styleClass="group-element"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="+pregunta.iEncuPregTipoId === PREGUNTA_ABIERTA">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Tipo de reporte</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="tipos_reportes"
+                    formControlName="iTipoReporte"
+                    [filter]="true"
+                    [showClear]="false"
+                    appendTo="body"
+                    placeholder="Seleccione"
+                    [style]="{ flex: '1', width: '100%' }"
+                    styleClass="group-element"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12" *ngIf="+pregunta.iEncuPregTipoId !== PREGUNTA_ABIERTA">
+                <p-chart
+                  *ngIf="getFormResumenPregunta(i).get('iTipoGrafico')?.value === GRAFICO_BARRA"
+                  type="bar"
+                  [data]="pregunta.resumen_grafico"
+                  [options]="options_bar"
+                  [plugins]="plugin_bar"
+                  style="width: 100%"
+                />
+                <p-chart
+                  *ngIf="getFormResumenPregunta(i).get('iTipoGrafico')?.value === GRAFICO_CIRCULAR"
+                  type="pie"
+                  [data]="pregunta.resumen_grafico"
+                  [options]="options_pie"
+                  [plugins]="plugin_pie"
+                  class="col-12 md:col-6"
+                  height="300px"
+                />
+              </div>
+              <div class="col-12" *ngIf="+pregunta.iEncuPregTipoId === PREGUNTA_ABIERTA">
+                <p-chart
+                  *ngIf="
+                    getFormResumenPregunta(i).get('iTipoReporte')?.value === TIPO_REPORTE_LISTA
+                  "
+                  type="bar"
+                  [data]="pregunta.resumen_grafico"
+                  [options]="options_bar"
+                  [plugins]="plugin_bar"
+                  style="width: 100%"
+                />
+                <app-wordcloud-chart
+                  *ngIf="
+                    getFormResumenPregunta(i).get('iTipoReporte')?.value === TIPO_REPORTE_INDIVIDUAL
+                  "
+                  [wordCloudData]="pregunta.resumen_wordcloud"
+                  [WordCloudOptions]="options_wordcloud"
+                />
+              </div>
+            </div>
+          </ng-container>
+        </p-fieldset>
+      </div>
+    </div>
+  </form>
+</p-panel>

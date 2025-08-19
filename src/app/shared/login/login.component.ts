@@ -8,7 +8,9 @@ import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { RecoverPasswordComponent } from '../recover-password/recover-password.component'
-import { SinRolAsignadoComponent } from '../../sistema/sin-rol-asignado/sin-rol-asignado.component'
+import { SinRolAsignadoComponent } from '../../sistema/usuarios/sin-rol-asignado/sin-rol-asignado.component'
+import { DomSanitizer } from '@angular/platform-browser'
+import { DialogModule } from 'primeng/dialog'
 
 interface Data {
     accessToken: string
@@ -28,7 +30,12 @@ interface Data {
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [PrimengModule, RecoverPasswordComponent, SinRolAsignadoComponent],
+    imports: [
+        PrimengModule,
+        RecoverPasswordComponent,
+        SinRolAsignadoComponent,
+        DialogModule,
+    ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
     providers: [MessageService],
@@ -39,8 +46,10 @@ export class LoginComponent implements OnInit {
     loadingText: string
     formLogin!: FormGroup
     modalSinRolAsignado: boolean
+    anuncio: boolean = true
 
     constructor(
+        public sanitizer: DomSanitizer,
         private tokenStorage: TokenStorageService,
         private router: Router,
         private fb: FormBuilder,
@@ -73,6 +82,14 @@ export class LoginComponent implements OnInit {
         this.loadingText = 'Verificando...'
         this.authService.login(this.formLogin.value).subscribe({
             next: (response: Data) => {
+                console.log(response)
+                if (!response.accessToken) {
+                    response.accessToken = response.data.accessToken
+                }
+                if (!response.user) {
+                    response.user = response.data.user
+                }
+
                 this.loading = false
 
                 /*if (!response.user)

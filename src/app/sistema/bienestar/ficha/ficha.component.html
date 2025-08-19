@@ -1,0 +1,51 @@
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">FICHA SOCIOECÓNOMICA</div>
+      <div class="flex text-sm">{{ cPersNombreApellidos }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        icon="pi pi-download"
+        label="Descargar Ficha"
+        size="small"
+        severity="info"
+        (onClick)="descargarFicha()"
+      />
+    </div>
+  </ng-template>
+  <p-tabMenu
+    #tabMenu
+    [model]="items"
+    scrollable="true"
+    (activeItemChange)="scrollToActiveTab(activeItem)"
+    [activeItem]="activeItem"
+  >
+    <ng-template pTemplate="item" let-item>
+      <ng-container *ngIf="item.route">
+        @if (items[activeItem] === item) {
+          <a [routerLink]="item.route" class="p-menuitem-link" [title]="item.label">
+            <span [class]="item.icon"></span>
+            <span class="block ml-2">
+              {{ item.label }}
+            </span>
+          </a>
+        } @else {
+          <a
+            [routerLink]="item.route"
+            class="p-menuitem-link text-color-secondary"
+            [title]="item.label"
+          >
+            <span [class]="item.icon"></span>
+            <span class="hidden md:block ml-2">
+              {{ item.label }}
+            </span>
+          </a>
+        }
+      </ng-container>
+    </ng-template>
+  </p-tabMenu>
+  <router-outlet></router-outlet>
+</p-panel>

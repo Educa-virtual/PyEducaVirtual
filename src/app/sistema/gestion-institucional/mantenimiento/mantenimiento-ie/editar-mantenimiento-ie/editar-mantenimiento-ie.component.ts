@@ -13,8 +13,6 @@ export class EditarMantenimientoIeComponent implements OnInit {
   @Input() selectedItem: any = null;
   @Output() eventEditarMantenimientoIe = new EventEmitter<boolean>();
   titulo: string = 'Editar';
-  mostrarEditarMantenimiento: boolean = false;
-  cerrarModal = true;
   constructor(private fb: FormBuilder) {}
   ngOnInit() {
     console.log('EditarManteniminetoie OnInit');

@@ -2,14 +2,15 @@
   <ng-template pTemplate="header">
     <div class="flex justify-content-between align-items-center w-full">
       <h3 class="m-0 text-uppercase text-primary">Mantenimiento I.E.</h3>
-      <!-- <button
+      <button
         pButton
         label="Agregar"
         pRipple
         pTooltip="Agregar"
         class="p-button-primary"
         icon="pi pi-plus"
-      ></button> -->
+        (click)="agregarMantenimiento()"
+      ></button>
     </div>
   </ng-template>
 
@@ -44,5 +45,21 @@
     (eventEditarMantenimientoIe)="cerrarModalEdicion($event)"
   >
   </app-editar-mantenimiento-ie>
+</p-dialog>
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="titleAgregarMantenimiento"
+  [(visible)]="mostrarAgregarMantenimiento"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+  <app-agregar-mantenimiento-ie
+    [selectedItem]="selectedItem"
+    (eventAgregarMantenimientoIe)="cerrarModalAgregar($event)"
+  >
+  </app-agregar-mantenimiento-ie>
 </p-dialog>
 <p-toast></p-toast>

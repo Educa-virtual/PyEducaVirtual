@@ -7,17 +7,25 @@ import {
 import { EditarMantenimientoIeComponent } from './editar-mantenimiento-ie/editar-mantenimiento-ie.component';
 import { MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
 @Component({
   selector: 'app-mantenimiento-ie',
   standalone: true,
-  imports: [TablePrimengComponent, PrimengModule, EditarMantenimientoIeComponent],
+  imports: [
+    TablePrimengComponent,
+    PrimengModule,
+    EditarMantenimientoIeComponent,
+    AgregarMantenimientoIeComponent,
+  ],
   templateUrl: './mantenimiento-ie.component.html',
   styleUrl: './mantenimiento-ie.component.scss',
 })
 export class MantenimientoIeComponent implements OnInit {
   selectedItem: any;
   titleEditarMantenimiento: string = 'Editar';
+  titleAgregarMantenimiento: string = 'Agregar';
   mostrarEditarMantenimiento: boolean = false;
+  mostrarAgregarMantenimiento: boolean = false;
   columns = [
     {
       type: 'item',
@@ -133,6 +141,10 @@ export class MantenimientoIeComponent implements OnInit {
     console.log('Data:', this.dataMantenimiento);
   }
 
+  agregarMantenimiento() {
+    this.mostrarAgregarMantenimiento = true;
+  }
+
   EditarMantenimiento() {
     this.mostrarEditarMantenimiento = true;
   }
@@ -144,6 +156,20 @@ export class MantenimientoIeComponent implements OnInit {
         this.dataMantenimiento = this.dataMantenimiento.filter(m => m.id !== item.id);
       },
     });
+  }
+
+  cerrarModalAgregar(estado: boolean) {
+    this.mostrarAgregarMantenimiento = estado;
+    if (!estado) {
+      this.selectedItem = null;
+    }
+  }
+
+  cerrarModalEdicion(estado: boolean) {
+    this.mostrarEditarMantenimiento = estado;
+    if (!estado) {
+      this.selectedItem = null;
+    }
   }
 
   accionBtnItemTable({ accion, item }) {
@@ -191,10 +217,4 @@ export class MantenimientoIeComponent implements OnInit {
       class: 'p-button-rounded p-button-warning p-button-text',
     },
   ];
-  cerrarModalEdicion(estado: boolean) {
-    this.mostrarEditarMantenimiento = estado;
-    if (!estado) {
-      this.selectedItem = null;
-    }
-  }
 }

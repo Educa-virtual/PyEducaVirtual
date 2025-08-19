@@ -1,43 +1,38 @@
-<p-breadcrumb
-    class="max-w-full"
-    [model]="breadCrumbItems"
-    [home]="breadCrumbHome"
->
-</p-breadcrumb>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome"> </p-breadcrumb>
 <p-panel>
-    <ng-template pTemplate="header">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-uppercase text-primary">
-                {{ title }}
-            </h3>
-        </div>
-    </ng-template>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">
+        {{ title }}
+      </h3>
+    </div>
+  </ng-template>
 
-    <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="true"
-        [data]="dataSugerencias"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        sortMode="single"
-        sortField="dtFechaCreacion"
-        [sortOrder]="-1"
-        [(selectedRowData)]="selectedItem"
-        [actions]="actions"
-        [showAdvancedFilter]="true"
-        [indiceColumnaBuscar]="3"
-        [showAdvancedFilter]="false"
-        [searchPlaceholder]="'Buscar por sugerencia...'"
-    >
-    </app-table-primeng>
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="dataSugerencias"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    sortMode="single"
+    sortField="dtFechaCreacion"
+    [sortOrder]="-1"
+    [(selectedRowData)]="selectedItem"
+    [actions]="actions"
+    [showAdvancedFilter]="true"
+    [indiceColumnaBuscar]="3"
+    [showAdvancedFilter]="false"
+    [searchPlaceholder]="'Buscar por sugerencia...'"
+  >
+  </app-table-primeng>
 </p-panel>
 
 <app-responder-sugerencia
-    (eventSugerenciaRespondida)="listenSugerenciaRespondida($event)"
-    (eventCerrarResponderSugerencia)="listenCerrarResponderSugerencia($event)"
-    [selectedItem]="selectedItem"
-    #responderSugerenciaComponent
-    [visible]="mostrarFormularioResponder"
+  (eventSugerenciaRespondida)="listenSugerenciaRespondida($event)"
+  (eventCerrarResponderSugerencia)="listenCerrarResponderSugerencia($event)"
+  [selectedItem]="selectedItem"
+  #responderSugerenciaComponent
+  [visible]="mostrarFormularioResponder"
 ></app-responder-sugerencia>
 
 <p-toast></p-toast>

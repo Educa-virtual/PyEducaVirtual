@@ -1,0 +1,10 @@
+// .disabled {
+//   background-color: #e9ecef !important;
+//   opacity: 1 !important;
+// }
+
+.disabled {
+  background-color: #f0f0f0;
+  pointer-events: none;
+  opacity: 0.6;
+}

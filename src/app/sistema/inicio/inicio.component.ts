@@ -14,6 +14,9 @@ import { GeneralService } from '@/app/servicios/general.service'
     imports: [CommonModule, PrimengModule],
 })
 export class InicioComponent implements OnInit {
+    mensaje: any[] | undefined
+    bandeja: any[] = []
+    bandejaFiltrada: any[] = []
     visible = false
     name: string
     name1: string
@@ -23,11 +26,12 @@ export class InicioComponent implements OnInit {
     perfilSeleccionado: any = {}
     iYAcadId: string
     iSedeId: string
+    iPerfilId: number
+    iEstudianteId: number
     // Variables para el diálogo de comunicado
     displayComunicado: boolean = false
     comunicado: any = null
     comunicados: any[] = []
-
     products: any = undefined
     responsiveOptions: any[] | undefined
     titulo = ''
@@ -41,6 +45,8 @@ export class InicioComponent implements OnInit {
     ) {
         this.iYAcadId = this.ConstantesService.iYAcadId
         this.iSedeId = this.ConstantesService.iSedeId
+        this.iPerfilId = this.ConstantesService.iPerfilId
+        this.iEstudianteId = this.ConstantesService.iEstudianteId
         this.responsiveOptions = [
             {
                 breakpoint: '1199px',

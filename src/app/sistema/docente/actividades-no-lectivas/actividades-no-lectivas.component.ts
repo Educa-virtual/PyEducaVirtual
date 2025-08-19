@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { Message, MessageService } from 'primeng/api'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
@@ -23,11 +23,23 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
     providers: [MessageService],
 })
 export class ActividadesNoLectivasComponent implements OnInit {
+    @Input() bAprobarActividad: boolean = false // Para mostrar el botón de agregar actividad no lectiva
+    @Input() iDocenteId: number = null
+    perfil: any = {}
+    bAprobacion: boolean = false // Para mostrar el modal de aprobación de actividad no lectiva
+    showModalAprobarActividad: boolean = false
+
     private _ConstantesService = inject(ConstantesService)
     private _GeneralService = inject(GeneralService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
-    private _LocalStoreService = inject(LocalStoreService)
+    private _confirmService = inject(ConfirmationModalService)
+    //private _LocalStoreService = inject(LocalStoreService)
     private _MessageService = inject(MessageService)
+
+    constructor(private _LocalStoreService: LocalStoreService) {
+        this.perfil = this._LocalStoreService.getItem('dremoPerfil')
+        console.log(this.perfil, 'perfil')
+    }
 
     mensaje: Message[] = [
         {
@@ -44,6 +56,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-primary',
+            disabled: this.bAprobarActividad,
         },
         // {
         //     labelTooltip: 'Refrescar lista de metodologías',
@@ -60,6 +73,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
             accion: 'actualizar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado != 1 && !this.bAprobarActividad
+            },
         },
         {
             labelTooltip: 'Eliminar',
@@ -67,14 +83,26 @@ export class ActividadesNoLectivasComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: (rowData) => {
+                return rowData.iEstado != 1 && !this.bAprobarActividad
+            },
+        },
+        {
+            labelTooltip: 'Aprobar',
+            icon: 'pi  pi-check-square',
+            accion: 'aprobar',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+            isVisible: () => this.bAprobarActividad,
         },
     ]
+
     data = []
     tiposCargaNoLectivas = []
-    item = []
+    item: { iDetCargaNoLectId?: number } = {}
     titulo: string = ''
     opcion: string = ''
-    informacion
+    informacion: any = []
     columns = [
         {
             type: 'item',
@@ -103,8 +131,32 @@ export class ActividadesNoLectivasComponent implements OnInit {
         {
             type: 'text',
             width: '2rem',
+            field: 'cDescripcion',
+            header: 'Descripcion',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'date',
+            width: '2rem',
+            field: 'dtInicio',
+            header: 'Fecha de Registro',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '2rem',
             field: 'nDetCargaNoLectHoras',
             header: 'Duración Horas',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'estado-activo',
+            width: '2rem',
+            field: 'iEstado',
+            header: 'Estado',
             text_header: 'center',
             text: 'center',
         },
@@ -127,22 +179,49 @@ export class ActividadesNoLectivasComponent implements OnInit {
     ]
 
     ngOnInit() {
-        !this.tiposCargaNoLectivas.length
-            ? this.obtenerTiposCargaNoLectivas()
-            : null
-        this.obtenerCargaNoLectivasxTiposDedicaciones()
-        this.obtenerCargaNoLectivas()
+        if (this.perfil.cPerfilNombre === 'DOCENTE') {
+            this.bAprobarActividad = false
+            if (!this.tiposCargaNoLectivas.length) {
+                this.obtenerTiposCargaNoLectivas()
+            }
+
+            this.obtenerCargaNoLectivasxTiposDedicaciones()
+            this.obtenerCargaNoLectivas()
+        }
+
+        // Si el perfil es ADMINISTRADOR o DIRECTOR, se muestra el botón de aprobar actividad no lectiva
+        else if (this.perfil.cPerfilNombre === 'DIRECTOR IE') {
+            this.bAprobarActividad = true
+            this.actionsContainer = []
+
+            this.obtenerCargaNoLectivas()
+            this.obtenerCargaNoLectivasxTiposDedicaciones()
+            this.obtenerTiposCargaNoLectivas()
+        }
     }
+
     accionBtnItem(elemento): void {
+        this.showModalAprobarActividad = false
+
         const { accion } = elemento
         const { item } = elemento
         switch (accion) {
             case 'close-modal':
                 this.showModal = false
                 break
+
+            case 'aprobar':
+                // this.showModalAprobarActividad = true
+                this.item = item
+                this.bAprobacion = item.iEstado === 1 ? true : false
+                this.cambioAprobacion()
+                // const perfil = this.perfil.cPerfilNombre === 'DOCENTE'
+                // const iCredId = this.perfil.iCredId
+                break
+
             case 'agregar':
             case 'actualizar':
-                if (Number(this.informacion.iFalta) === 0) {
+                if (Number(this.informacion?.iFalta) === 0) {
                     this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -151,6 +230,10 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 } else {
                     this.showModal = true
                     this.item = item
+                    const dtInicio = item.dtInicio
+                        ? item.dtInicio.split(' ')[0]
+                        : null
+                    this.item['dtInicio'] = dtInicio
                     this.titulo =
                         accion === 'agregar'
                             ? 'AGREGAR CARGA NO LECTIVA'
@@ -200,11 +283,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
             case 'CONSULTARxiDocenteIdxTiposDedicaciones':
                 this.informacion = item.length ? item[0] : null
-                this.informacion.iFalta =
-                    this.informacion.iFalta === '.00'
-                        ? '0.00'
-                        : this.informacion.iFalta
-
+                if (this.informacion && this.informacion.iFalta === '.00') {
+                    this.informacion.iFalta = '0.00'
+                }
                 break
         }
     }
@@ -231,8 +312,11 @@ export class ActividadesNoLectivasComponent implements OnInit {
             ruta: 'list',
             data: {
                 opcion: 'CONSULTARxiDocenteIdxTiposDedicaciones',
-                iDocenteId: this._ConstantesService.iDocenteId,
+                iDocenteId: this.iDocenteId
+                    ? this.iDocenteId
+                    : this._ConstantesService.iDocenteId,
                 valorBusqueda: iYearId,
+                iSedeId: this._ConstantesService.iSedeId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -247,7 +331,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
             ruta: 'list',
             data: {
                 opcion: 'CONSULTARxiDocenteIdxiYearId',
-                iDocenteId: this._ConstantesService.iDocenteId,
+                iDocenteId: this.iDocenteId
+                    ? this.iDocenteId
+                    : this._ConstantesService.iDocenteId,
                 valorBusqueda: iYearId,
             },
         }
@@ -255,8 +341,13 @@ export class ActividadesNoLectivasComponent implements OnInit {
     }
     GuardarActualizarDetalleCargaNoLectivas(item) {
         const iYearId = this._LocalStoreService.getItem('dremoYear')
-        item.iDocenteId = this._ConstantesService.iDocenteId
-        item.valorBusqueda = iYearId
+        item.dtInicio = item.dtInicio
+            ? new Date(item.dtInicio).toISOString()
+            : null
+        ;(item.iDocenteId = this.iDocenteId
+            ? this.iDocenteId
+            : this._ConstantesService.iDocenteId),
+            (item.valorBusqueda = iYearId)
         const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update'
         const prefix =
             item.opcion === 'GUARDAR'
@@ -301,7 +392,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
                     accion === 'store-carga-no-lectivas' ||
                     accion === 'update-detalle-carga-no-lectivas'
                 ) {
-                    console.log(response)
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Éxito',
@@ -311,7 +401,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
@@ -320,4 +409,72 @@ export class ActividadesNoLectivasComponent implements OnInit {
             },
         })
     }
+
+    cambioAprobacion() {
+        this._confirmService.openConfirm({
+            header: 'Advertencia de actividades no lectivas',
+            message: 'Desea aprobar la actividad no lectiva?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.aprobarActividad(1)
+                this._MessageService.add({
+                    severity: 'success',
+                    summary: 'Mensaje de sistema',
+                    detail: 'Actividad aprobada',
+                })
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.aprobarActividad(0)
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Mensaje de sistema',
+                    detail: 'Actividad desaprobada',
+                })
+            },
+        })
+    }
+
+    aprobarActividad(iEstado) {
+        const iDetCargaNoLectId = this.item.iDetCargaNoLectId
+        this.showModalAprobarActividad = false
+
+        //const iEstado =  event.checked ? 1 : 0;
+        const params = {
+            iDetCargaNoLectId: Number(iDetCargaNoLectId),
+            iEstado: iEstado,
+            iSesionId: Number(this.perfil.iCredId),
+        }
+
+        this._GeneralService
+            .updateCalAcademico({
+                json: JSON.stringify(params),
+                _opcion: 'updAprobacionCargaNoLectiva',
+            })
+            .subscribe({
+                error: (error) => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje de sistema',
+                        detail:
+                            'Error. No se proceso petición ' + error.message,
+                    })
+                },
+                complete: () => {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje de sistema',
+                        detail: 'Proceso exitoso',
+                    })
+
+                    this.obtenerCargaNoLectivas()
+                    this.obtenerCargaNoLectivasxTiposDedicaciones()
+                },
+            })
+    }
+
+    //validar iDetCargaNoLectId
+
+    //this._GeneralService.updateCalendario(params) .subscribe()
 }

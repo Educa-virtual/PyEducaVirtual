@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { ToolbarPrimengComponent } from '../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { FullCalendarioComponent } from '../../../shared/full-calendario/full-calendario.component' // * traduce el Modulo de calendario a español
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -12,7 +12,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     templateUrl: './calendario.component.html',
     styleUrl: './calendario.component.scss',
 })
-export class CalendarioComponent {
+export class CalendarioComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private ConstantesService = inject(ConstantesService)
 

@@ -10,8 +10,9 @@ export const storeDetalleCargaNoLectivas: any = new FormGroup({
     iTipoCargaNoLectId: new FormControl('', Validators.required),
     nDetCargaNoLectHoras: new FormControl('', Validators.required),
     cDetCargaNoLectEvidencias: new FormControl(''),
-
     iCredId: new FormControl(iCredId),
+    cDescripcion: new FormControl(''),
+    dtInicio: new FormControl(''),
 })
 
 export const updateDetalleCargaNoLectivas: any = new FormGroup({
@@ -23,6 +24,8 @@ export const updateDetalleCargaNoLectivas: any = new FormGroup({
     iTipoCargaNoLectId: new FormControl(''),
     nDetCargaNoLectHoras: new FormControl(''),
     cDetCargaNoLectEvidencias: new FormControl(''),
+    cDescripcion: new FormControl(''),
+    dtInicio: new FormControl(''),
 
     iCredId: new FormControl(iCredId),
 })
@@ -36,6 +39,8 @@ export const listDetalleCargaNoLectivas: any = new FormGroup({
     iTipoCargaNoLectId: new FormControl(''),
     nDetCargaNoLectHoras: new FormControl(''),
     cDetCargaNoLectEvidencias: new FormControl(''),
+    // cDescripcion: new FormControl(''),
+    // dtInicio: new FormControl(''),
 
     iCredId: new FormControl(iCredId),
 })

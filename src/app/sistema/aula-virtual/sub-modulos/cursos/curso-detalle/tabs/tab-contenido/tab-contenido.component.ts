@@ -696,6 +696,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         this.opcionEvaluacion = action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR';
         this.semanaEvaluacion = this.datos;
         this.semanaEvaluacion.idDocCursoId = this.idDocCursoId;
+        this.semanaEvaluacion.iCapacitacionId = this.iCapacitacionId;
         this.iEvaluacionId = actividad.ixActivadadId;
         break;
       case 'ELIMINAR':

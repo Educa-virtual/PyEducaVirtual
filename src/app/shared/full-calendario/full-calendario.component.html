@@ -75,43 +75,39 @@
   [(visible)]="showEventsDialog"
   [modal]="true"
   [closable]="true"
-  [style]="{ width: '520px' }"
+  [style]="{ width: '620px' }"
 >
   <div *ngIf="dialogEvents.length === 0" class="no-events">No hay eventos.</div>
 
   <table *ngIf="dialogEvents.length > 0" class="event-table" role="table">
     <thead>
       <tr>
+        <th class="col-index">#</th>
         <th class="col-time">Fecha</th>
         <th class="col-event">Evento</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let ev of dialogEvents" class="event-row">
-        <!--<td class="time-cell">
-          <span *ngIf="ev.start">{{ ev.start | date: 'HH:mm' }}</span>
-          <span *ngIf="ev.end"> - {{ ev.end | date: 'HH:mm' }}</span>
-        </td>-->
-
+      <tr *ngFor="let ev of dialogEvents; let i = index" class="event-row">
+        <td class="index-cell">{{ i + 1 }}</td>
         <td class="time-cell">
-          <!-- Si es evento allDay: mostramos solo fechas -->
           <ng-container *ngIf="ev.allDay; else timed">
-            <div *ngIf="ev.start">{{ ev.start | date: 'dd/MM/yyyy' : undefined : 'es' }}</div>
-            <div *ngIf="ev.end">- {{ ev.end | date: 'dd/MM/yyyy' : undefined : 'es' }}</div>
+            <div *ngIf="ev.start">{{ ev.start | date: 'dd/MMM' : undefined : 'es' }}</div>
+            <div *ngIf="ev.end">- {{ ev.end | date: 'dd/MMM' : undefined : 'es' }}</div>
           </ng-container>
 
           <!-- Evento con horario -->
           <ng-template #timed>
             <div *ngIf="ev.start">
-              Inicio: {{ ev.start | date: 'dd/MM/yyyy HH:mm' : undefined : 'es' }}
+              Inicio: {{ ev.start | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
             </div>
             <div *ngIf="ev.end">
-              Fin: &nbsp;&nbsp;{{ ev.end | date: 'dd/MM/yyyy HH:mm' : undefined : 'es' }}
+              Fin: &nbsp;&nbsp;&nbsp;&nbsp;{{ ev.end | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
             </div>
 
             <!-- Si no tiene end, solo muestra inicio (hora y fecha) -->
             <div *ngIf="!ev.end && ev.start">
-              {{ ev.start | date: 'dd/MM/yyyy HH:mm' : undefined : 'es' }}
+              {{ ev.start | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
             </div>
           </ng-template>
         </td>
@@ -120,6 +116,9 @@
           <div class="event-title">{{ ev.title }}</div>
           <div *ngIf="ev.extendedProps?.['cCursoNombre']" class="event-course">
             -Área: {{ ev.extendedProps?.['cCursoNombre'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cContenidoSemTitulo']" class="event-course">
+            -Ses. aprendizaje: {{ ev.extendedProps?.['cContenidoSemTitulo'] }}
           </div>
           <div *ngIf="ev.extendedProps?.['cDocenteNombre']" class="event-course">
             -Docente: {{ ev.extendedProps?.['cDocenteNombre'] }}

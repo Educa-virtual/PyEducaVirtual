@@ -385,7 +385,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
     if (this.iPerfilId === this.INSTRUCTOR) {
       const datos = {
-        iInscripIds: this.capacitacion.map(item => item.iInscripId).join(','),
+        iInscripId: this.capacitacion.map(item => item.iInscripId).join(','),
         iCapacitacionId: this.capacitacion.map(item => item.iCapacitacionId).join(','),
         iNroNota: this.conclusionDescrp.value.iNroNota,
         cConclusion: this.conclusionDescrp.value.cDetMatConclusionDescPromedio,

@@ -65,6 +65,7 @@ export class GestionFichasComponent implements OnInit {
   ies: any;
   sexos: any;
   distritos: any;
+  estados: any;
 
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
@@ -114,6 +115,7 @@ export class GestionFichasComponent implements OnInit {
         iNivelGradoId: [null],
         iSeccionId: [null],
         cPersSexo: [null],
+        iFichaEstado: [null],
       });
     } catch (error) {
       console.log(error, 'error de formulario');
@@ -129,6 +131,7 @@ export class GestionFichasComponent implements OnInit {
         this.nivel_tipos = this.datosInformes.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.datosInformes.getInstitucionesEducativas(data?.instituciones_educativas);
         this.sexos = this.datosInformes.getSexos();
+        this.estados = this.datosInformes.getEstados();
         this.datosInformes.getNivelesGrados(data?.nivel_grados);
         if (this.nivel_tipos && this.nivel_tipos.length === 1) {
           const nivel_tipo = this.nivel_tipos[0]['value'];
@@ -188,6 +191,7 @@ export class GestionFichasComponent implements OnInit {
         iNivelGradoId: this.formFiltros.value.iNivelGradoId,
         iSeccionId: this.formFiltros.value.iSeccionId,
         cPersSexo: this.formFiltros.value.cPersSexo,
+        iFichaEstado: this.formFiltros.value.iFichaEstado,
       })
       .subscribe({
         next: (data: any) => {
@@ -487,6 +491,9 @@ export class GestionFichasComponent implements OnInit {
       accion: 'imprimir',
       type: 'item',
       class: 'p-button-rounded p-button-secondary p-button-text',
+      isVisible(row) {
+        return Number(row.iFichaEstado) === 1;
+      },
     },
     {
       labelTooltip: 'Eliminar',
@@ -494,6 +501,9 @@ export class GestionFichasComponent implements OnInit {
       accion: 'eliminar',
       type: 'item',
       class: 'p-button-rounded p-button-primary p-button-text',
+      isVisible(row) {
+        return Number(row.iFichaEstado) === 1;
+      },
     },
   ];
 }

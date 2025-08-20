@@ -31,6 +31,7 @@ export class DatosInformeBienestarService {
   ugeles: Array<object>;
   zonas: Array<object>;
   tipo_sectores: Array<object>;
+  estados: Array<object>;
 
   antiguo_form: any;
   reportes: any;
@@ -67,6 +68,16 @@ export class DatosInformeBienestarService {
       ];
     }
     return this.sexos;
+  }
+
+  getEstados() {
+    if (!this.estados) {
+      this.estados = [
+        { label: 'EN PROCESO', value: 1 },
+        { label: 'EN BLANCO', value: 0 },
+      ];
+    }
+    return this.estados;
   }
 
   obtenerParametros(data: any) {

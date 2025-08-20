@@ -1,0 +1,88 @@
+@media (min-width: 768px) {
+  .md\:table-cell {
+    display: table-cell !important;
+  }
+}
+:host ::ng-deep {
+  .p-panel-header {
+    background-color: var(--primary-700);
+    color: white;
+  }
+  .p-panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .p-inputgroup p-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .boton {
+    width: 100%;
+    font-size: 12px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+  }
+}
+.primary-50-boton {
+  background-color: var(--primary-50);
+  color: var(--primary-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.green-50-boton {
+  background-color: var(--green-50);
+  color: var(--green-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.yellow-50-boton {
+  background-color: var(--yellow-50);
+  color: var(--yellow-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.orange-50-boton {
+  background-color: var(--orange-50);
+  color: var(--orange-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.red-50-boton {
+  background-color: var(--red-50);
+  color: var(--red-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.cyan-50-boton {
+  background-color: var(--cyan-50);
+  color: var(--cyan-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

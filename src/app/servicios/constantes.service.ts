@@ -792,7 +792,25 @@ const apoderado = [
 
 const first = [
   {
-    items: [inicio],
+    items: [
+      inicio,
+      {
+        label: 'Asistencia',
+        icon: 'pi pi-list-check',
+        items: [
+          {
+            label: 'Registro de Asistencia',
+            icon: 'pi pi-list-check',
+            routerLink: ['asistencia-auxiliar'],
+          },
+          {
+            label: 'Reporte de Asistencia',
+            icon: 'pi pi-chart-bar',
+            routerLink: ['reporte-asistencia-auxiliar'],
+          },
+        ],
+      },
+    ],
   },
 ];
 

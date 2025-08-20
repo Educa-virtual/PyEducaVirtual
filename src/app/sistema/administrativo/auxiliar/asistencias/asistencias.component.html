@@ -1,30 +1,86 @@
-<div class="grid">
-    <div class="col-12">
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between flex-wrap w-full">
+      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+        <span class="font-bold text-4xl">ASISTENCIA</span>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="grid h-full m-1">
+      <div class="col-12">
         <div class="flex">
-            <p-dropdown
-                class="mr-1"
-                [options]="cities"
-                [(ngModel)]="datos.idGrado"
-                optionLabel="name"
-                placeholder="Seleccionar Grado"
-            />
-            <p-dropdown
-                class="mr-1"
-                [options]="cities"
-                [(ngModel)]="datos.idSeccion"
-                optionLabel="name"
-                placeholder="Seleccionar Seccion"
-            />
-            <p-button
-                class="mr-1"
-                label="Search"
-                icon="pi pi-check"
-                [loading]="finalizar"
-                (onClick)="buscarGrupo()"
-            />
+          <p-dropdown
+            class="mr-1"
+            [options]="grado"
+            [(ngModel)]="datos.iGradoId"
+            (onChange)="filtrarSeccion()"
+            optionLabel="cGradoNombre"
+            optionValue="iGradoId"
+            placeholder="Seleccionar Grado"
+          />
+          <p-dropdown
+            class="mr-1"
+            [options]="seccion"
+            [(ngModel)]="datos.iSeccionId"
+            optionLabel="cSeccionNombre"
+            optionValue="iSeccionId"
+            placeholder="Seleccionar Seccion"
+          />
+          <p-calendar
+            appendTo="body"
+            class="mr-1"
+            [(ngModel)]="datos.fecha"
+            [showIcon]="true"
+            inputId="buttondisplay"
+            [showOnFocus]="false"
+          />
+          <p-button
+            class="mr-1"
+            label="Buscar"
+            icon="pi pi-check"
+            [loading]="finalizar"
+            (onClick)="buscarGrupo()"
+          />
         </div>
+      </div>
+      <div class="col-12">
+        <p-table
+          [value]="alumnos"
+          [paginator]="true"
+          [rows]="5"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          [rowsPerPageOptions]="[5, 10, 20]"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 5%">#</th>
+              <th style="width: 25%">Apellidos y Nombres</th>
+              <th class="hidden md:table-cell" style="width: 25%">DNI</th>
+              <th style="width: 10%">Asistencia</th>
+              <th style="width: 25%">Justificacion</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
+            <tr>
+              <td>{{ rowIndex + 1 }}</td>
+              <td>{{ alumno.completo }}</td>
+              <td class="hidden md:table-cell">{{ alumno.cPersDocumento }}</td>
+              <td>
+                <p-button
+                  size="small"
+                  styleClass="boton"
+                  (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
+                  ><span class="font-bold hidden md:table-cell">{{ alumno.cTipoAsiNombre }}</span>
+                  <span class="font-bold table-cell md:hidden">{{ alumno.cTipoAsiLetra }}</span>
+                </p-button>
+              </td>
+              <td></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
     </div>
-    <div class="col-12">
-        <app-table-primeng></app-table-primeng>
-    </div>
-</div>
+  </ng-template>
+</p-panel>
+<p-toast />

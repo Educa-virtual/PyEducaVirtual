@@ -715,9 +715,9 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             actividad.iProgActId,
             actividad.ixActivadadId,
             actividad.iActTipoId,
-            this.curso.iIeCursoId,
-            this.curso.iSeccionId,
-            this.curso.iNivelGradoId,
+            this.curso.iIeCursoId || 0,
+            this.curso.iSeccionId || 0,
+            this.curso.iNivelGradoId || 0,
           ],
           {
             queryParams: {

@@ -624,6 +624,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
             iActTipoId: actividad.iActTipoId,
             actividad: actividad,
             idDocCursoId: this.idDocCursoId,
+            iCapacitacionId: this.iCapacitacionId,
             action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
           },
           header: action === 'EDITAR' ? 'Editar Cuestionario' : 'Crear Cuestionario',
@@ -631,7 +632,6 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
         ref.onClose.subscribe(result => {
           if (result) {
             this.obtenerActividadesxiContenidoSemId(this.datos);
-            //this.obtenerContenidoSemanas(this.semanaSeleccionada);
           } else {
             console.log('Formulario cancelado');
           }

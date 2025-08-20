@@ -85,11 +85,13 @@
     </div>
   </div>
   <div *ngIf="seleccionar">
+    <br />
     <app-table-primeng
       [data]="estudiantes"
       [columnas]="columns"
       (accionBtnItem)="accionBtnItemTable($event)"
-      [searchPlaceholder]="'Buscar...'"
+      [showAdvancedFilter]="true"
+      [showCaption]="false"
       [actions]="actions"
     ></app-table-primeng>
   </div>

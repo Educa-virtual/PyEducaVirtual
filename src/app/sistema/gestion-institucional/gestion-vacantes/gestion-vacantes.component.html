@@ -55,15 +55,17 @@
       </button>
     </div>
     <div class="col-12 md:col-12">
+      <br />
       <app-table-primeng
         [columnas]="columns"
-        [showCaption]="true"
         [data]="vacantes"
         [scrollable]="true"
         (accionBtnItem)="accionBtnItem($event)"
         [showPaginator]="true"
         [(selectedRowData)]="selectedItems"
         [actions]="actions"
+        [showAdvancedFilter]="true"
+        [showCaption]="false"
       >
       </app-table-primeng>
     </div>

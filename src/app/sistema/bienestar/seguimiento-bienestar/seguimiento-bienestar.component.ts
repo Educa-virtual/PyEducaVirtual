@@ -214,7 +214,7 @@ export class SeguimientoBienestarComponent implements OnInit {
     this.visibleDialog = true;
     this.seguimiento_bloqueado = false;
     this.seguimiento_registrado = false;
-    this.setFormSeguimiento(null);
+    this.clearForm();
   }
 
   filtrarTabla() {

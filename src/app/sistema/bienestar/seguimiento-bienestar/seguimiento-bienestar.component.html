@@ -58,7 +58,7 @@
   [style]="{ width: '56rem' }"
   [modal]="true"
   [contentStyle]="{ overflow: 'auto' }"
-  (onClose)="clearForm()"
+  (onHide)="clearForm()"
 >
   <ng-content>
     <p-messages severity="info" *ngIf="!seguimiento_bloqueado">

@@ -248,44 +248,15 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   capacitacion: any;
   // obtener los alumnos de la capacitación
   obtenerEsctudiantes() {
-    // const icapacitacion = this.curso.iCapacitacionId
-
-    // const data = {
-    //   petition: 'get',
-    //   group: 'cap',
-    //   prefix: 'notas',
-    //   ruta: this.curso.iCapacitacionId.toString(),
-    //   params: {
-    //     iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
-    //   },
-    // };
     const data = this.curso.iCapacitacionId;
     this._serviceResultados.obtenerAlumnos(data).subscribe({
       next: resp => {
-        // this.capacitacion = resp.data.length ? resp.data[0] : null;
-        // this.reporteNotasFinales = {
-        //   ...this.capacitacion,
-        //   // iEscalaCalifIdPromedioFinal: this.capacitacion.iNroNota,
-        //   // cDetMatConclusionDescPromedio: this.capacitacion.cConclusion
-        // }
         this.capacitacion = resp['data'] || [];
         this.reporteNotasFinales = this.capacitacion.map(item => ({
           ...item,
           iEscalaCalifIdPromedioFinal: item.iNroNota,
           cDetMatConclusionDescPromedio: item.cConclusion,
         }));
-
-        // console.log(this.capacitacion);
-
-        // if (resp?.data?.length) {
-        //   this.capacitacion = resp.data[0];
-
-        // } else {
-        //   console.warn('No se encontraron datos para la capacitación.');
-        //   // this.closeModal(resp?.validated);
-        // }
-
-        // console.log('Respuesta de la capacitación:', this.capacitacion);
       },
       error: err => {
         console.error('Error obteniendo cuestionario:', err);

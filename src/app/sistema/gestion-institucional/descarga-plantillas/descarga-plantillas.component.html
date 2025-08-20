@@ -6,24 +6,36 @@
 
   <div class="card-container">
     <div class="card">
-      <img src="assets/images/icons/prueba.gif" alt="Excel Icon" class="icon" />
+      <img src="assets/images/icons/prueba.gif" alt="Formato Excel" class="icon" />
+      <h3>Aplicativo para cuadro de horas</h3>
+      <p>Descarga el aplicativo de gestión de cuadro de horas. (Formato xlsm)</p>
+      <button (click)="descargarArchivo('aplicativo_cuadro_horas.xlsm')">Descargar</button>
+    </div>
+    <div class="card">
+      <img src="assets/images/icons/prueba.gif" alt="Formato Excel" class="icon" />
+      <h3>Plantilla de calendarización</h3>
+      <p>Descarga la plantilla para realizar calendarización. (Formato xlsx)</p>
+      <button (click)="descargarArchivo('plantilla_calendarizacion.xlsx')">Descargar</button>
+    </div>
+    <div class="card">
+      <img src="assets/images/icons/prueba.gif" alt="Formato Word" class="icon" />
       <h3>Plantilla de Memorandum</h3>
-      <p>Descarga de formato de memorandum para Instituciones Educativas.</p>
-      <button (click)="descargarArchivo('plantilla-matricula.xlsx')">Descargar</button>
+      <p>Descarga de formato de memorandum para Instituciones Educativas. (Formato docx)</p>
+      <button (click)="descargarArchivo('plantilla_memorandum.docx')">Descargar</button>
     </div>
 
     <div class="card">
-      <img src="assets/images/icons/prueba.gif" alt="Excel Icon" class="icon" />
+      <img src="assets/images/icons/prueba.gif" alt="Formato Word" class="icon" />
       <h3>Plantilla de Informes</h3>
-      <p>Descarga de formato de Informes para Instituciones Educativas.</p>
-      <button (click)="descargarArchivo('registro-docente.xlsx')">Descargar</button>
+      <p>Descarga de formato de Informes para Instituciones Educativas. (Formato docx)</p>
+      <button (click)="descargarArchivo('plantilla_oficio.docx')">Descargar</button>
     </div>
 
     <div class="card">
-      <img src="assets/images/icons/prueba.gif" alt="Excel Icon" class="icon" />
+      <img src="assets/images/icons/prueba.gif" alt="Formato Word" class="icon" />
       <h3>Plantilla de Oficios</h3>
-      <p>Descarga de formato de oficio para Instituciones Educativas.</p>
-      <button (click)="descargarArchivo('asistencia.xlsx')">Descargar</button>
+      <p>Descarga de formato de oficio para Instituciones Educativas. (Formato docx)</p>
+      <button (click)="descargarArchivo('plantilla_informe.docx')">Descargar</button>
     </div>
   </div>
 </app-container-page>

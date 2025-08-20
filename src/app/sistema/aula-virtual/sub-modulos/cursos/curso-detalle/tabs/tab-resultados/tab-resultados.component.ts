@@ -82,6 +82,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     iNumeroPeriodo: [],
     iEscalaCalifId: ['', [Validators.required]],
     cDetMatConclusionDescPromedio: ['', [Validators.required]],
+    iNroNota: ['', [Validators.required]],
   });
 
   calificacion: any[] = [];
@@ -104,6 +105,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     { label: 'Foro', value: FORO, styleClass: 'btn-success' },
     { label: 'Evaluación', value: EVALUACION, styleClass: 'btn-danger' },
   ];
+  notas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   columnasTabla: IColumn[] = [
     {
@@ -257,9 +259,20 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     };
     this.GeneralService.getGralPrefixx(data).subscribe({
       next: resp => {
-        this.capacitacion = resp.data.length ? resp.data[0] : null;
-        this.reporteNotasFinales = resp.data;
-        console.log(this.capacitacion);
+        // this.capacitacion = resp.data.length ? resp.data[0] : null;
+        // this.reporteNotasFinales = {
+        //   ...this.capacitacion,
+        //   // iEscalaCalifIdPromedioFinal: this.capacitacion.iNroNota,
+        //   // cDetMatConclusionDescPromedio: this.capacitacion.cConclusion
+        // }
+        this.capacitacion = resp['data'] || [];
+        this.reporteNotasFinales = this.capacitacion.map(item => ({
+          ...item,
+          iEscalaCalifIdPromedioFinal: item.iNroNota,
+          cDetMatConclusionDescPromedio: item.cConclusion,
+        }));
+
+        // console.log(this.capacitacion);
 
         // if (resp?.data?.length) {
         //   this.capacitacion = resp.data[0];
@@ -287,6 +300,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   enviarDatosFinales(item: any, periodo: boolean) {
     this.mostrarModalConclusionDesc = true;
     this.estudianteSelect = item;
+    console.log(this.estudianteSelect);
     // Limpiar el formulario antes de aplicar nuevos valores
     this.conclusionDescrp.reset();
 
@@ -296,6 +310,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
         iNumeroPeriodo: null,
         iEscalaCalifId: item.iEscalaCalifIdPromedio,
         cDetMatConclusionDescPromedio: item.cDetMatConclusionDescPromedio,
+        iNroNota: this.estudianteSelect.iNroNota,
       });
     } else {
       const nPeriodo = this.periodos.find(p => p.iPeriodoEvalAperId === this.periodoSeleccionado);
@@ -365,11 +380,67 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
   isLoading: boolean = false;
   guardarConclusionDescriptiva() {
-    if (this.isLoading) return; // evitar doble clic
-    this.isLoading = true;
+    // if (this.isLoading) return; // evitar doble clic
+    // this.isLoading = true;
+
     if (this.iPerfilId === this.INSTRUCTOR) {
-      // Lógica específica para el perfil de instructor
-      console.log('guardar capacitacion', this.capacitacion, this.conclusionDescrp.value);
+      const datos = {
+        iInscripIds: this.capacitacion.map(item => item.iInscripId).join(','),
+        iCapacitacionId: this.capacitacion.map(item => item.iCapacitacionId).join(','),
+        iNroNota: this.conclusionDescrp.value.iNroNota,
+        cConclusion: this.conclusionDescrp.value.cDetMatConclusionDescPromedio,
+        iCredId: this._ConstantesService.iCredId,
+      };
+      console.log('Datos a guardar:', datos);
+
+      const data = {
+        petition: 'post',
+        group: 'cap',
+        prefix: 'notas',
+        data: datos,
+        params: {
+          iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
+        },
+      };
+      this.GeneralService.getGralPrefixx(data).subscribe({
+        next: resp => {
+          this.capacitacion = resp.data.length ? resp.data[0] : null;
+          this.reporteNotasFinales = resp.data;
+          this.messageService.add({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: 'Acción éxitosa',
+          });
+
+          this.estudianteSeleccionado = null;
+          this.obtenerReporteDenotasFinales();
+          this.mostrarModalConclusionDesc = false;
+          this.conclusionDescrp.reset();
+          // console.log(this.capacitacion);
+        },
+        error: error => {
+          const errores = error?.error?.errors;
+          if (error.status === 422 && errores) {
+            // Recorre y muestra cada mensaje de error
+            Object.keys(errores).forEach(campo => {
+              errores[campo].forEach((mensaje: string) => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error de validación',
+                  detail: mensaje,
+                });
+              });
+            });
+          } else {
+            // Error genérico si no hay errores específicos
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error?.error?.message || 'Ocurrió un error inesperado',
+            });
+          }
+        },
+      });
     } else {
       const { bEsPorPeriodo, iNumeroPeriodo, iEscalaCalifId, cDetMatConclusionDescPromedio } =
         this.conclusionDescrp.value;

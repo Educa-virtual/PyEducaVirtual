@@ -198,7 +198,7 @@
 >
   <form [formGroup]="conclusionDescrp" class="flex flex-column gap-3 w-full">
     <div class="grid pt-2">
-      <div class="col-12">
+      <div class="col-12" *ngIf="!curso?.iCapacitacionId">
         <p-inputGroup>
           <p-inputGroupAddon> Nivel de Logro final: </p-inputGroupAddon>
           <p-dropdown
@@ -210,6 +210,18 @@
             [style]="{ width: '100%' }"
             [showClear]="true"
           ></p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12" *ngIf="curso?.iCapacitacionId">
+        <p-inputGroup>
+          <p-inputGroupAddon> Nota final: </p-inputGroupAddon>
+          <input
+            pInputText
+            class="flex-auto w-full"
+            type="number"
+            formControlName="iNroNota"
+            placeholder="Ingrese la nota"
+          />
         </p-inputGroup>
       </div>
       <!-- Mostrar descripción -->

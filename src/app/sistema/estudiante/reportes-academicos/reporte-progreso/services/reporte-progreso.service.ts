@@ -12,7 +12,10 @@ export class ReporteProgresoService {
 
   constructor() {}
 
-  obtenerReporte() {
-    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso`);
+  obtenerReporte(iYAcadId: number) {
+    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso`, {
+      params: { iYAcadId: iYAcadId.toString() },
+      responseType: 'blob',
+    });
   }
 }

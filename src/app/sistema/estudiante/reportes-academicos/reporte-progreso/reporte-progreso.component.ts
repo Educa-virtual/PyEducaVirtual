@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ReporteProgresoService } from './services/reporte-progreso.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-reporte-progreso',
@@ -13,13 +14,19 @@ import { ReporteProgresoService } from './services/reporte-progreso.service';
 export class ReporteProgresoComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
+  iYAcadId: number;
+  anioEscolar: number;
 
   constructor(
     private reporteProgresoService: ReporteProgresoService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private store: LocalStoreService
   ) {}
 
   ngOnInit() {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.anioEscolar = this.store.getItem('dremoYear');
+
     this.breadCrumbHome = {
       icon: 'pi pi-home',
       routerLink: '/',
@@ -35,33 +42,22 @@ export class ReporteProgresoComponent implements OnInit {
   }
 
   descargarReporte() {
-    this.reporteProgresoService.obtenerReporte().subscribe({
+    this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
       next: (response: any) => {
-        const contentDisposition = response.headers?.get?.('content-disposition');
-        let fileName = 'Reporte progreso.pdf';
-        if (contentDisposition) {
-          const match = contentDisposition.match(/filename="?([^"]+)"?/);
-          if (match && match[1]) {
-            fileName = match[1];
-          }
-        }
-        const blob = new Blob([response.body ? response.body : response], {
+        const blob = new Blob([response], {
           type: 'application/pdf',
         });
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.click();
       },
-      error: error => {
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Problema al descargar el archivo',
-          detail: error?.error?.message || 'Error desconocido',
+          detail: 'Error desconocido',
         });
       },
     });

@@ -21,6 +21,7 @@ import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calific
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { GeneralService } from '@/app/servicios/general.service';
 import { INSTRUCTOR } from '@/app/servicios/seg/perfiles';
+import { TabResultadosService } from '@/app/servicios/aula/tab-resultados.service';
 
 @Component({
   selector: 'app-tab-resultados',
@@ -50,6 +51,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     }
   }
   private GeneralService = inject(GeneralService);
+  private _serviceResultados = inject(TabResultadosService);
   private _formBuilder = inject(FormBuilder);
   private _aulaService = inject(ApiAulaService);
   private _ConstantesService = inject(ConstantesService);
@@ -246,43 +248,15 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   capacitacion: any;
   // obtener los alumnos de la capacitación
   obtenerEsctudiantes() {
-    // const icapacitacion = this.curso.iCapacitacionId
-
-    const data = {
-      petition: 'get',
-      group: 'cap',
-      prefix: 'notas',
-      ruta: this.curso.iCapacitacionId.toString(),
-      params: {
-        iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
-      },
-    };
-    this.GeneralService.getGralPrefixx(data).subscribe({
+    const data = this.curso.iCapacitacionId;
+    this._serviceResultados.obtenerAlumnos(data).subscribe({
       next: resp => {
-        // this.capacitacion = resp.data.length ? resp.data[0] : null;
-        // this.reporteNotasFinales = {
-        //   ...this.capacitacion,
-        //   // iEscalaCalifIdPromedioFinal: this.capacitacion.iNroNota,
-        //   // cDetMatConclusionDescPromedio: this.capacitacion.cConclusion
-        // }
         this.capacitacion = resp['data'] || [];
         this.reporteNotasFinales = this.capacitacion.map(item => ({
           ...item,
           iEscalaCalifIdPromedioFinal: item.iNroNota,
           cDetMatConclusionDescPromedio: item.cConclusion,
         }));
-
-        // console.log(this.capacitacion);
-
-        // if (resp?.data?.length) {
-        //   this.capacitacion = resp.data[0];
-
-        // } else {
-        //   console.warn('No se encontraron datos para la capacitación.');
-        //   // this.closeModal(resp?.validated);
-        // }
-
-        // console.log('Respuesta de la capacitación:', this.capacitacion);
       },
       error: err => {
         console.error('Error obteniendo cuestionario:', err);
@@ -393,16 +367,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       };
       console.log('Datos a guardar:', datos);
 
-      const data = {
-        petition: 'post',
-        group: 'cap',
-        prefix: 'notas',
-        data: datos,
-        params: {
-          iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
-        },
-      };
-      this.GeneralService.getGralPrefixx(data).subscribe({
+      this._serviceResultados.guardarDescripcion(datos).subscribe({
         next: resp => {
           this.capacitacion = resp.data.length ? resp.data[0] : null;
           this.reporteNotasFinales = resp.data;
@@ -413,7 +378,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
           });
 
           this.estudianteSeleccionado = null;
-          this.obtenerReporteDenotasFinales();
+          this.obtenerEsctudiantes();
           this.mostrarModalConclusionDesc = false;
           this.conclusionDescrp.reset();
           // console.log(this.capacitacion);

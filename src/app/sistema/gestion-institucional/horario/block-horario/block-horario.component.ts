@@ -113,10 +113,38 @@ export class BlockHorarioComponent implements OnChanges {
       });
   }
 
+  toSeconds(hora: string): number {
+    const [h, m, s] = hora.split(':').map(Number);
+    return h * 3600 + m * 60 + (s || 0);
+  }
+
   agregarBloque() {
     this.sumarIntervalo();
+    //validar que no sea menor--------------------------------
+    const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
+    const bloqueMax = this.bloques.reduce((prev, current) =>
+      prev.tFin > current.tFin ? prev : current
+    );
 
+    const dtfin = bloqueMax.tBloqueFin;
+    const hFin = dtfin.substring(0, 8);
+
+    if (this.toSeconds(hFin) > this.toSeconds(tInicio)) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado no puede ser menor al anterior.',
+      });
+      const [hours, minutes, seconds] = hFin.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, seconds || 0);
+
+      this.formGenerador.get('tBloqueInicio')?.setValue(date);
+      return;
+    }
+    //----------------------------------------------
     if (!this.validarFechas()) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado ya existe.',
+      });
       return; // Detiene el flujo si es duplicado
     }
     const params = JSON.stringify({

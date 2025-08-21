@@ -174,7 +174,6 @@ export class LogroAlcanzadoComponent implements OnInit {
   }
 
   cargarCompetencias(curso: any) {
-    console.log(curso, 'curso seleccionado para competencias');
     const params = {
       iCursoId: Number(this.area?.iCursoId), // Evitar error si no encuentra
       iNivelTipoId: Number(this.perfil?.iNivelTipoId), // Evitar error si no encuentra
@@ -236,7 +235,6 @@ export class LogroAlcanzadoComponent implements OnInit {
       class: 'p-button-rounded p-button-success p-button-text',
     },
   ];
-
   /*
   obtenerGradoSeccion() {
     this._GeneralService
@@ -303,11 +301,20 @@ export class LogroAlcanzadoComponent implements OnInit {
         next: resp => {
           if (resp.validated) {
             this.periodos = resp.data;
-            console.log(resp.data);
+
             if (this.periodos.length > 0) {
               this.iPeriodoId = '1';
             }
           }
+        },
+        complete: () => {
+          this.periodos.push({
+            cNombrePeriodo: 'Logro final',
+            cPeriodoEvalNombre: '',
+            iEstado: '0',
+            iNumeroPeriodo: '5',
+            iPeriodoEvalAperId: '',
+          });
         },
         // error: error => this.mostrarErrores(error),
       });

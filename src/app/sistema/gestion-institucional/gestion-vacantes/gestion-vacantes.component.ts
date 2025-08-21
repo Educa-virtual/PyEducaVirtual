@@ -164,6 +164,7 @@ export class GestionVacantesComponent implements OnInit {
 
   getVacantesAll() {
     this.iGradoId = '0';
+    this.getVacantes();
     this.form.reset();
   }
 

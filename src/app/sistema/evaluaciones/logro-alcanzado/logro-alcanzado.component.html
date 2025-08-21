@@ -85,11 +85,13 @@
     </div>
   </div>
   <div *ngIf="seleccionar">
+    <br />
     <app-table-primeng
       [data]="estudiantes"
       [columnas]="columns"
       (accionBtnItem)="accionBtnItemTable($event)"
-      [searchPlaceholder]="'Buscar...'"
+      [showAdvancedFilter]="true"
+      [showCaption]="false"
       [actions]="actions"
     ></app-table-primeng>
   </div>
@@ -99,7 +101,7 @@
     [maximizable]="true"
     [header]="registroTitleModal"
     [(visible)]="dialogRegistrarLogroAlcanzado"
-    [style]="{ width: '95%', height: '95%' }"
+    [style]="{ width: '70%', height: '80%' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
   >
@@ -108,6 +110,7 @@
       [competencias]="competencias"
       [iPeriodoId]="iPeriodoId"
       [iCredId]="iCredId"
+      [periodos]="periodos"
       (registraLogroAlcanzado)="dialogRegistrarLogroAlcanzado = $event"
     ></app-registrar-logro-alcanzado>
     <!-- (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)" -->

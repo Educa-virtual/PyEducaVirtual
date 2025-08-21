@@ -53,12 +53,22 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return this.http.post(`${baseUrl}/bienestar/actualizarSeguimiento`, data);
   }
 
+  actualizarSeguimientoArchivo(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/actualizarSeguimientoArchivo`, data);
+  }
+
   borrarSeguimiento(data: any) {
     return this.http.post(`${baseUrl}/bienestar/borrarSeguimiento`, data);
   }
 
   verDatosPersona(data: any) {
     return this.http.post(`${baseUrl}/bienestar/verDatosPersona`, data);
+  }
+
+  descargarSeguimiento(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/descargarSeguimiento`, data, {
+      responseType: 'blob',
+    });
   }
 
   getTiposSeguimiento() {
@@ -138,7 +148,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     if (!this.tipos_documentos && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.tipos_documentos = items.map(doc => ({
-        vvalue: doc.iTipoIdentId,
+        value: doc.iTipoIdentId,
         label: doc.cTipoIdentSigla + ' - ' + doc.cTipoIdentNombre,
         longitud: doc.iTipoIdentLongitud,
       }));
@@ -172,7 +182,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return this.sedes;
   }
 
-  filterInstitucionesEducativas2(iNivelTipoId: any) {
+  filterInstitucionesEducativas(iNivelTipoId: any) {
     let ies_tmp: Array<object> = this.sedes;
     if (!iNivelTipoId || !this.sedes) {
       return null;
@@ -188,7 +198,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return ies_tmp;
   }
 
-  filterInstitucionesEducativas(iNivel: any): Observable<any[]> {
+  filterInstitucionesEducativas2(iNivel: any): Observable<any[]> {
     return of(this.sedes).pipe(map(sedes => sedes.filter((sede: any) => sede.iNivel === iNivel)));
   }
 

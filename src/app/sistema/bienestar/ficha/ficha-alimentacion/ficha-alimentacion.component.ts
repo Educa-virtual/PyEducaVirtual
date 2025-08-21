@@ -104,7 +104,7 @@ export class FichaAlimentacionComponent implements OnInit {
         iFichaDGId: this.iFichaDGId,
       })
       .subscribe((data: any) => {
-        if (data.data.length) {
+        if (data.data && data.data.length) {
           this.setFormAlimentacion(data.data[0]);
         }
       });

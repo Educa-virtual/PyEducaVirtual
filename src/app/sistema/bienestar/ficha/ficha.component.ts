@@ -8,10 +8,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CompartirFichaService } from '../services/compartir-ficha.service';
 import { TabMenu } from 'primeng/tabmenu';
 import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-ficha',
@@ -21,13 +22,18 @@ import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.se
   styleUrl: './ficha.component.scss',
 })
 export class FichaComponent implements OnInit, AfterViewInit {
+  @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu;
+
   items: MenuItem[] = [];
   activeItem: any;
   previousItem: any;
   iFichaDGId: any = 0;
   cPersNombreApellidos: string = '';
+  perfil: any;
+  iYACadId: any = 0;
 
-  @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu;
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
 
   private _messageService = inject(MessageService);
 
@@ -35,20 +41,42 @@ export class FichaComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private cf: ChangeDetectorRef,
     private compartirFicha: CompartirFichaService,
-    private datosFichaBienestar: DatosFichaBienestarService
+    private datosFichaBienestar: DatosFichaBienestarService,
+    private router: Router,
+    private store: LocalStoreService
   ) {
     this.route.paramMap.subscribe((params: any) => {
       this.iFichaDGId = params.params.id || 0;
     });
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.iYACadId = this.store.getItem('dremoiYAcadId');
+    this.breadCrumbItems = [
+      {
+        label: 'Bienestar social',
+      },
+      {
+        label: 'Ficha socioeconómica',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
   }
 
   ngOnInit(): void {
     this.datosFichaBienestar
       .verFicha({
         iFichaDGId: this.iFichaDGId,
+        iYAcadId: this.compartirFicha.iYAcadId,
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
       })
       .subscribe((data: any) => {
-        this.cPersNombreApellidos = data.data[0].cPersNombreApellidos;
+        if (data.data && data.data.length > 0) {
+          this.cPersNombreApellidos = data.data[0].cPersNombreApellidos;
+        } else {
+          this.router.navigate(['/']);
+        }
       });
 
     this.items = [
@@ -127,6 +155,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
     this.datosFichaBienestar
       .descargarFicha({
         iFichaDGId: this.iFichaDGId,
+        iYACadId: this.iYACadId,
       })
       .subscribe({
         next: response => {

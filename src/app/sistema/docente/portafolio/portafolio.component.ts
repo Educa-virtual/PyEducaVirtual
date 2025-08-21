@@ -26,7 +26,7 @@ export class PortafolioComponent implements OnInit {
   private _LocalStoreService = inject(LocalStoreService);
   private _evaluacionApiService = inject(ApiEvaluacionesService);
   private router = inject(Router);
-
+  nuevaRubrica: boolean = false;
   backend = environment.backend;
   private backendApi = environment.backendApi;
 
@@ -343,4 +343,6 @@ export class PortafolioComponent implements OnInit {
     const ruta = environment.backend + '/' + item;
     window.open(ruta, '_blank');
   }
+
+  agregarInstrumentos() {}
 }

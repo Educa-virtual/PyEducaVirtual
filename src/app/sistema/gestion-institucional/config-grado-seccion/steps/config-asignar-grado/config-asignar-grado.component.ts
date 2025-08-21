@@ -79,13 +79,11 @@ export class ConfigAsignarGradoComponent implements OnInit {
     this.items = this.stepService.itemsStep;
     this.configuracion = this.stepService.configuracion;
     this.sede = this.stepService.sede;
-    console.log(this.configuracion, 'configuracion servicio');
   }
 
   ngOnInit(): void {
     this.docentes = this.stepService.docentes.filter(d => d.docente === '1');
 
-    console.log(this.stepService.docentes, ' docentes desde servicio');
     try {
       this.getSeccionesAsignadas();
 
@@ -121,10 +119,9 @@ export class ConfigAsignarGradoComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error en conexion al servidor',
-        detail: 'La conexion excedió tiempo de espera',
+        detail: 'La conexion excedió tiempo de espera.',
       });
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
-      console.log(error, 'error de variables');
     }
   }
   validariProgId() {
@@ -217,15 +214,11 @@ export class ConfigAsignarGradoComponent implements OnInit {
             this.cursos = data.data;
           },
           error: error => {
-            console.error('Error fetching  seccionesAsignadas:', error);
             this.messageService.add({
               severity: 'error',
               summary: 'Error de conexión',
-              detail: 'Se registro error en el procedimiento',
+              detail: 'Se registro error en el procedimiento. ' + error.error.menssage,
             });
-          },
-          complete: () => {
-            console.log(this.cursos, 'cursos');
           },
         });
     } else {
@@ -261,16 +254,14 @@ export class ConfigAsignarGradoComponent implements OnInit {
             (sum, docente) => Number(sum) + Number(docente.nCursoTotalHoras),
             0
           );
-          console.log(datos, 'datos');
           // this.seccionesAsignadas = data.data
         },
         error: error => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error en conexión',
-            detail: 'Error en listar docentes asignados',
+            detail: 'Error en listar docentes asignados. ' + error.error.message,
           });
-          console.error('Error fetching  lista de Áreas curriculares:', error);
         },
         complete: () => {
           const total = this.form.get('ihora_total')?.value;
@@ -319,9 +310,6 @@ export class ConfigAsignarGradoComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          // this.seccionesAsignadas = data.data
-          //    this.iServId = this.serv_atencion[0].iServEdId
-          // this.lista = this.extraerSecciones(data.data)
           this.seccionesAsignadas = data.data.map((ambiente: any) => {
             return {
               ...ambiente, // Mantén todos los campos originales
@@ -334,15 +322,15 @@ export class ConfigAsignarGradoComponent implements OnInit {
               },
             };
           });
-
-          //   console.log(this.seccionesAsignadas,' seccionesAsignadas')
         },
         error: error => {
-          console.error('Error fetching  seccionesAsignadas:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error en conexión',
+            detail: 'Error en listar docentes asignados. ' + error.error.message,
+          });
         },
         complete: () => {
-          console.log(this.seccionesAsignadas, 'seccionesAsignadas');
-
           const gradosMap = new Map();
 
           this.seccionesAsignadas.forEach((a: any) => {
@@ -376,15 +364,11 @@ export class ConfigAsignarGradoComponent implements OnInit {
       valorId: id,
     };
     this.query.deleteAcademico(params).subscribe({
-      next: (data: any) => {
-        console.log(data.data);
-      },
       error: error => {
-        // console.error('Error fetching ambiente:', error)
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje de error',
-          detail: 'NO se pudo eliminar registro' + error,
+          detail: 'No se pudo eliminar registro: ' + error.error.message,
         });
       },
       complete: () => {
@@ -393,7 +377,6 @@ export class ConfigAsignarGradoComponent implements OnInit {
           summary: 'Eliminado',
           detail: 'Registro eliminado correctamente',
         });
-        console.log('Request completed');
         this.searchListaAreaDocente();
         this.searchListarAsignaturas();
       },
@@ -428,7 +411,7 @@ export class ConfigAsignarGradoComponent implements OnInit {
 
       iSeccionId: this.form.get('iSeccionId')?.value,
     });
-    console.log(params, 'params');
+
     this.query
       .addAmbienteAcademico({
         json: params,
@@ -437,11 +420,13 @@ export class ConfigAsignarGradoComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.form.get('idDocCursoId').setValue(data.data[0].id);
-          console.log(data, 'id', data.data[0].id);
-          console.log(data.data);
         },
         error: error => {
-          console.error('Error fetching ambiente:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'No se realizo la petición. ' + error.error.message,
+          });
         },
         complete: () => {
           this.messageService.add({
@@ -506,7 +491,6 @@ export class ConfigAsignarGradoComponent implements OnInit {
     }
 
     if (accion === 'editar') {
-      console.log(item, 'btnTable');
       this.c_accion = accion;
       this.caption = 'Editar áreas curricularesasignadas a docente';
 

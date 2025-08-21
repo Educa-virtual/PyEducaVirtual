@@ -100,8 +100,6 @@ export class HorarioComponent implements OnInit {
 
   accionBtnItem(accion: string) {
     if (accion === 'guardar') {
-      //console.log('btn agregar', this.formHorario.getRawValue())
-
       const params = JSON.stringify({
         iConfBloqueId: this.formHorario.get('iConfBloqueId')?.value || 0, // Aseguramos que sea un número
         cDescripcion: this.formHorario.get('cDescripcion')?.value || '',
@@ -165,12 +163,10 @@ export class HorarioComponent implements OnInit {
         return d.toTimeString().slice(0, 8);
       }
     }
-
     return '';
   }
 
   accionBtnItemTable({ accion, item }) {
-    console.log(item, 'btnTable accionBtnItemTable');
     if (accion === 'agregar') {
       this.visible = true;
       this.caption = 'Formulario de creación de horarios';
@@ -235,10 +231,6 @@ export class HorarioComponent implements OnInit {
         _opcion: 'updateConfiguracioBloques',
       })
       .subscribe({
-        next: (data: any) => {
-          console.log(data);
-          this.visible = false;
-        },
         error: error => {
           this.messageService.add({
             severity: 'error',
@@ -247,6 +239,7 @@ export class HorarioComponent implements OnInit {
           });
         },
         complete: () => {
+          this.visible = false;
           this.getHorario();
           this.messageService.add({
             severity: 'success',

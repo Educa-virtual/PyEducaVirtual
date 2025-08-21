@@ -135,7 +135,6 @@ export class LogroAlcanzadoComponent implements OnInit {
     this.iCredId = this._ConstantesService.iCredId; // Initialize iCredId
   }
   ngOnInit() {
-    // console.log('Logro alcanzado');
     this.perfil = this._store.getItem('dremoPerfil'); // Initialize perfil after _store is available
     this.obtenerPerfil();
     //this.obtenerGradoSeccion();
@@ -193,7 +192,6 @@ export class LogroAlcanzadoComponent implements OnInit {
       },
       complete: () => {
         this.dialogRegistrarLogroAlcanzado = true;
-        console.log(this.competencias, 'this.competencias');
       },
     });
   }
@@ -381,21 +379,22 @@ export class LogroAlcanzadoComponent implements OnInit {
           }));
           this.data = this.cursos;
         },
-        complete: () => {},
+        // complete: () => {},
         error: error => {
-          console.log(error);
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'No se pudo obtener cursos. ' + error.message,
+          });
         },
       });
   }
   filtrarCurso($event) {
     this.generarListaEstudiante($event);
-
     this.area = $event;
-    console.log('Curso seleccionado:', this.area);
   }
 
   generarListaEstudiante(area: any) {
-    //console.log("Invocando al servicio para generar la lista de estudiantes...");
     this.estudiantes = [];
     // 2. Aquí, el método del componente (`generarListaEstudiante`)
     //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
@@ -409,7 +408,6 @@ export class LogroAlcanzadoComponent implements OnInit {
     this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
       // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
       next: respuesta => {
-        // console.log('Servicio respondió con éxito:', respuesta);
         this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
       },
 
@@ -424,7 +422,6 @@ export class LogroAlcanzadoComponent implements OnInit {
         });
       },
       complete: () => {
-        console.log(this.estudiantes, 'estudiantes generados');
         this.seleccionar = true;
         this.cCursoNombre = area.cCursoNombre || '';
         this.estudiantes = this.estudiantes.map(estudiante => ({

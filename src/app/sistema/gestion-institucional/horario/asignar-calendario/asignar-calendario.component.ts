@@ -31,15 +31,15 @@ export class AsignarCalendarioComponent implements OnChanges {
       if (!this.inicializacionPendiente) {
         this.inicializacionPendiente = true;
         setTimeout(() => {
-          this.inicializarFormulario();
+          // this.inicializarFormulario();
           this.inicializacionPendiente = false;
         });
       }
     }
   }
-  inicializarFormulario() {
-    console.log(this.registros, '', this.iNumBloque, '');
-  }
+  // inicializarFormulario() {
+  //   console.log(this.registros, '', this.iNumBloque, '');
+  // }
   accionBtnItemTable(item: any) {
     this.asignar.emit(item);
   }

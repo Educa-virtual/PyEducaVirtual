@@ -142,7 +142,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
   @Input() searchPlaceholder: string = 'Buscar por nombre....';
 
   debug(d) {
-    console.log('d');
     console.log(d);
   }
   @Input() showCaption: boolean = true;
@@ -404,8 +403,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     } else {
       this.columnasSeleccionadas = columns;
     }
-
-    console.log(this.columnsGroupSeleccionadas);
   }
 
   reAddRemovedCells(removedCols, inTableColumnsGroup) {

@@ -189,14 +189,16 @@
                     <tr style="height: 12px">
                         <th style="width: auto">N°</th>
                         <th style="width: auto">Nombres y Apellidos</th>
-                        <th style="width: auto">MARCAR ASISTENCIA</th>
+                        <th style="width: auto">Marcar Asistencia</th>
+                        <th style="width: auto">Subir Documento</th>
+                        <th style="width: auto">Documento</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
                     <tr>
                         <td>{{ rowIndex + 1 }}</td>
                         <td>{{ item.nombrecompleto }}</td>
-                        <td class="flex justify-content-center">
+                        <td>
                             <p-button
                                 *ngIf="item.cTipoAsiLetra; else noboton"
                                 label="{{ item.cTipoAsiLetra }}"
@@ -212,6 +214,48 @@
                                     ngClass="bt-cyan"
                                 />
                             </ng-template>
+                        </td>
+                        <td>
+                            <p-fileUpload
+                                #subirJustificacion
+                                mode="basic"
+                                [disabled]="
+                                    !(
+                                        item.iTipoAsiId === '4' ||
+                                        item.iTipoAsiId === '9'
+                                    )
+                                "
+                                chooseLabel="Subir"
+                                chooseIcon="pi pi-upload"
+                                accept="application/pdf"
+                                maxFileSize="1000000"
+                                (onSelect)="
+                                    subirDocumento(
+                                        $event,
+                                        rowIndex,
+                                        subirJustificacion
+                                    )
+                                "
+                            />
+                        </td>
+                        <td class="text-center">
+                            <p-button
+                                [disabled]="
+                                    !(
+                                        item.cJustificar === '' ||
+                                        item.iTipoAsiId === '4' ||
+                                        item.iTipoAsiId === '9'
+                                    )
+                                "
+                                icon="pi pi-file-pdf"
+                                size="small"
+                                (click)="
+                                    descargarArchivo(
+                                        iDocenteId,
+                                        item.cJustificar
+                                    )
+                                "
+                            />
                         </td>
                     </tr>
                 </ng-template>

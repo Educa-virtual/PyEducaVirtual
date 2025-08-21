@@ -149,6 +149,7 @@
             class="p-button-primary"
             [disabled]="formDistribucion.invalid"
             (click)="guardarHorario()"
+            [disabled]="!iGradoId || !iSeccionId"
           >
             <i class="pi pi-save"></i>&nbsp;Actualizar
           </button>
@@ -161,6 +162,7 @@
             class="p-button-warning"
             (click)="actualizarHoras()"
             title="Asignar horas"
+            [disabled]="!iGradoId || !iSeccionId"
           >
             <i class="pi pi-clock"></i>&nbsp;Horas
           </button>
@@ -173,6 +175,7 @@
             class="p-button-success"
             (click)="actualizarCalendario()"
             title="Procesar calendario"
+            [disabled]="!iGradoId || !iSeccionId"
           >
             <i class="pi pi-calendar"></i>&nbsp;Fechas
           </button>

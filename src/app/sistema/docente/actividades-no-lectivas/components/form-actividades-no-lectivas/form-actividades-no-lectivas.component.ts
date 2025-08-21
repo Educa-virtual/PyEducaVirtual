@@ -79,9 +79,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
                     this.formDetalleCargaNoLectivas.value
                         .cDetCargaNoLectEvidencias
                 this.filesUrl = files ? files : []
-                this.formDetalleCargaNoLectivas.controls[
-                    'nDetCargaNoLectHoras'
-                ].setValue(this.iFalta)
+                this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras']
             }
         }
         // if (changes.iFalta?.currentValue) {

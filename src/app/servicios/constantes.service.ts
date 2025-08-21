@@ -57,12 +57,112 @@ const docente = [
         icon: 'pi pi-fw pi-list-check',
         routerLink: ['/docente/actividades-no-lectivas'],
       },
+
       {
+        label: 'Informes',
+        icon: 'pi pi-fw pi-objects-column',
+        //routerLink: ['/docente/informes'],
+        // routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
+        items: [
+          {
+            label: 'Logros Alcanzados',
+            icon: 'pi pi-fw pi-share-alt',
+            routerLink: ['/evaluaciones/registro-logro'],
+          },
+        ],
+      },
+      /* {
         label: 'Informes',
         icon: 'pi pi-fw pi-objects-column',
         routerLink: ['/docente/informes'],
         routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
         items: [
+          inicio,
+          {
+            label: 'Comunicados',
+            icon: 'pi pi-fw pi-bell',
+            routerLink: ['/docente/comunicados'],
+          },
+          {
+            label: 'Portafolio',
+            icon: 'pi pi-fw pi-folder',
+            routerLink: ['/docente/portafolio'],
+          },
+          {
+            label: 'Mis Áreas Curriculares',
+            icon: 'pi pi-fw pi-book',
+            routerLink: ['/aula-virtual/areas-curriculares'],
+          },
+          {
+            label: 'Actividades No Lectivas',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/docente/actividades-no-lectivas'],
+          },
+          {
+            label: 'Informes',
+            icon: 'pi pi-fw pi-objects-column',
+            routerLink: ['/docente/informes'],
+            routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
+            items: [
+              {
+                label: 'Logros Alcanzados',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['/docente/informes'],
+              },
+              // {
+              //     label: 'Reporte Asitencias',
+              //     icon: 'pi pi-fw pi-share-alt',
+              //     routerLink: [''],
+              // },
+            ],
+          },
+          {
+            label: 'Aula virtual',
+            icon: 'pi pi-id-card',
+            // routerLink: ['/aula-virtual/capacitate-docente'],
+            items: [
+              {
+                label: 'Capacitate',
+                icon: 'pi pi-book',
+                routerLink: ['/aula-virtual/capacitate-docente'],
+              },
+              {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-book',
+                routerLink: ['/aula-virtual/'],
+              },
+            ],
+          },
+          {
+            label: 'Enlaces de ayuda',
+            icon: 'pi pi-fw pi-share-alt',
+            routerLink: ['ayuda'],
+          },
+          {
+            label: 'Calendario',
+            icon: 'pi pi-fw pi-calendar-clock',
+            routerLink: ['/docente/calendario'],
+          },
+          {
+            label: 'Banco de Preguntas',
+            icon: 'pi pi-fw pi-folder',
+            routerLink: ['/aula-virtual/banco-preguntas'],
+          },
+          // {
+          //     label: 'Comunicados',
+          //     icon: 'pi pi-fw pi-folder',
+          //     routerLink: ['/comunicados/principal'],
+          // },
+          {
+            label: 'Bienestar Social',
+            icon: 'pi pi-check-square',
+            items: [
+              {
+                label: 'Recordatorios de cumpleaños',
+                icon: 'pi pi-fw pi-bell',
+              },
+            ],
+          },
           {
             label: 'Logros Alcanzados',
             icon: 'pi pi-fw pi-share-alt',
@@ -75,6 +175,7 @@ const docente = [
           // },
         ],
       },
+      */
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
@@ -89,6 +190,28 @@ const docente = [
         label: 'Banco de Preguntas',
         icon: 'pi pi-fw pi-folder',
         routerLink: ['/aula-virtual/banco-preguntas'],
+      },
+      // {
+      //   label: 'Informes y Estadisticas ',
+      //   icon: '',
+      //   items: [
+      //     {
+      //       label: 'Capacitate',
+      //       icon: 'pi pi-book',
+      //       routerLink: [''],
+      //     },
+      //   ]
+      // },
+      {
+        label: 'Informes y Estadisticas',
+        icon: 'pi pi-chart-line', // Agregué el icono que faltaba
+        items: [
+          {
+            label: 'Logro Alcanzado',
+            icon: 'pi pi-trophy',
+            routerLink: ['/ere/logro-alcanzado'],
+          },
+        ],
       },
       // {
       //     label: 'Comunicados',
@@ -189,7 +312,6 @@ const administrador = [
         icon: 'pi pi-fw pi-database',
         routerLink: ['/administrador/backup-bd'],
       },
-
       {
         label: 'Backup de BD',
         icon: 'pi pi-fw pi-database',
@@ -201,6 +323,29 @@ const administrador = [
         icon: 'pi pi-fw pi-user',
         routerLink: ['/administrador/gestion-usuarios'],
       },
+      {
+        label: 'Informes y Estadísticas',
+        icon: 'pi pi-chart-line',
+        items: [
+          {
+            label: 'Logros Alcanzados',
+            icon: 'pi pi-trophy',
+            routerLink: ['/administrador/logro-alcanzado'],
+          },
+        ],
+      },
+
+      // {
+      //     label: 'Informes y Estadísticas',
+      //     icon: 'pi pi-chart-line',
+      //     items: [
+      //         {
+      //             label: 'Logros Alcanzados',
+      //             icon: 'pi pi-trophy',
+      //             routerLink: ['/ere/logro-alcanzado'],
+      //         },
+      //     ],
+      // },
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
@@ -260,11 +405,73 @@ const registro_asistencia = [
     items: [inicio],
   },
   {
+    label: 'Gestión de usuarios',
+    icon: 'pi pi-fw pi-user',
+    routerLink: ['/administrador/gestion-usuarios'],
+  },
+  {
     label: 'Enlaces de ayuda',
     icon: 'pi pi-fw pi-share-alt',
     routerLink: ['ayuda'],
   },
 ];
+
+// const registro_asistencia = [
+//   {
+//     items: [inicio],
+//   },
+//   {
+//     label: 'Enlaces de ayuda',
+//     icon: 'pi pi-fw pi-share-alt',
+//     routerLink: ['ayuda'],
+//   },
+// ];
+
+// const jefe_programa = [
+//   {
+//     items: [
+//       inicio,
+//       {
+//         label: 'Administracion del Sistema',
+//         icon: 'pi pi-fw pi-cog',
+//         items: [
+//           {
+//             label: 'Registro Calendario Escolar',
+//             icon: 'pi pi-fw pi-cog',
+//             routerLink: ['/gestion-institucional/calendarioAcademico'],
+//           },
+//         ],
+//       },
+
+//       {
+//         label: 'Personas',
+//         icon: 'pi pi-fw pi-desktop',
+//         routerLink: ['/configuracion/personas'],
+//       },
+//       {
+//         label: 'Administracion de la I.E',
+//         icon: 'pi pi-fw pi-cog',
+//         items: [
+//           {
+//             label: 'Registro de año escolar',
+//             icon: 'pi pi-fw pi-cog',
+//             routerLink: ['/gestion-institucional/apertura'],
+//           },
+//           {
+//             label: 'Personal',
+//             icon: 'pi pi-fw pi-cog',
+//             routerLink: ['/configuracion/personal'],
+//           },
+//         ],
+//       },
+//       {
+//         label: 'Enlaces de ayuda',
+//         icon: 'pi pi-fw pi-share-alt',
+//         routerLink: ['ayuda'],
+//       },
+//     ],
+//   },
+// ];
 
 const administracion = [
   //Del modulo de gestion institucional

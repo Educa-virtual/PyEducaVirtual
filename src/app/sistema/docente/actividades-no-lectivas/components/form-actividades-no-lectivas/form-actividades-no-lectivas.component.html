@@ -7,7 +7,7 @@
 >
     <form [formGroup]="formDetalleCargaNoLectivas" class="mt-4">
         <div class="grid">
-            <div class="col-9">
+            <div class="col-12">
                 <p-inputGroup>
                     <p-inputGroupAddon> Tipo de Actividad </p-inputGroupAddon>
                     <p-dropdown
@@ -20,16 +20,30 @@
                     ></p-dropdown>
                 </p-inputGroup>
             </div>
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Fecha </p-inputGroupAddon>
+                    <input formControlName="dtInicio" pInputText type="date" />
+                </p-inputGroup>
+            </div>
             <div class="col-3">
                 <p-inputGroup>
                     <p-inputGroupAddon> Horas </p-inputGroupAddon>
-                    <p-inputNumber
+                    <input
                         formControlName="nDetCargaNoLectHoras"
-                        mode="decimal"
-                        [minFractionDigits]="1"
-                        [maxFractionDigits]="3"
-                    >
-                    </p-inputNumber>
+                        pInputText
+                        type="number"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Descripcion</p-inputGroupAddon>
+                    <textarea
+                        formControlName="cDescripcion"
+                        pInputTextarea
+                        placeholder="Ingresa tu descripcion"
+                    ></textarea>
                 </p-inputGroup>
             </div>
             <div class="col-12 mt-1">
@@ -51,7 +65,7 @@
         />
         <p-button
             [label]="opcion"
-            [disabled]="!this.formDetalleCargaNoLectivas.valid"
+            [disabled]="!formDetalleCargaNoLectivas.valid"
             (onClick)="accionBtn({ accion: opcion, item: [] })"
         />
     </div>

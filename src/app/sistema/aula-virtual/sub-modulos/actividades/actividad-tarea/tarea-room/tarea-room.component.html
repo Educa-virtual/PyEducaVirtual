@@ -32,7 +32,7 @@
             }
           </div>
         </div>
-        @if (iPerfilId === ESTUDIANTE) {
+        @if (isEstudiante) {
           <div section class="col-12">
             @if (!bTareaEsGrupal) {
               @if (!iEvaluado) {
@@ -92,21 +92,35 @@
                 }
               } @else {
                 <div class="grid">
-                  <div class="col-12 mt-2">
-                    <div class="text-xl font-medium text-900 mb-2">
-                      <span class="text-blue-500"
-                        ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                  @if (data.bCapacitacion) {
+                    <div class="col-12 mt-2">
+                      <div class="text-xl font-medium text-900 mb-2">
+                        <span class="text-blue-500"
+                          ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                        >
+                        <p-divider></p-divider>
+                        <span class="text-green-500"
+                          >📝✨ Nota: {{ notaTareaEstudiante || '-' }}</span
+                        >
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="col-12 mt-2">
+                      <div class="text-xl font-medium text-900 mb-2">
+                        <span class="text-blue-500"
+                          ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                        >
+                        <p-divider></p-divider>
+                        <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                      </div>
+                      <div
+                        class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
                       >
-                      <p-divider></p-divider>
-                      <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                        <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                        <div [innerHTML]="comentarioTareaEstudiante || '-'"></div>
+                      </div>
                     </div>
-                    <div
-                      class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
-                    >
-                      <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
-                      <div [innerHTML]="comentarioTareaEstudiante || '-'"></div>
-                    </div>
-                  </div>
+                  }
                 </div>
               }
             } @else {
@@ -166,22 +180,37 @@
                 }
               } @else {
                 <div class="grid">
-                  <div class="col-12 mt-2">
-                    <div class="text-xl font-medium text-900 mb-2">
-                      <span class="text-blue-500"
-                        ><i class="pi pi-check"></i>&nbsp;El Trabajo grupal ya ha sido
-                        evaluado</span
+                  @if (data.bCapacitacion) {
+                    <div class="col-12 mt-2">
+                      <div class="text-xl font-medium text-900 mb-2">
+                        <span class="text-blue-500"
+                          ><i class="pi pi-check"></i>&nbsp;El Trabajo grupal ya ha sido
+                          evaluado</span
+                        >
+                        <p-divider></p-divider>
+                        <span class="text-green-500"
+                          >📝✨ Nota: {{ notaTareaEstudianteGrupal || '-' }}</span
+                        >
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="col-12 mt-2">
+                      <div class="text-xl font-medium text-900 mb-2">
+                        <span class="text-blue-500"
+                          ><i class="pi pi-check"></i>&nbsp;El Trabajo grupal ya ha sido
+                          evaluado</span
+                        >
+                        <p-divider></p-divider>
+                        <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                      </div>
+                      <div
+                        class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
                       >
-                      <p-divider></p-divider>
-                      <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                        <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                        <div [innerHTML]="comentarioTareaEstudianteGrupal || '-'"></div>
+                      </div>
                     </div>
-                    <div
-                      class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words"
-                    >
-                      <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
-                      <div [innerHTML]="comentarioTareaEstudianteGrupal || '-'"></div>
-                    </div>
-                  </div>
+                  }
                 </div>
               }
             }
@@ -340,7 +369,7 @@
       </app-tab-descripcion-actividades>
     </p-tabPanel>
 
-    @if (iPerfilId !== ESTUDIANTE) {
+    @if (isDocente) {
       <p-tabPanel>
         <ng-template pTemplate="header" class="header-fixed">
           <div class="flex align-items-center flex-column gap-2">
@@ -710,31 +739,32 @@
                     <p-divider></p-divider>
                     <p-fieldset legend="Calificación" [toggleable]="true">
                       <div class="grid">
-                        <!-- Deshabilitado x el momento de calificar estudiante -->
-                        <!-- <div class="col-12">
-                          <p-inputGroup>
-                            <p-inputGroupAddon>Escala de calificación</p-inputGroupAddon>
-                            <p-dropdown
-                              [(ngModel)]="iEscalaCalifId"
-                              [options]="escalaCalificaciones"
-                              optionValue="iEscalaCalifId"
-                              optionLabel="cEscalaCalifNombre"
-                              placeholder="Seleccione calificación"
-                              [style]="{
-                                width: '100%',
-                              }"
-                            ></p-dropdown>
-                          </p-inputGroup>
-                        </div> -->
-                        <div class="col-12">
-                          <p-inputGroup>
-                            <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
-                            <textarea
-                              pInputText
-                              [(ngModel)]="cTareaEstudianteComentarioDocente"
-                            ></textarea>
-                          </p-inputGroup>
-                        </div>
+                        @if (data.bCapacitacion === '1') {
+                          <div class="col-12">
+                            <p-inputGroup>
+                              <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                              <p-inputNumber
+                                inputStyleClass="w-full"
+                                mode="decimal"
+                                [(ngModel)]="nTareaEstudianteNota"
+                                [min]="0"
+                                [max]="20"
+                                [showButtons]="true"
+                                (onInput)="validarNota($event)"
+                              />
+                            </p-inputGroup>
+                          </div>
+                        } @else {
+                          <div class="col-12">
+                            <p-inputGroup>
+                              <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
+                              <textarea
+                                pInputText
+                                [(ngModel)]="cTareaEstudianteComentarioDocente"
+                              ></textarea>
+                            </p-inputGroup>
+                          </div>
+                        }
                       </div>
                     </p-fieldset>
                     <div class="grid">
@@ -830,32 +860,32 @@
                     <p-divider></p-divider>
                     <p-fieldset legend="Calificación" [toggleable]="true">
                       <div class="grid">
-                        <!-- <div class="col-12">
-                          <p-inputGroup>
-                            <p-inputGroupAddon>Escala de calificación</p-inputGroupAddon>
-                            <p-dropdown
-                              [(ngModel)]="iEscalaCalifId"
-                              [options]="escalaCalificaciones"
-                              optionValue="iEscalaCalifId"
-                              optionLabel="cEscalaCalifNombre"
-                              placeholder="Seleccione calificación"
-                              [style]="{
-                                width: '100%',
-                              }"
-                            ></p-dropdown>
-                          </p-inputGroup>
-                        </div> -->
-                        <div class="col-12">
-                          <p-inputGroup>
-                            <!-- p-inputGroupAddon: Un componente de PrimeNG que se usa para agregar elementos al principio o al final de un grupo de entrada. -->
-                            <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
-                            <!-- textarea: Un elemento de formulario de HTML que permite a los usuarios introducir texto en múltiples líneas. -->
-                            <textarea
-                              pInputText
-                              [(ngModel)]="cTareaGrupoComentarioDocente"
-                            ></textarea>
-                          </p-inputGroup>
-                        </div>
+                        @if (data.bCapacitacion === '1') {
+                          <div class="col-12">
+                            <p-inputGroup>
+                              <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                              <p-inputNumber
+                                inputStyleClass="w-full"
+                                mode="decimal"
+                                [(ngModel)]="nTareaGrupoNota"
+                                [min]="0"
+                                [max]="20"
+                                [showButtons]="true"
+                                (onInput)="validarNota($event)"
+                              />
+                            </p-inputGroup>
+                          </div>
+                        } @else {
+                          <div class="col-12">
+                            <p-inputGroup>
+                              <p-inputGroupAddon> Conclusión Descriptiva </p-inputGroupAddon>
+                              <textarea
+                                pInputText
+                                [(ngModel)]="cTareaGrupoComentarioDocente"
+                              ></textarea>
+                            </p-inputGroup>
+                          </div>
+                        }
                       </div>
                     </p-fieldset>
                     <div class="grid">

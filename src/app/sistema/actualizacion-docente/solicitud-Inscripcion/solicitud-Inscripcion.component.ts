@@ -4,12 +4,14 @@ import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from 
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component';
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component';
 import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component';
-import { ApiAulaService } from '../../aula-virtual/services/api-aula.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { PaginatorModule } from 'primeng/paginator';
 import { DetalleInscripcionComponent } from './detalle-inscripcion/detalle-inscripcion.component';
 import { DropdownChangeEvent } from 'primeng/dropdown';
 import { GeneralService } from '@/app/servicios/general.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TipoCapacitacionesService } from '@/app/servicios/cap/tipo-capacitaciones.service';
+import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
 @Component({
   selector: 'app-solicitud-inscripcion',
   standalone: true,
@@ -26,9 +28,13 @@ import { GeneralService } from '@/app/servicios/general.service';
   ],
 })
 export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
-  private _aulaService = inject(ApiAulaService);
   private _ConstantesService = inject(ConstantesService);
   private GeneralService = inject(GeneralService);
+  private _ActivatedRoute = inject(ActivatedRoute);
+  private _Router = inject(Router);
+  private _TipoCapacitacionesService = inject(TipoCapacitacionesService);
+  private _CapacitacionesService = inject(CapacitacionesService);
+
   @ViewChild('gridContainer') gridContainer!: ElementRef;
 
   activeIndex: number = 1;
@@ -49,6 +55,10 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
   ];
 
   updateTab(tab): void {
+    this._Router.navigate([], {
+      queryParams: { tab: tab },
+      queryParamsHandling: 'merge',
+    });
     this.activeIndex = tab;
   }
 
@@ -74,42 +84,42 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.calculateRows(), 0); // Esperar renderizado
-    window.addEventListener('resize', () => this.calculateRows());
+    setTimeout(() => {
+      if (this.gridContainer) {
+        this.calculateRows();
+        window.addEventListener('resize', () => this.calculateRows());
+      }
+    }, 0);
   }
 
   ngOnInit() {
+    this._ActivatedRoute.queryParams.subscribe(params => {
+      if (params['tab'] !== undefined) {
+        this.activeIndex = Number(params['tab']);
+      }
+    });
+
     this.obtenerCapacitaciones();
     this.obtenerTipoCapacitacion();
   }
   // obtener y listar las capacitaciones
+  // obtener las capacitaciones
   obtenerCapacitaciones() {
-    const data = {
-      petition: 'get',
-      group: 'cap',
-      prefix: 'capacitaciones',
-      ruta: 'listarCapacitaciones',
-      params: {
-        iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
-      },
+    const iCredId = this._ConstantesService.iCredId;
+    const params = {
+      iCredId: iCredId,
     };
-    this.GeneralService.getGralPrefixx(data).subscribe({
-      next: resp => {
-        this.data = resp['data'];
-        // console.log('Capacitaciones:', this.data);
-        this.capacitaciones = [...this.data]; // cargar desde servicio o mock
-      },
-      error: err => {
-        console.error('Error al obtener capacitaciones:', err);
-      },
+    this._CapacitacionesService.obtenerCapacitacion(params).subscribe((resp: any) => {
+      this.data = resp.data;
+      this.capacitaciones = [...this.data]; // cargar desde servicio o mock
+      this.capacitacionFiltrado = [...this.data]; // Guardar una copia para filtrar
     });
   }
 
   // metodo para obtener tipo capacitación:
   obtenerTipoCapacitacion() {
-    const userId = 1;
-    this._aulaService.obtenerTipoCapacitacion(userId).subscribe(Data => {
-      this.tipoCapacitacion = Data['data'];
+    this._TipoCapacitacionesService.obtenerTipoCapacitacion().subscribe(data => {
+      this.tipoCapacitacion = data;
       this.tipoCapacitacionSearch = [...this.tipoCapacitacion];
       this.tipoCapacitacionSearch.unshift({
         iTipoCapId: 0,
@@ -137,9 +147,13 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
   }
 
   onVerDetalle(id: any) {
-    // console.log('onVerDetalle', id)
-    this.idSeleccionado = id;
-    this.detalleVisible = true;
+    const seleccionado = this.tipoCapacitacion.find(t => t.iTipoCapId === id.iTipoCapId);
+    if (seleccionado && id.cLink) {
+      window.open(id.cLink, '_blank');
+    } else {
+      this.idSeleccionado = id;
+      this.detalleVisible = true;
+    }
   }
 
   volverALista() {
@@ -158,24 +172,5 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         (capacitacion: any) => capacitacion.iTipoCapId === iTipoCapId
       );
     }
-    // const fechasFiltradas = this.data.fechas
-    //     .map((fecha: any) => {
-    //         const actividadesFiltradas = fecha.actividades.filter(
-    //             (actividad: any) =>
-    //                 Number(actividad.iActTipoId) === iActTipoId
-    //         )
-
-    //         if (actividadesFiltradas.length > 0) {
-    //             return {
-    //                 ...fecha,
-    //                 actividades: actividadesFiltradas,
-    //             }
-    //         }
-
-    //         return null
-    //     })
-    //     .filter((fecha: any) => fecha !== null)
-
-    // this.data.fechas = fechasFiltradas
   }
 }

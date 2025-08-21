@@ -5,6 +5,8 @@ import { MessageService } from 'primeng/api';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EvaluacionPromediosService } from '@/app/servicios/eval/evaluacion-promedios.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-form-calificar-evaluacion',
@@ -13,7 +15,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
   templateUrl: './form-calificar-evaluacion.component.html',
   styleUrl: './form-calificar-evaluacion.component.scss',
 })
-export class FormCalificarEvaluacionComponent implements OnChanges {
+export class FormCalificarEvaluacionComponent extends MostrarErrorComponent implements OnChanges {
   private _MessageService = inject(MessageService);
   private _EvaluacionPromediosService = inject(EvaluacionPromediosService);
   private _ConstantesService = inject(ConstantesService);
@@ -25,6 +27,9 @@ export class FormCalificarEvaluacionComponent implements OnChanges {
   @Input() estudiante;
 
   cConclusionDescriptiva;
+  bCapacitacion: boolean;
+  nEvalPromNota;
+
   isLoading: boolean = false;
 
   ngOnChanges(changes) {
@@ -34,6 +39,8 @@ export class FormCalificarEvaluacionComponent implements OnChanges {
     if (changes.estudiante?.currentValue) {
       this.estudiante = changes.estudiante.currentValue;
       this.cConclusionDescriptiva = this.estudiante?.cConclusionDescriptiva;
+      this.bCapacitacion = this.estudiante?.bCapacitacion === '1' ? true : false;
+      this.nEvalPromNota = this.estudiante?.nEvalPromNota;
     }
   }
   accionBtn(elemento): void {
@@ -57,48 +64,34 @@ export class FormCalificarEvaluacionComponent implements OnChanges {
       iEvaluacionId: this.estudiante.iEvaluacionId,
       iEstudianteId: this.estudiante.iEstudianteId,
       cConclusionDescriptiva: this.cConclusionDescriptiva,
+      nEvalPromNota: this.nEvalPromNota,
       iCredId: this._ConstantesService.iCredId,
     };
-    this._EvaluacionPromediosService.guardarConclusionxiEvaluacionIdxiEstudianteId(data).subscribe({
-      next: resp => {
-        if (resp.validated) {
-          this.mostrarMensajeToast({
-            severity: 'success',
-            summary: '¡Genial!',
-            detail: resp.message,
-          });
-          this.cConclusionDescriptiva = null;
-          this.accionBtn({ accion: 'close-modal', item: [] });
-        }
-        this.isLoading = false;
-      },
-      error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
+    this._EvaluacionPromediosService
+      .guardarConclusionxiEvaluacionIdxiEstudianteId(data)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.mostrarMensajeToast({
+              severity: 'success',
+              summary: '¡Genial!',
+              detail: resp.message,
             });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
-        this.isLoading = false;
-      },
-    });
+            this.cConclusionDescriptiva = null;
+            this.accionBtn({ accion: 'close-modal', item: [] });
+          }
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
 
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
+  validarNota(event: any) {
+    let value = event.value;
+    if (value < 0) value = 0;
+    if (value > 20) value = 20;
+    this.nEvalPromNota = value;
   }
 }

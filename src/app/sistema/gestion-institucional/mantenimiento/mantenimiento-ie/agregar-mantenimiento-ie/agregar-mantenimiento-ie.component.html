@@ -1,4 +1,170 @@
 <br />
-<p>agregar-mantenimiento-ie works!</p>
-<p-button [severity]="'secondary'" label="Cancelar" (click)="btnCancelar()"> </p-button>
-<p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()"> </p-button>
+<div class="grid">
+  <!-- <div class="col-12">
+        <label for="agregarInstitucion" class="block text-900 font-medium mb-2">
+            Agregar Institución Educativa
+        </label>
+        <p-dropdown id="agregarInstitucion" placeholder="Seleccionar..." [style]="{ width: '100%' }">
+        </p-dropdown>
+    </div> -->
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="clieCodigoModular" class="block text-900 font-medium mb-2"> Código Modular </label>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      placeholder="Insertar el código modular"
+      (input)="soloNumeros($event)"
+    />
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="clieCodigoModular" class="block text-900 font-medium mb-2">
+      Institución Educativa
+    </label>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      placeholder="Insertar I.E."
+      (input)="convertirMayusculas($event)"
+    />
+  </div>
+  <!-- <div class="col-12 md:col-6 lg:col-4">
+        <label for="iDsttId" class="block text-900 font-medium mb-2">
+            País 
+        </label>
+        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
+        </p-dropdown>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+        <label for="iDsttId" class="block text-900 font-medium mb-2">
+            Departamento 
+        </label>
+        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
+        </p-dropdown>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+        <label for="iDsttId" class="block text-900 font-medium mb-2">
+            Distrito 
+        </label>
+        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
+        </p-dropdown>
+    </div> -->
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="distrito" class="block text-900 font-medium mb-2"> Distrito </label>
+    <p-dropdown
+      id="distrito"
+      [options]="distritos"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      [style]="{ width: '100%' }"
+    >
+    </p-dropdown>
+  </div>
+  <!-- <div class="col-12 md:col-6 lg:col-4">
+        <label for="zona" class="block text-900 font-medium mb-2">
+            Zona 
+        </label>
+        <p-dropdown 
+            id="zona" 
+            [options]="zonas"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Seleccionar..." 
+            [style]="{ width: '100%' }">
+        </p-dropdown>
+    </div> -->
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
+    <p-dropdown
+      id="iZonaId"
+      [options]="zona"
+      optioLabel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      [style]="{ width: '100%' }"
+    >
+    </p-dropdown>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector </label>
+    <p-dropdown
+      id="iTipoSectorId"
+      [options]="sector"
+      optioLabel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      [style]="{ width: '100%' }"
+    >
+    </p-dropdown>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="clieRUC" class="block text-900 font-medium mb-2"> RUC </label>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      placeholder="Insertar RUC"
+      (input)="soloNumeros($event)"
+    />
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="clieDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      placeholder="Insertar dirección"
+      (input)="convertirMayusculas($event)"
+    />
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="clieLogo" class="block text-900 font-medium mb-2"> NIvel </label>
+    <p-dropdown
+      id="Nivel"
+      [options]="Nivel"
+      optionsLavel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      [style]="{ width: '100%' }"
+    >
+    </p-dropdown>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
+    <p-dropdown
+      id="iUgelId"
+      [options]="ugel"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      [style]="{ width: '100%' }"
+    >
+    </p-dropdown>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <label for="iUgelId" class="block text-900 font-medium mb-2"> Sede </label>
+    <p-dropdown
+      id="sede"
+      [options]="sede"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      [style]="{ width: '100%' }"
+    >
+    </p-dropdown>
+  </div>
+  <!-- <div class="col-12">
+        <label for="agregarInstitucion" class="block text-900 font-medium mb-2">
+            Sede 
+        </label>
+        <p-dropdown id="agregarInstitucion" placeholder="Seleccionar..." [style]="{ width: '100%' }">
+        </p-dropdown>
+    </div> -->
+</div>
+
+<div class="flex justify-content-end gap-2 mt-4">
+  <p-button [severity]="'secondary'" label="Cancelar" (click)="btnCancelar()"> </p-button>
+  <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()"> </p-button>
+</div>

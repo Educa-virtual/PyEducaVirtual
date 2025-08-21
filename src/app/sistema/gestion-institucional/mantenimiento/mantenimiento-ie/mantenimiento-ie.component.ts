@@ -22,8 +22,8 @@ import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agre
 })
 export class MantenimientoIeComponent implements OnInit {
   selectedItem: any;
-  titleEditarMantenimiento: string = 'Editar';
-  titleAgregarMantenimiento: string = 'Agregar';
+  titleEditarMantenimiento: string = 'Editar Institución Educativa';
+  titleAgregarMantenimiento: string = 'Agregar Institución Educativa';
   mostrarEditarMantenimiento: boolean = false;
   mostrarAgregarMantenimiento: boolean = false;
   columns = [

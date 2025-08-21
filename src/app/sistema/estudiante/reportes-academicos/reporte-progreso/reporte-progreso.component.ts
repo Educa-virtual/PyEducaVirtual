@@ -3,6 +3,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ReporteProgresoService } from './services/reporte-progreso.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-reporte-progreso',
@@ -41,25 +42,81 @@ export class ReporteProgresoComponent implements OnInit {
     ];
   }
 
-  descargarReporte() {
-    this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
-      next: (response: any) => {
-        const blob = new Blob([response], {
-          type: 'application/pdf',
-        });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.click();
-      },
-      error: () => {
+  async descargarReporte() {
+    try {
+      const respMatricula: any = await firstValueFrom(
+        this.reporteProgresoService.existeMatriculaPorAnio(this.iYAcadId)
+      );
+      if (!respMatricula?.data?.existe) {
         this.messageService.add({
           severity: 'error',
-          summary: 'Problema al descargar el archivo',
-          detail: 'Error desconocido',
+          summary: 'No existe matrícula',
+          detail: 'No hay una matrícula registrada para el año seleccionado',
         });
-      },
-    });
+        return;
+      }
+
+      // obtener reporte (Blob)
+      const response: Blob = await firstValueFrom(
+        this.reporteProgresoService.obtenerReporte(this.iYAcadId)
+      );
+
+      const blob = new Blob([response], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      // link.download = `reporte-${this.iYAcadId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (err: any) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Problema al descargar el archivo',
+        detail: err?.error?.message || 'Error desconocido',
+      });
+    }
   }
+  /*descargarReporte() {
+        this.reporteProgresoService.existeMatriculaPorAnio(this.iYAcadId).subscribe({
+            next: (responsex: any) => {
+                if (responsex.data.existe) {
+                    this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
+                        next: (response: any) => {
+                            const blob = new Blob([response], {
+                                type: 'application/pdf',
+                            });
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.target = '_blank';
+                            link.click();
+                        },
+                        error: () => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Problema al descargar el archivo',
+                                detail: 'Error desconocido',
+                            });
+                        },
+                    });
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'No existe matricula',
+                        detail: 'No hay una matricula registrada para el anio seleccionado',
+                    });
+                }
+            },
+            error: (err) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al descargar el archivo',
+                    detail: err.error.message || 'Error desconocido',
+                });
+            },
+        });
+    }*/
 }

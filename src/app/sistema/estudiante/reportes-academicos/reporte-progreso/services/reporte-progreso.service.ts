@@ -18,4 +18,10 @@ export class ReporteProgresoService {
       responseType: 'blob',
     });
   }
+
+  existeMatriculaPorAnio(iYAcadId: number) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/estudiantes/matriculas/anio-academico/${iYAcadId.toString()}/existe`
+    );
+  }
 }

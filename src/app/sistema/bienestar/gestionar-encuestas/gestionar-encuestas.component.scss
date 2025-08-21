@@ -21,6 +21,10 @@
   border-radius: 0rem;
 }
 
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
+}
+
 :host ::ng-deep .p-inputgroup .group-element:last-child,
 :host ::ng-deep .p-inputgroup .p-inputtextarea,
 :host ::ng-deep .p-inputgroup .group-element.p-inputtext {
@@ -61,6 +65,10 @@
 :host ::ng-deep .p-inputgroup.vertical-group .group-element .p-dropdown {
   width: 100% !important;
   border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
 }
 
 :host ::ng-deep .p-inputgroup.vertical-group .group-element:last-child,
@@ -191,6 +199,12 @@
   color: var(--primary-color-text) !important;
 }
 
+:host ::ng-deep .p-overlaypanel {
+  z-index: 1000 !important;
+  top: 50px !important;
+  left: 0px !important;
+}
+
 .card {
   background: var(--surface-card);
   border: 1px solid var(--surface-border);
@@ -205,4 +219,12 @@
 
 .card-alerta {
   border-left: 15px solid var(--red-500);
+}
+
+.card-disabled {
+  border-left: 15px solid var(--gray-500);
+}
+
+.card-warning {
+  border-left: 15px solid var(--yellow-500);
 }

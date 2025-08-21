@@ -1,0 +1,71 @@
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="'Nueva sugerencia'"
+  [(visible)]="visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  (onHide)="cerrarDialog()"
+>
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <div class="field col-12 md:col-8">
+        <p-inputGroup>
+          <p-inputGroupAddon>Asunto *</p-inputGroupAddon>
+          <input pInputText type="text" formControlName="cAsunto" placeholder="Ingrese un asunto" />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Prioridad *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="prioridades"
+            formControlName="iPrioridadId"
+            optionLabel="cPrioridadNombre"
+            [checkmark]="true"
+            optionValue="iPrioridadId"
+            [appendTo]="'body'"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12">
+        <!--<p-editor
+                formControlName="cSugerencia"
+                [style]="{ height: '150px' }"
+                placeholder="Escriba su sugerencia *"
+                [readonly]="disable_form"
+            />-->
+        <ng-container *ngIf="form">
+          <editor *ngIf="visible" [init]="initEnunciado" formControlName="cSugerencia"></editor>
+        </ng-container>
+      </div>
+      <div class="field col-12">
+        <p-fileUpload
+          #uploader
+          name="fArchivos[]"
+          showUploadButton="false"
+          (onSelect)="onFileSelect($event)"
+          (onRemove)="reiniciarFileUpload()"
+          chooseLabel="Seleccione archivo (opcional)"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          [maxFileSize]="FILE_MAX_SIZE"
+          [showCancelButton]="false"
+        >
+        </p-fileUpload>
+
+        <small class="text-muted">Máx. 10MB. Sólo documentos o imagenes</small>
+      </div>
+    </div>
+    <div class="flex justify-content-end">
+      <p-button
+        label="Guardar"
+        (onClick)="guardarSugerencia()"
+        severity="success"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </form>
+</p-dialog>

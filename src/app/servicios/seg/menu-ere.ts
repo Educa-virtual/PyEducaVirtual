@@ -100,11 +100,11 @@ export const administradorDremo = [
             icon: 'pi pi-user',
             routerLink: ['/actualizacion-docente/instructores'],
           },
-          {
-            label: 'Resultados del curso',
-            icon: 'pi pi-user',
-            routerLink: ['/actualizacion-docente/resultados'],
-          },
+          // {
+          //   label: 'Resultados del curso',
+          //   icon: 'pi pi-user',
+          //   routerLink: ['/actualizacion-docente/resultados'],
+          // },
         ],
       },
       //reportesEre,

@@ -52,7 +52,7 @@ export class CardCapacitacionesComponent {
     | 'secondary'
     | 'contrast' {
     if (this.iPerfilId === this.ADMINISTRADOR_DREMO) {
-      return this.capacitacion.cTipoCapDesc === this.CAP_EXT ? 'danger' : 'primary';
+      return this.capacitacion.cTipoCapDesc === this.CAP_EXT ? 'success' : 'primary';
     }
     return 'success';
   }

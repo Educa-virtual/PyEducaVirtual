@@ -61,7 +61,16 @@
     </div>
   </div>
   <div class="flex mx-3 mt-2 mb-3 justify-content-end">
+    @if (iPerfilId === PARTICIPANTE) {
+      <p-button
+        [label]="'Certificado'"
+        icon="pi pi-file-pdf"
+        iconPos="right"
+        [severity]="'danger'"
+      ></p-button>
+    }
     <p-button
+      class="ml-2"
       [label]="getBotonLabel()"
       icon="pi pi-arrow-right"
       iconPos="right"

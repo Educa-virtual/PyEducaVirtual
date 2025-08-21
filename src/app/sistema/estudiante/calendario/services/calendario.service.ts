@@ -18,8 +18,10 @@ export class CalendarioService {
     return this.http.get(`${this.urlBackendApi}/acad/fechas-importantes/tipos`);
   }
 
-  obtenerCalendarioAcademico() {
-    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/calendario-academico`);
+  obtenerCalendarioAcademico(iYAcadId: any) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/estudiantes/calendario-academico/anio/${iYAcadId}`
+    );
   }
 
   /*obtenerAreasCurriculares() {

@@ -82,7 +82,7 @@ export class ApiAulaService {
         })
       );
   }
-  obtenerResultados(params: { iEstudianteId; idDocCursoId }) {
+  obtenerResultados(params: { iEstudianteId; idDocCursoId; iCapacitacionId }) {
     return this._http
       .get<any>(`${this.baseUrlApi}/aula-virtual/Resultado/obtenerResultados`, { params })
       .pipe(

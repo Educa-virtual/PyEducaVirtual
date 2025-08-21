@@ -35,18 +35,30 @@
         </div>
 
         <div section>
-          @if (comentarioDocente && iPerfilId === ESTUDIANTE) {
-            <div class="col-12 mt-2">
-              <div class="text-xl font-medium text-900 mb-2">
-                <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+          @if (comentarioDocente && isEstudiante) {
+            @if (bCapacitacion) {
+              <div class="col-12 mt-2">
+                <div class="text-xl font-medium text-900 mb-2">
+                  <span class="text-blue-500"
+                    ><i class="pi pi-check"></i>&nbsp;Tu Trabajo ya ha sido evaluado</span
+                  >
+                  <p-divider></p-divider>
+                  <span class="text-green-500">📝✨ Nota: {{ comentarioDocente || '-' }}</span>
+                </div>
               </div>
-              <div
-                class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words text-justify estilo-descripcion"
-              >
-                <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
-                <div [innerHTML]="comentarioDocente || '-'"></div>
+            } @else {
+              <div class="col-12 mt-2">
+                <div class="text-xl font-medium text-900 mb-2">
+                  <span class="text-green-500">👍✨ Mi Retroalimentación Descriptiva</span>
+                </div>
+                <div
+                  class="p-3 border-1 border-green-200 border-round bg-green-50 min-h-10rem overflow-auto break-words text-justify estilo-descripcion"
+                >
+                  <p class="text-gray-700 font-medium mb-2">🗣 Comentario del docente:</p>
+                  <div [innerHTML]="comentarioDocente || '-'"></div>
+                </div>
               </div>
-            </div>
+            }
           }
         </div>
       </app-tab-descripcion-actividades>

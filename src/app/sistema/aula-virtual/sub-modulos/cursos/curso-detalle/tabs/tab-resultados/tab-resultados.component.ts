@@ -211,17 +211,14 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     this.iEstudianteId = this._ConstantesService.iEstudianteId;
     this.iPerfilId = this._ConstantesService.iPerfilId;
     this.iDocenteId = this._ConstantesService.iDocenteId;
-    // this.iIntructorId = this._ConstantesService.iIntructorId;
-    console.log('iIntructorId', this.iPerfilId, this.INSTRUCTOR);
-
-    this.obtenerEscalaCalificaciones();
 
     if (!this.curso?.iCapacitacionId) {
       this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
       this.obtenerReporteDenotasFinales();
+      this.obtenerEscalaCalificaciones();
     }
 
-    this.obtenerEsctudiantes();
+    this.obtenerEstudiantesCapacitacion();
   }
 
   periodoSeleccionado: number | string | null = null;
@@ -247,15 +244,16 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   }
   capacitacion: any;
   // obtener los alumnos de la capacitación
-  obtenerEsctudiantes() {
+  obtenerEstudiantesCapacitacion() {
     const data = this.curso.iCapacitacionId;
     this._serviceResultados.obtenerAlumnos(data).subscribe({
       next: resp => {
         this.capacitacion = resp['data'] || [];
-        this.reporteNotasFinales = this.capacitacion.map(item => ({
+        this.reporteNotasFinales = this.capacitacion.map((item: any, index) => ({
           ...item,
           iEscalaCalifIdPromedioFinal: item.iNroNota,
           cDetMatConclusionDescPromedio: item.cConclusion,
+          cTitulo: `${index + 1}.- ${item.completoalumno}`,
         }));
       },
       error: err => {
@@ -308,7 +306,8 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     this._aulaService
       .obtenerResultados({
         iEstudianteId: estudiantes.iEstudianteId,
-        idDocCursoId: this.idDocCursoId,
+        idDocCursoId: this.idDocCursoId || null,
+        iCapacitacionId: this.curso?.iCapacitacionId || null,
       })
       .pipe(takeUntil(this.unsbscribe$))
       .subscribe({
@@ -348,7 +347,6 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
         ...item,
         cTitulo: `${index + 1}.- ${item.completoalumno}`,
       }));
-      console.log(this.reporteNotasFinales, this.curso);
     });
   }
 
@@ -378,7 +376,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
           });
 
           this.estudianteSeleccionado = null;
-          this.obtenerEsctudiantes();
+          this.obtenerEstudiantesCapacitacion();
           this.mostrarModalConclusionDesc = false;
           this.conclusionDescrp.reset();
           // console.log(this.capacitacion);

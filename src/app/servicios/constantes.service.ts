@@ -9,6 +9,7 @@ import {
   SUBDIRECTOR_IE,
   APODERADO,
   AUXILIAR,
+  ASISTENTE_SOCIAL,
 } from './perfilesConstantes';
 import { ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from './seg/perfiles';
 import { administradorDremo, especialistaDremo, especialistaUgel } from './seg/menu-ere';
@@ -420,8 +421,14 @@ const administracion = [
             routerLink: ['/bienestar/recordario-fechas'],
           },
           {
-            label: 'Reportes e informes',
-            icon: 'pi pi-fw pi-chart-bar',
+            label: 'Seguimiento de bienestar',
+            icon: 'pi pi-fw pi-eye',
+            routerLink: ['/bienestar/seguimiento-bienestar'],
+          },
+          {
+            label: 'Informes y estadística',
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: ['/bienestar/informe-estadistico'],
           },
         ],
       },
@@ -567,6 +574,40 @@ const first = [
   },
 ];
 
+const asistente_social = [
+  {
+    label: 'Bienestar Social',
+    icon: 'pi pi-fw pi-check-square',
+    items: [
+      {
+        label: 'Consultar Fichas Socioeconómicas',
+        icon: 'pi pi-fw pi-user-edit',
+        routerLink: ['/bienestar/gestion-fichas'],
+      },
+      {
+        label: 'Gestionar encuestas',
+        icon: 'pi pi-fw pi-list-check',
+        routerLink: ['/bienestar/gestionar-encuestas'],
+      },
+      {
+        label: 'Recordatorios de cumpleaños',
+        icon: 'pi pi-fw pi-bell',
+        routerLink: ['/bienestar/recordario-fechas'],
+      },
+      {
+        label: 'Seguimiento de bienestar',
+        icon: 'pi pi-fw pi-eye',
+        routerLink: ['/bienestar/seguimiento-bienestar'],
+      },
+      {
+        label: 'Informes y estadística',
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: ['/bienestar/informe-estadistico'],
+      },
+    ],
+  },
+];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -608,7 +649,8 @@ export class ConstantesService {
         return apoderado;
       case AUXILIAR:
         return first;
-
+      case ASISTENTE_SOCIAL:
+        return asistente_social;
       default:
         return first;
     }

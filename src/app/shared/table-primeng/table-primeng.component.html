@@ -69,7 +69,7 @@
                 [rowSpan]="col.rowspan"
                 [ngStyle]="getStyleColumnGroup(col, $index)"
                 [pSortableColumnDisabled]="enableCellSelection"
-                [class]="col.class"
+                [class]="getCellClass(col)"
               >
                 <div [style.text-align]="col.text_header" class="">
                   <span> {{ col.header }}</span>
@@ -101,7 +101,7 @@
               [style.width]="col.width"
               [style.padding]="col.padding"
               [pSortableColumnDisabled]="enableCellSelection"
-              [class]="col.class"
+              [class]="getCellClass(col)"
             >
               @switch (col.type) {
                 @case ('actions') {
@@ -183,7 +183,7 @@
             }"
             [pEditableColumn]="rowData[col.field]"
             [pEditableColumnField]="col.field"
-            [class]="col.class"
+            [class]="getCellClass(col, rowData)"
           >
             @if (col.type === 'expansion') {
               <button

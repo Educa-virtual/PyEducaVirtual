@@ -287,7 +287,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
    * Setea los datos de un familiar seleccionado
    * @param item datos del familiar seleccionado
    */
-  setFormFamiliar(item: FichaFamiliar) {
+  setFormFamiliar(item: any) {
     if (!item) {
       this.formFamiliar.reset();
       this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
@@ -352,6 +352,12 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     );
     this.funcionesBienestar.formatearFormControl(
       this.formFamiliar,
+      'iFamiliarDireccionPiso',
+      item.iFamiliarDireccionPiso,
+      'number'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formFamiliar,
       'iOcupacionId',
       item.iOcupacionId,
       'number'
@@ -374,6 +380,27 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       item.dPersNacimiento,
       'date'
     );
+    this.formFamiliar.get('cPersDocumento').patchValue(item.cPersDocumento);
+    this.formFamiliar.get('cPersNombre').patchValue(item.cPersNombre);
+    this.formFamiliar.get('cPersPaterno').patchValue(item.cPersPaterno);
+    this.formFamiliar.get('cPersMaterno').patchValue(item.cPersMaterno);
+    this.formFamiliar.get('cPersSexo').patchValue(item.cPersSexo);
+    this.formFamiliar.get('cPersDomicilio').patchValue(item.cPersDomicilio);
+    this.formFamiliar.get('cTipoViaOtro').patchValue(item.cTipoViaOtro);
+    this.formFamiliar
+      .get('cFamiliarDireccionNombreVia')
+      .patchValue(item.cFamiliarDireccionNombreVia);
+    this.formFamiliar
+      .get('cFamiliarDireccionNroPuerta')
+      .patchValue(item.cFamiliarDireccionNroPuerta);
+    this.formFamiliar.get('cFamiliarDireccionBlock').patchValue(item.cFamiliarDireccionBlock);
+    this.formFamiliar.get('cFamiliarDireccionInterior').patchValue(item.cFamiliarDireccionInterior);
+    this.formFamiliar.get('cFamiliarDireccionManzana').patchValue(item.cFamiliarDireccionManzana);
+    this.formFamiliar.get('cFamiliarDireccionLote').patchValue(item.cFamiliarDireccionLote);
+    this.formFamiliar.get('cFamiliarDireccionKm').patchValue(item.cFamiliarDireccionKm);
+    this.formFamiliar
+      .get('cFamiliarDireccionReferencia')
+      .patchValue(item.cFamiliarDireccionReferencia);
     this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
   }
 

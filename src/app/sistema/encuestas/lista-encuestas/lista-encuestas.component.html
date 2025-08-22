@@ -1,41 +1,40 @@
-<p-panel class="lista-categoria">
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
   <ng-template pTemplate="header">
-    <div class="flex justify-content-between align-items-center w-full">
-      <span class="text-xl font-bold text-primary">{{ categoria?.cNombre }}</span>
-      <!--<button
-                pButton
-                pRipple
-                label="Nueva"
-                icon="pi pi-plus"
-                class="p-button-success"
-            ></button>
-        -->
-      <button
-        pButton
-        pRipple
-        label="Nueva"
-        icon="pi pi-plus"
-        class="p-button-success"
-        (click)="abrirDialogoNuevaEncuesta()"
-      ></button>
+    <div class="flex flex-column">
+      <div class="flex text-xl">Encuestas de categoría</div>
+      <div class="flex text-sm">{{ categoria?.cCatEncNombre }}</div>
     </div>
   </ng-template>
 
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <button
+      pButton
+      pRipple
+      label="Nueva"
+      icon="pi pi-plus"
+      class="p-button-success"
+      (click)="abrirDialogoNuevaEncuesta()"
+    ></button>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+      </p-inputGroup>
+    </div>
+  </div>
+
   <app-table-primeng
     [columnas]="columns"
-    [showCaption]="true"
     [data]="dataEncuestas"
     (accionBtnItem)="accionBtnItemTable($event)"
-    [showPaginator]="true"
-    sortMode="single"
-    sortField="dtFechaInicio"
-    [sortOrder]="-1"
     [(selectedRowData)]="selectedItem"
     [actions]="actions"
-    [showAdvancedFilter]="true"
-    [indiceColumnaBuscar]="1"
-    [showAdvancedFilter]="false"
-    [searchPlaceholder]="'Buscar por título de encuesta...'"
+    [showCaption]="false"
   >
   </app-table-primeng>
 </p-panel>

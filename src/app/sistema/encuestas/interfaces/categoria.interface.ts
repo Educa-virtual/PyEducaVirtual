@@ -1,10 +1,10 @@
 export interface ICategoria {
-    iCategoriaEncuestaId: number
-    bPuedeCrearDirector: boolean
-    bPuedeCrearEspDremo: boolean
-    bPuedeCrearEspUgel: boolean
-    cDescripcion: string
-    cImagenUrl?: string
-    cNombre?: string
-    iTotalEncuestas?: number
+  iCatEncId: number;
+  bCatEncPermisoDirector: boolean;
+  bCatEncPermisoDremo: boolean;
+  bCatEncPermisoUgel: boolean;
+  cCatEncDescripcion: string;
+  cCatEncImagenNombre?: string;
+  cCatEncNombre?: string;
+  iTotalEncuestas?: number;
 }

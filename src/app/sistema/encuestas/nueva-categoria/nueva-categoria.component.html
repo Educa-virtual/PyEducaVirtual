@@ -1,108 +1,88 @@
 <p-dialog
-    header="Nueva categoría"
-    [(visible)]="visible"
-    (onHide)="onHide()"
-    [modal]="true"
-    [closable]="true"
-    [draggable]="false"
-    [resizable]="false"
-    styleClass="nueva-categoria-dialog"
-    [style]="{ width: '700px' }"
+  header="Nueva categoría"
+  [(visible)]="visible"
+  (onHide)="onHide()"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="nueva-categoria-dialog"
+  [style]="{ width: '700px' }"
 >
-    <form [formGroup]="form" class="dialog-content">
-        <br />
-        <!-- Campo Nombre -->
-        <div class="field mb-4">
-            <label for="nombre" class="block text-900 font-medium mb-2">
-                Nombre <span class="text-red-500">(*) Obligatorio</span>
-            </label>
-            <input
-                id="nombre"
-                type="text"
-                pInputText
-                formControlName="cNombre"
-                placeholder="Categoría"
-                class="w-full p-3"
-            />
-        </div>
+  <form [formGroup]="form" class="dialog-content">
+    <br />
+    <!-- Campo Nombre -->
+    <div class="field mb-4">
+      <label for="nombre" class="block text-900 font-medium mb-2">
+        Nombre <span class="text-red-500">(*) Obligatorio</span>
+      </label>
+      <input
+        id="nombre"
+        type="text"
+        pInputText
+        formControlName="cNombre"
+        placeholder="Categoría"
+        class="w-full p-3"
+      />
+    </div>
 
-        <!-- Campo Descripción -->
-        <div class="field mb-4">
-            <label for="descripcion" class="block text-900 font-medium mb-2">
-                Descripción <span class="text-gray-500">(Opcional)</span>
-            </label>
-            <textarea
-                id="descripcion"
-                pInputTextarea
-                formControlName="cDescripcion"
-                placeholder="Descripción"
-                class="w-full p-3"
-                rows="3"
-            ></textarea>
-        </div>
+    <!-- Campo Descripción -->
+    <div class="field mb-4">
+      <label for="descripcion" class="block text-900 font-medium mb-2">
+        Descripción <span class="text-gray-500">(Opcional)</span>
+      </label>
+      <textarea
+        id="descripcion"
+        pInputTextarea
+        formControlName="cDescripcion"
+        placeholder="Descripción"
+        class="w-full p-3"
+        rows="3"
+      ></textarea>
+    </div>
 
-        <!--Crear encuestas-->
-        <div class="field mb-4">
-            <label
-                for="Permitir crear encuestas"
-                class="block text-900 font-medium mb-2"
-                >Permitir crear encuestas</label
-            >
-            <div class="flex items-center gap-2">
-                <label
-                    style="margin-top: 0.4rem; width: 15rem"
-                    for="switch1"
-                    class="mb-0"
-                    >Especialistas DREMO</label
-                >
-                <p-inputSwitch
-                    formControlName="bPuedeCrearEspDremo"
-                    inputId="switch1"
-                />
-            </div>
-            <div class="flex items-center gap-2">
-                <label
-                    style="margin-top: 0.4rem; width: 15rem"
-                    for="switch2"
-                    class="mb-0"
-                    >Especialistas UGEL</label
-                >
-                <p-inputSwitch
-                    formControlName="bPuedeCrearEspUgel"
-                    inputId="switch2"
-                />
-            </div>
-            <div class="flex items-center gap-2">
-                <label
-                    style="margin-top: 0.4rem; width: 15rem"
-                    for="switch3"
-                    class="mb-0"
-                    >Directores</label
-                >
-                <p-inputSwitch
-                    formControlName="bPuedeCrearDirector"
-                    inputId="switch3"
-                />
-            </div>
-        </div>
+    <!--Crear encuestas-->
+    <div class="field mb-4">
+      <label for="Permitir crear encuestas" class="block text-900 font-medium mb-2"
+        >Permitir crear encuestas</label
+      >
+      <div class="flex items-center gap-2">
+        <label style="margin-top: 0.4rem; width: 15rem" for="switch1" class="mb-0"
+          >Especialistas DREMO</label
+        >
+        <p-inputSwitch formControlName="bPuedeCrearEspDremo" inputId="switch1" />
+      </div>
+      <div class="flex items-center gap-2">
+        <label style="margin-top: 0.4rem; width: 15rem" for="switch2" class="mb-0"
+          >Especialistas UGEL</label
+        >
+        <p-inputSwitch formControlName="bPuedeCrearEspUgel" inputId="switch2" />
+      </div>
+      <div class="flex items-center gap-2">
+        <label style="margin-top: 0.4rem; width: 15rem" for="switch3" class="mb-0"
+          >Directores</label
+        >
+        <p-inputSwitch formControlName="bPuedeCrearDirector" inputId="switch3" />
+      </div>
+    </div>
 
-        <div class="flex justify-content-end gap-2 mt-4">
-            <button
-                pButton
-                pRipple
-                label="Cancelar"
-                class="p-button-text p-button-secondary"
-                (click)="cancelar()"
-            ></button>
-            <button
-                pButton
-                pRipple
-                label="Registrar"
-                icon="pi pi-check"
-                class="p-button-success"
-                (click)="registrarCategoria()"
-                [disabled]="form.invalid"
-            ></button>
-        </div>
-    </form>
+    <div class="flex justify-content-end gap-2 mt-4">
+      <button
+        pButton
+        pRipple
+        label="Cancelar"
+        class="p-button-text p-button-secondary"
+        (click)="cancelar()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Registrar"
+        icon="pi pi-check"
+        class="p-button-success"
+        (click)="guardarCategoria()"
+        [disabled]="form.invalid"
+      ></button>
+    </div>
+  </form>
 </p-dialog>

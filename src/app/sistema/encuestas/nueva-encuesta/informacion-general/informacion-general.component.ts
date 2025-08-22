@@ -113,7 +113,7 @@ export class InformacionGeneralComponent implements OnInit, OnChanges {
   guardarConfiguracion(): Promise<boolean> {
     if (this.form.valid) {
       return new Promise(resolve => {
-        this.encuestasService.guardarConfiguracionEncuesta(this.form).subscribe({
+        this.encuestasService.guardarEncuesta(this.form).subscribe({
           next: (resp: any) => {
             this.messageService.add({
               severity: 'success',

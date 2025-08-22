@@ -2,34 +2,51 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 
+const baseUrl = environment.backendApi;
+
 @Injectable({
   providedIn: 'root',
 })
 export class EncuestasService {
   constructor(private http: HttpClient) {}
 
-  obtenerEncuestasPorCategoria(iCategoriaEncuestaId: string) {
-    return this.http.get(
-      `${environment.backendApi}/enc/categorias/${iCategoriaEncuestaId}/encuestas`
-    );
+  listarCategorias(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarCategorias`, data);
   }
 
-  eliminarEncuesta(iConfEncId: string) {
-    return this.http.delete(`${environment.backendApi}/enc/encuestas/${iConfEncId}`);
+  verCategoria(data: any) {
+    return this.http.post(`${baseUrl}/enc/verCategoria`, data);
   }
 
-  actualizarAccesosEncuesta(iCategoriaEncuestaId: string, form: any) {
-    return this.http.patch(
-      `${environment.backendApi}/enc/encuestas/${iCategoriaEncuestaId}/accesos`,
-      {
-        iEspDremoTipoAccesoId: form.get('iEspDremoTipoAccesoId')?.value,
-        iEspUgelTipoAccesoId: form.get('iEspUgelTipoAccesoId')?.value,
-        iDirectorTipoAccesoId: form.get('iDirectorTipoAccesoId')?.value,
-      }
-    );
+  guardarCategoria(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarCategoria`, data);
   }
 
-  guardarConfiguracionEncuesta(form: any) {
-    return this.http.post(`${environment.backendApi}/enc/encuestas/configuracion`, form.value);
+  actualizarCategoria(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarCategoria`, data);
+  }
+
+  borrarCategoria(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarCategoria`, data);
+  }
+
+  listarEncuestas(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarEncuestas`, data);
+  }
+
+  verEncuesta(data: any) {
+    return this.http.post(`${baseUrl}/enc/verEncuesta`, data);
+  }
+
+  guardarEncuesta(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarEncuesta`, data);
+  }
+
+  actualizarEncuesta(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarEncuesta`, data);
+  }
+
+  borrarEncuesta(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarEncuesta`, data);
   }
 }

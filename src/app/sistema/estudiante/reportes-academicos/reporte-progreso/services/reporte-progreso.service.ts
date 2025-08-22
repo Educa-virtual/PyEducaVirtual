@@ -7,7 +7,6 @@ import { environment } from '@/environments/environment';
 })
 export class ReporteProgresoService {
   private urlBackendApi = environment.backendApi;
-  private urlBackend = environment.backend;
   private http = inject(HttpClient);
 
   constructor() {}

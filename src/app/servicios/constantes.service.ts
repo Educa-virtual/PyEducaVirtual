@@ -166,6 +166,11 @@ const estudiante = [
             icon: 'pi pi-fw pi-list-check',
             routerLink: ['/estudiante/reportes-academicos/progreso'],
           },
+          {
+            label: 'Académico',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/estudiante/reportes-academicos/academico'],
+          },
         ],
       },
     ],

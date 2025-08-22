@@ -38,11 +38,12 @@ export class PortafolioComponent implements OnInit {
   cPortafolioFichasDidacticas;
   cPortafolioSesionesAprendizaje;
 
+  portafolio: any = {};
   reglamento = [];
   rubricas = [];
   cursos = [];
   showModalRubricas: boolean = false;
-
+  eventoRubrica: boolean = false;
   public columnasTabla = [
     {
       type: 'text',
@@ -59,6 +60,31 @@ export class PortafolioComponent implements OnInit {
       header: 'Descripcion',
       text_header: 'left',
       text: 'left',
+    },
+    {
+      type: 'actions',
+      width: '1rem',
+      field: '',
+      header: 'Acciones',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
+
+  public accionesTabla: any[] = [
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-succes p-button-text',
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
     },
   ];
 
@@ -199,10 +225,7 @@ export class PortafolioComponent implements OnInit {
     };
     this._evaluacionApiService.obtenerRubricas(params).subscribe({
       next: data => {
-        console.log('revisar #2', data);
-        data.forEach(element => {
-          this.rubricas.push(element);
-        });
+        this.rubricas = data;
       },
     });
   }
@@ -212,6 +235,8 @@ export class PortafolioComponent implements OnInit {
     this.rubricasCurso = [];
     this.rubricasCurso = this.rubricas.filter(i => i.iCursoId === item.iCursoId);
     this.showModalRubricas = true;
+    this.portafolio.iCursoId = this.rubricasCurso[0].iCursoId;
+    this.portafolio.idDocCursoId = this.rubricasCurso[0].idDocCursoId;
   }
 
   getCursosDocente(item) {
@@ -252,7 +277,6 @@ export class PortafolioComponent implements OnInit {
             });
           }
         }
-        console.log(response);
       },
       complete: () => {},
       error: error => {
@@ -344,5 +368,118 @@ export class PortafolioComponent implements OnInit {
     window.open(ruta, '_blank');
   }
 
-  agregarInstrumentos() {}
+  agregarInstrumentos() {
+    const parametros = {
+      petition: 'post',
+      group: 'evaluaciones-docente',
+      prefix: 'instrumentos',
+      ruta: 'guardar-instrumentos',
+      data: {
+        iDocenteId: this._ConstantesService.iDocenteId,
+        idDocCursoId: this.portafolio.idDocCursoId,
+        iCursoId: this.portafolio.iCursoId,
+        cInstrumentoNombre: this.portafolio.cInstrumentoNombre,
+        cInstrumentoDescripcion: this.portafolio.cInstrumentoDescripcion,
+      },
+    };
+
+    this.conexion(parametros);
+  }
+
+  editarInstrumentos() {
+    const parametros = {
+      petition: 'post',
+      group: 'evaluaciones-docente',
+      prefix: 'instrumentos',
+      ruta: 'editar-instrumentos',
+      data: {
+        iInstrumentoId: this.portafolio.iInstrumentoId,
+        iDocenteId: this._ConstantesService.iDocenteId,
+        idDocCursoId: this.portafolio.idDocCursoId,
+        iCursoId: this.portafolio.iCursoId,
+        cInstrumentoNombre: this.portafolio.cInstrumentoNombre,
+        cInstrumentoDescripcion: this.portafolio.cInstrumentoDescripcion,
+      },
+    };
+
+    this.conexion(parametros);
+  }
+
+  eliminarInstrumentos() {
+    const parametros = {
+      petition: 'post',
+      group: 'evaluaciones-docente',
+      prefix: 'instrumentos',
+      ruta: 'eliminar-instrumentos',
+      data: {
+        iInstrumentoId: this.portafolio.iInstrumentoId,
+      },
+    };
+
+    this.conexion(parametros);
+  }
+
+  /**
+   *
+   * @param eventoRubrica Determina el nombre del titulo si sera Editar(true) o Guardar(false)
+   * @param nuevaRubrica Muestra el modal para la creacion o edicion de instrumentos
+   */
+
+  accionBnt(event: any) {
+    switch (event.accion) {
+      case 'editar':
+        this.nuevaRubrica = true;
+        this.eventoRubrica = true;
+        this.portafolio = event.item;
+        break;
+      case 'eliminar':
+        this.portafolio = event.item;
+        this.eliminarInstrumentos();
+        break;
+    }
+  }
+
+  /**
+   * Permite hacer la recepcion y envio de datos
+   */
+
+  conexion(enlace: any) {
+    this._GeneralService.getRecibirDatos(enlace).subscribe({
+      next: response => {
+        const respuesta = response.data[0].resultado;
+        if (respuesta > 0) {
+          this._MessageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Accion Completada',
+          });
+        } else {
+          this._MessageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error en la Peticion',
+          });
+        }
+        this.obtenerRubricas();
+      },
+      error: () => {
+        this.eventoRubrica = false;
+        this.limpiar();
+      },
+      complete: () => {
+        this.limpiar();
+        this.obtenerRubricas();
+      },
+    });
+  }
+
+  limpiar() {
+    this.showModalRubricas = false;
+    this.nuevaRubrica = false;
+    this.eventoRubrica = false;
+    this.portafolio = {
+      cInstrumentoNombre: null,
+      cInstrumentoDescripcion: null,
+    };
+  }
 }

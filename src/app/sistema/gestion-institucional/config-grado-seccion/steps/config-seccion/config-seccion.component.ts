@@ -240,8 +240,29 @@ export class ConfigSeccionComponent implements OnInit {
     }
   }
 
+  validarSeccion() {
+    //comparar la lista de secciones
+    const iNivelGradoId: number = this.form.value.iNivelGradoId;
+    const iSeccionId: number = this.form.value.iSeccionId;
+
+    const registro = this.seccionesAsignadas.some(
+      item =>
+        Number(item.iNivelGradoId) === Number(iNivelGradoId) &&
+        Number(item.iSeccionId) === Number(iSeccionId)
+    );
+    return registro;
+  }
+
   accionBtnItem(accion) {
     if (accion === 'guardar') {
+      if (this.validarSeccion()) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje de sistema',
+          detail: 'Ya existe nivel grado y sección en la IE',
+        });
+        return;
+      }
       if (this.form.valid) {
         this.formValues = this.form.getRawValue();
         //ALMACENAR LA INFORMACION
@@ -365,6 +386,7 @@ export class ConfigSeccionComponent implements OnInit {
         },
       });
   }
+
   getSeccionesAsignadas() {
     this.query
       .searchAmbienteAcademico({
@@ -469,9 +491,9 @@ export class ConfigSeccionComponent implements OnInit {
           });
         } else {
           this.messageService.add({
-            severity: 'Info',
+            severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: registro.mensaje,
+            detail: 'No se puede eliminar, ya existen matrículas relacionadas.', //registro.mensaje,
           });
         }
       },
@@ -479,7 +501,7 @@ export class ConfigSeccionComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje de error',
-          detail: 'NO se pudo eliminar registro' + error.error.message,
+          detail: 'No se pudo eliminar registro' + error.error.message,
         });
       },
       // complete: () => {

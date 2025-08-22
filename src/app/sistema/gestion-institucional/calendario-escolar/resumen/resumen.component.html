@@ -1,0 +1,110 @@
+<div class="card mt-4 relative">
+  <span class="btn-label">Información General</span>
+  <div class="grid mt-1">
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Inicio Regular </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          [showTime]="true"
+          [hourFormat]="'24'"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Inicio Recuperación </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          [showTime]="true"
+          [hourFormat]="'24'"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Fin Regular </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          [showTime]="true"
+          [hourFormat]="'24'"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Fin Recuperación </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          [showTime]="true"
+          [hourFormat]="'24'"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4 relative">
+  <span class="btn-label">Información Horaria</span>
+  <div class="grid mt-1">
+    <div class="col-12 md:col-6">
+      <p-inputGroup class="turno-input">
+        <p-inputGroupAddon>Turno </p-inputGroupAddon>
+        <input pInputText [value]="'Mañana'" />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <table class="tabla-dias">
+        <thead>
+          <tr>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th class="weekend">Sábado</th>
+            <th class="weekend">Domingo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+            <td>07:15 a.m. - 02:15 p.m.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4 relative">
+  <span class="btn-label">Periodo Académico</span>
+  <div class="grid mt-1">
+    <div class="col-12">
+      <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="data"
+        [showCaption]="false"
+        [actions]="[]"
+        [showPaginator]="false"
+      ></app-table-primeng>
+    </div>
+  </div>
+</div>

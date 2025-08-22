@@ -507,7 +507,7 @@ const administracion = [
           {
             label: 'Configurar calendario escolar',
             icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/apertura'],
+            routerLink: ['/gestion-institucional/calendario-escolar'],
           },
 
           {

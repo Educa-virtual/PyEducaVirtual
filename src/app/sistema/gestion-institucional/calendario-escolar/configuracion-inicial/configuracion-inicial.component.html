@@ -1,0 +1,106 @@
+<div class="grid">
+  <div class="col-12 md:col-6">
+    <div class="card mt-4 relative">
+      <span class="btn-label-danger">Configuración Inicial</span>
+      <div class="grid mt-3">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Año Vigente </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              [showTime]="true"
+              [hourFormat]="'24'"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Inicio y Fin </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              [showTime]="true"
+              [hourFormat]="'24'"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Matrícula Regular </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              [showTime]="true"
+              [hourFormat]="'24'"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Mátricula Rezagados </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              [showTime]="true"
+              [hourFormat]="'24'"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 md:col-6">
+    <div class="card mt-4 relative">
+      <span class="btn-label-success">Configuración de Fases y Turnos</span>
+      <div class="grid mt-3">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fase Regular </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              [hourFormat]="'24'"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fase Recuperación </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              [hourFormat]="'24'"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 text-center">
+          <p-button
+            [label]="'Configurar turnos'"
+            icon="pi pi-cog"
+            severity="warning"
+            (onClick)="mostrarModalConfigurarTurnos = true"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-configurar-turnos
+  *ngIf="mostrarModalConfigurarTurnos"
+  [showModal]="mostrarModalConfigurarTurnos"
+  (accionCloseForm)="mostrarModalConfigurarTurnos = false"
+></app-configurar-turnos>

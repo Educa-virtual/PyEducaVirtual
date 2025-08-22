@@ -1,0 +1,20 @@
+<div class="card mt-4 relative">
+  <span class="btn-label">Periodos Académicos</span>
+  <div class="grid mt-3">
+    <div class="col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Periodo</p-inputGroupAddon>
+        <p-dropdown [options]="[]" placeholder="Seleccione" styleClass="w-full"> </p-dropdown>
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="data"
+        [showCaption]="false"
+        [actions]="[]"
+        [showPaginator]="false"
+      ></app-table-primeng>
+    </div>
+  </div>
+</div>

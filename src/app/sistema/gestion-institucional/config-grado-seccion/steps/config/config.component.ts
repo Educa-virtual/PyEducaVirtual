@@ -90,10 +90,7 @@ export class ConfigComponent implements OnInit {
     this.configTipo = this.stepService.configTipo;
   }
   ngOnInit(): void {
-    console.log(this.configuracion, 'this.configuracion');
-
     if (!this.configuracion) {
-      console.warn('Configuración no encontrada, redirigiendo...');
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
       return;
     }
@@ -129,7 +126,6 @@ export class ConfigComponent implements OnInit {
         iProgId: [this.configuracion[0].iProgId],
       });
     } catch (error) {
-      console.error('Error initializing form:', error);
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
     if (
@@ -159,13 +155,7 @@ export class ConfigComponent implements OnInit {
       message: '¿Está seguro de que desea configurar los ambientes?',
       header: title,
       icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // Acción a realizar al confirmar
-        console.log('Eliminado');
-      },
       reject: () => {
-        // Acción a realizar al rechazar
-
         this.router.navigate(['/gestion-institucional/configGradoSeccion']);
       },
     });
@@ -174,7 +164,7 @@ export class ConfigComponent implements OnInit {
   accionBtn(elemento): void {
     const { accion } = elemento;
     const { item } = elemento;
-    console.log(this.filesUrl, 'files URL');
+
     switch (accion) {
       case 'close-modal':
         // this.accionBtnItem.emit({ accion, item })
@@ -183,7 +173,6 @@ export class ConfigComponent implements OnInit {
       case 'subir-file-configuracion-iiee':
         const url = this.query.baseUrlPublic();
         if (this.filesUrl.length < 1) {
-          console.log(item);
           this.filesUrl.push({
             type: 1, //1->file
             nameType: 'file',
@@ -198,8 +187,6 @@ export class ConfigComponent implements OnInit {
         } else {
           alert('No puede subir mas de un archivo');
         }
-        console.log(this.filesUrl, 'subir-file-configuracion-iiee');
-
         break;
     }
   }
@@ -276,21 +263,21 @@ export class ConfigComponent implements OnInit {
         }
     }
 */
-  confirmar() {
-    this._confirmService.openConfiSave({
-      message: '¿Está seguro de que desea eliminar este elemento?',
-      header: 'Confirmación de eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // Acción a realizar al confirmar
-        console.log('Eliminado');
-      },
-      reject: () => {
-        // Acción a realizar al rechazar
-        console.log('Acción cancelada');
-      },
-    });
-  }
+  // confirmar() {
+  //   this._confirmService.openConfiSave({
+  //     message: '¿Está seguro de que desea eliminar este elemento?',
+  //     header: 'Confirmación de eliminación',
+  //     icon: 'pi pi-exclamation-triangle',
+  //     accept: () => {
+  //       // Acción a realizar al confirmar
+  //       console.log('Eliminado');
+  //     },
+  //     reject: () => {
+  //       // Acción a realizar al rechazar
+  //       console.log('Acción cancelada');
+  //     },
+  //   });
+  // }
 
   confirm() {
     this._confirmService.openConfiSave({
@@ -323,18 +310,15 @@ export class ConfigComponent implements OnInit {
         })
         .subscribe({
           next: (data: any) => {
-            console.log(data, 'id', data.data[0].id);
-
             this.form.get('iConfigId')?.setValue(data.data[0].id);
             this.configuracion[0] = this.form.getRawValue();
             this.stepService.configuracion[0] = this.configuracion[0];
           },
           error: error => {
-            console.error('Error fetching configuración:', error);
             this.messageService.add({
               severity: 'error',
               summary: 'Mensaje',
-              detail: 'Error. No se proceso petición ',
+              detail: 'Error. No se proceso petición ' + error.error.message,
             });
           },
           complete: () => {
@@ -343,12 +327,16 @@ export class ConfigComponent implements OnInit {
               summary: 'Mensaje',
               detail: 'Proceso exitoso',
             });
-            console.log('Request completed');
+
             this.router.navigate(['/gestion-institucional/ambiente']);
           },
         });
     } else {
-      console.log('Formulario no válido', this.form.invalid);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Mensaje',
+        detail: 'Llenado de formulario invalido',
+      });
     }
   }
 
@@ -357,9 +345,7 @@ export class ConfigComponent implements OnInit {
       this.actualizar();
     }
   }
-  handleActions(actions) {
-    console.log(actions);
-  }
+
   accionesPrincipal: IActionContainer[] = [
     // {
     //     labelTooltip: 'Crear Ambiente',

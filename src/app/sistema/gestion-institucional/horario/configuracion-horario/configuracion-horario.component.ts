@@ -5,7 +5,6 @@ import { PrimengModule } from '@/app/primeng.module';
 import { ConfHorariosComponent } from '@/app/shared/horario/conf-horario.component';
 import { ToolbarPrimengComponent } from '../../../../shared/toolbar-primeng/toolbar-primeng.component';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { MessageService } from 'primeng/api';
 import {
   IActionTable,
   TablePrimengComponent,
@@ -14,6 +13,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 interface Curso {
   iCursoId: number;
   cCursoNombre: string;
@@ -31,7 +31,7 @@ interface Curso {
   styleUrls: ['./configuracion-horario.component.scss'],
   imports: [PrimengModule, ConfHorariosComponent, ToolbarPrimengComponent, TablePrimengComponent],
 })
-export class ConfiguracionHorarioComponent implements OnInit {
+export class ConfiguracionHorarioComponent extends MostrarErrorComponent implements OnInit {
   gradosSecciones: any[] = [];
   grados: any[] = [];
   secciones: any[] = [];
@@ -73,23 +73,18 @@ export class ConfiguracionHorarioComponent implements OnInit {
 
   private _GeneralService = inject(GeneralService);
   private _ConstantesService = inject(ConstantesService);
-  private messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
+  private fb = inject(FormBuilder);
+  private store = inject(LocalStoreService);
 
-  constructor(
-    public query: GeneralService,
-    private fb: FormBuilder,
-    private store: LocalStoreService
-  ) {
+  async ngOnInit() {
     const perfil = this.store.getItem('dremoPerfil');
-    console.log(perfil, 'perfil dremo', this.store);
+
     this.iSedeId = perfil.iSedeId;
     this.dremoYear = this.store.getItem('dremoYear');
     this.dremoiYAcadId = this.store.getItem('dremoiYAcadId');
     this.iCredId = perfil.iCredId;
-  }
 
-  async ngOnInit() {
     this.obtenerGradoSeccion();
     this.getHorarios_ies();
     this.getConfBloques();
@@ -116,9 +111,6 @@ export class ConfiguracionHorarioComponent implements OnInit {
         },
         error: error => {
           console.error('Error fetching Servicios de Atención:', error);
-        },
-        complete: () => {
-          //   console.log('Request completed')
         },
       });
   }
@@ -212,7 +204,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
       return;
     }
 
-    this.query
+    this._GeneralService
       .updateCalAcademico({
         json: JSON.stringify({
           iHorarioIeId: this.horario,
@@ -247,7 +239,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
       });
       return;
     }
-    this.query
+    this._GeneralService
       .updateCalAcademico({
         json: JSON.stringify({
           iHorarioIeId: this.horario,
@@ -290,8 +282,8 @@ export class ConfiguracionHorarioComponent implements OnInit {
       iConfBloqueId: iConfBloqueId,
       iEstado: 1,
     });
-    console.log(params, 'params');
-    this.query
+
+    this._GeneralService
       .addCalAcademico({
         json: params,
         _opcion: 'addHorarioIes',
@@ -321,7 +313,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
   }
 
   getConfBloques() {
-    this.query
+    this._GeneralService
       .searchCalAcademico({
         esquema: 'hor',
         tabla: 'configuracion_bloques',
@@ -333,18 +325,19 @@ export class ConfiguracionHorarioComponent implements OnInit {
           this.conf_bloques = data.data;
         },
         error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos del horario: ' + error.message,
-          });
+          this.mostrarErrores(error);
+          // this.messageService.add({
+          //   severity: 'error',
+          //   summary: 'Mensaje del Sistema',
+          //   detail: 'Error al cargar los datos del horario: ' + error.message,
+          // });
         },
       });
   }
 
   getConfDetalleBloques() {
     const iConfBloqueId = this.formDistribucion.get('iConfBloqueId')?.value;
-    this.query
+    this._GeneralService
       .searchCalAcademico({
         esquema: 'hor',
         tabla: 'detalle_bloques',
@@ -356,17 +349,18 @@ export class ConfiguracionHorarioComponent implements OnInit {
           this.conf_detalle_bloques = data.data;
         },
         error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos del horario: ' + error.message,
-          });
+          // this.messageService.add({
+          //   severity: 'error',
+          //   summary: 'Mensaje del Sistema',
+          //   detail: 'Error al cargar los datos del horario: ' + error.message,
+          // });
+          this.mostrarErrores(error);
         },
       });
   }
 
   getHorarios_ies() {
-    this.query
+    this._GeneralService
       .searchCalendario({
         json: JSON.stringify({
           iSedeId: this.iSedeId,
@@ -378,12 +372,14 @@ export class ConfiguracionHorarioComponent implements OnInit {
         next: (data: any) => {
           this.horario_ies = data.data;
         },
+
         error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos del horario: ' + error.message,
-          });
+          // this.messageService.add({
+          //   severity: 'error',
+          //   summary: 'Mensaje del Sistema',
+          //   detail: 'Error al cargar los datos del horario: ' + error.message,
+          // });
+          this.mostrarErrores(error);
         },
         complete: () => {
           this.horario_ies = this.horario_ies.map(item => ({
@@ -418,7 +414,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
   }
   //consulta la lista de horas asignadas
   getHorasAsignadas(iHorarioId: number) {
-    this.query
+    this._GeneralService
       .searchCalendario({
         json: JSON.stringify({
           iHorarioIeId: iHorarioId,
@@ -430,14 +426,14 @@ export class ConfiguracionHorarioComponent implements OnInit {
           this.lista_horas = data.data;
         },
         error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos de distribucion de bloques: ' + error.message,
-          });
+          this.mostrarErrores(error);
+          // this.messageService.add({
+          //   severity: 'error',
+          //   summary: 'Mensaje del Sistema',
+          //   detail: 'Error al cargar los datos de distribucion de bloques: ' + error.message,
+          // });
         },
         complete: () => {
-          console.log(this.lista_horas);
           this.messageService.add({
             severity: 'success',
             summary: 'Mensaje del Sistema',
@@ -446,7 +442,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
         },
       });
   }
-
+  //metodo para obtener todos los grados y secciones de la IE
   obtenerCursosxiGradoIdxiSeccionId() {
     const data = {
       iSedeId: this._ConstantesService.iSedeId,
@@ -459,16 +455,14 @@ export class ConfiguracionHorarioComponent implements OnInit {
         const horarioIe = data.data;
         if (horarioIe.length > 0) {
           this.cursos = horarioIe[0]['cursos'] ? JSON.parse(horarioIe[0]['cursos']) : [];
+
           this.dias = horarioIe[0]['dias'] ? JSON.parse(horarioIe[0]['dias']) : [];
           this.horarios = horarioIe[0]['horarios'] ? JSON.parse(horarioIe[0]['horarios']) : [];
           this.bloques = horarioIe[0]['iTotalBloques'];
         }
       },
       error: error => {
-        console.error('Error fetching Servicios de Atención:', error);
-      },
-      complete: () => {
-        //   console.log('Request completed')
+        this.mostrarErrores(error);
       },
     });
   }
@@ -516,21 +510,9 @@ export class ConfiguracionHorarioComponent implements OnInit {
         if (data.validated) {
           this.obtenerCursosxiGradoIdxiSeccionId();
         }
-        // console.log(data)
       },
       error: error => {
-        // console.error(
-        //     'Error fetching Servicios de Atención:',
-        //     error
-        // )
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error,
-        });
-      },
-      complete: () => {
-        //   console.log('Request completed')
+        this.mostrarErrores(error);
       },
     });
   }

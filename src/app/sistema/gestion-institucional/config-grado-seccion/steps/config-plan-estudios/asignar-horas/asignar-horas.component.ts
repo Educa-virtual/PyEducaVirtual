@@ -79,13 +79,12 @@ export class AsignarHorasComponent implements OnInit {
         // Control para "Descripcion año"
       });
     } catch (error) {
-      console.log('error ', error);
-      // this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+      //revisar
+      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
 
     this.formFiltrado = this.fb.group({
       iGradoId: [0],
-
       iServEdId: [0], // Control para "Servicio educativo"
     });
     this.getServicioEducativo();
@@ -98,12 +97,10 @@ export class AsignarHorasComponent implements OnInit {
   @HostListener('window:keydown.control.b', ['$event'])
   onCtrlB(event: KeyboardEvent) {
     event.preventDefault(); // Evita acciones predeterminadas del navegador
-    console.log('Ctrl + B presionado');
     this.confirm();
   }
 
   accionBtnItemTable(event: any) {
-    console.log('event.accion:', event.accion);
     // Aquí puedes manejar el evento de cambio si es necesario
     // const seccionIdSeleccionada = event.value
     if (event.accion === 'editar') {
@@ -153,11 +150,8 @@ export class AsignarHorasComponent implements OnInit {
         });
       }
     } else {
-      console.log('No se cumple el if, valor:', event.accion);
+      return;
     }
-    /* if(event.accion.trim() === 'registrar') {
-            console.log(event)  
-        }*/
   }
 
   getServicioEducativo() {
@@ -171,7 +165,6 @@ export class AsignarHorasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.servicio_educativo = data.data;
-          console.log(this.servicio_educativo, 'desde getServicioEducativo'); // Verifica que se obtenga el servicio educativo
         },
 
         error: error => {
@@ -183,7 +176,6 @@ export class AsignarHorasComponent implements OnInit {
         },
         complete: () => {
           this.stepService.servicio_educativo = this.servicio_educativo;
-          // console.log(this.lista, 'desde getSeccionesAsignadas')
         },
       });
   }
@@ -202,7 +194,6 @@ export class AsignarHorasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.programacion_curricular = data.data;
-          console.log(data.data);
           this.messageService.add({
             severity: 'success',
             summary: 'Mensaje del sistema',
@@ -222,7 +213,6 @@ export class AsignarHorasComponent implements OnInit {
                 mensaje: <number>item.Total > 0 ? 'Grados registrados: ' + item.Total : 'Pendiente',
               });
             }
-
             return acc;
           }, []);
         },
@@ -236,15 +226,11 @@ export class AsignarHorasComponent implements OnInit {
         },
         complete: () => {
           this.stepService.programacion_curricular = this.programacion_curricular;
-
           this.filtrado_programacion_curricular = [];
           this.formFiltrado.patchValue({ iGradoId: 0 }); // Reiniciar el valor del grado al completar la carga
-          console.log(this.grados_unicos, 'desde getCurriculaNivelServicioEducativo'); // Verifica que se obtenga el servicio educativo
-          // console.log(this.lista, 'desde getSeccionesAsignadas')
           const filtrado = this.servicio_educativo.filter(
             item => item.iServEdId === this.formFiltrado.value.iServEdId
           );
-
           this.serv_horas = filtrado[0].iServEdHorasTotal;
         },
       });
@@ -253,7 +239,6 @@ export class AsignarHorasComponent implements OnInit {
   getFiltradoGrado() {
     // Obtener el grado seleccionado
     this.mensaje = null; //limpiar mensaje
-
     const iGradoId = Number(this.formFiltrado.value.iGradoId);
 
     // Validar si se ha seleccionado un grado
@@ -275,13 +260,11 @@ export class AsignarHorasComponent implements OnInit {
       });
 
       this.total_horas_grado = sumatoria;
-
       const adicional = filtrado.filter(
         item => item.iTipoCursoId === '5' // 5 es el tipo de curso para "Adicional"
       );
 
       this.hora_adicional = adicional;
-      console.log(this.filtrado_programacion_curricular, 'horas adicionales filtradas');
       this.serv_horas = Number(this.serv_horas) || 0;
 
       if (Number(sumatoria) !== Number(this.serv_horas)) {
@@ -357,7 +340,6 @@ export class AsignarHorasComponent implements OnInit {
       iEstado: 1, // iEstado es el estado del registro (1 para activo)
       iSesionId: this.stepService.iCredId, // iSesionId es el ID de la sesión del usuario
     });
-    console.log(params);
 
     this._confirmService.openConfiSave({
       header: 'Advertencia del sistema',
@@ -386,8 +368,6 @@ export class AsignarHorasComponent implements OnInit {
               });
               this.getCurriculaNivelServicioEducativo();
               this.mostrar = true; // Ocultar el formulario de edición
-
-              // console.log(this.lista, 'desde getSeccionesAsignadas')
             },
           });
       },

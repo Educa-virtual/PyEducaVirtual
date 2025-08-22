@@ -96,7 +96,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
     private messageService: MessageService
   ) {
     const perfil = this.store.getItem('dremoPerfil');
-    console.log(perfil, 'perfil dremo', this.store);
     this.iSedeId = perfil.iSedeId;
     this.stepService.iSedeId = this.iSedeId;
     this.stepService.iNivelTipoId = perfil.iNivelTipoId;
@@ -167,8 +166,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
 
         this.stepService.configuracion = this.config;
 
-        console.log(this.sede, 'configuracion grado');
-
         setTimeout(() => {
           this.router.navigate(['/gestion-institucional/config']);
         }, 1000);
@@ -199,11 +196,14 @@ export class ConfigGradoSeccionComponent implements OnInit {
         this.stepService.setEstadoConfig(data.data);
       },
       error: error => {
-        console.error('Error fetching Años Académicos:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje de sistema',
+          detail: 'No se pudo cargar estados de configuración. ' + error.error.message,
+        });
       },
-      complete: () => {
-        console.log('Request completed');
-      },
+      // complete: () => {
+      // },
     });
   }
   getSede() {
@@ -218,13 +218,15 @@ export class ConfigGradoSeccionComponent implements OnInit {
         next: (data: any) => {
           this.stepService.sede = data.data;
           this.sede = data.data;
-          console.log(this.sede, 'sede');
         },
         error: error => {
-          console.error('Error procedimiento BD:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje de sistema',
+            detail: 'No se pudo cargar las sedes de la IE. ' + error.error.message,
+          });
         },
         complete: () => {
-          console.log('Request completed');
           // this.getYearCalendarios(this.formCalendario.value)
 
           if (Number(this.sede[0].iYAcadId) === Number(this.dremoiYAcadId)) {
@@ -288,7 +290,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
           });
         },
         complete: () => {
-          console.log('Request completed');
           this.opcion = 'inicio';
           this.messageService.add({
             severity: 'success',
@@ -308,10 +309,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
 
   // this.step.setEstadoConfig(data.data)
   navigateToYears() {
-    // this.ticketService.registroInformation = {
-    //     mode: 'create'
-    // }
-
     this.router.navigate(['configuracion/configuracion/years']); // Navega a YearsComponent
   }
 
@@ -400,40 +397,23 @@ export class ConfigGradoSeccionComponent implements OnInit {
       this.stepService.configuracion = registro;
       this.stepService.iCredId = this.iCredId;
 
-      //console.log(registro, 'configuracion constante')
-
       setTimeout(() => {
         this.router.navigate(['/gestion-institucional/config']);
       }, 1000);
-
-      /* this.form.get('iYearId')?.setValue(item.iYearId)
-            this.form.get('cYearNombre')?.setValue(item.cYearNombre)
-            this.form.get('cYearOficial')?.setValue(item.cYearOficial)
-            if (item.iYearEstado == 1) {
-                this.form.get('iYearEstado')?.setValue(1)
-            } else {
-                this.form.get('iYearEstado')?.setValue(0)
-            }*/
-      // this.caption = 'Seleccionar'
-      // this.visible = true
     }
 
     if (accion === 'eliminar') {
       this.form.get('iYearId')?.setValue(item.iYearId);
-
       // this.showDelete()
     }
     if (accion === 'select') {
       this.selAnio = 'El año a clonar es ' + item.cYAcadNombre;
-      console.log(item);
       // this.showDelete()
     }
   }
 
   //Maquetar tablas
-  handleActions(actions) {
-    console.log(actions);
-  }
+
   accionesPrincipal: IActionContainer[] = [
     {
       labelTooltip: 'Retornar',

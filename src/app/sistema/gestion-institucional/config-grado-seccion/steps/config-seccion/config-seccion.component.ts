@@ -181,7 +181,6 @@ export class ConfigSeccionComponent implements OnInit {
     }
 
     if (accion === 'editar') {
-      console.log(item, 'item modificar');
       this.visible = true;
       this.caption = 'Actualizar grados y secciones';
       // +++++++++++++++++++++++actualizar
@@ -220,8 +219,6 @@ export class ConfigSeccionComponent implements OnInit {
     }
     if (accion === 'eliminar') {
       const id = Number(item.iIieeAmbienteId);
-      console.log(item, 'item');
-      alert(id);
       this._confirmService.openConfiSave({
         header: 'Advertencia de autoguardado',
         message:
@@ -243,12 +240,32 @@ export class ConfigSeccionComponent implements OnInit {
     }
   }
 
+  validarSeccion() {
+    //comparar la lista de secciones
+    const iNivelGradoId: number = this.form.value.iNivelGradoId;
+    const iSeccionId: number = this.form.value.iSeccionId;
+
+    const registro = this.seccionesAsignadas.some(
+      item =>
+        Number(item.iNivelGradoId) === Number(iNivelGradoId) &&
+        Number(item.iSeccionId) === Number(iSeccionId)
+    );
+    return registro;
+  }
+
   accionBtnItem(accion) {
     if (accion === 'guardar') {
+      if (this.validarSeccion()) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje de sistema',
+          detail: 'Ya existe nivel grado y sección en la IE',
+        });
+        return;
+      }
       if (this.form.valid) {
         this.formValues = this.form.getRawValue();
         //ALMACENAR LA INFORMACION
-        console.log(this.formValues, 'formulario para guardar');
         this.query
           .addAmbienteAcademico({
             json: JSON.stringify(this.formValues),
@@ -266,7 +283,7 @@ export class ConfigSeccionComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Mensaje de sistema',
-                detail: 'Error. No se proceso petición: ' + error.message,
+                detail: 'Error. No se proceso petición: ' + error.error.message,
               });
             },
             complete: () => {
@@ -281,33 +298,23 @@ export class ConfigSeccionComponent implements OnInit {
             },
           });
       } else {
-        console.log('Formulario no válido', this.form.invalid);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje',
+          detail: 'Llenado incorrecto de formulario',
+        });
       }
-    }
-    if (accion === 'actualizar') {
-      console.log(this.form.value.iDetConfId);
-      console.log(this.form.status);
     }
   }
 
   //evento del dropdown
   onChange(event: any, cbo: string): void {
     // Captura el valor seleccionado
-    console.log(this.grados, 'lista de data grado');
-    console.log(event.value, 'id grado');
-
     const selected = event.value;
-    console.log(selected, 'id grado select');
-
     if (cbo === 'grado') {
       // Encuentra el objeto
-      //   const selectGrado = this.grados
-
-      // const found = selectGrado.find(item => item.iNivelGradoId === selected);
       const found = this.grados.find(item => item.iNivelGradoId === selected);
-      console.log(found.cCicloNombre);
       // Encuentra el índice del objeto si existe
-
       this.form.get('cCicloNombre')?.setValue(found.cCicloNombre);
       this.form.get('cNivelNombre')?.setValue(found.cNivelNombre);
       this.form.get('cNivelTipoNombre')?.setValue(found.cNivelTipoNombre);
@@ -315,7 +322,6 @@ export class ConfigSeccionComponent implements OnInit {
 
     if (cbo === 'ambiente') {
       const found = this.ambientes.find(item => item.iIieeAmbienteId === selected);
-      //console.log(found.cAmbienteNombre, 'ambientes', found, 'found ambientes')
 
       // Encuentra el índice del objeto si existe
 
@@ -340,17 +346,15 @@ export class ConfigSeccionComponent implements OnInit {
           const dias_json = JSON.parse(dias_laborables[0].calDiasDatos);
           // Concatenamos los nombres en una sola cadena
           this.dias = dias_json.map((dia: any) => dia.cDiaNombre).join(', ');
-          console.log(this.dias, 'dias laborables');
           // Actualiza el valor seleccionado del formControl
           this.form.get('cDiasLaborables')?.setValue(this.dias);
-          // console.log( this.dias,'dias calendarios')
         },
         error: error => {
           // Manejo de errores
           this.messageService.add({
-            severity: 'danger',
+            severity: 'error',
             summary: 'Mensaje de sistema',
-            detail: 'Error al procesar dias calendarios:' + error.message,
+            detail: 'Error al procesar dias calendarios:' + error.error.message,
           });
         },
         complete: () => {
@@ -369,18 +373,20 @@ export class ConfigSeccionComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.secciones = data.data;
-          //    this.iServId = this.serv_atencion[0].iServEdId
-
-          // console.log(this.secciones,'secciones')
         },
         error: error => {
-          console.error('Error fetching secciones:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje de sistema',
+            detail: 'Error al procesar lista de secciones: ' + error.error.message,
+          });
         },
         complete: () => {
           this.stepService.secciones = this.secciones;
         },
       });
   }
+
   getSeccionesAsignadas() {
     this.query
       .searchAmbienteAcademico({
@@ -406,11 +412,13 @@ export class ConfigSeccionComponent implements OnInit {
               },
             };
           });
-
-          //   console.log(this.seccionesAsignadas,' seccionesAsignadas')
         },
         error: error => {
-          console.error('Error fetching  seccionesAsignadas:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones asignadas:' + error.error.message,
+          });
         },
         complete: () => {
           this.stepService.secciones_asignadas = this.seccionesAsignadas;
@@ -426,20 +434,15 @@ export class ConfigSeccionComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.grados = data.data;
-          // this.rawData = data.data
-          console.log(this.grados, 'grados desde getGrado');
-          //  console.log(this.rawData, ' rawData desde getGrado')
         },
         error: error => {
-          console.error('Error fetching grados:', error);
           this.messageService.add({
-            severity: 'danger',
+            severity: 'error',
             summary: 'Mensaje de sistema',
-            detail: 'Error al cargar los grados:' + error,
+            detail: 'Error al cargar los grados:' + error.error.message,
           });
         },
         complete: () => {
-          console.log(this.grados, 'grados desde getGrado');
           this.messageService.add({
             severity: 'success',
             summary: 'Mensaje de sistema',
@@ -480,7 +483,6 @@ export class ConfigSeccionComponent implements OnInit {
     this.query.deleteAcademico(params).subscribe({
       next: (data: any) => {
         const registro = data.data[0];
-
         if (registro.result > 0) {
           this.messageService.add({
             severity: 'success',
@@ -489,24 +491,22 @@ export class ConfigSeccionComponent implements OnInit {
           });
         } else {
           this.messageService.add({
-            severity: 'Info',
+            severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: registro.mensaje,
+            detail: 'No se puede eliminar, ya existen matrículas relacionadas.', //registro.mensaje,
           });
         }
       },
       error: error => {
-        // console.error('Error fetching ambiente:', error)
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje de error',
-          detail: 'NO se pudo eliminar registro' + error,
+          detail: 'No se pudo eliminar registro' + error.error.message,
         });
       },
-      complete: () => {
-        console.log('Request completed');
-        //  this.getAmbientes()
-      },
+      // complete: () => {
+      //   console.log('Request completed');
+      // },
     });
   }
 

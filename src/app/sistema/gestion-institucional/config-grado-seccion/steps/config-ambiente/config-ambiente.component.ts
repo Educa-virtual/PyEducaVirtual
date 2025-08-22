@@ -78,7 +78,6 @@ export class ConfigAmbienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.configuracion, 'parametros de configuracion');
     try {
       //bd iiee_ambientes
       //this.visible = true
@@ -101,7 +100,6 @@ export class ConfigAmbienteComponent implements OnInit {
         cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
       });
     } catch (error) {
-      console.error('Error initializing form:', error);
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
     this.getAmbientes(); // devuelve arrays de tabla acad.ambientes
@@ -129,11 +127,10 @@ export class ConfigAmbienteComponent implements OnInit {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de configuraciones:' + error.message,
+            detail: 'Error en lista de configuraciones:' + error.error.message,
           });
         },
         complete: () => {
-          console.log('Request completed');
           this.messageService.add({
             severity: 'success',
             summary: 'Mensaje del Sistema',
@@ -155,14 +152,12 @@ export class ConfigAmbienteComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.tipo_ambiente = data.data;
-
-          console.log(this.tipo_ambiente);
         },
         error: error => {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de tipos de ambientes:' + error.message,
+            detail: 'Error en lista de tipos de ambientes:' + error.error.message,
           });
           // Manejo de error
         },
@@ -183,14 +178,12 @@ export class ConfigAmbienteComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.tipo_ubicacion = data.data;
-
-          console.log(this.tipo_ubicacion);
         },
         error: error => {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de ubicaciones de ambientes:' + error.message,
+            detail: 'Error en lista de ubicaciones de ambientes:' + error.error.message,
           });
         },
         complete: () => {
@@ -215,7 +208,7 @@ export class ConfigAmbienteComponent implements OnInit {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de usos de ambientes:' + error.message,
+            detail: 'Error en lista de usos de ambientes:' + error.error.message,
           });
         },
         complete: () => {
@@ -235,14 +228,12 @@ export class ConfigAmbienteComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.condicion_ambiente = data.data;
-
-          console.log(this.condicion_ambiente, 'condicion de ambiente');
         },
         error: error => {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de condiciones de ambientes:' + error.message,
+            detail: 'Error en lista de condiciones de ambientes:' + error.error.message,
           });
         },
         complete: () => {
@@ -262,14 +253,12 @@ export class ConfigAmbienteComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.piso_ambiente = data.data;
-
-          console.log(this.piso_ambiente);
         },
         error: error => {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de pisos de ambientes:' + error.message,
+            detail: 'Error en lista de pisos de ambientes:' + error.error.message,
           });
         },
         complete: () => {
@@ -301,7 +290,6 @@ export class ConfigAmbienteComponent implements OnInit {
 
   accionBtnItemTable({ accion, item }) {
     if (accion === 'editar') {
-      console.log(item, 'btnTable');
       this.visible = true;
       this.caption = 'Editar ambientes';
       this.option = 'editar';
@@ -343,16 +331,15 @@ export class ConfigAmbienteComponent implements OnInit {
             valorId: item.iIieeAmbienteId,
           };
           this.query.deleteAcademico(params).subscribe({
-            next: (data: any) => {
-              console.log(data.data);
-            },
+            // next: (data: any) => {
+            //   console.log(data.data);
+            // },
             error: error => {
               this.messageService.add({
                 severity: 'danger',
                 summary: 'Mensaje de sistema',
-                detail: 'Error en el proceso de eliminar: ' + error.message,
+                detail: 'Error en el proceso de eliminar: ' + error.error.message,
               });
-              console.error('Error fetching ambiente:', error);
             },
             complete: () => {
               this.messageService.add({
@@ -360,7 +347,7 @@ export class ConfigAmbienteComponent implements OnInit {
                 summary: 'Mensaje',
                 detail: 'Proceso exitoso',
               });
-              console.log('Request completed');
+
               this.getAmbientes();
               this.visible = false;
               this.clearForm();
@@ -373,7 +360,6 @@ export class ConfigAmbienteComponent implements OnInit {
             summary: 'Mensaje',
             detail: 'Proceso cancelado',
           });
-          console.log('Acción cancelada');
         },
       });
     }
@@ -404,24 +390,18 @@ export class ConfigAmbienteComponent implements OnInit {
       this.visible = true;
       this.caption = 'Registrar ambientes';
       if (this.form.valid) {
-        console.log(this.form.value);
         //ALMACENAR LA INFORMACION
-        console.log(this.form);
         this.query
           .addAmbienteAcademico({
             json: JSON.stringify(this.form.value),
             _opcion: 'addAmbiente',
           })
           .subscribe({
-            next: (data: any) => {
-              console.log(data, 'id', data.data[0].id);
-              console.log(data.data);
-            },
             error: error => {
               this.messageService.add({
                 severity: 'danger',
                 summary: 'Mensaje de sistema',
-                detail: 'Error en el proceso: ' + error.message,
+                detail: 'Error en el proceso: ' + error.error.message,
               });
             },
             complete: () => {
@@ -430,14 +410,18 @@ export class ConfigAmbienteComponent implements OnInit {
                 summary: 'Mensaje',
                 detail: 'Proceso exitoso',
               });
-              console.log('Request completed');
+
               this.getAmbientes();
               this.visible = false;
               this.clearForm();
             },
           });
       } else {
-        console.log('Formulario no válido', this.form.invalid);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje',
+          detail: 'Llenado de formulario incorrecto',
+        });
       }
     }
     //updateAcademico
@@ -465,36 +449,32 @@ export class ConfigAmbienteComponent implements OnInit {
           condicion: this.form.get('iIieeAmbienteId')?.value,
         };
 
-        console.log(params, 'parametros dem update');
         this.query.updateAcademico(params).subscribe({
-          next: (data: any) => {
-            console.log(data.data);
-          },
           error: error => {
             this.messageService.add({
               severity: 'danger',
               summary: 'Mensaje de sistema',
-              detail: 'Error en el proceso de actualizar: ' + error.message,
+              detail: 'Error en el proceso de actualizar: ' + error.error.message,
             });
-
-            // if(error && error.message){
-            //   //  console.error(error?.message || 'Error en la respuesta del servicio');
-            // }
           },
           complete: () => {
             this.messageService.add({
               severity: 'success',
-              summary: 'Mensaje',
+              summary: 'Mensaje de sistema',
               detail: 'Proceso exitoso',
             });
-            console.log('Request completed');
+
             this.getAmbientes();
             this.visible = false;
             this.clearForm();
           },
         });
       } else {
-        console.log('Formulario no válido', this.form.invalid);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje',
+          detail: 'Llenado de formulario incorrecto',
+        });
       }
     }
   }
@@ -526,9 +506,9 @@ export class ConfigAmbienteComponent implements OnInit {
 
   //ESTRUCTURASS DE TABLA
   //Maquetar tablas
-  handleActions(actions) {
-    console.log(actions);
-  }
+  // handleActions(actions) {
+  //   console.log(actions);
+  // }
   accionesPrincipal: IActionContainer[] = [
     {
       labelTooltip: 'Retornar',

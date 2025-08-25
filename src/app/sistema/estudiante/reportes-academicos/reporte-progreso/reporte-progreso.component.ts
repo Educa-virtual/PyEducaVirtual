@@ -56,21 +56,13 @@ export class ReporteProgresoComponent implements OnInit {
         return;
       }
 
-      // obtener reporte (Blob)
       const response: Blob = await firstValueFrom(
         this.reporteProgresoService.obtenerReporte(this.iYAcadId)
       );
-
-      const blob = new Blob([response], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = url;
-      link.target = '_blank';
-      // link.download = `reporte-${this.iYAcadId}.pdf`;
-      document.body.appendChild(link);
+      link.href = URL.createObjectURL(response);
+      link.download = 'Reporte de progreso.pdf';
       link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (err: any) {
       this.messageService.add({
         severity: 'error',
@@ -80,43 +72,43 @@ export class ReporteProgresoComponent implements OnInit {
     }
   }
   /*descargarReporte() {
-        this.reporteProgresoService.existeMatriculaPorAnio(this.iYAcadId).subscribe({
-            next: (responsex: any) => {
-                if (responsex.data.existe) {
-                    this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
-                        next: (response: any) => {
-                            const blob = new Blob([response], {
-                                type: 'application/pdf',
-                            });
-                            const url = window.URL.createObjectURL(blob);
-                            const link = document.createElement('a');
-                            link.href = url;
-                            link.target = '_blank';
-                            link.click();
-                        },
-                        error: () => {
-                            this.messageService.add({
-                                severity: 'error',
-                                summary: 'Problema al descargar el archivo',
-                                detail: 'Error desconocido',
-                            });
-                        },
-                    });
-                } else {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'No existe matricula',
-                        detail: 'No hay una matricula registrada para el anio seleccionado',
-                    });
-                }
-            },
-            error: (err) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Problema al descargar el archivo',
-                    detail: err.error.message || 'Error desconocido',
-                });
-            },
-        });
-    }*/
+          this.reporteProgresoService.existeMatriculaPorAnio(this.iYAcadId).subscribe({
+              next: (responsex: any) => {
+                  if (responsex.data.existe) {
+                      this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
+                          next: (response: any) => {
+                              const blob = new Blob([response], {
+                                  type: 'application/pdf',
+                              });
+                              const url = window.URL.createObjectURL(blob);
+                              const link = document.createElement('a');
+                              link.href = url;
+                              link.target = '_blank';
+                              link.click();
+                          },
+                          error: () => {
+                              this.messageService.add({
+                                  severity: 'error',
+                                  summary: 'Problema al descargar el archivo',
+                                  detail: 'Error desconocido',
+                              });
+                          },
+                      });
+                  } else {
+                      this.messageService.add({
+                          severity: 'error',
+                          summary: 'No existe matricula',
+                          detail: 'No hay una matricula registrada para el anio seleccionado',
+                      });
+                  }
+              },
+              error: (err) => {
+                  this.messageService.add({
+                      severity: 'error',
+                      summary: 'Problema al descargar el archivo',
+                      detail: err.error.message || 'Error desconocido',
+                  });
+              },
+          });
+      }*/
 }

@@ -11,9 +11,15 @@ export class ReporteAcademicoService {
 
   constructor() {}
 
-  obtenerAreasPorMatricula(iYAcadId: number) {
+  obtenerCursosPorMatricula(iYAcadId: number) {
     return this.http.get(
-      `${this.urlBackendApi}/acad/estudiantes/matriculas/anio/${iYAcadId}/areas`
+      `${this.urlBackendApi}/acad/estudiantes/matriculas/anio-academico/${iYAcadId}/cursos`
+    );
+  }
+
+  obtenerResultadosPorCurso(iYAcadId: number, iIeCursoId: any) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/estudiantes/matriculas/anio-academico/${iYAcadId}/cursos/${iIeCursoId}/resultados`
     );
   }
 }

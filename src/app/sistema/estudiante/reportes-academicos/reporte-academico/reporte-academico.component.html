@@ -18,13 +18,14 @@
       <p-inputGroup>
         <p-inputGroupAddon class="mi-addon-primary">Área:</p-inputGroupAddon>
         <p-dropdown
-          [options]="areas"
-          formControlName="iPrioridadId"
-          optionLabel="cPrioridadNombre"
+          [options]="cursos"
+          optionLabel="cCursoNombre"
           [checkmark]="true"
-          optionValue="iPrioridadId"
+          optionValue="iIeCursoId"
           [appendTo]="'body'"
           [style]="{ flex: '1', width: '100%' }"
+          placeholder="Seleccione..."
+          [(ngModel)]="iIeCursoId"
         />
       </p-inputGroup>
     </div>
@@ -43,5 +44,24 @@
     >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
     otra opción</small
   >
+
+  @if (graficos.length === 0 && mostrarMensajeSinDatos) {
+    <br /><br />
+    <div class="text-center mt-3">
+      <img src="assets/images/icons/sin-datos.gif" alt="logo" width="20%" />
+      <p>No hay resultados para mostrar</p>
+    </div>
+  } @else {
+    <div class="grid p-fluid mt-3">
+      <div *ngFor="let grafico of graficos" class="col-6">
+        <p-chart
+          type="bar"
+          [data]="grafico.data"
+          [options]="grafico.options"
+          [plugins]="grafico.plugins"
+        ></p-chart>
+      </div>
+    </div>
+  }
 </p-panel>
 <p-toast></p-toast>

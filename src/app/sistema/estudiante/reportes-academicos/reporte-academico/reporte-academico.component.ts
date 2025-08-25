@@ -104,10 +104,10 @@ export class ReporteAcademicoComponent implements OnInit {
                   data: valores,
                   backgroundColor: valores.map(
                     (_: any, i: number) => this.colores[i % this.colores.length]
-                  ), // 👈 un color por barra
+                  ),
                   borderColor: valores.map((_: any, i: number) =>
                     this.colores[i % this.colores.length].replace('0.6', '1')
-                  ), // más fuerte para borde
+                  ),
                   borderWidth: 1,
                 },
               ],
@@ -117,7 +117,6 @@ export class ReporteAcademicoComponent implements OnInit {
               plugins: {
                 title: {
                   display: true,
-                  //text: item.competencia,
                   text: this.splitText(item.competencia, 40),
                   font: { size: 18 },
                 },
@@ -129,7 +128,17 @@ export class ReporteAcademicoComponent implements OnInit {
                   align: 'end',
                   offset: -6,
                   color: '#000',
-                  formatter: (value: number) => value,
+                  formatter: (value: number) => {
+                    return value < 10 ? `0${value}` : value;
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (context: any) => {
+                      const value = context.raw;
+                      return value.toString().padStart(2, '0');
+                    },
+                  },
                 },
               },
               scales: {
@@ -138,12 +147,17 @@ export class ReporteAcademicoComponent implements OnInit {
                   grid: { color: '#ebedef' },
                 },
                 y: {
-                  ticks: { color: '#495057' },
+                  ticks: {
+                    color: '#495057',
+                    callback: (value: number | string) => {
+                      return value.toString().padStart(2, '0');
+                    },
+                  },
                   grid: { color: '#ebedef' },
                 },
               },
             },
-            plugins: [ChartDataLabels], // 👈 registro del plugin
+            plugins: [ChartDataLabels],
           };
         });
       },

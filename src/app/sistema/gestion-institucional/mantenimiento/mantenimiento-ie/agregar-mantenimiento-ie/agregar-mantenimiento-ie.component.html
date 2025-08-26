@@ -1,170 +1,176 @@
 <br />
-<div class="grid">
-  <!-- <div class="col-12">
-        <label for="agregarInstitucion" class="block text-900 font-medium mb-2">
-            Agregar Institución Educativa
-        </label>
-        <p-dropdown id="agregarInstitucion" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieCodigoModular" class="block text-900 font-medium mb-2"> Código Modular </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar el código modular"
-      (input)="soloNumeros($event)"
-    />
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieCodigoModular" class="block text-900 font-medium mb-2">
-      Institución Educativa
-    </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar I.E."
-      (input)="convertirMayusculas($event)"
-    />
-  </div>
-  <!-- <div class="col-12 md:col-6 lg:col-4">
-        <label for="iDsttId" class="block text-900 font-medium mb-2">
-            País 
-        </label>
-        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div>
+<form [formGroup]="formulario">
+  <div class="grid">
     <div class="col-12 md:col-6 lg:col-4">
-        <label for="iDsttId" class="block text-900 font-medium mb-2">
-            Departamento 
-        </label>
-        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
+      <label for="cIieeCodigoModular" class="block text-900 font-medium mb-2">
+        Código Modular *
+      </label>
+      <input
+        id="cIieeCodigoModular"
+        formControlName="cIieeCodigoModular"
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar el código modular"
+        (input)="soloNumeros($event)"
+        [class.ng-invalid]="esInvalido('cIieeCodigoModular')"
+      />
+      <small class="p-error" *ngIf="esInvalido('cIieeCodigoModular')">
+        {{ obtenerMensajeError('cIieeCodigoModular') }}
+      </small>
     </div>
+
     <div class="col-12 md:col-6 lg:col-4">
-        <label for="iDsttId" class="block text-900 font-medium mb-2">
-            Distrito 
-        </label>
-        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="distrito" class="block text-900 font-medium mb-2"> Distrito </label>
-    <p-dropdown
-      id="distrito"
-      [options]="distritos"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
+      <label for="cIieeNombre" class="block text-900 font-medium mb-2">
+        Institución Educativa *
+      </label>
+      <input
+        id="cIieeNombre"
+        formControlName="cIieeNombre"
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar I.E."
+        (input)="convertirMayusculas($event)"
+        [class.ng-invalid]="esInvalido('cIieeNombre')"
+      />
+      <small class="p-error" *ngIf="esInvalido('cIieeNombre')">
+        {{ obtenerMensajeError('cIieeNombre') }}
+      </small>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iDsttId" class="block text-900 font-medium mb-2"> Distrito * </label>
+      <p-dropdown
+        id="iDsttId"
+        formControlName="iDsttId"
+        [options]="distritos"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+        [class.ng-invalid]="esInvalido('iDsttId')"
+      >
+      </p-dropdown>
+      <small class="p-error" *ngIf="esInvalido('iDsttId')">
+        {{ obtenerMensajeError('iDsttId') }}
+      </small>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
+      <p-dropdown
+        id="iZonaId"
+        formControlName="iZonaId"
+        [options]="zona"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector * </label>
+      <p-dropdown
+        id="iTipoSectorId"
+        formControlName="iTipoSectorId"
+        [options]="sector"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+        [class.ng-invalid]="esInvalido('iTipoSectorId')"
+      >
+      </p-dropdown>
+      <small class="p-error" *ngIf="esInvalido('iTipoSectorId')">
+        {{ obtenerMensajeError('iTipoSectorId') }}
+      </small>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="cIieeRUC" class="block text-900 font-medium mb-2"> RUC </label>
+      <input
+        id="cIieeRUC"
+        formControlName="cIieeRUC"
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar RUC"
+        (input)="soloNumeros($event)"
+        [class.ng-invalid]="esInvalido('cIieeRUC')"
+      />
+      <small class="p-error" *ngIf="esInvalido('cIieeRUC')">
+        {{ obtenerMensajeError('cIieeRUC') }}
+      </small>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="cIieeDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
+      <input
+        id="cIieeDireccion"
+        formControlName="cIieeDireccion"
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar dirección"
+        (input)="convertirMayusculas($event)"
+      />
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iNivelTipoId" class="block text-900 font-medium mb-2"> Nivel </label>
+      <p-dropdown
+        id="iNivelTipoId"
+        formControlName="iNivelTipoId"
+        [options]="Nivel"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
+      <p-dropdown
+        id="iUgelId"
+        formControlName="iUgelId"
+        [options]="ugel"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iSedeId" class="block text-900 font-medium mb-2"> Sede </label>
+      <p-dropdown
+        id="iSedeId"
+        formControlName="iSedeId"
+        [options]="sede"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
   </div>
-  <!-- <div class="col-12 md:col-6 lg:col-4">
-        <label for="zona" class="block text-900 font-medium mb-2">
-            Zona 
-        </label>
-        <p-dropdown 
-            id="zona" 
-            [options]="zonas"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccionar..." 
-            [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
-    <p-dropdown
-      id="iZonaId"
-      [options]="zona"
-      optioLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector </label>
-    <p-dropdown
-      id="iTipoSectorId"
-      [options]="sector"
-      optioLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieRUC" class="block text-900 font-medium mb-2"> RUC </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar RUC"
-      (input)="soloNumeros($event)"
-    />
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar dirección"
-      (input)="convertirMayusculas($event)"
-    />
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieLogo" class="block text-900 font-medium mb-2"> NIvel </label>
-    <p-dropdown
-      id="Nivel"
-      [options]="Nivel"
-      optionsLavel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
-    <p-dropdown
-      id="iUgelId"
-      [options]="ugel"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iUgelId" class="block text-900 font-medium mb-2"> Sede </label>
-    <p-dropdown
-      id="sede"
-      [options]="sede"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <!-- <div class="col-12">
-        <label for="agregarInstitucion" class="block text-900 font-medium mb-2">
-            Sede 
-        </label>
-        <p-dropdown id="agregarInstitucion" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
-</div>
+</form>
 
 <div class="flex justify-content-end gap-2 mt-4">
-  <p-button [severity]="'secondary'" label="Cancelar" (click)="btnCancelar()"> </p-button>
-  <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()"> </p-button>
+  <p-button
+    [severity]="'secondary'"
+    label="Cancelar"
+    (click)="btnCancelar()"
+    [disabled]="guardando"
+  >
+  </p-button>
+  <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()" [loading]="guardando">
+  </p-button>
 </div>

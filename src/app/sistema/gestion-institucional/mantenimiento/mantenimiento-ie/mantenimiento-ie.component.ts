@@ -8,6 +8,8 @@ import { EditarMantenimientoIeComponent } from './editar-mantenimiento-ie/editar
 import { MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
+import { MantenimientoIeService, FiltrosIE } from './mantenimiento-ie.service';
+
 @Component({
   selector: 'app-mantenimiento-ie',
   standalone: true,
@@ -26,56 +28,58 @@ export class MantenimientoIeComponent implements OnInit {
   titleAgregarMantenimiento: string = 'Agregar Institución Educativa';
   mostrarEditarMantenimiento: boolean = false;
   mostrarAgregarMantenimiento: boolean = false;
+  dataMantenimiento: any[] = [];
+  loading: boolean = false;
+  totalRegistros: number = 0;
+  paginaActual: number = 1;
+  registrosPorPagina: number = 20;
+
   columns = [
     {
-      type: 'item',
-      width: '1rem',
-      field: 'id',
-      header: '#',
+      type: 'text',
+      width: '12rem',
+      field: 'cIieeCodigoModular',
+      header: 'Código Modular',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '12rem',
-      field: 'apellidosNombres',
-      header: 'Apellidos y Nombres',
+      width: '20rem',
+      field: 'cIieeNombre',
+      header: 'Instituciones Educativas',
       text_header: 'center',
       text: 'left',
     },
     {
-      type: 'date',
-      width: '6rem',
-      field: 'fecha',
-      header: 'Fecha',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
       type: 'text',
-      width: '8rem',
-      field: 'documento',
-      header: 'Documento',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'tag',
-      width: '4rem',
-      field: 'seraLaborable',
-      header: 'Será laborable',
-      styles: {
-        Sí: 'success',
-        No: 'danger',
-      },
+      width: '15rem',
+      field: 'cDsttNombre',
+      header: 'Distrito',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
       width: '15rem',
-      field: 'observacion',
-      header: 'Observación',
+      field: 'cUgelNombre',
+      header: 'UGEL',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: 'cZonaNombre',
+      header: 'Zona',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '12rem',
+      field: 'cSedeNombre',
+      header: 'Sede',
       text_header: 'center',
       text: 'left',
     },
@@ -89,56 +93,59 @@ export class MantenimientoIeComponent implements OnInit {
     },
   ];
 
-  dataMantenimiento = [
-    {
-      id: 1,
-      apellidosNombres: 'García Pérez, Juan Carlos',
-      fecha: '2025-01-15',
-      documento: '12345678',
-      seraLaborable: 'Sí',
-      observacion: 'Mantenimiento preventivo del sistema eléctrico',
-    },
-    {
-      id: 2,
-      apellidosNombres: 'Rodríguez López, María Elena',
-      fecha: '2025-01-20',
-      documento: '87654321',
-      seraLaborable: 'No',
-      observacion: 'Reparación urgente de tuberías en el baño',
-    },
-    {
-      id: 3,
-      apellidosNombres: 'Fernández Castro, Luis Miguel',
-      fecha: '2025-01-25',
-      documento: '11223344',
-      seraLaborable: 'Sí',
-      observacion: 'Pintura de aulas del segundo piso',
-    },
-    {
-      id: 4,
-      apellidosNombres: 'Silva Morales, Ana Lucía',
-      fecha: '2025-02-01',
-      documento: '55667788',
-      seraLaborable: 'Sí',
-      observacion: 'Instalación de nuevas luminarias LED',
-    },
-    {
-      id: 5,
-      apellidosNombres: 'Torres Vega, Carlos Alberto',
-      fecha: '2025-02-05',
-      documento: '99887766',
-      seraLaborable: 'No',
-      observacion: 'Reparación del techo del gimnasio',
-    },
-  ];
   constructor(
     private messageService: MessageService,
-    private confirmationModalService: ConfirmationModalService
+    private confirmationModalService: ConfirmationModalService,
+    private mantenimientoIeService: MantenimientoIeService
   ) {}
 
   ngOnInit() {
     console.log('mantenimiento-ie component loaded');
-    console.log('Data:', this.dataMantenimiento);
+    this.cargarDatos();
+  }
+
+  cargarDatos(filtros?: FiltrosIE) {
+    this.loading = true;
+
+    const filtrosCompletos: FiltrosIE = {
+      pagina: this.paginaActual,
+      registros_por_pagina: this.registrosPorPagina,
+      ...filtros,
+    };
+
+    this.mantenimientoIeService.obtenerInstitucionEducativa(filtrosCompletos).subscribe({
+      next: response => {
+        this.loading = false;
+        if (response.validated && response.data) {
+          this.dataMantenimiento = response.data;
+          console.log('Datos cargados:', this.dataMantenimiento);
+        } else {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Advertencia',
+            detail: response.mensaje || 'No se encontraron datos',
+          });
+        }
+      },
+      error: error => {
+        this.loading = false;
+        console.error('Error al cargar datos:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar las instituciones educativas',
+        });
+      },
+    });
+  }
+
+  buscarInstituciones(termino: string) {
+    this.cargarDatos({ termino_busqueda: termino });
+  }
+
+  cambiarPagina(pagina: number) {
+    this.paginaActual = pagina;
+    this.cargarDatos();
   }
 
   agregarMantenimiento() {
@@ -151,9 +158,40 @@ export class MantenimientoIeComponent implements OnInit {
 
   eliminarMantenimiento(item: any) {
     this.confirmationModalService.openConfirm({
-      header: '¿Está seguro de eliminar estos datos del mantenimiento?',
+      header: '¿Está seguro de eliminar esta institución educativa?',
       accept: () => {
-        this.dataMantenimiento = this.dataMantenimiento.filter(m => m.id !== item.id);
+        this.eliminarInstitucionEducativa(item.iIieeId);
+      },
+    });
+  }
+
+  eliminarInstitucionEducativa(id: number) {
+    const iSesionId = 1;
+
+    this.mantenimientoIeService.eliminarInstitucionEducativa(id, iSesionId).subscribe({
+      next: response => {
+        if (response.validated) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Institución educativa eliminada correctamente',
+          });
+          this.cargarDatos();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: response.mensaje || 'Error al eliminar',
+          });
+        }
+      },
+      error: error => {
+        console.error('Error al eliminar:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar la institución educativa',
+        });
       },
     });
   }
@@ -162,6 +200,7 @@ export class MantenimientoIeComponent implements OnInit {
     this.mostrarAgregarMantenimiento = estado;
     if (!estado) {
       this.selectedItem = null;
+      this.cargarDatos();
     }
   }
 
@@ -169,6 +208,7 @@ export class MantenimientoIeComponent implements OnInit {
     this.mostrarEditarMantenimiento = estado;
     if (!estado) {
       this.selectedItem = null;
+      this.cargarDatos();
     }
   }
 
@@ -179,38 +219,21 @@ export class MantenimientoIeComponent implements OnInit {
         this.EditarMantenimiento();
         break;
       case 'eliminar':
-        this.confirmationModalService.openConfirm({
-          header: '¿Está seguro de eliminar estos datos del mantenimiento?',
-          accept: () => {
-            this.dataMantenimiento = this.dataMantenimiento.filter(m => m.id !== item.id);
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Eliminado correctamente',
-            });
-          },
-        });
+        this.eliminarMantenimiento(item);
         break;
     }
   }
 
   actions: IActionTable[] = [
-    // {
-    //   labelTooltip: 'Calendar registro',
-    //   icon: 'pi pi-calendar-plus',
-    //   accion: 'ver',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-primary p-button-text',
-    // },
     {
-      labelTooltip: 'Editar mantenimiento',
+      labelTooltip: 'Editar institución',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
     },
     {
-      labelTooltip: 'Eliminar mantenimiento',
+      labelTooltip: 'Eliminar institución',
       icon: 'pi pi-trash',
       accion: 'eliminar',
       type: 'item',

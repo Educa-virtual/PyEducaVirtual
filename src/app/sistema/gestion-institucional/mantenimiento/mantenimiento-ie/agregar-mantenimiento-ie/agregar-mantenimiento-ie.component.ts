@@ -1,9 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
+import { MantenimientoIeService, InstitucionEducativa } from '../mantenimiento-ie.service';
+import { MessageService } from 'primeng/api';
+
 @Component({
   selector: 'app-agregar-mantenimiento-ie',
   standalone: true,
-  imports: [PrimengModule],
+  imports: [PrimengModule, ReactiveFormsModule],
   templateUrl: './agregar-mantenimiento-ie.component.html',
   styleUrl: './agregar-mantenimiento-ie.component.scss',
 })
@@ -11,29 +15,10 @@ export class AgregarMantenimientoIeComponent implements OnInit {
   @Input() selectedItem: any = null;
   @Output() eventAgregarMantenimientoIe = new EventEmitter<boolean>();
 
-  departamentos = [
-    { label: 'Lima', value: 1 },
-    { label: 'Arequipa', value: 2 },
-    { label: 'Cusco', value: 3 },
-    { label: 'La Libertad', value: 4 },
-    { label: 'Piura', value: 5 },
-    { label: 'Junín', value: 6 },
-    { label: 'Lambayeque', value: 7 },
-    { label: 'Ancash', value: 8 },
-  ];
+  formulario!: FormGroup;
+  guardando: boolean = false;
 
-  // Datos para Distrito
-  distritos = [
-    { label: 'Miraflores', value: 1 },
-    { label: 'San Isidro', value: 2 },
-    { label: 'Surco', value: 3 },
-    { label: 'Barranco', value: 4 },
-    { label: 'La Molina', value: 5 },
-    { label: 'San Borja', value: 6 },
-    { label: 'Magdalena', value: 7 },
-    { label: 'Pueblo Libre', value: 8 },
-    { label: 'Moquegua', value: 9 },
-  ];
+  distritos = [{ label: 'Moquegua', value: 1 }];
 
   Nivel = [
     { label: 'Educacion Inicial', value: 1 },
@@ -55,23 +40,144 @@ export class AgregarMantenimientoIeComponent implements OnInit {
     { label: 'RURAL', value: 2 },
   ];
 
+  constructor(
+    private fb: FormBuilder,
+    private mantenimientoIeService: MantenimientoIeService,
+    private messageService: MessageService
+  ) {
+    this.crearFormulario();
+  }
+
   ngOnInit() {
     console.log('AgregarMantenimientoIeComponent');
   }
+
+  crearFormulario() {
+    this.formulario = this.fb.group({
+      cIieeCodigoModular: [
+        '',
+        [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
+      ],
+      cIieeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+      iDsttId: [null, Validators.required],
+      iZonaId: [null],
+      iTipoSectorId: [null, Validators.required],
+      cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
+      cIieeDireccion: [''],
+      iNivelTipoId: [null],
+      iUgelId: [null],
+      iSedeId: [null],
+      iSesionId: [1],
+    });
+  }
+
   btnCancelar() {
-    //console.log('btn cancelar');
+    this.formulario.reset();
     this.eventAgregarMantenimientoIe.emit(false);
   }
+
   btnGuardar() {
-    //console.log('btn guardar');
-    this.eventAgregarMantenimientoIe.emit(false);
+    if (this.formulario.valid) {
+      this.guardarInstitucion();
+    } else {
+      this.mostrarErroresValidacion();
+    }
   }
+
+  guardarInstitucion() {
+    this.guardando = true;
+
+    const datosInstitucion: InstitucionEducativa = this.formulario.value;
+
+    console.log('Datos a enviar:', datosInstitucion);
+
+    this.mantenimientoIeService.crearInstitucionEducativa(datosInstitucion).subscribe({
+      next: response => {
+        this.guardando = false;
+
+        if (response.validated) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Institución educativa creada correctamente',
+          });
+
+          this.formulario.reset();
+          this.eventAgregarMantenimientoIe.emit(false);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: response.mensaje || 'Error al crear la institución',
+          });
+        }
+      },
+      error: error => {
+        this.guardando = false;
+        console.error('Error al crear institución:', error);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear la institución educativa',
+        });
+      },
+    });
+  }
+
+  mostrarErroresValidacion() {
+    Object.keys(this.formulario.controls).forEach(key => {
+      const control = this.formulario.get(key);
+      if (control && control.invalid) {
+        control.markAsTouched();
+      }
+    });
+
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Formulario incompleto',
+      detail: 'Por favor complete los campos requeridos',
+    });
+  }
+
   convertirMayusculas(event: any) {
     const input = event.target;
-    input.value = input.value.toUpperCase();
+    const valor = input.value.toUpperCase();
+    input.value = valor;
+
+    const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
+    if (controlName && this.formulario.get(controlName)) {
+      this.formulario.get(controlName)?.setValue(valor);
+    }
   }
+
   soloNumeros(event: any) {
     const input = event.target;
-    input.value = input.value.replace(/[^0-9]/g, '');
+    const valor = input.value.replace(/[^0-9]/g, '');
+    input.value = valor;
+
+    const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
+    if (controlName && this.formulario.get(controlName)) {
+      this.formulario.get(controlName)?.setValue(valor);
+    }
+  }
+
+  esInvalido(campo: string): boolean {
+    const control = this.formulario.get(campo);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  obtenerMensajeError(campo: string): string {
+    const control = this.formulario.get(campo);
+
+    if (control?.errors) {
+      if (control.errors['required']) return `${campo} es requerido`;
+      if (control.errors['minlength'])
+        return `${campo} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`;
+      if (control.errors['maxlength'])
+        return `${campo} debe tener máximo ${control.errors['maxlength'].requiredLength} caracteres`;
+    }
+
+    return '';
   }
 }

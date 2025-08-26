@@ -37,9 +37,10 @@
                 <li class="flex py-3">
                   <i class="pi pi-lock text-xl mr-3"></i>
                   <span class="flex flex-column">
-                    <span class="font-bold mb-1">Permisos</span>
+                    <span class="font-bold mb-1">Permisos asignados</span>
                     <span class="m-0 text-secondary">
                       <ul class="p-0">
+                        <li>CREADOR: VER RESPUESTAS, VER RESUMEN</li>
                         @for (permiso of encuesta?.permisos_detalle; track $index) {
                           <li>
                             {{ permiso?.permiso }}

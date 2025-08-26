@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -19,7 +26,7 @@ import { Router } from '@angular/router';
   templateUrl: './informe-estadistico.component.html',
   styleUrl: './../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
-export class InformeEstadisticoComponent implements OnInit {
+export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
   @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu;
   title: string = 'Informes y estadística';
   activeItem: any;
@@ -50,6 +57,7 @@ export class InformeEstadisticoComponent implements OnInit {
     ADMINISTRADOR_DREMO,
   ];
   es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   private _messageService = inject(MessageService);
 
@@ -64,6 +72,7 @@ export class InformeEstadisticoComponent implements OnInit {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
 
     this.es_especialista = this.perfiles_especialista.includes(Number(this.perfil.iPerfilId));
+    this.es_especialista_ugel = Number(this.perfil.iPerfilId) == ESPECIALISTA_UGEL;
 
     this.breadCrumbItems = [
       {
@@ -111,14 +120,19 @@ export class InformeEstadisticoComponent implements OnInit {
         this.sexos = this.datosInformes.getSexos();
         this.datosInformes.getNivelesGrados(data?.nivel_grados);
 
-        if (!this.es_especialista) {
-          const nivel_tipo =
-            this.nivel_tipos && this.nivel_tipos.length > 0 ? this.nivel_tipos[0]['value'] : null;
-          const ie = this.ies && this.ies.length > 0 ? this.ies[0]['value'] : null;
+        if (this.nivel_tipos && this.nivel_tipos.length === 1) {
+          const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formReportes.get('iNivelTipoId')?.setValue(nivel_tipo);
-          this.filterNivelesGrados(nivel_tipo);
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          const ugel = this.ugeles[0]['value'];
+          this.formReportes.get('iUgelId')?.setValue(ugel);
+        }
+        if (this.ies && this.ies.length === 1) {
+          const ie = this.ies[0]['value'];
           this.formReportes.get('iIieeId')?.setValue(ie);
         }
+        this.verReporte();
       });
 
     this.formReportes.get('iNivelTipoId').valueChanges.subscribe(value => {
@@ -153,8 +167,6 @@ export class InformeEstadisticoComponent implements OnInit {
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
     });
-
-    this.verReporte();
   }
 
   filterNivelesTipos() {
@@ -170,14 +182,12 @@ export class InformeEstadisticoComponent implements OnInit {
   }
 
   filterInstitucionesEducativas() {
-    const iEvaluacionId = this.formReportes.get('iEvaluacionId')?.value;
     const iNivelTipoId = this.formReportes.get('iNivelTipoId')?.value;
     const iDsttId = this.formReportes.get('iDsttId')?.value;
     const iZonaId = this.formReportes.get('iZonaId')?.value;
     const iTipoSectorId = this.formReportes.get('iTipoSectorId')?.value;
     const iUgelId = this.formReportes.get('iUgelId')?.value;
     this.ies = this.datosInformes.filterInstitucionesEducativas(
-      iEvaluacionId,
       iNivelTipoId,
       iDsttId,
       iZonaId,

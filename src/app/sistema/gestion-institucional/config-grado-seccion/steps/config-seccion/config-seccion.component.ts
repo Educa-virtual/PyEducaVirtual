@@ -58,12 +58,13 @@ export class ConfigSeccionComponent implements OnInit {
   seccionesAsignadas: any[];
   uso: any[];
   sede: any[];
-  dias: any[] = [];
+
   diasSelecionados: any[];
   tutores: any[];
   formValues: any[];
   rawData: any[] = [];
   lista: any = {};
+  bActualizar: boolean = false;
 
   private _confirmService = inject(ConfirmationModalService);
   constructor(
@@ -80,7 +81,7 @@ export class ConfigSeccionComponent implements OnInit {
     this.configuracion = this.stepService.configuracion;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     try {
       this.form = this.fb.group({
         iDetConfId: [0],
@@ -137,18 +138,16 @@ export class ConfigSeccionComponent implements OnInit {
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
 
-    this.getGrado();
+    this.grados = this.stepService.grados ?? (await this.stepService.getGrado());
     //this.stepService.getFilesPrimaria().then((data) => (this.files = data));
-    this.ambientes = this.stepService.ambientes; //this.getAmbientes()
+    this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes());
     //this.serv_atencion = this.stepService.serv_atencion
-    this.uso = this.stepService.uso_ambientes; // this.getUsoAmbientes()
-
-    //   this.getServicioAtencion()
-    //    this.getModalidad()
-    this.getSecciones();
-    this.getSeccionesAsignadas();
-    this.getDiasCalendario();
-
+    this.uso = this.stepService.uso_ambientes ?? (await this.stepService.getUsoAmbiente()); // this.getUsoAmbientes()
+    this.secciones = this.stepService.secciones ?? (await this.stepService.getSecciones());
+    this.seccionesAsignadas =
+      this.stepService.seccionesAsignadas ?? (await this.stepService.getSeccionesAsignadas());
+    const dias = await this.stepService.getDiasCalendario();
+    this.form.get('cDiasLaborables').setValue(dias);
     //this.getTutor()
 
     // this.rawData = this.stepService.listaGrados
@@ -158,7 +157,10 @@ export class ConfigSeccionComponent implements OnInit {
   accionBtnItemTable({ accion, item }) {
     if (accion === 'agregar') {
       this.visible = true;
+      this.bActualizar = false;
       this.caption = 'Configurar grados y secciones';
+      this.form.get('iNivelGradoId')?.enable();
+      this.form.get('iSeccionId')?.enable();
     }
     if (accion === 'retornar') {
       this._confirmService.openConfiSave({
@@ -182,6 +184,7 @@ export class ConfigSeccionComponent implements OnInit {
 
     if (accion === 'editar') {
       this.visible = true;
+      this.bActualizar = true;
       this.caption = 'Actualizar grados y secciones';
       // +++++++++++++++++++++++actualizar
       const found1 = this.grados.find(item1 => item1.iNivelGradoId === item.iNivelGradoId);
@@ -199,23 +202,22 @@ export class ConfigSeccionComponent implements OnInit {
         iDetConfId: item.iDetConfId,
         //iConfigId: item.iConfigId,
         // iTurnoId: item.iTurnoId,
-
         iIieeAmbienteId: item.iIieeAmbienteId,
-
         cDetConfNombreSeccion: item.cDetConfNombreSeccion,
         iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
         cDetConfObs: item.cDetConfObs,
         iSeccionId: item.iSeccionId,
         iNivelGradoId: item.iNivelGradoId,
-
         cPrograma: 'No APLICA',
         // iServEdId: this.configuracion[0].iServEdId,
         cCicloNombre: item.cCicloNombre,
         cFase: 'FASE REGULAR',
-
         iYAcadId: this.configuracion[0].iYAcadId,
         cYAcadNombre: this.configuracion[0].cYAcadNombre,
       });
+
+      this.form.get('iNivelGradoId')?.disable();
+      this.form.get('iSeccionId')?.disable();
     }
     if (accion === 'eliminar') {
       const id = Number(item.iIieeAmbienteId);
@@ -286,8 +288,52 @@ export class ConfigSeccionComponent implements OnInit {
                 detail: 'Error. No se proceso petición: ' + error.error.message,
               });
             },
-            complete: () => {
-              this.getSeccionesAsignadas();
+            complete: async () => {
+              this.seccionesAsignadas = await this.stepService.getSeccionesAsignadas();
+              this.visible = false;
+              // this.clearForm()
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Mensaje',
+                detail: 'Proceso exitoso',
+              });
+            },
+          });
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje',
+          detail: 'Llenado incorrecto de formulario',
+        });
+      }
+    }
+    if (accion === 'editar') {
+      if (this.form.valid) {
+        this.formValues = this.form.getRawValue();
+        //ALMACENAR LA INFORMACION
+
+        this.query
+          .addAmbienteAcademico({
+            json: JSON.stringify(this.formValues),
+            _opcion: 'addDetGradoSecciones',
+          })
+          .subscribe({
+            next: (data: any) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Mensaje de sistema',
+                detail: 'Se guardó correctamente la sección asignada. ' + data.data[0].id,
+              });
+            },
+            error: error => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje de sistema',
+                detail: 'Error. No se proceso petición: ' + error.error.message,
+              });
+            },
+            complete: async () => {
+              this.seccionesAsignadas = await this.stepService.getSeccionesAsignadas();
               this.visible = false;
               // this.clearForm()
               this.messageService.add({
@@ -322,7 +368,6 @@ export class ConfigSeccionComponent implements OnInit {
 
     if (cbo === 'ambiente') {
       const found = this.ambientes.find(item => item.iIieeAmbienteId === selected);
-
       // Encuentra el índice del objeto si existe
 
       this.form.get('iAmbienteAforo')?.setValue(found.iAmbienteAforo);
@@ -331,102 +376,8 @@ export class ConfigSeccionComponent implements OnInit {
     }
   }
 
-  getDiasCalendario() {
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          iCalAcadId: this.configuracion[0].iCalAcadId,
-        }),
-        _opcion: 'getCalendarioDiasLaborables',
-      })
-      .subscribe({
-        next: (data: any) => {
-          const dias_laborables = data.data;
-          // Parseamos el JSON original una sola vez
-          const dias_json = JSON.parse(dias_laborables[0].calDiasDatos);
-          // Concatenamos los nombres en una sola cadena
-          this.dias = dias_json.map((dia: any) => dia.cDiaNombre).join(', ');
-          // Actualiza el valor seleccionado del formControl
-          this.form.get('cDiasLaborables')?.setValue(this.dias);
-        },
-        error: error => {
-          // Manejo de errores
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje de sistema',
-            detail: 'Error al procesar dias calendarios:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.dias_laborables = this.dias;
-        },
-      });
-  }
-  getSecciones() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'secciones',
-        campos: 'iSeccionId, cSeccionNombre,cSeccionDescripcion',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.secciones = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje de sistema',
-            detail: 'Error al procesar lista de secciones: ' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.secciones = this.secciones;
-        },
-      });
-  }
-
-  getSeccionesAsignadas() {
-    this.query
-      .searchAmbienteAcademico({
-        json: JSON.stringify({
-          iConfigId: this.stepService.configuracion[0].iConfigId,
-        }),
-        _opcion: 'getSeccionesConfig',
-      })
-      .subscribe({
-        next: (data: any) => {
-          // this.seccionesAsignadas = data.data
-          //    this.iServId = this.serv_atencion[0].iServEdId
-          // this.lista = this.extraerSecciones(data.data)
-          this.seccionesAsignadas = data.data.map((ambiente: any) => {
-            return {
-              ...ambiente, // Mantén todos los campos originales
-              arrayAmbientes: {
-                ciclo: ambiente.cCicloRomanos,
-                grado: ambiente.cGradoNombre,
-                seccion: ambiente.cSeccionNombre,
-                estudiantes: ambiente.iDetConfCantEstudiantes,
-                ambiente: ambiente.cAmbienteNombre,
-              },
-            };
-          });
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje de sistema',
-            detail: 'Error al cargar secciones asignadas:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.secciones_asignadas = this.seccionesAsignadas;
-        },
-      });
-  }
-
-  getGrado() {
+  /*getGrado() {
+    
     this.query
       .searchGradoCiclo({
         iNivelTipoId: this.stepService.iNivelTipoId,
@@ -452,7 +403,7 @@ export class ConfigSeccionComponent implements OnInit {
           this.stepService.grados = this.grados;
         },
       });
-  }
+  }*/
   confirm() {
     this._confirmService.openConfiSave({
       message: '¿Estás seguro de que deseas guardar y continuar?',

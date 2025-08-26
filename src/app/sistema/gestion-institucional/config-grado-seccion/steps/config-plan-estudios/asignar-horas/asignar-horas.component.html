@@ -18,9 +18,8 @@
                 optionLabel="cServEdNombre"
                 optionValue="iServEdId"
                 formControlName="iServEdId"
-                (onChange)="getCurriculaNivelServicioEducativo()"
                 styleClass="w-full"
-              >
+                ><!--  (onChange)="getCurriculaNivelServicioEducativo()"  -->
               </p-dropdown>
               <label for="iServEdId">Servicio Educativo ({{ serv_horas }} Hrs semanales)</label>
             </span>
@@ -124,30 +123,36 @@
           <div class="col-12 mt-2 grid flex align-items-end">
             <div class="field col-12 md:col-4">
               <span class="p-float-label">
-                <input
-                  pInputText
+                <p-inputNumber
+                  [showButtons]="true"
                   id="iHorasSemPresencial"
                   formControlName="iHorasSemPresencial"
                   aria-describedby="iHorasSemPresencial-help"
+                  [min]="0"
+                  [max]="10"
+                  (onInput)="calcularTotal()"
                 />
                 <label for="iHorasSemPresencial">Presenciales</label>
               </span>
             </div>
             <div class="field col-12 md:col-4">
               <span class="p-float-label">
-                <input
-                  pInputText
+                <p-inputNumber
+                  [showButtons]="true"
                   id="iHorasSemDomicilio"
                   formControlName="iHorasSemDomicilio"
                   aria-describedby="iHorasSemDomicilio-help"
+                  [min]="0"
+                  [max]="10"
+                  (onInput)="calcularTotal()"
                 />
                 <label for="iHorasSemDomicilio">Domicilio</label>
               </span>
             </div>
             <div class="field col-12 md:col-4">
               <span class="p-float-label">
-                <input
-                  pInputText
+                <p-inputNumber
+                  currency="Hrs"
                   id="iTotalHoras"
                   formControlName="iTotalHoras"
                   aria-describedby="iTotalHoras-help"

@@ -32,7 +32,7 @@ import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-s
   styleUrl: './asignar-horas.component.scss',
 })
 export class AsignarHorasComponent implements OnInit {
-  grados: any[] = [];
+  grados: any[] = null;
   areas_curriculas: any[] = [];
   perfil: any[] = [];
   configuracion: any[];
@@ -60,7 +60,6 @@ export class AsignarHorasComponent implements OnInit {
   ) {
     this.perfil = this.stepService.perfil;
     this.configuracion = this.stepService.configuracion;
-    this.grados = this.stepService.grados;
 
     //this.secciones_asignadas =// this.stepService.secciones_asignadas
   }
@@ -73,7 +72,7 @@ export class AsignarHorasComponent implements OnInit {
         cCursoNombre: [{ value: '', disabled: true }, Validators.required], // Control para "Área curricular"
         iHorasSemPresencial: [0, Validators.required], // Control para "Horas semanales presenciales"
         iHorasSemDomicilio: [0, Validators.required],
-        iTotalHoras: [0, Validators.required], // Control para "Total de horas semanales"
+        iTotalHoras: [{ value: 0, disabled: true }, Validators.required], // Control para "Total de horas semanales"
         cDeclaracionJurada: [false, Validators.requiredTrue],
         iHorasMiniminas: [0], // Control para "Declaración jurada"
         // Control para "Descripcion año"
@@ -82,16 +81,18 @@ export class AsignarHorasComponent implements OnInit {
       //revisar
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
+    this.getGrados();
 
     this.formFiltrado = this.fb.group({
       iGradoId: [0],
-      iServEdId: [0], // Control para "Servicio educativo"
+      iServEdId: [{ value: 0, disabled: true }], // deshabilitado desde el inicio
+      iServEdHorasTotal: [0],
     });
     this.getServicioEducativo();
-
     setInterval(() => {
       // this.mostrar = true
     }, 3000); // Cambia a true después de 1 segundo
+    this.getCurriculaNivelServicioEducativo();
   }
 
   @HostListener('window:keydown.control.b', ['$event'])
@@ -100,6 +101,9 @@ export class AsignarHorasComponent implements OnInit {
     this.confirm();
   }
 
+  async getGrados() {
+    this.grados = this.stepService.grados ?? (await this.stepService.getGrado());
+  }
   accionBtnItemTable(event: any) {
     // Aquí puedes manejar el evento de cambio si es necesario
     // const seccionIdSeleccionada = event.value
@@ -182,11 +186,13 @@ export class AsignarHorasComponent implements OnInit {
 
   getCurriculaNivelServicioEducativo() {
     this.mensaje = null; //limpiar mensaje
+    const val = this.configuracion[0].iServEdId ?? 0;
+    this.formFiltrado.get('iServEdId')?.setValue(val);
     this.query
       .searchAmbienteAcademico({
         json: JSON.stringify({
           iNivelTipoId: this.configuracion[0].iNivelTipoId,
-          iServEdId: this.formFiltrado.value.iServEdId,
+          iServEdId: this.configuracion[0].iServEdId,
           iConfigId: this.configuracion[0].iConfigId,
         }),
         _opcion: 'getCurriculaNivelServicioEducativo',
@@ -229,11 +235,22 @@ export class AsignarHorasComponent implements OnInit {
           this.filtrado_programacion_curricular = [];
           this.formFiltrado.patchValue({ iGradoId: 0 }); // Reiniciar el valor del grado al completar la carga
           const filtrado = this.servicio_educativo.filter(
-            item => item.iServEdId === this.formFiltrado.value.iServEdId
+            item => item.iServEdId === this.configuracion[0].iServEdId
           );
-          this.serv_horas = filtrado[0].iServEdHorasTotal;
+          if (filtrado && filtrado.length > 0) {
+            this.serv_horas = Number(filtrado[0].iServEdHorasTotal ?? 0);
+          } else {
+            this.serv_horas = 0;
+          }
         },
       });
+  }
+  calcularTotal() {
+    const presencial = Number(this.formNivelGrado.get('iHorasSemPresencial')?.value ?? 0);
+    const domicilio = Number(this.formNivelGrado.get('iHorasSemDomicilio')?.value ?? 0);
+    const suma = presencial + domicilio;
+
+    this.formNivelGrado.get('iTotalHoras')?.setValue(suma);
   }
 
   getFiltradoGrado() {
@@ -289,6 +306,8 @@ export class AsignarHorasComponent implements OnInit {
   }
   // Aquí puedes ejecutar cualquier lógica
   // eventos de record set
+  //calculo de de valores
+
   confirm() {
     const filtrarGrado = Number(this.formFiltrado.value.iGradoId);
     const curso = Number(this.formNivelGrado.value.cCursoNombre);

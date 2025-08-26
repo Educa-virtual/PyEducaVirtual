@@ -308,7 +308,15 @@
       label="Guardar"
       [disabled]="form.invalid"
       (onClick)="accionBtnItem('guardar')"
-      styleClass="p-button-primary"
+      styleClass="p-button-success"
+      *ngIf="!bActualizar"
+    />
+    <p-button
+      label="Editar"
+      [disabled]="form.invalid"
+      (onClick)="accionBtnItem('editar')"
+      styleClass="p-button-warning"
+      *ngIf="bActualizar"
     />
   </form>
 </p-dialog>

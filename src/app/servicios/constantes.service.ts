@@ -487,6 +487,11 @@ const administracion = [
         icon: 'pi pi-briefcase',
         items: [
           {
+            label: 'Configurar calendario escolar',
+            icon: 'pi pi-lock-open',
+            routerLink: ['/gestion-institucional/apertura'],
+          },
+          {
             label: 'Gestion de Ambientes y Grados',
             icon: 'pi pi-building-columns',
             routerLink: ['/gestion-institucional/configGradoSeccion'],
@@ -496,16 +501,15 @@ const administracion = [
             icon: 'pi pi-user-plus',
             routerLink: ['/gestion-institucional/IesPersonal'],
           },
-
           {
             label: 'Fechas importantes',
             icon: 'pi pi-calendar',
             routerLink: ['/gestion-institucional/fechas-importantes'],
           },
           {
-            label: 'Configurar calendario escolar',
-            icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/apertura'],
+            label: 'Validación de horas',
+            icon: 'pi pi-fw pi-check',
+            routerLink: ['/gestion-institucional/validacion-no-lectiva'],
           },
 
           {
@@ -547,18 +551,19 @@ const administracion = [
             icon: 'pi pi-fw pi-envelope',
             routerLink: ['/buzon-sugerencias/director'],
           },
+          // {
+          //   label: 'Gestión de traslado',
+          //   icon: 'pi pi-folder-open',
+          //   routerLink: ['/gestion-institucional/gestion-traslados'],
+          // },
+          {
+            label: 'Registro de vacantes',
+            icon: 'pi pi-file-import',
+            routerLink: ['/gestion-institucional/gestion-vacantes'],
+          },
         ],
       },
-      {
-        label: 'Gestión de traslado',
-        icon: 'pi pi-folder-open',
-        routerLink: ['/gestion-institucional/gestion-traslados'],
-      },
-      {
-        label: 'Registro de vacantes',
-        icon: 'pi pi-file-import',
-        routerLink: ['/gestion-institucional/gestion-vacantes'],
-      },
+
       /* {
                   label: 'Gestión de Matrículas',
                   icon: 'pi pi-folder',
@@ -587,15 +592,16 @@ const administracion = [
                   ],
                 },
               */
-      {
-        label: 'Indicadores',
-        icon: 'pi pi-chart-line',
-        routerLink: ['/gestion-institucional/dashboard-indicadores'],
-      },
+
       {
         label: 'Generación de Reportes y estadísticas',
         icon: 'pi pi-chart-bar',
         items: [
+          {
+            label: 'Indicadores',
+            icon: 'pi pi-chart-line',
+            routerLink: ['/gestion-institucional/dashboard-indicadores'],
+          },
           {
             label: 'Reportes',
             icon: 'pi pi-book',
@@ -632,12 +638,6 @@ const administracion = [
       //     },
       //   ],
       // },
-
-      {
-        label: 'Validación de horas',
-        icon: 'pi pi-fw pi-check',
-        routerLink: ['/gestion-institucional/validacion-no-lectiva'],
-      },
 
       //director buzon
 

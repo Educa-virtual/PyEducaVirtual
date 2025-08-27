@@ -161,13 +161,12 @@
               </span>
             </div>
           </div>
-          <div class="field col-12">
+          <!-- <div class="field col-12">
             <span class="p-float-label">
-              + Horas adicionales:
-              {{ hora_adicional[0]?.iTotalHoras || 0 }} + Total de horas semanales:
-              {{ total_horas_grado }}
+              Horas acumuladas: {{ total_horas_grado }} de {{serv_horas}}
+
             </span>
-          </div>
+          </div> -->
           <div class="col-12 mt-2 grid flex align-items-end">
             <div class="field col-12 md:col-8">
               <p-checkbox
@@ -183,13 +182,24 @@
                 type="button"
                 class="p-button-success"
                 size="small"
-                (click)="addDistribucionHoras()"
+                (click)="validarHorasMinimas()"
                 aria-label="Agregar grado"
                 [label]="'Registrar horas'"
                 [disabled]="formNivelGrado.invalid"
               ></button>
             </div>
             <p-message [severity]="'warn'" [text]="mensaje" *ngIf="mensaje" closable />
+            <div>
+              <button
+                pButton
+                type="button"
+                class="p-button-danger"
+                size="small"
+                (click)="cerrarEditar()"
+                aria-label="Agregar grado"
+                [label]="'Cerrar'"
+              ></button>
+            </div>
           </div>
         </form>
       </p-fieldset>

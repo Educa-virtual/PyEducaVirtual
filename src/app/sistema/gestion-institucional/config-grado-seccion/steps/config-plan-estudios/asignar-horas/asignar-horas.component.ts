@@ -39,6 +39,7 @@ export class AsignarHorasComponent implements OnInit {
   serv_horas: number = 0; // Variable para almacenar las horas del servicio educativo
   total_horas_grado: number = 0; // Variable para almacenar el total de horas del grado
   mensaje: string = '';
+  horaEditar: number = 0;
 
   programacion_curricular: any[] = [];
   servicio_educativo: any[] = [];
@@ -72,7 +73,7 @@ export class AsignarHorasComponent implements OnInit {
         cCursoNombre: [{ value: '', disabled: true }, Validators.required], // Control para "Área curricular"
         iHorasSemPresencial: [0, Validators.required], // Control para "Horas semanales presenciales"
         iHorasSemDomicilio: [0, Validators.required],
-        iTotalHoras: [{ value: 0, disabled: true }, Validators.required], // Control para "Total de horas semanales"
+        iTotalHoras: [{ value: 0 }, Validators.required], // Control para "Total de horas semanales"
         cDeclaracionJurada: [false, Validators.requiredTrue],
         iHorasMiniminas: [0], // Control para "Declaración jurada"
         // Control para "Descripcion año"
@@ -110,6 +111,7 @@ export class AsignarHorasComponent implements OnInit {
     if (event.accion === 'editar') {
       this.mostrar = false; // Mostrar el formulario de edición
       // Lógica para editar el grado seleccionado
+      this.horaEditar = Number(event.item.iTotalHoras);
       this.formNivelGrado.patchValue({
         iCursosNivelGradId: Number(event.item.iCursosNivelGradId),
         iIeCursoId: Number(event.item.iIeCursoId),
@@ -128,7 +130,7 @@ export class AsignarHorasComponent implements OnInit {
         accept: () => {
           //Validar documento
           this.query
-            .addAmbienteAcademico({
+            .deleteCalAcademico({
               json: JSON.stringify({
                 iCursosNivelGradId: Number(event.item.iCursosNivelGradId),
                 iIeCursoId: Number(event.item.iIeCursoId),
@@ -153,46 +155,20 @@ export class AsignarHorasComponent implements OnInit {
                 });
                 //  this.getCurriculaNivelServicioEducativo();
                 this.mostrar = true; // Ocultar el formulario de edición
+
+                //Eliminar el registro
+                this.programacion_curricular = this.programacion_curricular.filter(
+                  item => item.iCursosNivelGradId !== String(event.item.iCursosNivelGradId)
+                );
+                //Eliminar el registro
+                this.filtrado_programacion_curricular =
+                  this.filtrado_programacion_curricular.filter(
+                    item => item.iCursosNivelGradId !== String(event.item.iCursosNivelGradId)
+                  );
               },
             });
         },
       });
-    }
-    if (event.accion === 'registrar') {
-      const totalHoras = Number(this.formNivelGrado.value.iTotalHoras);
-      const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas);
-
-      if (totalHoras < iHorasMiniminas) {
-        this._confirmService.openConfiSave({
-          header: 'Advertencia de procesamiento',
-          message: 'Esta ingresando un valor menor a ' + iHorasMiniminas,
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-            //Validar documento
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Mensaje de sistema',
-              detail: 'Se registro distribución de horas',
-            });
-          },
-          reject: () => {
-            // Mensaje de cancelación (opcional)
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Mensaje del sistema ',
-              detail: 'Acción cancelada',
-            });
-          },
-        });
-      } else {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje de sistema',
-          detail: 'Se registro distribución de horas',
-        });
-      }
-    } else {
-      return;
     }
   }
 
@@ -260,7 +236,6 @@ export class AsignarHorasComponent implements OnInit {
             return acc;
           }, []);
         },
-
         error: error => {
           this.messageService.add({
             severity: 'error',
@@ -280,9 +255,33 @@ export class AsignarHorasComponent implements OnInit {
           } else {
             this.serv_horas = 0;
           }
-          console.log(this.programacion_curricular, 'this.programacion_curricular');
         },
       });
+  }
+
+  validarHorasMinimas() {
+    const totalHoras = Number(this.formNivelGrado.value.iTotalHoras);
+    const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas);
+
+    if (totalHoras < iHorasMiniminas) {
+      this._confirmService.openConfirm({
+        header: 'Advertencia de procesamiento',
+        message: 'Esta ingresando un valor menor a ' + iHorasMiniminas + ' (Horas mínimas)',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.addDistribucionHoras();
+        },
+      });
+    } else {
+      this._confirmService.openConfirm({
+        header: 'Advertencia de procesamiento',
+        message: '¿Desea registar ' + totalHoras + ' (Horas) en el área curricular?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.addDistribucionHoras();
+        },
+      });
+    }
   }
   calcularTotal() {
     const presencial = Number(this.formNivelGrado.get('iHorasSemPresencial')?.value ?? 0);
@@ -305,42 +304,7 @@ export class AsignarHorasComponent implements OnInit {
         detail: 'Error: No selecciono un Grado válido ',
       });
     } else {
-      const filtrado = this.programacion_curricular.filter(
-        item => item.iGradoId === String(iGradoId)
-      );
-      this.filtrado_programacion_curricular = filtrado;
-      //suma los tosales
-      let sumatoria = 0;
-      filtrado.forEach(item => {
-        sumatoria += Number(item.iTotalHoras || 0);
-      });
-
-      this.total_horas_grado = sumatoria;
-      const adicional = filtrado.filter(
-        item => item.iTipoCursoId === '5' // 5 es el tipo de curso para "Adicional"
-      );
-
-      this.hora_adicional = adicional;
-      this.serv_horas = Number(this.serv_horas) || 0;
-
-      if (Number(sumatoria) !== Number(this.serv_horas)) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail:
-            'La distribución de horas del grado ' +
-            sumatoria +
-            'Hras no coinciden los totales horas del servicio educativo ' +
-            this.serv_horas +
-            ' Hras',
-        });
-        this.mensaje =
-          'Observación: Total de horas semanales ' +
-          sumatoria +
-          'Hras, diferentes al servicio educativo ' +
-          +this.serv_horas +
-          ' Hras';
-      }
+      this.actualizarSumatoria();
     }
   }
   // Aquí puedes ejecutar cualquier lógica
@@ -392,44 +356,125 @@ export class AsignarHorasComponent implements OnInit {
       iProgId: this.stepService.configuracion[0].iProgId, // iProgId es el ID del grado seleccionado
       iCursosNivelGradId: this.formNivelGrado.value.iCursosNivelGradId, // iCursosNivelGradId es el ID del curso seleccionado
       iConfigId: this.stepService.configuracion[0].iConfigId, // iConfigId es el ID de la configuración
-      iHorasSemPresencial: this.formNivelGrado.value.iHorasSemPresencial, // iHorasSemPresencial es el valor del campo de horas semanales presenciales
-      iHorasSemDomicilio: this.formNivelGrado.value.iHorasSemDomicilio, // iHorasSemDomicilio es el valor del campo de horas semanales domiciliarias
-      iTotalHoras: this.formNivelGrado.value.iTotalHoras, // iTotalHoras es el valor del campo de total de horas semanales
+      iHorasSemPresencial: Number(this.formNivelGrado.value.iHorasSemPresencial) ?? 0, // iHorasSemPresencial es el valor del campo de horas semanales presenciales
+      iHorasSemDomicilio: Number(this.formNivelGrado.value.iHorasSemDomicilio) ?? 0, // iHorasSemDomicilio es el valor del campo de horas semanales domiciliarias
+      iTotalHoras: Number(this.formNivelGrado.value.iTotalHoras) ?? 0, // iTotalHoras es el valor del campo de total de horas semanales
       iEstado: 1, // iEstado es el estado del registro (1 para activo)
       iSesionId: this.stepService.iCredId, // iSesionId es el ID de la sesión del usuario
     });
 
-    this._confirmService.openConfiSave({
-      header: 'Advertencia del sistema',
-      message: 'Desea registrar la distribución de horas?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        //Validar documento
-        this.query
-          .addAmbienteAcademico({
-            json: params,
-            _opcion: 'addDistribucionHoras',
-          })
-          .subscribe({
-            error: error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Mensaje del sistema',
-                detail: 'Error en en proceso de registro: ' + error.error.message,
-              });
-            },
-            complete: () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje del sistema',
-                detail: 'Proceso de registro de horas exitoso',
-              });
-              this.getCurriculaNivelServicioEducativo();
-              this.mostrar = true; // Ocultar el formulario de edición
-            },
+    //validar sumatoria de horas
+    const limiteHora = Number(this.formNivelGrado.value.iTotalHoras) ?? 0;
+    const sumatoria = Number(this.total_horas_grado) + Number(limiteHora) - this.horaEditar;
+
+    if (sumatoria > Number(this.serv_horas)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Mensaje de sistema',
+        detail:
+          'La distribución de horas del grado ' +
+          (Number(this.total_horas_grado) + Number(limiteHora)) +
+          'Hras sobrepasa las totales horas del servicio educativo ' +
+          this.serv_horas +
+          ' Hras',
+      });
+      return;
+    }
+    //continua el procesamiento
+    this.query
+      .addAmbienteAcademico({
+        json: params,
+        _opcion: 'addDistribucionHoras',
+      })
+      .subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error en el proceso de registro: ' + (error.error?.message ?? error.message),
           });
-      },
+        },
+        complete: () => {
+          this.actualizarRegistros();
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Proceso de registro de horas exitoso',
+          });
+          this.mostrar = true; // Ocultar el formulario de edición
+          this.actualizarSumatoria();
+        },
+      });
+  }
+  actualizarSumatoria() {
+    const iGradoId = Number(this.formFiltrado.value.iGradoId);
+    const filtrado = this.programacion_curricular.filter(
+      item => item.iGradoId === String(iGradoId)
+    );
+    this.filtrado_programacion_curricular = filtrado;
+    //suma los tosales
+    let sumatoria = 0;
+    filtrado.forEach(item => {
+      sumatoria += Number(item.iTotalHoras || 0);
     });
+
+    this.total_horas_grado = sumatoria;
+
+    if (Number(sumatoria) !== Number(this.serv_horas)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Mensaje de sistema',
+        detail:
+          'La distribución de horas del grado ' +
+          sumatoria +
+          'Hras no coinciden los totales horas del servicio educativo ' +
+          this.serv_horas +
+          ' Hras',
+      });
+      this.mensaje =
+        'Observación: Total de horas semanales ' +
+        sumatoria +
+        'Hras, diferentes al servicio educativo ' +
+        +this.serv_horas +
+        ' Hras';
+    } else {
+      this.mensaje = null;
+    }
+  }
+  actualizarRegistros() {
+    const iCursosNivelGradId = this.formNivelGrado.value.iCursosNivelGradId;
+    const iHorasSemPresencial = Number(this.formNivelGrado.value.iHorasSemPresencial) ?? 0;
+    const iHorasSemDomicilio = Number(this.formNivelGrado.value.iHorasSemDomicilio) ?? 0;
+    const iTotalHoras = Number(this.formNivelGrado.value.iTotalHoras) ?? 0;
+
+    this.programacion_curricular = this.programacion_curricular.map(item => {
+      if (item.iCursosNivelGradId === String(iCursosNivelGradId)) {
+        return {
+          ...item, // mantenemos lo demás igual
+          iHorasSemPresencial: iHorasSemPresencial,
+          iHorasSemDomicilio: iHorasSemDomicilio,
+          iTotalHoras: iTotalHoras,
+        };
+      }
+      return item;
+    });
+
+    this.filtrado_programacion_curricular = this.filtrado_programacion_curricular.map(item => {
+      if (item.iCursosNivelGradId === String(iCursosNivelGradId)) {
+        return {
+          ...item, // mantenemos lo demás igual
+          iHorasSemPresencial: iHorasSemPresencial,
+          iHorasSemDomicilio: iHorasSemDomicilio,
+          iTotalHoras: iTotalHoras,
+        };
+      }
+      return item;
+    });
+  }
+
+  cerrarEditar() {
+    this.mostrar = true;
   }
 
   selectedItems = [];
@@ -441,6 +486,9 @@ export class AsignarHorasComponent implements OnInit {
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
+      isVisible: rowData => {
+        return Number(rowData.bActive) === 1;
+      },
     },
     {
       labelTooltip: 'Eliminar',
@@ -473,9 +521,9 @@ export class AsignarHorasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '2rem',
       field: 'iHorasMiniminas',
-      header: 'Horas minimas',
+      header: 'H min',
       text_header: 'center',
       text: 'center',
     },
@@ -484,7 +532,7 @@ export class AsignarHorasComponent implements OnInit {
       type: 'text',
       width: '2rem',
       field: 'iHorasSemPresencial',
-      header: 'H Presenciales',
+      header: 'H Pres',
       text_header: 'center',
       text: 'center',
     },
@@ -492,7 +540,15 @@ export class AsignarHorasComponent implements OnInit {
       type: 'text',
       width: '2rem',
       field: 'iHorasSemDomicilio',
-      header: 'H Domiciliarias',
+      header: 'H Dom',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '2rem',
+      field: 'iTotalHoras',
+      header: 'H Total',
       text_header: 'center',
       text: 'center',
     },

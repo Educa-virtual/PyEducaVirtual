@@ -4,17 +4,68 @@
     <div class="col-5">
       <p-inputGroup>
         <p-inputGroupAddon>Periodo</p-inputGroupAddon>
-        <p-dropdown [options]="[]" placeholder="Seleccione" styleClass="w-full"> </p-dropdown>
+        <p-dropdown
+          [options]="tiposPeriodos"
+          placeholder="Seleccione"
+          styleClass="w-full"
+          optionLabel="cPeriodoEvalNombre"
+          optionValue="iPeriodoEvalId"
+          [(ngModel)]="data.iPeriodoEvalId"
+          (ngModelChange)="generarPeriodos()"
+        >
+        </p-dropdown>
       </p-inputGroup>
     </div>
     <div class="col-12">
-      <app-table-primeng
-        [columnas]="columnasTabla"
-        [data]="data"
-        [showCaption]="false"
-        [actions]="[]"
-        [showPaginator]="false"
-      ></app-table-primeng>
+      <p-table
+        [value]="periodos"
+        dataKey="id"
+        responsiveLayout="stack"
+        [breakpoint]="'768px'"
+        class="rounded-table hoverTable"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columnasTabla">
+              <div [style.text-align]="col.text_header">{{ col.header }}</div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="cols">
+          <tr>
+            <td *ngFor="let col of columnasTabla">
+              <span class="p-column-title">{{ col.header }}</span>
+              @if (col.type === 'item') {
+                <div [style.text-align]="col.text">
+                  <span>{{ rowIndex + 1 }}</span>
+                </div>
+              }
+              @if (col.type === 'text') {
+                <div [style.text-align]="col.text">
+                  {{ row[col.field] }}
+                </div>
+              }
+              @if (col.type === 'calendar') {
+                <div [style.text-align]="col.text">
+                  <p-calendar
+                    [iconDisplay]="'input'"
+                    styleClass="w-10rem"
+                    [showIcon]="true"
+                    appendTo="body"
+                    [(ngModel)]="row[col.field]"
+                  />
+                </div>
+              }
+              @if (col.type === 'item-innerHtml') {
+                <div [style.text-align]="col.text" class="text-innerHtml">
+                  <div [innerHTML]="row[col.field]"></div>
+                </div>
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </div>
 </div>

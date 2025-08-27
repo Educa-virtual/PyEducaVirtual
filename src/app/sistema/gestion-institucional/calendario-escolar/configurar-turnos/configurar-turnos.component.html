@@ -10,11 +10,11 @@
 
     <div class="flex flex-wrap gap-2 justify-content-center my-1">
       <p-button
-        *ngFor="let dia of dias; let i = index"
+        *ngFor="let dia of horarios; let i = index"
         [label]="dia.cDiaNombre"
-        [severity]="dia.iSeleccionado ? 'primary' : 'contrast'"
-        [class.custom-secondary]="dia.iSeleccionado !== 1"
-        (click)="dia.iSeleccionado = dia.iSeleccionado === 1 ? 0 : 1"
+        [severity]="dia.iDiaSeleccionado ? 'primary' : 'contrast'"
+        [class.custom-secondary]="dia.iDiaSeleccionado !== 1"
+        (click)="dia.iDiaSeleccionado = dia.iDiaSeleccionado === 1 ? 0 : 1"
       />
     </div>
   </div>
@@ -27,7 +27,16 @@
         <div style="width: 220px">
           <p-inputGroup>
             <p-inputGroupAddon>Turno</p-inputGroupAddon>
-            <p-dropdown [options]="[]" placeholder="Seleccione" styleClass="w-full"> </p-dropdown>
+            <p-dropdown
+              [options]="turnos"
+              placeholder="Seleccione"
+              styleClass="w-full"
+              optionValue="iTurnoId"
+              optionLabel="cTurnoNombre"
+              appendTo="body"
+              [(ngModel)]="iTurnoId"
+            >
+            </p-dropdown>
           </p-inputGroup>
         </div>
       </div>
@@ -44,6 +53,7 @@
               [timeOnly]="true"
               placeholder="Ingrese hora de inicio"
               appendTo="body"
+              [(ngModel)]="dtAperTurnoInicio"
             >
               <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
                 <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
@@ -69,6 +79,7 @@
               [timeOnly]="true"
               placeholder="Ingrese hora de fin"
               appendTo="body"
+              [(ngModel)]="dtAperTurnoFin"
             >
               <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
                 <i class="pi pi-clock" (onclick)="clickCallBack($event)"></i>
@@ -87,6 +98,7 @@
       severity="success"
       [loading]="isLoading"
       [disabled]="isLoading"
+      (onClick)="enviarDatosConfiguracionTurno()"
     />
   </div>
 </app-modal-primeng>

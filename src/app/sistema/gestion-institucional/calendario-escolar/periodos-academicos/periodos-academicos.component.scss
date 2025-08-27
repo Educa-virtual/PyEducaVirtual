@@ -19,3 +19,14 @@
     color: var(--primary-color-text) !important;
   }
 }
+.hoverTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px;
+}
+.hoverTable tr th {
+  background-color: #e6e6ee;
+}
+.hoverTable tr:hover:not(.itemSelected, .itemActive) {
+  background-color: var(--highlight-bg);
+}

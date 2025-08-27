@@ -1,4 +1,4 @@
-<div class="grid">
+<div class="grid" *ngIf="data">
   <div class="col-12 md:col-6">
     <div class="card mt-4 relative">
       <span class="btn-label-danger">Configuración Inicial</span>
@@ -6,14 +6,7 @@
         <div class="col-12">
           <p-inputGroup>
             <p-inputGroupAddon> Año Vigente </p-inputGroupAddon>
-            <p-calendar
-              [iconDisplay]="'input'"
-              styleClass="w-full"
-              [showIcon]="true"
-              [showTime]="true"
-              [hourFormat]="'24'"
-              appendTo="body"
-            />
+            <input pInputText [(ngModel)]="data.cYear" styleClass="w-full" readonly />
           </p-inputGroup>
         </div>
         <div class="col-12">
@@ -23,9 +16,11 @@
               [iconDisplay]="'input'"
               styleClass="w-full"
               [showIcon]="true"
-              [showTime]="true"
-              [hourFormat]="'24'"
               appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dInicioFin')"
             />
           </p-inputGroup>
         </div>
@@ -36,9 +31,11 @@
               [iconDisplay]="'input'"
               styleClass="w-full"
               [showIcon]="true"
-              [showTime]="true"
-              [hourFormat]="'24'"
               appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dMatriculaRegularInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRegularInicioFin')"
             />
           </p-inputGroup>
         </div>
@@ -49,9 +46,11 @@
               [iconDisplay]="'input'"
               styleClass="w-full"
               [showIcon]="true"
-              [showTime]="true"
-              [hourFormat]="'24'"
               appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dRezagadosInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRezagadosInicioFin')"
             />
           </p-inputGroup>
         </div>
@@ -69,8 +68,11 @@
               [iconDisplay]="'input'"
               styleClass="w-full"
               [showIcon]="true"
-              [hourFormat]="'24'"
               appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dRegularInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRegularInicioFin')"
             />
           </p-inputGroup>
         </div>
@@ -81,8 +83,11 @@
               [iconDisplay]="'input'"
               styleClass="w-full"
               [showIcon]="true"
-              [hourFormat]="'24'"
               appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dRecuperacionInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRecuperacionInicioFin')"
             />
           </p-inputGroup>
         </div>
@@ -102,5 +107,10 @@
 <app-configurar-turnos
   *ngIf="mostrarModalConfigurarTurnos"
   [showModal]="mostrarModalConfigurarTurnos"
+  [horarios]="horarios"
+  [iTurnoId]="iTurnoId"
+  [dtAperTurnoInicio]="dtAperTurnoInicio"
+  [dtAperTurnoFin]="dtAperTurnoFin"
   (accionCloseForm)="mostrarModalConfigurarTurnos = false"
+  (datosConfiguracionTurnos)="enviarDatosConfiguracionTurnos($event)"
 ></app-configurar-turnos>

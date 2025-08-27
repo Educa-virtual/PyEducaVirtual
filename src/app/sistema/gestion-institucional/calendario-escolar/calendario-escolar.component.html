@@ -14,10 +14,17 @@
   <div class="col-12">
     @switch (tabSeleccionado) {
       @case ('configuracion') {
-        <app-configuracion-inicial></app-configuracion-inicial>
+        <app-configuracion-inicial
+          [data]="this.formCalendarioAcademicos.value"
+          (datosConfiguracionTurnos)="dataConfigTurnos($event)"
+          (datosConfiguracionInicial)="dataConfigInicial($event)"
+        ></app-configuracion-inicial>
       }
       @case ('periodos') {
-        <app-periodos-academicos></app-periodos-academicos>
+        <app-periodos-academicos
+          [data]="this.formCalendarioAcademicos.value"
+          [tiposPeriodos]="tiposPeriodos"
+        ></app-periodos-academicos>
       }
       @case ('resumen') {
         <app-resumen></app-resumen>
@@ -40,6 +47,8 @@
       severity="success"
       icon="pi pi-arrow-right"
       iconPos="right"
+      (onClick)="enviarFormulario()"
     />
   </div>
 </div>
+<p-toast></p-toast>

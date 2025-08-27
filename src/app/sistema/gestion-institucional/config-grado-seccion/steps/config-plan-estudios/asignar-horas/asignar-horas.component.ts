@@ -120,6 +120,44 @@ export class AsignarHorasComponent implements OnInit {
         iHorasMiniminas: Number(event.item.iHorasMiniminas),
       });
     }
+    if (event.accion === 'eliminar') {
+      this._confirmService.openConfiSave({
+        header: 'Advertencia del sistema',
+        message: 'Desea eliminar la distribución de horas?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          //Validar documento
+          this.query
+            .addAmbienteAcademico({
+              json: JSON.stringify({
+                iCursosNivelGradId: Number(event.item.iCursosNivelGradId),
+                iIeCursoId: Number(event.item.iIeCursoId),
+                iEstado: 0, // Cambiar el estado a 0 para desactivar
+                iSesionId: this.stepService.iCredId, // iSesionId es el ID de la sesión del usuario
+              }),
+              _opcion: 'deleteDistribucionHoras',
+            })
+            .subscribe({
+              error: error => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Mensaje del sistema',
+                  detail: 'Error en en proceso de eliminación: ' + error.error.message,
+                });
+              },
+              complete: () => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Mensaje del sistema',
+                  detail: 'Proceso de eliminación de horas exitoso',
+                });
+                //  this.getCurriculaNivelServicioEducativo();
+                this.mostrar = true; // Ocultar el formulario de edición
+              },
+            });
+        },
+      });
+    }
     if (event.accion === 'registrar') {
       const totalHoras = Number(this.formNivelGrado.value.iTotalHoras);
       const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas);
@@ -242,6 +280,7 @@ export class AsignarHorasComponent implements OnInit {
           } else {
             this.serv_horas = 0;
           }
+          console.log(this.programacion_curricular, 'this.programacion_curricular');
         },
       });
   }
@@ -403,13 +442,16 @@ export class AsignarHorasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //     labelTooltip: 'Eliminar',
-    //     icon: 'pi pi-trash',
-    //     accion: 'eliminar',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-danger p-button-text',
-    // },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: rowData => {
+        return Number(rowData.bActive) === 0;
+      },
+    },
   ];
 
   columns = [
@@ -429,6 +471,15 @@ export class AsignarHorasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
     },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'iHorasMiniminas',
+      header: 'Horas minimas',
+      text_header: 'center',
+      text: 'center',
+    },
+
     {
       type: 'text',
       width: '2rem',

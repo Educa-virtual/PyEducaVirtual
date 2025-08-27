@@ -3,31 +3,22 @@ import { PrimengModule } from '@/app/primeng.module';
 import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component';
 import { MenuItem, MessageService } from 'primeng/api';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { GestionEncuestaConfiguracionComponent } from '../gestion-encuesta-configuracion/gestion-encuesta-configuracion.component';
-import { AccesosEncuestaComponent } from '../accesos-encuesta/accesos-encuesta.component';
-import { NuevaEncuestaComponent } from '../nueva-encuesta/nueva-encuesta/nueva-encuesta.component';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
   selector: 'app-lista-encuestas',
   standalone: true,
-  imports: [
-    PrimengModule,
-    TablePrimengComponent,
-    GestionEncuestaConfiguracionComponent,
-    AccesosEncuestaComponent,
-    NuevaEncuestaComponent,
-  ],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './lista-encuestas.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
 })
 export class ListaEncuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
-  iCatEncId: number = null;
+  iCateId: number = null;
   categoria: any = null;
   selectedItem: any;
   mostrarDialogoNuevaEncuesta: boolean = false;
@@ -44,10 +35,11 @@ export class ListaEncuestasComponent implements OnInit {
     private encuestasService: EncuestasService,
     private confirmService: ConfirmationModalService,
     private route: ActivatedRoute,
-    private store: LocalStoreService
+    private store: LocalStoreService,
+    private router: Router
   ) {
     this.route.params.subscribe(params => {
-      this.iCatEncId = params['iCatEncId'];
+      this.iCateId = params['iCateId'];
     });
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.breadCrumbItems = [
@@ -76,10 +68,14 @@ export class ListaEncuestasComponent implements OnInit {
     this.listarEncuestas();
   }
 
+  agregarEncuesta() {
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta`]);
+  }
+
   verCategoria() {
     this.encuestasService
       .verCategoria({
-        iCatEncId: this.iCatEncId,
+        iCateId: this.iCateId,
         iYAcadId: this.iYAcadId,
       })
       .subscribe({
@@ -101,7 +97,7 @@ export class ListaEncuestasComponent implements OnInit {
   listarEncuestas() {
     this.encuestasService
       .listarEncuestas({
-        iCatEncId: this.iCatEncId,
+        iCateId: this.iCateId,
         iYAcadId: this.iYAcadId,
       })
       .subscribe({

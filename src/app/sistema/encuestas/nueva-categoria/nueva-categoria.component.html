@@ -20,7 +20,7 @@
         id="nombre"
         type="text"
         pInputText
-        formControlName="cNombre"
+        formControlName="cCateNombre"
         placeholder="Categoría"
         class="w-full p-3"
       />
@@ -34,7 +34,7 @@
       <textarea
         id="descripcion"
         pInputTextarea
-        formControlName="cDescripcion"
+        formControlName="cCateDescripcion"
         placeholder="Descripción"
         class="w-full p-3"
         rows="3"
@@ -50,19 +50,19 @@
         <label style="margin-top: 0.4rem; width: 15rem" for="switch1" class="mb-0"
           >Especialistas DREMO</label
         >
-        <p-inputSwitch formControlName="bPuedeCrearEspDremo" inputId="switch1" />
+        <p-inputSwitch formControlName="bCatePermisoDremo" inputId="switch1" />
       </div>
       <div class="flex items-center gap-2">
         <label style="margin-top: 0.4rem; width: 15rem" for="switch2" class="mb-0"
           >Especialistas UGEL</label
         >
-        <p-inputSwitch formControlName="bPuedeCrearEspUgel" inputId="switch2" />
+        <p-inputSwitch formControlName="bCatePermisoUgel" inputId="switch2" />
       </div>
       <div class="flex items-center gap-2">
         <label style="margin-top: 0.4rem; width: 15rem" for="switch3" class="mb-0"
           >Directores</label
         >
-        <p-inputSwitch formControlName="bPuedeCrearDirector" inputId="switch3" />
+        <p-inputSwitch formControlName="bCatePermisoDirector" inputId="switch3" />
       </div>
     </div>
 

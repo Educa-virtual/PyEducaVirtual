@@ -79,8 +79,8 @@ export class CategoriasEncuestaComponent implements OnInit {
     const filtro = this.filtro.nativeElement.value;
     this.categorias = this.categoriasInicial.filter(categoria => {
       if (
-        categoria.cCatEncNombre &&
-        categoria.cCatEncNombre.toLowerCase().includes(filtro.toLowerCase())
+        categoria.cCateNombre &&
+        categoria.cCateNombre.toLowerCase().includes(filtro.toLowerCase())
       )
         return categoria;
       if (categoria.iTotalEncuestas && categoria.iTotalEncuestas.toString().includes(filtro))

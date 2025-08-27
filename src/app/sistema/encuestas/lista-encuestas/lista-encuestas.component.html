@@ -4,7 +4,7 @@
   <ng-template pTemplate="header">
     <div class="flex flex-column">
       <div class="flex text-xl">Encuestas de categoría</div>
-      <div class="flex text-sm">{{ categoria?.cCatEncNombre }}</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
     </div>
   </ng-template>
 
@@ -15,7 +15,7 @@
       label="Nueva"
       icon="pi pi-plus"
       class="p-button-success"
-      (click)="abrirDialogoNuevaEncuesta()"
+      (click)="agregarEncuesta()"
     ></button>
   </ng-template>
 
@@ -40,24 +40,3 @@
 </p-panel>
 
 <p-toast></p-toast>
-<!--<app-gestion-encuesta-configuracion
-    [visible]="mostrarDialogoNuevaEncuesta"
-    (visibleChange)="(mostrarDialogoNuevaEncuesta)"
->
-</app-gestion-encuesta-configuracion>-->
-
-<app-accesos-encuesta
-  [visible]="mostrarDialogoAccesosEncuesta"
-  [encuesta]="selectedItem"
-  (visibleChange)="cerrarDialogoAccesosEncuesta()"
-  (mostrarDialogoAccesosEncuesta)="abrirDialogoAccesosEncuesta()"
->
-</app-accesos-encuesta>
-
-<app-nueva-encuesta
-  [visible]="mostrarDialogoNuevaEncuesta"
-  [categoria]="categoria"
-  (visibleChange)="cerrarDialogoNuevaEncuesta()"
-  (mostrarDialogoNuevaEncuesta)="abrirDialogoNuevaEncuesta()"
->
-</app-nueva-encuesta>

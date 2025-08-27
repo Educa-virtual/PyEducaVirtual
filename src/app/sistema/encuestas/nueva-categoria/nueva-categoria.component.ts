@@ -26,12 +26,14 @@ export class NuevaCategoriaComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      bPuedeCrearDirector: [false],
-      bPuedeCrearEspDremo: [false],
-      bPuedeCrearEspUgel: [false],
-      cDescripcion: [''], // cDescripcion es un string
-      cImagenUrl: [''],
-      cNombre: ['', Validators.required],
+      iCateId: [null],
+      cCateNombre: ['', Validators.required],
+      cCateDescripcion: [''], // cDescripcion es un string
+      cCateImagenArchivo: [''],
+      archivo: [null],
+      bCatePermisoDirector: [false],
+      bCatePermisoDremo: [false],
+      bCatePermisoUgel: [false],
     });
   }
 

@@ -36,14 +36,14 @@
             >
               <div class="curso__image-container img-transition">
                 <img
-                  [alt]="categoria.cCatEncNombre"
+                  [alt]="categoria.cCateNombre"
                   class="w-full h-full"
                   (error)="updateUrl(categoria)"
                 />
               </div>
               <div class="p-3 mb-auto">
                 <h3 class="text-xl">
-                  {{ categoria.cCatEncNombre | stringCase }}
+                  {{ categoria.cCateNombre | uppercase }}
                 </h3>
               </div>
               <footer class="p-3 pt-0 flex align-items-center justify-content-between">
@@ -52,7 +52,7 @@
                   {{ categoria.iTotalEncuestas === 1 ? 'encuesta' : 'encuestas' }}
                 </p>
                 <a
-                  [routerLink]="['/encuestas/categorias', categoria.iCatEncId, 'encuestas']"
+                  [routerLink]="['/encuestas/categorias', categoria.iCateId, 'encuestas']"
                   style="color: white"
                   class="p-button p-component p-button-primary p-button-sm p-button-rounded"
                 >

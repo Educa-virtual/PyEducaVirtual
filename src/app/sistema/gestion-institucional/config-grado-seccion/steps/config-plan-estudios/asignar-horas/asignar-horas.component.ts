@@ -245,6 +245,18 @@ export class AsignarHorasComponent implements OnInit {
         },
         complete: () => {
           this.stepService.programacion_curricular = this.programacion_curricular;
+          //Validar si hay menores a las horas mínimas
+          this.programacion_curricular = this.programacion_curricular.map(item => {
+            if (item.iTotalHoras < item.iHorasMiniminas) {
+              return {
+                ...item, // mantenemos lo demás igual
+                bActive: 0,
+                bError: 1, // Actualiza bActive según la condición
+              };
+            }
+            return item;
+          });
+
           this.filtrado_programacion_curricular = [];
           this.formFiltrado.patchValue({ iGradoId: 0 }); // Reiniciar el valor del grado al completar la carga
           const filtrado = this.servicio_educativo.filter(
@@ -446,8 +458,9 @@ export class AsignarHorasComponent implements OnInit {
     const iCursosNivelGradId = this.formNivelGrado.value.iCursosNivelGradId;
     const iHorasSemPresencial = Number(this.formNivelGrado.value.iHorasSemPresencial) ?? 0;
     const iHorasSemDomicilio = Number(this.formNivelGrado.value.iHorasSemDomicilio) ?? 0;
+    const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas) ?? 0;
     const iTotalHoras = Number(this.formNivelGrado.value.iTotalHoras) ?? 0;
-
+    const cumpleCondicion = iHorasMiniminas > 0 && iTotalHoras >= iHorasMiniminas;
     this.programacion_curricular = this.programacion_curricular.map(item => {
       if (item.iCursosNivelGradId === String(iCursosNivelGradId)) {
         return {
@@ -455,6 +468,8 @@ export class AsignarHorasComponent implements OnInit {
           iHorasSemPresencial: iHorasSemPresencial,
           iHorasSemDomicilio: iHorasSemDomicilio,
           iTotalHoras: iTotalHoras,
+          bActive: cumpleCondicion ? 1 : 0,
+          bError: cumpleCondicion ? 0 : 1, // Actualiza bActive según la condición
         };
       }
       return item;
@@ -467,6 +482,8 @@ export class AsignarHorasComponent implements OnInit {
           iHorasSemPresencial: iHorasSemPresencial,
           iHorasSemDomicilio: iHorasSemDomicilio,
           iTotalHoras: iTotalHoras,
+          bActive: cumpleCondicion ? 1 : 0, // Actualiza bActive según la condición
+          bError: cumpleCondicion ? 0 : 1,
         };
       }
       return item;
@@ -487,7 +504,7 @@ export class AsignarHorasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
       isVisible: rowData => {
-        return Number(rowData.bActive) === 1;
+        return Number(rowData.bActive) === 1 || Number(rowData.bError) === 1;
       },
     },
     {
@@ -497,7 +514,7 @@ export class AsignarHorasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: rowData => {
-        return Number(rowData.bActive) === 0;
+        return Number(rowData.bActive) === 0 && Number(rowData.bError) != 1;
       },
     },
   ];

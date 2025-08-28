@@ -172,6 +172,11 @@ const estudiante = [
             icon: 'pi pi-fw pi-chart-bar',
             routerLink: ['/estudiante/reportes-academicos/academico'],
           },
+          {
+            label: 'Resultados ERE',
+            icon: 'pi pi-fw pi-ticket',
+            routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
+          },
         ],
       },
     ],

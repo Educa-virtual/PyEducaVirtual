@@ -11,10 +11,20 @@
           optionLabel="cPeriodoEvalNombre"
           optionValue="iPeriodoEvalId"
           [(ngModel)]="data.iPeriodoEvalId"
-          (ngModelChange)="generarPeriodos()"
+          (onChange)="generarPeriodos()"
         >
         </p-dropdown>
       </p-inputGroup>
+    </div>
+    <div class="col-3">
+      <p-button
+        [label]="'Guardar'"
+        icon="pi pi-save"
+        severity="primary"
+        [disabled]="!periodos.length || isLoading"
+        [loading]="isLoading"
+        (onClick)="guardarCalendarioPeriodosEvaluaciones()"
+      />
     </div>
     <div class="col-12">
       <p-table
@@ -54,12 +64,37 @@
                     [showIcon]="true"
                     appendTo="body"
                     [(ngModel)]="row[col.field]"
+                    (onSelect)="onDateChange(rowIndex, col.field, $event)"
                   />
                 </div>
               }
-              @if (col.type === 'item-innerHtml') {
-                <div [style.text-align]="col.text" class="text-innerHtml">
-                  <div [innerHTML]="row[col.field]"></div>
+              @if (col.type === 'tag-estado') {
+                <div [style.text-align]="col.text">
+                  <p-tag
+                    [severity]="row[col.field] === 'REGULAR' ? 'success' : 'danger'"
+                    [value]="row[col.field]"
+                  >
+                  </p-tag>
+                </div>
+              }
+              @if (col.type === 'tag') {
+                <div [style.text-align]="col.text">
+                  <p-tag
+                    [severity]="row[col.field] ? 'success' : 'danger'"
+                    [value]="row[col.field] ? 'Habilitado' : 'Deshabilitado'"
+                  >
+                  </p-tag>
+                </div>
+              }
+              @if (col.type === 'action') {
+                <div [style.text-align]="col.text">
+                  <p-button
+                    icon="pi pi-undo"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="danger"
+                    (onClick)="cambiarEstado(row)"
+                  />
                 </div>
               }
             </td>

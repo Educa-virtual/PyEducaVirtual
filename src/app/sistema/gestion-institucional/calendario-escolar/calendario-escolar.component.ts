@@ -77,6 +77,7 @@ export class CalendarioEscolarComponent extends MostrarErrorComponent implements
     jsonDiasLaborables: [],
 
     dtAperTurnoInicio: [],
+    iTurnoId: [],
     dtAperTurnoFin: [],
     jsonHorarios: [],
 
@@ -137,6 +138,16 @@ export class CalendarioEscolarComponent extends MostrarErrorComponent implements
               jsonDiasLaborables: data.jsonDiasLaborables
                 ? JSON.parse(data.jsonDiasLaborables)
                 : [],
+              iTurnoId: data.jsonCalendarioTurnos
+                ? JSON.parse(data.jsonCalendarioTurnos)[0]?.iTurnoId
+                : null,
+              dtAperTurnoInicio: data.jsonCalendarioTurnos
+                ? JSON.parse(data.jsonCalendarioTurnos)[0]?.dtAperTurnoInicio
+                : null,
+              dtAperTurnoFin: data.jsonCalendarioTurnos
+                ? JSON.parse(data.jsonCalendarioTurnos)[0]?.dtAperTurnoFin
+                : null,
+              jsonHorarios: data.jsonDiasLaborables ? JSON.parse(data.jsonDiasLaborables) : [],
             });
           }
         },
@@ -164,9 +175,10 @@ export class CalendarioEscolarComponent extends MostrarErrorComponent implements
 
   dataConfigTurnos(evento) {
     this.formCalendarioAcademicos.patchValue({
+      iTurnoId: evento.iTurnoId,
       dtAperTurnoInicio: evento.dtAperTurnoInicio,
-      dtAperTurnoFin: evento.dtAperTurnoInicio,
-      jsonHorarios: evento.horarios.length ? JSON.stringify(evento.horarios) : [],
+      dtAperTurnoFin: evento.dtAperTurnoFin,
+      jsonHorarios: evento.horarios.length ? evento.horarios : [],
     });
   }
   dataConfigInicial(evento) {
@@ -196,14 +208,17 @@ export class CalendarioEscolarComponent extends MostrarErrorComponent implements
       header: 'Antes de ir al siguiente, ¿Desea guardar la información?',
       message: 'No hay problema, puede volver.',
       accept: () => {
+        this.formCalendarioAcademicos.patchValue({
+          jsonHorarios: JSON.stringify(this.formCalendarioAcademicos.value.jsonHorarios),
+        });
         this._CalendarioAcademicosService
           .guardarCalendarioAcademicos(this.formCalendarioAcademicos.value)
           .subscribe({
             next: (resp: any) => {
               if (resp.validated) {
-                console.log(resp.data);
                 this.selectTab = 1;
                 this.tabSeleccionado = 'periodos';
+                this.obtenerCalendarioAcademicos();
               }
             },
             error: error => {

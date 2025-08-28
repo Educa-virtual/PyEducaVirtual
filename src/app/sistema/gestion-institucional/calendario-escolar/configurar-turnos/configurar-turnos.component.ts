@@ -3,7 +3,15 @@ import { TurnosService } from '@/app/servicios/acad/turnos.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
-import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'app-configurar-turnos',
@@ -29,21 +37,25 @@ export class ConfigurarTurnosComponent extends MostrarErrorComponent implements 
 
   turnos: any = [];
 
-  ngOnChanges(changes) {
-    if (changes.showModal.currentValue) {
-      this.showModal = changes.showModal.currentValue;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['showModal']?.currentValue) {
+      this.showModal = changes['showModal'].currentValue;
     }
-    if (changes.horarios.currentValue) {
-      this.horarios = changes.horarios.currentValue;
+    if (changes['horarios']?.currentValue) {
+      this.horarios = changes['horarios'].currentValue;
     }
-    if (changes.iTurnoId.currentValue) {
-      this.iTurnoId = changes.iTurnoId.currentValue;
+    if (changes['iTurnoId']?.currentValue) {
+      this.iTurnoId = Number(changes['data'].currentValue);
     }
-    if (changes.iTurnoId.currentValue) {
-      this.iTurnoId = changes.iTurnoId.currentValue;
+    if (changes['dtAperTurnoInicio']?.currentValue) {
+      this.dtAperTurnoInicio = changes['dtAperTurnoInicio'].currentValue;
+      this.dtAperTurnoInicio = this.dtAperTurnoInicio
+        ? this.parseHoraToDate(this.dtAperTurnoInicio)
+        : null;
     }
-    if (changes.iTurnoId.currentValue) {
-      this.iTurnoId = Number(changes.iTurnoId.currentValue);
+    if (changes['dtAperTurnoFin']?.currentValue) {
+      this.dtAperTurnoFin = changes['dtAperTurnoFin'].currentValue;
+      this.dtAperTurnoFin = this.dtAperTurnoFin ? this.parseHoraToDate(this.dtAperTurnoFin) : null;
     }
 
     this.obtenerTurnos();
@@ -126,11 +138,23 @@ export class ConfigurarTurnosComponent extends MostrarErrorComponent implements 
     const data = {
       horarios: this.horarios,
       iTurnoId: this.iTurnoId,
-      dtAperTurnoInicio: this.dtAperTurnoInicio,
-      dtAperTurnoFin: this.dtAperTurnoFin,
+      dtAperTurnoInicio: this.getHoraSolo(this.dtAperTurnoInicio),
+      dtAperTurnoFin: this.getHoraSolo(this.dtAperTurnoFin),
     };
     this.datosConfiguracionTurnos.emit(data);
 
     this.isLoading = false;
+  }
+
+  parseHoraToDate(hora: string): Date {
+    const [h, m] = hora.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+
+  getHoraSolo(fecha: Date | null): string | null {
+    if (!fecha) return null;
+    return fecha.toTimeString().slice(0, 5); // Ejemplo: "13:45"
   }
 }

@@ -24,10 +24,11 @@
         <app-periodos-academicos
           [data]="this.formCalendarioAcademicos.value"
           [tiposPeriodos]="tiposPeriodos"
+          (recargarobtenerCalendarioAcademicos)="obtenerCalendarioAcademicos()"
         ></app-periodos-academicos>
       }
       @case ('resumen') {
-        <app-resumen></app-resumen>
+        <app-resumen [data]="this.formCalendarioAcademicos.value"></app-resumen>
       }
     }
   </div>

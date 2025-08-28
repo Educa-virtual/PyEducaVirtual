@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ConfigurarTurnosComponent } from '../configurar-turnos/configurar-turnos.component';
 
 export interface ConfiguracionData {
@@ -45,9 +45,9 @@ export class ConfiguracionInicialComponent extends MostrarErrorComponent impleme
   dtAperTurnoInicio: any;
   dtAperTurnoFin: any;
 
-  ngOnChanges(changes) {
-    if (changes.data.currentValue) {
-      this.data = changes.data.currentValue;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']?.currentValue) {
+      this.data = changes['data'].currentValue;
       if (this.data.dtCalAcadInicio && this.data.dtCalAcadFin) {
         this.data.dInicioFin = [this.data.dtCalAcadInicio, this.data.dtCalAcadFin];
       }
@@ -84,11 +84,11 @@ export class ConfiguracionInicialComponent extends MostrarErrorComponent impleme
           : null;
 
         this.dtAperTurnoInicio = this.data.jsonCalendarioTurnos.length
-          ? new Date(this.data.jsonCalendarioTurnos[0].dtAperTurnoInicio)
+          ? this.data.jsonCalendarioTurnos[0].dtAperTurnoInicio
           : null;
 
         this.dtAperTurnoFin = this.data.jsonCalendarioTurnos.length
-          ? new Date(this.data.jsonCalendarioTurnos[0].dtAperTurnoFin)
+          ? this.data.jsonCalendarioTurnos[0].dtAperTurnoFin
           : null;
       }
     }
@@ -99,6 +99,24 @@ export class ConfiguracionInicialComponent extends MostrarErrorComponent impleme
       case 'dRegularInicioFin':
         const fin = this.data.dRegularInicioFin?.[1] ?? null;
         this.data.dRezagadosInicioFin = [fin, fin ? this.data.dRezagadosInicioFin?.[1] : null];
+        break;
+      case 'dRecuperacionInicioFin':
+        const finRegular = this.data.dRegularInicioFin?.[1] ?? null;
+        const inicioRecuperacion = this.data.dRecuperacionInicioFin?.[0] ?? null;
+
+        if (
+          finRegular &&
+          inicioRecuperacion &&
+          new Date(inicioRecuperacion) <= new Date(finRegular)
+        ) {
+          this.mostrarMensajeToast({
+            severity: 'error',
+            summary: '¡Atención!',
+            detail: `La fase de Recuperación debe iniciar después de la fase Regular (fin: ${new Date(finRegular).toLocaleDateString()}).`,
+          });
+
+          return;
+        }
         break;
     }
 

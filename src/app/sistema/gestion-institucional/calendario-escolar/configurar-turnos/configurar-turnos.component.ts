@@ -45,7 +45,7 @@ export class ConfigurarTurnosComponent extends MostrarErrorComponent implements 
       this.horarios = changes['horarios'].currentValue;
     }
     if (changes['iTurnoId']?.currentValue) {
-      this.iTurnoId = Number(changes['data'].currentValue);
+      this.iTurnoId = Number(changes['iTurnoId'].currentValue);
     }
     if (changes['dtAperTurnoInicio']?.currentValue) {
       this.dtAperTurnoInicio = changes['dtAperTurnoInicio'].currentValue;

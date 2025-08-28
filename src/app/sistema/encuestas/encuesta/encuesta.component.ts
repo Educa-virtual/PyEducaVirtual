@@ -62,6 +62,8 @@ export class EncuestaComponent implements OnInit {
   participantes: Array<object>;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
+  ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
+  USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADOR;
 
   private _messageService = inject(MessageService);
 
@@ -77,6 +79,7 @@ export class EncuestaComponent implements OnInit {
     this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iCateId = params.params.iCateId || null;
+      this.iEncuId = params.params.iEncuId || null;
     });
     this.breadCrumbItems = [
       {
@@ -102,19 +105,20 @@ export class EncuestaComponent implements OnInit {
   ngOnInit() {
     try {
       this.formEncuesta = this.fb.group({
-        iEncId: [0],
+        iEncuId: [0],
         cEncuNombre: ['', Validators.required],
         cEncuSubtitulo: [''],
         cEncuDescripcion: [''],
+        iEstado: [this.ESTADO_BORRADOR],
         dEncuInicio: ['', Validators.required],
         dEncuFin: ['', Validators.required],
-        iTiempoDurId: ['', Validators.required],
+        iTiemDurId: ['', Validators.required],
         iCateId: [this.iCateId, Validators.required],
         iYAcadId: [this.store.getItem('dremoiYAcadId')],
         poblacion: [null],
-        permisos: [null],
+        accesos: [null],
         jsonPoblacion: [null],
-        jsonPermisos: [null],
+        jsonAccesos: [null],
       });
 
       this.formPoblacion = this.fb.group({
@@ -246,19 +250,198 @@ export class EncuestaComponent implements OnInit {
   }
 
   verEncuesta() {
-    console.log('Ver encuesta:');
+    this.encuestasService
+      .verEncuesta({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iEncuId: this.iEncuId,
+        iTipoUsuario: this.USUARIO_ENCUESTADOR,
+      })
+      .subscribe({
+        next: (data: any) => {
+          if (data.data) {
+            this.encuesta_registrada = true;
+            this.setFormEncuesta(data.data);
+            this.inicializarColumnas();
+          } else {
+            this.router.navigate(['/encuestas/categorias/']);
+          }
+        },
+        error: error => {
+          console.error('Error obteniendo encuesta:', error);
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+          this.router.navigate(['/encuestas/categorias/']);
+        },
+      });
+  }
+
+  setFormEncuesta(data: any) {
+    if (Number(data.iEstado) !== this.ESTADO_BORRADOR || Number(data.puede_editar) !== 1) {
+      data.iEstado = this.ESTADO_APROBADA;
+      this.formEncuesta.disable();
+      this.puede_editar = false;
+    }
+    this.formEncuesta.reset();
+    this.formEncuesta.patchValue(data);
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'iTiemDurId',
+      data.iTiemDurId,
+      'number'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'iCateId',
+      data.iCateId,
+      'number'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'iEstado',
+      data.iEstado,
+      'number'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'dEncuInicio',
+      data.dEncuInicio,
+      'date'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'dEncuFin',
+      data.dEncuFin,
+      'date'
+    );
+
+    const poblacion = JSON.parse(data.poblacion);
+    if (poblacion && poblacion.length) {
+      for (let i = 0; i < poblacion.length; i++) {
+        this.agregarPoblacion(poblacion[i]);
+      }
+    }
+    const accesos = JSON.parse(data.accesos);
+    if (accesos && accesos.length) {
+      for (let i = 0; i < accesos.length; i++) {
+        this.agregarAcceso(accesos[i]);
+      }
+    }
+    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
+    this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
+
+    this.encuesta = data;
   }
 
   verPreguntas() {
-    console.log('Ver preguntas:');
+    this.router.navigate([
+      '/encuestas/categorias/' + this.iCateId + '/encuestas/' + this.iEncuId + '/preguntas',
+    ]);
   }
 
   guardarEncuesta() {
-    console.log('Guardar encuesta:');
+    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
+    this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
+
+    if (this.formEncuesta.invalid) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe llenar todos los campos de la primera sección: Información General',
+      });
+      return;
+    }
+
+    if (this.poblacion.length == 0) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe especificar al menos una población objetivo',
+      });
+      return;
+    }
+
+    this.encuestasService.formControlJsonStringify(
+      this.formEncuesta,
+      'jsonPoblacion',
+      'poblacion',
+      ''
+    );
+    this.encuestasService.formControlJsonStringify(this.formEncuesta, 'jsonAccesos', 'accesos', '');
+    this.encuestasService.guardarEncuesta(this.formEncuesta.value).subscribe({
+      next: (data: any) => {
+        this._messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos',
+        });
+        const iEncuId = data.data.iEncuId;
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/encuestas/${iEncuId}/preguntas`,
+        ]);
+      },
+      error: error => {
+        console.error('Error guardando encuesta:', error);
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 
   actualizarEncuesta() {
-    console.log('Actualizar encuesta:');
+    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
+    this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
+
+    if (this.formEncuesta.invalid) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe llenar todos los campos de la primera sección: Información General',
+      });
+      return;
+    }
+
+    if (this.poblacion.length == 0) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe especificar al menos una población objetivo',
+      });
+      return;
+    }
+
+    this.encuestasService.formControlJsonStringify(
+      this.formEncuesta,
+      'jsonPoblacion',
+      'poblacion',
+      ''
+    );
+    this.encuestasService.formControlJsonStringify(this.formEncuesta, 'jsonAccesos', 'accesos', '');
+    this.encuestasService.actualizarEncuesta(this.formEncuesta.getRawValue()).subscribe({
+      next: () => {
+        this._messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos',
+        });
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}/preguntas`,
+        ]);
+      },
+      error: error => {
+        console.error('Error guardando encuesta:', error);
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 
   agregarPoblacion(item: any = null) {

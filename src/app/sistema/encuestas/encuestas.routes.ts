@@ -10,6 +10,7 @@ import {
   ESPECIALISTA_UGEL,
   SUBDIRECTOR_IE,
 } from '@/app/servicios/seg/perfiles';
+import { LlenadoPreguntasEncuestaComponent } from './llenado-preguntas-encuesta/llenado-preguntas-encuesta.component';
 
 const perfiles_administran = [
   ADMINISTRADOR_DREMO,
@@ -54,6 +55,15 @@ const routes: Routes = [
     data: {
       expectedRole: perfiles_administran,
       breadcrumb: 'Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/encuestas/:iEncuId/preguntas',
+    component: LlenadoPreguntasEncuestaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: perfiles_administran,
+      breadcrumb: 'Preguntas',
     },
   },
 ];

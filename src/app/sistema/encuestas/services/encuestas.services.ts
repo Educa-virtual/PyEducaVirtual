@@ -19,8 +19,7 @@ export class EncuestasService implements OnDestroy {
   public readonly PREGUNTA_ESCALA = 3;
 
   public readonly ESTADO_BORRADOR = 1;
-  public readonly ESTADO_TERMINADA = 2;
-  public readonly ESTADO_APROBADA = 3;
+  public readonly ESTADO_APROBADA = 2;
 
   public readonly TIPO_REPORTE_LISTA = 1;
   public readonly TIPO_REPORTE_INDIVIDUAL = 2;
@@ -28,6 +27,9 @@ export class EncuestasService implements OnDestroy {
   public readonly GRAFICO_BARRA = 1;
   public readonly GRAFICO_CIRCULAR = 2;
   public readonly GRAFICO_NUBE = 3;
+
+  public readonly USUARIO_ENCUESTADO = 1;
+  public readonly USUARIO_ENCUESTADOR = 2;
 
   parametros: any;
 
@@ -96,6 +98,10 @@ export class EncuestasService implements OnDestroy {
 
   obtenerPoblacionObjetivo(data: any) {
     return this.http.post(`${baseUrl}/enc/obtenerPoblacionObjetivo`, data);
+  }
+
+  aprobarEncuesta(data: any) {
+    return this.http.post(`${baseUrl}/enc/aprobarEncuesta`, data);
   }
 
   /**
@@ -372,7 +378,7 @@ export class EncuestasService implements OnDestroy {
     if (!this.estados) {
       this.estados = [
         { label: 'BORRADOR', value: this.ESTADO_BORRADOR },
-        { label: 'TERMINADA', value: this.ESTADO_TERMINADA },
+        { label: 'APROBADA', value: this.ESTADO_APROBADA },
       ];
     }
     return this.estados;
@@ -426,6 +432,59 @@ export class EncuestasService implements OnDestroy {
   /**
    * FUNCIONES GENERALES
    */
+
+  /**
+   *
+   * @param form El nombre del formulario
+   * @param formControl El nombre del control del formulario
+   * @param value El valor del control
+   * @param tipo El tipo del control
+   * @param groupControl El control por el que se agrupan los datos en el json, por defecto es null
+   */
+  formatearFormControl(
+    form: FormGroup,
+    formControl: string,
+    value: any,
+    tipo: 'number' | 'string' | 'json' | 'boolean' | 'date',
+    groupControl: string | null = null
+  ) {
+    if (tipo === 'number') {
+      if (!value || isNaN(Number(value))) {
+        value = null;
+      } else {
+        value = +value;
+      }
+      form.get(formControl).patchValue(value);
+    } else if (tipo === 'boolean') {
+      if (!value || isNaN(Number(value))) value = 0;
+      form.get(formControl)?.patchValue(value == 1 ? true : false);
+    } else if (tipo === 'string') {
+      if (!value) value = null;
+      form.get(formControl)?.patchValue(value);
+    } else if (tipo === 'date') {
+      let fecha = new Date(value + 'T00:00:00');
+      if (!value) fecha = null;
+      form.get(formControl)?.patchValue(fecha);
+    } else if (tipo === 'json') {
+      if (!value) {
+        form.get(formControl)?.patchValue(null);
+      } else {
+        const json = JSON.parse(value);
+        const items = [];
+        for (let i = 0; i < json.length; i++) {
+          if (groupControl) {
+            items.push(json[i][groupControl]);
+          } else {
+            items.push(json[i][formControl]);
+          }
+        }
+        form.get(formControl)?.patchValue(items);
+      }
+    } else {
+      if (!value) value = null;
+      form.get(formControl)?.patchValue(value);
+    }
+  }
 
   formControlJsonStringify(
     form: FormGroup,

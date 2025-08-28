@@ -100,16 +100,18 @@ export class BlockHorarioComponent implements OnChanges {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos del horario: ' + error.message,
+            detail:
+              'Error al cargar los datos del horario: ' + error?.error?.message ||
+              'Ocurrió un error inesperado',
           });
         },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del Sistema',
-            detail: 'Se cargar los registros del horario correctamente',
-          });
-        },
+        // complete: () => {
+        //   this.messageService.add({
+        //     severity: 'success',
+        //     summary: 'Mensaje del Sistema',
+        //     detail: 'Se cargar los registros del horario correctamente',
+        //   });
+        // },
       });
   }
 
@@ -163,7 +165,9 @@ export class BlockHorarioComponent implements OnChanges {
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error. No se proceso petición de registro: ' + error.message,
+            detail:
+              'Error. No se proceso petición de registro: ' + error?.error?.message ||
+              'Ocurrió un error inesperado',
           });
         },
         complete: () => {
@@ -190,7 +194,8 @@ export class BlockHorarioComponent implements OnChanges {
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje de error',
-          detail: 'NO se pudo eliminar registro' + error,
+          detail:
+            'NO se pudo eliminar registro' + error?.error?.message || 'Ocurrió un error inesperado',
         });
       },
       complete: () => {
@@ -212,11 +217,10 @@ export class BlockHorarioComponent implements OnChanges {
   }
 
   validarFechas(): boolean {
-    console.log(this.formGenerador.get('tBloqueInicio')?.value, 'validarFechas');
     const existe = this.bloques.some((bloque: any) => {
       const horaBloque = this.extraerHora(bloque.tBloqueInicio);
       const inicio = this.extraerHora(this.formGenerador.get('tBloqueInicio')?.value);
-      console.log(horaBloque, ' bloque', inicio, 'horaBloque y inicio');
+
       return horaBloque === inicio;
     });
 
@@ -313,9 +317,9 @@ export class BlockHorarioComponent implements OnChanges {
   //   }
 
   accionBtnItemTable({ accion, item }) {
-    if (accion === 'editar') {
-      console.log(item, 'btnTable');
-    }
+    // if (accion === 'editar') {
+
+    // }
     if (accion === 'eliminar') {
       this._confirmService.openConfiSave({
         message: '¿Estás seguro de que deseas eliminar?',

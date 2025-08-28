@@ -97,34 +97,33 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedItem']) {
-      if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
-        console.log(this.selectedItem, 'selectedItem');
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Mensaje del sistema',
-          detail: 'Se detecto cambios en información del estudiante',
-          life: 3000,
-        });
-      }
-      // this.filtrarArea();
-    }
+    // if (changes['selectedItem']) {
+    //   if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
+
+    //     this.messageService.add({
+    //       severity: 'warn',
+    //       summary: 'Mensaje del sistema',
+    //       detail: 'Se detecto cambios en información del estudiante',
+    //       life: 3000,
+    //     });
+    //   }
+    //   // this.filtrarArea();
+    // }
     if (changes['competencias']) {
       if (Array.isArray(this.competencias) && this.competencias.length > 0) {
         this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
 
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Mensaje del sistema',
-          detail: 'Se detecto cambios en información del competencias',
-          life: 3000,
-        });
+        // this.messageService.add({
+        //   severity: 'warn',
+        //   summary: 'Mensaje del sistema',
+        //   detail: 'Se detecto cambios en información del competencias',
+        //   life: 3000,
+        // });
       }
     }
   }
 
   actualizarArea() {
-    console.log(this.competencias, 'competencias');
     this.iCalifIdPeriodo1 = this.selectedItem[0].iCalifIdPeriodo1 ?? '';
     this.iCalifIdPeriodo2 = this.selectedItem[0].iCalifIdPeriodo2 ?? '';
     this.iCalifIdPeriodo3 = this.selectedItem[0].iCalifIdPeriodo3 ?? '';
@@ -153,22 +152,6 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
     this.mostrarBotonFinalizar = false;
   }
 
-  guardarLogro() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Guardado',
-      detail: 'Guardado Exitosamente',
-      life: 3000,
-    });
-    const datosCompletos = {
-      estudiante: this.selectedItem,
-      matematica: this.competencias,
-    };
-
-    this.mostrarBotonFinalizar = true;
-
-    console.log('Datos a guardar:', datosCompletos);
-  }
   // BUSCADOR DE PAOLO EN FRONT
   buscarLogrosDelEstudiante(iMatriculaId: number) {
     this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({

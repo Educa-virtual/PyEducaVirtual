@@ -138,7 +138,8 @@ export class ConfigSeccionComponent implements OnInit {
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
 
-    this.grados = this.stepService.grados ?? (await this.stepService.getGrado());
+    this.grados = await this.stepService.getGrado();
+    console.log(this.grados, 'grados');
     //this.stepService.getFilesPrimaria().then((data) => (this.files = data));
     this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes());
     //this.serv_atencion = this.stepService.serv_atencion

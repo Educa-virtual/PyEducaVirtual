@@ -43,10 +43,11 @@
       <label for="iDsttId" class="block text-900 font-medium mb-2"> Distrito * </label>
       <p-dropdown
         id="iDsttId"
+        [(ngModel)]="distritoSeleccionado"
         formControlName="iDsttId"
         [options]="distritos"
-        optionLabel="label"
-        optionValue="value"
+        optionLabel="cDsttNombre"
+        optionValue="iDsttId"
         placeholder="Seleccionar..."
         [style]="{ width: '100%' }"
         [class.ng-invalid]="esInvalido('iDsttId')"
@@ -61,10 +62,11 @@
       <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
       <p-dropdown
         id="iZonaId"
+        [(ngModel)]="zonaSeleccionado"
         formControlName="iZonaId"
-        [options]="zona"
-        optionLabel="label"
-        optionValue="value"
+        [options]="zonas"
+        optionLabel="cZonaNombre"
+        optionValue="iZonaId"
         placeholder="Seleccionar..."
         [style]="{ width: '100%' }"
       >
@@ -75,10 +77,11 @@
       <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector * </label>
       <p-dropdown
         id="iTipoSectorId"
+        [(ngModel)]="sectorSeleccionado"
         formControlName="iTipoSectorId"
-        [options]="sector"
-        optionLabel="label"
-        optionValue="value"
+        [options]="sectores"
+        optionLabel="cTipoSectorNombre"
+        optionValue="iTipoSectorId"
         placeholder="Seleccionar..."
         [style]="{ width: '100%' }"
         [class.ng-invalid]="esInvalido('iTipoSectorId')"
@@ -122,39 +125,28 @@
     <div class="col-12 md:col-6 lg:col-4">
       <label for="iNivelTipoId" class="block text-900 font-medium mb-2"> Nivel </label>
       <p-dropdown
+        [(ngModel)]="nivelSeleccionado"
         id="iNivelTipoId"
         formControlName="iNivelTipoId"
-        [options]="Nivel"
-        optionLabel="label"
-        optionValue="value"
+        [options]="Niveles"
+        optionLabel="cNivelTipoNombre"
+        optionValue="iNivelTipoId"
         placeholder="Seleccionar..."
         [style]="{ width: '100%' }"
       >
       </p-dropdown>
+      nivel seleccionado {{ nivelSeleccionado }}
     </div>
 
     <div class="col-12 md:col-6 lg:col-4">
       <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
       <p-dropdown
         id="iUgelId"
+        [(ngModel)]="ugelSeleccionado"
         formControlName="iUgelId"
-        [options]="ugel"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-      >
-      </p-dropdown>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="iSedeId" class="block text-900 font-medium mb-2"> Sede </label>
-      <p-dropdown
-        id="iSedeId"
-        formControlName="iSedeId"
-        [options]="sede"
-        optionLabel="label"
-        optionValue="value"
+        [options]="ugeles"
+        optionLabel="cUgelNombre"
+        optionValue="iUgelId"
         placeholder="Seleccionar..."
         [style]="{ width: '100%' }"
       >

@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
 import { MantenimientoIeService, InstitucionEducativa } from '../mantenimiento-ie.service';
 import { MessageService } from 'primeng/api';
+import { GeneralService } from '@/app/servicios/general.service';
 
 @Component({
   selector: 'app-agregar-mantenimiento-ie',
@@ -14,32 +15,20 @@ import { MessageService } from 'primeng/api';
 export class AgregarMantenimientoIeComponent implements OnInit {
   @Input() selectedItem: any = null;
   @Output() eventAgregarMantenimientoIe = new EventEmitter<boolean>();
-
+  private generalService = inject(GeneralService);
   formulario!: FormGroup;
   guardando: boolean = false;
+  distritos = [];
+  distritoSeleccionado: any;
+  zonaSeleccionado: any;
+  sectorSeleccionado: any;
+  nivelSeleccionado: any;
+  ugelSeleccionado: any;
 
-  distritos = [{ label: 'Moquegua', value: 1 }];
-
-  Nivel = [
-    { label: 'Educacion Inicial', value: 1 },
-    { label: 'Educacion Primaria', value: 2 },
-    { label: 'Educacion Secundaria', value: 3 },
-  ];
-
-  ugel = [
-    { label: 'Mariscal Nieto', value: 1 },
-    { label: 'Ilo', value: 2 },
-  ];
-
-  sede = [{ label: 'Sede Principal', value: 1 }];
-
-  sector = [{ label: 'SECTOR PUBLICO', value: 1 }];
-
-  zona = [
-    { label: 'URBANA', value: 1 },
-    { label: 'RURAL', value: 2 },
-  ];
-
+  zonas = [];
+  Niveles = [];
+  ugeles = [];
+  sectores = [];
   constructor(
     private fb: FormBuilder,
     private mantenimientoIeService: MantenimientoIeService,
@@ -49,7 +38,63 @@ export class AgregarMantenimientoIeComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('AgregarMantenimientoIeComponent');
+    console.log('AgregarMantenim`ientoIeComponent2222');
+    this.cargarDistritos();
+    this.cargarZonas();
+    this.cargarSectores();
+    this.cargarNiveles();
+    this.cargarUgeles();
+    console.log('pas0');
+  }
+
+  cargarUgeles() {
+    const data = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'mantenimiento-ie',
+      ruta: 'getData',
+      data: {
+        esquema: 'acad',
+        tabla: 'ugeles',
+        campos: '*',
+        where: '',
+      },
+    };
+
+    this.generalService.getGralPrefix(data).subscribe({
+      next: response => {
+        this.ugeles = response.data;
+      },
+      complete: () => {},
+      error: error => {
+        console.log(error);
+      },
+    });
+  }
+
+  cargarNiveles() {
+    const data = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'mantenimiento-ie',
+      ruta: 'getData',
+      data: {
+        esquema: 'acad',
+        tabla: 'nivel_tipos',
+        campos: '*',
+        where: '',
+      },
+    };
+
+    this.generalService.getGralPrefix(data).subscribe({
+      next: response => {
+        this.Niveles = response.data;
+      },
+      complete: () => {},
+      error: error => {
+        console.log(error);
+      },
+    });
   }
 
   crearFormulario() {
@@ -68,6 +113,79 @@ export class AgregarMantenimientoIeComponent implements OnInit {
       iUgelId: [null],
       iSedeId: [null],
       iSesionId: [1],
+    });
+  }
+
+  cargarDistritos() {
+    const data = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'mantenimiento-ie',
+      ruta: 'getData',
+      data: {
+        esquema: 'grl',
+        tabla: 'distritos',
+        campos: '*',
+        where: 'iPrvnId in (147,148,149)',
+      },
+    };
+
+    this.generalService.getGralPrefix(data).subscribe({
+      next: response => {
+        this.distritos = response.data;
+      },
+      complete: () => {},
+      error: error => {
+        console.log(error);
+      },
+    });
+  }
+
+  cargarZonas() {
+    const data = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'mantenimiento-ie',
+      ruta: 'getData',
+      data: {
+        esquema: 'acad',
+        tabla: 'zonas',
+        campos: '*',
+        where: '',
+      },
+    };
+    this.generalService.getGralPrefix(data).subscribe({
+      next: response => {
+        this.zonas = response.data;
+      },
+      complete: () => {},
+      error: error => {
+        console.log(error);
+      },
+    });
+  }
+
+  cargarSectores() {
+    const data = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'mantenimiento-ie',
+      ruta: 'getData',
+      data: {
+        esquema: 'grl',
+        tabla: 'tipos_sectores',
+        campos: '*',
+        where: '',
+      },
+    };
+    this.generalService.getGralPrefix(data).subscribe({
+      next: response => {
+        this.sectores = response.data;
+      },
+      complete: () => {},
+      error: error => {
+        console.log(error);
+      },
     });
   }
 

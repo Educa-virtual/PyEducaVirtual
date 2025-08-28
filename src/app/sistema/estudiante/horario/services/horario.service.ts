@@ -12,9 +12,9 @@ export class HorarioService {
     return this.http.get<Horario[]>(this.url);
   }*/
 
-  obtenerHorario(params) {
+  obtenerHorario(iYAcadId: number) {
     return this.http.get(`${environment.backendApi}/hor/horarios`, {
-      params,
+      params: { iYAcadId: iYAcadId.toString() },
     });
   }
 }

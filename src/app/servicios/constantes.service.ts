@@ -281,6 +281,22 @@ const estudiante = [
         icon: 'pi pi-fw pi-envelope',
         routerLink: ['/buzon-sugerencias/estudiante'],
       },
+      {
+        label: 'Reportes académicos',
+        icon: 'pi pi-chart-bar',
+        items: [
+          {
+            label: 'Progreso',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/estudiante/reportes-academicos/progreso'],
+          },
+          {
+            label: 'Académico',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/estudiante/reportes-academicos/academico'],
+          },
+        ],
+      },
     ],
   },
 ];

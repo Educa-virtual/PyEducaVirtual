@@ -123,7 +123,7 @@ export class AppTopBarComponent implements OnInit {
     }, 200);
   }
   changePerfile(value) {
-    this.router.navigate(['./']);
+    //this.router.navigate(['./']);
     this.store.setItem('dremoPerfil', value);
     setTimeout(() => {
       window.location.reload();
@@ -131,7 +131,7 @@ export class AppTopBarComponent implements OnInit {
   }
   changeYear(value) {
     const year = this.years.find(item => item.iYearId === value);
-    this.router.navigate(['./']);
+    //this.router.navigate(['./']);
     this.store.setItem('dremoYear', value);
     this.store.setItem('dremoiYAcadId', year.iYAcadId);
     setTimeout(() => {

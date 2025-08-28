@@ -1,0 +1,34 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Reporte académico de progreso</h3>
+    </div>
+  </ng-template>
+
+  <div class="flex align-items-center gap-3 mb-3">
+    <div style="max-width: 400px">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
+        <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
+      </p-inputGroup>
+    </div>
+    <button
+      pButton
+      pRipple
+      pTooltip="Descargar reporte"
+      tooltipPosition="top"
+      class="p-button-success"
+      (click)="descargarReporte()"
+    >
+      <i class="pi pi-download"></i>
+      <span class="ml-2 hidden sm:block">Descargar reporte</span>
+    </button>
+  </div>
+  <small
+    >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
+    otra opción</small
+  >
+</p-panel>
+<p-toast></p-toast>

@@ -49,7 +49,7 @@ export class MantenimientoIeComponent implements OnInit {
       field: 'cIieeNombre',
       header: 'Instituciones Educativas',
       text_header: 'center',
-      text: 'left',
+      text: 'center',
     },
     {
       type: 'text',
@@ -65,7 +65,23 @@ export class MantenimientoIeComponent implements OnInit {
       field: 'cUgelNombre',
       header: 'UGEL',
       text_header: 'center',
-      text: 'left',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: 'cIieeDireccion',
+      header: 'Direccion',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: 'cIieeRUC',
+      header: 'RUC',
+      text_header: 'center',
+      text: 'center',
     },
     {
       type: 'text',

@@ -19,9 +19,8 @@ export class HorarioComponent implements OnInit {
   raw: Horario[] = [];
   bloques: number[] = [];
   detalleMatricula: string = '';
-  iYAcadId = '';
   franjas: { bloque: number; horario: string }[] = [];
-  iYAcadId: number;
+  iYAcadId: any;
   dias: Dia[] = [
     { id: 1, nombre: 'Lunes' },
     { id: 2, nombre: 'Martes' },

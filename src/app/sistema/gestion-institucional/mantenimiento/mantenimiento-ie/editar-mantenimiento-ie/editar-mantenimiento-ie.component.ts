@@ -170,7 +170,7 @@ export class EditarMantenimientoIeComponent implements OnInit, OnChanges {
         esquema: 'acad',
         tabla: 'nivel_tipos',
         campos: '*',
-        where: '',
+        where: 'iNivelTipoId in (1,3,4)',
       },
     };
 

@@ -5,7 +5,7 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { EditarMantenimientoIeComponent } from './editar-mantenimiento-ie/editar-mantenimiento-ie.component';
-import { MessageService } from 'primeng/api';
+import { MessageService, MenuItem } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
 import { MantenimientoIeService, FiltrosIE } from './mantenimiento-ie.service';
@@ -35,6 +35,8 @@ export class MantenimientoIeComponent implements OnInit {
   paginaActual: number = 1;
   registrosPorPagina: number = 10000;
   institucionSeleccionada: any;
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
   columns = [
     {
       type: 'text',
@@ -106,7 +108,17 @@ export class MantenimientoIeComponent implements OnInit {
     private messageService: MessageService,
     private confirmationModalService: ConfirmationModalService,
     private mantenimientoIeService: MantenimientoIeService
-  ) {}
+  ) {
+    this.breadCrumbItems = [
+      {
+        label: 'Mantenimiento Instituciones Educativas',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+  }
 
   ngOnInit() {
     console.log('mantenimiento-ie component loaded');

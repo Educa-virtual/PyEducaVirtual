@@ -70,16 +70,18 @@
       </p-dropdown>
     </div>
     <div class="col-12 md:col-6 lg:col-4">
-      <label for="clieRUC" class="block text-900 font-medium mb-2"> RUC </label>
-      <input
-        id="cIieeRUC"
-        formControlName="cIieeRUC"
-        type="text"
-        pInputText
-        class="w-full"
-        placeholder="Insertar RUC"
-        (input)="soloNumeros($event)"
-      />
+      <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
+      <p-dropdown
+        id="iUgelId"
+        [(ngModel)]="ugelSeleccionado"
+        formControlName="iUgelId"
+        [options]="ugeles"
+        optionLabel="cUgelNombre"
+        optionValue="iUgelId"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
     </div>
     <div class="col-12 md:col-6 lg:col-4">
       <label for="clieDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
@@ -108,18 +110,16 @@
       </p-dropdown>
     </div>
     <div class="col-12 md:col-6 lg:col-4">
-      <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
-      <p-dropdown
-        id="iUgelId"
-        [(ngModel)]="ugelSeleccionado"
-        formControlName="iUgelId"
-        [options]="ugeles"
-        optionLabel="cUgelNombre"
-        optionValue="iUgelId"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-      >
-      </p-dropdown>
+      <label for="clieRUC" class="block text-900 font-medium mb-2"> RUC </label>
+      <input
+        id="cIieeRUC"
+        formControlName="cIieeRUC"
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar RUC"
+        (input)="soloNumeros($event)"
+      />
     </div>
   </div>
 

@@ -8,13 +8,13 @@
   </ng-template>
 
   <div class="grid p-fluid mt-3">
-    <div class="field col-4">
+    <div class="field col-12 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
         <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
       </p-inputGroup>
     </div>
-    <div class="field col-4">
+    <div class="field col-12 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon class="mi-addon-primary">Área:</p-inputGroupAddon>
         <p-dropdown
@@ -29,7 +29,7 @@
         />
       </p-inputGroup>
     </div>
-    <div class="field col-2">
+    <div class="field col-12 md:col-4">
       <button
         pButton
         pRipple
@@ -53,7 +53,7 @@
     </div>
   } @else {
     <div class="grid p-fluid mt-3">
-      <div *ngFor="let grafico of graficos" class="col-6">
+      <div *ngFor="let grafico of graficos" class="col-12 md:col-6">
         <p-chart
           type="bar"
           [data]="grafico.data"

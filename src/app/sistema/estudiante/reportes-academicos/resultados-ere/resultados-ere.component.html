@@ -1,0 +1,77 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Resultados ERE</h3>
+    </div>
+  </ng-template>
+
+  <div class="grid p-fluid mt-3">
+    <div class="field col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Evaluación:</p-inputGroupAddon>
+        <p-dropdown
+          [options]="evaluaciones"
+          optionLabel="cEvaluacionNombre"
+          optionValue="iEvaluacionId"
+          [appendTo]="'body'"
+          [style]="{ flex: '1', width: '100%' }"
+          placeholder="Seleccione..."
+          [(ngModel)]="evaluacionSeleccionada"
+          (onChange)="obtenerAreasPorEvaluacionEstudiante()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="field col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Área:</p-inputGroupAddon>
+        <p-dropdown
+          [options]="areas"
+          optionLabel="cCursoNombre"
+          optionValue="iCursoId"
+          [appendTo]="'body'"
+          [style]="{ flex: '1', width: '100%' }"
+          placeholder="Seleccione..."
+          [(ngModel)]="areaSeleccionada"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="field col-12 md:col-2">
+      <button
+        pButton
+        pRipple
+        (click)="generarReporte()"
+        icon="pi pi-chart-bar"
+        label="Generar"
+        class="p-button-success"
+      ></button>
+    </div>
+  </div>
+  @if (resultado !== null) {
+    <div class="grid p-fluid mt-3">
+      <div class="col-12 md:col-8 md:col-offset-2">
+        <p-table [value]="[resultado]" styleClass="custom-table border-round w-full">
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center">Aciertos</th>
+              <th class="text-center">Desaciertos</th>
+              <th class="text-center">Blancos</th>
+              <th class="text-center">Nivel de logro</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="text-center">{{ row.iCantidadCorrectas }}</td>
+              <td class="text-center">{{ row.iCantidadIncorrectas }}</td>
+              <td class="text-center">{{ row.iEnBlanco }}</td>
+              <td class="text-center">{{ row.cNivelLogro }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  }
+</p-panel>
+<p-toast></p-toast>

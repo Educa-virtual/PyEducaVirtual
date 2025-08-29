@@ -33,7 +33,7 @@ export class MantenimientoIeComponent implements OnInit {
   totalRegistros: number = 0;
   paginaActual: number = 1;
   registrosPorPagina: number = 10000;
-
+  institucionSeleccionada: any;
   columns = [
     {
       type: 'text',
@@ -144,8 +144,9 @@ export class MantenimientoIeComponent implements OnInit {
     this.mostrarAgregarMantenimiento = true;
   }
 
-  EditarMantenimiento() {
+  EditarMantenimiento(item) {
     this.mostrarEditarMantenimiento = true;
+    this.institucionSeleccionada = item;
   }
 
   eliminarMantenimiento(item: any) {
@@ -208,7 +209,7 @@ export class MantenimientoIeComponent implements OnInit {
     switch (accion) {
       case 'editar':
         this.selectedItem = item;
-        this.EditarMantenimiento();
+        this.EditarMantenimiento(item);
         break;
       case 'eliminar':
         this.eliminarMantenimiento(item);

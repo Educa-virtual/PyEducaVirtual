@@ -1,115 +1,126 @@
 <br />
-<div class="grid">
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieCodigoModular" class="block text-900 font-medium mb-2"> Código Modular </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar el código modular"
-      (input)="soloNumeros($event)"
-    />
+<form [formGroup]="formulario">
+  <div class="grid">
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="clieCodigoModular" class="block text-900 font-medium mb-2">
+        Código Modular
+      </label>
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar el código modular"
+        (input)="soloNumeros($event)"
+        formControlName="cIieeCodigoModular"
+      />
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="clieCodigoModular" class="block text-900 font-medium mb-2">
+        Institución Educativa
+      </label>
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar I.E."
+        (input)="convertirMayusculas($event)"
+        formControlName="cIieeNombre"
+      />
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="distrito" class="block text-900 font-medium mb-2"> Distrito </label>
+      <p-dropdown
+        id="iDsttId"
+        [(ngModel)]="distritoSeleccionado"
+        formControlName="iDsttId"
+        [options]="distritos"
+        optionLabel="cDsttNombre"
+        optionValue="iDsttId"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
+      <p-dropdown
+        id="iZonaId"
+        [(ngModel)]="zonaSeleccionado"
+        formControlName="iZonaId"
+        [options]="zonas"
+        optionLabel="cZonaNombre"
+        optionValue="iZonaId"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector </label>
+      <p-dropdown
+        id="iTipoSectorId"
+        [(ngModel)]="sectorSeleccionado"
+        formControlName="iTipoSectorId"
+        [options]="sectores"
+        optionLabel="cTipoSectorNombre"
+        optionValue="iTipoSectorId"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="clieRUC" class="block text-900 font-medium mb-2"> RUC </label>
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar RUC"
+        (input)="soloNumeros($event)"
+      />
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="clieDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        placeholder="Insertar dirección"
+        (input)="convertirMayusculas($event)"
+      />
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="clieLogo" class="block text-900 font-medium mb-2"> NIvel </label>
+      <p-dropdown
+        [(ngModel)]="nivelSeleccionado"
+        id="iNivelTipoId"
+        formControlName="iNivelTipoId"
+        [options]="niveles"
+        optionLabel="cNivelTipoNombre"
+        optionValue="iNivelTipoId"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4">
+      <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
+      <p-dropdown
+        id="iUgelId"
+        [(ngModel)]="ugelSeleccionado"
+        formControlName="iUgelId"
+        [options]="ugeles"
+        optionLabel="cUgelNombre"
+        optionValue="iUgelId"
+        placeholder="Seleccionar..."
+        [style]="{ width: '100%' }"
+      >
+      </p-dropdown>
+    </div>
   </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieCodigoModular" class="block text-900 font-medium mb-2">
-      Institución Educativa
-    </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar I.E."
-      (input)="convertirMayusculas($event)"
-    />
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="distrito" class="block text-900 font-medium mb-2"> Distrito </label>
-    <p-dropdown
-      id="distrito"
-      [(ngModel)]="distritoSeleccionado"
-      [options]="distritos"
-      optionLabel="cDsttNombre"
-      optionValue="iDsttId"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
-    <p-dropdown
-      id="iZonaId"
-      [options]="zonas"
-      [(ngModel)]="zonaSeleccionado"
-      optioLabel="cDsttNombre"
-      optionValue="iDsttId"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector </label>
-    <p-dropdown
-      id="iTipoSectorId"
-      [options]="sectores"
-      [(ngModel)]="sectorSeleccionado"
-      optioLabel="cTipoSectorNombre"
-      optionValue="iTipoSectorId"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieRUC" class="block text-900 font-medium mb-2"> RUC </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar RUC"
-      (input)="soloNumeros($event)"
-    />
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Insertar dirección"
-      (input)="convertirMayusculas($event)"
-    />
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="clieLogo" class="block text-900 font-medium mb-2"> NIvel </label>
-    <p-dropdown
-      id="Nivel"
-      [options]="niveles"
-      [(ngModel)]="nivelSeleccionado"
-      optionsLavel="cNivelTipoNombre"
-      optionValue="iNivelTipoId"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
-    <p-dropdown
-      id="iUgelId"
-      [options]="ugeles"
-      [(ngModel)]="nivelSeleccionado"
-      optionLabel="cUgelNombre"
-      optionValue="iUgelId"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-</div>
 
-<div class="flex justify-content-end gap-2 mt-4">
-  <p-button [severity]="'secondary'" label="Cancelar" (click)="btnCancelar()"> </p-button>
-  <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()"> </p-button>
-</div>
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button [severity]="'secondary'" label="Cancelar" (click)="btnCancelar()"> </p-button>
+    <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()"> </p-button>
+  </div>
+</form>

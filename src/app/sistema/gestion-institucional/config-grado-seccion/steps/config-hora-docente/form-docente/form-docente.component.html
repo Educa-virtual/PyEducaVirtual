@@ -1,0 +1,139 @@
+<ng-content>
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <input pInputText type="hidden" formControlName="iPersIeId" class="p-inputtext-sm" />
+      <div class="field col-12 md:col-12">
+        <div class="separator-with-text">
+          <span>{{ titulo }}</span>
+        </div>
+      </div>
+
+      <div class="field col-12 md:col-12">
+        <p-message [severity]="sever" [text]="mensaje" styleClass="p-mr-2"></p-message>
+      </div>
+      <!--  formulario para buscar Docente-->
+      <div class="field col-12 md:col-6" *ngIf="form.get('iPersId')?.value === 0">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="dni"
+            (onclick)="buscarDni()"
+            formControlName="dni"
+            aria-describedby="dni-help"
+          />
+          <input type="hidden" formControlName="iPersId" />
+
+          <label for="dni">Documento</label>
+        </span>
+      </div>
+
+      <div class="field col-12 md:col-6" *ngIf="form.get('iPersId')?.value === 0">
+        <p-button label="Validar" styleClass="w-full" (onClick)="buscarDni()" />
+      </div>
+
+      <!--  formulario para buscar Docente-->
+
+      <!-- <div *ngIf="form.get('iPersId')?.value !== 0"> -->
+
+      <div class="field col-12 md:col-12">
+        <!-- <hr class="custom-separator" /> -->
+        <div class="separator-with-text">
+          <span>Información de NEXUS</span>
+        </div>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label">
+          <p-inputNumber formControlName="iHorasLabora" aria-describedby="iHorasLabora-help" />
+
+          <label for="iHorasLabora">Total de horas</label>
+        </span>
+        <small
+          id="iHorasLabora-help"
+          class="p-error"
+          *ngIf="form.get('iHorasLabora')?.invalid && form.get('iHorasLabora')?.touched"
+        >
+          Ingrese un número válido mayor de 6 a 40.
+        </small>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cCodigoPlaza"
+            formControlName="cCodigoPlaza"
+            aria-describedby="cCodigoPlaza-help"
+          />
+          <label for="cCodigoPlaza">Código de plaza</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cTipoTrabajador"
+            formControlName="cTipoTrabajador"
+            aria-describedby="cCodigoPlaza-help"
+          />
+          <label for="cTipoTrabajador">Tipo de trabajador</label>
+        </span>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label">
+          <p-calendar
+            formControlName="dtPersIeInicio"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            inputId="dtPersIeInicio"
+            [appendTo]="'body'"
+          />
+
+          <label for="dtPersIeInicio">Fecha inicio</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label">
+          <p-calendar
+            formControlName="dtPersIeFin"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            inputId="dtPersIeFin"
+            [appendTo]="'body'"
+          />
+
+          <label for="dtPersIeFin">Fecha fin</label>
+        </span>
+      </div>
+
+      <div class="field col-12 md:col-12">
+        <span class="p-float-label">
+          <input
+            pInputText
+            id="cMotivo"
+            formControlName="cMotivo"
+            aria-describedby="cMotivo-help"
+          />
+          <label for="cMotivo">Documento de aprobación</label>
+        </span>
+      </div>
+    </div>
+
+    @if (c_accion === 'editar') {
+      <p-button
+        label="Editar"
+        [disabled]="form.invalid"
+        (onClick)="procesar('actualizar')"
+        styleClass="p-button-warning"
+      />
+    }
+    @if (c_accion === 'agregar') {
+      <p-button
+        label="Guardar"
+        [disabled]="form.invalid"
+        (onClick)="procesar('registrar')"
+        styleClass="p-button-primary"
+      />
+    }
+  </form>
+</ng-content>

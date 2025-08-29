@@ -104,6 +104,46 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/aprobarEncuesta`, data);
   }
 
+  listarSecciones(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarSecciones`, data);
+  }
+
+  verSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/verSeccion`, data);
+  }
+
+  guardarSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarSeccion`, data);
+  }
+
+  actualizarSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarSeccion`, data);
+  }
+
+  borrarSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarSeccion`, data);
+  }
+
+  listarPreguntas(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarPreguntas`, data);
+  }
+
+  verPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/verPregunta`, data);
+  }
+
+  guardarPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarPregunta`, data);
+  }
+
+  actualizarPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarPregunta`, data);
+  }
+
+  borrarPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarPregunta`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */

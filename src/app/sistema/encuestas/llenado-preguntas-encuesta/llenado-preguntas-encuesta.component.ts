@@ -1,425 +1,346 @@
-import { Component, OnInit } from '@angular/core'
-import { PrimengModule } from '@/app/primeng.module'
-import { MenuItem, MessageService } from 'primeng/api'
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { FormsModule } from '@angular/forms'
-import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
-import { AgregarSeccionEncuestaComponent } from './agregar-seccion-encuesta/agregar-seccion-encuesta.component'
+import { Component, OnInit } from '@angular/core';
+import { PrimengModule } from '@/app/primeng.module';
+import { MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { SeccionComponent } from './seccion/seccion.component';
+import { PreguntaComponent } from './pregunta/pregunta.component';
+import { EncuestasService } from '../services/encuestas.services';
+
 @Component({
-    selector: 'app-llenado-preguntas-encuesta',
-    standalone: true,
-    imports: [
-        PrimengModule,
-        FormsModule,
-        EditorComponent,
-        AgregarSeccionEncuestaComponent,
-    ],
-    templateUrl: './llenado-preguntas-encuesta.component.html',
-    styleUrl: './llenado-preguntas-encuesta.component.scss',
-    providers: [
-        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-    ],
+  selector: 'app-llenado-preguntas-encuesta',
+  standalone: true,
+  imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent],
+  templateUrl: './llenado-preguntas-encuesta.component.html',
+  styleUrl: './../lista-categorias/lista-categorias.component.scss',
 })
 export class LlenadoPreguntasEncuestaComponent implements OnInit {
-    // BreadCrumb
-    breadCrumbItems: MenuItem[] = []
-    // Título de la encuesta
-    titleLLenadoPreguntasEncuesta: string = 'Encuesta: Satisfacción Académica'
-    // Variables para el llenado de preguntas
-    selectedItem: any
-    totalPreguntas: number = 3
-    nIndexAcordionTab: number = null
-    mostrarDialogoAgregarSeccionEncuesta: boolean = false
+  breadCrumbItems: MenuItem[] = [];
+  breadCrumbHome: MenuItem;
 
-    isDisabled: boolean = false
+  perfil: any;
+  iYAcadId: number;
+  es_director: boolean = false;
+  encuesta: any;
+  iEncuId: number;
+  iCateId: number;
 
-    // EDITOR
-    initEnunciado: EditorComponent['init'] = {
-        base_url: '/tinymce',
-        suffix: '.min',
-        menubar: false,
-        selector: 'textarea',
-        placeholder: 'Escribe aqui...',
-        height: 250,
-        plugins: 'lists image table',
-        toolbar:
-            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify fontsize | bullist numlist | ' +
-            'image table',
+  selectedItem: any;
+  totalPreguntas: number = 3;
+  nIndexAcordionTab: number = null;
+  mostrarDialogoSeccion: boolean = false;
+  mostrarDialogoPregunta: boolean = false;
+
+  isDisabled: boolean = false;
+
+  secciones: any[] = [];
+
+  pregunta: any;
+
+  constructor(
+    private messageService: MessageService,
+    private confirmationModalService: ConfirmationModalService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private store: LocalStoreService,
+    private encuestasService: EncuestasService
+  ) {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(this.perfil?.iPerfilId);
+    this.route.paramMap.subscribe((params: any) => {
+      this.iCateId = params.params.iCateId || null;
+      this.iEncuId = params.params.iEncuId || null;
+    });
+    this.breadCrumbItems = [
+      {
+        label: 'Encuestas',
+      },
+      {
+        label: 'Categorias',
+        routerLink: `/encuestas/categorias`,
+      },
+      {
+        label: 'Encuestas',
+        routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
+      },
+      {
+        label: 'Nueva encuesta',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+  }
+
+  ngOnInit() {
+    this.calcularTotalPreguntas();
+
+    if (this.iEncuId) {
+      this.verEncuesta();
     }
+  }
 
-    secciones = [
+  verEncuesta() {
+    this.encuestasService
+      .verEncuesta({
+        iEncuId: this.iEncuId,
+        iTipoUsuario: 1,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Actualización exitosa',
+            detail: 'Se actualizó la encuesta',
+          });
+          this.listarSecciones();
+        },
+        error: error => {
+          console.error('Error actualizando encuesta:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  listarSecciones() {
+    this.encuestasService
+      .listarSecciones({
+        iEncuId: this.iEncuId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.secciones = data.data;
+          this.secciones.forEach((seccion: any) => {
+            seccion.preguntas = seccion?.preguntas ? JSON.parse(seccion.preguntas) : [];
+          });
+          console.log(this.secciones, 'secciones');
+        },
+        error: error => {
+          console.error('Error obteniendo lista de preguntas:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  salir() {
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}`]);
+  }
+
+  calcularTotalPreguntas() {
+    this.totalPreguntas = this.secciones.reduce(
+      (total, seccion) => total + seccion.preguntas.length,
+      0
+    );
+  }
+
+  // Métodos para gestionar secciones
+  toggleSeccion(seccion: any) {
+    seccion.expandida = !seccion.expandida;
+  }
+
+  editarSeccion(seccion: any) {
+    console.log(seccion);
+  }
+
+  eliminarSeccion(seccion: any) {
+    this.confirmationModalService.openConfirm({
+      header: `¿Está seguro de eliminar la sección "${seccion.titulo}"?`,
+      accept: () => {
+        const index = this.secciones.findIndex(s => s.id === seccion.id);
+        if (index !== -1) {
+          this.secciones.splice(index, 1);
+          this.calcularTotalPreguntas();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sección eliminada',
+            detail: 'La sección ha sido eliminada correctamente',
+          });
+        }
+      },
+    });
+  }
+
+  duplicarSeccion(seccion: any) {
+    const nuevaSeccion = {
+      ...seccion,
+      id: this.secciones.length + 1,
+      titulo: seccion.titulo + ' (Copia)',
+      preguntas: seccion.preguntas.map(p => ({
+        ...p,
+        id: Date.now() + Math.random(),
+        alternativas: p.alternativas.map(alt => ({
+          ...alt,
+          iAlternativaId: Date.now() + Math.random(),
+        })),
+      })),
+    };
+    this.secciones.push(nuevaSeccion);
+    this.calcularTotalPreguntas();
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sección duplicada',
+      detail: 'La sección ha sido duplicada correctamente',
+    });
+  }
+
+  agregarSeccion() {
+    const nuevaSeccion = {
+      id: this.secciones.length + 1,
+      titulo: `SECCIÓN ${this.secciones.length + 1}: NUEVA SECCIÓN`,
+      expandida: true,
+      preguntas: [],
+    };
+    this.secciones.push(nuevaSeccion);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sección agregada',
+      detail: 'Nueva sección creada correctamente',
+    });
+  }
+
+  editarPregunta(pregunta: any) {
+    console.log(pregunta);
+  }
+
+  eliminarPregunta(pregunta: any) {
+    this.confirmationModalService.openConfirm({
+      header: `¿Está seguro de eliminar la pregunta seleccionada?`,
+      accept: () => {
+        const seccion = null;
+        if (seccion) {
+          const index = seccion.preguntas.findIndex(p => p.id === pregunta.id);
+          if (index !== -1) {
+            seccion.preguntas.splice(index, 1);
+            this.calcularTotalPreguntas();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Pregunta eliminada',
+              detail: 'La pregunta ha sido eliminada correctamente',
+            });
+          }
+        }
+      },
+    });
+  }
+
+  agregarPregunta(seccion: any) {
+    const numeroPregunta = this.totalPreguntas + 1;
+    const nuevaPregunta = {
+      id: Date.now(),
+      title: `Pregunta #${numeroPregunta}: Nueva pregunta`,
+      cPregunta: 'Nueva pregunta',
+      expandida: true,
+      alternativas: [
         {
-            id: 1,
-            titulo: 'SECCIÓN 1: DATOS GENERALES',
-            expandida: true,
-            preguntas: [
-                {
-                    id: 1,
-                    title: 'Pregunta #1: ¿Cuál es su edad?',
-                    cPregunta: '¿Cuál es su edad?',
-                    expandida: false,
-                    alternativas: [
-                        {
-                            iAlternativaId: 1,
-                            cAlternativaLetra: 'A',
-                            cAlternativaDescripcion: '18-25 años',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 2,
-                            cAlternativaLetra: 'B',
-                            cAlternativaDescripcion: '26-35 años',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 3,
-                            cAlternativaLetra: 'C',
-                            cAlternativaDescripcion: '36-45 años',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 4,
-                            cAlternativaLetra: 'D',
-                            cAlternativaDescripcion: 'Más de 45 años',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                    ],
-                },
-                {
-                    id: 2,
-                    title: 'Pregunta #2: ¿Cuál es su nivel educativo?',
-                    cPregunta:
-                        '¿Cuál es su nivel educativo más alto completado?',
-                    expandida: false,
-                    alternativas: [
-                        {
-                            iAlternativaId: 5,
-                            cAlternativaLetra: 'A',
-                            cAlternativaDescripcion: 'Secundaria',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 6,
-                            cAlternativaLetra: 'B',
-                            cAlternativaDescripcion: 'Técnico',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 7,
-                            cAlternativaLetra: 'C',
-                            cAlternativaDescripcion: 'Universitario',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 8,
-                            cAlternativaLetra: 'D',
-                            cAlternativaDescripcion: 'Postgrado',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                    ],
-                },
-            ],
+          iAlternativaId: Date.now() + 1,
+          cAlternativaLetra: 'A',
+          cAlternativaDescripcion: 'Opción A',
+          bAlternativaCorrecta: false,
+          cAlternativaExplicacion: '',
         },
         {
-            id: 2,
-            titulo: 'SECCIÓN 2: MONITOREO Y SEGUIMIENTO',
-            expandida: false,
-            preguntas: [
-                {
-                    id: 3,
-                    title: 'Pregunta #3: ¿Con qué frecuencia realiza monitoreo?',
-                    cPregunta:
-                        '¿Con qué frecuencia realiza actividades de monitoreo?',
-                    expandida: false,
-                    alternativas: [
-                        {
-                            iAlternativaId: 9,
-                            cAlternativaLetra: 'A',
-                            cAlternativaDescripcion: 'Diariamente',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 10,
-                            cAlternativaLetra: 'B',
-                            cAlternativaDescripcion: 'Semanalmente',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                        {
-                            iAlternativaId: 11,
-                            cAlternativaLetra: 'C',
-                            cAlternativaDescripcion: 'Mensualmente',
-                            bAlternativaCorrecta: false,
-                            cAlternativaExplicacion: '',
-                        },
-                    ],
-                },
-            ],
+          iAlternativaId: Date.now() + 2,
+          cAlternativaLetra: 'B',
+          cAlternativaDescripcion: 'Opción B',
+          bAlternativaCorrecta: false,
+          cAlternativaExplicacion: '',
         },
-    ]
+      ],
+    };
 
-    pregunta: any
+    seccion.preguntas.push(nuevaPregunta);
+    this.calcularTotalPreguntas();
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Pregunta agregada',
+      detail: 'Nueva pregunta creada correctamente',
+    });
+  }
 
-    constructor(
-        private messageService: MessageService,
-        private confirmationModalService: ConfirmationModalService
-    ) {}
-
-    ngOnInit() {
-        console.log('Inicializando llenado de preguntas de encuesta')
-        this.calcularTotalPreguntas()
+  guardarPregunta(pregunta: any) {
+    if (!pregunta.cPregunta || pregunta.cPregunta.trim() === '') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'La pregunta no puede estar vacía',
+      });
+      return;
     }
-
-    calcularTotalPreguntas() {
-        this.totalPreguntas = this.secciones.reduce(
-            (total, seccion) => total + seccion.preguntas.length,
-            0
-        )
+    if (
+      pregunta.alternativas.some(
+        (alt: any) => !alt.cAlternativaDescripcion || alt.cAlternativaDescripcion.trim() === ''
+      )
+    ) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Todas las alternativas deben tener descripción',
+      });
+      return;
     }
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Pregunta guardada',
+      detail: 'La pregunta ha sido guardada correctamente',
+    });
 
-    // Métodos para gestionar secciones
-    toggleSeccion(seccion: any) {
-        seccion.expandida = !seccion.expandida
-    }
+    pregunta.expandida = false;
+  }
 
-    eliminarSeccion(seccion: any) {
-        this.confirmationModalService.openConfirm({
-            header: `¿Está seguro de eliminar la sección "${seccion.titulo}"?`,
-            accept: () => {
-                const index = this.secciones.findIndex(
-                    (s) => s.id === seccion.id
-                )
-                if (index !== -1) {
-                    this.secciones.splice(index, 1)
-                    this.calcularTotalPreguntas()
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Sección eliminada',
-                        detail: 'La sección ha sido eliminada correctamente',
-                    })
-                }
-            },
-        })
-    }
+  vistaPrevia() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Vista previa',
+      detail: 'Cargando vista previa de la encuesta...',
+    });
+  }
 
-    duplicarSeccion(seccion: any) {
-        const nuevaSeccion = {
-            ...seccion,
-            id: this.secciones.length + 1,
-            titulo: seccion.titulo + ' (Copia)',
-            preguntas: seccion.preguntas.map((p) => ({
-                ...p,
-                id: Date.now() + Math.random(),
-                alternativas: p.alternativas.map((alt) => ({
-                    ...alt,
-                    iAlternativaId: Date.now() + Math.random(),
-                })),
-            })),
-        }
-        this.secciones.push(nuevaSeccion)
-        this.calcularTotalPreguntas()
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Sección duplicada',
-            detail: 'La sección ha sido duplicada correctamente',
-        })
-    }
+  configuracion() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Configuración',
+      detail: 'Abriendo configuración de la encuesta...',
+    });
+  }
 
-    agregarSeccion() {
-        const nuevaSeccion = {
-            id: this.secciones.length + 1,
-            titulo: `SECCIÓN ${this.secciones.length + 1}: NUEVA SECCIÓN`,
-            expandida: true,
-            preguntas: [],
-        }
-        this.secciones.push(nuevaSeccion)
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Sección agregada',
-            detail: 'Nueva sección creada correctamente',
-        })
-    }
+  toggleEditorState() {
+    this.isDisabled = !this.isDisabled;
+  }
 
-    eliminarPregunta(seccionId: number, pregunta: any) {
-        this.confirmationModalService.openConfirm({
-            header: `¿Está seguro de eliminar "${pregunta.title}"?`,
-            accept: () => {
-                const seccion = this.secciones.find((s) => s.id === seccionId)
-                if (seccion) {
-                    const index = seccion.preguntas.findIndex(
-                        (p) => p.id === pregunta.id
-                    )
-                    if (index !== -1) {
-                        seccion.preguntas.splice(index, 1)
-                        this.calcularTotalPreguntas()
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Pregunta eliminada',
-                            detail: 'La pregunta ha sido eliminada correctamente',
-                        })
-                    }
-                }
-            },
-        })
-    }
+  abrirDialgAgregarSeccionCategoria() {
+    this.mostrarDialogoSeccion = true;
+  }
 
-    agregarPregunta(seccion: any) {
-        const numeroPregunta = this.totalPreguntas + 1
-        const nuevaPregunta = {
-            id: Date.now(),
-            title: `Pregunta #${numeroPregunta}: Nueva pregunta`,
-            cPregunta: 'Nueva pregunta',
-            expandida: true,
-            alternativas: [
-                {
-                    iAlternativaId: Date.now() + 1,
-                    cAlternativaLetra: 'A',
-                    cAlternativaDescripcion: 'Opción A',
-                    bAlternativaCorrecta: false,
-                    cAlternativaExplicacion: '',
-                },
-                {
-                    iAlternativaId: Date.now() + 2,
-                    cAlternativaLetra: 'B',
-                    cAlternativaDescripcion: 'Opción B',
-                    bAlternativaCorrecta: false,
-                    cAlternativaExplicacion: '',
-                },
-            ],
-        }
-
-        seccion.preguntas.push(nuevaPregunta)
-        this.calcularTotalPreguntas()
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Pregunta agregada',
-            detail: 'Nueva pregunta creada correctamente',
-        })
-    }
-
-    agregarAlternativa(pregunta: any) {
-        const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-        const nuevaLetra = letras[pregunta.alternativas.length]
-
-        if (nuevaLetra) {
-            pregunta.alternativas.push({
-                iAlternativaId: Date.now(),
-                cAlternativaLetra: nuevaLetra,
-                cAlternativaDescripcion: `Opción ${nuevaLetra}`,
-                bAlternativaCorrecta: false,
-                cAlternativaExplicacion: '',
-            })
-        }
-    }
-
-    eliminarAlternativa(pregunta: any, index: number) {
-        if (pregunta.alternativas.length > 2) {
-            pregunta.alternativas.splice(index, 1)
-            const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-            pregunta.alternativas.forEach((alt: any, i: number) => {
-                alt.cAlternativaLetra = letras[i]
-            })
-        } else {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Debe tener al menos 2 alternativas',
-            })
-        }
-    }
-
-    cambiarEstadoCheckbox(iAlternativaId: any, alternativas: any[]) {
-        alternativas.forEach((alternativa) => {
-            if (alternativa.iAlternativaId != iAlternativaId) {
-                alternativa.bAlternativaCorrecta = false
-                alternativa.cAlternativaExplicacion = ''
-            }
-        })
-    }
-
-    guardarPregunta(pregunta: any) {
-        if (!pregunta.cPregunta || pregunta.cPregunta.trim() === '') {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'La pregunta no puede estar vacía',
-            })
-            return
-        }
-        if (
-            pregunta.alternativas.some(
-                (alt: any) =>
-                    !alt.cAlternativaDescripcion ||
-                    alt.cAlternativaDescripcion.trim() === ''
-            )
-        ) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Todas las alternativas deben tener descripción',
-            })
-            return
-        }
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Pregunta guardada',
-            detail: 'La pregunta ha sido guardada correctamente',
-        })
-
-        pregunta.expandida = false
-    }
-
-    vistaPrevia() {
-        this.messageService.add({
-            severity: 'info',
-            summary: 'Vista previa',
-            detail: 'Cargando vista previa de la encuesta...',
-        })
-    }
-
-    configuracion() {
-        this.messageService.add({
-            severity: 'info',
-            summary: 'Configuración',
-            detail: 'Abriendo configuración de la encuesta...',
-        })
-    }
-
-    toggleEditorState() {
-        this.isDisabled = !this.isDisabled
-    }
-
-    abrirDialgAgregarSeccionCategoria() {
-        this.mostrarDialogoAgregarSeccionEncuesta = true
-    }
-
-    cerrarDialogoSeccionCategoria() {
-        this.mostrarDialogoAgregarSeccionEncuesta = false
-    }
-    /*cancelarAgregarSeccionCategoria() {
+  cerrarDialogoSeccionCategoria() {
+    this.mostrarDialogoSeccion = false;
+  }
+  /*cancelarAgregarSeccionCategoria() {
         this.cancelarAgregarSeccionCategoria()
     }
      */
-    onAgregarSeccion(nuevaSeccion: any) {
-        if (nuevaSeccion) {
-            this.secciones.push(nuevaSeccion)
-            this.calcularTotalPreguntas()
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Sección agregada',
-                detail: 'Nueva sección creada correctamente',
-            })
-        }
-        this.cerrarDialogoSeccionCategoria()
+  onAgregarSeccion(nuevaSeccion: any) {
+    if (nuevaSeccion) {
+      this.secciones.push(nuevaSeccion);
+      this.calcularTotalPreguntas();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sección agregada',
+        detail: 'Nueva sección creada correctamente',
+      });
     }
+    this.cerrarDialogoSeccionCategoria();
+  }
 }

@@ -6,7 +6,8 @@
   }
 }
 
-:host ::ng-deep .p-panel-header {
+:host ::ng-deep .p-panel-header,
+:host ::ng-deep .p-accordion-header-link {
   background-color: var(--bg-header-modal) !important;
   color: var(--primary-color-text) !important;
   i {
@@ -14,11 +15,29 @@
   }
 }
 
+:host ::ng-deep .p-accordion-header-link {
+  padding: 0.75em !important;
+}
+
+:host ::ng-deep .p-accordion .p-panel-content {
+  padding: 0.25em !important;
+}
+
 :host ::ng-deep .p-inputgroup .group-element,
 :host ::ng-deep .p-inputgroup .p-inputtextarea,
 :host ::ng-deep .p-inputgroup .group-element .p-dropdown {
   width: 100% !important;
   border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputnumber-input:not(:only-child) {
+  border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputnumber-input:only-child {
+  border-radius: 0 !important;
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
 }
 
 :host ::ng-deep .p-inputgroup .group-element.p-dropdown input {

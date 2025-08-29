@@ -1,0 +1,91 @@
+<p-dialog
+  header="Agregar seccion"
+  [(visible)]="visible"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (onHide)="onHide()"
+  [style]="{ width: '56rem' }"
+>
+  <form [formGroup]="formSeccion">
+    <div class="grid p-fluid mt-3">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <span>Orden</span>
+          </p-inputGroupAddon>
+          <p-inputNumber
+            formControlName="iSeccionOrden"
+            [min]="1"
+            [step]="1"
+            placeholder="Indique"
+            [useGrouping]="false"
+            [showButtons]="true"
+            styleClass="group-element"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+    <div class="grid p-fluid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Título</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cSeccionTitulo"
+            placeholder="Ingrese el título"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+          <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="cSeccionDescripcion"
+            pInputTextarea
+            placeholder="Escriba"
+            maxLength="500"
+            [rows]="3"
+            class="group-element"
+            [style.minHeight]="3"
+            [style.maxHeight]="6"
+            [cdkAutosizeMinRows]="3 + 1.5"
+            [cdkAutosizeMaxRows]="6"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <br />
+
+  <div class="flex justify-content-end gap-4">
+    <button
+      pButton
+      pRipple
+      label="Cancelar"
+      class="p-button-text p-button-secondary"
+      (click)="cancelar()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Guardar"
+      icon="pi pi-check"
+      class="p-button-success"
+      (click)="finalizar()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Actualizar"
+      icon="pi pi-check"
+      class="p-button-success"
+      (click)="finalizar()"
+    ></button>
+  </div>
+</p-dialog>

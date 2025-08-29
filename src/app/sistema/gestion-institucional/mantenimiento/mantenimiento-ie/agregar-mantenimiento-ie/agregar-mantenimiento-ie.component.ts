@@ -82,7 +82,7 @@ export class AgregarMantenimientoIeComponent implements OnInit {
         esquema: 'acad',
         tabla: 'nivel_tipos',
         campos: '*',
-        where: '',
+        where: 'iNivelTipoId in (1,3,4)',
       },
     };
 

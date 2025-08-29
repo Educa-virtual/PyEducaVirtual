@@ -27,7 +27,7 @@ export class HorarioComponent implements OnInit {
     { id: 4, nombre: 'Jueves' },
     { id: 5, nombre: 'Viernes' },
   ];
-  iYAcadId = '';
+  iYAcadId: any = '';
 
   constructor(
     private horarioService: HorarioService,

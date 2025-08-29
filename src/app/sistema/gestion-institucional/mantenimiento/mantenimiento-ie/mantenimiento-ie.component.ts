@@ -23,6 +23,7 @@ import { MantenimientoIeService, FiltrosIE } from './mantenimiento-ie.service';
   styleUrl: './mantenimiento-ie.component.scss',
 })
 export class MantenimientoIeComponent implements OnInit {
+  title: string = 'Mantenimiento Instituciones Educativas';
   selectedItem: any;
   titleEditarMantenimiento: string = 'Editar Institución Educativa';
   titleAgregarMantenimiento: string = 'Agregar Institución Educativa';

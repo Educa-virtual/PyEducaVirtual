@@ -101,14 +101,14 @@ export class FullCalendarioComponent implements OnChanges {
   dialogDateLabel = '';
   dialogEvents: EventApi[] = [];
 
-  // Maneja clic directo en un evento
   handleEventClick(info: EventClickArg) {
     const clickedDate = info.event.start;
     if (!clickedDate) return;
 
-    // tomar todos los eventos del calendario y filtrar por el mismo día
     const allEvents = info.view.calendar.getEvents();
-    const eventsOnDay = allEvents.filter(e => this.isSameDay(e.start, clickedDate));
+    const eventsOnDay = allEvents
+      .filter(e => e.display !== 'none')
+      .filter(e => this.isSameDay(e.start, clickedDate));
     eventsOnDay.sort((a, b) => (a.start?.getTime() || 0) - (b.start?.getTime() || 0));
 
     this.dialogEvents = eventsOnDay;
@@ -119,25 +119,19 @@ export class FullCalendarioComponent implements OnChanges {
   }
 
   handleMoreLinkClick(arg: any) {
-    // Debug opcional (descomenta si quieres inspeccionar la estructura)
-    // console.log('moreLink arg:', arg);
-
-    // 1) intentar obtener todos los segmentos de eventos (nombres posibles según versión)
     const segs = arg.allSegs || arg.segs || [];
-    this.dialogEvents = segs.map((s: any) => s.event);
+    this.dialogEvents = segs
+      .map((s: any) => s.event)
+      .filter((event: any) => event.display !== 'none');
 
-    // 2) intentar obtener la fecha "verdadera" del día de la celda
     let fecha: Date | undefined;
 
-    // a) si el arg.date existe y es Date/ISO, normalizamos usando las partes UTC
     if (arg && arg.date) {
       const d = typeof arg.date === 'string' ? new Date(arg.date) : arg.date;
       if (d instanceof Date && !isNaN(d.getTime())) {
-        // Construir una fecha local con las partes UTC para evitar el desfase de zona horaria
         fecha = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
       }
     }
-    // c) finalmente, tomar la fecha desde el primer evento (start) si sigue sin fecha
     if (!fecha && this.dialogEvents.length > 0) {
       const firstStart = this.dialogEvents[0].start;
       if (firstStart instanceof Date && !isNaN(firstStart.getTime())) {
@@ -150,13 +144,8 @@ export class FullCalendarioComponent implements OnChanges {
       }
     }
 
-    // Formatear label
     this.dialogDateLabel = fecha ? this.formatDateLabel(fecha) : '';
-
-    // Abrir dialog
     this.showEventsDialog = true;
-
-    // evitar popup por defecto
     return 'none';
   }
 

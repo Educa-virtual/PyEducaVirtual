@@ -52,18 +52,6 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
-  filterFestividad(valor: any) {
-    this.events.map(evento => {
-      if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == true) {
-        evento.display = 'block';
-      }
-      if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == false) {
-        evento.display = 'none';
-      }
-    });
-    this.events = Object.assign([], this.events);
-  }
-
   formatAnioAcademico(anioAcademico: any) {
     const fechaInicio = new Date(anioAcademico.dtYAcadInicio);
     const fechaFin = new Date(anioAcademico.dYAcadFin);
@@ -94,13 +82,39 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
+  /*filterCurso(valor: any) {
+      this.events.map(evento => {
+        if (evento.cCursoNombre == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == true) {
+          evento.display = 'block';
+        }
+        if (evento.cCursoNombre == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == false) {
+          evento.display = 'none';
+        }
+        evento.iProgActId='xxx';
+      });
+      this.events = Object.assign([], this.events);
+      console.log(this.events)
+    }*/
+
   filterCurso(valor: any) {
-    console.log('valor', valor);
+    this.events = this.events.map(evento => {
+      if (evento.cCursoNombre == valor.checkbox.cCursoNombre) {
+        return {
+          ...evento,
+          display: valor.checkbox.mostrar ? 'block' : 'none',
+          iProgActId: 'xxx',
+        };
+      }
+      return evento;
+    });
+  }
+
+  filterFestividad(valor: any) {
     this.events.map(evento => {
-      if (evento.cCursoNombre == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == true) {
+      if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == true) {
         evento.display = 'block';
       }
-      if (evento.cCursoNombre == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == false) {
+      if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == false) {
         evento.display = 'none';
       }
     });

@@ -1,12 +1,5 @@
 <br />
 <div class="grid">
-  <!-- <div class="col-12">
-        <label for="agregarInstitucion" class="block text-900 font-medium mb-2">
-            Agregar Institución Educativa
-        </label>
-        <p-dropdown id="agregarInstitucion" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
   <div class="col-12 md:col-6 lg:col-4">
     <label for="clieCodigoModular" class="block text-900 font-medium mb-2"> Código Modular </label>
     <input
@@ -29,59 +22,27 @@
       (input)="convertirMayusculas($event)"
     />
   </div>
-  <!-- <div class="col-12 md:col-6 lg:col-4">
-        <label for="iDsttId" class="block text-900 font-medium mb-2">
-            País 
-        </label>
-        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div>
-    <div class="col-12 md:col-6 lg:col-4">
-        <label for="iDsttId" class="block text-900 font-medium mb-2">
-            Departamento 
-        </label>
-        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div>
-    <div class="col-12 md:col-6 lg:col-4">
-        <label for="iDsttId" class="block text-900 font-medium mb-2">
-            Distrito 
-        </label>
-        <p-dropdown id="iDsttId" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
   <div class="col-12 md:col-6 lg:col-4">
     <label for="distrito" class="block text-900 font-medium mb-2"> Distrito </label>
     <p-dropdown
       id="distrito"
+      [(ngModel)]="distritoSeleccionado"
       [options]="distritos"
-      optionLabel="label"
-      optionValue="value"
+      optionLabel="cDsttNombre"
+      optionValue="iDsttId"
       placeholder="Seleccionar..."
       [style]="{ width: '100%' }"
     >
     </p-dropdown>
   </div>
-  <!-- <div class="col-12 md:col-6 lg:col-4">
-        <label for="zona" class="block text-900 font-medium mb-2">
-            Zona 
-        </label>
-        <p-dropdown 
-            id="zona" 
-            [options]="zonas"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccionar..." 
-            [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
   <div class="col-12 md:col-6 lg:col-4">
     <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
     <p-dropdown
       id="iZonaId"
-      [options]="zona"
-      optioLabel="label"
-      optionValue="value"
+      [options]="zonas"
+      [(ngModel)]="zonaSeleccionado"
+      optioLabel="cDsttNombre"
+      optionValue="iDsttId"
       placeholder="Seleccionar..."
       [style]="{ width: '100%' }"
     >
@@ -91,9 +52,10 @@
     <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector </label>
     <p-dropdown
       id="iTipoSectorId"
-      [options]="sector"
-      optioLabel="label"
-      optionValue="value"
+      [options]="sectores"
+      [(ngModel)]="sectorSeleccionado"
+      optioLabel="cTipoSectorNombre"
+      optionValue="iTipoSectorId"
       placeholder="Seleccionar..."
       [style]="{ width: '100%' }"
     >
@@ -123,9 +85,10 @@
     <label for="clieLogo" class="block text-900 font-medium mb-2"> NIvel </label>
     <p-dropdown
       id="Nivel"
-      [options]="Nivel"
-      optionsLavel="label"
-      optionValue="value"
+      [options]="niveles"
+      [(ngModel)]="nivelSeleccionado"
+      optionsLavel="cNivelTipoNombre"
+      optionValue="iNivelTipoId"
       placeholder="Seleccionar..."
       [style]="{ width: '100%' }"
     >
@@ -135,118 +98,18 @@
     <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
     <p-dropdown
       id="iUgelId"
-      [options]="ugel"
-      optionLabel="label"
-      optionValue="value"
+      [options]="ugeles"
+      [(ngModel)]="nivelSeleccionado"
+      optionLabel="cUgelNombre"
+      optionValue="iUgelId"
       placeholder="Seleccionar..."
       [style]="{ width: '100%' }"
     >
     </p-dropdown>
   </div>
-  <div class="col-12 md:col-6 lg:col-4">
-    <label for="iUgelId" class="block text-900 font-medium mb-2"> Sede </label>
-    <p-dropdown
-      id="sede"
-      [options]="sede"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar..."
-      [style]="{ width: '100%' }"
-    >
-    </p-dropdown>
-  </div>
-  <!-- <div class="col-12">
-        <label for="agregarInstitucion" class="block text-900 font-medium mb-2">
-            Sede 
-        </label>
-        <p-dropdown id="agregarInstitucion" placeholder="Seleccionar..." [style]="{ width: '100%' }">
-        </p-dropdown>
-    </div> -->
 </div>
 
 <div class="flex justify-content-end gap-2 mt-4">
   <p-button [severity]="'secondary'" label="Cancelar" (click)="btnCancelar()"> </p-button>
   <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()"> </p-button>
 </div>
-<!-- <br />
-<div class="field mb-4">
-  <label for="fecha" class="block text-900 font-medium mb-2">
-    Fecha
-    <span class="text-red-500">*</span>
-  </label>
-  <p-calendar
-    formControlName="fecha"
-    [showIcon]="true"
-    dateFormat="dd/mm/yy"
-    placeholder="Seleccionar fecha"
-    [style]="{ width: '100%' }"
-  >
-  </p-calendar>
-  <br />
-  <div class="flex justify-content-between align-items-center mt-1">
-    <small class="text-blue-600">Es recuperable</small>
-  </div>
-  <button
-    type="button"
-    pButton
-    pRipple
-    label="Sí"
-    class="p-button-primary p-button-sm"
-    style="padding: 0.25rem 0.75rem; font-size: 0.875rem"
-  ></button>
-</div>
-<div class="field mb-4">
-  <label for="nombre" class="block text-900 font-medium mb-2">
-    Nombre
-    <span class="text-red-500">*</span>
-  </label>
-  <input
-    id="nombre"
-    type="text"
-    pInputText
-    formControlName="nombre"
-    placeholder="Ingrese el nombre"
-    class="w-full"
-  />
-</div>
-<div class="field mb-4">
-  <label for="urlDocumento" class="block text-900 font-medium mb-2"> URL del documento </label>
-  <input
-    id="urlDocumento"
-    type="url"
-    pInputText
-    formControlName="urlDocumento"
-    placeholder="https://ejemplo.com/documento.pdf"
-    class="w-full"
-  />
-</div>
-<div class="field mb-4">
-  <label for="informacionAdicional" class="block text-900 font-medium mb-2">
-    Información adicional
-  </label>
-  <textarea
-    pInputTextarea
-    formControlName="informacionAdicional"
-    placeholder="Ingrese información adicional..."
-    class="w-full"
-  >
-  </textarea>
-</div>
-<div class="flex justify-content-end gap-2 mt-4">
-  <button
-    type="button"
-    pButton
-    pRipple
-    label="Cancelar"
-    class="p-button-text p-button-secondary"
-    (click)="cancelarEdicion()"
-  ></button>
-  <button
-    type="submit"
-    pButton
-    pRipple
-    label="Guardar"
-    class="p-button-primary"
-    (click)="guardarRegistro()"
-  ></button>
-</div> -->

@@ -32,7 +32,7 @@ export class MantenimientoIeComponent implements OnInit {
   loading: boolean = false;
   totalRegistros: number = 0;
   paginaActual: number = 1;
-  registrosPorPagina: number = 20;
+  registrosPorPagina: number = 10000;
 
   columns = [
     {
@@ -74,14 +74,6 @@ export class MantenimientoIeComponent implements OnInit {
       header: 'Zona',
       text_header: 'center',
       text: 'center',
-    },
-    {
-      type: 'text',
-      width: '12rem',
-      field: 'cSedeNombre',
-      header: 'Sede',
-      text_header: 'center',
-      text: 'left',
     },
     {
       type: 'actions',

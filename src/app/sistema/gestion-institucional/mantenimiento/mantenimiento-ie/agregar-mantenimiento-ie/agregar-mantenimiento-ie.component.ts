@@ -97,25 +97,6 @@ export class AgregarMantenimientoIeComponent implements OnInit {
     });
   }
 
-  crearFormulario() {
-    this.formulario = this.fb.group({
-      cIieeCodigoModular: [
-        '',
-        [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
-      ],
-      cIieeNombre: ['', [Validators.required, Validators.maxLength(200)]],
-      iDsttId: [null, Validators.required],
-      iZonaId: [null],
-      iTipoSectorId: [null, Validators.required],
-      cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
-      cIieeDireccion: [''],
-      iNivelTipoId: [null],
-      iUgelId: [null],
-      iSedeId: [null],
-      iSesionId: [1],
-    });
-  }
-
   cargarDistritos() {
     const data = {
       petition: 'post',
@@ -186,6 +167,25 @@ export class AgregarMantenimientoIeComponent implements OnInit {
       error: error => {
         console.log(error);
       },
+    });
+  }
+
+  crearFormulario() {
+    this.formulario = this.fb.group({
+      cIieeCodigoModular: [
+        '',
+        [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
+      ],
+      cIieeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+      iDsttId: [null, Validators.required],
+      iZonaId: [null],
+      iTipoSectorId: [null, Validators.required],
+      cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
+      cIieeDireccion: [''],
+      iNivelTipoId: [null],
+      iUgelId: [null],
+      iSedeId: [null],
+      iSesionId: [1],
     });
   }
 

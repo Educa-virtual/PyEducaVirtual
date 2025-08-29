@@ -21,6 +21,7 @@ export class HorarioComponent implements OnInit {
   detalleMatricula: string = '';
   iYAcadId = '';
   franjas: { bloque: number; horario: string }[] = [];
+  iYAcadId: number;
   dias: Dia[] = [
     { id: 1, nombre: 'Lunes' },
     { id: 2, nombre: 'Martes' },
@@ -42,9 +43,6 @@ export class HorarioComponent implements OnInit {
       routerLink: '/',
     };
     this.breadCrumbItems = [
-      {
-        label: 'Estudiante',
-      },
       {
         label: 'Horario',
       },

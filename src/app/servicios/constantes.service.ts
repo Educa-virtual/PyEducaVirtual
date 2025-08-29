@@ -100,6 +100,7 @@ const docente = [
           {
             label: 'Recordatorios de cumpleaños',
             icon: 'pi pi-fw pi-bell',
+            routerLink: ['/bienestar/recordario-fechas'],
           },
         ],
       },
@@ -167,6 +168,22 @@ const estudiante = [
         label: 'Buzón de sugerencias',
         icon: 'pi pi-fw pi-envelope',
         routerLink: ['/buzon-sugerencias/estudiante'],
+      },
+      {
+        label: 'Reportes académicos',
+        icon: 'pi pi-chart-bar',
+        items: [
+          {
+            label: 'Progreso',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/estudiante/reportes-academicos/progreso'],
+          },
+          {
+            label: 'Académico',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/estudiante/reportes-academicos/academico'],
+          },
+        ],
       },
       {
         label: 'Mesa de Partes GORE',
@@ -518,8 +535,14 @@ const administracion = [
             routerLink: ['/bienestar/recordario-fechas'],
           },
           {
-            label: 'Reportes e informes',
-            icon: 'pi pi-fw pi-chart-bar',
+            label: 'Seguimiento de bienestar',
+            icon: 'pi pi-fw pi-eye',
+            routerLink: ['/bienestar/seguimiento-bienestar'],
+          },
+          {
+            label: 'Informes y estadística',
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: ['/bienestar/informe-estadistico'],
           },
         ],
       },
@@ -584,6 +607,11 @@ const apoderado = [
             label: 'Gestionar Fichas Socioeconómicas',
             icon: 'pi pi-fw pi-user-edit',
             routerLink: ['/bienestar/gestion-fichas-apoderado'],
+          },
+          {
+            label: 'Gestionar encuestas',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/bienestar/gestionar-encuestas'],
           },
         ],
       },

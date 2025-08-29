@@ -23,6 +23,7 @@ import {
   ESPECIALISTA_UGEL,
 } from '@/app/servicios/perfilesConstantes';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { APODERADO, ASISTENTE_SOCIAL } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-gestionar-encuestas',
@@ -60,10 +61,12 @@ export class GestionarEncuestasComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
-  perfil_permitido: boolean = false;
-  perfiles_permitido: Array<number> = [
+  perfil_administra: boolean = false;
+  perfil_consulta: boolean = false;
+  perfiles_administran: Array<number> = [
     DIRECTOR_IE,
     SUBDIRECTOR_IE,
+    ASISTENTE_SOCIAL,
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
   ];
@@ -98,9 +101,10 @@ export class GestionarEncuestasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.perfil_permitido = this.perfiles_permitido.includes(+this.perfil.iPerfilId);
+    this.perfil_administra = this.perfiles_administran.includes(+this.perfil.iPerfilId);
+    this.perfil_consulta = [APODERADO].includes(+this.perfil.iPerfilId);
     this.listarEncuestas();
-    if (this.perfil_permitido) {
+    if (this.perfil_administra || this.perfil_consulta) {
       this.datosEncuestas
         .getEncuestaParametros({
           iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -123,12 +127,8 @@ export class GestionarEncuestasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data.length) {
-            this.encuestas = data.data;
-            this.encuestas_filtradas = this.encuestas;
-          } else {
-            this.encuestas = null;
-          }
+          this.encuestas = data.data;
+          this.filtrarEncuestas();
         },
         error: error => {
           console.error('Error obteniendo encuestas:', error);
@@ -148,11 +148,22 @@ export class GestionarEncuestasComponent implements OnInit {
   filtrarEncuestas() {
     const filtro = this.filtro.nativeElement.value;
     this.encuestas_filtradas = this.encuestas.filter((encuesta: any) => {
-      if (encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.cEncuCateNombre.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.cEstadoNombre.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.dEncuDesde.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
-      if (encuesta.dEncuHasta.toLowerCase().includes(filtro.toLowerCase())) return encuesta;
+      if (encuesta.cEncuNombre && encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
+      if (
+        encuesta.cEncuCateNombre &&
+        encuesta.cEncuCateNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return encuesta;
+      if (
+        encuesta.cEstadoNombre &&
+        encuesta.cEstadoNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return encuesta;
+      if (encuesta.dEncuDesde && encuesta.dEncuDesde.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
+      if (encuesta.dEncuHasta && encuesta.dEncuHasta.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
       return null;
     });
   }
@@ -214,6 +225,22 @@ export class GestionarEncuestasComponent implements OnInit {
 
   responderEncuesta(item) {
     this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/ver`]);
+  }
+
+  getColorEncuesta(encuesta) {
+    if (Number(encuesta.puede_responder) === 0) {
+      return 'card-disabled';
+    }
+    if (Number(encuesta.alerta) === 1) {
+      return 'card-alerta';
+    } else {
+      const respuestas_blanco =
+        Number(encuesta.count_preguntas) - Number(encuesta.count_respuestas);
+      if (respuestas_blanco > 0) {
+        return 'card-warning';
+      }
+      return 'card-regular';
+    }
   }
 
   accionBnt({ accion, item }) {
@@ -291,6 +318,12 @@ export class GestionarEncuestasComponent implements OnInit {
       header: 'Hasta',
       text_header: 'center',
       text: 'center',
+      class: (rowData: any) => {
+        if (Number(rowData?.esta_abierta) === 1) {
+          return 'font-bold';
+        }
+        return null;
+      },
     },
     {
       field: 'cEncuCateNombre',
@@ -310,11 +343,16 @@ export class GestionarEncuestasComponent implements OnInit {
     },
     {
       field: 'cEstadoNombre',
-      type: 'text',
+      type: 'tag',
       width: '10%',
       header: 'Estado',
       text_header: 'center',
       text: 'center',
+      styles: {
+        BORRADOR: 'danger',
+        TERMINADA: 'warning',
+        APROBADA: 'success',
+      },
     },
     {
       type: 'actions',

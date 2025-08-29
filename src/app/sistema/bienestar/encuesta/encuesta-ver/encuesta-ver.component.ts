@@ -76,6 +76,9 @@ export class EncuestaVerComponent implements OnInit {
     if (this.puede_editar) {
       this.breadCrumbItems = [
         {
+          label: 'Bienestar social',
+        },
+        {
           label: 'Gestionar encuestas',
           routerLink: '/bienestar/gestionar-encuestas',
         },
@@ -85,6 +88,9 @@ export class EncuestaVerComponent implements OnInit {
       ];
     } else {
       this.breadCrumbItems = [
+        {
+          label: 'Bienestar social',
+        },
         {
           label: 'Gestionar encuestas',
           routerLink: '/bienestar/gestionar-encuestas',
@@ -119,6 +125,9 @@ export class EncuestaVerComponent implements OnInit {
         next: (data: any) => {
           if (data.data) {
             this.encuesta = data.data;
+            this.puede_editar = this.funcionesBienestar.formatearFormBoolean(
+              this.encuesta?.puede_responder
+            );
             this.encuesta.permisos_detalle = JSON.parse(this.encuesta.permisos_detalle);
           }
         },
@@ -221,7 +230,7 @@ export class EncuestaVerComponent implements OnInit {
         this._messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
-          detail: 'Se registraron los datos',
+          detail: 'Se registraron los datos. Redirigiendo a la lista de encuestas',
         });
         setTimeout(() => {
           this.router.navigate(['/bienestar/gestionar-encuestas']);
@@ -251,7 +260,7 @@ export class EncuestaVerComponent implements OnInit {
         this._messageService.add({
           severity: 'success',
           summary: 'Actualización exitosa',
-          detail: 'Se actualizaron los datos',
+          detail: 'Se actualizaron los datos. Redirigiendo a la lista de encuestas',
         });
         setTimeout(() => {
           this.router.navigate(['/bienestar/gestionar-encuestas']);
@@ -269,7 +278,7 @@ export class EncuestaVerComponent implements OnInit {
   }
 
   salir() {
-    if (!this.puede_editar) {
+    if (!this.puede_editar && Number(this.perfil.iPerfilId) !== ESTUDIANTE) {
       this.router.navigate(['/bienestar/encuesta/' + this.iEncuId + '/respuestas']);
     } else {
       this.router.navigate(['/bienestar/gestionar-encuestas']);

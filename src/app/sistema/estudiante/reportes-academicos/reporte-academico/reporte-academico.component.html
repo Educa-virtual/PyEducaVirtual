@@ -1,0 +1,67 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Reporte académico</h3>
+    </div>
+  </ng-template>
+
+  <div class="grid p-fluid mt-3">
+    <div class="field col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
+        <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
+      </p-inputGroup>
+    </div>
+    <div class="field col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Área:</p-inputGroupAddon>
+        <p-dropdown
+          [options]="cursos"
+          optionLabel="cCursoNombre"
+          [checkmark]="true"
+          optionValue="iIeCursoId"
+          [appendTo]="'body'"
+          [style]="{ flex: '1', width: '100%' }"
+          placeholder="Seleccione..."
+          [(ngModel)]="iIeCursoId"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="field col-2">
+      <button
+        pButton
+        pRipple
+        (click)="generarReporte()"
+        icon="pi pi-chart-bar"
+        label="Generar"
+        class="p-button-success"
+      ></button>
+    </div>
+  </div>
+  <small
+    >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
+    otra opción</small
+  >
+
+  @if (graficos.length === 0 && mostrarMensajeSinDatos) {
+    <br /><br />
+    <div class="text-center mt-3">
+      <img src="assets/images/icons/sin-datos.gif" alt="logo" width="20%" />
+      <p>No hay resultados para mostrar</p>
+    </div>
+  } @else {
+    <div class="grid p-fluid mt-3">
+      <div *ngFor="let grafico of graficos" class="col-6">
+        <p-chart
+          type="bar"
+          [data]="grafico.data"
+          [options]="grafico.options"
+          [plugins]="grafico.plugins"
+        ></p-chart>
+      </div>
+    </div>
+  }
+</p-panel>
+<p-toast></p-toast>

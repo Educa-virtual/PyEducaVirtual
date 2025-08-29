@@ -79,7 +79,7 @@ export class FichaFamiliaComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.familiares = data.data;
-          this.familiares_filtrados = this.familiares;
+          this.filtrarTabla();
         },
         error: error => {
           console.error('Error al obtener familiares:', error);
@@ -128,10 +128,20 @@ export class FichaFamiliaComponent implements OnInit {
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value.toLowerCase();
     this.familiares_filtrados = this.familiares.filter((familiar: any) => {
-      if (familiar.cTipoFamiliarDescripcion.toLowerCase().includes(filtro)) return familiar;
-      if (familiar.cTipoIdentSigla.toLowerCase().includes(filtro)) return familiar;
-      if (familiar.cPersDocumento.toLowerCase().includes(filtro)) return familiar;
-      if (familiar.cPersNombresApellidos.toLowerCase().includes(filtro)) return familiar;
+      if (
+        familiar.cTipoFamiliarDescripcion &&
+        familiar.cTipoFamiliarDescripcion.toLowerCase().includes(filtro)
+      )
+        return familiar;
+      if (familiar.cTipoIdentSigla && familiar.cTipoIdentSigla.toLowerCase().includes(filtro))
+        return familiar;
+      if (familiar.cPersDocumento && familiar.cPersDocumento.toLowerCase().includes(filtro))
+        return familiar;
+      if (
+        familiar.cPersNombresApellidos &&
+        familiar.cPersNombresApellidos.toLowerCase().includes(filtro)
+      )
+        return familiar;
       return null;
     });
   }

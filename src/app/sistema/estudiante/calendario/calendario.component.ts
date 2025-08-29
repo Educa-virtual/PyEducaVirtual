@@ -82,33 +82,20 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
-  /*filterCurso(valor: any) {
-      this.events.map(evento => {
-        if (evento.cCursoNombre == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == true) {
-          evento.display = 'block';
-        }
-        if (evento.cCursoNombre == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == false) {
-          evento.display = 'none';
-        }
-        evento.iProgActId='xxx';
-      });
-      this.events = Object.assign([], this.events);
-      console.log(this.events)
-    }*/
-
   filterCurso(valor: any) {
     this.events = this.events.map(evento => {
+      const mostrar = this.obtenerEstadoMostrarActividad(evento.cActTipoNombre);
       if (evento.cCursoNombre == valor.checkbox.cCursoNombre) {
         return {
           ...evento,
-          display: valor.checkbox.mostrar ? 'block' : 'none',
-          iProgActId: 'xxx',
+          display: valor.checkbox.mostrar && mostrar ? 'block' : 'none',
         };
       }
       return evento;
     });
   }
 
+  //Dias recuperables, feriados, etc.
   filterFestividad(valor: any) {
     this.events.map(evento => {
       if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == true) {
@@ -121,21 +108,27 @@ export class CalendarioComponent implements OnInit {
     this.events = Object.assign([], this.events);
   }
 
+  //Cuestionarios, foros, etc.
   filterActividad(valor: any) {
-    this.events.map(evento => {
-      if (
-        evento.cActTipoNombre == valor.checkbox.cActTipoNombre &&
-        valor.checkbox.mostrar == true
-      ) {
-        evento.display = 'block';
+    this.events = this.events.map(evento => {
+      if (evento.cActTipoNombre == valor.checkbox.cActTipoNombre) {
+        const mostrar = this.obtenerEstadoMostrarCurso(evento.cCursoNombre);
+        return {
+          ...evento,
+          display: valor.checkbox.mostrar && mostrar ? 'block' : 'none',
+        };
       }
-      if (
-        evento.cActTipoNombre == valor.checkbox.cActTipoNombre &&
-        valor.checkbox.mostrar == false
-      ) {
-        evento.display = 'none';
-      }
+      return evento;
     });
-    this.events = Object.assign([], this.events);
+  }
+
+  obtenerEstadoMostrarCurso(nombreCurso: string): boolean {
+    const curso = this.curricula.find(c => c.cCursoNombre === nombreCurso);
+    return curso ? curso.mostrar : false;
+  }
+
+  obtenerEstadoMostrarActividad(nombreActividad: string): boolean {
+    const actividad = this.actividades.find(c => c.cActTipoNombre === nombreActividad);
+    return actividad ? actividad.mostrar : false;
   }
 }

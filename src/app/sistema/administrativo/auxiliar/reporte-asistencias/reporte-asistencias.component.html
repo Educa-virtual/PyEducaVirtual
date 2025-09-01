@@ -1,1 +1,144 @@
-<p>reporte-asistencias works!</p>
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between flex-wrap w-full">
+      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+        <span class="font-bold text-4xl">REPORTE DE ASISTENCIA</span>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="grid m-1">
+      <div class="col-12">
+        <div class="flex fondo-grid">
+          <p-inputGroup ngClass="mr-2 w-3">
+            <p-inputGroupAddon>opciones</p-inputGroupAddon>
+            <p-dropdown
+              [options]="opcion"
+              [(ngModel)]="tipo.id"
+              optionLabel="nombre"
+              optionValue="id"
+              placeholder="Seleccionar tipo de reporte"
+            />
+          </p-inputGroup>
+          <p-inputGroup ngClass="mr-2 w-2">
+            <p-inputGroupAddon>Mes</p-inputGroupAddon>
+            <p-dropdown
+              [options]="meses"
+              [(ngModel)]="tipo.numero"
+              optionLabel="nombre"
+              optionValue="numero"
+              placeholder="Seleccionar Mes"
+            />
+          </p-inputGroup>
+          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1">
+            <p-inputGroupAddon>Grado</p-inputGroupAddon>
+            <p-dropdown
+              [options]="grado"
+              [(ngModel)]="datos.iGradoId"
+              (onChange)="filtrarSeccion()"
+              optionLabel="cGradoNombre"
+              optionValue="iGradoId"
+              placeholder="Seleccionar Grado"
+            />
+          </p-inputGroup>
+          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1">
+            <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+            <p-dropdown
+              [options]="seccion"
+              [(ngModel)]="datos.iSeccionId"
+              optionLabel="cSeccionNombre"
+              optionValue="iSeccionId"
+              placeholder="Seleccionar Seccion"
+            />
+          </p-inputGroup>
+          <p-inputGroup class="w-3" *ngIf="tipo.id === 2">
+            <p-inputGroupAddon>Cod. de Est.</p-inputGroupAddon>
+            <input
+              pInputText
+              class="mr-1"
+              [(ngModel)]="datos.cEstCodigo"
+              name="cEstCodigo"
+              placeholder="Codigo"
+            />
+          </p-inputGroup>
+          <p-inputGroup class="w-3" *ngIf="tipo.id === 2">
+            <p-inputGroupAddon>DNI</p-inputGroupAddon>
+            <input
+              pInputText
+              class="mr-1"
+              [(ngModel)]="datos.cPersDocumento"
+              name="cPersDocumento"
+              placeholder="DNI"
+            />
+          </p-inputGroup>
+          <div class="w-1 mr-2" *ngIf="tipo.id === 1">
+            <p-button
+              [disabled]="!tipo.id"
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (click)="buscarReporteAula()"
+            />
+          </div>
+          <div class="w-1 mr-2" *ngIf="tipo.id === 2">
+            <p-button
+              [disabled]="!tipo.id"
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (click)="buscarReporteEstudiante()"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="overflow-auto surface-overlay">
+          <p-table
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '125rem' }"
+            [value]="alumnos"
+            [paginator]="true"
+            [rows]="15"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            [scrollable]="true"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Apellidos y Nombres</th>
+                <th class="text-center">DNI</th>
+                <th *ngFor="let dia of dias">{{ dia }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
+              <tr>
+                <td class="text-center">{{ rowIndex + 1 }}</td>
+                <td>{{ alumno.completo }}</td>
+                <td class="text-center">{{ alumno.cPersDocumento }}</td>
+                <td
+                  class="text-center font-bold"
+                  [ngClass]="dia.bgColor + ' ' + dia.textColor"
+                  *ngFor="let dia of alumno.asistencia || []"
+                >
+                  {{ dia.cTipoAsiLetra }}
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="5" class="text-center text-gray-500 py-3">
+                  Sin registros de Alumnos.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-panel>

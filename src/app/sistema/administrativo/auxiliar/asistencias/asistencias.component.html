@@ -7,80 +7,301 @@
     </div>
   </ng-template>
   <ng-template pTemplate="content">
-    <div class="grid h-full m-1">
-      <div class="col-12">
-        <div class="flex">
-          <p-dropdown
-            class="mr-1"
-            [options]="grado"
-            [(ngModel)]="datos.iGradoId"
-            (onChange)="filtrarSeccion()"
-            optionLabel="cGradoNombre"
-            optionValue="iGradoId"
-            placeholder="Seleccionar Grado"
-          />
-          <p-dropdown
-            class="mr-1"
-            [options]="seccion"
-            [(ngModel)]="datos.iSeccionId"
-            optionLabel="cSeccionNombre"
-            optionValue="iSeccionId"
-            placeholder="Seleccionar Seccion"
-          />
-          <p-calendar
-            appendTo="body"
-            class="mr-1"
-            [(ngModel)]="datos.fecha"
-            [showIcon]="true"
-            inputId="buttondisplay"
-            [showOnFocus]="false"
-          />
-          <p-button
-            class="mr-1"
-            label="Buscar"
-            icon="pi pi-check"
-            [loading]="finalizar"
-            (onClick)="buscarGrupo()"
-          />
-        </div>
-      </div>
-      <div class="col-12">
-        <p-table
-          [value]="alumnos"
-          [paginator]="true"
-          [rows]="5"
-          [tableStyle]="{ 'min-width': '50rem' }"
-          [rowsPerPageOptions]="[5, 10, 20]"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th style="width: 5%">#</th>
-              <th style="width: 25%">Apellidos y Nombres</th>
-              <th class="hidden md:table-cell" style="width: 25%">DNI</th>
-              <th style="width: 10%">Asistencia</th>
-              <th style="width: 25%">Justificacion</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
-            <tr>
-              <td>{{ rowIndex + 1 }}</td>
-              <td>{{ alumno.completo }}</td>
-              <td class="hidden md:table-cell">{{ alumno.cPersDocumento }}</td>
-              <td>
+    <p-tabView>
+      <p-tabPanel header="Grados y Seccion">
+        <div class="grid h-full m-1">
+          <div class="col-11">
+            <div class="flex fondo-grid">
+              <p-inputGroup ngClass="mr-2 w-3">
+                <p-inputGroupAddon>Grado</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="grado"
+                  [(ngModel)]="datos.iGradoId"
+                  (onChange)="filtrarSeccion()"
+                  optionLabel="cGradoNombre"
+                  optionValue="iGradoId"
+                  placeholder="Seleccionar Grado"
+                />
+              </p-inputGroup>
+              <p-inputGroup ngClass="mr-2 w-3">
+                <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+                <p-dropdown
+                  [options]="seccion"
+                  [(ngModel)]="datos.iSeccionId"
+                  optionLabel="cSeccionNombre"
+                  optionValue="iSeccionId"
+                  placeholder="Seleccionar Seccion"
+                />
+              </p-inputGroup>
+              <div class="w-2 mr-2">
+                <p-calendar
+                  appendTo="body"
+                  inputId="calendar-12h"
+                  [(ngModel)]="datos.dtAsistencia"
+                  (click)="registrar = false"
+                  [showIcon]="true"
+                  [showTime]="true"
+                />
+              </div>
+              <div class="w-2 mr-2">
                 <p-button
-                  size="small"
-                  styleClass="boton"
-                  (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
-                  ><span class="font-bold hidden md:table-cell">{{ alumno.cTipoAsiNombre }}</span>
-                  <span class="font-bold table-cell md:hidden">{{ alumno.cTipoAsiLetra }}</span>
-                </p-button>
-              </td>
-              <td></td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    </div>
+                  class="expandir"
+                  severity="primary"
+                  label="Buscar"
+                  icon="pi pi-search"
+                  [loading]="finalizar"
+                  (onClick)="buscarGrupo()"
+                />
+              </div>
+              <div class="w-2">
+                <p-button
+                  class="expandir"
+                  severity="success"
+                  label="guardar"
+                  icon="pi pi-save"
+                  [disabled]="!registrar"
+                  (click)="guardarAsistenciaAula()"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <p-table
+              [value]="alumnos"
+              [paginator]="true"
+              [rows]="10"
+              [tableStyle]="{ 'min-width': '50rem' }"
+              [rowsPerPageOptions]="[5, 10, 20]"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%">#</th>
+                  <th style="width: 25%">Apellidos y Nombres</th>
+                  <th class="hidden md:table-cell" style="width: 25%">DNI</th>
+                  <th style="width: 15%">Asistencia</th>
+                  <th style="width: 25%">Justificacion</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ alumno.completo }}</td>
+                  <td class="hidden md:table-cell">{{ alumno.cPersDocumento }}</td>
+                  <td>
+                    <p-button
+                      size="small"
+                      styleClass="boton"
+                      (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
+                      ><span class="font-bold hidden md:table-cell w-100">{{
+                        alumno.cTipoAsiNombre
+                      }}</span>
+                      <span class="font-bold table-cell md:hidden w-100">{{
+                        alumno.cTipoAsiLetra
+                      }}</span>
+                    </p-button>
+                  </td>
+                  <td></td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="5" class="text-center text-gray-500 py-3">
+                    Sin registros de Alumnos.
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Busqueda por Codigo">
+        <div class="grid h-full m-1">
+          <div class="col-10">
+            <div class="fondo-grid">
+              <p-inputGroup class="w-3">
+                <p-inputGroupAddon>Cod. de Estudiante</p-inputGroupAddon>
+                <input
+                  pInputText
+                  class="mr-1"
+                  [(ngModel)]="datos.cEstCodigo"
+                  name="cEstCodigo"
+                  placeholder="Codigo"
+                />
+              </p-inputGroup>
+              <p-inputGroup class="w-3">
+                <p-inputGroupAddon>DNI</p-inputGroupAddon>
+                <input
+                  pInputText
+                  class="mr-1"
+                  [(ngModel)]="datos.cPersDocumento"
+                  name="cPersDocumento"
+                  placeholder="DNI"
+                />
+              </p-inputGroup>
+              <div class="w-2 mr-2">
+                <p-calendar
+                  appendTo="body"
+                  inputId="calendar-12h"
+                  [(ngModel)]="datos.dtAsistencia"
+                  (click)="registrarEstudiante = false"
+                  [showIcon]="true"
+                  [showTime]="true"
+                />
+              </div>
+              <div class="w-2 mr-2">
+                <p-button
+                  class="expandir"
+                  severity="primary"
+                  label="Buscar"
+                  icon="pi pi-search"
+                  [loading]="finalizar"
+                  (click)="buscarCodigo()"
+                />
+              </div>
+              <div class="w-2 mr-2">
+                <p-button
+                  class="expandir"
+                  severity="success"
+                  label="guardar"
+                  icon="pi pi-save"
+                  [disabled]="!registrarEstudiante"
+                  (click)="guardarAsistencia()"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <p-table
+              [value]="estudiante"
+              [paginator]="true"
+              [rows]="10"
+              [tableStyle]="{ 'min-width': '50rem' }"
+              [rowsPerPageOptions]="[5, 10, 20]"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%">#</th>
+                  <th style="width: 25%">Apellidos y Nombres</th>
+                  <th class="hidden md:table-cell" style="width: 25%">DNI</th>
+                  <th style="width: 15%">Asistencia</th>
+                  <th style="width: 25%">Justificacion</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-estudiante let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ estudiante.completo }}</td>
+                  <td class="hidden md:table-cell">{{ estudiante.cPersDocumento }}</td>
+                  <td>
+                    <p-button
+                      size="small"
+                      styleClass="boton"
+                      (click)="cambiarEstadoEstudiante(rowIndex, estudiante.iTipoAsiId)"
+                      ><span class="font-bold hidden md:table-cell w-100">{{
+                        estudiante.cTipoAsiNombre
+                      }}</span>
+                      <span class="font-bold table-cell md:hidden w-100">{{
+                        estudiante.cTipoAsiLetra
+                      }}</span>
+                    </p-button>
+                  </td>
+                  <td></td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="5" class="text-center text-gray-500 py-3">
+                    Sin registros de Alumnos.
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Registrar por QR">
+        <div class="grid h-full">
+          <div class="col-6">
+            <zxing-scanner
+              *ngIf="scanner"
+              [torch]="false"
+              (scanSuccess)="escaner($event)"
+              (camerasFound)="camaraEncontrada()"
+            >
+            </zxing-scanner>
+            <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="scanner" />
+          </div>
+          <div class="col-6 card">
+            <div class="col-12">
+              <p-button
+                class="expandir"
+                severity="success"
+                label="Registrar"
+                icon="pi pi-qrcode"
+                (click)="scanner = !scanner; progreso = true"
+              ></p-button>
+            </div>
+            <p-table
+              [value]="temporal"
+              [paginator]="true"
+              [rows]="10"
+              [rowsPerPageOptions]="[5, 10, 20]"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="text-center" style="width: 5%">#</th>
+                  <th class="text-center" style="width: 60%">Apellidos y Nombres</th>
+                  <th class="text-center" style="width: 35%">Fecha y Hora</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-temporal let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ temporal.completo }}</td>
+                  <td class="hidden md:table-cell">
+                    {{ temporal.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+                  </td>
+                  <td></td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </ng-template>
 </p-panel>
+
+<p-dialog
+  header="Informacion del Estudiante"
+  [modal]="true"
+  [(visible)]="visible"
+  [style]="{ width: '35rem' }"
+>
+  <div class="flex align-items-center mt-3 mb-3">
+    <div class="font-semibold">Nombre Completo: {{ codigo.completo }}</div>
+  </div>
+  <div class="flex align-items-center mb-3">
+    <div class="font-semibold">DNI: {{ codigo.cPersDocumento }}</div>
+  </div>
+  <!-- <div class="flex align-items-center mb-5">
+        <div class="font-semibold">Hora de Ingreso: {{codigo.fecha}}</div>
+    </div> -->
+  <div class="flex align-items-center mb-5">
+    <div class="font-semibold">
+      Fecha y Hora de Registro: {{ codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+    </div>
+  </div>
+  <div class="flex justify-content-end">
+    <p-button class="mr-2" label="Cancel" severity="secondary" (onClick)="visible = false" />
+    <p-button
+      label="Guardar Asistencia"
+      severity="success"
+      (onClick)="guardarAsistenciaSacnner()"
+    />
+  </div>
+</p-dialog>
+
 <p-toast />

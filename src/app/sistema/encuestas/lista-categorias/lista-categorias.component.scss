@@ -248,7 +248,7 @@
   border-left: 15px solid var(--yellow-500);
 }
 
-.curso__image-container {
+.image-container {
   height: 8rem;
 
   img {
@@ -296,7 +296,7 @@
 
 .post-module .img-transition img {
   display: block;
-  width: 120%;
+  width: 100%;
   -webkit-transition: all 0.4s linear 0s;
   -moz-transition: all 0.4s linear 0s;
   -ms-transition: all 0.4s linear 0s;

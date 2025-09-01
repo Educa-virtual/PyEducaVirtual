@@ -27,7 +27,7 @@
             <article
               class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
             >
-              <div class="curso__image-container img-transition">
+              <div class="image-container img-transition">
                 <img
                   [alt]="categoria?.cCateNombre"
                   class="w-full h-full"
@@ -44,20 +44,27 @@
                   {{ categoria?.iTotalEncuestas }}
                   {{ categoria?.iTotalEncuestas === 1 ? 'encuesta' : 'encuestas' }}
                 </p>
-                <div class="flex gap-3">
-                  <p-button
-                    label="Editar"
-                    size="small"
-                    icon="pi pi-pencil"
-                    severity="success"
-                    (click)="editarCategoria(categoria)"
-                  />
+                <div class="flex gap-1">
+                  @if (categoria?.iTotalEncuestas === 0) {
+                    <p-button
+                      size="small"
+                      [outlined]="true"
+                      icon="pi pi-trash"
+                      severity="danger"
+                      (click)="borrarCategoria(categoria)"
+                    />
+                  }
+                  <p-button size="small" severity="success" (click)="editarCategoria(categoria)">
+                    <i class="pi pi-pencil inline md:hidden"></i>
+                    <span class="hidden md:inline">Editar</span>
+                  </p-button>
                   <a
                     class="p-button p-button-sm font-bold"
                     style="color: white"
                     [routerLink]="['/encuestas/categorias', categoria?.iCateId, 'encuestas']"
                   >
-                    Acceder
+                    <i class="pi pi-list inline md:hidden"></i>
+                    <span class="hidden md:inline">Acceder</span>
                   </a>
                 </div>
               </footer>

@@ -9,6 +9,7 @@ import { ICategoria } from '../interfaces/categoria.interface';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { EncuestasService } from '../services/encuestas.services';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 
 @Component({
   selector: 'app-categorias-encuestas',
@@ -40,6 +41,7 @@ export class CategoriasEncuestaComponent implements OnInit {
   constructor(
     private encuestasService: EncuestasService,
     private messageService: MessageService,
+    private confirmationService: ConfirmationModalService,
     private store: LocalStoreService
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
@@ -114,6 +116,37 @@ export class CategoriasEncuestaComponent implements OnInit {
       this.iCateId = categoria.iCateId;
       this.visibleDialogCategoria = true;
     }, 100);
+  }
+
+  borrarCategoria(categoria) {
+    this.confirmationService.openConfirm({
+      message: '¿Está seguro de eliminar la categoría seleccionada?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.encuestasService
+          .borrarCategoria({
+            iCateId: categoria.iCateId,
+          })
+          .subscribe({
+            next: (respuesta: any) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Eliminación exitosa',
+                detail: respuesta.message,
+              });
+              this.listarCategorias();
+            },
+            error: error => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error al eliminar categoría',
+                detail: error.error.message,
+              });
+            },
+          });
+      },
+    });
   }
 
   cerrarDialogCategoria() {

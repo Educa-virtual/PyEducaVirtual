@@ -1,88 +1,110 @@
 <p-dialog
-  header="Nueva categoría"
+  [header]="dialogTitle"
   [(visible)]="visible"
   (onHide)="onHide()"
   [modal]="true"
   [closable]="true"
   [draggable]="false"
   [resizable]="false"
-  styleClass="nueva-categoria-dialog"
-  [style]="{ width: '700px' }"
+  [style]="{ width: '90vw' }"
 >
-  <form [formGroup]="form" class="dialog-content">
+  <form [formGroup]="form">
     <br />
-    <!-- Campo Nombre -->
-    <div class="field mb-4">
-      <label for="nombre" class="block text-900 font-medium mb-2">
-        Nombre <span class="text-red-500">(*) Obligatorio</span>
-      </label>
-      <input
-        id="nombre"
-        type="text"
-        pInputText
-        formControlName="cCateNombre"
-        placeholder="Categoría"
-        class="w-full p-3"
-      />
-    </div>
-
-    <!-- Campo Descripción -->
-    <div class="field mb-4">
-      <label for="descripcion" class="block text-900 font-medium mb-2">
-        Descripción <span class="text-gray-500">(Opcional)</span>
-      </label>
-      <textarea
-        id="descripcion"
-        pInputTextarea
-        formControlName="cCateDescripcion"
-        placeholder="Descripción"
-        class="w-full p-3"
-        rows="3"
-      ></textarea>
-    </div>
-
-    <!--Crear encuestas-->
-    <div class="field mb-4">
-      <label for="Permitir crear encuestas" class="block text-900 font-medium mb-2"
-        >Permitir crear encuestas</label
-      >
-      <div class="flex items-center gap-2">
-        <label style="margin-top: 0.4rem; width: 15rem" for="switch1" class="mb-0"
-          >Especialistas DREMO</label
-        >
-        <p-inputSwitch formControlName="bCatePermisoDremo" inputId="switch1" />
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cCateNombre"
+            placeholder="Nombre de la categoría"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
       </div>
-      <div class="flex items-center gap-2">
-        <label style="margin-top: 0.4rem; width: 15rem" for="switch2" class="mb-0"
-          >Especialistas UGEL</label
-        >
-        <p-inputSwitch formControlName="bCatePermisoUgel" inputId="switch2" />
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+          <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="cCateDescripcion"
+            pInputTextarea
+            placeholder="Descripción de la categoría"
+            maxLength="500"
+            [rows]="3"
+            class="group-element"
+            [style.minHeight]="3"
+            [style.maxHeight]="6"
+            [cdkAutosizeMinRows]="3 + 1.5"
+            [cdkAutosizeMaxRows]="6"
+          ></textarea>
+        </p-inputGroup>
       </div>
-      <div class="flex items-center gap-2">
-        <label style="margin-top: 0.4rem; width: 15rem" for="switch3" class="mb-0"
-          >Directores</label
-        >
-        <p-inputSwitch formControlName="bCatePermisoDirector" inputId="switch3" />
+      @if (categoria?.cCateImagenNombre) {
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Imagen</p-inputGroupAddon>
+            <div class="card" style="position: relative">
+              <img
+                height="200px"
+                [src]="categoria?.cCateImagenNombre"
+                [alt]="categoria?.cCateNombre"
+                class="block"
+              />
+              <p-button
+                label="Quitar imagen"
+                (click)="quitarImagen()"
+                icon="pi pi-times"
+                severity="danger"
+                class="btn-quitar-imagen"
+              />
+            </div>
+          </p-inputGroup>
+        </div>
+      }
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon
+            >{{ categoria?.cCateImagenNombre ? 'Cambiar' : 'Subir' }} imagen</p-inputGroupAddon
+          >
+          <p-fileUpload
+            name="cCateImagenNombre"
+            (onSelect)="handleArchivo($event)"
+            [multiple]="false"
+            accept="image/*"
+            fileLimit="1"
+            invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
+            invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
+            invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
+            invalidFileTypeMessageDetail="el tipo de archivo permitido es: {0}."
+            invalidFileLimitMessageDetail="solo debe subir {0} archivo."
+            invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
+            maxFileSize="10485760"
+          >
+          </p-fileUpload>
+        </p-inputGroup>
       </div>
-    </div>
-
-    <div class="flex justify-content-end gap-2 mt-4">
-      <button
-        pButton
-        pRipple
-        label="Cancelar"
-        class="p-button-text p-button-secondary"
-        (click)="cancelar()"
-      ></button>
-      <button
-        pButton
-        pRipple
-        label="Registrar"
-        icon="pi pi-check"
-        class="p-button-success"
-        (click)="guardarCategoria()"
-        [disabled]="form.invalid"
-      ></button>
     </div>
   </form>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button label="Salir" icon="pi pi-arrow-left" severity="secondary" (click)="salir()" />
+    <p-button
+      label="Guardar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="guardar()"
+      *ngIf="!categoria_registrada && form.valid"
+    />
+    <p-button
+      label="Actualizar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="actualizar()"
+      *ngIf="categoria_registrada && form.valid"
+    />
+  </div>
 </p-dialog>

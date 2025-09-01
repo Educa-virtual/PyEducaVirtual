@@ -2,17 +2,10 @@
 
 <p-panel>
   <ng-template pTemplate="header">
-    <span class="text-2xl text-uppercase"> Gestionar categorías de encuestas </span>
+    <span class="text-2xl text-uppercase">Categorías de encuestas</span>
   </ng-template>
   <ng-template pTemplate="icons" class="flex justify-content-center">
-    <button
-      pButton
-      pRipple
-      label="Nueva"
-      icon="pi pi-plus"
-      class="p-button-success"
-      (click)="abrirDialogNuevaCategoria()"
-    ></button>
+    <p-button label="Nueva" icon="pi pi-plus" severity="success" (click)="agregarCategoria()" />
   </ng-template>
 
   <div class="grid">
@@ -36,28 +29,37 @@
             >
               <div class="curso__image-container img-transition">
                 <img
-                  [alt]="categoria.cCateNombre"
+                  [alt]="categoria?.cCateNombre"
                   class="w-full h-full"
-                  (error)="updateUrl(categoria)"
+                  [src]="rutaImagenPlaceholder(categoria)"
                 />
               </div>
               <div class="p-3 mb-auto">
                 <h3 class="text-xl">
-                  {{ categoria.cCateNombre | uppercase }}
+                  {{ categoria?.cCateNombre | uppercase }}
                 </h3>
               </div>
               <footer class="p-3 pt-0 flex align-items-center justify-content-between">
                 <p>
-                  {{ categoria.iTotalEncuestas }}
-                  {{ categoria.iTotalEncuestas === 1 ? 'encuesta' : 'encuestas' }}
+                  {{ categoria?.iTotalEncuestas }}
+                  {{ categoria?.iTotalEncuestas === 1 ? 'encuesta' : 'encuestas' }}
                 </p>
-                <a
-                  [routerLink]="['/encuestas/categorias', categoria.iCateId, 'encuestas']"
-                  style="color: white"
-                  class="p-button p-component p-button-primary p-button-sm p-button-rounded"
-                >
-                  Acceder
-                </a>
+                <div class="flex gap-3">
+                  <p-button
+                    label="Editar"
+                    size="small"
+                    icon="pi pi-pencil"
+                    severity="success"
+                    (click)="editarCategoria(categoria)"
+                  />
+                  <a
+                    class="p-button p-button-sm font-bold"
+                    style="color: white"
+                    [routerLink]="['/encuestas/categorias', categoria?.iCateId, 'encuestas']"
+                  >
+                    Acceder
+                  </a>
+                </div>
               </footer>
             </article>
           </div>
@@ -68,8 +70,9 @@
 </p-panel>
 
 <app-nueva-categoria
-  [(visible)]="mostrarDialogNuevaCategoria"
-  (categoriaCreada)="onCategoriaCreada($event)"
+  [(visible)]="visibleDialogCategoria"
+  (categoriaModificada)="listarCategorias()"
+  [iCateId]="iCateId"
 ></app-nueva-categoria>
 
 <p-toast></p-toast>

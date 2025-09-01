@@ -27,14 +27,15 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 export class CategoriasEncuestaComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
   titleEncuestasPorCategoria: string = 'Categorías de encuestas';
-  mostrarDialogNuevaCategoria: boolean = false;
+  visibleDialogCategoria: boolean = false;
   iYAcadId: number;
+  iCateId: number;
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
   categorias: ICategoria[] = [];
-  categoriasInicial: ICategoria[] = [];
+  categorias_filtradas: ICategoria[] = [];
 
   constructor(
     private encuestasService: EncuestasService,
@@ -66,18 +67,24 @@ export class CategoriasEncuestaComponent implements OnInit {
         iYAcadId: this.iYAcadId,
       })
       .subscribe({
-        next: (respuesta: any) => {
-          this.categoriasInicial = respuesta.data.map((categoria: ICategoria) => ({
-            ...categoria,
-          }));
-          this.categorias = this.categoriasInicial;
+        next: (data: any) => {
+          this.categorias = data.data;
+          this.categorias_filtradas = this.categorias;
+        },
+        error: error => {
+          console.error('Error obteniendo categorias:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
         },
       });
   }
 
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value;
-    this.categorias = this.categoriasInicial.filter(categoria => {
+    this.categorias_filtradas = this.categorias.filter(categoria => {
       if (
         categoria.cCateNombre &&
         categoria.cCateNombre.toLowerCase().includes(filtro.toLowerCase())
@@ -89,25 +96,28 @@ export class CategoriasEncuestaComponent implements OnInit {
     });
   }
 
-  updateUrl(item) {
-    item.cImagenUrl = 'cursos/images/no-image.jpg';
+  rutaImagenPlaceholder(item) {
+    if (!item?.cCateImagenNombre) {
+      return 'cursos/images/no-image.jpg';
+    }
+    return item?.cCateImagenNombre;
   }
 
-  // Métodos para el dialog Nueva Categoría
-  abrirDialogNuevaCategoria() {
-    this.mostrarDialogNuevaCategoria = true;
+  agregarCategoria() {
+    this.iCateId = null;
+    this.visibleDialogCategoria = true;
   }
 
-  cerrarDialogNuevaCategoria() {
-    this.mostrarDialogNuevaCategoria = false;
+  editarCategoria(categoria) {
+    this.iCateId = null;
+    setTimeout(() => {
+      this.iCateId = categoria.iCateId;
+      this.visibleDialogCategoria = true;
+    }, 100);
   }
 
-  cancelarCreacionCategoria() {
-    this.cerrarDialogNuevaCategoria();
-  }
-
-  // Mantiene compatibilidad con el componente NuevaCategoriaComponent
-  onCategoriaCreada(nuevaCategoria: ICategoria) {
-    this.categorias.push(nuevaCategoria);
+  cerrarDialogCategoria() {
+    this.visibleDialogCategoria = false;
+    this.listarCategorias();
   }
 }

@@ -310,3 +310,10 @@
   gap: 1.5rem;
   padding: 0;
 }
+
+.btn-quitar-imagen {
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+  z-index: 2;
+}

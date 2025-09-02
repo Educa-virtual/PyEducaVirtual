@@ -530,8 +530,13 @@ const administracion = [
           {
             label: 'Configurar calendario escolar',
             icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/apertura'],
+            routerLink: ['/gestion-institucional/calendario-escolar'],
           },
+          // {
+          //   label: 'Configurar calendario escolar',
+          //   icon: 'pi pi-lock-open',
+          //   routerLink: ['/gestion-institucional/apertura'],
+          // },
           {
             label: 'Gestion de Ambientes y Grados',
             icon: 'pi pi-building-columns',
@@ -547,11 +552,7 @@ const administracion = [
             icon: 'pi pi-calendar',
             routerLink: ['/gestion-institucional/fechas-importantes'],
           },
-          {
-            label: 'Configurar calendario escolar',
-            icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/calendario-escolar'],
-          },
+
           {
             label: 'Validación de horas',
             icon: 'pi pi-fw pi-check',

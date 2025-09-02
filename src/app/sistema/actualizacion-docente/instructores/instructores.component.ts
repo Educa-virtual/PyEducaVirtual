@@ -93,28 +93,14 @@ export class InstructoresComponent implements OnInit {
       class: 'p-button-rounded p-button-danger p-button-text',
     },
   ];
-  // para mas delante ji
-  // obtenerIcono(accion: string, estado: string): string {
-  //     const iconos = {
-  //         editar: {
-  //             activo: 'pi pi-pencil',
-  //             inactivo: 'pi pi-ban',
-  //         },
-  //         eliminar: {
-  //             Activo: 'pi pi-trash',
-  //             Eliminado: 'pi pi-check',
-  //         },
-  //     };
-  //     return iconos[accion][estado] || 'pi pi-question'; // Ícono por defecto si el estado no coincide
-  // //     cambiarEstado(accion: string, nuevoEstado: string) {
-  // //     this.accionesTabla = this.accionesTabla.map((accionItem) => {
-  // //         if (accionItem.accion === accion) {
-  // //             return { ...accionItem, estado: nuevoEstado, icon: this.obtenerIcono(accionItem.accion, nuevoEstado) };
-  // //         }
-  // //         return accionItem;
-  // //     });
-  // // }
-  // }
+  public btnAccion = [
+    {
+      label: 'Nuevo Instructor',
+      icon: 'pi pi-plus',
+      class: 'p-button-primary',
+      action: () => this.accionBnt({ accion: 'guardar' }),
+    },
+  ];
 
   ngOnInit(): void {
     this.obtenerTipoIdentificaciones();

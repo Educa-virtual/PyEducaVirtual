@@ -1,12 +1,17 @@
-<app-toolbar-primeng
-  [title]="(curso?.cNivelNombreCursos.toUpperCase() || '') + ': ' + (curso?.cCursoNombre || '')"
->
-  <div class="text-white font-bold block">
-    Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo: {{ curso?.cCicloRomanos }} | Grado:
-    {{ curso?.cGradoAbreviacion }} | Seccion:
-    {{ curso?.cSeccionNombre }}
-  </div>
-</app-toolbar-primeng>
+@if (curso.iCapacitacionId) {
+  <app-toolbar-primeng [title]="curso?.cCursoNombre || ''"> </app-toolbar-primeng>
+} @else {
+  <app-toolbar-primeng
+    [title]="(curso?.cNivelNombreCursos.toUpperCase() || '') + ': ' + (curso?.cCursoNombre || '')"
+  >
+    <div class="text-white font-bold block">
+      Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo: {{ curso?.cCicloRomanos }} | Grado:
+      {{ curso?.cGradoAbreviacion }} | Seccion:
+      {{ curso?.cSeccionNombre }}
+    </div>
+  </app-toolbar-primeng>
+}
+
 <div class="grid">
   <app-tabs-primeng
     class="col-12"
@@ -21,6 +26,7 @@
       [iCursoId]="curso?.iCursoId"
       [idDocCursoId]="curso?.idDocCursoId"
       [curso]="curso"
+      [iCapacitacionId]="curso?.iCapacitacionId"
     ></app-tab-inicio>
 
     <app-tab-contenido
@@ -28,6 +34,7 @@
       [iCursoId]="curso?.iCursoId"
       [idDocCursoId]="curso?.idDocCursoId"
       [curso]="curso"
+      [iCapacitacionId]="curso?.iCapacitacionId"
       [contenidoSemanas]="contenidoSemanas"
       (recargarContenidoSemanas)="obtenerContenidoSemanasxidDocCursoIdxiYAcadId(true)"
     ></app-tab-contenido>

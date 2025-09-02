@@ -32,4 +32,5 @@ export interface ICurso {
   cDocente?: string;
   bEstudiante?: string;
   bDescarga?: string | number;
+  iCapacitacionId?: string | number;
 }

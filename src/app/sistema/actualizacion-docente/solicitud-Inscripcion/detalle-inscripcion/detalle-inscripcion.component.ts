@@ -5,7 +5,7 @@ import {
   IColumn,
   IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service';
+import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -28,7 +28,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
   @Output() volver = new EventEmitter<void>();
 
   private _formBuilder = inject(FormBuilder);
-  private _capService = inject(CapacitacionesServiceService);
+  private _CapacitacionesService = inject(CapacitacionesService);
   private _ConstantesService = inject(ConstantesService);
   private _TiposIdentificacionesService = inject(TiposIdentificacionesService);
   private _constantesService = inject(ConstantesService);
@@ -214,10 +214,9 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
       iCapacitacionId: this.datosCurso.iCapacitacionId,
       iCredId: iCredId,
     };
-    this._capService.listarInscripcionxcurso(data).subscribe({
+    this._CapacitacionesService.listarInscripcionxcurso(data).subscribe({
       next: (res: any) => {
         this.alumnos = res['data'];
-        // console.log('datos de alumnos', this.alumnos);
       },
     });
   }

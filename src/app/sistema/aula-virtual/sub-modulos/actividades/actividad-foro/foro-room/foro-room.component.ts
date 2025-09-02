@@ -34,6 +34,7 @@ import { TabDescripcionActividadesComponent } from '../../components/tab-descrip
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-foro-room',
@@ -70,14 +71,11 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
   @Input() iSeccionId;
   @Input() iNivelGradoId;
 
-  public DOCENTE = DOCENTE;
-  public ESTUDIANTE = ESTUDIANTE;
-
   private GeneralService = inject(GeneralService);
   private _formBuilder = inject(FormBuilder);
   private _aulaService = inject(ApiAulaService);
   // private ref = inject(DynamicDialogRef)
-  private _constantesService = inject(ConstantesService);
+  private _ConstantesService = inject(ConstantesService);
   private _ForosService = inject(ForosService);
   private location = inject(Location);
   private store = inject(LocalStoreService);
@@ -123,7 +121,13 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
   selectedCommentIndex: number | null = null; // Para rastrear el comentario seleccionado para responder
   selectedComentario: number | null = null;
   respuestaInput: string = ''; // Para almacenar la respuesta temporal
-  isDocente: boolean = this._constantesService.iPerfilId === DOCENTE;
+  isDocente: boolean =
+    this._ConstantesService.iPerfilId === DOCENTE ||
+    this._ConstantesService.iPerfilId === INSTRUCTOR;
+
+  isEstudiante: boolean =
+    this._ConstantesService.iPerfilId === ESTUDIANTE ||
+    this._ConstantesService.iPerfilId === PARTICIPANTE;
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
 
@@ -194,7 +198,7 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
     // this.mostrarCalificacion()
 
     this.obtenerForo();
-    this.getRespuestaF();
+    // this.getRespuestaF();
     //this.getEstudiantesMatricula()
     // this.obtenerResptDocente()
   }
@@ -255,9 +259,9 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
   }
   //ver si mi perfil esta llegando (borrar)
   obtenerIdPerfil() {
-    this.iEstudianteId = this._constantesService.iEstudianteId;
-    this.iPerfilId = this._constantesService.iPerfilId;
-    this.iDocenteId = this._constantesService.iDocenteId;
+    this.iEstudianteId = this._ConstantesService.iEstudianteId;
+    this.iPerfilId = this._ConstantesService.iPerfilId;
+    this.iDocenteId = this._ConstantesService.iDocenteId;
     console.log('icredito', this.iEstudianteId);
   }
   // openModal(respuestasForo) {
@@ -373,6 +377,7 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
   respuestaDocente: string;
   comentarioDocente: string;
   // obtener retroalimentacion de docente a estudiante x su comentario
+  bCapacitacion: boolean = null;
   obtenerResptDocente() {
     const idEstudiante = Number(this.iEstudianteId);
     const idForoId = Number(this.foro?.iForoId);
@@ -387,7 +392,10 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
         // cForoRptaDocente
         this.resptDocente = Data['data'];
         // console.log(this.resptDocente)
-        this.comentarioDocente = this.resptDocente?.[0]?.cForoRptaDocente;
+        this.bCapacitacion = this.resptDocente?.[0]?.bCapacitacion === '1' ? true : false;
+        this.comentarioDocente = this.bCapacitacion
+          ? this.resptDocente?.[0]?.nForoRptaNota
+          : this.resptDocente?.[0]?.cForoRptaDocente;
         // console.log('respuesta docente', this.comentarioDocente)
       });
   }
@@ -464,8 +472,8 @@ export class ForoRoomComponent extends MostrarErrorComponent implements OnInit {
   //     this._ForosService
   //         .obtenerReporteEstudiantesRetroalimentacion({
   //             iIeCursoId: this.iIeCursoId,
-  //             iYAcadId: this._constantesService.iYAcadId,
-  //             iSedeId: this._constantesService.iSedeId,
+  //             iYAcadId: this._ConstantesService.iYAcadId,
+  //             iSedeId: this._ConstantesService.iSedeId,
   //             iSeccionId: this.iSeccionId,
   //             iNivelGradoId: this.iNivelGradoId,
   //             iForoId:Number(this.foro.iForoId)

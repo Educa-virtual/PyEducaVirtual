@@ -11,8 +11,15 @@ import {
   AUXILIAR,
   ASISTENTE_SOCIAL,
 } from './perfilesConstantes';
-import { ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from './seg/perfiles';
+import {
+  ADMINISTRADOR_DREMO,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  INSTRUCTOR,
+  PARTICIPANTE,
+} from './seg/perfiles';
 import { administradorDremo, especialistaDremo, especialistaUgel } from './seg/menu-ere';
+import { instructor } from './seg/menus/instructor';
 
 const store = new LocalStoreService();
 // const modulo = store.getItem('dremoModulo')
@@ -169,11 +176,6 @@ const docente = [
         ],
       },
       */
-      {
-        label: 'Mis capacitaciones',
-        icon: 'pi pi-id-card',
-        // routerLink: ['/aula-virtual/capacitate-docente'],
-      },
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
@@ -546,6 +548,11 @@ const administracion = [
             routerLink: ['/gestion-institucional/fechas-importantes'],
           },
           {
+            label: 'Configurar calendario escolar',
+            icon: 'pi pi-lock-open',
+            routerLink: ['/gestion-institucional/calendario-escolar'],
+          },
+          {
             label: 'Validación de horas',
             icon: 'pi pi-fw pi-check',
             routerLink: ['/gestion-institucional/validacion-no-lectiva'],
@@ -780,6 +787,24 @@ const administracion = [
     ],
   },
 ];
+const participante = [
+  {
+    items: [
+      inicio,
+      {
+        label: 'Mis capacitaciones',
+        icon: 'pi pi-id-card',
+        routerLink: ['/actualizacion-docente/curso-capacitaciones'],
+        // routerLink: ['/aula-virtual/capacitate-docente'],
+      },
+      {
+        label: 'Enlaces de ayuda',
+        icon: 'pi pi-fw pi-share-alt',
+        routerLink: ['ayuda'],
+      },
+    ],
+  },
+];
 
 // const comunicado = [
 //     {
@@ -912,6 +937,8 @@ export class ConstantesService {
         return jefe_programa;
       case DOCENTE:
         return docente;
+      case PARTICIPANTE:
+        return participante;
       case DIRECTOR_IE:
         return administracion;
       case APODERADO:
@@ -920,6 +947,9 @@ export class ConstantesService {
         return first;
       case ASISTENTE_SOCIAL:
         return asistente_social;
+      case INSTRUCTOR:
+        return instructor;
+
       default:
         return first;
     }

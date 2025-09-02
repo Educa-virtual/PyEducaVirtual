@@ -15,6 +15,48 @@ export class ReporteAsistenciasComponent implements OnInit {
   dremoiYAcadId: any;
   dremoPerfil: any;
   dias: any = [];
+  barra: any[] = [[], [], [], [], [], [], []];
+  configuracion: any = {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    aspectRatio: 0.4,
+    plugins: {
+      legend: {
+        labels: {
+          color: 'text-white',
+        },
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        axis: 'y',
+      },
+    },
+    scales: {
+      x: {
+        stacked: true,
+        ticks: {
+          font: {
+            weight: 500,
+          },
+        },
+        grid: {
+          drawBorder: false,
+        },
+      },
+      y: {
+        stacked: true,
+        ticks: {
+          autoSkip: false,
+        },
+        grid: {
+          drawBorder: false,
+        },
+      },
+    },
+  };
+
+  grafico: any;
 
   meses: any = [
     { nombre: 'Enero', numero: '01', dia: '31' },
@@ -34,6 +76,8 @@ export class ReporteAsistenciasComponent implements OnInit {
   opcion: any = [
     { id: 1, nombre: 'reporte por grado y Seccion' },
     { id: 2, nombre: 'reporte por alumno' },
+    { id: 3, nombre: 'reporte grafico Grado y Seccion' },
+    { id: 4, nombre: 'reporte grafico por alumno' },
   ];
 
   tipoAsistencia = [
@@ -99,6 +143,125 @@ export class ReporteAsistenciasComponent implements OnInit {
 
   ngOnInit() {
     this.buscarAulas();
+  }
+
+  ReporteGraficoGradoSeccion() {
+    const enlace = {
+      petition: 'post',
+      group: 'asi',
+      prefix: 'grupos',
+      ruta: 'buscar-reporte',
+      data: {
+        opcion: 'reporte-aula',
+        iGradoId: this.datos.iGradoId,
+        iSeccionId: this.datos.iSeccionId,
+        iSedeId: this.dremoPerfil.iSedeId,
+        iYAcadId: this.dremoiYAcadId,
+      },
+    };
+    this.conecionReporteGrafico(enlace);
+  }
+
+  ReporteGraficoEstudiante() {
+    const enlace = {
+      petition: 'post',
+      group: 'asi',
+      prefix: 'grupos',
+      ruta: 'buscar-reporte',
+      data: {
+        opcion: 'reporte-estudiante',
+        cPersDocumento: this.datos.cPersDocumento,
+        cEstCodigo: this.datos.cEstCodigo,
+        iSedeId: this.dremoPerfil.iSedeId,
+        iYAcadId: this.dremoiYAcadId,
+      },
+    };
+    this.conecionReporteGrafico(enlace);
+  }
+
+  conecionReporteGrafico(enlace: any) {
+    this.servicioGeneral.getRecibirDatos(enlace).subscribe({
+      next: data => {
+        const dato = data.data;
+        const nombres = dato.map(item => item.completo);
+        const documentStyle = getComputedStyle(document.documentElement);
+
+        dato.forEach(lista => {
+          lista.asistencia = JSON.parse(lista.asistencia);
+          const indice = lista.asistencia[0];
+          const resta =
+            indice.total -
+            indice.sinRegistro -
+            indice.inasistencia -
+            indice.inasistenciaJustificada -
+            indice.tardanza -
+            indice.tardanzaJustificada;
+
+          const totalPorcentaje = ((resta / indice.total) * 100).toFixed(2);
+          const asistio = ((indice.asistio / indice.total) * 100).toFixed(2);
+          const inasistencia = ((indice.inasistencia / indice.total) * 100).toFixed(2);
+          const inasistenciaJustificada = (
+            (indice.inasistenciaJustificada / indice.total) *
+            100
+          ).toFixed(2);
+          const sinRegistro = ((indice.sinRegistro / indice.total) * 100).toFixed(2);
+          const tardanza = (indice.tardanza / indice.total).toFixed(2);
+          const tardanzaJustificada = (indice.tardanzaJustificada / indice.total).toFixed(2);
+
+          this.barra[0].push(asistio);
+          this.barra[1].push(inasistencia);
+          this.barra[2].push(inasistenciaJustificada);
+          this.barra[3].push(sinRegistro);
+          this.barra[4].push(tardanza);
+          this.barra[5].push(tardanzaJustificada);
+          this.barra[6].push(totalPorcentaje);
+        });
+
+        this.grafico = {
+          labels: nombres,
+          datasets: [
+            {
+              label: 'Asistencia',
+              backgroundColor: documentStyle.getPropertyValue('--green-500'),
+              data: this.barra[0],
+            },
+            {
+              label: 'Tardanza',
+              backgroundColor: documentStyle.getPropertyValue('--orange-500'),
+              data: this.barra[1],
+            },
+            {
+              label: 'Inasistencia',
+              backgroundColor: documentStyle.getPropertyValue('--red-500'),
+              data: this.barra[2],
+            },
+            {
+              label: 'Inasistencia Justificada',
+              backgroundColor: documentStyle.getPropertyValue('--primary-500'),
+              data: this.barra[3],
+            },
+            {
+              label: 'Sin Registro',
+              backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
+              data: this.barra[4],
+            },
+            {
+              label: 'Tardanza Justificada',
+              backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
+              data: this.barra[5],
+            },
+            {
+              label: 'Total de Clases',
+              backgroundColor: documentStyle.getPropertyValue('--black-500'),
+              data: this.barra[6],
+            },
+          ],
+        };
+      },
+      error: err => {
+        console.log(err);
+      },
+    });
   }
 
   buscarReporteEstudiante() {

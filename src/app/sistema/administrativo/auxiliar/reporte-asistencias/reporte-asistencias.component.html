@@ -20,7 +20,7 @@
               placeholder="Seleccionar tipo de reporte"
             />
           </p-inputGroup>
-          <p-inputGroup ngClass="mr-2 w-2">
+          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1 || tipo.id === 2">
             <p-inputGroupAddon>Mes</p-inputGroupAddon>
             <p-dropdown
               [options]="meses"
@@ -30,7 +30,7 @@
               placeholder="Seleccionar Mes"
             />
           </p-inputGroup>
-          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1">
+          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1 || tipo.id === 3">
             <p-inputGroupAddon>Grado</p-inputGroupAddon>
             <p-dropdown
               [options]="grado"
@@ -41,7 +41,7 @@
               placeholder="Seleccionar Grado"
             />
           </p-inputGroup>
-          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1">
+          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 1 || tipo.id === 3">
             <p-inputGroupAddon>Seccion</p-inputGroupAddon>
             <p-dropdown
               [options]="seccion"
@@ -51,7 +51,7 @@
               placeholder="Seleccionar Seccion"
             />
           </p-inputGroup>
-          <p-inputGroup class="w-3" *ngIf="tipo.id === 2">
+          <p-inputGroup class="w-3" *ngIf="tipo.id === 2 || tipo.id === 4">
             <p-inputGroupAddon>Cod. de Est.</p-inputGroupAddon>
             <input
               pInputText
@@ -61,7 +61,7 @@
               placeholder="Codigo"
             />
           </p-inputGroup>
-          <p-inputGroup class="w-3" *ngIf="tipo.id === 2">
+          <p-inputGroup class="w-3" *ngIf="tipo.id === 2 || tipo.id === 4">
             <p-inputGroupAddon>DNI</p-inputGroupAddon>
             <input
               pInputText
@@ -93,9 +93,31 @@
               (click)="buscarReporteEstudiante()"
             />
           </div>
+          <div class="w-1 mr-2" *ngIf="tipo.id === 3">
+            <p-button
+              [disabled]="!tipo.id"
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (click)="ReporteGraficoGradoSeccion()"
+            />
+          </div>
+          <div class="w-1 mr-2" *ngIf="tipo.id === 4">
+            <p-button
+              [disabled]="!tipo.id"
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (click)="ReporteGraficoEstudiante()"
+            />
+          </div>
         </div>
       </div>
-      <div class="col-12">
+      <div class="col-12" *ngIf="tipo.id === 1 || tipo.id === 2">
         <div class="overflow-auto surface-overlay">
           <p-table
             styleClass="p-datatable-gridlines"
@@ -138,6 +160,9 @@
             </ng-template>
           </p-table>
         </div>
+      </div>
+      <div class="col-12" *ngIf="tipo.id === 3 || tipo.id === 4">
+        <p-chart type="bar" [data]="grafico" [options]="configuracion" style="height: 1500px" />
       </div>
     </div>
   </ng-template>

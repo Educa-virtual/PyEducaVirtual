@@ -4,6 +4,8 @@ import { Routes } from '@angular/router';
 import { HorarioComponent } from './horario/horario.component';
 import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso/reporte-progreso.component';
 import { ReporteAcademicoComponent } from './reportes-academicos/reporte-academico/reporte-academico.component';
+import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/resultados-ere.component';
+import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
 
 const routes: Routes = [
   {
@@ -17,7 +19,17 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ESTUDIANTE],
-      breadcrumb: 'Horario',
+      breadcrumb: 'horario',
+      icon: 'pi pi-share-alt',
+    },
+  },
+  {
+    path: 'calendario',
+    component: CalendarioComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'calendario',
       icon: 'pi pi-share-alt',
     },
   },
@@ -38,6 +50,16 @@ const routes: Routes = [
     data: {
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'Academico',
+      icon: 'pi pi-chart-bar',
+    },
+  },
+  {
+    path: 'reportes-academicos/resultados-ere',
+    component: ResultadosEreComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Resultados ERE',
       icon: 'pi pi-chart-bar',
     },
   },

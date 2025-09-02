@@ -20,7 +20,6 @@ export class HorarioComponent implements OnInit {
   bloques: number[] = [];
   detalleMatricula: string = '';
   franjas: { bloque: number; horario: string }[] = [];
-  iYAcadId: number;
   dias: Dia[] = [
     { id: 1, nombre: 'Lunes' },
     { id: 2, nombre: 'Martes' },
@@ -28,6 +27,7 @@ export class HorarioComponent implements OnInit {
     { id: 4, nombre: 'Jueves' },
     { id: 5, nombre: 'Viernes' },
   ];
+  iYAcadId: any = '';
 
   constructor(
     private horarioService: HorarioService,

@@ -16,7 +16,7 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { IesPersonalComponent } from '../../../ies-personal/ies-personal.component';
+//import { IesPersonalComponent } from '../../../ies-personal/ies-personal.component';
 import { FormDocenteComponent } from './form-docente/form-docente.component';
 
 @Component({
@@ -27,7 +27,7 @@ import { FormDocenteComponent } from './form-docente/form-docente.component';
     PrimengModule,
     ContainerPageComponent,
     TablePrimengComponent,
-    IesPersonalComponent,
+    // IesPersonalComponent,
     FormDocenteComponent,
   ],
   templateUrl: './config-hora-docente.component.html',

@@ -256,6 +256,17 @@ const estudiante = [
         routerLink: ['/estudiante/horario'],
       },
       {
+        label: 'Calendario',
+        icon: 'pi pi-calendar',
+        routerLink: ['/estudiante/calendario'],
+      },
+      /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
+                  {
+                      label: 'Buzón de sugerencias',
+                      icon: 'pi pi-fw pi-envelope',
+                      routerLink: ['/estudiante/buzon-sugerencias'],
+                  },*/
+      {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [
@@ -295,7 +306,18 @@ const estudiante = [
             icon: 'pi pi-fw pi-chart-bar',
             routerLink: ['/estudiante/reportes-academicos/academico'],
           },
+          {
+            label: 'Resultados ERE',
+            icon: 'pi pi-fw pi-ticket',
+            routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
+          },
         ],
+      },
+      {
+        label: 'Mesa de Partes GORE',
+        icon: 'pi pi-external-link',
+        url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
+        target: '_blank',
       },
     ],
   },
@@ -312,25 +334,26 @@ const administrador = [
         routerLink: ['/administrador/auditoria'],
       },
       /*{
-                      label: 'Componentes',
-                      icon: 'pi pi-fw pi-folder',
-                      routerLink: ['/administrador/componentes'],
-                  },*/
+                            label: 'Componentes',
+                            icon: 'pi pi-fw pi-folder',
+                            routerLink: ['/administrador/componentes'],
+                        },*/
       {
         label: 'Registro de fechas especiales',
         icon: 'pi pi-calendar',
         routerLink: ['/gestion-institucional/fechas'],
       },
       /*{
-        label: 'Backup de BD',
-        icon: 'pi pi-fw pi-database',
-        routerLink: ['/administrador/backup-bd'],
-      },
-      {
-        label: 'Backup de BD',
-        icon: 'pi pi-fw pi-database',
-        routerLink: ['/administrador/backup-bd'],
-      },*/
+            /*{
+              label: 'Backup de BD',
+              icon: 'pi pi-fw pi-database',
+              routerLink: ['/administrador/backup-bd'],
+            },
+            {
+              label: 'Backup de BD',
+              icon: 'pi pi-fw pi-database',
+              routerLink: ['/administrador/backup-bd'],
+            },*/
 
       {
         label: 'Gestión de usuarios',

@@ -7,8 +7,8 @@
   [style]="{ width: '56rem' }"
 >
   <form [formGroup]="formSeccion">
-    <div class="grid p-fluid mt-3">
-      <div class="col-12">
+    <div class="grid mt-3">
+      <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>
             <span>Orden</span>
@@ -25,7 +25,7 @@
         </p-inputGroup>
       </div>
     </div>
-    <div class="grid p-fluid">
+    <div class="grid">
       <div class="col-12">
         <p-inputGroup>
           <p-inputGroupAddon>Título</p-inputGroupAddon>
@@ -64,28 +64,20 @@
   <br />
 
   <div class="flex justify-content-end gap-4">
-    <button
-      pButton
-      pRipple
-      label="Cancelar"
-      class="p-button-text p-button-secondary"
-      (click)="cancelar()"
-    ></button>
-    <button
-      pButton
-      pRipple
+    <p-button label="Salir" icon="pi pi-arrow-left" severity="secondary" (click)="salir()" />
+    <p-button
+      [hidden]="seccion_registrada"
       label="Guardar"
-      icon="pi pi-check"
-      class="p-button-success"
-      (click)="finalizar()"
-    ></button>
-    <button
-      pButton
-      pRipple
+      icon="pi pi-save"
+      severity="success"
+      (click)="guardar()"
+    />
+    <p-button
+      [hidden]="!seccion_registrada"
       label="Actualizar"
-      icon="pi pi-check"
-      class="p-button-success"
-      (click)="finalizar()"
-    ></button>
+      icon="pi pi-save"
+      severity="success"
+      (click)="actualizar()"
+    />
   </div>
 </p-dialog>

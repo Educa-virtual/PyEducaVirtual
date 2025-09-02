@@ -14,10 +14,6 @@ export class EncuestasService implements OnDestroy {
 
   constructor(private http: HttpClient) {}
 
-  public readonly PREGUNTA_CERRADA = 1;
-  public readonly PREGUNTA_ABIERTA = 2;
-  public readonly PREGUNTA_ESCALA = 3;
-
   public readonly ESTADO_BORRADOR = 1;
   public readonly ESTADO_APROBADA = 2;
 
@@ -51,6 +47,7 @@ export class EncuestasService implements OnDestroy {
   tipos_graficos: Array<object>;
   tiempos_duracion: Array<object>;
   participantes: Array<object>;
+  tipos_preguntas: Array<object>;
 
   /**
    * CONEXIONES A LA API
@@ -159,6 +156,19 @@ export class EncuestasService implements OnDestroy {
       return this.parametros;
     }
     return of(this.parametros);
+  }
+
+  getTiposPreguntas(data: any) {
+    if (!this.tipos_preguntas && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_preguntas = items.map(tipo => ({
+        value: tipo.iTipoPregId,
+        label: tipo.cTipoPregNombre,
+        icono: tipo.cTipoPregIcono,
+      }));
+      return this.tipos_preguntas;
+    }
+    return this.tipos_preguntas;
   }
 
   getTiemposDuracion(data: any) {
@@ -424,17 +434,6 @@ export class EncuestasService implements OnDestroy {
     return this.estados;
   }
 
-  getTiposPreguntas() {
-    return [
-      { label: 'PREGUNTA CERRADA (SI/NO)', value: this.PREGUNTA_CERRADA },
-      { label: 'PREGUNTA ABIERTA (TEXTO)', value: this.PREGUNTA_ABIERTA },
-      {
-        label: 'PREGUNTA DE ESCALA (1 A 5)',
-        value: this.PREGUNTA_ESCALA,
-      },
-    ];
-  }
-
   getTiposReportes() {
     if (!this.tipos_reportes) {
       this.tipos_reportes = [
@@ -457,12 +456,10 @@ export class EncuestasService implements OnDestroy {
         {
           label: 'BARRA',
           value: this.GRAFICO_BARRA,
-          iEncuPregTipoId: [this.PREGUNTA_CERRADA, this.PREGUNTA_ESCALA],
         },
         {
           label: 'CIRCULAR',
           value: this.GRAFICO_CIRCULAR,
-          iEncuPregTipoId: [this.PREGUNTA_CERRADA, this.PREGUNTA_ESCALA],
         },
       ];
     }

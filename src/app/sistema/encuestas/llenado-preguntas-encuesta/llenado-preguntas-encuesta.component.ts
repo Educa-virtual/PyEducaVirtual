@@ -27,9 +27,11 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   encuesta: any;
   iEncuId: number;
   iCateId: number;
+  iSeccionId: number;
+  iPregId: number;
 
   selectedItem: any;
-  totalPreguntas: number = 3;
+  totalPreguntas: number = 0;
   nIndexAcordionTab: number = null;
   mostrarDialogoSeccion: boolean = false;
   mostrarDialogoPregunta: boolean = false;
@@ -146,68 +148,49 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     );
   }
 
-  // Métodos para gestionar secciones
-  toggleSeccion(seccion: any) {
-    seccion.expandida = !seccion.expandida;
-  }
-
   editarSeccion(seccion: any) {
-    console.log(seccion);
+    this.iSeccionId = seccion.iSeccionId;
+    this.abrirDialogoSeccion();
   }
 
   eliminarSeccion(seccion: any) {
+    if (seccion.preguntas.length > 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No puede eliminar una sección con preguntas asociadas',
+      });
+      return;
+    }
     this.confirmationModalService.openConfirm({
-      header: `¿Está seguro de eliminar la sección "${seccion.titulo}"?`,
+      header: `¿Está seguro de eliminar la sección seleccionada #${seccion.iSeccionOrden}?`,
       accept: () => {
-        const index = this.secciones.findIndex(s => s.id === seccion.id);
-        if (index !== -1) {
-          this.secciones.splice(index, 1);
-          this.calcularTotalPreguntas();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sección eliminada',
-            detail: 'La sección ha sido eliminada correctamente',
+        this.encuestasService
+          .borrarSeccion({
+            iSeccionId: seccion.iSeccionId,
+          })
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sección eliminada',
+                detail: 'La sección ha sido eliminada correctamente',
+              });
+              this.secciones = this.secciones.filter(
+                (seccion: any) => seccion.iSeccionId !== seccion.iSeccionId
+              );
+              this.calcularTotalPreguntas();
+            },
+            error: error => {
+              console.error('Error eliminando la sección:', error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.message,
+              });
+            },
           });
-        }
       },
-    });
-  }
-
-  duplicarSeccion(seccion: any) {
-    const nuevaSeccion = {
-      ...seccion,
-      id: this.secciones.length + 1,
-      titulo: seccion.titulo + ' (Copia)',
-      preguntas: seccion.preguntas.map(p => ({
-        ...p,
-        id: Date.now() + Math.random(),
-        alternativas: p.alternativas.map(alt => ({
-          ...alt,
-          iAlternativaId: Date.now() + Math.random(),
-        })),
-      })),
-    };
-    this.secciones.push(nuevaSeccion);
-    this.calcularTotalPreguntas();
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sección duplicada',
-      detail: 'La sección ha sido duplicada correctamente',
-    });
-  }
-
-  agregarSeccion() {
-    const nuevaSeccion = {
-      id: this.secciones.length + 1,
-      titulo: `SECCIÓN ${this.secciones.length + 1}: NUEVA SECCIÓN`,
-      expandida: true,
-      preguntas: [],
-    };
-    this.secciones.push(nuevaSeccion);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sección agregada',
-      detail: 'Nueva sección creada correctamente',
     });
   }
 
@@ -237,37 +220,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   }
 
   agregarPregunta(seccion: any) {
-    const numeroPregunta = this.totalPreguntas + 1;
-    const nuevaPregunta = {
-      id: Date.now(),
-      title: `Pregunta #${numeroPregunta}: Nueva pregunta`,
-      cPregunta: 'Nueva pregunta',
-      expandida: true,
-      alternativas: [
-        {
-          iAlternativaId: Date.now() + 1,
-          cAlternativaLetra: 'A',
-          cAlternativaDescripcion: 'Opción A',
-          bAlternativaCorrecta: false,
-          cAlternativaExplicacion: '',
-        },
-        {
-          iAlternativaId: Date.now() + 2,
-          cAlternativaLetra: 'B',
-          cAlternativaDescripcion: 'Opción B',
-          bAlternativaCorrecta: false,
-          cAlternativaExplicacion: '',
-        },
-      ],
-    };
-
-    seccion.preguntas.push(nuevaPregunta);
-    this.calcularTotalPreguntas();
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Pregunta agregada',
-      detail: 'Nueva pregunta creada correctamente',
-    });
+    console.log(seccion, 'seccion');
   }
 
   guardarPregunta(pregunta: any) {
@@ -320,27 +273,11 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     this.isDisabled = !this.isDisabled;
   }
 
-  abrirDialgAgregarSeccionCategoria() {
+  abrirDialogoSeccion() {
     this.mostrarDialogoSeccion = true;
   }
 
-  cerrarDialogoSeccionCategoria() {
+  cerrarDialogoSeccion() {
     this.mostrarDialogoSeccion = false;
-  }
-  /*cancelarAgregarSeccionCategoria() {
-        this.cancelarAgregarSeccionCategoria()
-    }
-     */
-  onAgregarSeccion(nuevaSeccion: any) {
-    if (nuevaSeccion) {
-      this.secciones.push(nuevaSeccion);
-      this.calcularTotalPreguntas();
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sección agregada',
-        detail: 'Nueva sección creada correctamente',
-      });
-    }
-    this.cerrarDialogoSeccionCategoria();
   }
 }

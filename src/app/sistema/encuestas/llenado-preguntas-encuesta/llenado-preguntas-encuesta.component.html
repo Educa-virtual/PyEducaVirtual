@@ -12,7 +12,7 @@
       <p-button
         size="small"
         severity="secondary"
-        pTooltip="Ver encuesta"
+        pTooltip="Volver a encuesta"
         tooltipPosition="top"
         (click)="salir()"
       >
@@ -22,15 +22,17 @@
     </div>
   </ng-template>
 
-  <div class="flex justify-content-between flex-wrap m-2">
+  <div class="flex justify-content-between flex-wrap gap-2">
     <p-button
-      icon="pi pi-plus"
-      label="Agregar sección"
       severity="primary"
-      styleClass="w-full md:inline"
-      (click)="mostrarDialogoSeccion = true"
-      onclick="onAgregarSeccion($event)"
-    />
+      pTooltip="Agregar sección"
+      tooltipPosition="top"
+      (click)="abrirDialogoSeccion()"
+    >
+      <i class="pi pi-plus mr-2"></i>
+      <span class="font-bold hidden md:inline">Agregar sección</span>
+      <span class="font-bold inline md:hidden">Sección</span>
+    </p-button>
     <div class="card p-1">
       <span class="font-semibold hidden md:inline">Total de </span>
       <span class="font-semibold">Preguntas: </span>
@@ -45,7 +47,10 @@
       <p-accordionTab iconPos="start" [selected]="true">
         <ng-template pTemplate="header">
           <span class="flex align-items-center justify-content-start w-full">
-            <span>{{ seccion.cSeccionTitulo }}</span>
+            <div class="flex flex-column">
+              <div class="flex text-xl">SECCION # {{ seccion.iSeccionOrden }}</div>
+              <div class="flex text-sm">{{ seccion?.cSeccionTitulo }}</div>
+            </div>
             <div
               class="flex gap-1 ml-auto"
               tabindex="0"
@@ -60,7 +65,7 @@
                 (onClick)="editarSeccion(seccion)"
               >
                 <i class="pi pi-pencil"></i>
-                <span class="ml-2 hidden md:inline">Editar</span>
+                <span class="ml-2 font-bold hidden md:inline">Editar</span>
               </p-button>
               <p-button
                 size="small"
@@ -70,7 +75,7 @@
                 (onClick)="eliminarSeccion(seccion)"
               >
                 <i class="pi pi-trash"></i>
-                <span class="ml-2 hidden md:inline">Eliminar</span>
+                <span class="ml-2 font-bold hidden md:inline">Eliminar</span>
               </p-button>
             </div>
           </span>
@@ -110,12 +115,15 @@
 
         <div class="flex flex-row-reverse">
           <p-button
-            icon="pi pi-plus"
-            label="Agregar pregunta"
             severity="primary"
             size="small"
+            pTooltip="Agregar pregunta"
+            tooltipPosition="top"
             (onClick)="agregarPregunta(seccion)"
           >
+            <i class="pi pi-plus mr-2"></i>
+            <span class="font-bold hidden md:inline">Agregar pregunta</span>
+            <span class="font-bold inline md:hidden">Pregunta</span>
           </p-button>
         </div>
       </p-accordionTab>
@@ -125,17 +133,12 @@
   </p-accordion>
 
   <app-seccion
-    [visible]="mostrarDialogoSeccion"
-    (visibleChange)="mostrarDialogoSeccion = $event"
-    (AgregarSeccionEncuesta)="onAgregarSeccion($event)"
-  >
-  </app-seccion>
+    [(visible)]="mostrarDialogoSeccion"
+    [iSeccionId]="iSeccionId"
+    (seccionModificada)="listarSecciones()"
+  />
 
-  <app-pregunta
-    [visible]="mostrarDialogoPregunta"
-    (visibleChange)="mostrarDialogoPregunta = $event"
-  >
-  </app-pregunta>
+  <app-pregunta [(visible)]="mostrarDialogoPregunta" [iSeccionId]="iSeccionId" />
 </p-panel>
 
 <p-toast></p-toast>

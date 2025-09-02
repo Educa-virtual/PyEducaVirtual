@@ -18,6 +18,8 @@ import { MessageService } from 'primeng/api';
 })
 export class PreguntaComponent implements OnInit {
   @Input() visible: boolean = false;
+  @Input() iEncuId: number;
+  @Input() iSeccionId: number;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() AgregarSeccionEncuesta = new EventEmitter<any>();
 

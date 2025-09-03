@@ -71,44 +71,4 @@ export class ReporteProgresoComponent implements OnInit {
       });
     }
   }
-  /*descargarReporte() {
-          this.reporteProgresoService.existeMatriculaPorAnio(this.iYAcadId).subscribe({
-              next: (responsex: any) => {
-                  if (responsex.data.existe) {
-                      this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
-                          next: (response: any) => {
-                              const blob = new Blob([response], {
-                                  type: 'application/pdf',
-                              });
-                              const url = window.URL.createObjectURL(blob);
-                              const link = document.createElement('a');
-                              link.href = url;
-                              link.target = '_blank';
-                              link.click();
-                          },
-                          error: () => {
-                              this.messageService.add({
-                                  severity: 'error',
-                                  summary: 'Problema al descargar el archivo',
-                                  detail: 'Error desconocido',
-                              });
-                          },
-                      });
-                  } else {
-                      this.messageService.add({
-                          severity: 'error',
-                          summary: 'No existe matricula',
-                          detail: 'No hay una matricula registrada para el anio seleccionado',
-                      });
-                  }
-              },
-              error: (err) => {
-                  this.messageService.add({
-                      severity: 'error',
-                      summary: 'Problema al descargar el archivo',
-                      detail: err.error.message || 'Error desconocido',
-                  });
-              },
-          });
-      }*/
 }

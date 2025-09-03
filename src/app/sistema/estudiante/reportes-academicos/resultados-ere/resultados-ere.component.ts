@@ -131,7 +131,6 @@ export class ResultadosEreComponent implements OnInit {
       labels,
       datasets: [
         {
-          label: 'Correctas',
           data: correctas,
           backgroundColor: [
             'rgba(220, 20, 60, 0.6)', // rojo suave

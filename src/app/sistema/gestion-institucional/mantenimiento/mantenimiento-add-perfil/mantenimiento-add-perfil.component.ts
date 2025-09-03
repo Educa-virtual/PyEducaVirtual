@@ -135,7 +135,6 @@ export class MantenimientoAddPerfilComponent implements OnChanges, OnInit {
   //funciones de perfiles
 
   eliminar_perfiles(id: number) {
-    alert(id);
     let params = {};
     if (id === 0) {
       params = {

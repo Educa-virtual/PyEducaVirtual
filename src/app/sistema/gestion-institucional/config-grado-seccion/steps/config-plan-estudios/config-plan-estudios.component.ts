@@ -4,7 +4,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem, Message, MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
 
 import {
@@ -38,7 +38,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   planes: [];
   form: FormGroup;
   formNivelGrado: FormGroup;
-  formFiltrado: FormGroup;
+  //formFiltrado: FormGroup;
 
   caption: string;
   visible: boolean = false;
@@ -64,7 +64,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   lista: any = [];
 
   //Validaro para actualiza plan curricular
-  bAgregar: boolean = false;
+  bAgregar: boolean;
+  mensaje: Message[] = [
+    {
+      severity: 'info',
+      detail: 'No cuenta con un servicio educativo asignado a su Institución Educativa.',
+    },
+  ];
 
   private _confirmService = inject(ConfirmationModalService);
   constructor(
@@ -94,14 +100,15 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         // ambiente: [''],
         cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
       });
+      this.bAgregar = this.configuracion[0]?.iServEdId != null;
     } catch (error) {
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
 
-    this.formFiltrado = this.fb.group({
-      iGradoId: [0],
-      cCurso: [''],
-    });
+    // this.formFiltrado = this.fb.group({
+    //   iGradoId: [{value :0, Disable: true}],
+    //   cCurso: [''],
+    // });
 
     this.formNivelGrado = this.fb.group({
       //   iNivelGradoId : [0],
@@ -111,7 +118,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       cNivelTipoNombre: [''],
 
       cDeclaracionJurada: [''],
-
       cCursoNombre: [''],
       iHorasSemPresencial: [0],
       iHorasSemDomicilio: [0],

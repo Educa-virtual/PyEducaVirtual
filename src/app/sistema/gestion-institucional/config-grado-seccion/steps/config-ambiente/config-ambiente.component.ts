@@ -63,6 +63,7 @@ export class ConfigAmbienteComponent implements OnInit {
 
   ambientes: any[];
   private _confirmService = inject(ConfirmationModalService);
+
   constructor(
     private stepService: AdmStepGradoSeccionService,
     private router: Router,
@@ -77,7 +78,7 @@ export class ConfigAmbienteComponent implements OnInit {
     this.configuracion = this.stepService.configuracion;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     try {
       //bd iiee_ambientes
       //this.visible = true
@@ -97,175 +98,182 @@ export class ConfigAmbienteComponent implements OnInit {
         iAmbienteAforo: [0, Validators.required],
         cAmbienteObs: [''],
         // ambiente: [''],
-        cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
+        cYAcadNombre: [this.configuracion[0].cYAcadNombre],
+        // campo adicional para la vista
       });
     } catch (error) {
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
-    this.getAmbientes(); // devuelve arrays de tabla acad.ambientes
-    this.getTipoAmbiente(); // devuelve arrays de tabla acad.tipo_ambientes
-    this.getTipoUbicacion(); //devuelve arrays de tabla acad.ubiccion_ambientes
-    this.getUsoAmbiente(); // devuelve arrays de tabla acad.uso_ambientes
-    this.getPisoAmbiente(); // devuelve arrays de tabla acad.piso_ambientes
-    this.getCondicionAmbiente(); // devuelve arrays de tabla acad.estado_ambientes
+    this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes()); // devuelve arrays de tabla acad.ambientes
+    this.tipo_ambiente =
+      this.stepService.tipo_ambiente ?? (await this.stepService.getTipoAmbiente());
+    this.tipo_ubicacion =
+      this.stepService.tipo_ubicacion ?? (await this.stepService.getTipoUbicacion());
+    this.uso_ambientes =
+      this.stepService.uso_ambientes ?? (await this.stepService.getUsoAmbiente());
+    this.piso_ambiente =
+      this.stepService.piso_ambiente ?? (await this.stepService.getPisoAmbiente());
+    this.condicion_ambiente =
+      this.stepService.condicion_ambiente ?? (await this.stepService.getCondicionAmbiente());
   }
-  //Consultyas a tablas
-  getAmbientes() {
-    this.query
-      .searchAmbienteAcademico({
-        json: JSON.stringify({
-          iSedeId: this.stepService.configuracion[0].iSedeId,
-          iYAcadId: this.stepService.configuracion[0].iYAcadId,
-        }),
-        _opcion: 'getAmbientesSedeYear',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.ambientes = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de configuraciones:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del Sistema',
-            detail: 'Lista de ambientes obtenida correctamente',
-          });
-          this.stepService.ambientes = this.ambientes; //SE ACTUALIZA EL ARRAY DE AMBIENTES
-          // this.getYearCalendarios(this.formCalendario.value)
-        },
-      });
-  }
-  getTipoAmbiente() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'tipo_ambientes',
-        campos: 'iTipoAmbienteId, cTipoAmbienteNombre',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.tipo_ambiente = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de tipos de ambientes:' + error.error.message,
-          });
-          // Manejo de error
-        },
-        complete: () => {
-          this.stepService.tipo_ambiente = this.tipo_ambiente;
-        },
-      });
-  }
+  // //Consultyas a tablas
+  // getAmbientes() {
+  //   this.query
+  //     .searchAmbienteAcademico({
+  //       json: JSON.stringify({
+  //         iSedeId: this.stepService.configuracion[0].iSedeId,
+  //         iYAcadId: this.stepService.configuracion[0].iYAcadId,
+  //       }),
+  //       _opcion: 'getAmbientesSedeYear',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.ambientes = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'danger',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error en lista de configuraciones:' + error.error.message,
+  //         });
+  //       },
+  //       complete: () => {
+  //         this.messageService.add({
+  //           severity: 'success',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Lista de ambientes obtenida correctamente',
+  //         });
+  //         this.stepService.ambientes = this.ambientes; //SE ACTUALIZA EL ARRAY DE AMBIENTES
+  //         // this.getYearCalendarios(this.formCalendario.value)
+  //       },
+  //     });
+  // }
+  // getTipoAmbiente() {
 
-  getTipoUbicacion() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'ubicacion_ambientes',
-        campos: 'iUbicaAmbId, cUbicaAmbNombre',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.tipo_ubicacion = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de ubicaciones de ambientes:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.tipo_ubicacion = this.tipo_ubicacion;
-        },
-      });
-  }
+  //   this.query
+  //     .searchCalAcademico({
+  //       esquema: 'acad',
+  //       tabla: 'tipo_ambientes',
+  //       campos: 'iTipoAmbienteId, cTipoAmbienteNombre',
+  //       condicion: '1=1',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.tipo_ambiente = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'danger',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error en lista de tipos de ambientes:' + error.error.message,
+  //         });
+  //         // Manejo de error
+  //       },
+  //       complete: () => {
+  //         this.stepService.tipo_ambiente = this.tipo_ambiente;
+  //       },
+  //     });
+  // }
 
-  getUsoAmbiente() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'uso_ambientes',
-        campos: 'iUsoAmbId, cUsoAmbNombre, cUsoAmbDescripcion',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.uso_ambientes = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de usos de ambientes:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.uso_ambientes = this.uso_ambientes;
-        },
-      });
-  }
+  // getTipoUbicacion() {
+  //   this.query
+  //     .searchCalAcademico({
+  //       esquema: 'acad',
+  //       tabla: 'ubicacion_ambientes',
+  //       campos: 'iUbicaAmbId, cUbicaAmbNombre',
+  //       condicion: '1=1',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.tipo_ubicacion = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'danger',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error en lista de ubicaciones de ambientes:' + error.error.message,
+  //         });
+  //       },
+  //       complete: () => {
+  //         this.stepService.tipo_ubicacion = this.tipo_ubicacion;
+  //       },
+  //     });
+  // }
 
-  getCondicionAmbiente() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'estado_ambientes',
-        campos: 'iEstadoAmbId, cEstadoAmbNombre',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.condicion_ambiente = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de condiciones de ambientes:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.condicion_ambiente = this.condicion_ambiente;
-        },
-      });
-  }
+  // getUsoAmbiente() {
+  //   this.query
+  //     .searchCalAcademico({
+  //       esquema: 'acad',
+  //       tabla: 'uso_ambientes',
+  //       campos: 'iUsoAmbId, cUsoAmbNombre, cUsoAmbDescripcion',
+  //       condicion: '1=1',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.uso_ambientes = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'danger',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error en lista de usos de ambientes:' + error.error.message,
+  //         });
+  //       },
+  //       complete: () => {
+  //         this.stepService.uso_ambientes = this.uso_ambientes;
+  //       },
+  //     });
+  // }
 
-  getPisoAmbiente() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'piso_ambientes',
-        campos: 'iPisoAmbid, cPisoAmbNombre, cPisoAmbDescripcion',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.piso_ambiente = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error en lista de pisos de ambientes:' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.stepService.piso_ambiente = this.piso_ambiente;
-        },
-      });
-  }
+  // getCondicionAmbiente() {
+  //   this.query
+  //     .searchCalAcademico({
+  //       esquema: 'acad',
+  //       tabla: 'estado_ambientes',
+  //       campos: 'iEstadoAmbId, cEstadoAmbNombre',
+  //       condicion: '1=1',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.condicion_ambiente = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'danger',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error en lista de condiciones de ambientes:' + error.error.message,
+  //         });
+  //       },
+  //       complete: () => {
+  //         this.stepService.condicion_ambiente = this.condicion_ambiente;
+  //       },
+  //     });
+  // }
+
+  // getPisoAmbiente() {
+  //   this.query
+  //     .searchCalAcademico({
+  //       esquema: 'acad',
+  //       tabla: 'piso_ambientes',
+  //       campos: 'iPisoAmbid, cPisoAmbNombre, cPisoAmbDescripcion',
+  //       condicion: '1=1',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.piso_ambiente = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'danger',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error en lista de pisos de ambientes:' + error.error.message,
+  //         });
+  //       },
+  //       complete: () => {
+  //         this.stepService.piso_ambiente = this.piso_ambiente;
+  //       },
+  //     });
+  // }
 
   // eventos de record set
   confirm() {
@@ -341,14 +349,14 @@ export class ConfigAmbienteComponent implements OnInit {
                 detail: 'Error en el proceso de eliminar: ' + error.error.message,
               });
             },
-            complete: () => {
+            complete: async () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Mensaje',
                 detail: 'Proceso exitoso',
               });
 
-              this.getAmbientes();
+              this.ambientes = await this.stepService.getAmbientes();
               this.visible = false;
               this.clearForm();
             },
@@ -404,14 +412,14 @@ export class ConfigAmbienteComponent implements OnInit {
                 detail: 'Error en el proceso: ' + error.error.message,
               });
             },
-            complete: () => {
+            complete: async () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Mensaje',
                 detail: 'Proceso exitoso',
               });
 
-              this.getAmbientes();
+              this.ambientes = await this.stepService.getAmbientes();
               this.visible = false;
               this.clearForm();
             },
@@ -457,14 +465,14 @@ export class ConfigAmbienteComponent implements OnInit {
               detail: 'Error en el proceso de actualizar: ' + error.error.message,
             });
           },
-          complete: () => {
+          complete: async () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Mensaje de sistema',
               detail: 'Proceso exitoso',
             });
 
-            this.getAmbientes();
+            this.ambientes = await this.stepService.getAmbientes();
             this.visible = false;
             this.clearForm();
           },

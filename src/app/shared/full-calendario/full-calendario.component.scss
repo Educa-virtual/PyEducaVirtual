@@ -1,0 +1,92 @@
+/* calendar.component.css */
+.no-events {
+  padding: 1rem;
+  color: #666;
+}
+
+/* Tabla base */
+.event-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px; /* separa filas para el efecto de "tarjetas" */
+  font-family: inherit;
+}
+
+/* Encabezados */
+.event-table thead th {
+  text-align: left;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Columnas */
+.col-time {
+  width: 110px;
+} /* ajusta según necesidad */
+.col-event {
+  width: calc(100% - 110px);
+}
+
+/* Filas (cada fila parece una "tarjeta") */
+.event-row {
+  background: #f7f7f7; /* fondo claro como tenías en los divs */
+  transition:
+    background 0.12s ease,
+    transform 0.08s ease;
+  border-radius: 6px;
+  overflow: hidden;
+  display: table-row;
+}
+
+/* Hover / focus */
+.event-row:hover,
+.event-row:focus {
+  background: #eef3ff; /* un ligero cambio, más visible en hover */
+  transform: translateY(-1px);
+}
+
+/* Celdas */
+.event-row td {
+  padding: 0.6rem 0.75rem;
+  vertical-align: top;
+  border: none;
+  background: transparent; /* el color ya lo lleva la fila */
+}
+
+/* Estilos particulares */
+.time-cell {
+  color: #1f2d3d;
+  white-space: nowrap;
+}
+
+.event-title {
+  font-weight: 600;
+  color: #0b2545;
+  margin-bottom: 0.2rem;
+  word-break: break-word;
+}
+
+.event-course {
+  font-size: 0.88rem;
+  color: #3b4a5a;
+  margin-bottom: 0.25rem;
+}
+
+.event-desc {
+  font-size: 0.87rem;
+  color: #2f2f2f;
+  white-space: normal;
+  margin-top: 0.25rem;
+}
+
+/* Ajustes responsivos (opcional) */
+@media (max-width: 520px) {
+  .col-time {
+    width: 90px;
+  }
+  p-dialog {
+    width: 100% !important;
+  }
+}

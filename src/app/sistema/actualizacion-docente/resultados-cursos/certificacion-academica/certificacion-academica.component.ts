@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { CapacitacionesServiceService } from '@/app/servicios/cap/capacitaciones-service.service';
+import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 import {
@@ -21,7 +21,7 @@ export class CertificacionAcademicaComponent implements OnInit {
   @Input() id: any; // Recibe el id del curso seleccionado
 
   private _ConstantesService = inject(ConstantesService);
-  private _capService = inject(CapacitacionesServiceService);
+  private _capService = inject(CapacitacionesService);
 
   datosCurso: any;
   alumnos: any;

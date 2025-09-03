@@ -1,7 +1,7 @@
 const inicio = {
   label: 'Inicio',
   icon: 'pi pi-fw pi-home',
-  routerLink: [''],
+  // routerLink: [''],
 };
 
 /*export const evaluacionesEre = {
@@ -19,7 +19,33 @@ export const reportesEre = {
 export const administradorDremo = [
   {
     items: [
-      inicio,
+      {
+        label: 'Administracion',
+        icon: 'pi pi-fw pi-home',
+        // routerLink: [''],
+      },
+      // inicio,
+      {
+        label: 'Administrador IE',
+        icon: 'pi pi-warehouse',
+        items: [
+          {
+            label: 'Gestión de feriados nacionales',
+            icon: 'pi pi-calendar',
+            routerLink: ['/gestion-institucional/fechas-nacionales'],
+          },
+          {
+            label: 'Gestión del año académico',
+            icon: 'pi pi-calendar-clock',
+            routerLink: ['/gestion-institucional/years-academicos'],
+          },
+          {
+            label: 'Gestión de ciclos',
+            icon: 'pi pi-stopwatch',
+            routerLink: ['/gestion-institucional/ciclo'],
+          },
+        ],
+      },
       /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',
@@ -100,11 +126,11 @@ export const administradorDremo = [
             icon: 'pi pi-user',
             routerLink: ['/actualizacion-docente/instructores'],
           },
-          {
-            label: 'Resultados del curso',
-            icon: 'pi pi-user',
-            routerLink: ['/actualizacion-docente/resultados'],
-          },
+          // {
+          //   label: 'Resultados del curso',
+          //   icon: 'pi pi-user',
+          //   routerLink: ['/actualizacion-docente/resultados'],
+          // },
         ],
       },
       {

@@ -18,9 +18,8 @@
                 optionLabel="cServEdNombre"
                 optionValue="iServEdId"
                 formControlName="iServEdId"
-                (onChange)="getCurriculaNivelServicioEducativo()"
                 styleClass="w-full"
-              >
+                ><!--  (onChange)="getCurriculaNivelServicioEducativo()"  -->
               </p-dropdown>
               <label for="iServEdId">Servicio Educativo ({{ serv_horas }} Hrs semanales)</label>
             </span>
@@ -124,30 +123,36 @@
           <div class="col-12 mt-2 grid flex align-items-end">
             <div class="field col-12 md:col-4">
               <span class="p-float-label">
-                <input
-                  pInputText
+                <p-inputNumber
+                  [showButtons]="true"
                   id="iHorasSemPresencial"
                   formControlName="iHorasSemPresencial"
                   aria-describedby="iHorasSemPresencial-help"
+                  [min]="0"
+                  [max]="10"
+                  (onInput)="calcularTotal()"
                 />
                 <label for="iHorasSemPresencial">Presenciales</label>
               </span>
             </div>
             <div class="field col-12 md:col-4">
               <span class="p-float-label">
-                <input
-                  pInputText
+                <p-inputNumber
+                  [showButtons]="true"
                   id="iHorasSemDomicilio"
                   formControlName="iHorasSemDomicilio"
                   aria-describedby="iHorasSemDomicilio-help"
+                  [min]="0"
+                  [max]="10"
+                  (onInput)="calcularTotal()"
                 />
                 <label for="iHorasSemDomicilio">Domicilio</label>
               </span>
             </div>
             <div class="field col-12 md:col-4">
               <span class="p-float-label">
-                <input
-                  pInputText
+                <p-inputNumber
+                  currency="Hrs"
                   id="iTotalHoras"
                   formControlName="iTotalHoras"
                   aria-describedby="iTotalHoras-help"
@@ -156,13 +161,12 @@
               </span>
             </div>
           </div>
-          <div class="field col-12">
+          <!-- <div class="field col-12">
             <span class="p-float-label">
-              + Horas adicionales:
-              {{ hora_adicional[0]?.iTotalHoras || 0 }} + Total de horas semanales:
-              {{ total_horas_grado }}
+              Horas acumuladas: {{ total_horas_grado }} de {{serv_horas}}
+
             </span>
-          </div>
+          </div> -->
           <div class="col-12 mt-2 grid flex align-items-end">
             <div class="field col-12 md:col-8">
               <p-checkbox
@@ -178,13 +182,24 @@
                 type="button"
                 class="p-button-success"
                 size="small"
-                (click)="addDistribucionHoras()"
+                (click)="validarHorasMinimas()"
                 aria-label="Agregar grado"
                 [label]="'Registrar horas'"
                 [disabled]="formNivelGrado.invalid"
               ></button>
             </div>
             <p-message [severity]="'warn'" [text]="mensaje" *ngIf="mensaje" closable />
+            <div>
+              <button
+                pButton
+                type="button"
+                class="p-button-danger"
+                size="small"
+                (click)="cerrarEditar()"
+                aria-label="Agregar grado"
+                [label]="'Cerrar'"
+              ></button>
+            </div>
           </div>
         </form>
       </p-fieldset>

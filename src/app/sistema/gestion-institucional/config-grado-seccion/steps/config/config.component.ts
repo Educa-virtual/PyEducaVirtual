@@ -90,14 +90,20 @@ export class ConfigComponent implements OnInit {
     this.configTipo = this.stepService.configTipo;
   }
   ngOnInit(): void {
-    if (!this.configuracion) {
-      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
-      return;
-    }
+    try {
+      console.log(this.configuracion[0]);
 
-    // Si llegas aquí, `configuracion` sí existe
-    this.mensajeInformativo();
-    this.inicializarFormulario();
+      if (!this.configuracion) {
+        this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+        return;
+      }
+
+      // Si llegas aquí, `configuracion` sí existe
+      this.mensajeInformativo();
+      this.inicializarFormulario();
+    } catch (error) {
+      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+    }
   }
 
   inicializarFormulario() {

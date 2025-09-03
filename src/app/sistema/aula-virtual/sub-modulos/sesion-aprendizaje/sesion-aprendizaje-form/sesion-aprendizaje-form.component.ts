@@ -27,6 +27,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   @Input() idSesion: number = 0;
   @Input() accion: string = '';
   @Input() datosSesion: any;
+  @Input() bCapacitacion: boolean = false;
 
   private _TipoExperienciaAprendizajeService = inject(TipoExperienciaAprendizajeService);
   private _ConstantesService = inject(ConstantesService);
@@ -55,8 +56,11 @@ export class SesionAprendizajeFormComponent implements OnChanges {
     if (changes['showModal']) {
       this.idSesion;
       this.showModal = changes['showModal'].currentValue;
-      this.obtenerTipoExperienciaAprendizaje();
-      this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
+      if (!this.bCapacitacion) {
+        this.obtenerTipoExperienciaAprendizaje();
+        this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
+      }
+
       this.formSesines.reset();
     }
     if (this.accion === 'editar') {
@@ -152,7 +156,7 @@ export class SesionAprendizajeFormComponent implements OnChanges {
   guardarDatosdeSesion() {
     this.data = {
       ...this.formSesines.value,
-      cAdjunto: this.documentos.data,
+      cAdjunto: this.documentos?.data,
     };
     this.formSesines.reset();
     this.dataSesion.emit(this.data);

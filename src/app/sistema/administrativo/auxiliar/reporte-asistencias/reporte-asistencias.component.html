@@ -46,6 +46,7 @@
             <p-dropdown
               [options]="seccion"
               [(ngModel)]="datos.iSeccionId"
+              (click)="inhabilitarBoton = false"
               optionLabel="cSeccionNombre"
               optionValue="iSeccionId"
               placeholder="Seleccionar Seccion"
@@ -93,9 +94,21 @@
               (click)="buscarReporteEstudiante()"
             />
           </div>
+          <p-inputGroup ngClass="mr-2 w-2" *ngIf="tipo.id === 3">
+            <p-inputGroupAddon>Tipo</p-inputGroupAddon>
+            <p-dropdown
+              [disabled]="inhabilitar"
+              [options]="asistencias"
+              [(ngModel)]="tipo.tipoAsistencia"
+              (onChange)="filtrarGrafica()"
+              optionLabel="nombre"
+              optionValue="indice"
+              placeholder="Seleccionar Tipo de Asistencia"
+            />
+          </p-inputGroup>
           <div class="w-1 mr-2" *ngIf="tipo.id === 3">
             <p-button
-              [disabled]="!tipo.id"
+              [disabled]="!datos.iGradoId || !datos.iSeccionId"
               class="expandir"
               severity="primary"
               label="Buscar"
@@ -134,6 +147,11 @@
                 <th class="text-center">Apellidos y Nombres</th>
                 <th class="text-center">DNI</th>
                 <th *ngFor="let dia of dias">{{ dia }}</th>
+                <!-- <th>Asisntcia</th>
+                <th>T</th>
+                <th>I</th>
+                <th>Asisntcia</th>
+                <th>Asisntcia</th> -->
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
@@ -161,8 +179,47 @@
           </p-table>
         </div>
       </div>
-      <div class="col-12" *ngIf="tipo.id === 3 || tipo.id === 4">
-        <p-chart type="bar" [data]="grafico" [options]="configuracion" style="height: 1500px" />
+      <div class="col-12" *ngIf="tipo.id === 3">
+        <p-chart
+          type="bar"
+          [data]="grafico"
+          [options]="configuracion"
+          [plugins]="[plugin]"
+          style="width: 2000px; height: 1500px"
+        />
+      </div>
+      <div class="col-7" *ngIf="tipo.id === 4">
+        <div class="card flex justify-content-center">
+          <p-chart
+            type="doughnut"
+            [data]="dona"
+            [options]="opcionDona"
+            [plugins]="[plugin]"
+            style="width: 400px"
+          />
+        </div>
+      </div>
+      <div class="col-5" *ngIf="tipo.id === 4">
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>Nombre Completo</p-inputGroupAddon>
+          <input pInputText class="mr-1" [(ngModel)]="estudiante.nombre" readonly />
+        </p-inputGroup>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>Codigo de Estudiante</p-inputGroupAddon>
+          <input pInputText class="mr-1" [(ngModel)]="estudiante.codigo" readonly />
+        </p-inputGroup>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>DNI</p-inputGroupAddon>
+          <input pInputText class="mr-1" [(ngModel)]="estudiante.dni" readonly />
+        </p-inputGroup>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>Grado</p-inputGroupAddon>
+          <input pInputText class="mr-1" [(ngModel)]="estudiante.grado" readonly />
+        </p-inputGroup>
+        <p-inputGroup class="mb-3">
+          <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+          <input pInputText class="mr-1" [(ngModel)]="estudiante.seccion" readonly />
+        </p-inputGroup>
       </div>
     </div>
   </ng-template>

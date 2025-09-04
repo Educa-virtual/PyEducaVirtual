@@ -3,6 +3,7 @@ import { GeneralService } from '@/app/servicios/general.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 @Component({
   selector: 'app-reporte-asistencias',
   standalone: true,
@@ -12,14 +13,21 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 })
 export class ReporteAsistenciasComponent implements OnInit {
   private servicioGeneral = inject(GeneralService);
+  estudiante: any = {};
+  plugin = ChartDataLabels;
   dremoiYAcadId: any;
   dremoPerfil: any;
+  nombres: any = [];
+  total: any;
   dias: any = [];
-  barra: any[] = [[], [], [], [], [], [], []];
+  barra: any[] = [[], [], [], [], [], []];
+  inhabilitar: boolean = true;
+  inhabilitarBoton: boolean = true;
+  registros: any[] = [];
   configuracion: any = {
     indexAxis: 'y',
     maintainAspectRatio: false,
-    aspectRatio: 0.4,
+    aspectRatio: 0.3,
     plugins: {
       legend: {
         labels: {
@@ -31,13 +39,22 @@ export class ReporteAsistenciasComponent implements OnInit {
         intersect: false,
         axis: 'y',
       },
+      datalabels: {
+        anchor: 'center',
+        align: 'center',
+        color: '#000',
+        formatter: (value: number) => {
+          const porcentaje = ((value / this.total) * 100).toFixed(2);
+          return value === 0 ? '' : value + ' - ' + porcentaje + '%';
+        },
+      },
     },
     scales: {
       x: {
         stacked: true,
         ticks: {
           font: {
-            weight: 500,
+            weight: 200,
           },
         },
         grid: {
@@ -56,7 +73,29 @@ export class ReporteAsistenciasComponent implements OnInit {
     },
   };
 
+  opcionDona: any = {
+    responsive: true,
+    plugins: {
+      datalabels: {
+        color: '#000',
+        formatter: value => {
+          return value ? value : '';
+        },
+        font: {
+          weight: 'bold' as const,
+          size: 14,
+        },
+      },
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+  };
   grafico: any;
+  dona: any;
 
   meses: any = [
     { nombre: 'Enero', numero: '01', dia: '31' },
@@ -78,6 +117,58 @@ export class ReporteAsistenciasComponent implements OnInit {
     { id: 2, nombre: 'reporte por alumno' },
     { id: 3, nombre: 'reporte grafico Grado y Seccion' },
     { id: 4, nombre: 'reporte grafico por alumno' },
+  ];
+
+  asistencias = [
+    {
+      id: undefined,
+      indice: undefined,
+      nombre: 'Todos',
+      seccion: '',
+      color: '',
+    },
+    {
+      id: 0,
+      indice: 1,
+      nombre: 'Asistencia',
+      seccion: 'asistio',
+      color: '--green-500',
+    },
+    {
+      id: 1,
+      indice: 2,
+      nombre: 'Tardanza',
+      seccion: 'inasistencia',
+      color: '--orange-500',
+    },
+    {
+      id: 2,
+      indice: 3,
+      nombre: 'Inasistencia',
+      seccion: 'inasistenciaJustificada',
+      color: '--red-500',
+    },
+    {
+      id: 3,
+      indice: 4,
+      nombre: 'Inasistencia Justificada',
+      seccion: 'sinRegistro',
+      color: '--primary-500',
+    },
+    {
+      id: 4,
+      indice: 5,
+      nombre: 'Sin Registro',
+      seccion: 'tardanza',
+      color: '--yellow-500',
+    },
+    {
+      id: 5,
+      indice: 6,
+      nombre: 'Tardanza Justificada',
+      seccion: 'tardanzaJustificada',
+      color: '--cyan-500',
+    },
   ];
 
   tipoAsistencia = [
@@ -160,6 +251,7 @@ export class ReporteAsistenciasComponent implements OnInit {
       },
     };
     this.conecionReporteGrafico(enlace);
+    this.inhabilitar = false;
   }
 
   ReporteGraficoEstudiante() {
@@ -182,43 +274,119 @@ export class ReporteAsistenciasComponent implements OnInit {
   conecionReporteGrafico(enlace: any) {
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
       next: data => {
-        const dato = data.data;
-        const nombres = dato.map(item => item.completo);
-        const documentStyle = getComputedStyle(document.documentElement);
-
-        dato.forEach(lista => {
+        // this.barra = [[], [], [], [], [], []];
+        // this.total = [];
+        this.registros = data.data;
+        this.registros.forEach(lista => {
           lista.asistencia = JSON.parse(lista.asistencia);
-          const indice = lista.asistencia[0];
-          const resta =
-            indice.total -
-            indice.sinRegistro -
-            indice.inasistencia -
-            indice.inasistenciaJustificada -
-            indice.tardanza -
-            indice.tardanzaJustificada;
-
-          const totalPorcentaje = ((resta / indice.total) * 100).toFixed(2);
-          const asistio = ((indice.asistio / indice.total) * 100).toFixed(2);
-          const inasistencia = ((indice.inasistencia / indice.total) * 100).toFixed(2);
-          const inasistenciaJustificada = (
-            (indice.inasistenciaJustificada / indice.total) *
-            100
-          ).toFixed(2);
-          const sinRegistro = ((indice.sinRegistro / indice.total) * 100).toFixed(2);
-          const tardanza = (indice.tardanza / indice.total).toFixed(2);
-          const tardanzaJustificada = (indice.tardanzaJustificada / indice.total).toFixed(2);
-
-          this.barra[0].push(asistio);
-          this.barra[1].push(inasistencia);
-          this.barra[2].push(inasistenciaJustificada);
-          this.barra[3].push(sinRegistro);
-          this.barra[4].push(tardanza);
-          this.barra[5].push(tardanzaJustificada);
-          this.barra[6].push(totalPorcentaje);
         });
+        if (this.tipo.id === 3) {
+          this.filtrarGrafica();
+        }
+        if (this.tipo.id === 4) {
+          this.filtrarDona();
+        }
+      },
+      error: err => {
+        console.log(err);
+        this.inhabilitar = true;
+      },
+    });
+  }
+  filtrarDona() {
+    const tipo = this.registros[0].asistencia[0];
+    this.estudiante.nombre = this.registros[0].completo;
+    this.estudiante.codigo = this.registros[0].cEstCodigo;
+    this.estudiante.dni = this.registros[0].cPersDocumento;
+    this.estudiante.grado = this.registros[0].cGradoNombre;
+    this.estudiante.seccion = this.registros[0].cSeccionNombre;
+    const documentStyle = getComputedStyle(document.documentElement);
 
+    const conjunto = [
+      tipo.asistio,
+      tipo.inasistencia,
+      tipo.inasistenciaJustificada,
+      tipo.sinRegistro,
+      tipo.tardanza,
+      tipo.tardanzaJustificada,
+    ];
+
+    const etiquetas = [
+      'Asistencia',
+      'Tardanza',
+      'Inasistencia',
+      'Inasistencia Justificada',
+      'Sin Registro',
+      'Tardanza Justificada',
+    ];
+    const color = [
+      documentStyle.getPropertyValue('--green-500'),
+      documentStyle.getPropertyValue('--orange-500'),
+      documentStyle.getPropertyValue('--red-500'),
+      documentStyle.getPropertyValue('--primary-500'),
+      documentStyle.getPropertyValue('--yellow-500'),
+      documentStyle.getPropertyValue('--cyan-500'),
+    ];
+
+    const hover = [
+      documentStyle.getPropertyValue('--green-400'),
+      documentStyle.getPropertyValue('--orange-400'),
+      documentStyle.getPropertyValue('--red-400'),
+      documentStyle.getPropertyValue('--primary-400'),
+      documentStyle.getPropertyValue('--yellow-400'),
+      documentStyle.getPropertyValue('--cyan-400'),
+    ];
+
+    this.dona = {
+      labels: etiquetas,
+      datasets: [
+        {
+          data: conjunto,
+          backgroundColor: color,
+          hoverBackgroundColor: hover,
+        },
+      ],
+    };
+  }
+  filtrarGrafica() {
+    this.inhabilitarBoton = true;
+    this.barra = [[], [], [], [], [], []];
+    this.total = [];
+    this.total = this.registros[0].asistencia[0].total;
+    this.nombres = [];
+
+    const documentStyle = getComputedStyle(document.documentElement);
+
+    const datos = this.tipo.tipoAsistencia;
+    const tipo = this.asistencias.find(list => list.indice === datos);
+    const filtrar = !datos
+      ? this.registros
+      : this.registros.sort(
+          (a, b) => b.asistencia[0][tipo.seccion] - a.asistencia[0][tipo.seccion]
+        );
+
+    filtrar.forEach(lista => {
+      const nombre = lista.completo;
+
+      const indice = lista.asistencia[0];
+      const asistio = indice.asistio;
+      const inasistencia = indice.inasistencia;
+      const inasistenciaJustificada = indice.inasistenciaJustificada;
+      const sinRegistro = indice.sinRegistro;
+      const tardanza = indice.tardanza;
+      const tardanzaJustificada = indice.tardanzaJustificada;
+
+      this.nombres.push(nombre);
+      this.barra[0].push(asistio);
+      this.barra[1].push(inasistencia);
+      this.barra[2].push(inasistenciaJustificada);
+      this.barra[3].push(sinRegistro);
+      this.barra[4].push(tardanza);
+      this.barra[5].push(tardanzaJustificada);
+
+      if (!this.tipo.tipoAsistencia) {
         this.grafico = {
-          labels: nombres,
+          labels: this.nombres,
           datasets: [
             {
               label: 'Asistencia',
@@ -250,17 +418,24 @@ export class ReporteAsistenciasComponent implements OnInit {
               backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
               data: this.barra[5],
             },
+          ],
+        };
+      } else {
+        const tipo = this.asistencias.find(lista => {
+          return lista.indice === this.tipo.tipoAsistencia;
+        });
+
+        this.grafico = {
+          labels: this.nombres,
+          datasets: [
             {
-              label: 'Total de Clases',
-              backgroundColor: documentStyle.getPropertyValue('--black-500'),
-              data: this.barra[6],
+              label: 'Asistencia',
+              backgroundColor: documentStyle.getPropertyValue(tipo.color),
+              data: this.barra[tipo.id],
             },
           ],
         };
-      },
-      error: err => {
-        console.log(err);
-      },
+      }
     });
   }
 

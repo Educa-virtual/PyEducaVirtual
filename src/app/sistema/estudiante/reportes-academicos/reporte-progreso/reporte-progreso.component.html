@@ -6,29 +6,100 @@
       <h3 class="m-0 text-uppercase text-primary">Reporte académico de progreso</h3>
     </div>
   </ng-template>
-
-  <div class="flex align-items-center gap-3 mb-3">
-    <div style="max-width: 400px">
-      <p-inputGroup>
-        <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
-        <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
-      </p-inputGroup>
+  <ng-template pTemplate="body">
+    <div class="grid p-fluid mt-3">
+      <div class="field col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
+          <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-3"></div>
     </div>
-    <button
-      pButton
-      pRipple
-      pTooltip="Descargar reporte"
-      tooltipPosition="top"
-      class="p-button-success"
-      (click)="descargarReporte()"
-    >
-      <i class="pi pi-download"></i>
-      <span class="ml-2 hidden sm:block">Descargar reporte</span>
-    </button>
-  </div>
-  <small
-    >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
-    otra opción</small
-  >
+    <p>
+      <small class="mb-3"
+        >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar,
+        seleccione otra opción</small
+      >
+    </p>
+    <p-tabView>
+      <p-tabPanel header="Resumen">
+        <div class="curso-table-wrapper">
+          <table class="curso-table">
+            <thead>
+              <tr>
+                <th style="width: 5%" class="text-center">#</th>
+                <th class="text-center">Área curricular</th>
+                <th style="width: 10%" class="text-center">Periodo 1</th>
+                <th style="width: 10%" class="text-center">Periodo 2</th>
+                <th style="width: 10%" class="text-center">Periodo 3</th>
+                <th style="width: 10%" class="text-center">Periodo 4</th>
+                <th style="width: 10%" class="text-center">Final</th>
+                <th style="width: 5%"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let curso of courses; let i = index">
+                <tr class="main-row">
+                  <td class="text-center">{{ i + 1 }}</td>
+                  <td class="text-center">{{ curso.cCursoNombre }}</td>
+                  <td colspan="5"></td>
+                  <td class="text-center">
+                    <button
+                      pButton
+                      type="button"
+                      [icon]="
+                        expanded[curso.iIeCursoId] ? 'pi pi-chevron-up' : 'pi pi-chevron-down'
+                      "
+                      (click)="toggle(curso.iIeCursoId)"
+                      class="p-button-rounded p-button-text p-button-plain"
+                      aria-label="expandir"
+                    ></button>
+                  </td>
+                </tr>
+
+                <tr
+                  class="expanded-row fondo-gris"
+                  *ngFor="let comp of curso.competencias; let j = index"
+                  [hidden]="!expanded[curso.iIeCursoId]"
+                >
+                  <td></td>
+                  <td class="text-justify">
+                    <ol [start]="j + 1" type="a">
+                      <li>{{ comp.cCompetenciaNombre }}</li>
+                    </ol>
+                  </td>
+                  <td style="width: 11%" class="text-center">{{ comp.notas[0] }}</td>
+                  <td style="width: 11%" class="text-center">{{ comp.notas[1] }}</td>
+                  <td style="width: 11%" class="text-center">{{ comp.notas[2] }}</td>
+                  <td style="width: 11%" class="text-center">{{ comp.notas[3] }}</td>
+                  <td style="width: 11%" class="text-center">{{ comp.notas[4] }}</td>
+                  <td></td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4 flex justify-content-end w-full">
+          <button
+            pButton
+            pRipple
+            pTooltip="Descargar reporte"
+            tooltipPosition="top"
+            class="p-button-danger"
+            (click)="descargarReporte()"
+          >
+            <i class="pi pi-download"></i>
+            <span class="ml-2 hidden sm:block">Descargar reporte</span>
+          </button>
+        </div>
+      </p-tabPanel>
+      <!--<p-tabPanel header="Detalle completo">
+                <p>
+                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium...
+                </p>
+            </p-tabPanel>-->
+    </p-tabView>
+  </ng-template>
 </p-panel>
 <p-toast></p-toast>

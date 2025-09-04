@@ -11,11 +11,19 @@ export class ReporteProgresoService {
 
   constructor() {}
 
+  generarReportePdf(iYAcadId: number) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso/${iYAcadId.toString()}/pdf`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
   obtenerReporte(iYAcadId: number) {
-    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso`, {
-      params: { iYAcadId: iYAcadId.toString() },
-      responseType: 'blob',
-    });
+    return this.http.get(
+      `${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso/${iYAcadId.toString()}`
+    );
   }
 
   existeMatriculaPorAnio(iYAcadId: number) {

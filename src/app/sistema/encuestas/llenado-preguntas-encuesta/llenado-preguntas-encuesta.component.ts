@@ -9,12 +9,11 @@ import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { SeccionComponent } from './seccion/seccion.component';
 import { PreguntaComponent } from './pregunta/pregunta.component';
 import { EncuestasService } from '../services/encuestas.services';
-import { CdkAutofill } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-llenado-preguntas-encuesta',
   standalone: true,
-  imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent, CdkAutofill],
+  imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent],
   templateUrl: './llenado-preguntas-encuesta.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
 })
@@ -115,7 +114,6 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
           this.secciones.forEach((seccion: any) => {
             seccion.preguntas = seccion?.json_preguntas ? JSON.parse(seccion.json_preguntas) : [];
           });
-          console.log(this.secciones);
           this.encuestasService.getSecciones(this.secciones);
           this.calcularTotalPreguntas();
         },

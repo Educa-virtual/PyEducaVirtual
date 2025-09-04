@@ -11,8 +11,9 @@ import {
   SUBDIRECTOR_IE,
 } from '@/app/servicios/seg/perfiles';
 import { LlenadoPreguntasEncuestaComponent } from './llenado-preguntas-encuesta/llenado-preguntas-encuesta.component';
+import { EncuestaVerComponent } from './encuesta-ver/encuesta-ver.component';
 
-const perfiles_administran = [
+const encuestadores = [
   ADMINISTRADOR_DREMO,
   ESPECIALISTA_DREMO,
   ESPECIALISTA_UGEL,
@@ -26,7 +27,7 @@ const routes: Routes = [
     component: CategoriasEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: perfiles_administran,
+      expectedRole: encuestadores,
       breadcrumb: 'Categorías',
     },
   },
@@ -35,7 +36,7 @@ const routes: Routes = [
     component: ListaEncuestasComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: perfiles_administran,
+      expectedRole: encuestadores,
       breadcrumb: 'Encuestas',
     },
   },
@@ -44,7 +45,7 @@ const routes: Routes = [
     component: EncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: perfiles_administran,
+      expectedRole: encuestadores,
       breadcrumb: 'Nueva encuesta',
     },
   },
@@ -53,7 +54,7 @@ const routes: Routes = [
     component: EncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: perfiles_administran,
+      expectedRole: encuestadores,
       breadcrumb: 'Encuesta',
     },
   },
@@ -62,8 +63,17 @@ const routes: Routes = [
     component: LlenadoPreguntasEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: perfiles_administran,
+      expectedRole: encuestadores,
       breadcrumb: 'Preguntas',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/encuestas/:iEncuId/ver',
+    component: EncuestaVerComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Ver Encuesta',
     },
   },
 ];

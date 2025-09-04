@@ -133,11 +133,11 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
       return;
     }
     this.encuestasService.guardarCategoria(this.getFormData()).subscribe({
-      next: (respuesta: any) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Categoría creada',
-          detail: respuesta.message,
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos',
         });
         this.categoriaModificada.emit();
         this.salir();
@@ -162,11 +162,11 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
       return;
     }
     this.encuestasService.actualizarCategoria(this.getFormData()).subscribe({
-      next: (respuesta: any) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Categoría actualizada',
-          detail: respuesta.message,
+          summary: 'Actualización exitosa',
+          detail: 'Se actualizaron los datos',
         });
         this.categoriaModificada.emit();
         this.salir();

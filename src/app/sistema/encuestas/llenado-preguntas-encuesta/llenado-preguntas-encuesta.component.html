@@ -4,7 +4,7 @@
   <ng-template pTemplate="header">
     <div class="flex flex-column">
       <div class="flex text-xl">Preguntas de encuesta</div>
-      <div class="flex text-sm">{{ encuesta?.cEncuTitulo }}</div>
+      <div class="flex text-sm">{{ encuesta?.cEncuNombre }}</div>
     </div>
   </ng-template>
   <ng-template pTemplate="icons" class="flex justify-content-center">
@@ -36,7 +36,7 @@
     <div class="card p-1">
       <span class="font-semibold hidden md:inline">Total de </span>
       <span class="font-semibold">Preguntas: </span>
-      <p-badge [value]="totalPreguntas" severity="primary" size="large" />
+      <p-badge [value]="totalPreguntas" severity="primary" badgeSize="large" />
     </div>
   </div>
 
@@ -48,7 +48,7 @@
         <ng-template pTemplate="header">
           <span class="flex align-items-center justify-content-start w-full">
             <div class="flex flex-column">
-              <div class="flex text-xl">SECCION # {{ seccion.iSeccionOrden }}</div>
+              <div class="flex text-xl">SECCION # {{ seccion?.iSeccionOrden }}</div>
               <div class="flex text-sm">{{ seccion?.cSeccionTitulo }}</div>
             </div>
             <div
@@ -84,7 +84,36 @@
         @for (pregunta of seccion.preguntas; track pregunta.iPregId) {
           <p-panel>
             <ng-template pTemplate="header">
-              {{ pregunta.cPregContenido }}
+              <a
+                *ngIf="pregunta?.cPregAdicional"
+                role="button"
+                class="p-button p-button-secondary mr-2"
+                (click)="panel.toggle($event)"
+                (keypress)="panel.toggle($event)"
+                tabindex="0"
+              >
+                <i class="pi pi-question-circle"></i>
+              </a>
+              <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+                <div class="flex w-15rem">
+                  <ng-template #infoAdicional>
+                    {{ pregunta?.cPregAdicional }}
+                  </ng-template>
+                </div>
+              </p-overlayPanel>
+              {{ pregunta?.cPregContenido }}
+            </ng-template>
+            <ng-template pTemplate="icons" class="p-0 m-0">
+              <p-button
+                size="small"
+                severity="info"
+                disabled="true"
+                [pTooltip]="pregunta.cTipoPregNombre"
+                tooltipPosition="top"
+              >
+                <i [class]="'pi ' + pregunta.cTipoPregIcono"></i>
+                <span class="hidden md:inline ml-2">{{ pregunta.cTipoPregNombre }}</span>
+              </p-button>
             </ng-template>
             <div class="flex">
               <p-button
@@ -138,7 +167,12 @@
     (seccionModificada)="listarSecciones()"
   />
 
-  <app-pregunta [(visible)]="mostrarDialogoPregunta" [iSeccionId]="iSeccionId" />
+  <app-pregunta
+    [(visible)]="mostrarDialogoPregunta"
+    [iSeccionId]="iSeccionId"
+    [iPregId]="iPregId"
+    (preguntaModificada)="listarSecciones()"
+  />
 </p-panel>
 
 <p-toast></p-toast>

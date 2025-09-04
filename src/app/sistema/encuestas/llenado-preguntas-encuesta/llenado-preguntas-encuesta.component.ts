@@ -9,11 +9,12 @@ import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { SeccionComponent } from './seccion/seccion.component';
 import { PreguntaComponent } from './pregunta/pregunta.component';
 import { EncuestasService } from '../services/encuestas.services';
+import { CdkAutofill } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-llenado-preguntas-encuesta',
   standalone: true,
-  imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent],
+  imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent, CdkAutofill],
   templateUrl: './llenado-preguntas-encuesta.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
 })
@@ -81,7 +82,6 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
 
   ngOnInit() {
     this.calcularTotalPreguntas();
-
     if (this.iEncuId) {
       this.verEncuesta();
     }
@@ -94,21 +94,12 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
         iTipoUsuario: 1,
       })
       .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Actualización exitosa',
-            detail: 'Se actualizó la encuesta',
-          });
+        next: (data: any) => {
+          this.encuesta = data.data;
           this.listarSecciones();
         },
         error: error => {
-          console.error('Error actualizando encuesta:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message,
-          });
+          console.error('Error obteniendo encuesta:', error);
         },
       });
   }
@@ -124,7 +115,8 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
           this.secciones.forEach((seccion: any) => {
             seccion.preguntas = seccion?.preguntas ? JSON.parse(seccion.preguntas) : [];
           });
-          console.log(this.secciones, 'secciones');
+          this.encuestasService.getSecciones(this.secciones);
+          this.calcularTotalPreguntas();
         },
         error: error => {
           console.error('Error obteniendo lista de preguntas:', error);
@@ -149,8 +141,12 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   }
 
   editarSeccion(seccion: any) {
-    this.iSeccionId = seccion.iSeccionId;
-    this.abrirDialogoSeccion();
+    this.iSeccionId = null;
+    this.mostrarDialogoSeccion = false;
+    setTimeout(() => {
+      this.iSeccionId = seccion.iSeccionId;
+      this.abrirDialogoSeccion();
+    }, 0);
   }
 
   eliminarSeccion(seccion: any) {
@@ -163,7 +159,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
       return;
     }
     this.confirmationModalService.openConfirm({
-      header: `¿Está seguro de eliminar la sección seleccionada #${seccion.iSeccionOrden}?`,
+      header: `¿Está seguro de eliminar la sección seleccionada #${seccion?.iSeccionOrden}?`,
       accept: () => {
         this.encuestasService
           .borrarSeccion({
@@ -194,10 +190,6 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     });
   }
 
-  editarPregunta(pregunta: any) {
-    console.log(pregunta);
-  }
-
   eliminarPregunta(pregunta: any) {
     this.confirmationModalService.openConfirm({
       header: `¿Está seguro de eliminar la pregunta seleccionada?`,
@@ -220,7 +212,26 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   }
 
   agregarPregunta(seccion: any) {
-    console.log(seccion, 'seccion');
+    this.iSeccionId = seccion.iSeccionId;
+    this.iPregId = null;
+    this.abrirDialogoPregunta();
+  }
+
+  editarPregunta(pregunta: any) {
+    this.iPregId = null;
+    this.mostrarDialogoPregunta = false;
+    setTimeout(() => {
+      this.iPregId = pregunta.iPregId;
+      this.abrirDialogoPregunta();
+    }, 0);
+  }
+
+  abrirDialogoPregunta() {
+    this.mostrarDialogoPregunta = true;
+  }
+
+  cerrarDialogoPregunta() {
+    this.mostrarDialogoPregunta = false;
   }
 
   guardarPregunta(pregunta: any) {

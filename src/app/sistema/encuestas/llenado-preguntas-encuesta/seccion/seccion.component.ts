@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TextFieldModule } from '@angular/cdk/text-field';
@@ -48,8 +56,8 @@ export class SeccionComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(): void {
-    if (this.iSeccionId) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.iSeccionId && changes['visible'].currentValue) {
       this.verSeccion();
     } else {
       this.clearForm();

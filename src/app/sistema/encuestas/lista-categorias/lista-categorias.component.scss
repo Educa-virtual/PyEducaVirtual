@@ -317,3 +317,30 @@
   left: 10px !important;
   z-index: 2;
 }
+
+.tox-tinymce-aux {
+  z-index: 99999999999 !important;
+}
+
+:host ::ng-deep .p-orderlist-controls {
+  display: none !important;
+}
+
+:host ::ng-deep .p-orderlist-list {
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+:host ::ng-deep .p-orderlist-list-container,
+:host ::ng-deep .p-orderlist-list {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-orderlist-item {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .p-orderlist-item:hover {
+  background-color: var(--surface-hovered-background) !important;
+}

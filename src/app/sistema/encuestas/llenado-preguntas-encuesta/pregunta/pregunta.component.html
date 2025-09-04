@@ -1,120 +1,224 @@
 <p-dialog
-  header="Agregar seccion"
+  [header]="dialogTitle"
   [(visible)]="visible"
   (onHide)="onHide()"
   [modal]="true"
   [closable]="true"
   [draggable]="false"
   [resizable]="false"
-  styleClass="nueva-categoria-dialog"
-  [style]="{ width: '700px', height: '350px' }"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 >
-  <div class="dialog-content">
-    <div class="pregunta-content">
-      <div>
-        <label for="pregunta" class="block mb-2 font-semibold">
-          Pregunta
-          <span class="text-red-500 text-xs">(*) Obligatorio</span>
-        </label>
-        <editor
-          class="w-full"
-          [init]="initEnunciado"
-          class="w-full"
-          placeholder="Escriba la pregunta aquí.."
-        >
-        </editor>
-        <!--<p-editor
-                            class="w-full"
-                            placeholder="Escriba la pregunta aquí..."
-                            [(ngModel)]="pregunta.cPregunta"
-                        >
-                        </p-editor>-->
-      </div>
-      <div class="grid">
-        <div class="col-12 md:col-6">
-          <div class="mb-3" style="width: 130%; max-width: none">
-            @for (
-              alternativa of pregunta?.alternativas;
-              track alternativa?.iAlternativaId;
-              let idx = $index
-            ) {
-              <div
-                class="alternativa-item p-2 mb-2 border-round"
-                [ngStyle]="{
-                  'border-left': alternativa.bAlternativaCorrecta ? '4px solid #22c55e' : 'inherit',
-                  background: alternativa.bAlternativaCorrecta ? 'rgb(227 253 237)' : 'transparent',
-                }"
-              >
-                <p-inputGroup class="mt-1">
-                  <p-inputGroupAddon>
-                    {{ alternativa.cAlternativaLetra }}
-                  </p-inputGroupAddon>
-                  <input
-                    type="text"
-                    pInputText
-                    [(ngModel)]="alternativa.cAlternativaDescripcion"
-                    placeholder="Ingrese la alternativa"
-                  />
-                </p-inputGroup>
+  <br />
 
-                <div class="flex justify-content-end">
+  <form [formGroup]="formPregunta">
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sección *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="secciones"
+            formControlName="iSeccionId"
+            [filter]="false"
+            [showClear]="false"
+            appendTo="body"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            [appendTo]="'body'"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Orden *</p-inputGroupAddon>
+          <p-inputNumber
+            formControlName="iPregOrden"
+            [min]="1"
+            [step]="1"
+            placeholder="Indique"
+            [useGrouping]="false"
+            [showButtons]="true"
+            styleClass="group-element"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Tipo de Pregunta *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="tipos_preguntas"
+            formControlName="iTipoPregId"
+            [filter]="false"
+            [showClear]="false"
+            appendTo="body"
+            placeholder="Seleccione"
+            [style]="{ flex: '1', width: '100%' }"
+            styleClass="group-element"
+          >
+            <ng-template let-seccion pTemplate="item">
+              <!-- Mostrar icono de tipo de pregunta y luego el nombre -->
+              <div class="flex align-items-center">
+                <i class="pi pi-fw {{ seccion.icono }} mr-2"></i>
+                <span>{{ seccion.label }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Contenido *</p-inputGroupAddon>
+          <!-- <div style="z-index: 10;">
+            <editor
+              class="w-full"
+              [init]="initEnunciado"
+              class="w-full"
+              placeholder="Escriba la pregunta aquí.."
+            >
+            </editor>
+          </div> -->
+          <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="cPregContenido"
+            pInputTextarea
+            placeholder="Escriba"
+            [rows]="3"
+            class="group-element"
+            [style.minHeight]="3"
+            [style.maxHeight]="6"
+            [cdkAutosizeMinRows]="3 + 1.5"
+            [cdkAutosizeMaxRows]="6"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Información Adicional</p-inputGroupAddon>
+          <!-- <div style="z-index: 10;">
+            <editor
+              class="w-full"
+              [init]="initEnunciado"
+              class="w-full"
+              placeholder="Escriba la pregunta aquí.."
+            >
+            </editor>
+          </div> -->
+          <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="cPregAdicional"
+            pInputTextarea
+            placeholder="Escriba"
+            [rows]="3"
+            class="group-element"
+            [style.minHeight]="3"
+            [style.maxHeight]="6"
+            [cdkAutosizeMinRows]="3 + 1.5"
+            [cdkAutosizeMaxRows]="6"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  @if (iTipoPregId && iTipoPregId !== TIPO_PREG_TEXTO) {
+    <p-fieldset legend="Alternativas">
+      <div class="grid">
+        <div class="col-12">
+          <form [formGroup]="formAlternativa">
+            <p-inputGroup>
+              <p-inputGroupAddon>Alternativa</p-inputGroupAddon>
+              <input
+                pInputText
+                formControlName="cAlternativaContenido"
+                placeholder="Indique"
+                type="text"
+                class="group-element"
+                [maxlength]="150"
+              />
+            </p-inputGroup>
+          </form>
+        </div>
+        <div class="col-12">
+          <p-button
+            label="Agregar"
+            size="small"
+            icon="pi pi-plus"
+            class="p-button-success"
+            (click)="agregarAlternativa([])"
+          />
+        </div>
+        <div class="col-12">
+          <p-orderList
+            [value]="pregunta.alternativas"
+            dragdrop="true"
+            [style]="{ width: '100%' }"
+            emptyMessage="No hay alternativas"
+          >
+            <ng-template let-alternativa pTemplate="item">
+              <div class="grid">
+                <div class="col flex-1">
+                  @if (iTipoPregId === TIPO_PREG_SIMPLE) {
+                    <p-radioButton
+                      name="radios"
+                      [(ngModel)]="selectedAlternativa"
+                      [value]="alternativa"
+                    />
+                  } @else if (iTipoPregId === TIPO_PREG_MULTIPLE) {
+                    <p-checkbox
+                      name="checkbox"
+                      [(ngModel)]="selectedAlternativas"
+                      [value]="alternativa.iAlternativaId"
+                    />
+                  }
+                  <label [for]="alternativa?.iAlternativaId" class="ml-2">{{
+                    alternativa?.cAlternativaContenido
+                  }}</label>
+                </div>
+                <div class="col-fixed">
                   <p-button
                     icon="pi pi-trash"
                     severity="danger"
+                    iconPos="left"
                     size="small"
-                    [text]="true"
-                    (onClick)="eliminarAlternativa(pregunta, idx)"
-                    *ngIf="pregunta.alternativas.length > 2"
-                  >
-                  </p-button>
-                  <p-checkbox
-                    [label]="'Respuesta correcta'"
-                    [inputId]="alternativa.iAlternativaId?.toString() || 'alt_' + idx"
-                    [value]="alternativa"
-                    [(ngModel)]="alternativa.bAlternativaCorrecta"
-                    [binary]="true"
-                    (onChange)="
-                      cambiarEstadoCheckbox(
-                        alternativa.iAlternativaId || idx,
-                        pregunta.alternativas
-                      )
-                    "
-                  >
-                  </p-checkbox>
+                    pTooltip="Eliminar alternativa"
+                    tooltipPosition="top"
+                    (click)="eliminarAlternativa(alternativa.iAlternativaId)"
+                  />
                 </div>
-
-                @if (alternativa.bAlternativaCorrecta) {
-                  <p-inputGroup class="mt-1">
-                    <p-inputGroupAddon>Explicación</p-inputGroupAddon>
-                    <input
-                      type="text"
-                      pInputText
-                      [(ngModel)]="alternativa.cAlternativaExplicacion"
-                      placeholder="Explicación de por qué la respuesta es correcta"
-                    />
-                  </p-inputGroup>
-                }
               </div>
-            }
-
-            <div class="text-center mt-2">
-              <p-button
-                icon="pi pi-plus"
-                label="Añadir alternativa"
-                severity="primary"
-                size="small"
-                (onClick)="agregarAlternativa(pregunta)"
-              >
-              </p-button>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 md:col-6">
-          <div class="flex justify-content-center align-items-center h-full">
-            <p-button label="Adjuntar" severity="success" icon="pi pi-paperclip"></p-button>
-          </div>
+            </ng-template>
+          </p-orderList>
         </div>
       </div>
-    </div>
+    </p-fieldset>
+  }
+
+  <div class="flex flex-row-reverse gap-2 mt-2">
+    <p-button
+      label="Guardar"
+      (click)="guardarPregunta()"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="left"
+      *ngIf="!pregunta_registrada"
+    />
+    <p-button
+      label="Actualizar"
+      (click)="actualizar()"
+      icon="pi pi-save"
+      iconPos="left"
+      severity="success"
+      *ngIf="pregunta_registrada"
+    />
+    <p-button
+      label="Salir"
+      (click)="onHide()"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      severity="secondary"
+    />
   </div>
 </p-dialog>

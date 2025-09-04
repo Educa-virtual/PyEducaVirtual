@@ -27,6 +27,10 @@ export class EncuestasService implements OnDestroy {
   public readonly USUARIO_ENCUESTADO = 1;
   public readonly USUARIO_ENCUESTADOR = 2;
 
+  public readonly TIPO_PREG_TEXTO = 1;
+  public readonly TIPO_PREG_SIMPLE = 3;
+  public readonly TIPO_PREG_MULTIPLE = 4;
+
   parametros: any;
 
   permisos: Array<object>;
@@ -284,10 +288,9 @@ export class EncuestasService implements OnDestroy {
 
   getSecciones(data: any) {
     if (!this.secciones && data) {
-      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.secciones = items.map(seccion => ({
+      this.secciones = data.map(seccion => ({
         value: seccion.iSeccionId,
-        label: seccion.cSeccionNombre,
+        label: seccion.iSeccionOrden + '. ' + seccion.cSeccionTitulo,
       }));
       return this.secciones;
     }

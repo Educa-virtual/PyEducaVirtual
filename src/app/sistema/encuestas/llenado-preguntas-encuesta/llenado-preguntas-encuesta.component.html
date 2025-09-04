@@ -48,8 +48,10 @@
         <ng-template pTemplate="header">
           <span class="flex align-items-center justify-content-start w-full">
             <div class="flex flex-column">
-              <div class="flex text-xl">SECCION # {{ seccion?.iSeccionOrden }}</div>
-              <div class="flex text-sm">{{ seccion?.cSeccionTitulo }}</div>
+              <div class="flex text-xl">
+                SECCION # {{ seccion?.iSeccionOrden }}: {{ seccion?.cSeccionTitulo }}
+              </div>
+              <div class="flex text-sm">{{ seccion?.cSeccionSubtitulo }}</div>
             </div>
             <div
               class="flex gap-1 ml-auto"
@@ -62,7 +64,7 @@
                 severity="warning"
                 pTooltip="Editar sección"
                 tooltipPosition="top"
-                (onClick)="editarSeccion(seccion)"
+                (onClick)="editarSeccion(seccion?.iSeccionId)"
               >
                 <i class="pi pi-pencil"></i>
                 <span class="ml-2 font-bold hidden md:inline">Editar</span>
@@ -81,9 +83,15 @@
           </span>
         </ng-template>
 
+        <p-messages severity="info" class="my-0">
+          <ng-template pTemplate>
+            {{ seccion?.cSeccionDescripcion }}
+          </ng-template>
+        </p-messages>
+
         @for (pregunta of seccion.preguntas; track pregunta.iPregId) {
-          <p-panel>
-            <ng-template pTemplate="header">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>
               <a
                 *ngIf="pregunta?.cPregAdicional"
                 role="button"
@@ -91,19 +99,18 @@
                 (click)="panel.toggle($event)"
                 (keypress)="panel.toggle($event)"
                 tabindex="0"
+                pTooltip="Información Adicional"
+                tooltipPosition="top"
               >
                 <i class="pi pi-question-circle"></i>
               </a>
               <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
                 <div class="flex w-15rem">
-                  <ng-template #infoAdicional>
-                    {{ pregunta?.cPregAdicional }}
-                  </ng-template>
+                  {{ pregunta?.cPregAdicional }}
                 </div>
               </p-overlayPanel>
-              {{ pregunta?.cPregContenido }}
-            </ng-template>
-            <ng-template pTemplate="icons" class="p-0 m-0">
+              <span>{{ seccion.iSeccionOrden + '.' + pregunta?.iPregOrden + '. ' }}</span>
+              <span>{{ pregunta?.cPregContenido }}</span>
               <p-button
                 size="small"
                 severity="info"
@@ -114,35 +121,53 @@
                 <i [class]="'pi ' + pregunta.cTipoPregIcono"></i>
                 <span class="hidden md:inline ml-2">{{ pregunta.cTipoPregNombre }}</span>
               </p-button>
-            </ng-template>
-            <div class="flex">
-              <p-button
-                severity="success"
-                icon="pi pi-pen-to-square"
-                label="Editar"
-                size="small"
-                class="m-2"
-                pTooltip="Editar pregunta"
-                tooltipPosition="top"
-                (onClick)="editarPregunta(pregunta)"
-              />
-              <p-button
-                severity="danger"
-                icon="pi pi-trash"
-                label="Eliminar"
-                size="small"
-                class="m-2"
-                pTooltip="Eliminar pregunta"
-                tooltipPosition="top"
-                (onClick)="eliminarPregunta(pregunta)"
-              />
+            </p-inputGroupAddon>
+            <div class="text-panel">
+              <div class="flex justify-content-start flex-wrap gap-2 m-2">
+                @for (alternativa of pregunta.alternativas; track alternativa.iAlternativaId) {
+                  <p-chip [label]="alternativa.cAlternativaContenido" />
+                }
+              </div>
+              <div class="flex justify-content-start">
+                <p-button
+                  severity="success"
+                  icon="pi pi-pen-to-square"
+                  label="Editar"
+                  size="small"
+                  class="m-2"
+                  pTooltip="Editar pregunta"
+                  tooltipPosition="top"
+                  (onClick)="editarPregunta(pregunta?.iPregId)"
+                />
+                <p-button
+                  severity="danger"
+                  icon="pi pi-trash"
+                  label="Eliminar"
+                  size="small"
+                  class="m-2"
+                  pTooltip="Eliminar pregunta"
+                  tooltipPosition="top"
+                  (onClick)="eliminarPregunta(pregunta?.iPregId)"
+                />
+              </div>
             </div>
-          </p-panel>
+          </p-inputGroup>
+          <br />
         }
 
         <br />
 
-        <div class="flex flex-row-reverse">
+        <div class="flex justify-content-between flex-wrap gap-2">
+          <p-button
+            severity="secondary"
+            size="small"
+            pTooltip="Vista previa"
+            tooltipPosition="top"
+            (onClick)="vistaPrevia()"
+          >
+            <i class="pi pi-eye mr-2"></i>
+            <span class="font-bold">Vista previa</span>
+          </p-button>
           <p-button
             severity="primary"
             size="small"

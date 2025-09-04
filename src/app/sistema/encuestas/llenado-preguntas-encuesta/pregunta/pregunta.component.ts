@@ -97,7 +97,7 @@ export class PreguntaComponent implements OnInit, OnChanges {
         iSeccionId: [null, Validators.required],
         iTipoPregId: [null, Validators.required],
         iPregOrden: [null],
-        cPregContenido: ['', Validators.maxLength(500)],
+        cPregContenido: ['', [Validators.required, Validators.maxLength(500)]],
         cPregAdicional: [''],
         alternativas: [null],
         jsonAlternativas: [null],
@@ -129,7 +129,7 @@ export class PreguntaComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.secciones = this.encuestasService.getSecciones(null);
-    if (this.iPregId && changes['visible'].currentValue) {
+    if (this.iPregId && changes['visible']?.currentValue === true) {
       this.dialogTitle = 'Editar pregunta';
       this.verPregunta();
     } else {
@@ -238,11 +238,14 @@ export class PreguntaComponent implements OnInit, OnChanges {
       ''
     );
 
-    if (this.pregunta.alternativas.length < 2) {
+    if (
+      Number(this.formPregunta.value.iTipoPregId) !== this.TIPO_PREG_TEXTO &&
+      this.pregunta.alternativas.length < 2
+    ) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Debe agregar al menos 2 alternativas',
+        detail: 'Debe agregar al menos dos alternativas',
       });
       return;
     }
@@ -286,7 +289,10 @@ export class PreguntaComponent implements OnInit, OnChanges {
       ''
     );
 
-    if (this.pregunta.alternativas.length < 2) {
+    if (
+      Number(this.formPregunta.value.iTipoPregId) !== this.TIPO_PREG_TEXTO &&
+      this.pregunta.alternativas.length < 2
+    ) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',

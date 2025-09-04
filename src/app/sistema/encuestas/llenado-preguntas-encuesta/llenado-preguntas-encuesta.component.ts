@@ -113,8 +113,9 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
         next: (data: any) => {
           this.secciones = data.data;
           this.secciones.forEach((seccion: any) => {
-            seccion.preguntas = seccion?.preguntas ? JSON.parse(seccion.preguntas) : [];
+            seccion.preguntas = seccion?.json_preguntas ? JSON.parse(seccion.json_preguntas) : [];
           });
+          console.log(this.secciones);
           this.encuestasService.getSecciones(this.secciones);
           this.calcularTotalPreguntas();
         },
@@ -140,11 +141,11 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     );
   }
 
-  editarSeccion(seccion: any) {
+  editarSeccion(iSeccionId: any) {
     this.iSeccionId = null;
     this.mostrarDialogoSeccion = false;
     setTimeout(() => {
-      this.iSeccionId = seccion.iSeccionId;
+      this.iSeccionId = iSeccionId;
       this.abrirDialogoSeccion();
     }, 0);
   }
@@ -163,7 +164,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
       accept: () => {
         this.encuestasService
           .borrarSeccion({
-            iSeccionId: seccion.iSeccionId,
+            iSeccionId: seccion?.iSeccionId,
           })
           .subscribe({
             next: () => {
@@ -173,9 +174,8 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
                 detail: 'La sección ha sido eliminada correctamente',
               });
               this.secciones = this.secciones.filter(
-                (seccion: any) => seccion.iSeccionId !== seccion.iSeccionId
+                (sec: any) => sec.iSeccionId !== seccion?.iSeccionId
               );
-              this.calcularTotalPreguntas();
             },
             error: error => {
               console.error('Error eliminando la sección:', error);
@@ -190,23 +190,32 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     });
   }
 
-  eliminarPregunta(pregunta: any) {
+  eliminarPregunta(iPregId: any) {
     this.confirmationModalService.openConfirm({
       header: `¿Está seguro de eliminar la pregunta seleccionada?`,
       accept: () => {
-        const seccion = null;
-        if (seccion) {
-          const index = seccion.preguntas.findIndex(p => p.id === pregunta.id);
-          if (index !== -1) {
-            seccion.preguntas.splice(index, 1);
-            this.calcularTotalPreguntas();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Pregunta eliminada',
-              detail: 'La pregunta ha sido eliminada correctamente',
-            });
-          }
-        }
+        this.encuestasService
+          .borrarPregunta({
+            iPregId: iPregId,
+          })
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Pregunta eliminada',
+                detail: 'La pregunta ha sido eliminada correctamente',
+              });
+              this.listarSecciones();
+            },
+            error: error => {
+              console.error('Error eliminando la pregunta:', error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.message,
+              });
+            },
+          });
       },
     });
   }
@@ -217,11 +226,11 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     this.abrirDialogoPregunta();
   }
 
-  editarPregunta(pregunta: any) {
+  editarPregunta(iPregId: any) {
     this.iPregId = null;
     this.mostrarDialogoPregunta = false;
     setTimeout(() => {
-      this.iPregId = pregunta.iPregId;
+      this.iPregId = iPregId;
       this.abrirDialogoPregunta();
     }, 0);
   }
@@ -264,31 +273,15 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     pregunta.expandida = false;
   }
 
-  vistaPrevia() {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Vista previa',
-      detail: 'Cargando vista previa de la encuesta...',
-    });
-  }
-
-  configuracion() {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Configuración',
-      detail: 'Abriendo configuración de la encuesta...',
-    });
-  }
-
-  toggleEditorState() {
-    this.isDisabled = !this.isDisabled;
-  }
-
   abrirDialogoSeccion() {
     this.mostrarDialogoSeccion = true;
   }
 
   cerrarDialogoSeccion() {
     this.mostrarDialogoSeccion = false;
+  }
+
+  vistaPrevia() {
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}/ver`]);
   }
 }

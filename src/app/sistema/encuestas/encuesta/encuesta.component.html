@@ -51,10 +51,7 @@
           <div class="grid">
             <div class="col-12">
               <p-inputGroup>
-                <p-inputGroupAddon>
-                  Título:
-                  <span class="text-red-500 text-xs">(*) Obligatorio</span>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon> Título * </p-inputGroupAddon>
                 <input
                   pInputText
                   styleClass="group-element"
@@ -67,10 +64,7 @@
             </div>
             <div class="col-12">
               <p-inputGroup>
-                <p-inputGroupAddon>
-                  Subtítulo:
-                  <span class="text-blue-500 text-xs">(Opcional)</span>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
                 <input
                   pInputText
                   styleClass="group-element"
@@ -81,9 +75,9 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-4">
+            <div class="col-12 md:col-6 lg:col-4">
               <p-inputGroup>
-                <p-inputGroupAddon>Fecha inicio</p-inputGroupAddon>
+                <p-inputGroupAddon>Inicio</p-inputGroupAddon>
                 <p-calendar
                   inputStyleClass="group-element"
                   view="date"
@@ -95,21 +89,21 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-4">
+            <div class="col-12 md:col-6 lg:col-4">
               <p-inputGroup>
-                <p-inputGroupAddon>Fecha fin</p-inputGroupAddon>
+                <p-inputGroupAddon>Cierre</p-inputGroupAddon>
                 <p-calendar
                   inputStyleClass="group-element"
                   view="date"
                   formControlName="dEncuFin"
                   dateFormat="dd/mm/yy"
-                  placeholder="Fecha fin"
+                  placeholder="Fecha de cierre"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-4">
+            <div class="col-12 lg:col-4">
               <p-inputGroup>
                 <p-inputGroupAddon>Tiempo</p-inputGroupAddon>
                 <p-dropdown

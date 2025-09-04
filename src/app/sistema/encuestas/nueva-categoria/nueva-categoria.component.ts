@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
@@ -46,8 +54,8 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(): void {
-    if (this.iCateId) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.iCateId && changes['visible']?.currentValue === true) {
       this.dialogTitle = 'Editar categoría';
       this.verCategoria();
     } else {

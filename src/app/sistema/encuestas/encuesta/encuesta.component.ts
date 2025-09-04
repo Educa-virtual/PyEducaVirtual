@@ -158,7 +158,6 @@ export class EncuestaComponent implements OnInit {
       .subscribe((data: any) => {
         this.perfiles = this.encuestasService.getPerfiles(data?.perfiles);
         this.distritos = this.encuestasService.getDistritos(data?.distritos);
-        this.secciones = this.encuestasService.getSecciones(data?.secciones);
         this.zonas = this.encuestasService.getZonas(data?.zonas);
         this.tipo_sectores = this.encuestasService.getTipoSectores(data?.tipo_sectores);
         this.ugeles = this.encuestasService.getUgeles(data?.ugeles);

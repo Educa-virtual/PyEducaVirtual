@@ -57,7 +57,7 @@ export class SeccionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.iSeccionId && changes['visible'].currentValue) {
+    if (this.iSeccionId && changes['visible']?.currentValue === true) {
       this.verSeccion();
     } else {
       this.clearForm();
@@ -105,8 +105,9 @@ export class SeccionComponent implements OnInit, OnChanges {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Formulario no válido',
+        detail: 'Complete los campos obligatorios',
       });
+      this.encuestasService.formMarkAsDirty(this.formSeccion);
       return;
     }
     this.encuestasService.guardarSeccion(this.formSeccion.value).subscribe({
@@ -135,8 +136,9 @@ export class SeccionComponent implements OnInit, OnChanges {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Formulario no válido',
+        detail: 'Complete los campos obligatorios',
       });
+      this.encuestasService.formMarkAsDirty(this.formSeccion);
       return;
     }
     this.encuestasService.actualizarSeccion(this.formSeccion.value).subscribe({

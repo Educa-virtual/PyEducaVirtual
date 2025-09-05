@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { EncuestasService } from '../services/encuestas.services';
@@ -8,12 +8,14 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
 import { IActionTable, IColumn } from '@/app/shared/table-primeng/table-primeng.component';
+import { SlicePipe } from '@angular/common';
 @Component({
   selector: 'app-encuesta',
   standalone: true,
   imports: [PrimengModule, AulaBancoPreguntasModule],
   templateUrl: './encuesta.component.html',
   styleUrls: ['./../lista-categorias/lista-categorias.component.scss'],
+  providers: [SlicePipe],
 })
 export class EncuestaComponent implements OnInit {
   categoria: any = null;
@@ -65,14 +67,14 @@ export class EncuestaComponent implements OnInit {
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
   USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADOR;
 
-  private _messageService = inject(MessageService);
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private store: LocalStoreService,
-    private encuestasService: EncuestasService
+    private encuestasService: EncuestasService,
+    private slicePipe: SlicePipe,
+    private messageService: MessageService
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
@@ -81,27 +83,9 @@ export class EncuestaComponent implements OnInit {
       this.iCateId = params.params.iCateId || null;
       this.iEncuId = params.params.iEncuId || null;
     });
-    this.breadCrumbItems = [
-      {
-        label: 'Encuestas',
-      },
-      {
-        label: 'Categorias',
-        routerLink: `/encuestas/categorias`,
-      },
-      {
-        label: 'Encuestas',
-        routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
-      },
-      {
-        label: 'Nueva encuesta',
-      },
-    ];
-    this.breadCrumbHome = {
-      icon: 'pi pi-home',
-      routerLink: '/',
-    };
+    this.setBreadCrumbs();
   }
+
   ngOnInit() {
     try {
       this.formEncuesta = this.fb.group({
@@ -148,6 +132,8 @@ export class EncuestaComponent implements OnInit {
     } catch (error) {
       console.error('Error al inicializar el formulario', error);
     }
+
+    this.verCategoria();
 
     this.encuestasService
       .crearEncuesta({
@@ -221,6 +207,56 @@ export class EncuestaComponent implements OnInit {
     this.inicializarColumnas();
   }
 
+  verCategoria() {
+    this.encuestasService
+      .verCategoria({
+        iCateId: this.iCateId,
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.categoria = data.data;
+          this.setBreadCrumbs();
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message ?? 'Ocurrió un error',
+          });
+        },
+      });
+  }
+
+  setBreadCrumbs() {
+    this.breadCrumbItems = [
+      {
+        label: 'Encuestas',
+      },
+      {
+        label: 'Categorias',
+        routerLink: `/encuestas/categorias`,
+      },
+      {
+        label: this.categoria?.cCateNombre
+          ? String(this.slicePipe.transform(this.categoria?.cCateNombre, 0, 20))
+          : 'Categoría',
+      },
+      {
+        label: 'Encuestas',
+        routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
+      },
+      {
+        label: 'Nueva encuesta',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+  }
+
   filterNivelesTipos() {
     this.nivel_tipos = this.encuestasService.filterNivelesTipos();
   }
@@ -258,8 +294,10 @@ export class EncuestaComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           if (data.data) {
+            this.encuesta = data.data;
             this.encuesta_registrada = true;
-            this.setFormEncuesta(data.data);
+            this.setBreadCrumbs();
+            this.setFormEncuesta(this.encuesta);
             this.inicializarColumnas();
           } else {
             this.router.navigate(['/encuestas/categorias/']);
@@ -267,7 +305,7 @@ export class EncuestaComponent implements OnInit {
         },
         error: error => {
           console.error('Error obteniendo encuesta:', error);
-          this._messageService.add({
+          this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error.message,
@@ -345,7 +383,7 @@ export class EncuestaComponent implements OnInit {
     this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
     if (this.formEncuesta.invalid) {
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe llenar todos los campos de la primera sección: Información General',
@@ -354,7 +392,7 @@ export class EncuestaComponent implements OnInit {
     }
 
     if (this.poblacion.length == 0) {
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe especificar al menos una población objetivo',
@@ -371,7 +409,7 @@ export class EncuestaComponent implements OnInit {
     this.encuestasService.formControlJsonStringify(this.formEncuesta, 'jsonAccesos', 'accesos', '');
     this.encuestasService.guardarEncuesta(this.formEncuesta.value).subscribe({
       next: (data: any) => {
-        this._messageService.add({
+        this.messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
@@ -383,7 +421,7 @@ export class EncuestaComponent implements OnInit {
       },
       error: error => {
         console.error('Error guardando encuesta:', error);
-        this._messageService.add({
+        this.messageService.add({
           severity: 'error',
           summary: 'Error',
           detail: error.error.message,
@@ -397,7 +435,7 @@ export class EncuestaComponent implements OnInit {
     this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
     if (this.formEncuesta.invalid) {
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe llenar todos los campos de la primera sección: Información General',
@@ -406,7 +444,7 @@ export class EncuestaComponent implements OnInit {
     }
 
     if (this.poblacion.length == 0) {
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe especificar al menos una población objetivo',
@@ -423,7 +461,7 @@ export class EncuestaComponent implements OnInit {
     this.encuestasService.formControlJsonStringify(this.formEncuesta, 'jsonAccesos', 'accesos', '');
     this.encuestasService.actualizarEncuesta(this.formEncuesta.getRawValue()).subscribe({
       next: () => {
-        this._messageService.add({
+        this.messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
@@ -434,7 +472,7 @@ export class EncuestaComponent implements OnInit {
       },
       error: error => {
         console.error('Error guardando encuesta:', error);
-        this._messageService.add({
+        this.messageService.add({
           severity: 'error',
           summary: 'Error',
           detail: error.error.message,
@@ -449,7 +487,7 @@ export class EncuestaComponent implements OnInit {
     }
     if (this.formPoblacion.value.iPerfilId === null) {
       this.encuestasService.formMarkAsDirty(this.formPoblacion);
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe indicar los participantes de la encuesta',
@@ -472,7 +510,7 @@ export class EncuestaComponent implements OnInit {
     );
     if (duplicados.length) {
       this.encuestasService.formMarkAsDirty(this.formPoblacion);
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Ya existe un registro con estos datos',
@@ -498,7 +536,7 @@ export class EncuestaComponent implements OnInit {
     }
     if (this.formAccesos.value.iPerfilId === null || this.formAccesos.value.iPermId === null) {
       this.encuestasService.formMarkAsDirty(this.formAccesos);
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'No puede agregar un acceso en blanco',
@@ -512,7 +550,7 @@ export class EncuestaComponent implements OnInit {
     );
     if (duplicados.length) {
       this.encuestasService.formMarkAsDirty(this.formAccesos);
-      this._messageService.add({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Ya existe un acceso con ese perfil y permiso',
@@ -550,7 +588,7 @@ export class EncuestaComponent implements OnInit {
         },
         error: error => {
           console.error('Error obteniendo cantidad poblacion:', error);
-          this._messageService.add({
+          this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error.message,

@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { SlicePipe } from '@angular/common';
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
@@ -15,6 +16,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
   imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './lista-encuestas.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  providers: [SlicePipe],
 })
 export class ListaEncuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
@@ -25,6 +27,7 @@ export class ListaEncuestasComponent implements OnInit {
   mostrarDialogoAccesosEncuesta: boolean = false;
   iYAcadId: number;
   perfil: any;
+  cCateNombre: string;
 
   dataEncuestas: Array<any> = [];
 
@@ -40,37 +43,39 @@ export class ListaEncuestasComponent implements OnInit {
     private confirmService: ConfirmationModalService,
     private route: ActivatedRoute,
     private store: LocalStoreService,
-    private router: Router
+    private router: Router,
+    private slicePipe: SlicePipe
   ) {
     this.route.params.subscribe(params => {
       this.iCateId = params['iCateId'];
     });
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
+    this.setBreadCrumbs();
+  }
+
+  ngOnInit() {
+    if (this.iCateId) {
+      this.verCategoria();
+      this.listarEncuestas();
+    }
+  }
+
+  setBreadCrumbs() {
     this.breadCrumbItems = [
+      { label: 'Encuestas' },
+      { label: 'Categorías', routerLink: '/encuestas/categorias' },
       {
-        label: 'Evaluaciones',
+        label: this.categoria?.cCateNombre
+          ? String(this.slicePipe.transform(this.categoria?.cCateNombre, 0, 20))
+          : 'Categoría',
       },
-      {
-        label: 'Categorías',
-        routerLink: '/encuestas/categorias',
-      },
-      {
-        label: 'Categoría',
-      },
-      {
-        label: 'Encuestas',
-      },
+      { label: 'Encuestas' },
     ];
     this.breadCrumbHome = {
       icon: 'pi pi-home',
       routerLink: '/',
     };
-  }
-
-  ngOnInit() {
-    this.verCategoria();
-    this.listarEncuestas();
   }
 
   agregarEncuesta() {
@@ -85,8 +90,8 @@ export class ListaEncuestasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          console.log(data.data);
           this.categoria = data.data;
+          this.setBreadCrumbs();
         },
         error: error => {
           console.error('Error obteniendo datos:', error);

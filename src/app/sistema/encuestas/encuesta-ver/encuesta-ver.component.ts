@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PreguntaOpcionSimpleComponent } from '../shared/pregunta-opcion-simple/pregunta-opcion-simple.component';
 import { PreguntaOpcionMultipleComponent } from '../shared/pregunta-opcion-multiple/pregunta-opcion-multiple.component';
 import { PreguntaTextoComponent } from '../shared/pregunta-texto/pregunta-texto.component';
+import { SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-encuesta-ver',
@@ -20,6 +21,7 @@ import { PreguntaTextoComponent } from '../shared/pregunta-texto/pregunta-texto.
   ],
   templateUrl: './encuesta-ver.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  providers: [SlicePipe],
 })
 export class EncuestaVerComponent implements OnInit {
   iEncuId: number;
@@ -52,7 +54,8 @@ export class EncuestaVerComponent implements OnInit {
     private store: LocalStoreService,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private slicePipe: SlicePipe
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
     this.route.paramMap.subscribe((params: any) => {
@@ -77,33 +80,44 @@ export class EncuestaVerComponent implements OnInit {
     } catch (error) {
       console.error('Error creando formulario:', error);
     }
+    this.setBreadCrumbs();
+  }
 
+  setBreadCrumbs() {
     if (this.puede_editar) {
       this.breadCrumbItems = [
+        { label: 'Encuestas' },
+        { label: 'Categorias', routerLink: `/encuestas/categorias` },
         {
-          label: 'Gestionar encuestas',
-          routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
+          label: this.encuesta?.cCateNombre
+            ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
+            : 'Categoría',
         },
+        { label: 'Encuestas', routerLink: `/encuestas/categorias/${this.iCateId}/encuestas` },
         {
-          label: 'Responder encuesta',
+          label: this.encuesta?.cEncuNombre
+            ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
+            : 'Encuesta',
         },
+        { label: 'Responder encuesta' },
       ];
     } else {
       this.breadCrumbItems = [
+        { label: 'Encuestas' },
+        { label: 'Categorias', routerLink: `/encuestas/categorias` },
         {
-          label: 'Encuestas',
+          label: this.encuesta?.cCateNombre
+            ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
+            : 'Categoría',
         },
+        { label: 'Encuestas', routerLink: `/encuestas/categorias/${this.iCateId}/encuestas` },
         {
-          label: 'Categorias',
-          routerLink: `/encuestas/categorias`,
+          label: this.encuesta?.cEncuNombre
+            ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
+            : 'Encuesta',
+          routerLink: `/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}`,
         },
-        {
-          label: 'Encuestas',
-          routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
-        },
-        {
-          label: 'Responder encuesta',
-        },
+        { label: 'Responder encuesta' },
       ];
     }
   }

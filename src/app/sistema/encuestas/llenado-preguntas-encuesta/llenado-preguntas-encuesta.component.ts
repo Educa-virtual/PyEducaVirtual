@@ -9,6 +9,7 @@ import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { SeccionComponent } from './seccion/seccion.component';
 import { PreguntaComponent } from './pregunta/pregunta.component';
 import { EncuestasService } from '../services/encuestas.services';
+import { SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-llenado-preguntas-encuesta',
@@ -16,6 +17,7 @@ import { EncuestasService } from '../services/encuestas.services';
   imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent],
   templateUrl: './llenado-preguntas-encuesta.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  providers: [SlicePipe],
 })
 export class LlenadoPreguntasEncuestaComponent implements OnInit {
   breadCrumbItems: MenuItem[] = [];
@@ -48,7 +50,8 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private store: LocalStoreService,
-    private encuestasService: EncuestasService
+    private encuestasService: EncuestasService,
+    private slicePipe: SlicePipe
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
@@ -57,26 +60,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
       this.iCateId = params.params.iCateId || null;
       this.iEncuId = params.params.iEncuId || null;
     });
-    this.breadCrumbItems = [
-      {
-        label: 'Encuestas',
-      },
-      {
-        label: 'Categorias',
-        routerLink: `/encuestas/categorias`,
-      },
-      {
-        label: 'Encuestas',
-        routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
-      },
-      {
-        label: 'Nueva encuesta',
-      },
-    ];
-    this.breadCrumbHome = {
-      icon: 'pi pi-home',
-      routerLink: '/',
-    };
+    this.setBreadCrumbs();
   }
 
   ngOnInit() {
@@ -84,6 +68,29 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     if (this.iEncuId) {
       this.verEncuesta();
     }
+  }
+
+  setBreadCrumbs() {
+    this.breadCrumbItems = [
+      { label: 'Encuestas' },
+      { label: 'Categorias', routerLink: `/encuestas/categorias` },
+      {
+        label: this.encuesta?.cCateNombre
+          ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
+          : 'Categoría',
+      },
+      { label: 'Encuestas', routerLink: `/encuestas/categorias/${this.iCateId}/encuestas` },
+      {
+        label: this.encuesta?.cEncuNombre
+          ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
+          : 'Encuesta',
+      },
+      { label: 'Preguntas' },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
   }
 
   verEncuesta() {
@@ -95,6 +102,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.encuesta = data.data;
+          this.setBreadCrumbs();
           this.listarSecciones();
         },
         error: error => {

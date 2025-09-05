@@ -47,7 +47,7 @@ export class CategoriasEncuestaComponent implements OnInit {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.breadCrumbItems = [
       {
-        label: 'Evaluaciones',
+        label: 'Encuestas',
       },
       {
         label: 'Categorías',

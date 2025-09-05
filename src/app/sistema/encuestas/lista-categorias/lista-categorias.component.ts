@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
-import { StringCasePipe } from '@shared/pipes/string-case.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NuevaCategoriaComponent } from '../nueva-categoria/nueva-categoria.component';
@@ -10,18 +9,12 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { EncuestasService } from '../services/encuestas.services';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-categorias-encuestas',
   standalone: true,
-  imports: [
-    PrimengModule,
-    CommonModule,
-    StringCasePipe,
-    FormsModule,
-    NuevaCategoriaComponent,
-    NoDataComponent,
-  ],
+  imports: [PrimengModule, CommonModule, FormsModule, NuevaCategoriaComponent, NoDataComponent],
   templateUrl: './lista-categorias.component.html',
   styleUrl: './lista-categorias.component.scss',
 })
@@ -42,7 +35,8 @@ export class CategoriasEncuestaComponent implements OnInit {
     private encuestasService: EncuestasService,
     private messageService: MessageService,
     private confirmationService: ConfirmationModalService,
-    private store: LocalStoreService
+    private store: LocalStoreService,
+    private router: Router
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.breadCrumbItems = [
@@ -72,6 +66,9 @@ export class CategoriasEncuestaComponent implements OnInit {
         next: (data: any) => {
           this.categorias = data.data;
           this.categorias_filtradas = this.categorias;
+          this.categorias.forEach(cat => {
+            cat.btnItems = this.setBtnItems(cat.iCateId);
+          });
         },
         error: error => {
           console.error('Error obteniendo categorias:', error);
@@ -110,10 +107,10 @@ export class CategoriasEncuestaComponent implements OnInit {
     this.visibleDialogCategoria = true;
   }
 
-  editarCategoria(categoria) {
+  editarCategoria(iCateId) {
     this.iCateId = null;
     setTimeout(() => {
-      this.iCateId = categoria.iCateId;
+      this.iCateId = iCateId;
       this.visibleDialogCategoria = true;
     }, 100);
   }
@@ -152,5 +149,28 @@ export class CategoriasEncuestaComponent implements OnInit {
   cerrarDialogCategoria() {
     this.visibleDialogCategoria = false;
     this.listarCategorias();
+  }
+
+  listarEncuestas(iCateId: any) {
+    this.router.navigate([`/encuestas/categorias/${iCateId}/lista-encuestas`]);
+  }
+
+  gestionarEncuestas(iCateId: any) {
+    this.router.navigate([`/encuestas/categorias/${iCateId}/gestionar-encuestas`]);
+  }
+
+  setBtnItems(iCateId: any): MenuItem[] {
+    return [
+      {
+        label: 'Administrar encuestas',
+        icon: 'pi pi-cog',
+        command: () => this.gestionarEncuestas(iCateId),
+      },
+      {
+        label: 'Editar Categoría',
+        icon: 'pi pi-pencil',
+        command: () => this.editarCategoria(iCateId),
+      },
+    ];
   }
 }

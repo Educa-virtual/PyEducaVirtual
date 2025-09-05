@@ -5,13 +5,17 @@ import { ListaEncuestasComponent } from './lista-encuestas/lista-encuestas.compo
 import { EncuestaComponent } from './encuesta/encuesta.component';
 import {
   ADMINISTRADOR_DREMO,
+  APODERADO,
   DIRECTOR_IE,
+  DOCENTE,
   ESPECIALISTA_DREMO,
   ESPECIALISTA_UGEL,
+  ESTUDIANTE,
   SUBDIRECTOR_IE,
 } from '@/app/servicios/seg/perfiles';
 import { LlenadoPreguntasEncuestaComponent } from './llenado-preguntas-encuesta/llenado-preguntas-encuesta.component';
 import { EncuestaVerComponent } from './encuesta-ver/encuesta-ver.component';
+import { GestionEncuestasComponent } from './gestion-encuestas/gestion-encuestas.component';
 
 const encuestadores = [
   ADMINISTRADOR_DREMO,
@@ -19,6 +23,15 @@ const encuestadores = [
   ESPECIALISTA_UGEL,
   DIRECTOR_IE,
   SUBDIRECTOR_IE,
+];
+const encuestados = [
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  DOCENTE,
+  APODERADO,
+  ESTUDIANTE,
 ];
 
 const routes: Routes = [
@@ -32,8 +45,17 @@ const routes: Routes = [
     },
   },
   {
-    path: 'categorias/:iCateId/encuestas',
+    path: 'categorias/:iCateId/lista-encuestas',
     component: ListaEncuestasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestados,
+      breadcrumb: 'Encuestas',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/gestionar-encuestas',
+    component: GestionEncuestasComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: encuestadores,
@@ -50,7 +72,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'categorias/:iCateId/encuestas/:iEncuId',
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId',
     component: EncuestaComponent,
     canActivate: [RoleGuard],
     data: {
@@ -59,7 +81,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'categorias/:iCateId/encuestas/:iEncuId/preguntas',
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/preguntas',
     component: LlenadoPreguntasEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
@@ -68,12 +90,21 @@ const routes: Routes = [
     },
   },
   {
-    path: 'categorias/:iCateId/encuestas/:iEncuId/ver',
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/ver',
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: encuestadores,
       breadcrumb: 'Ver Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/lista-encuestas/:iEncuId/responder',
+    component: EncuestaVerComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Responder Encuesta',
     },
   },
 ];

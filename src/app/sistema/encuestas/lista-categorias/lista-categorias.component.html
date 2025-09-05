@@ -24,9 +24,7 @@
       <ng-template pTemplate="list" let-categorias>
         <div class="categorias-grid">
           <div *ngFor="let categoria of categorias" class="categoria-item">
-            <article
-              class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
-            >
+            <article class="card p-0 border-1 flex flex-column surface-border h-full post-module">
               <div class="image-container img-transition">
                 <img
                   [alt]="categoria?.cCateNombre"
@@ -40,10 +38,10 @@
                 </h3>
               </div>
               <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-                <p>
+                <span>
                   {{ +categoria?.iTotalEncuestas }}
                   {{ +categoria?.iTotalEncuestas === 1 ? 'encuesta' : 'encuestas' }}
-                </p>
+                </span>
                 <div class="flex gap-1">
                   @if (categoria?.iTotalEncuestas === 0) {
                     <p-button
@@ -54,18 +52,22 @@
                       (click)="borrarCategoria(categoria)"
                     />
                   }
-                  <p-button size="small" severity="success" (click)="editarCategoria(categoria)">
-                    <i class="pi pi-pencil inline md:hidden"></i>
-                    <span class="hidden md:inline">Editar</span>
-                  </p-button>
-                  <a
-                    class="p-button p-button-sm font-bold"
-                    style="color: white"
-                    [routerLink]="['/encuestas/categorias', categoria?.iCateId, 'encuestas']"
+                  <p-splitButton
+                    severity="primary"
+                    size="small"
+                    [model]="categoria?.btnItems"
+                    badge="100"
+                    (onClick)="listarEncuestas(categoria?.iCateId)"
                   >
-                    <i class="pi pi-list inline md:hidden"></i>
-                    <span class="hidden md:inline">Acceder</span>
-                  </a>
+                    <ng-template pTemplate="content">
+                      Acceder
+                      <p-badge
+                        *ngIf="categoria?.iTotalEncuestasPendientes"
+                        [value]="categoria?.iTotalEncuestasPendientes"
+                        severity="danger"
+                      />
+                    </ng-template>
+                  </p-splitButton>
                 </div>
               </footer>
             </article>

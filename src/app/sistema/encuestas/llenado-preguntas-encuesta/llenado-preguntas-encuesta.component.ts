@@ -79,7 +79,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
           ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
           : 'Categoría',
       },
-      { label: 'Encuestas', routerLink: `/encuestas/categorias/${this.iCateId}/encuestas` },
+      { label: 'Encuestas', routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas` },
       {
         label: this.encuesta?.cEncuNombre
           ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
@@ -137,7 +137,9 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   }
 
   salir() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}`]);
+    this.router.navigate([
+      `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}`,
+    ]);
   }
 
   calcularTotalPreguntas() {
@@ -288,6 +290,8 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   }
 
   vistaPrevia() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}/ver`]);
+    this.router.navigate([
+      `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}/ver`,
+    ]);
   }
 }

@@ -245,7 +245,7 @@ export class EncuestaComponent implements OnInit {
       },
       {
         label: 'Encuestas',
-        routerLink: `/encuestas/categorias/${this.iCateId}/encuestas`,
+        routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
       },
       {
         label: 'Nueva encuesta',
@@ -416,7 +416,7 @@ export class EncuestaComponent implements OnInit {
         });
         const iEncuId = data.data.iEncuId;
         this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/encuestas/${iEncuId}/preguntas`,
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${iEncuId}/preguntas`,
         ]);
       },
       error: error => {
@@ -467,7 +467,7 @@ export class EncuestaComponent implements OnInit {
           detail: 'Se registraron los datos',
         });
         this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/encuestas/${this.iEncuId}/preguntas`,
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}/preguntas`,
         ]);
       },
       error: error => {

@@ -1,0 +1,42 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Encuestas de categoría</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <button
+      pButton
+      pRipple
+      label="Nueva"
+      icon="pi pi-plus"
+      class="p-button-success"
+      (click)="agregarEncuesta()"
+    ></button>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [data]="dataEncuestas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [(selectedRowData)]="selectedItem"
+    [actions]="actions"
+    [showCaption]="false"
+  >
+  </app-table-primeng>
+</p-panel>
+
+<p-toast></p-toast>

@@ -8,4 +8,5 @@ export interface ICategoria {
   cCateNombre?: string;
   cCateSubtitulo?: string;
   iTotalEncuestas?: number;
+  btnItems: any;
 }

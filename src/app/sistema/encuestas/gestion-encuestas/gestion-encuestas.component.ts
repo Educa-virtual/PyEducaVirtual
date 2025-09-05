@@ -11,14 +11,14 @@ import { SlicePipe } from '@angular/common';
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
-  selector: 'app-lista-encuestas',
+  selector: 'app-gestion-encuestas',
   standalone: true,
   imports: [PrimengModule, TablePrimengComponent],
-  templateUrl: './lista-encuestas.component.html',
+  templateUrl: './gestion-encuestas.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
   providers: [SlicePipe],
 })
-export class ListaEncuestasComponent implements OnInit {
+export class GestionEncuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
   iCateId: number = null;
   categoria: any = null;
@@ -158,7 +158,9 @@ export class ListaEncuestasComponent implements OnInit {
   }
 
   editarEncuesta(item: any) {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}`]);
+    this.router.navigate([
+      `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
+    ]);
   }
 
   eliminarEncuesta(item: any) {
@@ -234,17 +236,17 @@ export class ListaEncuestasComponent implements OnInit {
     switch (accion) {
       case 'editar':
         this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}`,
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
         ]);
         break;
       case 'ver':
         this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}`,
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
         ]);
         break;
       case 'preguntas':
         this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}/preguntas`,
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/preguntas`,
         ]);
         break;
       case 'eliminar':

@@ -29,6 +29,9 @@ import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricul
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
 import { YearsComponent } from './years/years.component';
+import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
 const routes: Routes = [
   { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
   { path: 'years-academicos', component: YearsComponent },
@@ -135,6 +138,16 @@ const routes: Routes = [
   {
     path: 'mantenimiento-usuario',
     component: MantenimientoUsuariosComponent,
+  },
+  {
+    path: 'calendario-escolar',
+    component: CalendarioEscolarComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+      breadcrumb: 'calendario-escolar',
+      icon: 'pi pi-book',
+    },
   },
 ];
 

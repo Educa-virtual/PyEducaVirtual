@@ -19,6 +19,9 @@ import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calen
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { GeneralService } from '@/app/servicios/general.service';
+import { INSTRUCTOR } from '@/app/servicios/seg/perfiles';
+import { TabResultadosService } from '@/app/servicios/aula/tab-resultados.service';
 
 @Component({
   selector: 'app-tab-resultados',
@@ -47,6 +50,8 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       }
     }
   }
+  private GeneralService = inject(GeneralService);
+  private _serviceResultados = inject(TabResultadosService);
   private _formBuilder = inject(FormBuilder);
   private _aulaService = inject(ApiAulaService);
   private _ConstantesService = inject(ConstantesService);
@@ -65,18 +70,21 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   iEstudianteId: number;
   iPerfilId: number;
   iDocenteId: number;
+  iIntructorId: number;
 
   mostrarModalConclusionDesc = false;
   descrip: string;
 
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
+  public INSTRUCTOR = INSTRUCTOR;
 
   public conclusionDescrp: FormGroup = this._formBuilder.group({
     bEsPorPeriodo: [],
     iNumeroPeriodo: [],
     iEscalaCalifId: ['', [Validators.required]],
     cDetMatConclusionDescPromedio: ['', [Validators.required]],
+    iNroNota: ['', [Validators.required]],
   });
 
   calificacion: any[] = [];
@@ -99,6 +107,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     { label: 'Foro', value: FORO, styleClass: 'btn-success' },
     { label: 'Evaluación', value: EVALUACION, styleClass: 'btn-danger' },
   ];
+  notas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   columnasTabla: IColumn[] = [
     {
@@ -124,6 +133,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 1',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -132,6 +142,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 2',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -140,6 +151,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 3',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -148,6 +160,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       header: 'Período 4',
       text_header: 'center',
       text: 'center',
+      isVisible: () => !this.curso?.iCapacitacionId,
     },
     {
       type: 'text',
@@ -182,18 +195,30 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
       accion: 'agregarConclusion',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
-      isVisible: () => this.iPerfilId === this.DOCENTE,
+      isVisible: () => this.iPerfilId === this.DOCENTE || this.iPerfilId === this.INSTRUCTOR,
     },
   ];
+  get columnasVisibles(): IColumn[] {
+    return this.columnasTabla.filter(col => {
+      if (typeof col.isVisible === 'function') {
+        return col.isVisible();
+      }
+      return col.isVisible !== false; // por defecto visible si no se indica
+    });
+  }
 
   ngOnInit() {
     this.iEstudianteId = this._ConstantesService.iEstudianteId;
     this.iPerfilId = this._ConstantesService.iPerfilId;
     this.iDocenteId = this._ConstantesService.iDocenteId;
 
-    this.obtenerEscalaCalificaciones();
-    this.obtenerReporteDenotasFinales();
-    this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
+    if (!this.curso?.iCapacitacionId) {
+      this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
+      this.obtenerReporteDenotasFinales();
+      this.obtenerEscalaCalificaciones();
+    }
+
+    this.obtenerEstudiantesCapacitacion();
   }
 
   periodoSeleccionado: number | string | null = null;
@@ -217,7 +242,25 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
         error: error => this.mostrarErrores(error),
       });
   }
-
+  capacitacion: any;
+  // obtener los alumnos de la capacitación
+  obtenerEstudiantesCapacitacion() {
+    const data = this.curso.iCapacitacionId;
+    this._serviceResultados.obtenerAlumnos(data).subscribe({
+      next: resp => {
+        this.capacitacion = resp['data'] || [];
+        this.reporteNotasFinales = this.capacitacion.map((item: any, index) => ({
+          ...item,
+          iEscalaCalifIdPromedioFinal: item.iNroNota,
+          cDetMatConclusionDescPromedio: item.cConclusion,
+          cTitulo: `${index + 1}.- ${item.completoalumno}`,
+        }));
+      },
+      error: err => {
+        console.error('Error obteniendo cuestionario:', err);
+      },
+    });
+  }
   semanaSeleccionado: number | string | null = null;
 
   accionBnt({ accion, item }) {
@@ -229,6 +272,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   enviarDatosFinales(item: any, periodo: boolean) {
     this.mostrarModalConclusionDesc = true;
     this.estudianteSelect = item;
+    console.log(this.estudianteSelect);
     // Limpiar el formulario antes de aplicar nuevos valores
     this.conclusionDescrp.reset();
 
@@ -238,6 +282,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
         iNumeroPeriodo: null,
         iEscalaCalifId: item.iEscalaCalifIdPromedio,
         cDetMatConclusionDescPromedio: item.cDetMatConclusionDescPromedio,
+        iNroNota: this.estudianteSelect.iNroNota,
       });
     } else {
       const nPeriodo = this.periodos.find(p => p.iPeriodoEvalAperId === this.periodoSeleccionado);
@@ -261,7 +306,8 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     this._aulaService
       .obtenerResultados({
         iEstudianteId: estudiantes.iEstudianteId,
-        idDocCursoId: this.idDocCursoId,
+        idDocCursoId: this.idDocCursoId || null,
+        iCapacitacionId: this.curso?.iCapacitacionId || null,
       })
       .pipe(takeUntil(this.unsbscribe$))
       .subscribe({
@@ -306,102 +352,153 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
   isLoading: boolean = false;
   guardarConclusionDescriptiva() {
-    if (this.isLoading) return; // evitar doble clic
-    this.isLoading = true;
+    // if (this.isLoading) return; // evitar doble clic
+    // this.isLoading = true;
 
-    const { bEsPorPeriodo, iNumeroPeriodo, iEscalaCalifId, cDetMatConclusionDescPromedio } =
-      this.conclusionDescrp.value;
+    if (this.iPerfilId === this.INSTRUCTOR) {
+      const datos = {
+        iInscripId: this.capacitacion.map(item => item.iInscripId).join(','),
+        iCapacitacionId: this.capacitacion.map(item => item.iCapacitacionId).join(','),
+        iNroNota: this.conclusionDescrp.value.iNroNota,
+        cConclusion: this.conclusionDescrp.value.cDetMatConclusionDescPromedio,
+        iCredId: this._ConstantesService.iCredId,
+      };
+      console.log('Datos a guardar:', datos);
 
-    const params = {
-      iEscalaCalifIdPromedio: iEscalaCalifId,
-      iEstudianteId: this.estudianteSelect.iEstudianteId,
-      iMatrId: this.estudianteSelect.iMatrId,
-      iDetMatrId: this.estudianteSelect.iDetMatrId,
-      iIeCursoId: this.curso.iIeCursoId,
-      iSeccionId: this.curso.iSeccionId,
-      idDocCursoId: this.idDocCursoId,
-      cDetMatConclusionDescPromedio,
-      bEsPorPeriodo,
-      iNumeroPeriodo,
-      iEscalaCalifIdPeriodo: iEscalaCalifId,
-      cDetMatrConclusionDescPeriodo: cDetMatConclusionDescPromedio,
-      iCredId: this._ConstantesService.iCredId,
-    };
+      this._serviceResultados.guardarDescripcion(datos).subscribe({
+        next: resp => {
+          this.capacitacion = resp.data.length ? resp.data[0] : null;
+          this.reporteNotasFinales = resp.data;
+          this.messageService.add({
+            severity: 'success',
+            summary: '¡Genial!',
+            detail: 'Acción éxitosa',
+          });
 
-    const nombresCampos: Record<string, string> = {
-      iEscalaCalifIdPromedio: 'Escala de calificación',
-      cDetMatConclusionDescPromedio: 'Conclusión descriptiva',
-      iEscalaCalifIdPeriodo: 'Escala de calificación',
-      cDetMatrConclusionDescPeriodo: 'Conclusión descriptiva',
-      iEstudianteId: 'Estudiante',
-      iMatrId: 'Matrícula',
-      iDetMatrId: 'Detalle matrícula',
-      iIeCursoId: 'Curso',
-      iSeccionId: 'Sección',
-      idDocCursoId: 'Docente del curso',
-      iCredId: 'Credencial',
-    };
-
-    // Validación manual basada en campos requeridos según bEsPorPeriodo
-    const camposRequeridos = [
-      'iEstudianteId',
-      'iMatrId',
-      'iDetMatrId',
-      'iIeCursoId',
-      'iSeccionId',
-      'idDocCursoId',
-      'iCredId',
-      bEsPorPeriodo ? 'iEscalaCalifIdPeriodo' : 'iEscalaCalifIdPromedio',
-      bEsPorPeriodo ? 'cDetMatrConclusionDescPeriodo' : 'cDetMatConclusionDescPromedio',
-    ];
-
-    // Validación
-    let valid = true;
-    let message = '';
-
-    for (const campo of camposRequeridos) {
-      if (
-        params[campo] === null ||
-        params[campo] === undefined ||
-        (typeof params[campo] === 'string' && params[campo].trim() === '')
-      ) {
-        valid = false;
-        message = `El campo "${nombresCampos[campo] ?? campo}" es obligatorio.`;
-        break;
-      }
-    }
-
-    // Resultado
-    if (!valid) {
-      this._MessageService.add({
-        severity: 'warn',
-        summary: 'Validación',
-        detail: message,
-      });
-      this.isLoading = false;
-      return;
-    }
-
-    this._DetalleMatriculasService
-      .guardarConclusionDescriptiva(this.estudianteSelect.iDetMatrId, params)
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: response => {
           this.estudianteSeleccionado = null;
-          this.obtenerReporteDenotasFinales();
+          this.obtenerEstudiantesCapacitacion();
           this.mostrarModalConclusionDesc = false;
           this.conclusionDescrp.reset();
-
-          if (response.validated) {
-            this._MessageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Calificación guardada correctamente.',
+          // console.log(this.capacitacion);
+        },
+        error: error => {
+          const errores = error?.error?.errors;
+          if (error.status === 422 && errores) {
+            // Recorre y muestra cada mensaje de error
+            Object.keys(errores).forEach(campo => {
+              errores[campo].forEach((mensaje: string) => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error de validación',
+                  detail: mensaje,
+                });
+              });
+            });
+          } else {
+            // Error genérico si no hay errores específicos
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error?.error?.message || 'Ocurrió un error inesperado',
             });
           }
         },
-        error: error => this.mostrarErrores(error),
       });
+    } else {
+      const { bEsPorPeriodo, iNumeroPeriodo, iEscalaCalifId, cDetMatConclusionDescPromedio } =
+        this.conclusionDescrp.value;
+
+      const params = {
+        iEscalaCalifIdPromedio: iEscalaCalifId,
+        iEstudianteId: this.estudianteSelect.iEstudianteId,
+        iMatrId: this.estudianteSelect.iMatrId,
+        iDetMatrId: this.estudianteSelect.iDetMatrId,
+        iIeCursoId: this.curso.iIeCursoId,
+        iSeccionId: this.curso.iSeccionId,
+        idDocCursoId: this.idDocCursoId,
+        cDetMatConclusionDescPromedio,
+        bEsPorPeriodo,
+        iNumeroPeriodo,
+        iEscalaCalifIdPeriodo: iEscalaCalifId,
+        cDetMatrConclusionDescPeriodo: cDetMatConclusionDescPromedio,
+        iCredId: this._ConstantesService.iCredId,
+      };
+
+      const nombresCampos: Record<string, string> = {
+        iEscalaCalifIdPromedio: 'Escala de calificación',
+        cDetMatConclusionDescPromedio: 'Conclusión descriptiva',
+        iEscalaCalifIdPeriodo: 'Escala de calificación',
+        cDetMatrConclusionDescPeriodo: 'Conclusión descriptiva',
+        iEstudianteId: 'Estudiante',
+        iMatrId: 'Matrícula',
+        iDetMatrId: 'Detalle matrícula',
+        iIeCursoId: 'Curso',
+        iSeccionId: 'Sección',
+        idDocCursoId: 'Docente del curso',
+        iCredId: 'Credencial',
+      };
+
+      // Validación manual basada en campos requeridos según bEsPorPeriodo
+      const camposRequeridos = [
+        'iEstudianteId',
+        'iMatrId',
+        'iDetMatrId',
+        'iIeCursoId',
+        'iSeccionId',
+        'idDocCursoId',
+        'iCredId',
+        bEsPorPeriodo ? 'iEscalaCalifIdPeriodo' : 'iEscalaCalifIdPromedio',
+        bEsPorPeriodo ? 'cDetMatrConclusionDescPeriodo' : 'cDetMatConclusionDescPromedio',
+      ];
+
+      // Validación
+      let valid = true;
+      let message = '';
+
+      for (const campo of camposRequeridos) {
+        if (
+          params[campo] === null ||
+          params[campo] === undefined ||
+          (typeof params[campo] === 'string' && params[campo].trim() === '')
+        ) {
+          valid = false;
+          message = `El campo "${nombresCampos[campo] ?? campo}" es obligatorio.`;
+          break;
+        }
+      }
+
+      // Resultado
+      if (!valid) {
+        this._MessageService.add({
+          severity: 'warn',
+          summary: 'Validación',
+          detail: message,
+        });
+        this.isLoading = false;
+        return;
+      }
+
+      this._DetalleMatriculasService
+        .guardarConclusionDescriptiva(this.estudianteSelect.iDetMatrId, params)
+        .pipe(finalize(() => (this.isLoading = false)))
+        .subscribe({
+          next: response => {
+            this.estudianteSeleccionado = null;
+            this.obtenerReporteDenotasFinales();
+            this.mostrarModalConclusionDesc = false;
+            this.conclusionDescrp.reset();
+
+            if (response.validated) {
+              this._MessageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Calificación guardada correctamente.',
+              });
+            }
+          },
+          error: error => this.mostrarErrores(error),
+        });
+    }
   }
 
   obtenerEscalaCalificaciones() {

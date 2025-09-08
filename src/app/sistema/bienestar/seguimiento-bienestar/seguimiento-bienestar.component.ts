@@ -14,6 +14,7 @@ import { FuncionesBienestarService } from '../services/funciones-bienestar.servi
 import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
 import { Dropdown } from 'primeng/dropdown';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { FileUpload } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-seguimiento-bienestar',
@@ -26,6 +27,7 @@ export class SeguimientoBienestarComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
   @ViewChild('filtro_tipo') filtro_tipo: Dropdown;
   @ViewChild('filtro_persona') filtro_persona: ElementRef;
+  @ViewChild('fileUpload') fileUpload: FileUpload;
 
   perfil: any;
   iYAcadId: number;
@@ -67,6 +69,9 @@ export class SeguimientoBienestarComponent implements OnInit {
   FASE_PENDIENTE: number = this.datosSeguimiento.FASE_PENDIENTE;
   FASE_DERIVADO: number = this.datosSeguimiento.FASE_DERIVADO;
 
+  archivoSeleccionado: File | null = null;
+  fecha_actual: Date = new Date();
+
   private _confirmService = inject(ConfirmationModalService);
   private _messageService = inject(MessageService);
 
@@ -96,8 +101,8 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   ngOnInit(): void {
     this.formSeguimiento = this.fb.group({
-      iCredEntPerfId: [this.perfil.iCredEntPerfId, Validators.required],
-      iYAcadId: [this.iYAcadId, Validators.required],
+      iCredEntPerfId: [this.perfil.iCredEntPerfId],
+      iYAcadId: [this.iYAcadId],
       iNivelTipoId: [null, Validators.required],
       iSedeId: [null, Validators.required],
       iSeguimId: [null],
@@ -108,8 +113,9 @@ export class SeguimientoBienestarComponent implements OnInit {
       iPrioridad: [null, Validators.required],
       iFase: [null],
       dSeguimFecha: [null, Validators.required],
-      cSeguimArchivo: [null],
+      archivo: [null, Validators.required],
       cSeguimDescripcion: [null],
+      cSeguimArchivo: [null],
       cInstitucionDatos: [null],
       iTipoIdentId: [null, Validators.required],
       cPersDocumento: [null, Validators.required],
@@ -129,14 +135,6 @@ export class SeguimientoBienestarComponent implements OnInit {
         this.nivel_tipos = this.datosSeguimiento.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.datosSeguimiento.getInstitucionesEducativas(data?.instituciones_educativas);
         this.tipos_documentos = this.datosSeguimiento.getTiposDocumentos(data?.tipos_documentos);
-        if (this.es_director) {
-          const nivel_tipo =
-            this.nivel_tipos && this.nivel_tipos.length > 0 ? this.nivel_tipos[0]['value'] : null;
-          const ie = this.ies && this.ies.length > 0 ? this.ies[0]['value'] : null;
-          this.formSeguimiento.get('iNivelTipoId')?.setValue(nivel_tipo);
-          this.filterInstitucionesEducativas();
-          this.formSeguimiento.get('iSedeId')?.setValue(ie);
-        }
       });
 
     this.formSeguimiento.get('iNivelTipoId').valueChanges.subscribe(() => {
@@ -164,11 +162,10 @@ export class SeguimientoBienestarComponent implements OnInit {
     this.formSeguimiento.get('iTipoSeguimId').valueChanges.subscribe(value => {
       this.obtenerTiposDocumento(value);
     });
-
-    this.verSeguimientos();
+    this.listarSeguimientos();
   }
 
-  verSeguimientos() {
+  listarSeguimientos() {
     this.datosSeguimiento
       .listarSeguimientos({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -176,11 +173,12 @@ export class SeguimientoBienestarComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data.length) {
+          if (data.data.length > 0) {
             this.seguimientos = data.data;
-            this.seguimientos_filtrados = this.seguimientos;
+            this.filtrarTabla();
           } else {
             this.seguimientos = null;
+            this.seguimientos_filtrados = null;
           }
         },
         error: error => {
@@ -195,58 +193,77 @@ export class SeguimientoBienestarComponent implements OnInit {
   }
 
   obtenerTiposDocumento(tipo_seguimiento: any) {
+    this.tipos_documentos = this.tipos_documentos.filter((doc: any) => {
+      return doc.value !== 0;
+    });
     if (tipo_seguimiento === this.datosSeguimiento.SEGUIMIENTO_ESTUDIANTE) {
       this.tipos_documentos.unshift({
         value: 0,
         label: 'CODIGO DE ESTUDIANTE',
         longitud: 15,
       });
-    } else {
-      this.tipos_documentos = this.tipos_documentos.filter((doc: any) => {
-        return doc.value !== 0;
-      });
     }
   }
 
   filterInstitucionesEducativas() {
     const iNivelTipoId = this.formSeguimiento.get('iNivelTipoId')?.value;
-    this.datosSeguimiento.filterInstitucionesEducativas(iNivelTipoId).subscribe((data: any) => {
-      this.ies = data;
-    });
+    this.ies = this.datosSeguimiento.filterInstitucionesEducativas(iNivelTipoId);
   }
 
   agregarSeguimiento() {
     this.visibleDialog = true;
     this.seguimiento_bloqueado = false;
     this.seguimiento_registrado = false;
+    this.clearForm();
   }
 
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value.toLowerCase();
-    const filtro_tipo = this.filtro_tipo.value;
+    const filtro_tipo = this.filtro_tipo?.value;
     this.seguimientos_filtrados = this.seguimientos.filter((seguimiento: any) => {
-      if (seguimiento?.iTipoSeguimId === filtro_tipo) return seguimiento;
-      if (seguimiento?.cPersDocumento.toLowerCase().includes(filtro)) return seguimiento;
-      if (seguimiento?.cPersNombreApellidos.toLowerCase().includes(filtro)) return seguimiento;
-      if (seguimiento?.dSeguimFechaUltima.toLowerCase().includes(filtro)) return seguimiento;
+      if (
+        !filtro_tipo ||
+        (seguimiento?.iTipoSeguimId && Number(seguimiento?.iTipoSeguimId) === Number(filtro_tipo))
+      ) {
+        if (
+          seguimiento?.cPersDocumento &&
+          seguimiento?.cPersDocumento.toLowerCase().includes(filtro)
+        )
+          return seguimiento;
+        if (
+          seguimiento?.cPersNombreApellidos &&
+          seguimiento?.cPersNombreApellidos.toLowerCase().includes(filtro)
+        )
+          return seguimiento;
+        if (
+          seguimiento?.dSeguimFechaUltima &&
+          seguimiento?.dSeguimFechaUltima.toLowerCase().includes(filtro)
+        )
+          return seguimiento;
+      }
       return null;
     });
   }
 
   filtrarTablaPersona() {
     const filtro_persona = this.filtro_persona.nativeElement.value.toLowerCase();
-    this.seguimientos_persona_filtrados = this.seguimientos.filter((seguimiento: any) => {
-      if (seguimiento?.dSeguimFecha.toLowerCase().includes(filtro_persona)) return seguimiento;
-      if (seguimiento?.cSeguimPrioridad.toLowerCase().includes(filtro_persona)) return seguimiento;
-      if (seguimiento?.cIieeNombre.toLowerCase().includes(filtro_persona)) return seguimiento;
+    this.seguimientos_persona_filtrados = this.seguimientos_persona.filter((seguimiento: any) => {
+      if (
+        seguimiento?.dSeguimFecha &&
+        seguimiento?.dSeguimFecha.toLowerCase().includes(filtro_persona)
+      )
+        return seguimiento;
+      if (
+        seguimiento?.cSeguimPrioridad &&
+        seguimiento?.cSeguimPrioridad.toLowerCase().includes(filtro_persona)
+      )
+        return seguimiento;
+      if (
+        seguimiento?.cIieeNombre &&
+        seguimiento?.cIieeNombre.toLowerCase().includes(filtro_persona)
+      )
+        return seguimiento;
       return null;
-    });
-  }
-
-  handleArchivo(event) {
-    const file = (event.target as HTMLInputElement)?.files?.[0];
-    this.formSeguimiento.patchValue({
-      cSeguimArchivo: file,
     });
   }
 
@@ -312,13 +329,11 @@ export class SeguimientoBienestarComponent implements OnInit {
       cPersDatos: datos_persona,
       iNivelTipoId: data ? Number(data?.iNivelTipoId) : null,
     });
-    this.datosSeguimiento
-      .filterInstitucionesEducativas(data?.iNivelTipoId)
-      .subscribe((data: any) => {
-        this.formSeguimiento.patchValue({
-          iSedeId: data?.value,
-        });
-      });
+    this.datosSeguimiento.filterInstitucionesEducativas(data?.iNivelTipoId);
+    this.formSeguimiento.patchValue({
+      iSedeId: data?.value,
+    });
+    this.formSeguimiento.get('cPersDocumento').setValue(data?.cPersDocumento);
     this.seguimiento_registrado = this.formSeguimiento.value.iSeguimId ? true : false;
     this.funcionesBienestar.formMarkAsDirty(this.formSeguimiento);
     if (this.seguimiento_bloqueado) {
@@ -357,13 +372,12 @@ export class SeguimientoBienestarComponent implements OnInit {
         iSedeId: this.formSeguimiento.value.iSedeId,
         iTipoPers: this.formSeguimiento.value.iTipoSeguimId,
         cEstCodigo: tipo_doc === 0 ? this.formSeguimiento.value.cPersDocumento : null,
-        iTipoIdentId: tipo_doc > 0 ? this.formSeguimiento.value.iTipoIdentId : null,
-        cPersDocumento: tipo_doc > 0 ? this.formSeguimiento.value.cPersDocumento : null,
+        iTipoIdentId: this.formSeguimiento.value.iTipoIdentId,
+        cPersDocumento: this.formSeguimiento.value.cPersDocumento,
       })
       .subscribe({
         next: (data: any) => {
           if (data.data) {
-            console.log(data.data, 'datos');
             let datos_persona: string = '';
             switch (this.formSeguimiento.value.iTipoSeguimId) {
               case this.datosSeguimiento.SEGUIMIENTO_ESTUDIANTE:
@@ -381,15 +395,18 @@ export class SeguimientoBienestarComponent implements OnInit {
                 datos_persona = data.data ? data.data?.cPersNombreApellidos : null;
                 break;
             }
-            console.log(datos_persona, 'persona');
             this.formSeguimiento.patchValue({
               cPersDatos: datos_persona,
-              iPersId: data.data?.iPersId,
+              iPersId: data.data?.iPersId ?? null,
+              iMatrId: data.data?.iMatrId ?? null,
+              iPersIeId: data.data?.iPersIeId ?? null,
             });
           } else {
             this.formSeguimiento.patchValue({
               iPersId: null,
               cPersDatos: null,
+              iMatrId: null,
+              iPersIeId: null,
             });
             this._messageService.add({
               severity: 'error',
@@ -399,7 +416,12 @@ export class SeguimientoBienestarComponent implements OnInit {
           }
         },
         error: error => {
-          this.setFormSeguimiento(null);
+          this.formSeguimiento.patchValue({
+            iPersId: null,
+            cPersDatos: null,
+            iMatrId: null,
+            iPersIeId: null,
+          });
           console.error('Error obteniendo datos de la persona:', error);
           this._messageService.add({
             severity: 'error',
@@ -410,25 +432,56 @@ export class SeguimientoBienestarComponent implements OnInit {
       });
   }
 
+  handleArchivo(event: any) {
+    const file = event.files && event.files.length > 0 ? event.files[0] : null;
+    if (file) {
+      this.archivoSeleccionado = file;
+      this.formSeguimiento.get('archivo').setValue(file);
+    } else {
+      this.archivoSeleccionado = null;
+      this.formSeguimiento.get('archivo').setValue(null);
+    }
+  }
+
   guardarSeguimiento() {
     if (this.formSeguimiento.invalid) {
       this._messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Debe completar los campos requeridos',
+        detail: 'Debe completar los campos requeridos y cargar un archivo PDF',
       });
       this.funcionesBienestar.formMarkAsDirty(this.formSeguimiento);
       return;
     }
-    this.datosSeguimiento.guardarSeguimiento(this.formSeguimiento.value).subscribe({
+
+    const formData: FormData = new FormData();
+    formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+    formData.append('iYAcadId', String(this.iYAcadId));
+    formData.append('iNivelTipoId', this.formSeguimiento.value.iNivelTipoId);
+    formData.append('iSedeId', this.formSeguimiento.value.iSedeId);
+    formData.append('iPersId', this.formSeguimiento.value.iPersId);
+    formData.append('iMatrId', this.formSeguimiento.value.iMatrId);
+    formData.append('iPersIeId', this.formSeguimiento.value.iPersIeId);
+    formData.append('iTipoSeguimId', this.formSeguimiento.value.iTipoSeguimId);
+    formData.append('iPrioridad', this.formSeguimiento.value.iPrioridad);
+    formData.append('iFase', this.formSeguimiento.value.iFase);
+    formData.append('dSeguimFecha', this.formSeguimiento.value.dSeguimFecha);
+    formData.append('cSeguimDescripcion', this.formSeguimiento.value.cSeguimDescripcion);
+    formData.append('iTipoIdentId', this.formSeguimiento.value.iTipoIdentId);
+    formData.append('cPersDocumento', this.formSeguimiento.value.cPersDocumento);
+    if (this.archivoSeleccionado) {
+      formData.append('archivo', this.archivoSeleccionado);
+    }
+
+    this.datosSeguimiento.guardarSeguimiento(formData).subscribe({
       next: () => {
         this._messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        this.verSeguimientos();
         this.visibleDialog = false;
+        this.listarSeguimientos();
       },
       error: error => {
         console.error('Error guardando seguimiento:', error);
@@ -452,13 +505,15 @@ export class SeguimientoBienestarComponent implements OnInit {
       return;
     }
     this.datosSeguimiento.actualizarSeguimiento(this.formSeguimiento.value).subscribe({
-      next: () => {
+      next: (data: any) => {
         this._messageService.add({
           severity: 'success',
           summary: 'Atualización exitosa',
           detail: 'Se actualizaron los datos',
         });
-        this.verSeguimientos();
+        if (this.archivoSeleccionado) {
+          this.actualizarArchivo(data.data?.iSeguimId);
+        }
         this.visibleDialog = false;
       },
       error: error => {
@@ -472,7 +527,32 @@ export class SeguimientoBienestarComponent implements OnInit {
     });
   }
 
+  actualizarArchivo(iSeguimId: any) {
+    const formData: FormData = new FormData();
+    formData.append('archivo', this.archivoSeleccionado);
+    formData.append('iSeguimId', iSeguimId);
+    formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+    this.datosSeguimiento.actualizarSeguimientoArchivo(formData).subscribe({
+      next: () => {
+        this.listarSeguimientos();
+      },
+      error: error => {
+        console.error('Error subiendo archivo:', error);
+        this._messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message || 'Error al subir archivo',
+        });
+      },
+      complete: () => {
+        console.log('Request completed');
+      },
+    });
+  }
+
   verHistorialSeguimiento(item: any): void {
+    this.seguimientos_persona_filtrados = null;
+    this.seguimientos_persona = null;
     this.datosSeguimiento
       .verSeguimientosPersona({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
@@ -482,12 +562,8 @@ export class SeguimientoBienestarComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data) {
-            this.seguimientos_persona = data.data;
-            this.seguimientos_persona_filtrados = this.seguimientos_persona;
-          } else {
-            this.seguimientos_persona = null;
-          }
+          this.seguimientos_persona = data.data;
+          this.filtrarTablaPersona();
         },
         error: error => {
           console.error('Error obteniendo historial de seguimiento:', error);
@@ -500,12 +576,45 @@ export class SeguimientoBienestarComponent implements OnInit {
       });
   }
 
-  descargarSeguimiento(item: any) {
-    console.log(item, 'descarga');
+  descargarSeguimiento(item: any = null) {
+    if (!item) {
+      item.iSeguimId = this.formSeguimiento.value.iSeguimId;
+      item.cSeguimArchivo = this.formSeguimiento.value.cSeguimArchivo;
+    }
+    this.datosSeguimiento
+      .descargarSeguimiento({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iSeguimId: item.iSeguimId,
+        cSeguimArchivo: item.cSeguimArchivo,
+      })
+      .subscribe({
+        next: (response: any) => {
+          const blob = new Blob([response], {
+            type: 'application/pdf',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.click();
+        },
+        error: error => {
+          console.error('Error descargando archivo:', error);
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message ?? 'No se pudo descargar el archivo',
+          });
+        },
+      });
   }
 
   clearForm() {
     this.setFormSeguimiento(null);
+    this.fileUpload.clear();
+    this.archivoSeleccionado = null;
+    this.seguimiento_registrado = false;
+    this.seguimiento_bloqueado = false;
   }
 
   borrarSeguimiento(item: any) {
@@ -521,14 +630,24 @@ export class SeguimientoBienestarComponent implements OnInit {
             summary: 'Eliminación exitosa',
             detail: 'Se eliminaron los datos',
           });
-          if (data.data === true) {
-            this.seguimientos_filtrados = this.seguimientos_filtrados.filter(
+          if (data.data) {
+            this.seguimientos_persona = this.seguimientos_persona.filter(
               (seguimiento: any) => item.iSeguimId != seguimiento.iSeguimId
             );
+            this.filtrarTablaPersona();
+            if (this.seguimientos_persona.length === 0) {
+              this.salirHistorial();
+              this.listarSeguimientos();
+            }
           }
-          this.visibleDialog = false;
         },
       });
+  }
+
+  salirHistorial() {
+    this.seguimientos_persona = null;
+    this.seguimientos_persona_filtrados = null;
+    this.visibleDialogPersona = false;
   }
 
   salir() {
@@ -589,13 +708,12 @@ export class SeguimientoBienestarComponent implements OnInit {
       class: 'hidden md:table-cell',
     },
     {
-      field: 'CTipoSeguimNombre',
+      field: 'cTipoSeguimNombre',
       header: 'Tipo',
       type: 'text',
       width: '15%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       field: 'cPersDocumento',
@@ -604,7 +722,6 @@ export class SeguimientoBienestarComponent implements OnInit {
       width: '15%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       field: 'cPersNombreApellidos',
@@ -621,7 +738,6 @@ export class SeguimientoBienestarComponent implements OnInit {
       width: '15%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       type: 'actions',
@@ -634,13 +750,6 @@ export class SeguimientoBienestarComponent implements OnInit {
   ];
 
   public accionesTablaPersona: IActionTable[] = [
-    {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-file-edit',
-      accion: 'editar',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-    },
     {
       labelTooltip: 'Eliminar',
       icon: 'pi pi-trash',
@@ -681,16 +790,19 @@ export class SeguimientoBienestarComponent implements OnInit {
       width: '10%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
     },
     {
       field: 'cSeguimPrioridad',
       header: 'Prioridad',
-      type: 'text',
+      type: 'tag',
       width: '10%',
       text_header: 'center',
       text: 'center',
-      class: 'hidden md:table-cell',
+      styles: {
+        NORMAL: 'success',
+        ALERTA: 'warning',
+        URGENTE: 'danger',
+      },
     },
     {
       field: 'cSeguimDescripcion',

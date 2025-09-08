@@ -336,7 +336,7 @@ export class DatosEncuestaService implements OnDestroy {
     iUgelId: any
   ) {
     let ies_tmp: Array<object> = this.instituciones_educativas;
-    if (!iNivelTipoId || !this.instituciones_educativas) {
+    if (!this.instituciones_educativas) {
       return null;
     }
     if (iNivelTipoId) {

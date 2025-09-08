@@ -1,7 +1,13 @@
 import { MessageService } from 'primeng/api';
 import { inject } from '@angular/core';
+import { IModal } from '../../confirm-modal/modal.interface';
 
 export abstract class MostrarErrorComponent {
+  message: IModal = {
+    severity: 'error',
+    summary: '',
+    detail: '',
+  };
   protected messageService = inject(MessageService);
 
   protected mostrarErrores(error: any) {
@@ -25,15 +31,7 @@ export abstract class MostrarErrorComponent {
     }
   }
 
-  protected mostrarMensajeToast({
-    severity,
-    summary,
-    detail,
-  }: {
-    severity: string;
-    summary: string;
-    detail: string;
-  }) {
+  protected mostrarMensajeToast({ severity, summary, detail }: IModal) {
     this.messageService.add({ severity, summary, detail });
   }
 }

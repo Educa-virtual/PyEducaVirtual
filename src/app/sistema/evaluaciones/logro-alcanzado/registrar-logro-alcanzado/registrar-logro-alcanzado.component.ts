@@ -31,11 +31,12 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   @Input() area: any = [];
   @Input() iCredId: number; // Variable para almacenar el crédito seleccionado
   //@Input() curso: any = [];
+  @Input() periodos: any[] = [];
   @Input() iPeriodoId: string = '0'; // Variable para almacenar el periodo seleccionado
   @Input() mostrarDialog: boolean = false;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
   //periodo array
-  periodos: any[] = [];
+
   cargarPeriodo: boolean = true;
   area_nombre: string = ''; // Variable para almacenar el área del curso seleccionado
   conversion: any[] = [
@@ -96,28 +97,28 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedItem']) {
-      if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
-        console.log(this.selectedItem, 'selectedItem');
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Mensaje del sistema',
-          detail: 'Se detecto cambios en información del estudiante',
-          life: 3000,
-        });
-      }
-      // this.filtrarArea();
-    }
+    // if (changes['selectedItem']) {
+    //   if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
+
+    //     this.messageService.add({
+    //       severity: 'warn',
+    //       summary: 'Mensaje del sistema',
+    //       detail: 'Se detecto cambios en información del estudiante',
+    //       life: 3000,
+    //     });
+    //   }
+    //   // this.filtrarArea();
+    // }
     if (changes['competencias']) {
       if (Array.isArray(this.competencias) && this.competencias.length > 0) {
         this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
 
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Mensaje del sistema',
-          detail: 'Se detecto cambios en información del competencias',
-          life: 3000,
-        });
+        // this.messageService.add({
+        //   severity: 'warn',
+        //   summary: 'Mensaje del sistema',
+        //   detail: 'Se detecto cambios en información del competencias',
+        //   life: 3000,
+        // });
       }
     }
   }
@@ -145,47 +146,12 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   cerrarDialog() {
     this.registraLogroAlcanzado.emit(false);
   }
-  /*
-  filtrarArea() {
-    let areas: any[] = [];
-  
-    try {
-      // Parsear el string a un array real
-      areas = JSON.parse(this.selectedItem?.json_cursos || '[]');
-    } catch (e) {
-      console.error('Error parseando json_cursos:', e);
-      return;
-    }
-  
-    // Filtrar por el curso seleccionado
-    const curso = areas.filter((item: any) =>
-      item.cCursoNombre === this.selectedItem.cCursoNombre
-    );
-  
-    console.log('Curso filtrado:', curso);
-  }*/
 
   finalizarRegistro() {
     this.registraLogroAlcanzado.emit(false);
     this.mostrarBotonFinalizar = false;
   }
 
-  guardarLogro() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Guardado',
-      detail: 'Guardado Exitosamente',
-      life: 3000,
-    });
-    const datosCompletos = {
-      estudiante: this.selectedItem,
-      matematica: this.competencias,
-    };
-
-    this.mostrarBotonFinalizar = true;
-
-    console.log('Datos a guardar:', datosCompletos);
-  }
   // BUSCADOR DE PAOLO EN FRONT
   buscarLogrosDelEstudiante(iMatriculaId: number) {
     this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({
@@ -209,108 +175,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       },
     });
   }
-  // Cargar periodos
-  cargarPeriodos() {
-    const iYAcadId = this.selectedItem?.iYAcadId;
-    const iSedeId = this.selectedItem?.iSedeId;
 
-    // Parámetros adicionales
-    const params = {
-      iSeccionId: this.selectedItem?.iSeccionId || null,
-      iNivelGradoId: this.selectedItem?.iNivelGradoId || null,
-      //agregando parametros necesitados y usados
-      //iYAcadId: this.selectedItem?.iYAcadId || null,
-      //iSedeId: this.selectedItem?.iSedeId || null
-    };
-
-    this.calendarioPeriodosService
-      .obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular(iYAcadId, iSedeId, params)
-      .subscribe({
-        next: response => {
-          console.log('Períodos obtenidos:', response);
-          if (response.validated && response.data) {
-            this.periodos = response.data;
-            // this.CompetenciasAPeriodos();
-          } else {
-            console.error('Respuesta inválida:', response.message);
-          }
-        },
-        error: error => {
-          console.error('Error al cargar períodos:', error);
-        },
-      });
-  }
-  onlyNumbers(event: any): void {
-    event.target.value = event.target.value.toUpperCase();
-  }
-  onlyLetras(event: any): void {
-    let value = event.target.value;
-    // Permite solo A, B, C o AD (cualquier otro carácter será eliminado)
-    if (!/^(A|B|C|AD)?$/.test(value)) {
-      value = value.replace(/[^ABC]/g, ''); // Elimina lo que no sea A, B o C
-    }
-  }
-
-  registrarLogro(
-    event: any,
-    campo: string,
-    iCompetenciaId: number,
-    iDetMatrId: number,
-    iPeriodoId: string
-  ) {
-    //this.nPromedio = parseFloat(this.nPromedio.toFixed(2));
-    const valor = event.target.value;
-    //this.iCredId
-    this._confirmService.openConfiSave({
-      message: 'Este registro se guardará automáticamente: ' + campo + ': ' + valor,
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        let json: any = {};
-        // Acción para eliminar el registro
-        switch (campo) {
-          case 'cDescripcion':
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(iDetMatrId ?? 0),
-              iCompetenciaId: Number(iCompetenciaId),
-              iPeriodoId: Number(iPeriodoId),
-              cDescripcion: valor,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, campo);
-            break;
-          case 'cNivelLogro':
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(iDetMatrId ?? 0),
-              iCompetenciaId: Number(iCompetenciaId),
-              iPeriodoId: Number(iPeriodoId),
-              cNivelLogro: valor,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, campo);
-            break;
-          case 'iResultado':
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(iDetMatrId ?? 0),
-              iCompetenciaId: Number(iCompetenciaId),
-              iPeriodoId: Number(iPeriodoId),
-              iResultado: valor,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, campo);
-            break;
-        }
-      },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail: 'Acción cancelada',
-        });
-      },
-    });
-  }
   insertarResultadoXcompetencias(json: any, iCredId: number, option: string) {
     this.ApiEvaluacionesService.insertarResultadoXcompetencias({
       json: JSON.stringify(json),
@@ -337,56 +202,158 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
     });
   }
 
-  getLogroPorValor(valor: number, periodo: string): void {
-    const rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
+  convertirLogroCompetencias(event: any, index: number, competencia: any) {
+    //this.nPromedio = parseFloat(this.nPromedio.toFixed(2));
 
-    switch (periodo) {
-      case '1':
-        this.cDetMatrConclusionDesc1 =
-          (this.selectedItem[0].cDetMatrConclusionDesc1 ?? '') +
-          ' ' +
-          (rango ? rango.descripcion : '');
-        this.iCalifIdPeriodo1 = rango ? rango.logro : '';
-        break;
-      case '2':
-        this.cDetMatrConclusionDesc2 =
-          (this.selectedItem[0].cDetMatrConclusionDesc2 ?? '') +
-          ' ' +
-          (rango ? rango.descripcion : '');
-        this.iCalifIdPeriodo1 = rango ? rango.logro : '';
-        break;
-      case '3':
-        this.cDetMatrConclusionDesc3 =
-          (this.selectedItem[0].cDetMatrConclusionDesc3 ?? '') +
-          ' ' +
-          (rango ? rango.descripcion : '');
-        this.iCalifIdPeriodo3 = rango ? rango.logro : '';
-        break;
-      case '4':
-        this.cDetMatrConclusionDesc4 =
-          (this.selectedItem[0].cDetMatrConclusionDesc4 ?? '') +
-          ' ' +
-          (rango ? rango.descripcion : '');
-        this.iCalifIdPeriodo4 = rango ? rango.logro : '';
-        break;
-      case '5':
-        this.cDetMatrConclusionDescPromedio =
-          (this.selectedItem[0].cDetMatrConclusionDescPromedio ?? '') +
-          ' ' +
-          (rango ? rango.descripcion : '');
-        this.iPromedio = rango ? rango.logro : '';
-        break;
-      default:
+    let json: any;
+    let valor: any;
+    let rango: any;
+
+    this._confirmService.openConfiSave({
+      message: 'Desea procesar el Nivel de logro',
+      header: 'Advertencia de  procesamiento',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        switch (this.iPeriodoId) {
+          case '1':
+            valor = this.competencias[index].iResultado_1;
+            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
+            //sctualizar
+            // this.competencias[index].cDescripcion_1 = (this.competencias[index].cDescripcion_1 ?? '') +
+            //   ' ' +  (rango ? rango.descripcion : '');
+            this.competencias[index].cNivelLogro_1 = rango ? rango.logro : '';
+            this.competencias[index].iResultado_1 = parseFloat(parseFloat(valor).toFixed(2));
+            //procesar
+            json = {
+              iResultadoCompId: 0,
+              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
+              iCompetenciaId: Number(competencia.iCompetenciaId),
+              iPeriodoId: Number(this.iPeriodoId),
+              iResultado: this.competencias[index].iResultado_1,
+              cNivelLogro: this.competencias[index].cNivelLogro_1,
+              cDescripcion: this.competencias[index].cDescripcion_1,
+            };
+            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
+            break;
+          case '2':
+            valor = this.competencias[index].iResultado_2;
+            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
+            // this.competencias[index].cDescripcion_2 = (this.competencias[index].cDescripcion_2 ?? '') +
+            //   ' ' +  (rango ? rango.descripcion : '');
+            this.competencias[index].cNivelLogro_2 = rango ? rango.logro : '';
+            this.competencias[index].iResultado_2 = parseFloat(parseFloat(valor).toFixed(2));
+            //procesar
+            json = {
+              iResultadoCompId: 0,
+              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
+              iCompetenciaId: Number(competencia.iCompetenciaId),
+              iPeriodoId: Number(this.iPeriodoId),
+              iResultado: this.competencias[index].iResultado_2,
+              cNivelLogro: this.competencias[index].cNivelLogro_2,
+              cDescripcion: this.competencias[index].cDescripcion_2,
+            };
+            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
+            break;
+
+          case '3':
+            valor = this.competencias[index].iResultado_3;
+            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
+            // this.competencias[index].cDescripcion_3 = (this.competencias[index].cDescripcion_3 ?? '') +
+            // ' ' +  (rango ? rango.descripcion : '');
+            this.competencias[index].cNivelLogro_3 = rango ? rango.logro : '';
+            this.competencias[index].iResultado_3 = parseFloat(parseFloat(valor).toFixed(2));
+            //procesar
+            json = {
+              iResultadoCompId: 0,
+              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
+              iCompetenciaId: Number(competencia.iCompetenciaId),
+              iPeriodoId: Number(this.iPeriodoId),
+              iResultado: this.competencias[index].iResultado_3,
+              cNivelLogro: this.competencias[index].cNivelLogro_3,
+              cDescripcion: this.competencias[index].cDescripcion_3,
+            };
+            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
+            break;
+
+          case '4':
+            valor = this.competencias[index].iResultado_4;
+            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
+            // this.competencias[index].cDescripcion_4 = (this.competencias[index].cDescripcion_4 ?? '') +
+            // ' ' +  (rango ? rango.descripcion : '');
+            this.competencias[index].cNivelLogro_4 = rango ? rango.logro : '';
+            this.competencias[index].iResultado_4 = parseFloat(parseFloat(valor).toFixed(2));
+            //procesar
+            json = {
+              iResultadoCompId: 0,
+              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
+              iCompetenciaId: Number(competencia.iCompetenciaId),
+              iPeriodoId: Number(this.iPeriodoId),
+              iResultado: this.competencias[index].iResultado_4,
+              cNivelLogro: this.competencias[index].cNivelLogro_4,
+              cDescripcion: this.competencias[index].cDescripcion_4,
+            };
+            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
+            break;
+
+          case '5':
+            valor = this.competencias[index].iResultado_5;
+            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
+            // this.competencias[index].cDescripcion_4 = (this.competencias[index].cDescripcion_4 ?? '') +
+            // ' ' +  (rango ? rango.descripcion : '');
+            this.competencias[index].cNivelLogro_5 = rango ? rango.logro : '';
+            this.competencias[index].iResultado_5 = parseFloat(parseFloat(valor).toFixed(2));
+            //procesar
+            json = {
+              iResultadoCompId: 0,
+              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
+              iCompetenciaId: Number(competencia.iCompetenciaId),
+              iPeriodoId: Number(this.iPeriodoId),
+              iResultado: this.competencias[index].iResultado_5,
+              cNivelLogro: this.competencias[index].cNivelLogro_5,
+              cDescripcion: this.competencias[index].cDescripcion_5,
+            };
+            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
+            break;
+        }
+      },
+      reject: () => {
+        // Mensaje de cancelación (opcional)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje de sistema',
+          detail: 'Acción cancelada',
+        });
+      },
+    });
+  }
+
+  actualizarResultadoXperiodoDetMatricula(json) {
+    this.ApiEvaluacionesService.actualizarResultadoXperiodoDetMatricula({
+      json: JSON.stringify(json),
+      iCredId: this.iCredId,
+    }).subscribe({
+      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
+      error: error => {
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje del sistema',
-          detail: 'El periodo seleccionado no es válido.',
+          detail: 'No se pudo guardar el logro.' + error.message,
           life: 3000,
         });
-        break;
-    }
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Logro guardado exitosamente.',
+          life: 3000,
+        });
+      },
+    });
   }
+}
 
+/*
   convertirLogro(campo: string, periodo: string): void {
     const mensaje = 'Este registro se guardará automáticamente: ' + campo + ': ' + this[campo];
 
@@ -440,8 +407,9 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       },
     });
   }
-
-  validarLogro(opcion: string) {
+*/
+/*  
+validarLogro(opcion: string) {
     let camposRequeridos = [];
     let json: any = {};
     let rango: any = {};
@@ -531,29 +499,4 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       console.log('Campos completos:', camposRequeridos, json);
     }
   }
-
-  actualizarResultadoXperiodoDetMatricula(json) {
-    this.ApiEvaluacionesService.actualizarResultadoXperiodoDetMatricula({
-      json: JSON.stringify(json),
-      iCredId: this.iCredId,
-    }).subscribe({
-      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'No se pudo guardar el logro.' + error.message,
-          life: 3000,
-        });
-      },
-      complete: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Logro guardado exitosamente.',
-          life: 3000,
-        });
-      },
-    });
-  }
-}
+*/

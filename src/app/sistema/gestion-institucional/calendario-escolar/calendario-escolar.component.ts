@@ -91,6 +91,8 @@ export class CalendarioEscolarComponent extends MostrarErrorComponent implements
 
   updateTab(event): void {
     this.tabSeleccionado = event.tab;
+    const index = this.tabs.findIndex(t => t.tab === event.tab);
+    this.selectTab = Number(index);
   }
 
   obtenerCalendarioAcademicos() {
@@ -195,10 +197,26 @@ export class CalendarioEscolarComponent extends MostrarErrorComponent implements
     });
   }
 
-  enviarFormulario() {
+  enviarFormulario(direccion: string) {
     switch (this.tabSeleccionado) {
       case 'configuracion':
         this.enviarConfiguracionInicial();
+        break;
+      case 'periodos':
+        if (direccion === 'atras') {
+          this.selectTab = 0;
+          this.tabSeleccionado = 'configuracion';
+        }
+        if (direccion === 'siguiente') {
+          this.selectTab = 2;
+          this.tabSeleccionado = 'resumen';
+        }
+        break;
+      case 'resumen':
+        if (direccion === 'atras') {
+          this.selectTab = 1;
+          this.tabSeleccionado = 'periodos';
+        }
         break;
     }
   }

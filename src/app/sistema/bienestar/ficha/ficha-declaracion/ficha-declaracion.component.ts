@@ -51,7 +51,7 @@ export class FichaDeclaracionComponent implements OnInit {
   ) {
     this.iPersId = this.route.snapshot.params['id'] || 0;
     this.perfil = this.store.getItem('dremoPerfil');
-    if (this.perfiles_permitidos.includes(this.perfil.iPerfilId)) {
+    if (this.perfiles_permitidos.includes(Number(this.perfil.iPerfilId))) {
       this.iPersId = Number(this.perfil.iPersId);
       this.router.navigate([`/bienestar/ficha-declaracion/${this.iPersId}`]);
     }

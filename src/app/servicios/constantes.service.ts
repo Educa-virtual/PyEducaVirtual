@@ -98,6 +98,11 @@ const docente = [
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
+            label: 'Ficha Socioeconomica',
+            icon: 'pi pi-fw pi-file-edit',
+            routerLink: ['/bienestar/ficha-declaracion'],
+          },
+          {
             label: 'Recordatorios de cumpleaños',
             icon: 'pi pi-fw pi-bell',
             routerLink: ['/bienestar/recordario-fechas'],
@@ -295,6 +300,37 @@ const jefe_programa = [
 const registro_asistencia = [
   {
     items: [inicio],
+  },
+  {
+    label: 'Bienestar Social',
+    icon: 'pi pi-fw pi-check-square',
+    items: [
+      {
+        label: 'Ficha Socioeconomica',
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: ['/bienestar/ficha-declaracion'],
+      },
+      {
+        label: 'Consultar Fichas Socioeconómicas',
+        icon: 'pi pi-fw pi-user-edit',
+        routerLink: ['/bienestar/gestion-fichas'],
+      },
+      {
+        label: 'Gestionar encuestas',
+        icon: 'pi pi-fw pi-list-check',
+        routerLink: ['/bienestar/gestionar-encuestas'],
+      },
+      {
+        label: 'Recordatorios de cumpleaños',
+        icon: 'pi pi-fw pi-bell',
+        routerLink: ['/bienestar/recordario-fechas'],
+      },
+      {
+        label: 'Informes y estadística',
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: ['/bienestar/informe-estadistico'],
+      },
+    ],
   },
   {
     label: 'Enlaces de ayuda',
@@ -525,6 +561,11 @@ const administracion = [
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
+            label: 'Ficha Socioeconomica',
+            icon: 'pi pi-fw pi-file-edit',
+            routerLink: ['/bienestar/ficha-declaracion'],
+          },
+          {
             label: 'Consultar Fichas Socioeconómicas',
             icon: 'pi pi-fw pi-user-edit',
             routerLink: ['/bienestar/gestion-fichas'],
@@ -645,6 +686,11 @@ const asistente_social = [
     label: 'Bienestar Social',
     icon: 'pi pi-fw pi-check-square',
     items: [
+      {
+        label: 'Ficha Socioeconomica',
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: ['/bienestar/ficha-declaracion'],
+      },
       {
         label: 'Consultar Fichas Socioeconómicas',
         icon: 'pi pi-fw pi-user-edit',

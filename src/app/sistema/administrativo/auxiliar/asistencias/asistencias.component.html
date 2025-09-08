@@ -70,16 +70,17 @@
               [value]="alumnos"
               [paginator]="true"
               [rows]="10"
-              [tableStyle]="{ 'min-width': '50rem' }"
+              class="w-full"
               [rowsPerPageOptions]="[5, 10, 20]"
             >
               <ng-template pTemplate="header">
                 <tr>
                   <th style="width: 5%">#</th>
                   <th style="width: 25%">Apellidos y Nombres</th>
-                  <th class="hidden md:table-cell" style="width: 25%">DNI</th>
-                  <th style="width: 15%">Asistencia</th>
-                  <th style="width: 25%">Justificacion</th>
+                  <th class="hidden md:table-cell">DNI</th>
+                  <th class="text-center">Asistencia</th>
+                  <th class="text-center">Justificacion</th>
+                  <th class="text-center">Documento</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
@@ -90,17 +91,28 @@
                   <td>
                     <p-button
                       size="small"
-                      styleClass="boton"
+                      styleClass="text-center boton"
                       (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
-                      ><span class="font-bold hidden md:table-cell w-100">{{
+                      ><span class="font-bold hidden md:table-cell">{{
                         alumno.cTipoAsiNombre
                       }}</span>
-                      <span class="font-bold table-cell md:hidden w-100">{{
-                        alumno.cTipoAsiLetra
-                      }}</span>
+                      <span class="font-bold table-cell md:hidden">{{ alumno.cTipoAsiLetra }}</span>
                     </p-button>
                   </td>
-                  <td></td>
+                  <td class="flex justify-content-center">
+                    <p-fileUpload
+                      #folder
+                      mode="basic"
+                      class="mr-1"
+                      [chooseLabel]="alumno.archivo?.name || 'Seleccionar archivo'"
+                      chooseIcon="pi pi-upload"
+                      name="archivo"
+                      accept="image/*"
+                      maxFileSize="1000000"
+                      (onSelect)="seleccionarFolder($event, alumno, folder)"
+                    />
+                  </td>
+                  <td>-</td>
                 </tr>
               </ng-template>
 

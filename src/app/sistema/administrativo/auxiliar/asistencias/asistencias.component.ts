@@ -38,7 +38,7 @@ export class AsistenciasComponent implements OnInit {
   aulas: any = [];
   datos: any = {};
   registro: any = [];
-  alumnos: any = [];
+  alumnos: any[] = [];
   estudiante: any = [];
   codigo: any = [];
   registrar: boolean = false;
@@ -141,7 +141,7 @@ export class AsistenciasComponent implements OnInit {
 
   // busca la lista de alumnos por grados y seccion
   buscarGrupo() {
-    if (this.datos.iGradoId && this.datos.iSeccionId) {
+    if (this.datos.iGradoId && this.datos.iSeccionId && this.datos.dtAsistencia) {
       this.finalizar = true;
 
       const enlace = {
@@ -181,7 +181,10 @@ export class AsistenciasComponent implements OnInit {
         },
       });
     } else {
-      this.mensajeError('Mensaje del sistema', 'Debes Seleccionar un Grado');
+      this.mensajeError(
+        'Mensaje del sistema',
+        'Debes Ingresar los Grado, Seccion y Fecha de Asistencia'
+      );
     }
   }
 
@@ -310,6 +313,8 @@ export class AsistenciasComponent implements OnInit {
   }
 
   guardarAsistenciaAula() {
+    console.log(this.alumnos);
+    /*
     const enlace = {
       petition: 'post',
       group: 'asi',
@@ -332,7 +337,7 @@ export class AsistenciasComponent implements OnInit {
         this.buscarGrupo();
         this.mensajeError('Mensaje del sistema', 'Error al guardar asistencia');
       },
-    });
+    });*/
   }
 
   guardarAsistencia() {
@@ -431,8 +436,16 @@ export class AsistenciasComponent implements OnInit {
     this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
   }
   camaraEncontrada() {
-    console.log('camara encontrada');
     this.progreso = false;
-    console.log(this.progreso);
+  }
+  seleccionarFolder(event: any, alumno: any, fileUpload: any) {
+    fileUpload.clear();
+    const archivo = event.files[0];
+    if (archivo) {
+      alumno.cJustificar = archivo;
+      // Limpia el fileUpload para permitir volver a subir el mismo archivo
+    } else {
+      fileUpload.name = archivo.name[0];
+    }
   }
 }

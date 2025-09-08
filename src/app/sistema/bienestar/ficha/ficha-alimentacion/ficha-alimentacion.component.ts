@@ -10,6 +10,8 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component';
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { ESTUDIANTE, APODERADO } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-alimentacion',
@@ -33,6 +35,10 @@ export class FichaAlimentacionComponent implements OnInit {
   visibleAdicionalInput: Array<boolean>;
   ficha_registrada: boolean = false;
 
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabeLs: any;
+
   private _messageService = inject(MessageService);
 
   constructor(
@@ -41,15 +47,18 @@ export class FichaAlimentacionComponent implements OnInit {
     private datosFichaBienestar: DatosFichaBienestarService,
     private router: Router,
     private route: ActivatedRoute,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(4);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
   }
 
   ngOnInit() {
@@ -90,6 +99,15 @@ export class FichaAlimentacionComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error inicializando formulario');
     }
+
+    this.formLabeLs = {
+      seccion2: this.es_estudiante_apoderado
+        ? 'Lugar de alimentación del estudiante durante la semana'
+        : 'Lugar dónde se alimenta durante la semana',
+      seccion3: this.es_estudiante_apoderado
+        ? 'Información alimenticia adicional sobre el estudiante'
+        : 'Información alimenticia adicional',
+    };
 
     if (this.iFichaDGId) {
       this.verFichaAlimentacion();

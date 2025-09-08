@@ -11,6 +11,8 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
 import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-recreacion',
@@ -40,6 +42,10 @@ export class FichaRecreacionComponent implements OnInit {
   relacion_familia: Array<any> = [];
   estados_relacion: Array<any> = [];
 
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabels: any;
+
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
 
@@ -49,15 +55,18 @@ export class FichaRecreacionComponent implements OnInit {
     private datosFichaBienestar: DatosFichaBienestarService,
     private router: Router,
     private route: ActivatedRoute,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(7);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
   }
 
   ngOnInit() {
@@ -87,6 +96,15 @@ export class FichaRecreacionComponent implements OnInit {
       jsonProblemas: [null],
       jsonTransportes: [null],
     });
+
+    this.formLabels = {
+      bFichaDGAsistioConsultaPsicologica: this.es_estudiante_apoderado
+        ? '¿El estudiante recibe atención psicológica?'
+        : '¿Usted recibe atención psicológica?',
+      iEstadoRelFamiliar: this.es_estudiante_apoderado
+        ? '¿Cómo es la relación del estudiante con su familia?'
+        : '¿Cómo es su relación con su familia?',
+    };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
       this.deportes = this.datosFichaBienestar.getDeportes(data?.deportes);

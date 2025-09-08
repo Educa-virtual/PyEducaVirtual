@@ -11,6 +11,8 @@ import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-s
 import { SwitchSimpleComponent } from '../../shared/switch-simple/switch-simple.component';
 import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component';
 import { FuncionesBienestarService } from '../../../services/funciones-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-familia-registro',
@@ -54,6 +56,10 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
   fecha_actual: Date = new Date();
   ver_controles_direccion: boolean = true;
 
+  perfil: any;
+  formLabeLs: any;
+  es_estudiante_apoderado: boolean = false;
+
   private _messageService = inject(MessageService); // dialog Mensaje simple
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
 
@@ -62,14 +68,17 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     private datosFichaBienestar: DatosFichaBienestarService,
     private funcionesBienestar: FuncionesBienestarService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: LocalStoreService
   ) {
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
+    this.perfil = this.store.getItem('dremoPerfil');
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
   }
 
   ngOnInit(): void {
@@ -89,6 +98,12 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       );
       this.tipos_ies = this.datosFichaBienestar.getTiposIes(data?.tipos_ies);
     });
+
+    this.formLabeLs = {
+      bFamiliarVivoConEl: this.es_estudiante_apoderado
+        ? '¿Vive en la misma dirección del estudiante?'
+        : '¿Vive en la misma dirección?',
+    };
 
     try {
       this.formFamiliar = this.fb.group({

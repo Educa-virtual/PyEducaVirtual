@@ -20,7 +20,9 @@
       <ng-template pTemplate="header">
         <span class="text-uppercase">
           <div class="flex flex-column">
-            <div class="flex text-xl">¿El apoderado tiene trabajo?</div>
+            <div class="flex text-xl">
+              ¿El(a) {{ es_estudiante_apoderado ? 'apoderado(a)' : 'jefe del hogar' }} trabaja?
+            </div>
           </div>
         </span>
       </ng-template>
@@ -34,7 +36,10 @@
       <ng-template pTemplate="header">
         <span class="text-uppercase">
           <div class="flex flex-column">
-            <div class="flex text-xl">¿El apoderado recibe apoyo económico?</div>
+            <div class="flex text-xl">
+              ¿El(a) {{ es_estudiante_apoderado ? 'apoderado(a)' : 'jefe del hogar' }} recibe algún
+              apoyo económico?
+            </div>
           </div>
         </span>
       </ng-template>
@@ -48,7 +53,10 @@
       <ng-template pTemplate="header">
         <span class="text-uppercase">
           <div class="flex flex-column">
-            <div class="flex text-xl">¿De quién depende económicamente el apoderado?</div>
+            <div class="flex text-xl">
+              ¿De quién depende económicamente el(a)
+              {{ es_estudiante_apoderado ? 'apoderado(a)' : 'jefe del hogar' }}?
+            </div>
           </div>
         </span>
       </ng-template>
@@ -62,7 +70,10 @@
       <ng-template pTemplate="header">
         <span class="text-uppercase">
           <div class="flex flex-column">
-            <div class="flex text-xl">Jornada laboral de apoderado</div>
+            <div class="flex text-xl">
+              Jornada laboral del(a)
+              {{ es_estudiante_apoderado ? 'apoderado(a)' : 'jefe del hogar' }}
+            </div>
           </div>
         </span>
       </ng-template>

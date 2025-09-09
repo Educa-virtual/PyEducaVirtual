@@ -43,11 +43,13 @@ export class AsistenciasComponent implements OnInit {
   codigo: any = [];
   registrar: boolean = false;
   visible: boolean = false;
+  visibleJusticar: boolean = false;
   finalizar: boolean = false;
   scanner: boolean = false;
   progreso: boolean = false;
   registrarEstudiante: boolean = false;
   temporal: any = [];
+  archivos: any = [];
   tipoAsistencia = [
     {
       iTipoAsiId: '1',
@@ -189,7 +191,7 @@ export class AsistenciasComponent implements OnInit {
   }
 
   buscarCodigo() {
-    if (this.datos.cEstCodigo || this.datos.cPersDocumento) {
+    if ((this.datos.cEstCodigo || this.datos.cPersDocumento) & this.datos.dtAsistencia) {
       const enlace = {
         petition: 'post',
         group: 'asi',
@@ -225,6 +227,8 @@ export class AsistenciasComponent implements OnInit {
           this.registrarEstudiante = true;
         },
       });
+    } else {
+      this.mensajeError('Mensaje del sistema', 'Debes Ingresar los Datos Solicitados');
     }
   }
   escaner(qr: string) {
@@ -312,23 +316,41 @@ export class AsistenciasComponent implements OnInit {
     });
   }
 
+  formatoFecha(fecha: any) {
+    const f = new Date(fecha);
+    const year = f.getFullYear();
+    const mes = String(f.getMonth() + 1).padStart(2, '0');
+    const dia = String(f.getDate()).padStart(2, '0');
+    const hora = String(f.getHours()).padStart(2, '0');
+    const minuto = String(f.getMinutes()).padStart(2, '0');
+    const segundo = String(f.getSeconds()).padStart(2, '0');
+
+    return `${year}-${mes}-${dia}T${hora}:${minuto}:${segundo}`;
+  }
+
   guardarAsistenciaAula() {
-    console.log(this.alumnos);
-    /*
+    const enviar = new FormData();
+    enviar.append('asistencia', JSON.stringify(this.alumnos));
+    enviar.append('iPersId', this.dremoPerfil.iPersId);
+    enviar.append('iSedeId', this.dremoPerfil.iSedeId);
+    enviar.append('iYAcadId', this.dremoiYAcadId);
+    enviar.append('dtAsistencia', this.formatoFecha(this.datos.dtAsistencia));
+
+    this.alumnos.forEach((item: any, index: number) => {
+      if (item.subir) {
+        enviar.append(`archivos[${index}]`, item.subir);
+      }
+    });
+
     const enlace = {
       petition: 'post',
       group: 'asi',
       prefix: 'grupos',
       ruta: 'guardar-asistencia-aula',
-      data: {
-        asistencia: JSON.stringify(this.alumnos),
-        dtAsistencia: this.datos.dtAsistencia,
-        iSedeId: this.dremoPerfil.iSedeId,
-        iYAcadId: this.dremoiYAcadId,
-      },
+      data: enviar,
     };
 
-    this.servicioGeneral.getRecibirDatos(enlace).subscribe({
+    this.servicioGeneral.getMultipleMedia(enlace).subscribe({
       next: () => {
         this.buscarGrupo();
         this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
@@ -337,26 +359,29 @@ export class AsistenciasComponent implements OnInit {
         this.buscarGrupo();
         this.mensajeError('Mensaje del sistema', 'Error al guardar asistencia');
       },
-    });*/
+    });
   }
 
   guardarAsistencia() {
+    const enviar = new FormData();
+    enviar.append('iMatrId', this.estudiante[0].iMatrId);
+    enviar.append('iEstudianteId', this.estudiante[0].iEstudianteId);
+    enviar.append('iNivelGradoId', this.estudiante[0].iNivelGradoId);
+    enviar.append('iTipoAsiId', this.estudiante[0].iTipoAsiId);
+    enviar.append('iSeccionId', this.estudiante[0].iSeccionId);
+    enviar.append('iSedeId', this.dremoPerfil.iSedeId);
+    enviar.append('iYAcadId', this.dremoiYAcadId);
+    enviar.append('dtAsistencia', this.formatoFecha(this.datos.dtAsistencia));
+    enviar.append('idAsistencia', this.estudiante[0].idAsistencia);
+    enviar.append('iPersId', this.dremoPerfil.iPersId);
+    enviar.append(`archivos`, this.estudiante[0].subir);
+
     const enlace = {
       petition: 'post',
       group: 'asi',
       prefix: 'grupos',
       ruta: 'guardar-asistencia',
-      data: {
-        iMatrId: this.estudiante[0].iMatrId,
-        iEstudianteId: this.estudiante[0].iEstudianteId,
-        iNivelGradoId: this.estudiante[0].iNivelGradoId,
-        iTipoAsiId: this.estudiante[0].iTipoAsiId,
-        iSeccionId: this.estudiante[0].iSeccionId,
-        iSedeId: this.dremoPerfil.iSedeId,
-        iYAcadId: this.dremoiYAcadId,
-        dtAsistencia: this.datos.dtAsistencia,
-        idAsistencia: this.estudiante[0].idAsistencia,
-      },
+      data: enviar,
     };
 
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
@@ -438,14 +463,44 @@ export class AsistenciasComponent implements OnInit {
   camaraEncontrada() {
     this.progreso = false;
   }
-  seleccionarFolder(event: any, alumno: any, fileUpload: any) {
-    fileUpload.clear();
+  seleccionarFolder(event: any, seleccionado: any, fileUpload: any) {
     const archivo = event.files[0];
     if (archivo) {
-      alumno.cJustificar = archivo;
-      // Limpia el fileUpload para permitir volver a subir el mismo archivo
-    } else {
+      seleccionado.subir = archivo;
       fileUpload.name = archivo.name[0];
     }
+  }
+  limpiar(fileUpload: any) {
+    fileUpload.clear();
+  }
+  descargarArchivo(archivo: any) {
+    const params = {
+      petition: 'post',
+      group: 'asi',
+      prefix: 'asistencia',
+      ruta: 'descargar-justificacion',
+      data: {
+        cJustificar: archivo,
+      },
+    };
+
+    this.servicioGeneral.getRecibirMultimedia(params).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.click();
+      },
+      error: error => {
+        console.error('Error obteniendo encuesta:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 }

@@ -33,6 +33,9 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
   periodos: any = [];
   isLoading: boolean = false;
   label: string = 'Periodo';
+  iPeriodoEvalId: string | number;
+  respaldoPeriodos: any = [];
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']?.currentValue) {
       this.data = changes['data'].currentValue;
@@ -45,7 +48,7 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
       if (this.data.iPeriodoEvalId === '3') {
         this.label = 'Bimestre';
       }
-      if (this.data.jsonRegular?.length > 0 || this.data.jsonRecuperacion?.length > 0) {
+      if (this.data.jsonRegular?.length > 0) {
         this.periodos = [];
 
         if (this.data.jsonRegular?.length > 0) {
@@ -69,10 +72,27 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
               dtFaseFinRecuperacion: new Date(this.data.dtFaseFinRecuperacion),
             });
           });
+        } else {
+          this.periodos.push({
+            iPeriodoEvalAperId: null,
+            iFaseId: null,
+            dtPeriodoEvalAperFin: this.data.dtFaseFinRecuperacion
+              ? new Date(this.data.dtFaseFinRecuperacion)
+              : new Date(),
+            dtPeriodoEvalAperInicio: this.data.dtFaseInicioRecuperacion
+              ? new Date(this.data.dtFaseInicioRecuperacion)
+              : new Date(),
+            cFase: `RECUPERACIÓN`,
+            cPeriodo: 'Vacacional',
+            bHabilitado: 1,
+            iFasePromId: 2,
+          });
         }
+        this.respaldoPeriodos = this.periodos;
       } else {
         this.generarPeriodos();
       }
+      this.iPeriodoEvalId = this.data.iPeriodoEvalId;
     }
     if (changes['tiposPeriodos']?.currentValue) {
       this.tiposPeriodos = changes['tiposPeriodos'].currentValue;
@@ -321,5 +341,10 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
           this.mostrarErrores(error);
         },
       });
+  }
+
+  restablecerCalendarioPeriodosEvaluaciones() {
+    this.data.iPeriodoEvalId = this.iPeriodoEvalId;
+    this.periodos = this.respaldoPeriodos;
   }
 }

@@ -157,4 +157,18 @@ export class ConfigurarTurnosComponent extends MostrarErrorComponent implements 
     if (!fecha) return null;
     return fecha.toTimeString().slice(0, 5); // Ejemplo: "13:45"
   }
+
+  get diasInhabilitados(): string {
+    const dias = this.horarios
+      .filter((dia: any) => dia.iSeleccionadoHorario === 1) // deshabilitados
+      .map((dia: any) => dia.cDiaNombre);
+
+    if (dias.length === 0) return '';
+
+    // Texto final: "lunes, martes y miércoles"
+    const listaDias =
+      dias.length > 1 ? dias.slice(0, -1).join(', ') + ' y ' + dias[dias.length - 1] : dias[0];
+
+    return `Los días ${listaDias} están inhabilitados porque ya tienen asignadas asignaturas en los horarios de la I.E.`;
+  }
 }

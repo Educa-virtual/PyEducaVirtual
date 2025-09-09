@@ -7,13 +7,14 @@
 >
   <div class="card relative mt-5">
     <samp class="btn-label-days">Seleccionar los días.</samp>
-
-    <div class="flex flex-wrap gap-2 justify-content-center my-1">
+    <p-tag *ngIf="diasInhabilitados" [severity]="'warning'" [value]="diasInhabilitados"></p-tag>
+    <div class="flex flex-wrap gap-2 justify-content-center my-1 pt-2">
       <p-button
         *ngFor="let dia of horarios; let i = index"
         [label]="dia.cDiaNombre"
         [severity]="dia.iDiaSeleccionado ? 'primary' : 'contrast'"
         [class.custom-secondary]="dia.iDiaSeleccionado !== 1"
+        [disabled]="dia.iSeleccionadoHorario === 1"
         (click)="dia.iDiaSeleccionado = dia.iDiaSeleccionado === 1 ? 0 : 1"
       />
     </div>

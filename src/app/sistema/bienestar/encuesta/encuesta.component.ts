@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { DatosEncuestaService } from '../services/datos-encuesta.service';
@@ -34,6 +34,7 @@ export class EncuestaComponent implements OnInit {
   ultima_fecha_anio: Date = new Date(new Date().getFullYear(), 11, 31);
   fecha_actual: Date = new Date();
   es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   formEncuesta: FormGroup;
   formPoblacion: FormGroup;
@@ -78,15 +79,22 @@ export class EncuestaComponent implements OnInit {
     private funcionesBienestar: FuncionesBienestarService,
     private store: LocalStoreService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cf: ChangeDetectorRef
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId);
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.id || null;
     });
     this.breadCrumbItems = [
+      {
+        label: 'Bienestar social',
+      },
       {
         label: 'Gestionar encuestas',
         routerLink: '/bienestar/gestionar-encuestas',
@@ -160,13 +168,16 @@ export class EncuestaComponent implements OnInit {
         this.sexos = this.datosEncuestas.getSexos();
         this.estados = this.datosEncuestas.getEstados();
         this.datosEncuestas.getNivelesGrados(data?.nivel_grados);
-        if (!this.es_especialista) {
-          const nivel_tipo =
-            this.nivel_tipos && this.nivel_tipos.length > 0 ? this.nivel_tipos[0]['value'] : null;
-          const ie = this.ies && this.ies.length > 0 ? this.ies[0]['value'] : null;
+        if (this.nivel_tipos && this.nivel_tipos.length == 1) {
+          const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formPoblacion.get('iNivelTipoId')?.setValue(nivel_tipo);
           this.filterNivelesGrados(nivel_tipo);
-          this.formPoblacion.get('iIieeId')?.setValue(ie);
+          this.filterInstitucionesEducativas();
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          const ugel = this.ugeles[0]['value'];
+          this.formPoblacion.get('iUgelId')?.setValue(ugel);
+          this.filterInstitucionesEducativas();
         }
       });
 
@@ -176,28 +187,23 @@ export class EncuestaComponent implements OnInit {
       this.filterNivelesGrados(value);
 
       this.formPoblacion.get('iIieeId')?.setValue(null);
-      this.ies = null;
       this.filterInstitucionesEducativas();
     });
     this.formPoblacion.get('iDsttId').valueChanges.subscribe(() => {
       this.formPoblacion.get('iIieeId')?.setValue(null);
-      this.ies = null;
       this.filterInstitucionesEducativas();
     });
     this.formPoblacion.get('iZonaId').valueChanges.subscribe(() => {
       this.formPoblacion.get('iIieeId')?.setValue(null);
-      this.ies = null;
       this.filterInstitucionesEducativas();
     });
     this.formPoblacion.get('iTipoSectorId').valueChanges.subscribe(() => {
       this.formPoblacion.get('iIieeId')?.setValue(null);
-      this.ies = null;
       this.filterInstitucionesEducativas();
     });
     this.formPoblacion.get('iUgelId').valueChanges.subscribe(value => {
       this.formPoblacion.get('iDsttId')?.setValue(null);
       this.formPoblacion.get('iIieeId')?.setValue(null);
-      this.ies = null;
       this.distritos = null;
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
@@ -223,6 +229,7 @@ export class EncuestaComponent implements OnInit {
   }
 
   filterInstitucionesEducativas() {
+    this.ies = null;
     const iNivelTipoId = this.formPoblacion.get('iNivelTipoId')?.value;
     const iDsttId = this.formPoblacion.get('iDsttId')?.value;
     const iZonaId = this.formPoblacion.get('iZonaId')?.value;
@@ -235,6 +242,9 @@ export class EncuestaComponent implements OnInit {
       iTipoSectorId,
       iUgelId
     );
+    if (this.ies && this.ies.length === 1) {
+      this.formPoblacion.get('iIieeId')?.setValue(this.ies[0]['value']);
+    }
   }
 
   verEncuesta() {
@@ -358,7 +368,7 @@ export class EncuestaComponent implements OnInit {
     poblacion = poblacion.filter((item: any) => item != null);
     this.formPoblacion.get('poblacion')?.setValue(poblacion.join(', '));
     this.formEncuesta.get('poblacion')?.setValue(poblacion);
-    this.formPoblacion.get('iEncuPobId')?.setValue(item ? item.iEncuPobId : new Date().getTime());
+    this.formPoblacion.get('iEncuPobId')?.setValue(item.iEncuPobId ?? new Date().getTime());
   }
 
   actualizarPermisos(item: any) {
@@ -366,7 +376,7 @@ export class EncuestaComponent implements OnInit {
     const opcion: any = this.opciones.find((opcion: any) => opcion.value == item.iEncuOpcId);
     this.formPermisos.get('cPerfilNombre')?.setValue(perfil ? perfil.label : '');
     this.formPermisos.get('cEncuOpcNombre')?.setValue(opcion ? opcion.label : '');
-    this.formPermisos.get('iEncuPermId')?.setValue(item ? item.iEncuPermId : new Date().getTime());
+    this.formPermisos.get('iEncuPermId')?.setValue(item.iEncuPermId ?? new Date().getTime());
   }
 
   guardarEncuesta() {
@@ -502,16 +512,16 @@ export class EncuestaComponent implements OnInit {
       return;
     }
     const duplicados = this.poblacion.filter(
-      (item: any) =>
-        item.iNivelTipoId === this.formPoblacion.value.iNivelTipoId &&
-        item.iTipoSectorId === this.formPoblacion.value.iTipoSectorId &&
-        item.iZonaId === this.formPoblacion.value.iZonaId &&
-        item.iUgelId === this.formPoblacion.value.iUgelId &&
-        item.iDsttId === this.formPoblacion.value.iDsttId &&
-        item.iIieeId === this.formPoblacion.value.iIieeId &&
-        item.iNivelGradoId === this.formPoblacion.value.iNivelGradoId &&
-        item.iSeccionId === this.formPoblacion.value.iSeccionId &&
-        item.cPersSexo === this.formPoblacion.value.cPersSexo
+      (pob: any) =>
+        Number(pob.iNivelTipoId) === Number(this.formPoblacion.value.iNivelTipoId) &&
+        Number(pob.iTipoSectorId) === Number(this.formPoblacion.value.iTipoSectorId) &&
+        Number(pob.iZonaId) === Number(this.formPoblacion.value.iZonaId) &&
+        Number(pob.iUgelId) === Number(this.formPoblacion.value.iUgelId) &&
+        Number(pob.iDsttId) === Number(this.formPoblacion.value.iDsttId) &&
+        Number(pob.iIieeId) === Number(this.formPoblacion.value.iIieeId) &&
+        Number(pob.iNivelGradoId) === Number(this.formPoblacion.value.iNivelGradoId) &&
+        Number(pob.iSeccionId) === Number(this.formPoblacion.value.iSeccionId) &&
+        Number(pob.cPersSexo) === Number(this.formPoblacion.value.cPersSexo)
     );
     if (duplicados.length) {
       this.funcionesBienestar.formMarkAsDirty(this.formPoblacion);
@@ -527,11 +537,9 @@ export class EncuestaComponent implements OnInit {
     this.poblacion = [...this.poblacion, form];
     this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
     this.formPoblacion.reset();
-    if (!this.es_especialista && this.nivel_tipos && this.ies) {
+    if (!this.es_especialista && this.nivel_tipos) {
       this.formPoblacion.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
-      this.formPoblacion.get('iIieeId')?.setValue(this.ies[0]['value']);
     }
-
     this.obtenerPoblacionObjetivo();
   }
 

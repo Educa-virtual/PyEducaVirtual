@@ -1,0 +1,17 @@
+<app-toolbar-primeng title="Calendario"></app-toolbar-primeng>
+<div style="max-width: 500px">
+  <p-inputGroup class="mb-2 mt-2">
+    <p-inputGroupAddon class="mi-addon-primary"> Año académico </p-inputGroupAddon>
+    <input pInputText [value]="textoAnioAcademico" disabled class="input-disabled" />
+  </p-inputGroup>
+</div>
+<app-full-calendario
+  [curricula]="curricula"
+  [events]="events"
+  [festividades]="festividades"
+  [actividades]="actividades"
+  (filtrarFestividad)="filterFestividad($event)"
+  (filtrarCalendario)="filterCurso($event)"
+  (filtrarActividad)="filterActividad($event)"
+>
+</app-full-calendario>

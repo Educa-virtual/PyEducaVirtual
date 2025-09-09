@@ -1,25 +1,69 @@
-import { ESTUDIANTE } from '@/app/servicios/seg/perfiles'
-import { RoleGuard } from '@/app/shared/_guards/role.guard'
-import { Routes } from '@angular/router'
-import { BuzonSugerenciasComponent } from './buzon-sugerencias/buzon-sugerencias.component'
+import { ESTUDIANTE } from '@/app/servicios/seg/perfiles';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { Routes } from '@angular/router';
+import { HorarioComponent } from './horario/horario.component';
+import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso/reporte-progreso.component';
+import { ReporteAcademicoComponent } from './reportes-academicos/reporte-academico/reporte-academico.component';
+import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/resultados-ere.component';
+import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
 
 const routes: Routes = [
-    {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
+  },
+  {
+    path: 'horario',
+    component: HorarioComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'horario',
+      icon: 'pi pi-share-alt',
     },
-    {
-        path: 'buzon-sugerencias',
-        component: BuzonSugerenciasComponent,
-        canActivate: [RoleGuard],
-        data: {
-            expectedRole: [ESTUDIANTE],
-            breadcrumb: 'Áreas Examen',
-            icon: 'pi pi-share-alt',
-        },
+  },
+  {
+    path: 'calendario',
+    component: CalendarioComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'calendario',
+      icon: 'pi pi-share-alt',
     },
-]
+  },
+  {
+    path: 'reportes-academicos/progreso',
+    component: ReporteProgresoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Progreso',
+      icon: 'pi pi-share-alt',
+    },
+  },
+  {
+    path: 'reportes-academicos/academico',
+    component: ReporteAcademicoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Academico',
+      icon: 'pi pi-chart-bar',
+    },
+  },
+  {
+    path: 'reportes-academicos/resultados-ere',
+    component: ResultadosEreComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Resultados ERE',
+      icon: 'pi pi-chart-bar',
+    },
+  },
+];
 
 export class AppRoutingModule {}
-export default routes
+export default routes;

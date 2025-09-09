@@ -1,33 +1,50 @@
-<div class="login d-flex justify-content-center align-items-center">
+<app-header></app-header>
+
+<div class="login d-flex justify-content-center align-items-center pt-1">
   <div class="login__banner">
     <img src="assets/images/logins.svg" alt="logo" width="100%" />
   </div>
   <div class="login__form">
     <div class="p-4">
-      <div class="login_card">
-        <div class="p-4 border-1 border-round-2xl border-gray-300">
-          <div class="text-center">
-            <h4 class="text-center mb-4 text-danger">
-              <b>Dirección Regional de Educación Moquegua</b>
-            </h4>
-            <img src="assets/images/dremo.png" alt="logo" class="logo_dremo" />
+      <div class="login_card card relative">
+        <div class="btn-group">
+          <button
+            class="btn-blue"
+            [class.active]="activeForm === 'login'"
+            (click)="switchForm('login')"
+          >
+            Ingresar
+          </button>
+          <button
+            class="btn-red"
+            [class.active]="activeForm === 'register'"
+            (click)="switchForm('register')"
+          >
+            Solicitar Registro
+          </button>
+        </div>
+
+        <div class="p-4 form-content" *ngIf="activeForm === 'login'">
+          <div class="text-center mt-1">
+            <img src="assets/images/logo-proyecto.png" alt="logo" class="logo_dremo" />
           </div>
-          <!-- <h5 class="text-center"><b>Proyecto Virtual</b></h5> -->
-          <h5 class="text-center text-primary">Iniciar Sesión</h5>
-          <form class="flex flex-column" [formGroup]="formLogin">
-            <div class="mb-3 flex flex-column gap-2">
-              <label for="usuario">Usuario</label>
+          <div class="text-center mb-4 mt-2 text-sm">
+            Ingrese su <b>Usuario</b> y <b>Contraseña.</b><br />
+            (si no lo tiene, solicite uno en el Registro)
+          </div>
+
+          <form class="flex flex-column mt-1" [formGroup]="formLogin">
+            <div class="mb-3 flex flex-column gap-2 mt-2">
               <input
                 type="text"
                 pInputText
-                placeholder="Ingresar su Usuario"
+                placeholder="Usuario"
                 name="usuario"
                 formControlName="user"
               />
             </div>
 
-            <div class="mb-5 flex flex-column gap-2">
-              <label for="clave">Contraseña</label>
+            <div class="mb-5 flex flex-column gap-2 mt-2">
               <div class="flex">
                 <input
                   pInputText
@@ -52,16 +69,54 @@
             </div>
             <p class="small" align="center">
               <p-button class="text-primary" (onClick)="showModal = true" [text]="true"
-                >¿Has olvidado tu contraseña? / ¿Contraseña vencida?</p-button
+                >¿Has olvidado tu contraseña?<br />
+                ¿Contraseña vencida?</p-button
               >
             </p>
             <button
               pButton
+              class="btn-submit"
+              severity="success"
               size="small"
               label="Iniciar Sesión"
               [loading]="loading"
               (click)="onSubmit()"
               [disabled]="this.formLogin.invalid"
+            ></button>
+          </form>
+        </div>
+
+        <div class="p-4" *ngIf="activeForm === 'register'">
+          <div class="text-center mt-1">
+            <img src="assets/images/logo-proyecto.png" alt="logo" class="logo_dremo" />
+          </div>
+          <div class="text-center mb-4 mt-2 text-sm">
+            Registre sus datos para solicitar el <b>Ingreso a la Plataforma</b>
+          </div>
+
+          <form class="flex flex-column mt-1">
+            <div class="mb-3 flex flex-column gap-2 mt-2">
+              <input type="text" pInputText placeholder="DNI" name="documento" />
+            </div>
+            <div class="mb-3 flex flex-column gap-2 mt-2">
+              <input type="text" pInputText placeholder="Nombre Completo" name="nombre" />
+            </div>
+            <div class="mb-3 flex flex-column gap-2 mt-2">
+              <input type="text" pInputText placeholder="Cód. Modular" name="codmodular" />
+            </div>
+            <div class="mb-3 flex flex-column gap-2 mt-2">
+              <input type="text" pInputText placeholder="Cargo" name="cargo" />
+            </div>
+            <div class="mb-5 flex flex-column gap-2 mt-2">
+              <input type="text" pInputText placeholder="Correo Personal" name="correo" />
+            </div>
+            <button
+              pButton
+              class="btn-submit"
+              severity="success"
+              size="small"
+              label="Solicitar"
+              disabled
             ></button>
           </form>
         </div>

@@ -29,7 +29,7 @@
         />
       </p-inputGroup>
     </div>
-    <div class="field col-12 md:col-4">
+    <div class="field col-12 md:col-2">
       <button
         pButton
         pRipple
@@ -54,12 +54,19 @@
   } @else {
     <div class="grid p-fluid mt-3">
       <div *ngFor="let grafico of graficos" class="col-12 md:col-6">
-        <p-chart
-          type="bar"
-          [data]="grafico.data"
-          [options]="grafico.options"
-          [plugins]="grafico.plugins"
-        ></p-chart>
+        @if (grafico.data.datasets[0].data.length === 0) {
+          <div class="text-center mt-3">
+            <p style="font-size: 18px" [innerHTML]="grafico.data.datasets[0].label"></p>
+            <p>(No hay resultados ingresados)</p>
+          </div>
+        } @else {
+          <p-chart
+            type="bar"
+            [data]="grafico.data"
+            [options]="grafico.options"
+            [plugins]="grafico.plugins"
+          ></p-chart>
+        }
       </div>
     </div>
   }

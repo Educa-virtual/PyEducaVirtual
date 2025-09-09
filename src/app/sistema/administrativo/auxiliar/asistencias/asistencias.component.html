@@ -282,7 +282,7 @@
               (camerasFound)="camaraEncontrada()"
             >
             </zxing-scanner>
-            <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="scanner" />
+            <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
           </div>
           <div class="col-6 card">
             <div class="col-12">
@@ -291,7 +291,7 @@
                 severity="success"
                 label="Registrar"
                 icon="pi pi-qrcode"
-                (click)="scanner = !scanner; progreso = true"
+                (click)="scanner = !scanner; progreso = true; estado = true"
               ></p-button>
             </div>
             <p-table

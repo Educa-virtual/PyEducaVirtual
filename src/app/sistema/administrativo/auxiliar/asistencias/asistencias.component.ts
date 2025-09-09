@@ -48,6 +48,7 @@ export class AsistenciasComponent implements OnInit {
   scanner: boolean = false;
   progreso: boolean = false;
   registrarEstudiante: boolean = false;
+  estado: boolean = false;
   temporal: any = [];
   archivos: any = [];
   tipoAsistencia = [
@@ -232,7 +233,6 @@ export class AsistenciasComponent implements OnInit {
     }
   }
   escaner(qr: string) {
-    this.scanner = false;
     const extraer = qr.split('|');
     if (extraer.length > 0) {
       this.visible = true;
@@ -461,6 +461,7 @@ export class AsistenciasComponent implements OnInit {
     this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
   }
   camaraEncontrada() {
+    this.estado = false;
     this.progreso = false;
   }
   seleccionarFolder(event: any, seleccionado: any, fileUpload: any) {

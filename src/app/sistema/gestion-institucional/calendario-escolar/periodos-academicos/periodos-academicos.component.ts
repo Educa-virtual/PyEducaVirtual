@@ -39,13 +39,15 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']?.currentValue) {
       this.data = changes['data'].currentValue;
-      if (this.data.iPeriodoEvalId === '1') {
+      this.iPeriodoEvalId = this.data?.iPeriodoEvalId;
+
+      if (this.iPeriodoEvalId === '1') {
         this.label = 'Semestre';
       }
-      if (this.data.iPeriodoEvalId === '2') {
+      if (this.iPeriodoEvalId === '2') {
         this.label = 'Trimestre';
       }
-      if (this.data.iPeriodoEvalId === '3') {
+      if (this.iPeriodoEvalId === '3') {
         this.label = 'Bimestre';
       }
       if (this.data.jsonRegular?.length > 0) {
@@ -92,7 +94,6 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
       } else {
         this.generarPeriodos();
       }
-      this.iPeriodoEvalId = this.data.iPeriodoEvalId;
     }
     if (changes['tiposPeriodos']?.currentValue) {
       this.tiposPeriodos = changes['tiposPeriodos'].currentValue;
@@ -158,19 +159,20 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
   ];
 
   generarPeriodos() {
-    const iPeriodoEvalId = this.data.iPeriodoEvalId;
-    if (this.data.iPeriodoEvalId === '1') {
+    if (this.iPeriodoEvalId === '1') {
       this.label = 'Semestre';
     }
-    if (this.data.iPeriodoEvalId === '2') {
+    if (this.iPeriodoEvalId === '2') {
       this.label = 'Trimestre';
     }
-    if (this.data.iPeriodoEvalId === '3') {
+    if (this.iPeriodoEvalId === '3') {
       this.label = 'Bimestre';
     }
 
-    if (!iPeriodoEvalId) return;
-    const periodo = this.tiposPeriodos.find(periodo => periodo.iPeriodoEvalId === iPeriodoEvalId);
+    if (!this.iPeriodoEvalId) return;
+    const periodo = this.tiposPeriodos.find(
+      periodo => periodo.iPeriodoEvalId === this.iPeriodoEvalId
+    );
 
     const fechasCalculadas = this.calculandoPeriodosFormativos(periodo, this.data);
 
@@ -317,7 +319,7 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
     }));
 
     const data = {
-      iPeriodoEvalId: this.data.iPeriodoEvalId,
+      iPeriodoEvalId: this.iPeriodoEvalId,
       jsonPeriodos: JSON.stringify(periodosNormalizados),
       iSedeId: this._ConstantesService.iSedeId,
       iYAcadId: this._ConstantesService.iYAcadId,
@@ -344,7 +346,7 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
   }
 
   restablecerCalendarioPeriodosEvaluaciones() {
-    this.data.iPeriodoEvalId = this.iPeriodoEvalId;
+    this.iPeriodoEvalId = this.data.iPeriodoEvalId;
     this.periodos = this.respaldoPeriodos;
   }
 }

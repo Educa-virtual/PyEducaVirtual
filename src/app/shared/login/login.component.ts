@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
   loadingText: string;
   formLogin!: FormGroup;
   modalSinRolAsignado: boolean;
-  anuncio: boolean = false;
+  anuncio: boolean = true;
 
   constructor(
     public sanitizer: DomSanitizer,

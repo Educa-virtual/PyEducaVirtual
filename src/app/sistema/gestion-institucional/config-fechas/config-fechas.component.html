@@ -1,139 +1,125 @@
+<p-toast />
 <app-container-page
-    title="Registrar fechas especiales"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+  title="Registrar feriados nacionales"
+  [actions]="nationalHolyday.container.actions"
+  (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
 >
-    <div class="card">
-        <app-table-primeng
-            [columnas]="columns"
-            [showCaption]="false"
-            [data]="fechas"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="false"
-            [(selectedRowData)]="selectedItems"
-            [actions]="actions"
-        >
-            <!-- <ng-container slot="caption-content"> </ng-container> -->
-        </app-table-primeng>
-    </div>
+  <div class="card">
+    <app-table-primeng
+      [columnas]="nationalHolyday.table.columns.core"
+      [showCaption]="false"
+      [data]="nationalHolyday.table.data.core"
+      (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
+      [actions]="nationalHolyday.table.actions"
+    >
+    </app-table-primeng>
+  </div>
 </app-container-page>
 
 <p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
+  [header]="dialogs.nationalHoliday.title"
+  [(visible)]="dialogs.nationalHoliday.visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
 >
-    <form [formGroup]="form">
-        <input
-            pInputText
-            type="hidden"
-            formControlName="iFechaImpId"
-            class="p-inputtext-sm"
-        />
-        <div class="grid p-fluid mt-5">
-            <div class="field col-12 md:col-12">
-                <span class="p-float-label">
-                    <p-calendar
-                        appendTo="body"
-                        formControlName="dtFechaImpFecha"
-                        [iconDisplay]="'input'"
-                        [showIcon]="true"
-                        inputId="icondisplay"
-                    />
-
-                    <label for="calendar">Fecha</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-12">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cFechaImpNombre"
-                        formControlName="cFechaImpNombre"
-                        aria-describedby="cFechaImpNombre-help"
-                    />
-                    <label for="cFechaImpNombre">Nombre</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-12 flex align-items-center gap-2">
-                <span>Fecha recuperable:</span>
-                <div class="">
-                    <span class="p-float-label">
-                        <p-inputSwitch
-                            formControlName="bFechaImpSeraLaborable"
-                            [trueValue]="1"
-                            [falseValue]="0"
-                        />
-                    </span>
-                </div>
-            </div>
-
-            <div class="field col-12 md:col-12">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cFechaImpURLDocumento"
-                        formControlName="cFechaImpURLDocumento"
-                        aria-describedby="cFechaImpURLDocumento-help"
-                    />
-                    <label for="cFechaImpURLDocumento">URL Documento:</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-12">
-                <span class="p-float-label">
-                    @if (option === 'crear') {
-                        <p-button
-                            label="Guardar"
-                            [disabled]="form.invalid"
-                            (onClick)="accionBtnItem('guardar')"
-                        />
-                    }
-                    @if (option === 'editar') {
-                        <p-button
-                            label="Editar"
-                            [disabled]="form.invalid"
-                            (onClick)="accionBtnItem('editar')"
-                            styleClass="p-button-warning"
-                        />
-                    }
-                </span>
-            </div>
+  <form [formGroup]="form">
+    <div class="grid mt-2">
+      <div class="col-12 grid">
+        <div class="col-10 flex flex-column gap-2">
+          <label for="dtFeriado">Fecha</label>
+          <p-calendar
+            appendTo="body"
+            [showOnFocus]="false"
+            inputStyleClass="w-full"
+            styleClass="w-full"
+            formControlName="dtFeriado"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            inputId="dtFeriado"
+          />
         </div>
-    </form>
+        <div class="col flex flex-column gap-2">
+          <label for="bFeriadoEsRecuperable">Es recuperable</label>
+          <p-toggleButton
+            formControlName="bFeriadoEsRecuperable"
+            onLabel="Si"
+            offLabel="No"
+            styleClass="w-full"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 flex flex-column gap-2">
+        <label for="cFeriadoNombre">Nombre</label>
+        <input
+          pInputText
+          id="cFechaImpNombre"
+          formControlName="cFeriadoNombre"
+          aria-describedby="cFeriadoNombre-help"
+        />
+      </div>
+
+      <div class="col-12 flex flex-column gap-2">
+        <label for="cDocumento">URL del documento</label>
+        <input
+          pInputText
+          id="cDocumento"
+          formControlName="cDocumento"
+          aria-describedby="cDocumento-help"
+        />
+      </div>
+
+      <div class="col-12">
+        <p-button
+          label="Guardar"
+          [disabled]="form.invalid"
+          styleClass="w-full"
+          (onClick)="nationalHolyday.saveData()"
+        />
+      </div>
+    </div>
+  </form>
 </p-dialog>
 
 <p-dialog
-    header="{{ caption }}"
-    [(visible)]="visibleImport"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
+  [header]="dialogs.importNationalHolyday.title"
+  [(visible)]="dialogs.importNationalHolyday.visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
 >
-    <div class="mt-3 flex flex-column gap-3">
-        <div class="flex justify-content-between gap-3">
-            <app-btn-file-upload
-                accept="*.xlsx"
-                icon="pi pi-file-import"
-                (fileChange)="uploadFile($event)"
-                [(ngModel)]="file"
-            />
+  <div class="mt-3 flex flex-column gap-3">
+    <div class="flex justify-content-between gap-3">
+      <div class="flex gap-2">
+        <app-btn-file-upload
+          accept="*.xlsx"
+          icon="pi pi-file-import"
+          [(ngModel)]="file"
+          (fileChange)="nationalHolyday.import.fileChange($event)"
+        />
 
-            <p-button
-                [loading]="importLoad"
-                (onClick)="dateSpecialImport()"
-                severity="success"
-                icon="pi pi-database"
-                label="Iniciar importación"
-            />
-        </div>
+        <p-button
+          (onClick)="nationalHolyday.import.downloadTemplate()"
+          severity="info"
+          icon="pi pi-file-excel"
+          label="Descargar plantilla"
+        />
+      </div>
 
-        <app-table-primeng
-            [columnas]="dateSpecialColumns"
-            [data]="dateSpecialData"
-            [showCaption]="true"
-            [showSortIcon]="false"
-        ></app-table-primeng>
+      <p-button
+        [loading]="nationalHolyday.import.loading"
+        (onClick)="nationalHolyday.import.saveData()"
+        severity="success"
+        [disabled]="file ? false : true"
+        icon="pi pi-database"
+        label="Iniciar importación"
+      />
     </div>
+
+    <app-table-primeng
+      [columnas]="nationalHolyday.table.columns.import"
+      [data]="nationalHolyday.table.data.import"
+      [showCaption]="true"
+      [showSortIcon]="false"
+    ></app-table-primeng>
+  </div>
 </p-dialog>

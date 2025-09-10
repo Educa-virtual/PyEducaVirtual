@@ -1,7 +1,7 @@
 <div class="grid col">
   <div class="card col-4 mr-2">
     <app-toolbar-primeng title="Sesiones de Aprendizaje"></app-toolbar-primeng>
-    @if (iPerfilId === DOCENTE) {
+    @if (iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR) {
       <div class="flex justify-content-end ml-auto mb-2 mx-4 mr-5">
         <button
           size="small"
@@ -67,7 +67,7 @@
         </p-inputGroup>
       </div>
       <div class="col md:col-6">
-        @if (iPerfilId === DOCENTE) {
+        @if (iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR) {
           <div class="flex justify-content-end mx-4 mr-5">
             <div class="flex align-content-center">
               <button
@@ -129,6 +129,7 @@
   [datosSesion]="datosSesion"
   [accion]="accion"
   [idSesion]="contenidoSemanas.length + 1"
+  [bCapacitacion]="iCapacitacionId ? true : false"
   (dataSesion)="guardarSesionDeAprendizaje($event)"
   (editarSesion)="actualizarSesionDeAprendizaje($event)"
   (accionCloseForm)="showModalSesionAprendizaje = false; datosSesion = null; accion = null"

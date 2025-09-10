@@ -160,6 +160,7 @@ export class ReporteAcademicoComponent implements OnInit {
             plugins: [ChartDataLabels],
           };
         });
+        console.log(this.graficos);
       },
       error: err => {
         this.messageService.add({

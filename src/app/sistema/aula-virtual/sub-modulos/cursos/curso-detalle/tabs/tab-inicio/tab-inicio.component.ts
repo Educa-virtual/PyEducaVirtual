@@ -10,12 +10,13 @@ import {
 } from '@angular/core';
 import { ICurso } from '../../../interfaces/curso.interface';
 import { PrimengModule } from '@/app/primeng.module';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { AnunciosService } from '@/app/servicios/aula/anuncios.service';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 @Component({
   selector: 'app-tab-inicio',
   standalone: true,
@@ -30,43 +31,44 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
   @Input() anuncios = [];
   @Input() iCursoId;
   @Input() idDocCursoId;
+  @Input() iCapacitacionId;
 
   private _formBuilder = inject(FormBuilder);
-  private _aulaService = inject(ApiAulaService);
-  private _constantesService = inject(ConstantesService);
-  private _confirmService = inject(ConfirmationModalService);
+  private _AnunciosService = inject(AnunciosService);
+  private _ConstantesService = inject(ConstantesService);
+  private _ConfirmService = inject(ConfirmationModalService);
 
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
+  public INSTRUCTOR = INSTRUCTOR;
+  public PARTICIPANTE = PARTICIPANTE;
 
   iPerfilId: number;
   anunciosDocente: any[] = [];
   data: any[];
-  contadorAnuncios: number = 0;
   remainingText: number = 0;
   tituloremainingText: number = 0;
   cNombres: string = '';
   //form para obtener la variable
-  public guardarComunicado: FormGroup = this._formBuilder.group({
-    numero: new FormControl(''),
+  public formAnuncios: FormGroup = this._formBuilder.group({
     titulo: ['', [Validators.required, Validators.pattern(/\S+/)]],
     descripcion: ['', [Validators.required, Validators.pattern(/\S+/)]],
   });
 
   //Inicializamos
   ngOnInit(): void {
-    this.iPerfilId = this._constantesService.iPerfilId;
-    this.obtenerAnuncios();
+    this.iPerfilId = this._ConstantesService.iPerfilId;
+    this.obtenerAnuncios(true);
 
     // contador de caracteres de descripcion
-    this.guardarComunicado.get('descripcion')?.valueChanges.subscribe((value: string) => {
+    this.formAnuncios.get('descripcion')?.valueChanges.subscribe((value: string) => {
       this.remainingText = value?.length || 0;
     });
     // contador de caracteres de título
-    this.guardarComunicado.get('titulo')?.valueChanges.subscribe((value: string) => {
+    this.formAnuncios.get('titulo')?.valueChanges.subscribe((value: string) => {
       this.tituloremainingText = value?.length || 0;
     });
-    this.cNombres = this._constantesService.nombres;
+    this.cNombres = this._ConstantesService.nombres;
   }
 
   // asignar el color de los caracteres restantes
@@ -97,34 +99,34 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
     }
 
     const texto = this.buscarText.toLowerCase();
-
     return this.data.filter(card => card.cTitulo.toLowerCase().includes(texto));
-    // || card.cContenido.toLowerCase().includes(texto)
   }
 
   // guardar anunciado:
-  guardarComunicadoSubmit() {
-    const iCursosNivelGradId = 1;
-    const iCredId = this._constantesService.iCredId;
-    const data = {
-      iCursosNivelGradId: iCursosNivelGradId,
+  guardarAnuncio() {
+    if (!this.esRolPermitido()) {
+      return;
+    }
+
+    const params = {
       idDocCursoId: this.idDocCursoId,
-      iCredId: iCredId,
-      cTitulo: this.guardarComunicado.value.titulo,
-      cContenido: this.guardarComunicado.value.descripcion,
+      iCapacitacionId: this.iCapacitacionId,
+      iCredId: this._ConstantesService.iCredId,
+      cTitulo: this.formAnuncios.value.titulo,
+      cContenido: this.formAnuncios.value.descripcion,
     };
-    if (this.guardarComunicado.invalid) {
+    if (this.formAnuncios.invalid) {
       this.mostrarMensajeToast({
         severity: 'error',
         summary: 'Error',
         detail: 'Formulario inválido',
       });
     } else {
-      this._confirmService.openConfiSave({
+      this._ConfirmService.openConfiSave({
         message: 'Recuerde que podran verlo todos los estudiantes',
         header: `¿Desea proceder con la publicación del anuncio?`,
         accept: () => {
-          this._aulaService.guardarAnuncio(data).subscribe({
+          this._AnunciosService.guardarAnuncio(params).subscribe({
             next: (resp: any) => {
               // para refrescar la pagina
               if (resp?.validated) {
@@ -134,15 +136,14 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
                   detail: 'Anuncio creado correctamente',
                 });
 
-                this.obtenerAnuncios();
-                // this.guardarComunicado.get('cForoRptaPadre')?.reset()
+                this.obtenerAnuncios(true);
+                this.formAnuncios.reset();
               }
             },
             error: error => {
               this.mostrarErrores(error);
             },
           });
-          this.guardarComunicado.reset();
         },
         reject: () => {
           // Mensaje de cancelación (opcional)
@@ -153,25 +154,27 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
           });
         },
       });
-      // console.log(this.guardarComunicado.value)
     }
   }
 
   // metodo para eliminar el anuncio
   eliminarComunicado(id): void {
+    if (!this.esRolPermitido()) {
+      return;
+    }
     const iAnuncioId = id.iAnuncioId;
     const nombreTitulo = id.cTitulo;
 
-    this._confirmService.openConfiSave({
+    this._ConfirmService.openConfiSave({
       message: 'Recuerde que al eliminarlo no podra recuperarlo',
       header: `¿Esta seguro de Eliminar: ${nombreTitulo} ?`,
       accept: () => {
-        const iCredId = this._constantesService.iCredId;
+        const iCredId = this._ConstantesService.iCredId;
         const params = {
           iAnuncioId: iAnuncioId,
           iCredId: iCredId,
         };
-        this._aulaService.eliminarAnuncio(params).subscribe({
+        this._AnunciosService.eliminarAnuncio(params).subscribe({
           next: (response: any) => {
             if (response.validated) {
               this.mostrarMensajeToast({
@@ -180,7 +183,7 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
                 detail: 'Anuncio eliminado correctamente',
               });
             }
-            this.obtenerAnuncios();
+            this.obtenerAnuncios(true);
           },
           error: error => {
             this.mostrarErrores(error);
@@ -200,16 +203,19 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
 
   // metodo para fijar el anuncio
   fijarAnuncio(id: string, iFijado: number): void {
-    if (this.iPerfilId !== this.DOCENTE) return;
-    const iCredId = this._constantesService.iCredId;
+    if (!this.esRolPermitido()) {
+      return;
+    }
+
+    const iCredId = this._ConstantesService.iCredId;
     const params = {
       iAnuncioId: id,
       iCredId: iCredId,
     };
-    this._aulaService.fijarAnuncio(params).subscribe({
+    this._AnunciosService.fijarAnuncio(params).subscribe({
       next: (response: any) => {
         if (response.validated) {
-          this.obtenerAnuncios();
+          this.obtenerAnuncios(true);
           this.mostrarMensajeToast({
             severity: 'success',
             summary: 'Exito',
@@ -220,35 +226,25 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
           });
         }
       },
-      error: err => {
-        this.mostrarMensajeToast({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo fijar el anuncio: ' + err,
-        });
+      error: error => {
+        this.mostrarErrores(error);
       },
     });
   }
-  // obtener anunciados de curso:
-  obtenerAnuncios() {
-    const iCursosNivelGradId = 1;
-    const iCredId = this._constantesService.iCredId;
+  // obtener anunciados de curso o capacitación:
+  obtenerAnuncios(recargar = false) {
+    const iCredId = this._ConstantesService.iCredId;
 
-    const paramst = {
-      iCursosNivelGradId: iCursosNivelGradId,
+    const params = {
       idDocCursoId: this.idDocCursoId,
       iCredId: iCredId,
+      iCapacitacionId: this.iCapacitacionId,
     };
 
-    this._aulaService.obtenerAnuncios(paramst).subscribe({
+    this._AnunciosService.obtenerAnuncios(params, recargar).subscribe({
       next: Data => {
         this.data = Data['data'] || [];
         this.data.sort((a, b) => b.iFijado - a.iFijado);
-        this.contadorAnuncios = this.data.length + 1;
-
-        this.guardarComunicado.patchValue({
-          numero: this.contadorAnuncios,
-        });
       },
       error: error => {
         this.mostrarErrores(error);
@@ -266,5 +262,10 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
       textarea.style.height = 'auto'; // reset
       textarea.style.height = `${textarea.scrollHeight}px`; // ajustar al contenido
     });
+  }
+
+  esRolPermitido(): boolean {
+    const rolesPermitidos = [this.DOCENTE, this.INSTRUCTOR];
+    return rolesPermitidos.includes(this.iPerfilId);
   }
 }

@@ -7,10 +7,11 @@
     <p-steps [model]="items" [readonly]="true"></p-steps>
   </div>
   <br />
-  @if (bAgregar) {
+  @if (!bAgregar) {
     <div class="card">
-      <p-table [value]="groupedData" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm">
-        <!-- Cabecera personalizada -->
+      <p-messages [(value)]="mensaje" [enableService]="false" [closable]="false" />
+      <!-- <p-table [value]="groupedData" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm">
+         Cabecera personalizada 
         <ng-template pTemplate="header">
           <tr>
             <th>Asignatura</th>
@@ -22,7 +23,7 @@
           </tr>
         </ng-template>
 
-        <!-- Filas dinámicas -->
+         Filas dinámicas 
         <ng-template pTemplate="body" let-rowData>
           <tr>
             <td>{{ rowData.cCursoNombre }}</td>
@@ -37,7 +38,7 @@
                 style="width: 50px"
                 value="{{ rowData.grades[grado] }}"
               />
-              <!-- {{ rowData.grades[grado] || '-' }} -->
+               {{ rowData.grades[grado] || '-' }} 
             </td>
             <td>
               <p-button
@@ -48,7 +49,7 @@
             </td>
           </tr>
         </ng-template>
-      </p-table>
+      </p-table> -->
     </div>
   } @else {
     <app-asignar-horas></app-asignar-horas>

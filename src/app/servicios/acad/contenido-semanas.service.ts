@@ -51,6 +51,44 @@ export class ContenidoSemanasService {
       );
   }
 
+  obtenerContenidoSemanasxiCapacitacionIdxiYAcadId(
+    iCapacitacionId,
+    iYAcadId,
+    params = {},
+    forzarRecarga = false
+  ): Observable<any> {
+    if (!forzarRecarga && this.cacheContenidoSemanas) {
+      return of({
+        validated: true,
+        data: this.cacheContenidoSemanas,
+      });
+    }
+
+    const headers = new HttpHeaders()
+      .set('x-cache', forzarRecarga ? 'false' : 'true')
+      .set('x-cache-duration', '3600000');
+
+    if (forzarRecarga) {
+      params = {
+        ...params,
+        _ts: Date.now(),
+      };
+    }
+
+    return this.http
+      .get(`${baseUrl}/acad/contenido-semanas/capacitacion/${iCapacitacionId}/year/${iYAcadId}`, {
+        params,
+        headers,
+      })
+      .pipe(
+        tap((resp: any) => {
+          if (resp.validated) {
+            this.cacheContenidoSemanas = resp.data;
+          }
+        })
+      );
+  }
+
   limpiarCache() {
     this.cacheContenidoSemanas = null;
   }
@@ -63,5 +101,8 @@ export class ContenidoSemanasService {
 
   guardarSesionDeAprendizaje(data): Observable<any> {
     return this.http.post(`${baseUrl}/acad/contenido-semanas`, data);
+  }
+  actualizarContenidoSemanas(data): Observable<any> {
+    return this.http.put(`${baseUrl}/acad/contenido-semanas/${data.iContenidoSemId}`, data);
   }
 }

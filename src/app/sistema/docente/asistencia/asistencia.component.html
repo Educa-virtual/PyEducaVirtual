@@ -1,286 +1,253 @@
 <div class="grid">
-    <p-toolbar class="col-12">
-        <div class="block">
-            <h4 class="text-primary text-white font-bold block">
-                ASISTENCIA DEL {{ encabezado[0]?.cCursoNombre | uppercase }}
-            </h4>
-            <div class="text-primary text-white font-bold block">
-                Nivel: {{ cNivelTipoNombre }} | Ciclo:
-                {{ encabezado[0]?.cCicloRomanos }} | Grado:
-                {{ encabezado[0]?.cGradoAbreviacion }} | Seccion:
-                {{ encabezado[0]?.cSeccionNombre }}
-            </div>
-        </div>
-    </p-toolbar>
-
-    <div class="col-12">
-        <div class="card">
-            <h5 class="font-bold">Instrucciones</h5>
-            <ol>
-                <li>
-                    Hacer doble click en la fecha que desea registrar
-                    asistencia.
-                </li>
-                <li>
-                    Luego registrar asistencia de cada alumno de acuerdo a la
-                    leyenda
-                </li>
-            </ol>
-        </div>
+  <p-toolbar class="col-12">
+    <div class="block">
+      <h4 class="text-primary text-white font-bold block">
+        ASISTENCIA DEL {{ encabezado[0]?.cCursoNombre | uppercase }}
+      </h4>
+      <div class="text-primary text-white font-bold block">
+        Nivel: {{ cNivelTipoNombre }} | Ciclo: {{ encabezado[0]?.cCicloRomanos }} | Grado:
+        {{ encabezado[0]?.cGradoAbreviacion }} | Seccion:
+        {{ encabezado[0]?.cSeccionNombre }}
+      </div>
     </div>
+  </p-toolbar>
 
-    <div class="grid">
-        <div class="xl:col-3 sm:col-12 md:col-12">
-            <div class="card">
-                <div class="flex block p-2">
-                    <div class="font-bold pb-2">LEGENDA</div>
-                </div>
-                <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
-                    <div *ngFor="let lista of leyenda" class="flex w-full mr-1">
-                        <p-inputGroup>
-                            <button
-                                type="button"
-                                size="small"
-                                pButton
-                                [ngClass]="lista.bgColor"
-                            >
-                                {{ lista.simbolo }}
-                            </button>
-                            <div [ngClass]="lista.divColor">
-                                {{ lista.significado }}
-                            </div>
-                            <button
-                                type="button"
-                                size="small"
-                                pButton
-                                [ngClass]="lista.bgColor"
-                            >
-                                {{ lista.contar }}
-                            </button>
-                        </p-inputGroup>
-                    </div>
-                </div>
-                <div class="w-full">
-                    <p-button
-                        class="flex align-items-center justify-content-center w-full"
-                        [outlined]="true"
-                        icon="pi pi-file-pdf"
-                        label="Descargar Reporte"
-                        (click)="modalReporte()"
-                    />
-                </div>
-            </div>
-        </div>
-        <div class="xl:col-9 sm:col-12 md:col-12">
-            <div class="card">
-                <full-calendar [options]="calendarOptions">
-                    <ng-template #eventContent let-arg>
-                        <div class="fc-event-time">{{ arg.timeText }}</div>
-                        <div class="fc-event-title">{{ arg.event.title }}</div>
-                    </ng-template>
-                </full-calendar>
-            </div>
-        </div>
+  <div class="col-12">
+    <div class="card">
+      <h5 class="font-bold">Instrucciones</h5>
+      <ol>
+        <li>Hacer doble click en la fecha que desea registrar asistencia.</li>
+        <li>Luego registrar asistencia de cada alumno de acuerdo a la leyenda</li>
+      </ol>
     </div>
+  </div>
+
+  <div class="grid">
+    <div class="xl:col-3 sm:col-12 md:col-12">
+      <div class="card">
+        <div class="flex block p-2">
+          <div class="font-bold pb-2">LEGENDA</div>
+        </div>
+        <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
+          <div *ngFor="let lista of leyenda" class="flex w-full mr-1">
+            <p-inputGroup>
+              <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+                {{ lista.simbolo }}
+              </button>
+              <div [ngClass]="lista.divColor">
+                {{ lista.significado }}
+              </div>
+              <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+                {{ lista.contar }}
+              </button>
+            </p-inputGroup>
+          </div>
+        </div>
+        <div class="w-full">
+          <p-button
+            class="flex align-items-center justify-content-center w-full"
+            [outlined]="true"
+            icon="pi pi-file-pdf"
+            label="Descargar Reporte"
+            (click)="modalReporte()"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="xl:col-9 sm:col-12 md:col-12">
+      <div class="card">
+        <full-calendar [options]="calendarOptions">
+          <ng-template #eventContent let-arg>
+            <div class="fc-event-time">{{ arg.timeText }}</div>
+            <div class="fc-event-title">{{ arg.event.title }}</div>
+          </ng-template>
+        </full-calendar>
+      </div>
+    </div>
+  </div>
 </div>
 
 <p-dialog
-    header="Asistencia del Dia : {{ fechaEspecifica }}"
-    [modal]="true"
-    class="asistenciaModal"
-    [(visible)]="verAsistencia"
-    [style]="{ width: '60rem' }"
+  header="Asistencia del Dia : {{ fechaEspecifica }}"
+  [modal]="true"
+  class="asistenciaModal"
+  [(visible)]="verAsistencia"
+  [style]="{ width: '60rem' }"
 >
-    <div class="grid mt-4">
-        <div class="col-12">
-            <span class="font-bold white-space-nowrap m-0">
-                Detalles del {{ encabezado[0]?.cNivelNombreCursos }}
-            </span>
-        </div>
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    {{ cNivelNombre }}
-                </p-inputGroupAddon>
-                <input
-                    pInputText
-                    disabled
-                    [value]="encabezado[0]?.cCursoNombre"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Nivel
-                </p-inputGroupAddon>
-                <input pInputText disabled [value]="cNivelTipoNombre" />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Ciclo
-                </p-inputGroupAddon>
-                <input
-                    pInputText
-                    disabled
-                    [value]="encabezado[0]?.cCicloRomanos"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Grado
-                </p-inputGroupAddon>
-                <input
-                    pInputText
-                    disabled
-                    [value]="encabezado[0]?.cGradoAbreviacion"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon
-                    [ngStyle]="{
-                        backgroundColor: 'var(--primary-700)',
-                        color: 'var(--primary-color-text)',
-                    }"
-                >
-                    Sección
-                </p-inputGroupAddon>
-                <input
-                    pInputText
-                    disabled
-                    [value]="encabezado[0]?.cSeccionNombre"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12">
-            <p-table
-                class="mt-1 block w-full"
-                [value]="data"
-                [scrollable]="true"
-                scrollHeight="400px"
-            >
-                <ng-template pTemplate="header">
-                    <tr style="height: 12px">
-                        <th style="width: auto">N°</th>
-                        <th style="width: auto">Nombres y Apellidos</th>
-                        <th style="width: auto">MARCAR ASISTENCIA</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                    <tr>
-                        <td>{{ rowIndex + 1 }}</td>
-                        <td>{{ item.nombrecompleto }}</td>
-                        <td class="flex justify-content-center">
-                            <p-button
-                                *ngIf="item.cTipoAsiLetra; else noboton"
-                                label="{{ item.cTipoAsiLetra }}"
-                                size="small"
-                                [ngClass]="item.bgcolor"
-                                (click)="changeAsistencia(rowIndex)"
-                            />
-                            <ng-template #noboton>
-                                <p-button
-                                    label="-"
-                                    size="small"
-                                    (click)="changeAsistencia(rowIndex)"
-                                    ngClass="bt-cyan"
-                                />
-                            </ng-template>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="summary">
-                    <div
-                        class="flex block flex-wrap column-gap-3 row-gap-3 p-2"
-                    >
-                        <div
-                            *ngFor="let lista of leyendaModal"
-                            class="flex mr-1"
-                        >
-                            <p-inputGroup class="grupo">
-                                <button
-                                    type="button"
-                                    size="small"
-                                    pButton
-                                    [ngClass]="lista.bgColor"
-                                >
-                                    {{ lista.simbolo }}
-                                </button>
-                                <div [ngClass]="lista.divColor">
-                                    {{ lista.significado }}
-                                </div>
-                                <button
-                                    type="button"
-                                    size="small"
-                                    pButton
-                                    [ngClass]="lista.bgColor"
-                                >
-                                    {{ lista.contar }}
-                                </button>
-                            </p-inputGroup>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-table>
-        </div>
+  <div class="grid mt-4">
+    <div class="col-12">
+      <span class="font-bold white-space-nowrap m-0">
+        Detalles del {{ encabezado[0]?.cNivelNombreCursos }}
+      </span>
     </div>
-    <div class="flex justify-content-center gap-2">
-        <p-button
-            label="Cancelar"
-            severity="danger"
-            (onClick)="escapeModal()"
-        />
-        <p-button label="Guardar" (onClick)="storeAsistencia()" />
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          {{ cNivelNombre }}
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="encabezado[0]?.cCursoNombre" />
+      </p-inputGroup>
     </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Nivel
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="cNivelTipoNombre" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Ciclo
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="encabezado[0]?.cCicloRomanos" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Grado
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="encabezado[0]?.cGradoAbreviacion" />
+      </p-inputGroup>
+    </div>
+    <div class="col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon
+          [ngStyle]="{
+            backgroundColor: 'var(--primary-700)',
+            color: 'var(--primary-color-text)',
+          }"
+        >
+          Sección
+        </p-inputGroupAddon>
+        <input pInputText disabled [value]="encabezado[0]?.cSeccionNombre" />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <p-table class="mt-1 block w-full" [value]="data" [scrollable]="true" scrollHeight="400px">
+        <ng-template pTemplate="header">
+          <tr style="height: 12px">
+            <th style="width: auto">N°</th>
+            <th style="width: auto">Nombres y Apellidos</th>
+            <th style="width: auto">Marcar Asistencia</th>
+            <th style="width: auto">Subir Documento</th>
+            <th style="width: auto">Documento</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr>
+            <td>{{ rowIndex + 1 }}</td>
+            <td>{{ item.nombrecompleto }}</td>
+            <td>
+              <p-button
+                *ngIf="item.cTipoAsiLetra; else noboton"
+                label="{{ item.cTipoAsiLetra }}"
+                size="small"
+                [ngClass]="item.bgcolor"
+                (click)="changeAsistencia(rowIndex)"
+              />
+              <ng-template #noboton>
+                <p-button
+                  label="-"
+                  size="small"
+                  (click)="changeAsistencia(rowIndex)"
+                  ngClass="bt-cyan"
+                />
+              </ng-template>
+            </td>
+            <td>
+              <p-fileUpload
+                #subirJustificacion
+                mode="basic"
+                [disabled]="!(item.iTipoAsiId === '4' || item.iTipoAsiId === '9')"
+                chooseLabel="Subir"
+                chooseIcon="pi pi-upload"
+                accept="application/pdf"
+                maxFileSize="1000000"
+                (onSelect)="subirDocumento($event, rowIndex, subirJustificacion)"
+              />
+            </td>
+            <td class="text-center">
+              <p-button
+                [disabled]="
+                  !(item.cJustificar === '' || item.iTipoAsiId === '4' || item.iTipoAsiId === '9')
+                "
+                icon="pi pi-file-pdf"
+                size="small"
+                (click)="descargarArchivo(iDocenteId, item.cJustificar)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="flex block flex-wrap column-gap-3 row-gap-3 p-2">
+            <div *ngFor="let lista of leyendaModal" class="flex mr-1">
+              <p-inputGroup class="grupo">
+                <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+                  {{ lista.simbolo }}
+                </button>
+                <div [ngClass]="lista.divColor">
+                  {{ lista.significado }}
+                </div>
+                <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+                  {{ lista.contar }}
+                </button>
+              </p-inputGroup>
+            </div>
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <div class="flex justify-content-center gap-2">
+    <p-button label="Cancelar" severity="danger" (onClick)="escapeModal()" />
+    <p-button label="Guardar" (onClick)="storeAsistencia()" />
+  </div>
 </p-dialog>
 
 <p-toast />
 
 <app-reporte-asistencia
-    [idDocCursoId]="idDocCursoId"
-    [year]="year"
-    [cPersNombreLargo]="cPersNombreLargo"
-    [cIieeNombre]="cIieeNombre"
-    [cCicloRomanos]="encabezado[0]?.cCicloRomanos"
-    [cNivelTipoNombre]="cNivelTipoNombre"
-    [cNivelNombreCursos]="encabezado[0]?.cNivelNombreCursos"
-    [showModal]="showModal"
-    [cCursoNombre]="encabezado[0]?.cCursoNombre"
-    [iCursoId]="iCursoId"
-    [iDocenteId]="iDocenteId"
-    [iGradoId]="iGradoId"
-    [cGradoAbreviacion]="encabezado[0]?.cGradoAbreviacion"
-    [iSeccionId]="iSeccionId"
-    [cSeccionNombre]="encabezado[0]?.cSeccionNombre"
-    [iYAcadId]="iYAcadId"
-    [iIieeId]="iIieeId"
-    [iSedeId]="iSedeId"
-    [iNivelGradoId]="iNivelGradoId"
-    (accionBtnItem)="accionBtnItem($event)"
+  [idDocCursoId]="idDocCursoId"
+  [year]="year"
+  [cPersNombreLargo]="cPersNombreLargo"
+  [cIieeNombre]="cIieeNombre"
+  [cCicloRomanos]="encabezado[0]?.cCicloRomanos"
+  [cNivelTipoNombre]="cNivelTipoNombre"
+  [cNivelNombreCursos]="encabezado[0]?.cNivelNombreCursos"
+  [showModal]="showModal"
+  [cCursoNombre]="encabezado[0]?.cCursoNombre"
+  [iCursoId]="iCursoId"
+  [iDocenteId]="iDocenteId"
+  [iGradoId]="iGradoId"
+  [cGradoAbreviacion]="encabezado[0]?.cGradoAbreviacion"
+  [iSeccionId]="iSeccionId"
+  [cSeccionNombre]="encabezado[0]?.cSeccionNombre"
+  [iYAcadId]="iYAcadId"
+  [iIieeId]="iIieeId"
+  [iSedeId]="iSedeId"
+  [iNivelGradoId]="iNivelGradoId"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-reporte-asistencia>

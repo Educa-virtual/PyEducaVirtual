@@ -62,7 +62,7 @@ export class SesionAprendizajeFormComponent extends MostrarErrorComponent implem
         this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
         this.cTituloModal = 'SESIÓN DE APRENDIZAJE';
       } else {
-        this.cTituloModal = 'SESIÓN ACADÉMICA';
+        this.cTituloModal = 'SESIÓN FORMATIVA';
       }
 
       this.formSesiones.reset();
@@ -136,23 +136,38 @@ export class SesionAprendizajeFormComponent extends MostrarErrorComponent implem
       return;
     }
 
-    // if(!this.bCapacitacion){
-    //   if(this.formSesiones.value.iTipExp === null || this.formSesiones.value.iTipExp === ''){
-    //     this.mostrarMensajeToast('Seleccione un tipo de experiencia de aprendizaje');
-    //     this.isLoading = false;
-    //     return;
-    //   }
-    //   if(this.formSesiones.value.iPeriodoEvalAperId === null || this.formSesiones.value.iPeriodoEvalAperId === ''){
-    //     this.mostrarMensajeToast('Seleccione un periodo de evaluación');
-    //     this.isLoading = false;
-    //     return;
-    //   }
-    //    if(!this.documentos.data){
-    //     this.mostrarMensajeToast('Seleccione un periodo de evaluación');
-    //     this.isLoading = false;
-    //     return;
-    //   }
-    // }
+    if (!this.bCapacitacion) {
+      if (
+        this.formSesiones.value.iPeriodoEvalAperId === null ||
+        this.formSesiones.value.iPeriodoEvalAperId === ''
+      ) {
+        this.mostrarMensajeToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Seleccione un periodo de evaluación',
+        });
+        this.isLoading = false;
+        return;
+      }
+      if (this.formSesiones.value.iTipExp === null || this.formSesiones.value.iTipExp === '') {
+        this.mostrarMensajeToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Seleccione un tipo de experiencia de aprendizaje',
+        });
+        this.isLoading = false;
+        return;
+      }
+      if (!this.documentos?.data) {
+        this.mostrarMensajeToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Seleccione un documento adjunto',
+        });
+        this.isLoading = false;
+        return;
+      }
+    }
 
     this.data = {
       ...this.formSesiones.value,

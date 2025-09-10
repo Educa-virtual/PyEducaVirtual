@@ -1,149 +1,189 @@
-import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit } from '@angular/core'
-import { MessageService } from 'primeng/api'
-
-interface ClassSchedule {
-    id: number
-    subject: string
-    startTime: string
-    endTime: string
-    location?: string
-}
-
-interface WeeklySchedule {
-    lunes: ClassSchedule[]
-    martes: ClassSchedule[]
-    miercoles: ClassSchedule[]
-    jueves: ClassSchedule[]
-    viernes: ClassSchedule[]
-    sabado: ClassSchedule[]
-    domingo: ClassSchedule[]
-}
+import { PrimengModule } from '@/app/primeng.module';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 @Component({
-    selector: 'app-asignar-horario-capacitacion',
-    standalone: true,
-    templateUrl: './asignar-horario-capacitacion.component.html',
-    styleUrls: ['./asignar-horario-capacitacion.component.scss'],
-    imports: [PrimengModule],
+  selector: 'app-asignar-horario-capacitacion',
+  standalone: true,
+  templateUrl: './asignar-horario-capacitacion.component.html',
+  styleUrls: ['./asignar-horario-capacitacion.component.scss'],
+  imports: [PrimengModule, ModalPrimengComponent],
 })
-export class AsignarHorarioCapacitacionComponent implements OnInit {
-    displayDialog = false
-    activeDay = ''
-    activeDayName = ''
+export class AsignarHorarioCapacitacionComponent
+  extends MostrarErrorComponent
+  implements OnChanges
+{
+  @Input() showModal: boolean = false;
+  @Input() data: any;
 
-    schedule: WeeklySchedule = {
-        lunes: [],
-        martes: [],
-        miercoles: [],
-        jueves: [],
-        viernes: [],
-        sabado: [],
-        domingo: [],
-    }
-    dias = [
-        { id: 'lunes', nombre: 'Lunes', color: 'bg-blue-100' },
-        { id: 'martes', nombre: 'Martes', color: 'bg-green-100' },
-        { id: 'miercoles', nombre: 'Miércoles', color: 'bg-yellow-100' },
-        { id: 'jueves', nombre: 'Jueves', color: 'bg-purple-100' },
-        { id: 'viernes', nombre: 'Viernes', color: 'bg-pink-100' },
-        { id: 'sabado', nombre: 'Sábado', color: 'bg-indigo-100' },
-        { id: 'domingo', nombre: 'Domingo', color: 'bg-orange-100' },
-    ]
-    newClass: ClassSchedule = {
-        id: 0,
-        subject: '',
-        startTime: '',
-        endTime: '',
-        location: '',
-    }
-    constructor(private messageService: MessageService) {}
+  @Output() accionCloseForm = new EventEmitter<any>();
+  @Output() accionEnviarHorario = new EventEmitter<any>();
 
-    ngOnInit() {
-        console.log('jjj')
+  iHorarioUniforme: boolean = true;
+  isLoading: boolean = false;
+  iHoraInicio: Date | null = null;
+  iHoraFin: Date | null = null;
+
+  dias = [
+    {
+      iDiaId: 1,
+      cDiaNombre: 'Lunes',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+    {
+      iDiaId: 2,
+      cDiaNombre: 'Martes',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+    {
+      iDiaId: 3,
+      cDiaNombre: 'Miércoles',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+    {
+      iDiaId: 4,
+      cDiaNombre: 'Jueves',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+    {
+      iDiaId: 5,
+      cDiaNombre: 'Viernes',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+    {
+      iDiaId: 6,
+      cDiaNombre: 'Sábado',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+    {
+      iDiaId: 7,
+      cDiaNombre: 'Domingo',
+      iSeleccionado: 0,
+      iHoraInicio: null,
+      iHoraFin: null,
+      iHorarioUniforme: false,
+    },
+  ];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['showModal']) {
+      this.showModal = changes['showModal'].currentValue;
     }
-    openDialog(dayKey: string) {
-        this.activeDay = dayKey
-        this.activeDayName =
-            this.dias.find((d) => d.id === dayKey)?.nombre || ''
-        this.displayDialog = true
-        this.resetNewClass()
+    if (changes['data']) {
+      this.data = changes['data'].currentValue;
+
+      const horarios = this.data?.jsonHorario ? JSON.parse(this.data.jsonHorario) : [];
+      this.iHorarioUniforme =
+        horarios.length > 0 ? (horarios[0].iHorarioUniforme === 0 ? false : true) : false;
+
+      this.iHoraInicio = horarios.length > 0 ? this.parseHoraToDate(horarios[0].iHoraInicio) : null;
+      this.iHoraFin = horarios.length > 0 ? this.parseHoraToDate(horarios[0].iHoraFin) : null;
+
+      this.dias = this.dias.map(dia => {
+        const diaHorario = horarios.find(h => h.iDiaId === dia.iDiaId);
+
+        return {
+          ...dia,
+          iHoraInicio: this.iHorarioUniforme
+            ? null
+            : diaHorario?.iHoraInicio
+              ? this.parseHoraToDate(diaHorario.iHoraInicio)
+              : null,
+          iHoraFin: this.iHorarioUniforme
+            ? null
+            : diaHorario?.iHoraFin
+              ? this.parseHoraToDate(diaHorario.iHoraFin)
+              : null,
+          iHorarioUniforme: !!this.iHorarioUniforme,
+          iSeleccionado: diaHorario ? 1 : 0,
+        };
+      });
     }
-    closeDialog() {
-        this.displayDialog = false
-        this.activeDay = ''
-        this.resetNewClass()
+  }
+
+  get diasSeleccionados() {
+    return this.dias.filter(d => d.iSeleccionado === 1);
+  }
+
+  isValidForm(): boolean {
+    const diasSeleccionados = this.dias.filter(d => d.iSeleccionado === 1);
+
+    if (diasSeleccionados.length === 0) {
+      return true;
     }
 
-    resetNewClass() {
-        this.newClass = {
-            id: 0,
-            subject: '',
-            startTime: '',
-            endTime: '',
-            location: '',
+    if (this.iHorarioUniforme) {
+      if (!this.iHoraInicio || !this.iHoraFin) {
+        return true;
+      }
+    } else {
+      for (const dia of diasSeleccionados) {
+        if (!dia.iHoraInicio || !dia.iHoraFin) {
+          return true;
         }
-    }
-    formatTime(time: string): string {
-        // if (!time) return '';
-        // const [hours, minutes] = time.split(':');
-        // return `${hours}:${minutes}`;
-        if (!time || !time.includes(':')) return ''
-        const parts = time.split(':')
-        const hours = parts[0] ?? ''
-        const minutes = parts[1] ?? ''
-        return `${hours}:${minutes}`
-    }
-    formatToHour(time: string): string {
-        const date = new Date(time)
-        const hours = date.getHours().toString().padStart(2, '0')
-        const minutes = date.getMinutes().toString().padStart(2, '0')
-        return `${hours}:${minutes}`
+      }
     }
 
-    getTotalClasses(): number {
-        return Object.values(this.schedule).reduce(
-            (total, dayClasses) => total + dayClasses.length,
-            0
-        )
+    return false;
+  }
+
+  guardarHorario() {
+    if (this.isLoading) return;
+    this.isLoading = true;
+
+    if (this.isValidForm()) {
+      this.mostrarMensajeToast({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Debe seleccionar al menos un día y definir las horas de inicio y fin.',
+      });
+      this.isLoading = false;
+      return;
     }
 
-    anadirClase() {
-        this.newClass.startTime = this.formatToHour(this.newClass.startTime)
-        this.newClass.endTime = this.formatToHour(this.newClass.endTime)
-        console.log('Adding class:', this.newClass)
-        if (
-            this.newClass.subject &&
-            this.newClass.startTime &&
-            this.newClass.endTime
-        ) {
-            const classToAdd: ClassSchedule = {
-                ...this.newClass,
-                id: Date.now(),
-            }
-
-            this.schedule[this.activeDay as keyof WeeklySchedule].push(
-                classToAdd
-            )
-
-            // Ordenar por hora de inicio
-            this.schedule[this.activeDay as keyof WeeklySchedule].sort((a, b) =>
-                a.startTime.localeCompare(b.startTime)
-            )
-
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Clase agregada correctamente',
-            })
-
-            this.closeDialog()
-        } else {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Por favor completa todos los campos requeridos',
-            })
-        }
+    if (this.iHorarioUniforme) {
+      this.diasSeleccionados.forEach(dia => {
+        dia.iHoraInicio = this.iHoraInicio;
+        dia.iHoraFin = this.iHoraFin;
+        dia.iHorarioUniforme = this.iHorarioUniforme;
+      });
+    } else {
+      this.diasSeleccionados.forEach(dia => {
+        dia.iHorarioUniforme = false;
+      });
     }
+
+    this.accionEnviarHorario.emit({ dias: this.diasSeleccionados });
+  }
+
+  parseHoraToDate(hora: string): Date {
+    const [h, m] = hora.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+
+  esUltimoDiaSeleccionado(item: any): boolean {
+    const seleccionados = this.dias.filter(d => d.iSeleccionado === 1);
+    return seleccionados.indexOf(item) === seleccionados.length - 1;
+  }
 }

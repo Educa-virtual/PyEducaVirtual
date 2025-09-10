@@ -1,13 +1,14 @@
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
 import { Component, inject, OnInit } from '@angular/core';
-import { ApiAulaService } from '../../aula-virtual/services/api-aula.service';
 import { CardCapacitacionesComponent } from '../solicitud-Inscripcion/card-capacitaciones/card-capacitaciones.component';
 import { DropdownChangeEvent } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
 import { PrimengModule } from '@/app/primeng.module';
 import { CertificacionAcademicaComponent } from './certificacion-academica/certificacion-academica.component';
 import { GeneralService } from '@/app/servicios/general.service';
+import { TipoCapacitacionesService } from '@/app/servicios/cap/tipo-capacitaciones.service';
+import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
 
 @Component({
   selector: 'app-resultados-cursos',
@@ -24,8 +25,9 @@ import { GeneralService } from '@/app/servicios/general.service';
 })
 export class ResultadosCursosComponent implements OnInit {
   private _ConstantesService = inject(ConstantesService);
-  private _aulaService = inject(ApiAulaService);
   private GeneralService = inject(GeneralService);
+  private _TipoCapacitacionesService = inject(TipoCapacitacionesService);
+  private _CapacitacionesService = inject(CapacitacionesService);
 
   iTipoCapId: any = 0;
   data: any[] = []; //Información general de cursos
@@ -58,30 +60,20 @@ export class ResultadosCursosComponent implements OnInit {
 
   // obtener y listar las capacitaciones
   obtenerCapacitaciones() {
-    const data = {
-      petition: 'get',
-      group: 'cap',
-      prefix: 'capacitaciones',
-      params: {
-        iCredId: this._ConstantesService.iCredId, // Asignar el ID del crédito
-      },
+    const iCredId = this._ConstantesService.iCredId;
+    const params = {
+      iCredId: iCredId,
     };
-    this.GeneralService.getGralPrefixx(data).subscribe({
-      next: resp => {
-        this.data = resp['data'];
-        console.log('Capacitaciones:', this.data);
-        this.capacitaciones = [...this.data]; // cargar desde servicio o mock
-      },
-      error: err => {
-        console.error('Error al obtener capacitaciones:', err);
-      },
+    this._CapacitacionesService.obtenerCapacitacion(params).subscribe((resp: any) => {
+      this.data = resp.data;
+      this.capacitaciones = [...this.data];
     });
   }
+
   // metodo para obtener tipo capacitación:
   obtenerTipoCapacitacion() {
-    const userId = 1;
-    this._aulaService.obtenerTipoCapacitacion(userId).subscribe(Data => {
-      this.tipoCapacitacion = Data['data'];
+    this._TipoCapacitacionesService.obtenerTipoCapacitacion().subscribe(data => {
+      this.tipoCapacitacion = data;
       this.tipoCapacitacionSearch = [...this.tipoCapacitacion];
       this.tipoCapacitacionSearch.unshift({
         iTipoCapId: 0,

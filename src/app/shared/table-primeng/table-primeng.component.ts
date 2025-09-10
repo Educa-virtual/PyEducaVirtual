@@ -53,6 +53,7 @@ export interface IColumn {
   placeholder?: string;
   inputType?: string;
   outputType?: string;
+  isVisible?: boolean | (() => boolean); // 👈 ahora acepta función o boolean
 
   severity?: (
     option
@@ -102,19 +103,19 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     return fieldValue ? { [String(fieldValue)]: true } : {};
   }
 
+  getCellClass(col: IColumn, rowData: any = null): string {
+    if (typeof col.class === 'function') {
+      return col.class(rowData);
+    }
+    return col.class || '';
+  }
+
   getRowClasses(rowData: any, rowIndex: number): { [key: string]: boolean } {
     return {
       ...this.getClass(rowData, 'class'),
       itemSelected: rowIndex === this.trSelected,
       itemActive: Number(rowData.bActive) ? true : false,
     };
-  }
-
-  getCellClass(col: IColumn, rowData: any = null): string {
-    if (typeof col.class === 'function') {
-      return col.class(rowData);
-    }
-    return col.class || '';
   }
 
   getColorEstado(rowData: any, rowIndex: number, tipo: 'check' | 'times'): string {
@@ -141,7 +142,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
   @Input() searchPlaceholder: string = 'Buscar por nombre....';
 
   debug(d) {
-    console.log('d');
     console.log(d);
   }
   @Input() showCaption: boolean = true;
@@ -403,8 +403,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     } else {
       this.columnasSeleccionadas = columns;
     }
-
-    console.log(this.columnsGroupSeleccionadas);
   }
 
   reAddRemovedCells(removedCols, inTableColumnsGroup) {

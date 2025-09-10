@@ -4,7 +4,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem, Message, MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
 
 import {
@@ -38,7 +38,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   planes: [];
   form: FormGroup;
   formNivelGrado: FormGroup;
-  formFiltrado: FormGroup;
+  //formFiltrado: FormGroup;
 
   caption: string;
   visible: boolean = false;
@@ -64,7 +64,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   lista: any = [];
 
   //Validaro para actualiza plan curricular
-  bAgregar: boolean = false;
+  bAgregar: boolean;
+  mensaje: Message[] = [
+    {
+      severity: 'info',
+      detail: 'No cuenta con un servicio educativo asignado a su Institución Educativa.',
+    },
+  ];
 
   private _confirmService = inject(ConfirmationModalService);
   constructor(
@@ -79,8 +85,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('implemntacion');
-
     try {
       //bd iiee_ambientes
       //this.visible = true
@@ -96,15 +100,15 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         // ambiente: [''],
         cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
       });
+      this.bAgregar = this.configuracion[0]?.iServEdId != null;
     } catch (error) {
-      console.error('Error initializing form:', error);
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
 
-    this.formFiltrado = this.fb.group({
-      iGradoId: [0],
-      cCurso: [''],
-    });
+    // this.formFiltrado = this.fb.group({
+    //   iGradoId: [{value :0, Disable: true}],
+    //   cCurso: [''],
+    // });
 
     this.formNivelGrado = this.fb.group({
       //   iNivelGradoId : [0],
@@ -114,7 +118,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       cNivelTipoNombre: [''],
 
       cDeclaracionJurada: [''],
-
       cCursoNombre: [''],
       iHorasSemPresencial: [0],
       iHorasSemDomicilio: [0],
@@ -135,11 +138,8 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.lista = this.extraerAsignatura(data.data);
-
-          console.log(this.lista, 'grados y cursos');
           this.nivelesCiclos = data.data;
 
-          console.log(this.nivelesCiclos, 'console data');
           const grouped = this.nivelesCiclos.reduce((acc, item) => {
             const curso = item.cCursoNombre;
             const grado = item.cGradoNombre + '(' + item.cCicloRomanos + ')'; //item.cGradoNombre; // Nombre ded grado
@@ -170,10 +170,11 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         },
 
         error: error => {
-          console.error('Error fetching  seccionesAsignadas:', error);
-        },
-        complete: () => {
-          // console.log(this.lista, 'desde getSeccionesAsignadas')
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje',
+            detail: 'Petición denegada. ' + error.error.message,
+          });
         },
       });
   }
@@ -231,7 +232,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   accionBtn(elemento): void {
     const { accion } = elemento;
     const { item } = elemento;
-    console.log(this.filesUrl, 'files URL');
     switch (accion) {
       case 'close-modal':
         // this.accionBtnItem.emit({ accion, item })
@@ -240,7 +240,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       case 'subir-file-configuracion-iiee':
         const url = this.query.baseUrlPublic();
         if (this.filesUrl.length < 1) {
-          console.log(item);
           this.filesUrl.push({
             type: 1, //1->file
             nameType: 'file',
@@ -255,7 +254,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         } else {
           alert('No puede subir mas de un archivo');
         }
-        console.log(this.filesUrl, 'subir-file-configuracion-iiee');
+
         break;
     }
   }
@@ -285,7 +284,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     if (evento.accion === 'agregar') {
       this.visible = true;
       this.caption = 'Registrar plan de estudios';
-      console.log(evento.item, 'btnTable');
     }
   }
 
@@ -299,23 +297,15 @@ export class ConfigPlanEstudiosComponent implements OnInit {
           })
           .subscribe({
             next: (data: any) => {
-              console.log(data, 'id', data.data[0].id);
-
-              // Asegurar inicialización
-              // this.configuracion = this.configuracion || [{}]
-              // this.stepService.configuracion[0] = this.stepService
-              //     .configuracion || [{}]
-              // Actualizar valores
               this.form.get('iConfigId')?.setValue(data.data[0].id);
               this.configuracion[0] = this.form.value;
               this.stepService.configuracion[0] = this.configuracion[0];
             },
             error: error => {
-              console.error('Error fetching configuración:', error);
               this.messageService.add({
                 severity: 'error',
                 summary: 'Mensaje',
-                detail: 'Error. No se proceso petición ',
+                detail: 'Error. No se proceso petición. ' + error.error.message,
               });
             },
             complete: () => {
@@ -324,14 +314,14 @@ export class ConfigPlanEstudiosComponent implements OnInit {
                 summary: 'Mensaje',
                 detail: 'Proceso exitoso',
               });
-              console.log('Request completed');
-              // this.router.navigate([
-              //     '/gestion-institucional/ambiente',
-              // ])
             },
           });
       } else {
-        console.log('Formulario no válido', this.form.invalid);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje',
+          detail: 'llenado incorrecto del formulario.',
+        });
       }
     }
   }

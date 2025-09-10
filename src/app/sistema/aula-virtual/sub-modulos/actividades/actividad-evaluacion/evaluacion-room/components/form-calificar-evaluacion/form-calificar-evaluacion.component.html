@@ -1,36 +1,53 @@
 <app-modal-primeng
-    [title]="'Calificar a: ' + name"
-    (accionBtnItem)="accionBtn($event)"
-    [width]="'50%'"
-    [showModal]="showFormCalificarEvaluacion"
+  [title]="'Calificar a: ' + name"
+  (accionBtnItem)="accionBtn($event)"
+  [width]="'50%'"
+  [showModal]="showFormCalificarEvaluacion"
 >
-    <div class="mt-4">
-        <div class="grid">
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Retroalimentación</p-inputGroupAddon>
-                    <textarea
-                        pInputText
-                        rows="5"
-                        [placeholder]="'Ingrese la retroalimentación'"
-                        [(ngModel)]="cConclusionDescriptiva"
-                    ></textarea>
-                </p-inputGroup>
-            </div>
+  <div class="mt-4">
+    <div class="grid">
+      @if (bCapacitacion) {
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Nota </p-inputGroupAddon>
+            <p-inputNumber
+              inputStyleClass="w-full"
+              mode="decimal"
+              [(ngModel)]="nEvalPromNota"
+              [min]="0"
+              [max]="20"
+              [showButtons]="true"
+              (onInput)="validarNota($event)"
+            />
+          </p-inputGroup>
         </div>
+      } @else {
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Retroalimentación</p-inputGroupAddon>
+            <textarea
+              pInputText
+              rows="5"
+              [placeholder]="'Ingrese la retroalimentación'"
+              [(ngModel)]="cConclusionDescriptiva"
+            ></textarea>
+          </p-inputGroup>
+        </div>
+      }
     </div>
-    <div footer class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-        />
-        <p-button
-            [label]="'Guardar Retroalimentación'"
-            [loading]="isLoading"
-            [disabled]="isLoading"
-            (onClick)="guardarConclusionxiEvalPromId()"
-        />
-    </div>
+  </div>
+  <div footer class="flex justify-content-end gap-2">
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+    />
+    <p-button
+      [label]="'Guardar Retroalimentación'"
+      [loading]="isLoading"
+      [disabled]="isLoading"
+      (onClick)="guardarConclusionxiEvalPromId()"
+    />
+  </div>
 </app-modal-primeng>
 <p-toast></p-toast>

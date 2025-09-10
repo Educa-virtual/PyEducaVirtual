@@ -100,23 +100,53 @@ export class BlockHorarioComponent implements OnChanges {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos del horario: ' + error.message,
+            detail:
+              'Error al cargar los datos del horario: ' + error?.error?.message ||
+              'Ocurrió un error inesperado',
           });
         },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del Sistema',
-            detail: 'Se cargar los registros del horario correctamente',
-          });
-        },
+        // complete: () => {
+        //   this.messageService.add({
+        //     severity: 'success',
+        //     summary: 'Mensaje del Sistema',
+        //     detail: 'Se cargar los registros del horario correctamente',
+        //   });
+        // },
       });
+  }
+
+  toSeconds(hora: string): number {
+    const [h, m, s] = hora.split(':').map(Number);
+    return h * 3600 + m * 60 + (s || 0);
   }
 
   agregarBloque() {
     this.sumarIntervalo();
+    //validar que no sea menor--------------------------------
+    const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
+    const bloqueMax = this.bloques.reduce((prev, current) =>
+      prev.tFin > current.tFin ? prev : current
+    );
 
+    const dtfin = bloqueMax.tBloqueFin;
+    const hFin = dtfin.substring(0, 8);
+
+    if (this.toSeconds(hFin) > this.toSeconds(tInicio)) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado no puede ser menor al anterior.',
+      });
+      const [hours, minutes, seconds] = hFin.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, seconds || 0);
+
+      this.formGenerador.get('tBloqueInicio')?.setValue(date);
+      return;
+    }
+    //----------------------------------------------
     if (!this.validarFechas()) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado ya existe.',
+      });
       return; // Detiene el flujo si es duplicado
     }
     const params = JSON.stringify({
@@ -135,7 +165,9 @@ export class BlockHorarioComponent implements OnChanges {
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error. No se proceso petición de registro: ' + error.message,
+            detail:
+              'Error. No se proceso petición de registro: ' + error?.error?.message ||
+              'Ocurrió un error inesperado',
           });
         },
         complete: () => {
@@ -162,7 +194,8 @@ export class BlockHorarioComponent implements OnChanges {
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje de error',
-          detail: 'NO se pudo eliminar registro' + error,
+          detail:
+            'NO se pudo eliminar registro' + error?.error?.message || 'Ocurrió un error inesperado',
         });
       },
       complete: () => {
@@ -184,11 +217,10 @@ export class BlockHorarioComponent implements OnChanges {
   }
 
   validarFechas(): boolean {
-    console.log(this.formGenerador.get('tBloqueInicio')?.value, 'validarFechas');
     const existe = this.bloques.some((bloque: any) => {
       const horaBloque = this.extraerHora(bloque.tBloqueInicio);
       const inicio = this.extraerHora(this.formGenerador.get('tBloqueInicio')?.value);
-      console.log(horaBloque, ' bloque', inicio, 'horaBloque y inicio');
+
       return horaBloque === inicio;
     });
 
@@ -285,9 +317,9 @@ export class BlockHorarioComponent implements OnChanges {
   //   }
 
   accionBtnItemTable({ accion, item }) {
-    if (accion === 'editar') {
-      console.log(item, 'btnTable');
-    }
+    // if (accion === 'editar') {
+
+    // }
     if (accion === 'eliminar') {
       this._confirmService.openConfiSave({
         message: '¿Estás seguro de que deseas eliminar?',

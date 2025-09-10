@@ -1,11 +1,6 @@
 <div class="grid">
   <div class="col-12">
-    <app-toolbar-primeng [title]="'Lista de Instructores'">
-      <p-button
-        icon="pi pi-plus"
-        label="Nuevo Instructor"
-        (onClick)="accionBnt({ accion: 'guardar' })"
-      ></p-button>
+    <app-toolbar-primeng [title]="'Lista de Instructores'" [butons]="btnAccion">
     </app-toolbar-primeng>
     <app-table-primeng
       [columnas]="columnasTabla"

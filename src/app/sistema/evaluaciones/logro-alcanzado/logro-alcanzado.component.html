@@ -1,0 +1,136 @@
+<p-panel>
+  <ng-template pTemplate="header" class="encabezado">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Registrar Logros Alcanzados</h3>
+    </div>
+  </ng-template>
+
+  <div *ngIf="!seleccionar">
+    <div class="grid" *ngIf="data && data.length > 0">
+      <div class="col-12 cursos">
+        @for (curso of cursos; track curso) {
+          <app-curso-card
+            #dv
+            [curso]="curso"
+            [registro]="true"
+            (filtrarCurso)="filtrarCurso($event)"
+          ></app-curso-card>
+        }
+      </div>
+    </div>
+    <div class="grid" *ngIf="!data || data.length === 0">
+      <div class="col-12">
+        <p-message
+          severity="info"
+          text="No hay cursos disponibles para registrar logros alcanzados."
+        ></p-message>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="seleccionar"
+    style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem"
+  >
+    <!-- <div>
+      <p-inputGroup>
+        <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
+        <p-dropdown [(ngModel)]="iGradoId" styleClass="w-full" placeholder="Seleccione Grado" optionValue="iGradoId"
+          [options]="grados" optionLabel="cGradoNombre" (onChange)="obtenerSecciones()" />
+      </p-inputGroup>
+    </div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon> Sección: </p-inputGroupAddon>
+        <p-dropdown [(ngModel)]="iSeccionId" styleClass="w-full" placeholder="Seleccione Sección"
+          optionValue="iSeccionId" [options]="secciones" optionLabel="cSeccionNombre"
+          (onChange)="generarListaEstudiante()" />
+      </p-inputGroup>
+    </div>-->
+    <div>
+      <p-button
+        label="Seleccionar Áreas"
+        icon="pi pi-file-pdf"
+        iconPos="right"
+        class="ml-2"
+        (onClick)="seleccionarCurso()"
+      >
+      </p-button>
+    </div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon> Área </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cCursoNombre"
+          disabled
+          class="w-full p-inputtext-sm opacity-100"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iPeriodoId"
+          [options]="periodos"
+          optionLabel="cNombrePeriodo"
+          optionValue="iNumeroPeriodo"
+          placeholder="Seleccionar"
+          styleClass="w-full"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+  </div>
+  <div *ngIf="seleccionar">
+    <br />
+    <app-table-primeng
+      [data]="estudiantes"
+      [columnas]="columns"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showAdvancedFilter]="true"
+      [showCaption]="false"
+      [actions]="actions"
+    ></app-table-primeng>
+  </div>
+  <!-- Registrar Logro Alcanzado-->
+  <p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="registroTitleModal"
+    [(visible)]="dialogRegistrarLogroAlcanzado"
+    [style]="{ width: '70%', height: '80%' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+  >
+    <app-registrar-logro-alcanzado
+      [selectedItem]="selectedItem"
+      [competencias]="competencias"
+      [iPeriodoId]="iPeriodoId"
+      [iCredId]="iCredId"
+      [periodos]="periodos"
+      (registraLogroAlcanzado)="dialogRegistrarLogroAlcanzado = $event"
+    ></app-registrar-logro-alcanzado>
+    <!-- (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)" -->
+  </p-dialog>
+  <p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="boletaTitleModal"
+    [(visible)]="dialogBoletaLogroAlcanzado"
+    [style]="{ width: '60rem', height: '670px' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  >
+    <app-boleta-logro
+      [selectedItem]="selectedItem"
+      (boletaLogroImprimir)="listenDialogBoleta($event)"
+    >
+    </app-boleta-logro>
+  </p-dialog>
+</p-panel>
+<p-toast />
+ 

@@ -66,6 +66,11 @@ export class GestionFichasComponent implements OnInit {
   sexos: any;
   distritos: any;
   estados: any;
+  tipos_personas: any;
+
+  TIPO_PERSONA_ESTUDIANTE: number = 1;
+  TIPO_PERSONA_DOCENTE: number = 2;
+  TIPO_PERSONA_ADMINISTRATIVO: number = 3;
 
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
@@ -116,6 +121,7 @@ export class GestionFichasComponent implements OnInit {
         iSeccionId: [null],
         cPersSexo: [null],
         iFichaEstado: [null],
+        iTipoPersId: [this.TIPO_PERSONA_ESTUDIANTE],
       });
     } catch (error) {
       console.log(error, 'error de formulario');
@@ -130,6 +136,7 @@ export class GestionFichasComponent implements OnInit {
         this.secciones = this.datosInformes.getSecciones(data?.secciones);
         this.nivel_tipos = this.datosInformes.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.datosInformes.getInstitucionesEducativas(data?.instituciones_educativas);
+        this.tipos_personas = this.datosInformes.getTiposPersonas(data?.tipos_personas);
         this.sexos = this.datosInformes.getSexos();
         this.estados = this.datosInformes.getEstados();
         this.datosInformes.getNivelesGrados(data?.nivel_grados);
@@ -192,6 +199,7 @@ export class GestionFichasComponent implements OnInit {
         iSeccionId: this.formFiltros.value.iSeccionId,
         cPersSexo: this.formFiltros.value.cPersSexo,
         iFichaEstado: this.formFiltros.value.iFichaEstado,
+        iTipoPersId: this.formFiltros.value.iTipoPersId,
       })
       .subscribe({
         next: (data: any) => {

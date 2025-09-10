@@ -87,8 +87,11 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
     ],
     iContenidoSemId: ['', Validators.required],
     iActTipoId: [0, Validators.required],
-    idDocCursoId: ['', Validators.required],
+    idDocCursoId: [''],
     iCredId: ['', Validators.required],
+
+    iCapacitacionId: [''],
+    iYAcadId: ['', Validators.required],
   });
 
   // Método para obtener una tarea específica por su ID (iTareaId)
@@ -177,37 +180,46 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
     this.formTareas.patchValue({
       iContenidoSemId: this.semanaTarea?.iContenidoSemId,
       idDocCursoId: this.semanaTarea?.idDocCursoId,
+      iCapacitacionId: this.semanaTarea?.iCapacitacionId,
       iDocenteId: this._ConstantesService.iDocenteId,
       iActTipoId: TAREA,
       iCredId: this._ConstantesService.iCredId,
       cTareaArchivoAdjunto: JSON.stringify(this.filesUrl),
+      iYAcadId: this._ConstantesService.iYAcadId,
     });
 
     const nombresCampos: Record<string, string> = {
-      iDocenteId: 'Docente',
       cTareaTitulo: 'Título de la tarea',
       cTareaDescripcion: 'Descripción',
       dtTareaInicio: 'Fecha de inicio',
       dtTareaFin: 'Fecha de fin',
       iContenidoSemId: 'Semana de contenido',
       iActTipoId: 'Tipo de actividad',
-      idDocCursoId: 'Curso',
       iCredId: 'Credencial',
+      iYAcadId: 'Año académico',
+      iDocenteId: 'Docente',
     };
     const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
       this.formTareas,
       nombresCampos
     );
 
-    if (!valid) {
-      if (message) {
-        // Mostrar solo el mensaje generado por el servicio
-        this.mostrarMensajeToast({
-          severity: 'error',
-          detail: '',
-          summary: '¡Error!',
-        });
-      }
+    if (!valid && message) {
+      this.mostrarMensajeToast(message);
+      this.isLoading = false;
+      return;
+    }
+
+    const { idDocCursoId, iCapacitacionId } = this.formTareas.value;
+
+    const soloUnoPresente = Boolean(idDocCursoId) !== Boolean(iCapacitacionId);
+
+    if (!soloUnoPresente) {
+      this.mostrarMensajeToast({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se encontró el curso',
+      });
       this.isLoading = false;
       return;
     }

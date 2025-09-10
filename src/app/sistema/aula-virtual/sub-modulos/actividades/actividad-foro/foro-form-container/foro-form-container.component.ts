@@ -3,13 +3,17 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service';
 import { PrimengModule } from '@/app/primeng.module';
-import { Message, MessageService } from 'primeng/api';
+import { Message } from 'primeng/api';
 import { DatePipe } from '@angular/common';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { GeneralService } from '@/app/servicios/general.service';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ForosService } from '@/app/servicios/aula/foros.service';
+import { FORO } from '@/app/sistema/aula-virtual/interfaces/actividad.interface';
+import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-foro-form-container',
@@ -18,7 +22,7 @@ import { ForosService } from '@/app/servicios/aula/foros.service';
   templateUrl: './foro-form-container.component.html',
   styleUrl: './foro-form-container.component.scss',
 })
-export class ForoFormContainerComponent implements OnInit {
+export class ForoFormContainerComponent extends MostrarErrorComponent implements OnInit {
   @Input() contenidoSemana;
 
   typesFiles = {
@@ -37,9 +41,10 @@ export class ForoFormContainerComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
   private ref = inject(DynamicDialogRef);
   private GeneralService = inject(GeneralService);
-  private _constantesService = inject(ConstantesService);
+  private _ConstantesService = inject(ConstantesService);
   private _ForosService = inject(ForosService);
-  private _MessageService = inject(MessageService);
+  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
+  private _DialogConfig = inject(DynamicDialogConfig);
 
   tareas = [];
 
@@ -57,20 +62,28 @@ export class ForoFormContainerComponent implements OnInit {
     dtForoFin: [this.date, Validators.required],
     cForoUrl: [],
     iForoId: [],
+
+    iContenidoSemId: ['', Validators.required],
+    iActTipoId: [0, Validators.required],
+    idDocCursoId: [''],
+    iCredId: ['', Validators.required],
+
+    iCapacitacionId: [''],
+    iYAcadId: ['', Validators.required],
+    iDocenteId: ['', Validators.required],
   });
 
   action: string = 'GUARDAR';
   perfil: any;
   data: any;
-  constructor(
-    private dialogConfig: DynamicDialogConfig,
-    private messageService: MessageService
-  ) {
-    this.contenidoSemana = this.dialogConfig.data.contenidoSemana;
-    this.idDocCursoId = this.dialogConfig.data.idDocCursoId;
-    this.action = this.dialogConfig.data.action.toUpperCase();
 
-    this.data = this.dialogConfig.data;
+  ngOnInit(): void {
+    this.mostrarCategorias();
+    this.contenidoSemana = this._DialogConfig.data.contenidoSemana;
+    this.idDocCursoId = this._DialogConfig.data.idDocCursoId;
+    this.action = this._DialogConfig.data.action.toUpperCase();
+
+    this.data = this._DialogConfig.data;
 
     if (this.action == 'ACTUALIZAR') {
       this.obtenerForoxiForoId(this.data.actividad.ixActivadadId);
@@ -82,9 +95,6 @@ export class ForoFormContainerComponent implements OnInit {
         detail: this.contenidoSemana?.cContenidoSemTitulo,
       },
     ];
-  }
-  ngOnInit(): void {
-    this.mostrarCategorias();
   }
   // Mostrar las categorias que existen para foros
   mostrarCategorias() {
@@ -103,37 +113,71 @@ export class ForoFormContainerComponent implements OnInit {
     if (this.isLoading) return; // evitar doble clic
     this.isLoading = true;
 
-    const data = this.foroForm.value;
-    const dataForo = {
-      iForoCatId: data.iForoCatId,
-      iDocenteId: this._constantesService.iDocenteId,
-      cForoTitulo: data.cForoTitulo,
-      cForoDescripcion: data.cForoDescripcion,
-      dtForoInicio: this.pipe.transform(data.dtForoInicio, 'yyyy-MM-ddTHH:mm:ss'),
-      dtForoFin: this.pipe.transform(data.dtForoFin, 'yyyy-MM-ddTHH:mm:ss'),
-      iContenidoSemId: this.contenidoSemana.iContenidoSemId,
-      iActTipoId: this.data.iActTipoId,
-      idDocCursoId: this.data.idDocCursoId,
-      iCredId: this._constantesService.iCredId, // Asignar el ID del crédito
-      cForoUrl: this.filesUrl.length ? JSON.stringify(this.filesUrl) : null,
-      iForoId: data.iForoId,
+    this.foroForm.patchValue({
+      iContenidoSemId: this.contenidoSemana?.iContenidoSemId,
+      idDocCursoId: this.data?.idDocCursoId,
+      iCapacitacionId: this.data?.iCapacitacionId,
+      iDocenteId: this._ConstantesService.iDocenteId,
+      iActTipoId: FORO,
+      iCredId: this._ConstantesService.iCredId,
+      cForoUrl: JSON.stringify(this.filesUrl),
+      iYAcadId: this._ConstantesService.iYAcadId,
+    });
+
+    const nombresCampos: Record<string, string> = {
+      cForoTitulo: 'Título del foro',
+      cForoDescripcion: 'Descripción',
+      iForoCatId: 'Categoría',
+      dtForoInicio: 'Fecha de inicio',
+      dtForoFin: 'Fecha de fin',
+      iContenidoSemId: 'Semana de contenido',
+      iActTipoId: 'Tipo de actividad',
+      iCredId: 'Credencial',
+      iYAcadId: 'Año académico',
+      iDocenteId: 'Docente',
     };
-    // console.log('foro a guardar', dataForo)
-    if (this.foroForm.invalid) {
-      this.messageService.add({
+
+    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
+      this.foroForm,
+      nombresCampos
+    );
+
+    if (!valid && message) {
+      this.mostrarMensajeToast(message);
+      this.isLoading = false;
+      return;
+    }
+
+    const { idDocCursoId, iCapacitacionId } = this.foroForm.value;
+
+    const soloUnoPresente = Boolean(idDocCursoId) !== Boolean(iCapacitacionId);
+
+    if (!soloUnoPresente) {
+      this.mostrarMensajeToast({
         severity: 'error',
-        summary: 'Error de validación',
-        detail: '¡Campos vacios!',
+        summary: 'Error',
+        detail: 'No se encontró el curso',
       });
       this.isLoading = false;
       return;
     }
 
+    const data = {
+      ...this.foroForm.value,
+      dtForoInicio: this.foroForm.value.dtForoInicio
+        ? this.pipe.transform(this.foroForm.value.dtForoInicio, 'dd/MM/yyyy HH:mm:ss')
+        : null,
+
+      dtForoFin: this.foroForm.value.dtForoFin
+        ? this.pipe.transform(this.foroForm.value.dtForoFin, 'dd/MM/yyyy HH:mm:ss')
+        : null,
+    };
+
     if (this.action === 'GUARDAR') {
-      this.agregarForo(dataForo);
+      this.agregarForo(data);
     }
     if (this.action === 'ACTUALIZAR') {
-      this.actualizarForo(dataForo);
+      this.actualizarForo(data);
     }
   }
   obtenerForoxiForoId(iForoId: string) {
@@ -156,26 +200,7 @@ export class ForoFormContainerComponent implements OnInit {
       },
       complete: () => {},
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
       },
     });
   }
@@ -237,88 +262,51 @@ export class ForoFormContainerComponent implements OnInit {
   }
 
   agregarForo(foro) {
-    this._ForosService.guardarForos(foro).subscribe({
-      next: resp => {
-        if (resp.validated) {
-          this.mostrarMensajeToast({
-            severity: 'success',
-            summary: '¡Genial!',
-            detail: resp.message,
-          });
-          setTimeout(() => {
-            this.closeModal(resp.validated);
-          }, 1000);
-        }
-        this.isLoading = false;
-      },
-      error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
+    console.log(foro);
+    this._ForosService
+      .guardarForos(foro)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.mostrarMensajeToast({
+              severity: 'success',
+              summary: '¡Genial!',
+              detail: resp.message,
             });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
-        this.isLoading = false;
-      },
-    });
+            setTimeout(() => {
+              this.closeModal(resp.validated);
+            }, 1000);
+          }
+          this.isLoading = false;
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
 
   actualizarForo(foro) {
-    this._aulaService.actualizarForo(foro).subscribe({
-      next: (resp: any) => {
-        if (resp.validated) {
-          this.messageService.add({
-            severity: 'success',
-            summary: '¡Genial!',
-            detail: 'Se actualizó correctamente',
-          });
-          setTimeout(() => {
-            this.closeModal(resp.validated);
-          }, 1000);
-        }
-        this.isLoading = false;
-      },
-      error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
+    this._aulaService
+      .actualizarForo(foro)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (resp: any) => {
+          if (resp.validated) {
+            this.messageService.add({
+              severity: 'success',
+              summary: '¡Genial!',
+              detail: 'Se actualizó correctamente',
             });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
-        this.isLoading = false;
-      },
-    });
-  }
-
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
+            setTimeout(() => {
+              this.closeModal(resp.validated);
+            }, 1000);
+          }
+          this.isLoading = false;
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
 }

@@ -1,16 +1,12 @@
 <div class="grid">
-    <div class="col-12">
-        <app-container-page
-            title="ACTIVIDADES NO LECTIVAS"
-            [actions]="actionsContainer"
-            (accionBtnItem)="accionBtnItem($event)"
-        >
-            <p-messages
-                [(value)]="mensaje"
-                [enableService]="false"
-                [closable]="false"
-            />
-            @if (informacion) {
+  <div class="col-12">
+    <app-container-page
+      title="ACTIVIDADES NO LECTIVAS"
+      [actions]="actionsContainer"
+      (accionBtnItem)="accionBtnItem($event)"
+    >
+      <p-messages [(value)]="mensaje" [enableService]="false" [closable]="false" />
+      <!-- @if (informacion) {
                 <div class="text-primary">
                     Total de horas:
                     {{ informacion?.nTipoDedicaHorasSemanalMensual }} | Horas
@@ -27,26 +23,39 @@
                         Falta: {{ informacion?.iFalta || 0 }}</span
                     >
                 </div>
-            }
+            } -->
 
-            <app-table-primeng
-                [columnas]="columns"
-                [actions]="actions"
-                [data]="data"
-                [showCaption]="true"
-                [tableStyle]="null"
-                (accionBtnItem)="accionBtnItem($event)"
-            ></app-table-primeng>
-        </app-container-page>
-    </div>
+      <app-table-primeng
+        [columnas]="columns"
+        [actions]="actions"
+        [data]="data"
+        [showCaption]="true"
+        [tableStyle]="null"
+        (accionBtnItem)="accionBtnItem($event)"
+      ></app-table-primeng>
+    </app-container-page>
+  </div>
 </div>
 <app-form-actividades-no-lectivas
-    [showModal]="showModal"
-    [data]="item"
-    [titulo]="titulo"
-    [opcion]="opcion"
-    [tiposCargaNoLectivas]="tiposCargaNoLectivas"
-    [iFalta]="informacion?.iFalta"
-    (accionBtnItem)="accionBtnItem($event)"
+  [showModal]="showModal"
+  [data]="item"
+  [titulo]="titulo"
+  [opcion]="opcion"
+  [tiposCargaNoLectivas]="tiposCargaNoLectivas"
+  [iFalta]="informacion?.iFalta"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-form-actividades-no-lectivas>
+
+<!-- <p-dialog header="Aprobar Actividad No Lectiva" [(visible)]="showModalAprobarActividad" class="p-fluid" [modal]="true"
+    [closable]="false" [style]="{ width: '450px' }">
+    <div class="row">
+        <div class="col-8">
+            <label for="bAprobacion">¿Aprueba la actividad no lectiva?</label>
+        </div>
+        <div class="col-4">
+            <p-inputSwitch [(ngModel)]="bAprobacion" inputId="bAprobacion" (onChange)="cambioAprobacion($event)" />
+        </div>
+    </div>
+</p-dialog> -->
+
 <p-toast />

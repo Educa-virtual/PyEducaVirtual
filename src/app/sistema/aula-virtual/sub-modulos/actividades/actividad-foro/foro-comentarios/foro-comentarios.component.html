@@ -1,5 +1,5 @@
 <div class="card grid">
-  <div [class]="iPerfilId === DOCENTE ? 'col-12 md:col-8' : 'col-12'">
+  <div [class]="iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR ? 'col-12 md:col-8' : 'col-12'">
     <div class="pb-2">
       <label for="" class="" style="font-weight: bold; font-size: 16px">Chats: </label>
     </div>
@@ -257,7 +257,7 @@
       </div>
     </div>
   </div>
-  @if (iPerfilId === DOCENTE) {
+  @if (iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR) {
     <div class="col-4">
       <app-foro-estudiantes
         [id]="id"

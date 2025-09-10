@@ -17,6 +17,7 @@ import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component';
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component';
 import { Location } from '@angular/common';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-evaluacion-room',
@@ -57,6 +58,14 @@ export class EvaluacionRoomComponent implements OnInit {
     // },
   ];
 
+  isDocente: boolean =
+    this._ConstantesService.iPerfilId === DOCENTE ||
+    this._ConstantesService.iPerfilId === INSTRUCTOR;
+
+  isEstudiante: boolean =
+    this._ConstantesService.iPerfilId === ESTUDIANTE ||
+    this._ConstantesService.iPerfilId === PARTICIPANTE;
+
   tabs = [
     {
       title: 'Descripción',
@@ -68,21 +77,21 @@ export class EvaluacionRoomComponent implements OnInit {
       title: 'Preguntas',
       icon: 'pi-pen-to-square',
       tab: 'preguntas',
-      isVisible: !(this._ConstantesService.iPerfilId === DOCENTE),
+      isVisible: !this.isDocente,
       //tab:1
     },
     {
       title: 'Calificar',
       icon: 'pi-list-check',
       tab: 'calificar',
-      isVisible: !(this._ConstantesService.iPerfilId === DOCENTE),
+      isVisible: !this.isDocente,
       //tab:2
     },
     {
       title: 'Rendir Evaluación',
       icon: 'pi-check-circle',
       tab: 'rendir-examen',
-      isVisible: !(this._ConstantesService.iPerfilId === ESTUDIANTE),
+      isVisible: !this.isEstudiante,
       //tab:3
     },
   ];
@@ -125,9 +134,6 @@ export class EvaluacionRoomComponent implements OnInit {
   public iPerfilId = this._ConstantesService.iPerfilId;
   public evaluacion;
   public cEvaluacionInstrucciones;
-  public DOCENTE = DOCENTE;
-  public ESTUDIANTE = ESTUDIANTE;
-  isDocente: boolean = this._ConstantesService.iPerfilId === DOCENTE;
 
   iNivelCicloId: string | number;
   iCursoId: string | number;

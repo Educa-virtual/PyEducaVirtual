@@ -1,92 +1,96 @@
 <div class="p-5">
-    <!-- inicio de publicacion de comunicados -->
-    <p-carousel
-        [value]="comunicados"
-        [numVisible]="2"
-        [numScroll]="2"
-        [circular]="true"
-        [responsiveOptions]="responsiveOptions"
-        *ngIf="comunicados.length > 0"
-        autoplayInterval="9000"
-    >
-        <ng-template let-comunicado pTemplate="item">
-            <div
-                class="border-1 surface-border border-round m-2 p-3 bg-white"
-                (click)="
-                    showModal(
-                        comunicado.cComunicadoTitulo,
-                        comunicado.cComunicadoDescripcion
-                    )
-                "
-                tabindex="0"
-                (keydown)="onKeyDown($event)"
-                (keyup)="onKeyUp($event)"
-            >
-                <div class="mb-3">
-                    <div class="relative mx-auto">
-                        <p-tag
-                            [value]="comunicado.cPrioridadNombre"
-                            [severity]="obtenerEstado(comunicado.iPrioridadId)"
-                            class="absolute"
-                            [ngStyle]="{ 'right.px': 1, 'top.px': 1 }"
-                        />
-                    </div>
-                </div>
-                <div class="mb-3 font-bold w-10">
-                    {{ comunicado.cComunicadoTitulo | uppercase }}
-                </div>
-                <hr />
-                <div class="flex justify-content-between align-items-center">
-                    <div
-                        class="mt-0 font-medium text-base text-justify white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                        style="width: 500px"
-                    >
-                        {{ comunicado.cComunicadoDescripcion }}
-                    </div>
-                </div>
-                <br />
-                <div class="font-bold text-sm text-right">
-                    Fecha de Publicacion:
-                    {{ comunicado.dtComunicadoEmision | date: 'yyyy-MM-dd' }}
-                </div>
-            </div>
-        </ng-template>
-    </p-carousel>
-    <!-- fin de publicacion de comunicado -->
-
-    <div class="container p-5 text-center">
-        <!-- <span class="title">Bienvenido</span> -->
-        <div class="title">
-            <span class="title">Bienvenido </span>
-            <b>{{ name }}</b> a la
-            <!-- style="color: var(--surface-menu)" -->
-            <span class="plataforVirt">Plataforma Educativa Virtual</span>
-            de la Dirección Regional de Educación Moquegua
-        </div>
-        <div class="mt-5 icono-container">
-            <img
-                style="max-width: 150px"
-                src="assets/images/logo-plataforma-virtual-small.png"
-                alt="logo"
-                class="ico-3d"
+  <!-- inicio de publicacion de comunicados -->
+  <p-carousel
+    [value]="comunicados"
+    [numVisible]="2"
+    [numScroll]="2"
+    [circular]="true"
+    [responsiveOptions]="responsiveOptions"
+    *ngIf="comunicados.length > 0"
+    autoplayInterval="9000"
+  >
+    <ng-template let-comunicado pTemplate="item">
+      <div
+        class="border-1 surface-border border-round m-2 p-3 bg-white"
+        (click)="showModal(comunicado.cComunicadoTitulo, comunicado.cComunicadoDescripcion)"
+        tabindex="0"
+        (keydown)="onKeyDown($event)"
+        (keyup)="onKeyUp($event)"
+      >
+        <div class="mb-3">
+          <div class="relative mx-auto">
+            <p-tag
+              [value]="comunicado.cPrioridadNombre"
+              [severity]="obtenerEstado(comunicado.iPrioridadId)"
+              class="absolute"
+              [ngStyle]="{ 'right.px': 1, 'top.px': 1 }"
             />
+          </div>
         </div>
+        <div class="mb-3 font-bold w-10">
+          {{ comunicado.cComunicadoTitulo | uppercase }}
+        </div>
+        <hr />
+        <div class="flex justify-content-between align-items-center">
+          <div
+            class="mt-0 font-medium text-base text-justify white-space-nowrap overflow-hidden text-overflow-ellipsis"
+            style="width: 500px"
+          >
+            {{ comunicado.cComunicadoDescripcion }}
+          </div>
+        </div>
+        <br />
+        <div class="font-bold text-sm text-right">
+          Fecha de Publicacion:
+          {{ comunicado.dtComunicadoEmision | date: 'yyyy-MM-dd' }}
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+  <!-- fin de publicacion de comunicado -->
+
+  <div class="container p-5 border-round-xl shadow-4 w-full">
+    <div class="grid flex justify-content-center align-items-center">
+      <div
+        class="xl:col-3 sm:col-12 flex-order-2 xl:flex-order-1 lg:flex-order-1 sm:flex-order-2 flex justify-content-center align-items-center text-center"
+      >
+        <div class="w-full">
+          <img
+            style="width: 130px"
+            src="assets/images/logo-plataforma-virtual-small.png"
+            alt="logo"
+          />
+        </div>
+      </div>
+      <div
+        class="xl:col-9 sm:col-12 flex-order-1 xl:flex-order-2 lg:flex-order-2 sm:flex-order-1 flex justify-content-center align-items-center text-center"
+      >
+        <div class="title">
+          <span class="title">Bienvenido </span>
+          <b>{{ name }}</b> a la
+          <span class="plataforVirt">Plataforma Educativa Virtual</span>
+          de la Dirección Regional de Educación Moquegua
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <p-dialog
-    header="Comunicados"
-    [(visible)]="visible"
-    [modal]="true"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    [style]="{ width: '50vw' }"
-    [draggable]="false"
-    [resizable]="false"
+  header="Comunicados"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
 >
-    <p class="mt-5 font-bold">
-        {{ titulo }}
-    </p>
-    <p class="mt-2">
-        {{ descripcion }}
-    </p>
+  <p class="mt-5 font-bold">
+    {{ titulo }}
+  </p>
+  <p class="mt-2">
+    {{ descripcion }}
+  </p>
 </p-dialog>
+
+<p-toast />

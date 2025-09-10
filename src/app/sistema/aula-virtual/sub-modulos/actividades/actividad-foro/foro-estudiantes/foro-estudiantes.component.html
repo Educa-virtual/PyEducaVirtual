@@ -58,35 +58,36 @@
   [modal]="true"
 >
   <div class="grid pt-2">
-    <!-- Mostrar la califcación comentada segun el requerimiento -->
-    <!--  for="calificacion" [options]="calificacion"-->
-    <!-- <div class="col-12">
-          <p-inputGroup>
-              <p-inputGroupAddon> Calificación </p-inputGroupAddon>
-              <p-dropdown
-                  formControlName="iEscalaCalifId"
-                  [options]="calificacion"
-                  optionValue="iEscalaCalifId"
-                  optionLabel="cEscalaCalifNombre"
-                  placeholder="Seleccione una Calificación"
-                  [style]="{ width: '100%' }"
-                  [showClear]="true"
-              ></p-dropdown>
-          </p-inputGroup>
-      </div> -->
     <!-- Mostrar descripción -->
-    <div class="col-12">
-      <label for="descripcion" class="font-bold mt-1"
-        >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-      >
-      <div class="mt-2 pt-2">
-        <p-editor
-          id="descripcion"
-          [(ngModel)]="descripcionContrctva"
-          [style]="{ height: '150px' }"
-        />
+    @if (bCapacitacion) {
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Nota </p-inputGroupAddon>
+          <p-inputNumber
+            inputStyleClass="w-full"
+            mode="decimal"
+            [(ngModel)]="nForoRptaNota"
+            [min]="0"
+            [max]="20"
+            [showButtons]="true"
+            (onInput)="validarNota($event)"
+          />
+        </p-inputGroup>
       </div>
-    </div>
+    } @else {
+      <div class="col-12">
+        <label for="descripcion" class="font-bold mt-1"
+          >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+        >
+        <div class="mt-2 pt-2">
+          <p-editor
+            id="descripcion"
+            [(ngModel)]="descripcionContrctva"
+            [style]="{ height: '150px' }"
+          />
+        </div>
+      </div>
+    }
   </div>
 
   <div class="justify-content-center flex-wrap">
@@ -100,28 +101,6 @@
         (click)="cerrarmodal()"
       />
       <p-button label="Enviar" icon="pi pi-send" (click)="calificarComntEstudiante()" />
-      <!-- <button
-              pButton
-              pRipple
-              label="Cancelar"
-              icon="pi pi-times"
-              class="p-button-secondary mx-3"
-              type="button"
-              size="small"
-              
-          ></button> -->
-      <!-- (click)="cerrarmodal()" -->
-      <!-- <button
-              pButton
-              pRipple
-              type="button"
-              label="Enviar"
-              icon="pi pi-send"
-              size="small"
-              class="p-button-primary"
-              
-          ></button> -->
-      <!-- (click)="calificarComnt()" -->
     </div>
   </div>
 </p-dialog>

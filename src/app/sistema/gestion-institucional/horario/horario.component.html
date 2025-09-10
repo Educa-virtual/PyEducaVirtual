@@ -27,7 +27,7 @@
     [draggable]="true"
     [resizable]="true"
     [maximizable]="true"
-  >
+    ><br />
     <form [formGroup]="formHorario">
       <input pInputText type="hidden" formControlName="iConfBloqueId" class="p-inputtext-sm" />
 
@@ -67,11 +67,7 @@
             <label for="iBloqueInter">Intervalo:</label>
           </span>
         </div>
-        <div class="field col-12 md:col-2">
-          <span class="p-float-label">
-            <p-inputSwitch formControlName="iEstado" [trueValue]="1" [falseValue]="0" />
-          </span>
-        </div>
+        <div class="field col-12 md:col-2"></div>
       </div>
       <div class="grid p-fluid mt-3">
         <div class="field col-12 md:col-4">
@@ -83,6 +79,7 @@
               [timeOnly]="true"
               [disabledDays]="[0, 6]"
               inputId="icondisplay"
+              appendTo="body"
             >
             </p-calendar>
 
@@ -98,6 +95,7 @@
               [timeOnly]="true"
               [disabledDays]="[0, 6]"
               inputId="icondisplay"
+              appendTo="body"
             >
             </p-calendar>
 

@@ -1,0 +1,56 @@
+<app-toolbar-primeng [title]="'Datos del año académico'"> </app-toolbar-primeng>
+<app-tabs-primeng
+  class="col-12"
+  [activeIndex]="selectTab"
+  [tabs]="tabs"
+  [icon]="false"
+  [list]="true"
+  [getIndex]="false"
+  (updateTab)="updateTab($event)"
+>
+</app-tabs-primeng>
+
+<div class="grid">
+  <div class="col-12">
+    @switch (tabSeleccionado) {
+      @case ('configuracion') {
+        <app-configuracion-inicial
+          [data]="this.formCalendarioAcademicos.value"
+          (datosConfiguracionTurnos)="dataConfigTurnos($event)"
+          (datosConfiguracionInicial)="dataConfigInicial($event)"
+        ></app-configuracion-inicial>
+      }
+      @case ('periodos') {
+        <app-periodos-academicos
+          [data]="this.formCalendarioAcademicos.value"
+          [tiposPeriodos]="tiposPeriodos"
+          (recargarobtenerCalendarioAcademicos)="obtenerCalendarioAcademicos()"
+        ></app-periodos-academicos>
+      }
+      @case ('resumen') {
+        <app-resumen [data]="this.formCalendarioAcademicos.value"></app-resumen>
+      }
+    }
+  </div>
+  <div class="col-6 text-left">
+    <p-button
+      *ngIf="tabSeleccionado !== 'configuracion'"
+      [label]="'Atrás'"
+      severity="danger"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      (onClick)="enviarFormulario('atras')"
+    />
+  </div>
+  <div class="col-6 text-right">
+    <p-button
+      *ngIf="tabSeleccionado !== 'resumen'"
+      [label]="'Siguiente'"
+      severity="success"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (onClick)="enviarFormulario('siguiente')"
+    />
+  </div>
+</div>
+<p-toast></p-toast>

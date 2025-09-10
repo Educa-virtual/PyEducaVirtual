@@ -40,7 +40,7 @@ const routes: Routes = [
     component: CategoriasEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: encuestadores,
+      expectedRole: [...encuestados, ...encuestadores],
       breadcrumb: 'Categorías',
     },
   },
@@ -54,7 +54,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'categorias/:iCateId/gestionar-encuestas',
+    path: 'categorias/:iCateId/gestion-encuestas',
     component: GestionEncuestasComponent,
     canActivate: [RoleGuard],
     data: {
@@ -103,7 +103,7 @@ const routes: Routes = [
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: encuestadores,
+      expectedRole: [...encuestadores, ...encuestados],
       breadcrumb: 'Responder Encuesta',
     },
   },

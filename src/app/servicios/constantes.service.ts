@@ -103,6 +103,11 @@ const docente = [
           },
         ],
       },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
     ],
   },
 ];
@@ -152,6 +157,11 @@ const estudiante = [
             routerLink: ['/bienestar/recordario-fechas'],
           },
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
     ],
   },
@@ -432,6 +442,11 @@ const administracion = [
           },
         ],
       },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
 
       // {
       //     label: 'Generación de Reportes y estadísticas',
@@ -553,6 +568,11 @@ const apoderado = [
             routerLink: ['/bienestar/gestion-fichas-apoderado'],
           },
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
       {
         label: 'Notificaciones y anuncios',

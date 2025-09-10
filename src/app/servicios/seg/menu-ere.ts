@@ -233,6 +233,11 @@ export const especialistaUgel = [
           },
         ],
       },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
       reportesEre,
       {
         label: 'Enlaces de ayuda',

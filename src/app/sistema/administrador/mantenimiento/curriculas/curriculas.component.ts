@@ -354,17 +354,14 @@ export class CurriculasComponent implements OnInit {
   // }
 
   updCurriculas() {
-    alert('lleg');
-    let params = this.frmCurriculas.value;
-    // Si params es un array, recorres con map
-    params = params.map((item: any) => ({
-      ...item, // mantenemos todas las propiedades originales
-      iSesionId: this.iPerfilId, // agregamos la variable nueva
+    const params = this.frmCurriculas.value.map((item: any) => ({
+      ...item,
+      iPerfil: this.iPerfilId,
     }));
 
     this.query.updateCalAcademico({
       json: JSON.stringify(params),
-      _opcion: 'updAprobacionCargaNoLectiva',
+      _opcion: 'updCurricula',
     });
 
     this.curriculas.save().subscribe({

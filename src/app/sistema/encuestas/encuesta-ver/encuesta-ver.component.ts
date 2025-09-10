@@ -138,6 +138,7 @@ export class EncuestaVerComponent implements OnInit {
         next: (data: any) => {
           this.encuesta = data.data;
           this.encuesta.accesos_detalle = JSON.parse(this.encuesta.json_accesos_detalle);
+          this.setBreadCrumbs();
         },
         error: error => {
           console.error('Error obteniendo encuesta:', error);

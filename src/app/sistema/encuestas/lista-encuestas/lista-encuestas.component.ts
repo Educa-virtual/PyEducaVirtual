@@ -1,19 +1,18 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
-import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
-import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { SlicePipe } from '@angular/common';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
   selector: 'app-lista-encuestas',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent],
+  imports: [PrimengModule, NoDataComponent],
   templateUrl: './lista-encuestas.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
   providers: [SlicePipe],
@@ -29,13 +28,16 @@ export class ListaEncuestasComponent implements OnInit {
   perfil: any;
   cCateNombre: string;
 
-  dataEncuestas: Array<any> = [];
+  encuestas: Array<any> = [];
+  encuestas_filtradas: Array<any> = [];
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
+
+  USUARIO_ENCUESTADO: number = this.encuestasService.USUARIO_ENCUESTADO;
 
   constructor(
     private messageService: MessageService,
@@ -56,7 +58,6 @@ export class ListaEncuestasComponent implements OnInit {
 
   ngOnInit() {
     if (this.iCateId) {
-      this.verCategoria();
       this.listarEncuestas();
     }
   }
@@ -70,7 +71,7 @@ export class ListaEncuestasComponent implements OnInit {
           ? String(this.slicePipe.transform(this.categoria?.cCateNombre, 0, 20))
           : 'Categoría',
       },
-      { label: 'Encuestas' },
+      { label: 'Listar encuestas' },
     ];
     this.breadCrumbHome = {
       icon: 'pi pi-home',
@@ -78,41 +79,16 @@ export class ListaEncuestasComponent implements OnInit {
     };
   }
 
-  agregarEncuesta() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta`]);
-  }
-
-  verCategoria() {
-    this.encuestasService
-      .verCategoria({
-        iCateId: this.iCateId,
-        iYAcadId: this.iYAcadId,
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.categoria = data.data;
-          this.setBreadCrumbs();
-        },
-        error: error => {
-          console.error('Error obteniendo datos:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message ?? 'Ocurrió un error',
-          });
-        },
-      });
-  }
-
   listarEncuestas() {
     this.encuestasService
       .listarEncuestas({
         iCateId: this.iCateId,
         iYAcadId: this.iYAcadId,
+        iTipoUsuario: this.USUARIO_ENCUESTADO,
       })
       .subscribe({
         next: (resp: any) => {
-          this.dataEncuestas = resp.data;
+          this.encuestas = resp.data;
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);
@@ -127,7 +103,7 @@ export class ListaEncuestasComponent implements OnInit {
 
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value;
-    this.dataEncuestas = this.dataEncuestas.filter(encuesta => {
+    this.encuestas_filtradas = this.encuestas.filter(encuesta => {
       if (encuesta.cEncNombre && encuesta.cEncNombre.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
       if (
@@ -149,248 +125,25 @@ export class ListaEncuestasComponent implements OnInit {
   }
 
   verEncuesta() {
-    console.log('Ver encuesta:', this.selectedItem);
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Ver encuesta',
-      detail: `Viendo encuesta: ${this.selectedItem.cTituloEncuesta}`,
-    });
+    this.router.navigate([
+      `/encuestas/categorias/${this.iCateId}/lista-encuestas/${this.selectedItem.iEncuId}`,
+    ]);
   }
 
-  editarEncuesta(item: any) {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}`]);
-  }
-
-  eliminarEncuesta(item: any) {
-    this.encuestasService
-      .borrarEncuesta({
-        iEncuId: item.iEncuId,
-      })
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Encuesta eliminada',
-          });
-          this.dataEncuestas = this.dataEncuestas.filter(
-            encuesta => encuesta.iEncuId !== item.iEncuId
-          );
-        },
-        error: error => {
-          console.error('Error obteniendo lista de encuestas:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message,
-          });
-        },
-      });
-  }
-
-  aprobarEncuesta(item: any) {
-    this.encuestasService
-      .aprobarEncuesta({
-        iCredEntPerfId: this.perfil.iCredEntPerfId,
-        iEncuId: item.iEncuId,
-      })
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Actualización exitosa',
-            detail: 'Se actualizó la encuesta',
-          });
-          this.listarEncuestas();
-        },
-        error: error => {
-          console.error('Error actualizando encuesta:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message,
-          });
-        },
-      });
-  }
-
-  abrirDialogoNuevaEncuesta() {
-    this.mostrarDialogoNuevaEncuesta = true;
-  }
-
-  cerrarDialogoNuevaEncuesta() {
-    this.mostrarDialogoNuevaEncuesta = false;
-  }
-
-  abrirDialogoAccesosEncuesta() {
-    this.mostrarDialogoAccesosEncuesta = true;
-  }
-  cerrarDialogoAccesosEncuesta() {
-    this.mostrarDialogoAccesosEncuesta = false;
-  }
-
-  accionBtnItemTable({ accion, item }) {
-    this.selectedItem = item;
-    switch (accion) {
-      case 'editar':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}`,
-        ]);
-        break;
-      case 'ver':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}`,
-        ]);
-        break;
-      case 'preguntas':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/lista-encuestas/${item.iEncuId}/preguntas`,
-        ]);
-        break;
-      case 'eliminar':
-        this.confirmService.openConfirm({
-          header: '¿Está seguro de eliminar la encuesta seleccionada?',
-          accept: () => {
-            this.eliminarEncuesta(item);
-          },
-          reject: () => {},
-        });
-        break;
-      case 'aprobar':
-        this.confirmService.openConfirm({
-          message: '¿Está seguro de aprobar la encuesta seleccionada?',
-          header: 'Confirmación',
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-            this.aprobarEncuesta(item);
-          },
-          reject: () => {},
-        });
-        break;
-      case 'respuestas':
-        this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/respuestas`]);
-        break;
-      case 'resumen':
-        this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/resumen`]);
-        break;
-      default:
-        console.warn('Acción no reconocida:', accion);
+  getColorEncuesta(encuesta: any) {
+    if (encuesta.iEstado === this.ESTADO_BORRADOR) {
+      return 'card-alerta';
+    } else if (encuesta.iEstado === this.ESTADO_APROBADA) {
+      return 'card-regular';
     }
+    return 'card-regular';
   }
 
-  actions: IActionTable[] = [
-    {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-file-edit',
-      accion: 'editar',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
-    },
-    {
-      labelTooltip: 'Ver',
-      icon: 'pi pi-eye',
-      accion: 'ver',
-      type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) !== this.ESTADO_BORRADOR || Number(rowData.puede_editar) !== 1,
-    },
-    {
-      labelTooltip: 'Ver Preguntas',
-      icon: 'pi pi-question',
-      accion: 'preguntas',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
-    {
-      labelTooltip: 'Aprobar',
-      icon: 'pi pi-check',
-      accion: 'aprobar',
-      type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_aprobar) === 1,
-    },
-    {
-      labelTooltip: 'Eliminar',
-      icon: 'pi pi-trash',
-      accion: 'eliminar',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
-    },
-    {
-      labelTooltip: 'Ver respuestas',
-      icon: 'pi pi-users',
-      accion: 'respuestas',
-      type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_APROBADA &&
-        Number(rowData.puede_ver_respuestas) === 1,
-    },
-    {
-      labelTooltip: 'Ver resumen',
-      icon: 'pi pi-chart-pie',
-      accion: 'resumen',
-      type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) == this.ESTADO_APROBADA && Number(rowData.puede_ver_resumen) === 1,
-    },
-  ];
+  responderEncuesta(encuesta: any) {
+    this.router.navigate([`/bienestar/encuesta/${encuesta.iEncuId}/respuestas`]);
+  }
 
-  columns: IColumn[] = [
-    {
-      type: 'item',
-      width: '1rem',
-      field: 'item',
-      header: '#',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '8rem',
-      field: 'cEncuNombre',
-      header: 'Título de encuesta',
-      text_header: 'center',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '2rem',
-      field: 'cTiemDurNombre',
-      header: 'Tiempo',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'date',
-      width: '3rem',
-      field: 'dEncuInicio',
-      header: 'Desde',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'date',
-      width: '3rem',
-      field: 'dEncuFin',
-      header: 'Hasta',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'actions',
-      width: '3rem',
-      field: 'actions',
-      header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
-    },
-  ];
+  verRespuestas(encuesta: any) {
+    this.router.navigate([`/bienestar/encuesta/${encuesta.iEncuId}/resumen`]);
+  }
 }

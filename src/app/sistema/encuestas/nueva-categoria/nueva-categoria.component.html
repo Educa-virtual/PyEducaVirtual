@@ -44,14 +44,14 @@
           ></textarea>
         </p-inputGroup>
       </div>
-      @if (categoria?.cCateImagenNombre) {
+      @if (categoria?.cCateImagenUrl) {
         <div class="col-12">
           <p-inputGroup class="vertical-group">
             <p-inputGroupAddon>Imagen</p-inputGroupAddon>
             <div class="card" style="position: relative">
               <img
                 height="200px"
-                [src]="categoria?.cCateImagenNombre"
+                [src]="categoria?.cCateImagenUrl"
                 [alt]="categoria?.cCateNombre"
                 class="block"
               />
@@ -72,6 +72,7 @@
             >{{ categoria?.cCateImagenNombre ? 'Cambiar' : 'Subir' }} imagen</p-inputGroupAddon
           >
           <p-fileUpload
+            #fileUpload
             name="cCateImagenNombre"
             (onSelect)="handleArchivo($event)"
             [multiple]="false"

@@ -244,7 +244,7 @@ export class EncuestaComponent implements OnInit {
           : 'Categoría',
       },
       {
-        label: 'Encuestas',
+        label: 'Gestionar encuestas',
         routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
       },
       {
@@ -374,7 +374,7 @@ export class EncuestaComponent implements OnInit {
 
   verPreguntas() {
     this.router.navigate([
-      '/encuestas/categorias/' + this.iCateId + '/encuestas/' + this.iEncuId + '/preguntas',
+      '/encuestas/categorias/' + this.iCateId + '/gestion-encuestas/' + this.iEncuId + '/preguntas',
     ]);
   }
 

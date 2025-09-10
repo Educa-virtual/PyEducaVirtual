@@ -3,7 +3,7 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-xl">Encuestas de categoría</div>
+      <div class="flex text-xl">Gestionar encuestas de categoría</div>
       <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
     </div>
   </ng-template>
@@ -30,7 +30,7 @@
 
   <app-table-primeng
     [columnas]="columns"
-    [data]="dataEncuestas"
+    [data]="encuestas_filtradas"
     (accionBtnItem)="accionBtnItemTable($event)"
     [(selectedRowData)]="selectedItem"
     [actions]="actions"

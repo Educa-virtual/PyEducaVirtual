@@ -24,6 +24,7 @@
 
   <div class="flex justify-content-between flex-wrap gap-2">
     <p-button
+      *ngIf="!encuesta_bloqueada"
       severity="primary"
       pTooltip="Agregar sección"
       tooltipPosition="top"
@@ -54,6 +55,7 @@
               <div class="flex text-sm">{{ seccion?.cSeccionSubtitulo }}</div>
             </div>
             <div
+              *ngIf="!encuesta_bloqueada"
               class="flex gap-1 ml-auto"
               tabindex="0"
               (click)="$event.stopPropagation()"
@@ -83,7 +85,7 @@
           </span>
         </ng-template>
 
-        <p-messages severity="info" class="my-0">
+        <p-messages severity="info" class="my-0" *ngIf="seccion?.cSeccionDescripcion">
           <ng-template pTemplate>
             {{ seccion?.cSeccionDescripcion }}
           </ng-template>
@@ -128,7 +130,7 @@
                   <p-chip [label]="alternativa.cAlternativaContenido" />
                 }
               </div>
-              <div class="flex justify-content-start">
+              <div class="flex justify-content-start" *ngIf="!encuesta_bloqueada">
                 <p-button
                   severity="success"
                   icon="pi pi-pen-to-square"
@@ -157,17 +159,7 @@
 
         <br />
 
-        <div class="flex justify-content-between flex-wrap gap-2">
-          <p-button
-            severity="secondary"
-            size="small"
-            pTooltip="Vista previa"
-            tooltipPosition="top"
-            (onClick)="vistaPrevia()"
-          >
-            <i class="pi pi-eye mr-2"></i>
-            <span class="font-bold">Vista previa</span>
-          </p-button>
+        <div class="flex justify-content-end flex-wrap gap-2" *ngIf="!encuesta_bloqueada">
           <p-button
             severity="primary"
             size="small"
@@ -185,6 +177,19 @@
       <br />
     }
   </p-accordion>
+
+  <div class="flex justify-content-end flex-wrap gap-2">
+    <p-button
+      severity="secondary"
+      size="small"
+      pTooltip="Vista previa"
+      tooltipPosition="top"
+      (onClick)="vistaPrevia()"
+    >
+      <i class="pi pi-eye mr-2"></i>
+      <span class="font-bold">Vista previa</span>
+    </p-button>
+  </div>
 
   <app-seccion
     [(visible)]="mostrarDialogoSeccion"

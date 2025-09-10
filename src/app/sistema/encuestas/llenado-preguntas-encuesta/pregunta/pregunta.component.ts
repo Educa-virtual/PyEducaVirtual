@@ -137,6 +137,9 @@ export class PreguntaComponent implements OnInit, OnChanges {
       this.iPregId = null;
       this.pregunta_registrada = false;
       this.clearForm();
+      if (this.formPregunta) {
+        this.formPregunta.get('iSeccionId').patchValue(this.iSeccionId);
+      }
     }
   }
 
@@ -199,6 +202,19 @@ export class PreguntaComponent implements OnInit, OnChanges {
   }
 
   agregarAlternativa(item: any | null) {
+    if (
+      item.length === 0 &&
+      (this.formAlternativa.value.cAlternativaContenido === null ||
+        this.formAlternativa.value.cAlternativaContenido.trim() === '')
+    ) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe completar el nombre de la alternativa',
+      });
+      this.encuestasService.formMarkAsDirty(this.formAlternativa);
+      return;
+    }
     this.pregunta.alternativas = [
       ...this.pregunta.alternativas,
       {

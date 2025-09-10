@@ -10,6 +10,13 @@ import { EncuestasService } from '../services/encuestas.services';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { Router } from '@angular/router';
+import {
+  ADMINISTRADOR_DREMO,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+} from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-categorias-encuestas',
@@ -31,6 +38,19 @@ export class CategoriasEncuestaComponent implements OnInit {
   categorias: ICategoria[] = [];
   categorias_filtradas: ICategoria[] = [];
 
+  perfil: any;
+  es_encuestador: boolean = false;
+  encuestadores = [
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+    DIRECTOR_IE,
+    SUBDIRECTOR_IE,
+  ];
+  crea_categorias = [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO];
+  puede_crear = false;
+  USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADO;
+
   constructor(
     private encuestasService: EncuestasService,
     private messageService: MessageService,
@@ -39,6 +59,9 @@ export class CategoriasEncuestaComponent implements OnInit {
     private router: Router
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.es_encuestador = this.encuestadores.includes(Number(this.perfil.iPerfilId));
+    this.puede_crear = this.crea_categorias.includes(Number(this.perfil.iPerfilId));
     this.breadCrumbItems = [
       {
         label: 'Encuestas',
@@ -61,13 +84,14 @@ export class CategoriasEncuestaComponent implements OnInit {
     this.encuestasService
       .listarCategorias({
         iYAcadId: this.iYAcadId,
+        iTipoUsuario: 2,
       })
       .subscribe({
         next: (data: any) => {
           this.categorias = data.data;
           this.categorias_filtradas = this.categorias;
           this.categorias.forEach(cat => {
-            cat.btnItems = this.setBtnItems(cat.iCateId);
+            cat.btnItems = this.es_encuestador ? this.setBtnItems(cat) : [];
           });
         },
         error: error => {
@@ -96,10 +120,10 @@ export class CategoriasEncuestaComponent implements OnInit {
   }
 
   rutaImagenPlaceholder(item) {
-    if (!item?.cCateImagenNombre) {
+    if (!item?.cCateImagenUrl) {
       return 'cursos/images/no-image.jpg';
     }
-    return item?.cCateImagenNombre;
+    return item?.cCateImagenUrl;
   }
 
   agregarCategoria() {
@@ -156,20 +180,28 @@ export class CategoriasEncuestaComponent implements OnInit {
   }
 
   gestionarEncuestas(iCateId: any) {
-    this.router.navigate([`/encuestas/categorias/${iCateId}/gestionar-encuestas`]);
+    this.router.navigate([`/encuestas/categorias/${iCateId}/gestion-encuestas`]);
   }
 
-  setBtnItems(iCateId: any): MenuItem[] {
+  setBtnItems(categoria: any): MenuItem[] {
     return [
       {
-        label: 'Administrar encuestas',
+        label: 'Gestionar encuestas',
         icon: 'pi pi-cog',
-        command: () => this.gestionarEncuestas(iCateId),
+        command: () => this.gestionarEncuestas(categoria?.iCateId),
       },
       {
         label: 'Editar Categoría',
         icon: 'pi pi-pencil',
-        command: () => this.editarCategoria(iCateId),
+        command: () => this.editarCategoria(categoria?.iCateId),
+        visible: this.puede_crear,
+      },
+      {
+        label: 'Borrar Categoría',
+        icon: 'pi pi-trash',
+        command: () => this.borrarCategoria(categoria?.iCateId),
+        visible: this.puede_crear,
+        disabled: categoria?.iTotalEncuestas > 0,
       },
     ];
   }

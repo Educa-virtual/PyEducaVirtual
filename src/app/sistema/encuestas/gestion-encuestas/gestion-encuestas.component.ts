@@ -29,13 +29,16 @@ export class GestionEncuestasComponent implements OnInit {
   perfil: any;
   cCateNombre: string;
 
-  dataEncuestas: Array<any> = [];
+  encuestas: Array<any> = [];
+  encuestas_filtradas: Array<any> = [];
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
+
+  USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADOR;
 
   constructor(
     private messageService: MessageService,
@@ -70,7 +73,7 @@ export class GestionEncuestasComponent implements OnInit {
           ? String(this.slicePipe.transform(this.categoria?.cCateNombre, 0, 20))
           : 'Categoría',
       },
-      { label: 'Encuestas' },
+      { label: 'Gestionar encuestas' },
     ];
     this.breadCrumbHome = {
       icon: 'pi pi-home',
@@ -109,10 +112,12 @@ export class GestionEncuestasComponent implements OnInit {
       .listarEncuestas({
         iCateId: this.iCateId,
         iYAcadId: this.iYAcadId,
+        iTipoUsuario: this.USUARIO_ENCUESTADOR,
       })
       .subscribe({
         next: (resp: any) => {
-          this.dataEncuestas = resp.data;
+          this.encuestas = resp.data;
+          this.encuestas_filtradas = this.encuestas;
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);
@@ -127,7 +132,7 @@ export class GestionEncuestasComponent implements OnInit {
 
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value;
-    this.dataEncuestas = this.dataEncuestas.filter(encuesta => {
+    this.encuestas_filtradas = this.encuestas.filter(encuesta => {
       if (encuesta.cEncNombre && encuesta.cEncNombre.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
       if (
@@ -175,9 +180,7 @@ export class GestionEncuestasComponent implements OnInit {
             summary: 'Éxito',
             detail: 'Encuesta eliminada',
           });
-          this.dataEncuestas = this.dataEncuestas.filter(
-            encuesta => encuesta.iEncuId !== item.iEncuId
-          );
+          this.encuestas = this.encuestas.filter(encuesta => encuesta.iEncuId !== item.iEncuId);
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);
@@ -190,23 +193,24 @@ export class GestionEncuestasComponent implements OnInit {
       });
   }
 
-  aprobarEncuesta(item: any) {
+  actualizarEncuestaEstado(item: any, iEstado: number) {
     this.encuestasService
-      .aprobarEncuesta({
+      .actualizarEncuestaEstado({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
         iEncuId: item.iEncuId,
+        iEstado: iEstado,
       })
       .subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Actualización exitosa',
-            detail: 'Se actualizó la encuesta',
+            detail: 'Se actualizó el estado de la encuesta',
           });
           this.listarEncuestas();
         },
         error: error => {
-          console.error('Error actualizando encuesta:', error);
+          console.error('Error actualizando estado de encuesta:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -264,7 +268,18 @@ export class GestionEncuestasComponent implements OnInit {
           header: 'Confirmación',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
-            this.aprobarEncuesta(item);
+            this.actualizarEncuestaEstado(item, this.ESTADO_APROBADA);
+          },
+          reject: () => {},
+        });
+        break;
+      case 'desaprobar':
+        this.confirmService.openConfirm({
+          message: '¿Está seguro de cambiar el estado de la encuesta seleccionada?',
+          header: 'Confirmación',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.actualizarEncuestaEstado(item, this.ESTADO_BORRADOR);
           },
           reject: () => {},
         });
@@ -313,7 +328,7 @@ export class GestionEncuestasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-primary p-button-text',
       isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_aprobar) === 1,
+        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
     {
       labelTooltip: 'Eliminar',

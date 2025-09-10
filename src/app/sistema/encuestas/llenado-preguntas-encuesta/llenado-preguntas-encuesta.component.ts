@@ -31,18 +31,18 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   iCateId: number;
   iSeccionId: number;
   iPregId: number;
+  encuesta_bloqueada: boolean = true;
 
   selectedItem: any;
   totalPreguntas: number = 0;
-  nIndexAcordionTab: number = null;
   mostrarDialogoSeccion: boolean = false;
   mostrarDialogoPregunta: boolean = false;
 
-  isDisabled: boolean = false;
-
   secciones: any[] = [];
-
   pregunta: any;
+
+  ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
+  ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
 
   constructor(
     private messageService: MessageService,
@@ -97,13 +97,14 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     this.encuestasService
       .verEncuesta({
         iEncuId: this.iEncuId,
-        iTipoUsuario: 1,
+        iTipoUsuario: 2,
       })
       .subscribe({
         next: (data: any) => {
           this.encuesta = data.data;
           this.setBreadCrumbs();
           this.listarSecciones();
+          this.encuesta_bloqueada = Number(this.encuesta?.iEstado) === this.ESTADO_APROBADA;
         },
         error: error => {
           console.error('Error obteniendo encuesta:', error);

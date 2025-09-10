@@ -93,16 +93,16 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/actualizarEncuesta`, data);
   }
 
+  actualizarEncuestaEstado(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarEncuestaEstado`, data);
+  }
+
   borrarEncuesta(data: any) {
     return this.http.post(`${baseUrl}/enc/borrarEncuesta`, data);
   }
 
   obtenerPoblacionObjetivo(data: any) {
     return this.http.post(`${baseUrl}/enc/obtenerPoblacionObjetivo`, data);
-  }
-
-  aprobarEncuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/aprobarEncuesta`, data);
   }
 
   listarSecciones(data: any) {
@@ -287,7 +287,7 @@ export class EncuestasService implements OnDestroy {
   }
 
   getSecciones(data: any) {
-    if (!this.secciones && data) {
+    if (data) {
       this.secciones = data.map(seccion => ({
         value: seccion.iSeccionId,
         label: seccion.iSeccionOrden + '. ' + seccion.cSeccionTitulo,

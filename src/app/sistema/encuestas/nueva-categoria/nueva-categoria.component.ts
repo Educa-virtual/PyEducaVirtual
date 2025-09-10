@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { CommonModule } from '@angular/common';
@@ -13,6 +14,7 @@ import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api';
 import { EncuestasService } from '../services/encuestas.services';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { FileUpload } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-nueva-categoria',
@@ -26,6 +28,7 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
   @Input() iCateId: number;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() categoriaModificada = new EventEmitter<any>();
+  @ViewChild('fileUpload') fileUpload: FileUpload;
 
   archivoSeleccionado: File;
   dialogTitle: string = 'Nueva categoría';
@@ -55,6 +58,11 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.archivoSeleccionado = null;
+    if (this.form && this.fileUpload) {
+      this.fileUpload.clear();
+      this.form.get('archivo').setValue(null);
+    }
     if (this.iCateId && changes['visible']?.currentValue === true) {
       this.dialogTitle = 'Editar categoría';
       this.verCategoria();
@@ -119,8 +127,11 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
   getFormData() {
     const formData: FormData = new FormData();
     formData.append('iCateId', String(this.iCateId));
-    formData.append('cCateNombre', this.form.value.cCateNombre);
-    formData.append('cCateDescripcion', this.form.value.cCateDescripcion);
+    formData.append('cCateNombre', this.form.value.cCateNombre ? this.form.value.cCateNombre : '');
+    formData.append(
+      'cCateDescripcion',
+      this.form.value.cCateDescripcion ? this.form.value.cCateDescripcion : ''
+    );
     formData.append(
       'cCateImagenNombre',
       this.form.value.cCateImagenNombre ? this.form.value.cCateImagenNombre : ''

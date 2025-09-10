@@ -4,7 +4,7 @@
   <ng-template pTemplate="header">
     <span class="text-2xl text-uppercase">Categorías de encuestas</span>
   </ng-template>
-  <ng-template pTemplate="icons" class="flex justify-content-center">
+  <ng-template pTemplate="icons" class="flex justify-content-center" *ngIf="puede_crear">
     <p-button label="Nueva" icon="pi pi-plus" severity="success" (click)="agregarCategoria()" />
   </ng-template>
 
@@ -38,20 +38,18 @@
                 </h3>
               </div>
               <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-                <span>
-                  {{ +categoria?.iTotalEncuestas }}
-                  {{ +categoria?.iTotalEncuestas === 1 ? 'encuesta' : 'encuestas' }}
-                </span>
+                <a
+                  [routerLink]="[
+                    '/encuestas/categorias/' + categoria?.iCateId + '/gestion-encuestas',
+                  ]"
+                >
+                  <span *ngIf="+categoria?.iCantBorradores > 0">
+                    {{ +categoria?.iCantBorradores }}
+                    {{ +categoria?.iCantBorradores === 1 ? 'borrador' : 'borradores' }}
+                  </span>
+                </a>
+                <span *ngIf="+categoria?.iCantBorradores === 0"></span>
                 <div class="flex gap-1">
-                  @if (categoria?.iTotalEncuestas === 0) {
-                    <p-button
-                      size="small"
-                      [outlined]="true"
-                      icon="pi pi-trash"
-                      severity="danger"
-                      (click)="borrarCategoria(categoria)"
-                    />
-                  }
                   <p-splitButton
                     severity="primary"
                     size="small"
@@ -60,10 +58,10 @@
                     (onClick)="listarEncuestas(categoria?.iCateId)"
                   >
                     <ng-template pTemplate="content">
-                      Acceder
+                      Responder
                       <p-badge
-                        *ngIf="categoria?.iTotalEncuestasPendientes"
-                        [value]="categoria?.iTotalEncuestasPendientes"
+                        *ngIf="+categoria?.iCantSinResponder > 0"
+                        [value]="categoria?.iCantSinResponder"
                         severity="danger"
                       />
                     </ng-template>

@@ -61,3 +61,23 @@ zxing-scanner {
   height: auto;
   display: block;
 }
+
+.movil {
+  display: none;
+}
+
+@media screen and (max-width: 700px) {
+  ::ng-deep .p-table thead {
+    display: none;
+  }
+  .escritorio {
+    display: none;
+  }
+  .movil {
+    display: table-row;
+  }
+  .movil div {
+    font-size: 16px;
+    padding: 5px;
+  }
+}

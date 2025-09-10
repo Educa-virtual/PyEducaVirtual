@@ -10,59 +10,60 @@
     <p-tabView>
       <p-tabPanel header="Grados y Seccion">
         <div class="grid h-full m-1">
-          <div class="col-11">
-            <div class="flex fondo-grid">
-              <p-inputGroup ngClass="mr-2 w-3">
-                <p-inputGroupAddon>Grado</p-inputGroupAddon>
-                <p-dropdown
-                  [options]="grado"
-                  [(ngModel)]="datos.iGradoId"
-                  (onChange)="filtrarSeccion()"
-                  optionLabel="cGradoNombre"
-                  optionValue="iGradoId"
-                  placeholder="Seleccionar Grado"
-                />
-              </p-inputGroup>
-              <p-inputGroup ngClass="mr-2 w-3">
-                <p-inputGroupAddon>Seccion</p-inputGroupAddon>
-                <p-dropdown
-                  [options]="seccion"
-                  [(ngModel)]="datos.iSeccionId"
-                  optionLabel="cSeccionNombre"
-                  optionValue="iSeccionId"
-                  placeholder="Seleccionar Seccion"
-                />
-              </p-inputGroup>
-              <div class="w-2 mr-2">
-                <p-calendar
-                  appendTo="body"
-                  [(ngModel)]="datos.dtAsistencia"
-                  (click)="registrar = false"
-                  [showIcon]="true"
-                  [showTime]="true"
-                />
-              </div>
-              <div class="w-2 mr-2">
-                <p-button
-                  class="expandir"
-                  severity="primary"
-                  label="Buscar"
-                  icon="pi pi-search"
-                  [loading]="finalizar"
-                  (onClick)="buscarGrupo()"
-                />
-              </div>
-              <div class="w-2">
-                <p-button
-                  class="expandir"
-                  severity="success"
-                  label="guardar"
-                  icon="pi pi-save"
-                  [disabled]="!registrar"
-                  (click)="guardarAsistenciaAula()"
-                />
-              </div>
-            </div>
+          <div class="col-6 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Grado</p-inputGroupAddon>
+              <p-dropdown
+                [options]="grado"
+                [(ngModel)]="datos.iGradoId"
+                (onChange)="filtrarSeccion()"
+                optionLabel="cGradoNombre"
+                optionValue="iGradoId"
+                placeholder="Seleccionar Grado"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-6 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+              <p-dropdown
+                [options]="seccion"
+                [(ngModel)]="datos.iSeccionId"
+                optionLabel="cSeccionNombre"
+                optionValue="iSeccionId"
+                placeholder="Seleccionar Seccion"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 lg:col-2">
+            <p-calendar
+              styleClass="w-full"
+              appendTo="body"
+              [(ngModel)]="datos.dtAsistencia"
+              (click)="registrar = false"
+              [showIcon]="true"
+              [showTime]="true"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (onClick)="buscarGrupo()"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="success"
+              label="guardar"
+              icon="pi pi-save"
+              [disabled]="!registrar"
+              (click)="guardarAsistenciaAula()"
+            />
           </div>
           <div class="col-12">
             <p-table
@@ -141,94 +142,90 @@
       </p-tabPanel>
       <p-tabPanel header="Busqueda por Codigo">
         <div class="grid h-full m-1">
-          <div class="col-10">
-            <div class="fondo-grid">
-              <p-inputGroup class="w-4">
-                <p-inputGroupAddon>Cod. de Est.</p-inputGroupAddon>
-                <input
-                  pInputText
-                  class="mr-1"
-                  [(ngModel)]="datos.cEstCodigo"
-                  name="cEstCodigo"
-                  placeholder="Codigo"
-                />
-              </p-inputGroup>
-              <p-inputGroup class="w-2">
-                <p-inputGroupAddon>DNI</p-inputGroupAddon>
-                <input
-                  pInputText
-                  class="mr-1"
-                  [(ngModel)]="datos.cPersDocumento"
-                  name="cPersDocumento"
-                  placeholder="DNI"
-                />
-              </p-inputGroup>
-              <div class="w-2 mr-2">
-                <p-calendar
-                  appendTo="body"
-                  inputId="calendar-12h"
-                  [(ngModel)]="datos.dtAsistencia"
-                  (click)="registrarEstudiante = false"
-                  [showIcon]="true"
-                  [showTime]="true"
-                />
-              </div>
-              <div class="w-2 mr-2">
-                <p-button
-                  class="expandir"
-                  severity="primary"
-                  label="Buscar"
-                  icon="pi pi-search"
-                  [loading]="finalizar"
-                  (click)="buscarCodigo()"
-                />
-              </div>
-              <div class="w-2 mr-2">
-                <p-button
-                  class="expandir"
-                  severity="success"
-                  label="guardar"
-                  icon="pi pi-save"
-                  [disabled]="!registrarEstudiante"
-                  (click)="guardarAsistencia()"
-                />
-              </div>
-            </div>
+          <div class="col-12 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Cod. de Est.</p-inputGroupAddon>
+              <input
+                pInputText
+                class="mr-1"
+                [(ngModel)]="datos.cEstCodigo"
+                name="cEstCodigo"
+                placeholder="Codigo"
+              />
+            </p-inputGroup>
           </div>
+          <div class="col-12 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>DNI</p-inputGroupAddon>
+              <input
+                pInputText
+                class="mr-1"
+                [(ngModel)]="datos.cPersDocumento"
+                name="cPersDocumento"
+                placeholder="DNI"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 lg:col-2">
+            <p-calendar
+              appendTo="body"
+              styleClass="w-full"
+              inputId="calendar-12h"
+              [(ngModel)]="datos.dtAsistencia"
+              (click)="registrarEstudiante = false"
+              [showIcon]="true"
+              [showTime]="true"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (click)="buscarCodigo()"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="success"
+              label="guardar"
+              icon="pi pi-save"
+              [disabled]="!registrarEstudiante"
+              (click)="guardarAsistencia()"
+            />
+          </div>
+
           <div class="col-12">
             <p-table
               [value]="estudiante"
               [paginator]="true"
               [rows]="10"
-              [tableStyle]="{ 'min-width': '50rem' }"
+              responsiveLayout="stack"
               [rowsPerPageOptions]="[5, 10, 20]"
             >
               <ng-template pTemplate="header">
-                <tr>
+                <tr class="escritorio">
                   <th style="width: 5%">#</th>
-                  <th>Apellidos y Nombres</th>
-                  <th class="hidden md:table-cell">DNI</th>
-                  <th>Asistencia</th>
-                  <th>Justificacion</th>
-                  <th>Documento</th>
+                  <th class="text-center">Apellidos y Nombres</th>
+                  <th class="text-center">DNI</th>
+                  <th class="text-center">Asistencia</th>
+                  <th class="text-center">Justificacion</th>
+                  <th class="text-center">Documento</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-estudiante let-rowIndex="rowIndex">
-                <tr>
+                <tr class="escritorio">
                   <td>{{ rowIndex + 1 }}</td>
                   <td>{{ estudiante.completo }}</td>
-                  <td class="hidden md:table-cell">{{ estudiante.cPersDocumento }}</td>
+                  <td>{{ estudiante.cPersDocumento }}</td>
                   <td>
                     <p-button
-                      size="small"
                       styleClass="boton"
                       (click)="cambiarEstadoEstudiante(rowIndex, estudiante.iTipoAsiId)"
-                      ><span class="font-bold hidden md:table-cell w-100">{{
-                        estudiante.cTipoAsiNombre
-                      }}</span>
-                      <span class="font-bold table-cell md:hidden w-100">{{
-                        estudiante.cTipoAsiLetra
-                      }}</span>
+                      ><span class="font-bold w-100">{{ estudiante.cTipoAsiNombre }}</span>
                     </p-button>
                   </td>
                   <td class="text-center flex justify-content-center">
@@ -245,8 +242,9 @@
                       (onSelect)="seleccionarFolder($event, estudiante, folderEstudiante)"
                     />
                     <p-button
+                      styleClass="h-full"
                       [disabled]="!estudiante.cJustificar"
-                      icon="pi pi-file-pdf"
+                      icon="pi pi-trash"
                       (click)="limpiar(folderEstudiante)"
                     />
                   </td>
@@ -258,6 +256,46 @@
                       (click)="descargarArchivo(estudiante.cJustificar)"
                     />
                   </td>
+                </tr>
+                <tr class="movil">
+                  <div>Nombre Completo: {{ estudiante.completo }}</div>
+                  <div>DNI: {{ estudiante.cPersDocumento }}</div>
+                  <div>
+                    <p-button
+                      size="small"
+                      styleClass="boton"
+                      (click)="cambiarEstadoEstudiante(rowIndex, estudiante.iTipoAsiId)"
+                      ><span class="font-bold">{{ estudiante.cTipoAsiNombre }}</span>
+                    </p-button>
+                  </div>
+                  <div class="text-center flex justify-content-center">
+                    <p-fileUpload
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
+                      #folderEstudiante
+                      mode="basic"
+                      class="mr-1"
+                      [chooseLabel]="'Seleccionar archivo'"
+                      chooseIcon="pi pi-upload"
+                      name="archivo"
+                      accept=".pdf,image/*"
+                      maxFileSize="1000000"
+                      (onSelect)="seleccionarFolder($event, estudiante, folderEstudiante)"
+                    />
+                    <p-button
+                      styleClass="h-full"
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
+                      icon="pi pi-trash"
+                      (click)="limpiar(folderEstudiante)"
+                    />
+                  </div>
+                  <div>
+                    <p-button
+                      [disabled]="!estudiante.cJustificar"
+                      icon="pi pi-file-pdf"
+                      size="small"
+                      (click)="descargarArchivo(estudiante.cJustificar)"
+                    />
+                  </div>
                 </tr>
               </ng-template>
 
@@ -274,7 +312,7 @@
       </p-tabPanel>
       <p-tabPanel header="Registrar por QR">
         <div class="grid h-full">
-          <div class="col-6">
+          <div class="col-12 lg:col-6">
             <zxing-scanner
               *ngIf="scanner"
               [torch]="false"
@@ -284,7 +322,7 @@
             </zxing-scanner>
             <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
           </div>
-          <div class="col-6 card">
+          <div class="col-12 lg:col-6 card">
             <div class="col-12">
               <p-button
                 class="expandir"

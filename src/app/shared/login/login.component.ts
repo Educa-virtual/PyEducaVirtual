@@ -49,8 +49,10 @@ export class LoginComponent implements OnInit {
   loading: boolean;
   loadingText: string;
   formLogin!: FormGroup;
+  formRegistro!: FormGroup;
   modalSinRolAsignado: boolean;
-  anuncio: boolean = true;
+  mostrarAnuncio: boolean = false;
+  solicitandoRegistro: boolean = false;
 
   constructor(
     public sanitizer: DomSanitizer,
@@ -65,6 +67,14 @@ export class LoginComponent implements OnInit {
     this.formLogin = this.fb.group({
       user: ['', Validators.required],
       pass: ['', Validators.required],
+    });
+
+    this.formRegistro = this.fb.group({
+      documento: ['', Validators.required],
+      nombre: ['', Validators.required],
+      codigoModular: ['', Validators.required],
+      cargo: ['', Validators.required],
+      correo: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -177,4 +187,6 @@ export class LoginComponent implements OnInit {
   switchForm(type: 'login' | 'register') {
     this.activeForm = type;
   }
+
+  solicitarRegistroUsuario() {}
 }

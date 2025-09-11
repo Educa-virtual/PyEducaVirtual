@@ -67,12 +67,15 @@
                 </button>
               </div>
             </div>
-            <p class="small">
+            <p class="small text-center">
               <p-button class="text-primary" (onClick)="showModal = true" [text]="true"
-                >¿Has olvidado tu contraseña?<br />
-                ¿Contraseña vencida?</p-button
+                >¿Has olvidado tu contraseña?</p-button
+              >
+              <p-button class="text-primary" (onClick)="mostrarAnuncio = true" [text]="true"
+                >Contactar con soporte</p-button
               >
             </p>
+
             <button
               pButton
               class="btn-submit"
@@ -91,24 +94,39 @@
             <img src="assets/images/logo-proyecto.png" alt="logo" class="logo_dremo" />
           </div>
           <div class="text-center mb-4 mt-2 text-sm">
-            Registre sus datos para solicitar el <b>Ingreso a la Plataforma</b>
+            Registra tus datos para solicitar el <strong>ingreso a la Plataforma</strong>
           </div>
 
-          <form class="flex flex-column mt-1">
+          <form class="flex flex-column mt-1" [formGroup]="formRegistro">
             <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="DNI" name="documento" />
+              <input type="text" pInputText placeholder="DNI" formControlName="documento" />
             </div>
             <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Nombre Completo" name="nombre" />
+              <input
+                type="text"
+                pInputText
+                placeholder="Nombre Completo"
+                formControlName="nombre"
+              />
             </div>
             <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Cód. Modular" name="codmodular" />
+              <input
+                type="text"
+                pInputText
+                placeholder="Cód. Modular I.E."
+                formControlName="codigoModular"
+              />
             </div>
             <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Cargo" name="cargo" />
+              <input type="text" pInputText placeholder="Cargo" formControlName="cargo" />
             </div>
             <div class="mb-5 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Correo Personal" name="correo" />
+              <input
+                type="text"
+                pInputText
+                placeholder="Correo electrónico"
+                formControlName="correo"
+              />
             </div>
             <button
               pButton
@@ -116,8 +134,13 @@
               severity="success"
               size="small"
               label="Solicitar"
-              disabled
+              [loading]="solicitandoRegistro"
+              [disabled]="formRegistro.invalid"
+              (onClick)="solicitarRegistroUsuario()"
             ></button>
+            <p class="mb-3 font-light">
+              <small>Se te notificará al correo ingresado cuando tu cuenta haya sido creada.</small>
+            </p>
           </form>
         </div>
       </div>
@@ -132,8 +155,8 @@
 <p-toast />
 
 <p-dialog
-  [header]="'DIÁLOGO INFORMATIVO DE EDUCA VIRTUAL'"
-  [(visible)]="anuncio"
+  [header]="'Información de Soporte'"
+  [(visible)]="mostrarAnuncio"
   [maximizable]="true"
   [modal]="true"
   [closable]="true"

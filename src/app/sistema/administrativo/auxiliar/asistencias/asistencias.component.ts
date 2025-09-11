@@ -245,7 +245,7 @@ export class AsistenciasComponent implements OnInit {
         prefix: 'grupos',
         ruta: 'buscar-lista-estudiantes',
         data: {
-          opcion: 'buscar-estudiante',
+          opcion: 'buscar-estudiante-qr',
           cEstCodigo: this.datos.cEstCodigo,
           cPersDocumento: this.datos.cPersDocumento,
           iSedeId: this.dremoPerfil.iSedeId,
@@ -303,19 +303,15 @@ export class AsistenciasComponent implements OnInit {
 
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
       next: data => {
-        console.log('recibir #1', data);
-
-        /*const resultado = parseInt(data.data[0].resultado);
-        if (resultado > 0) {
-          console.log(data)
+        const idAsistencia = parseInt(data.data[0]);
+        const verificar = this.temporal.find(item => item.idAsistencia == idAsistencia);
+        if (verificar) {
           this.temporal.push(this.codigo);
           this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
-        }else{
-          console.log(data)
+        } else {
           this.mensajeSuccess('Mensaje del sistema', 'Ya fue registrado el alumno');
-        } 
-        this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
-        this.visible = false;*/
+        }
+        this.visible = false;
       },
       error: () => {
         this.mensajeError('Mensaje del sistema', 'Error al guardar asistencia');

@@ -94,15 +94,37 @@ const routes: Routes = [
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
+      puede_editar: false,
       expectedRole: encuestadores,
       breadcrumb: 'Ver Encuesta',
     },
   },
   {
-    path: 'categorias/:iCateId/lista-encuestas/:iEncuId/responder',
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/ver/:iPersId',
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
+      puede_editar: false,
+      expectedRole: encuestadores,
+      breadcrumb: 'Ver Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/lista-encuestas/:iEncuId/ver',
+    component: EncuestaVerComponent,
+    canActivate: [RoleGuard],
+    data: {
+      puede_editar: true,
+      expectedRole: [...encuestadores, ...encuestados],
+      breadcrumb: 'Responder Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/lista-encuestas/:iEncuId/ver/:iPersId',
+    component: EncuestaVerComponent,
+    canActivate: [RoleGuard],
+    data: {
+      puede_editar: true,
       expectedRole: [...encuestadores, ...encuestados],
       breadcrumb: 'Responder Encuesta',
     },

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { SlicePipe } from '@angular/common';
+import { formatDate, SlicePipe } from '@angular/common';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
@@ -71,6 +71,7 @@ export class ListaEncuestasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.categoria = data.data;
+          this.setBreadCrumbs();
         },
         error: error => {
           console.error('Error obteniendo categoria:', error);
@@ -126,22 +127,17 @@ export class ListaEncuestasComponent implements OnInit {
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value;
     this.encuestas_filtradas = this.encuestas.filter(encuesta => {
-      if (encuesta.cEncNombre && encuesta.cEncNombre.toLowerCase().includes(filtro.toLowerCase()))
+      if (encuesta.cEncuNombre && encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
       if (
-        encuesta.cEncCatNombre &&
-        encuesta.cEncCatNombre.toLowerCase().includes(filtro.toLowerCase())
+        encuesta.cTiemDurNombre &&
+        encuesta.cTiemDurNombre.toLowerCase().includes(filtro.toLowerCase())
       )
         return encuesta;
-      if (
-        encuesta.cEncDurNombre &&
-        encuesta.cEncDurNombre.toLowerCase().includes(filtro.toLowerCase())
-      )
-        return encuesta;
-      if (encuesta.dEncInicio && encuesta.dEncInicio.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
-      if (encuesta.dEncFin && encuesta.dEncFin.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
+      const dEncuInicio = formatDate(encuesta.dEncuInicio, 'dd/MM/yyyy', 'es-PE');
+      if (encuesta.dEncuInicio && dEncuInicio.includes(filtro)) return encuesta;
+      const dEncuFin = formatDate(encuesta.dEncuFin, 'dd/MM/yyyy', 'es-PE');
+      if (encuesta.dEncuFin && dEncuFin.includes(filtro)) return encuesta;
       return null;
     });
   }

@@ -21,7 +21,7 @@
     <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay encuestas disponibles" />
   } @else {
     <p-dataView [rows]="10" [paginator]="true" [value]="encuestas_filtradas">
-      <ng-template pTemplate="list" let-encuestas>
+      <ng-template pTemplate="list" let-encuestas_filtradas>
         <div
           *ngFor="let encuesta of encuestas_filtradas; let first = first"
           class="card mb-5 relative overflow-visible {{ getColorEncuesta(encuesta) }}"

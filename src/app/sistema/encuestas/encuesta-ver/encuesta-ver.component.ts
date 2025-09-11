@@ -26,7 +26,7 @@ import { SlicePipe } from '@angular/common';
 export class EncuestaVerComponent implements OnInit {
   iEncuId: number;
   iCateId: number;
-  iMatrId: number;
+  iPersId: number;
 
   perfil: any;
   secciones: any[] = [];
@@ -61,7 +61,9 @@ export class EncuestaVerComponent implements OnInit {
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.iEncuId || 0;
       this.iCateId = params.params.iCateId || 0;
-      this.iMatrId = params.params.iMatrId || 0;
+    });
+    this.route.data.subscribe((data: any) => {
+      this.puede_editar = data.puede_editar;
     });
   }
 
@@ -84,6 +86,10 @@ export class EncuestaVerComponent implements OnInit {
   }
 
   setBreadCrumbs() {
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
     if (this.puede_editar) {
       this.breadCrumbItems = [
         { label: 'Encuestas' },
@@ -180,12 +186,33 @@ export class EncuestaVerComponent implements OnInit {
       });
   }
 
+  verRespuestas() {
+    this.encuestasService
+      .listarRespuestas({
+        iEncuId: this.iEncuId,
+        iPersId: this.iPersId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          if (data.data[0].respuestas) {
+            this.respuesta_registrada = true;
+            const respuestas = JSON.parse(data.data[0].respuestas);
+            this.setRespuestasFormArray(respuestas);
+          }
+        },
+        error: error => {
+          console.error('Error obteniendo respuestas:', error);
+        },
+      });
+  }
+
   setPreguntasFormArray(preguntas: any[]) {
     const preguntasFGs = preguntas.map(p =>
       this.fb.group({
         iPregId: [p.iPregId],
-        iPregTipoId: [p.iPregTipoId],
-        cRespContenido: [null, Validators.required],
+        iTipoPregId: [p.iTipoPregId],
+        iAlternativaId: [null],
+        cRespContenido: [null],
       })
     );
     const formArray = this.fb.array(preguntasFGs);
@@ -200,6 +227,7 @@ export class EncuestaVerComponent implements OnInit {
       );
       if (respuesta) {
         preguntaFG.patchValue({
+          iAlternativaId: respuesta.iAlternativaId,
           cRespContenido: respuesta.cRespContenido,
         });
       }
@@ -207,11 +235,63 @@ export class EncuestaVerComponent implements OnInit {
   }
 
   guardarRespuesta() {
-    console.log(this.formPreguntas.value);
+    this.encuestasService.formControlJsonStringify(
+      this.formPreguntas,
+      'jsonPreguntas',
+      'preguntas',
+      ''
+    );
+
+    this.encuestasService.guardarRespuesta(this.formPreguntas.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos. Redirigiendo a la lista de encuestas',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/bienestar/gestionar-encuestas']);
+        }, 2000);
+      },
+      error: error => {
+        console.error('Error guardando pregunta:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 
   actualizarRespuesta() {
-    console.log(this.formPreguntas.value);
+    this.encuestasService.formControlJsonStringify(
+      this.formPreguntas,
+      'jsonPreguntas',
+      'preguntas',
+      ''
+    );
+
+    this.encuestasService.actualizarRespuesta(this.formPreguntas.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Actualización exitosa',
+          detail: 'Se actualizaron los datos. Redirigiendo a la lista de encuestas',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/bienestar/gestionar-encuestas']);
+        }, 2000);
+      },
+      error: error => {
+        console.error('Error actualizando pregunta:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 
   salir() {

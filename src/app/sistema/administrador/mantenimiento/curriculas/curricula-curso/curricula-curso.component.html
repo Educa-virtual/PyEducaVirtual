@@ -1,14 +1,14 @@
 <app-container-page
   title="Cursos"
-  [actions]="cursos.container.actions"
-  (accionBtnItem)="cursos.container.accionBtnItem($event)"
+  [actions]="accionesCursos"
+  (accionBtnItem)="accionBtnItem($event)"
 >
   <app-table-primeng
     class="w-full"
-    [columnas]="cursos.table.columns"
-    [data]="cursos.table.data"
-    [actions]="cursos.table.actions.core"
-    (accionBtnItem)="cursos.table.accionBtnItem($event)"
+    [columnas]="cursosColumns"
+    [data]="cursos"
+    [actions]="accionesTablaCurso"
+    (accionBtnItem)="accionBtnItem($event)"
   />
 </app-container-page>
 <p-dialog

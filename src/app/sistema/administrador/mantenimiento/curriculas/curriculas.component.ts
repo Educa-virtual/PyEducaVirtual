@@ -55,6 +55,7 @@ import { ImageModule } from 'primeng/image';
 import { CalendarModule } from 'primeng/calendar';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
+import { CurriculaCursoComponent } from './curricula-curso/curricula-curso.component';
 
 @Component({
   selector: 'app-curriculas',
@@ -81,6 +82,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
     EditorModule,
     ToggleButtonModule,
     CalendarModule,
+    CurriculaCursoComponent,
   ],
   templateUrl: './curriculas.component.html',
   styleUrl: './curriculas.component.scss',
@@ -100,89 +102,10 @@ export class CurriculasComponent implements OnInit {
   titulo: string = 'Gestión de Currículas';
   iPerfilId: number;
   bEditar: boolean = false;
-
-  // curriculas = {
-  //     container: {
-  //         actions: [agregar],
-  //         accionBtnItem: accionBtnContainerCurriculas.bind(this),
-  //     },
-  //     table: {
-  //         columns: curriculasColumns,
-  //         data: [],
-  //         actions: [editar, nivelesCursos],
-  //         accionBtnItem: curriculasAccionBtnTable.bind(this),
-  //     },
-  //     save: (): Observable<object> => curriculasSave.call(this),
-  // }
-
-  // cursos = {
-  //     container: {
-  //         actions: [{ ...agregar, disabled: true }],
-  //         accionBtnItem: accionBtnContainerCursos.bind(this),
-  //     },
-  //     table: {
-  //         columnsGroup: cursosColumns.inTableColumnsGroup,
-  //         columns: cursosColumns.inTableColumns,
-  //         columnsWithoutActions: cursosColumns.inTableColumns.filter(
-  //             (column) => column.type != 'actions'
-  //         ),
-  //         data: [],
-  //         actions: {
-  //             core: [editar],
-  //             nivelesGrados: [assignCursosInNivelesGrados],
-  //         },
-  //         accionBtnItem: cursosAccionBtnTable.bind(this),
-  //     },
-  //     save: (): Observable<object> => cursosSave.call(this),
-  // }
-
-  // nivelesGrados = {
-  //     container: {
-  //         actions: [],
-  //     },
-  //     table: {
-  //         columns: nivelesGradosColumns,
-  //         data: [],
-  //     },
-  // }
-
-  // curriculasActions: IActionTable[] = [editar]
   messages: Message[] | undefined;
   sidebarVisible: boolean = false;
+  iCurrId: number = 1;
 
-  // forms: FormConfig = {
-  //     curriculas: this.fb.group({}),
-  //     cursos: this.fb.group({}),
-  //     tipoCurso: this.fb.group({}),
-  //     assignCursosInNivelesGrados: this.fb.group({}),
-  // }
-  // dialogs = {
-  //     curriculas: {
-  //         title: 'Crear Currículas',
-  //         visible: false,
-  //         expand: {
-  //             cursos: false,
-  //         },
-  //     },
-  //     cursos: {
-  //         title: 'Crear Curso',
-  //         visible: false,
-  //     },
-  //     tipoCurso: {
-  //         title: 'Crear Modalidad de Servicio',
-  //         visible: false,
-  //     },
-  //     nivelesCursos: {
-  //         title: 'Currículas',
-  //         visible: false,
-  //     },
-  // }
-
-  // dropdowns = {
-  //     tipoCurso: undefined,
-  //     modalidades: undefined,
-  //     nivelesGrados: undefined,
-  // }
   private _ConstantesService = inject(ConstantesService);
   constructor(
     private fb: FormBuilder,
@@ -211,55 +134,40 @@ export class CurriculasComponent implements OnInit {
       dtCurrRsl: ['', Validators.required],
       cCurrDescripcion: ['', Validators.required],
     });
-
-    // this.forms.cursos = this.fb.group({
-    //     iCurrId: [''],
-    //     iTipoCursoId: [''],
-    //     cCursoNombre: [''],
-    //     nCursoCredTeoria: [''],
-    //     nCursoCredPractica: [''],
-    //     cCursoDescripcion: [''],
-    //     nCursoTotalCreditos: [''],
-    //     cCursoPerfilDocente: [''],
-    //     iCursoTotalHoras: [''],
-    //     iCursoEstado: [''],
-    //     cCursoImagen: [''],
-    // })
-
-    // this.forms.assignCursosInNivelesGrados = this.fb.group({
-    //     iNivelGradoId: ['', Validators.required],
-    // })
-
-    // this.forms.curriculas.get('iModalServId').dirty
   }
 
   ngOnInit() {
     this.messages = [{ severity: 'info', detail: 'Videos de Seguridad' }];
-    /*
-        this.forms.curriculas.valueChanges.subscribe(({ iCurrId }) => {
-            const disabled = !(iCurrId !== '' && iCurrId !== null)
-
-            this.cursos.container = {
-                ...this.cursos.container,
-                actions: this.cursos.container.actions.map((action) => ({
-                    ...action,
-                    disabled,
-                })),
-            }
-        })
-    */
     this.obtenerDatosIniciales();
   }
 
   accionBtnItem(event: any) {
     const item = event.item;
     const accion = event.accion;
+
     switch (accion) {
       case 'nueva_curricula':
+        this.iCurrId = 0;
         this.bEditar = false;
         this.visible = true;
         break;
+
+      case 'cursos':
+        this.bEditar = false;
+        this.visible = false;
+        this.iCurrId = item.iCurrId;
+        alert(this.iCurrId);
+
+        break;
+
+      case 'mostrar_curricula':
+        this.iCurrId = 0;
+        this.bEditar = false;
+        this.visible = false;
+        this.obtenerDatosIniciales();
+        break;
       case 'editar':
+        this.iCurrId = 0;
         this.titulo = 'Editar currícula';
         this.visible = true;
         this.bEditar = true;
@@ -277,15 +185,9 @@ export class CurriculasComponent implements OnInit {
           cCurrPesoActitudinal: item.cCurrPesoActitudinal,
           bCurrEsLaVigente: item.bCurrEsLaVigente,
           cCurrRsl: item.cCurrRsl,
-          dtCurrRsl: item.dtCurrRsl,
+          dtCurrRsl: item.dtCurrRsl ? new Date(item.dtCurrRsl) : null,
           cCurrDescripcion: item.cCurrDescripcion,
         });
-
-        // this.cursosService.getCursos(item.iCurrId).subscribe({
-        //     next: (res: any) => {
-        //         this.cursos.table.data = res.data
-        //     },
-        // })
 
         break;
     }
@@ -326,179 +228,106 @@ export class CurriculasComponent implements OnInit {
     });
   }
 
-  // showCursos() {
-  //     this.cursos.table.data = []
-
-  //     Object.keys(this.forms.curriculas.controls).forEach((field) => {
-  //         const control = this.forms.curriculas.get(field)
-  //         control?.markAsTouched() // Marca como tocado (touched)
-  //         control?.markAsDirty() // Marca como modificado (dirty)
-  //     })
-
-  //     this.dialogs.curriculas.expand.cursos = true
-
-  //     this.cursosService
-  //         .getCursos(this.forms.curriculas.value.iCurrId)
-  //         .subscribe({
-  //             next: (res: any) => {
-  //                 console.log(res)
-  //                 this.cursos.table.data = res.data
-  //             },
-  //             error: (err) => {
-  //                 console.log(err)
-  //             },
-  //             complete: () => {},
-  //         })
-
-  //     this.cursos.table.data
-  // }
-
   updCurriculas() {
-    const params = this.frmCurriculas.value.map((item: any) => ({
-      ...item,
-      iPerfil: this.iPerfilId,
-    }));
+    const params = {
+      iCurrId: Number(this.frmCurriculas.value.iCurrId) || 0,
+      iModalServId: Number(this.frmCurriculas.value.iModalServId) || 0,
+      iCurrNotaMinima: Number(this.frmCurriculas.value.iCurrNotaMinima) || 0,
+      iCurrTotalCreditos: Number(this.frmCurriculas.value.iCurrTotalCreditos) || 0,
+      iCurrNroHoras: Number(this.frmCurriculas.value.iCurrNroHoras) || 0,
+      cCurrPerfilEgresado: this.frmCurriculas.value.cCurrPerfilEgresado || '',
+      cCurrMencion: this.frmCurriculas.value.cCurrMencion || '',
+      nCurrPesoProcedimiento: parseFloat(
+        this.frmCurriculas.value.nCurrPesoProcedimiento || 0
+      ).toFixed(2),
+      cCurrPesoConceptual: parseFloat(this.frmCurriculas.value.cCurrPesoConceptual || 0).toFixed(2),
+      cCurrPesoActitudinal: parseFloat(this.frmCurriculas.value.cCurrPesoActitudinal || 0).toFixed(
+        2
+      ),
+      bCurrEsLaVigente: Number(this.frmCurriculas.value.bCurrEsLaVigente) || 0,
+      cCurrRsl: this.frmCurriculas.value.cCurrRsl || '',
+      dtCurrRsl: this.frmCurriculas.value.dtCurrRsl
+        ? new Date(this.frmCurriculas.value.dtCurrRsl)
+        : null,
+      cCurrDescripcion: this.frmCurriculas.value.cCurrDescripcion || '',
+      iSesionId: this.iPerfilId,
+    };
 
-    this.query.updateCalAcademico({
-      json: JSON.stringify(params),
-      _opcion: 'updCurricula',
-    });
-
-    this.curriculas.save().subscribe({
-      next: () => {
-        this.visible = false;
-        this.obtenerDatosIniciales();
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'danger',
-          summary: 'Mensaje del sistema',
-          detail: 'Error: No se registro curricula. ' + error.error.message,
-        });
-      },
-      complete: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Se registro curricula.',
-        });
-      },
-    });
+    this.query
+      .updateCalAcademico({
+        json: JSON.stringify(params),
+        _opcion: 'updCurricula',
+      })
+      .subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error: No se registró la currícula. ' + (error.error?.message || ''),
+          });
+        },
+        complete: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Se registró la currícula correctamente.',
+          });
+          this.visible = false;
+          this.obtenerDatosIniciales();
+        },
+      });
   }
 
   saveCurriculas() {
-    let params = this.frmCurriculas.value;
-    // Si params es un array, recorres con map
-    params = params.map((item: any) => ({
-      ...item, // mantenemos todas las propiedades originales
-      iSesionId: this.iPerfilId, // agregamos la variable nueva
-    }));
+    const params = {
+      iCurrId: Number(this.frmCurriculas.value.iCurrId) || 0,
+      iModalServId: Number(this.frmCurriculas.value.iModalServId) || 0,
+      iCurrNotaMinima: Number(this.frmCurriculas.value.iCurrNotaMinima) || 0,
+      iCurrTotalCreditos: Number(this.frmCurriculas.value.iCurrTotalCreditos) || 0,
+      iCurrNroHoras: Number(this.frmCurriculas.value.iCurrNroHoras) || 0,
+      cCurrPerfilEgresado: this.frmCurriculas.value.cCurrPerfilEgresado || '',
+      cCurrMencion: this.frmCurriculas.value.cCurrMencion || '',
+      nCurrPesoProcedimiento: parseFloat(
+        this.frmCurriculas.value.nCurrPesoProcedimiento || 0
+      ).toFixed(2),
+      cCurrPesoConceptual: parseFloat(this.frmCurriculas.value.cCurrPesoConceptual || 0).toFixed(2),
+      cCurrPesoActitudinal: parseFloat(this.frmCurriculas.value.cCurrPesoActitudinal || 0).toFixed(
+        2
+      ),
+      bCurrEsLaVigente: Number(this.frmCurriculas.value.bCurrEsLaVigente) || 0,
+      cCurrRsl: this.frmCurriculas.value.cCurrRsl || '',
+      dtCurrRsl: this.frmCurriculas.value.dtCurrRsl
+        ? new Date(this.frmCurriculas.value.dtCurrRsl)
+        : null,
+      cCurrDescripcion: this.frmCurriculas.value.cCurrDescripcion || '',
+      iSesionId: this.iPerfilId,
+    };
 
-    this.query.updateCalAcademico({
-      json: JSON.stringify(params),
-      _opcion: 'updAprobacionCargaNoLectiva',
-    });
-
-    this.curriculas.save().subscribe({
-      next: () => {
-        this.visible = false;
-        this.obtenerDatosIniciales();
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'danger',
-          summary: 'Mensaje del sistema',
-          detail: 'Error: No se registro curricula. ' + error.error.message,
-        });
-      },
-      complete: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Se registro curricula.',
-        });
-      },
-    });
+    this.query
+      .addCalAcademico({
+        json: JSON.stringify(params),
+        _opcion: 'addCurricula',
+      })
+      .subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error: No se registró la currícula. ' + (error.error?.message || ''),
+          });
+        },
+        complete: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Se registró la currícula correctamente.',
+          });
+          this.visible = false;
+          this.obtenerDatosIniciales();
+        },
+      });
   }
 
-  /*   saveCursos() {
-        this.cursos.save().subscribe({
-            next: (res: any) => {
-                console.log(res)
-                this.dialogs.cursos.visible = false
-
-                console.log(this.forms.cursos.value)
-
-                this.obtenerDatosIniciales()
-            },
-            error: (err) => {
-                console.error(err)
-            },
-            complete: () => {},
-        })
-    }
-*/
-  // saveInformation() {
-
-  //     of(null)
-  //         .pipe(
-  //             concatMap(() => {
-  //                 // Insertar datos
-  //                 return this.curriculas.save()
-  //             }),
-  //             concatMap((value: any) => {
-  //                 const curricula = value.data[0]
-
-  //                 if (!this.forms.cursos.value.iCursoId) {
-  //                     return this.cursosService.insCursos({
-  //                         iCurrid: curricula.id,
-  //                         iTipoCursoId: this.forms.cursos.value.iTipoCursoId,
-  //                         cCursoNombre: this.forms.cursos.value.cCursoNombre,
-  //                         nCursoCredTeoria:
-  //                             this.forms.cursos.value.nCursoCredTeoria,
-  //                         nCursoCredPractica:
-  //                             this.forms.cursos.value.nCursoCredPractica,
-  //                         cCursoDescripcion:
-  //                             this.forms.cursos.value.cCursoDescripcion,
-  //                         nCursoTotalCreditos:
-  //                             this.forms.cursos.value.nCursoTotalCreditos,
-  //                         cCursoPerfilDocente:
-  //                             this.forms.cursos.value.cCursoPerfilDocente,
-  //                         iCursoTotalHoras:
-  //                             this.forms.cursos.value.iCursoTotalHoras,
-  //                     })
-  //                 } else {
-  //                     return this.cursosService.insCursos({
-  //                         iCurrid: curricula.id,
-  //                         iTipoCursoId: this.forms.cursos.value.iTipoCursoId,
-  //                         cCursoNombre: this.forms.cursos.value.cCursoNombre,
-  //                         nCursoCredTeoria:
-  //                             this.forms.cursos.value.nCursoCredTeoria,
-  //                         nCursoCredPractica:
-  //                             this.forms.cursos.value.nCursoCredPractica,
-  //                         cCursoDescripcion:
-  //                             this.forms.cursos.value.cCursoDescripcion,
-  //                         nCursoTotalCreditos:
-  //                             this.forms.cursos.value.nCursoTotalCreditos,
-  //                         cCursoPerfilDocente:
-  //                             this.forms.cursos.value.cCursoPerfilDocente,
-  //                         iCursoTotalHoras:
-  //                             this.forms.cursos.value.iCursoTotalHoras,
-  //                     })
-  //                 }
-  //             })
-  //         )
-  //         .subscribe({
-  //             next: (res) => console.log('Resultado final:', res),
-  //             error: (err) => {
-  //                 console.error('Error al inscribir el curso:', err);
-  //             },
-  //             complete: () => {
-  //                 this.dialogVisible.curricula = false
-  //                 this.dialogVisible.cursos = false
-  //             },
-  //         })
-  // }
   accionesCurricula: IActionContainer[] = [
     {
       labelTooltip: 'Agregar curricula',
@@ -523,6 +352,13 @@ export class CurriculasComponent implements OnInit {
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
+    },
+    {
+      labelTooltip: 'Mostrar cursos',
+      icon: 'pi pi-book',
+      accion: 'cursos',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
     },
   ];
   curriculasColumns = [

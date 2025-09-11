@@ -221,13 +221,21 @@ export class ActividadesNoLectivasComponent implements OnInit {
 
       case 'agregar':
       case 'actualizar':
-        this.showModal = true;
-        this.item = item;
-        const dtInicio = item.dtInicio ? item.dtInicio.split(' ')[0] : null;
-        this.item['dtInicio'] = dtInicio;
-        this.titulo =
-          accion === 'agregar' ? 'AGREGAR CARGA NO LECTIVA' : 'ACTUALIZAR CARGA NO LECTIVA';
-        this.opcion = accion === 'agregar' ? 'GUARDAR' : 'ACTUALIZAR';
+        if (this.iDocenteId) {
+          this.showModal = true;
+          this.item = item;
+          const dtInicio = item.dtInicio ? item.dtInicio.split(' ')[0] : null;
+          this.item['dtInicio'] = dtInicio;
+          this.titulo =
+            accion === 'agregar' ? 'AGREGAR CARGA NO LECTIVA' : 'ACTUALIZAR CARGA NO LECTIVA';
+          this.opcion = accion === 'agregar' ? 'GUARDAR' : 'ACTUALIZAR';
+        } else {
+          this._MessageService.add({
+            severity: 'error',
+            summary: 'Mensaje de sistema',
+            detail: 'Debe Asignarle el Rol de Docente',
+          });
+        }
         break;
 
       case 'eliminar':

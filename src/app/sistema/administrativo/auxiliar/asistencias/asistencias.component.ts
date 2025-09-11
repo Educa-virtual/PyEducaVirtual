@@ -288,6 +288,7 @@ export class AsistenciasComponent implements OnInit {
       prefix: 'grupos',
       ruta: 'guardar-asistencia',
       data: {
+        opcion: 'escaner',
         iEstudianteId: this.codigo.iEstudianteId,
         iMatrId: this.codigo.iMatrId,
         iNivelGradoId: this.codigo.iNivelGradoId,
@@ -295,19 +296,26 @@ export class AsistenciasComponent implements OnInit {
         iSeccionId: this.codigo.iSeccionId,
         iSedeId: this.dremoPerfil.iSedeId,
         iYAcadId: this.dremoiYAcadId,
-        dtAsistencia: this.codigo.dtAsistencia,
+        dtAsistencia: this.formatoFecha(this.codigo.dtAsistencia),
         idAsistencia: this.codigo.idAsistencia,
       },
     };
 
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
       next: data => {
-        const resultado = parseInt(data.data[0].resultado);
+        console.log('recibir #1', data);
+
+        /*const resultado = parseInt(data.data[0].resultado);
         if (resultado > 0) {
+          console.log(data)
           this.temporal.push(this.codigo);
-        }
+          this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+        }else{
+          console.log(data)
+          this.mensajeSuccess('Mensaje del sistema', 'Ya fue registrado el alumno');
+        } 
         this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
-        this.visible = false;
+        this.visible = false;*/
       },
       error: () => {
         this.mensajeError('Mensaje del sistema', 'Error al guardar asistencia');
@@ -364,6 +372,7 @@ export class AsistenciasComponent implements OnInit {
 
   guardarAsistencia() {
     const enviar = new FormData();
+    enviar.append('opcion', 'estudiante');
     enviar.append('iMatrId', this.estudiante[0].iMatrId);
     enviar.append('iEstudianteId', this.estudiante[0].iEstudianteId);
     enviar.append('iNivelGradoId', this.estudiante[0].iNivelGradoId);

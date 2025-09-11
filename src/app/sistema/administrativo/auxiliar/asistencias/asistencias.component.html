@@ -1,0 +1,393 @@
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between flex-wrap w-full">
+      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+        <span class="font-bold text-4xl">ASISTENCIA</span>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p-tabView>
+      <p-tabPanel header="Grados y Seccion">
+        <div class="grid h-full m-1">
+          <div class="col-6 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Grado</p-inputGroupAddon>
+              <p-dropdown
+                [options]="grado"
+                [(ngModel)]="datos.iGradoId"
+                (onChange)="filtrarSeccion()"
+                optionLabel="cGradoNombre"
+                optionValue="iGradoId"
+                placeholder="Seleccionar Grado"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-6 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+              <p-dropdown
+                [options]="seccion"
+                [(ngModel)]="datos.iSeccionId"
+                optionLabel="cSeccionNombre"
+                optionValue="iSeccionId"
+                placeholder="Seleccionar Seccion"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 lg:col-2">
+            <p-calendar
+              styleClass="w-full"
+              appendTo="body"
+              [(ngModel)]="datos.dtAsistencia"
+              (click)="registrar = false"
+              [showIcon]="true"
+              [showTime]="true"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (onClick)="buscarGrupo()"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="success"
+              label="guardar"
+              icon="pi pi-save"
+              [disabled]="!registrar"
+              (click)="guardarAsistenciaAula()"
+            />
+          </div>
+          <div class="col-12">
+            <p-table
+              [value]="alumnos"
+              [paginator]="true"
+              [rows]="10"
+              class="w-full"
+              [rowsPerPageOptions]="[5, 10, 20]"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%">#</th>
+                  <th style="width: 25%">Apellidos y Nombres</th>
+                  <th class="hidden md:table-cell">DNI</th>
+                  <th class="text-center">Asistencia</th>
+                  <th class="text-center">Justificacion</th>
+                  <th class="text-center">Documento</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-alumno let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ alumno.completo }}</td>
+                  <td class="hidden md:table-cell">{{ alumno.cPersDocumento }}</td>
+                  <td>
+                    <p-button
+                      size="small"
+                      styleClass="text-center boton"
+                      (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
+                      ><span class="font-bold hidden md:table-cell">{{
+                        alumno.cTipoAsiNombre
+                      }}</span>
+                      <span class="font-bold table-cell md:hidden">{{ alumno.cTipoAsiLetra }}</span>
+                    </p-button>
+                  </td>
+                  <td class="text-center flex justify-content-center">
+                    <p-fileUpload
+                      [disabled]="alumno.iTipoAsiId !== '4' && alumno.iTipoAsiId !== '9'"
+                      #folder
+                      mode="basic"
+                      class="mr-1"
+                      [chooseLabel]="'Seleccionar archivo'"
+                      chooseIcon="pi pi-upload"
+                      name="archivo"
+                      accept=".pdf,image/*"
+                      maxFileSize="1000000"
+                      (onSelect)="seleccionarFolder($event, alumno, folder)"
+                    />
+                    <p-button
+                      [disabled]="alumno.iTipoAsiId !== '4' && alumno.iTipoAsiId !== '9'"
+                      (click)="limpiar(folder)"
+                      >x</p-button
+                    >
+                  </td>
+                  <td class="text-center">
+                    <p-button
+                      [disabled]="!alumno.cJustificar"
+                      icon="pi pi-file-pdf"
+                      size="small"
+                      (click)="descargarArchivo(alumno.cJustificar)"
+                    />
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="5" class="text-center text-gray-500 py-3">
+                    Sin registros de Alumnos.
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Busqueda por Codigo">
+        <div class="grid h-full m-1">
+          <div class="col-12 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Cod. de Est.</p-inputGroupAddon>
+              <input
+                pInputText
+                class="mr-1"
+                [(ngModel)]="datos.cEstCodigo"
+                name="cEstCodigo"
+                placeholder="Codigo"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>DNI</p-inputGroupAddon>
+              <input
+                pInputText
+                class="mr-1"
+                [(ngModel)]="datos.cPersDocumento"
+                name="cPersDocumento"
+                placeholder="DNI"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 lg:col-2">
+            <p-calendar
+              appendTo="body"
+              styleClass="w-full"
+              inputId="calendar-12h"
+              [(ngModel)]="datos.dtAsistencia"
+              (click)="registrarEstudiante = false"
+              [showIcon]="true"
+              [showTime]="true"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="primary"
+              label="Buscar"
+              icon="pi pi-search"
+              [loading]="finalizar"
+              (click)="buscarCodigo()"
+            />
+          </div>
+          <div class="col-6 md:col-6 lg:col-2">
+            <p-button
+              class="expandir"
+              severity="success"
+              label="guardar"
+              icon="pi pi-save"
+              [disabled]="!registrarEstudiante"
+              (click)="guardarAsistencia()"
+            />
+          </div>
+
+          <div class="col-12">
+            <p-table
+              [value]="estudiante"
+              [paginator]="true"
+              [rows]="10"
+              responsiveLayout="stack"
+              [rowsPerPageOptions]="[5, 10, 20]"
+            >
+              <ng-template pTemplate="header">
+                <tr class="escritorio">
+                  <th style="width: 5%">#</th>
+                  <th class="text-center">Apellidos y Nombres</th>
+                  <th class="text-center">DNI</th>
+                  <th class="text-center">Asistencia</th>
+                  <th class="text-center">Justificacion</th>
+                  <th class="text-center">Documento</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-estudiante let-rowIndex="rowIndex">
+                <tr class="escritorio">
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ estudiante.completo }}</td>
+                  <td>{{ estudiante.cPersDocumento }}</td>
+                  <td>
+                    <p-button
+                      styleClass="boton"
+                      (click)="cambiarEstadoEstudiante(rowIndex, estudiante.iTipoAsiId)"
+                      ><span class="font-bold w-100">{{ estudiante.cTipoAsiNombre }}</span>
+                    </p-button>
+                  </td>
+                  <td class="text-center flex justify-content-center">
+                    <p-fileUpload
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
+                      #folderEstudiante
+                      mode="basic"
+                      class="mr-1"
+                      [chooseLabel]="'Seleccionar archivo'"
+                      chooseIcon="pi pi-upload"
+                      name="archivo"
+                      accept=".pdf,image/*"
+                      maxFileSize="1000000"
+                      (onSelect)="seleccionarFolder($event, estudiante, folderEstudiante)"
+                    />
+                    <p-button
+                      styleClass="h-full"
+                      [disabled]="!estudiante.cJustificar"
+                      icon="pi pi-trash"
+                      (click)="limpiar(folderEstudiante)"
+                    />
+                  </td>
+                  <td>
+                    <p-button
+                      [disabled]="!estudiante.cJustificar"
+                      icon="pi pi-file-pdf"
+                      size="small"
+                      (click)="descargarArchivo(estudiante.cJustificar)"
+                    />
+                  </td>
+                </tr>
+                <tr class="movil">
+                  <div>Nombre Completo: {{ estudiante.completo }}</div>
+                  <div>DNI: {{ estudiante.cPersDocumento }}</div>
+                  <div>
+                    <p-button
+                      size="small"
+                      styleClass="boton"
+                      (click)="cambiarEstadoEstudiante(rowIndex, estudiante.iTipoAsiId)"
+                      ><span class="font-bold">{{ estudiante.cTipoAsiNombre }}</span>
+                    </p-button>
+                  </div>
+                  <div class="text-center flex justify-content-center">
+                    <p-fileUpload
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
+                      #folderEstudiante
+                      mode="basic"
+                      class="mr-1"
+                      [chooseLabel]="'Seleccionar archivo'"
+                      chooseIcon="pi pi-upload"
+                      name="archivo"
+                      accept=".pdf,image/*"
+                      maxFileSize="1000000"
+                      (onSelect)="seleccionarFolder($event, estudiante, folderEstudiante)"
+                    />
+                    <p-button
+                      styleClass="h-full"
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
+                      icon="pi pi-trash"
+                      (click)="limpiar(folderEstudiante)"
+                    />
+                  </div>
+                  <div>
+                    <p-button
+                      [disabled]="!estudiante.cJustificar"
+                      icon="pi pi-file-pdf"
+                      size="small"
+                      (click)="descargarArchivo(estudiante.cJustificar)"
+                    />
+                  </div>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="5" class="text-center text-gray-500 py-3">
+                    Sin registros de Alumnos.
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Registrar por QR">
+        <div class="grid h-full">
+          <div class="col-12 lg:col-6">
+            <zxing-scanner
+              *ngIf="scanner"
+              [torch]="false"
+              (scanSuccess)="escaner($event)"
+              (camerasFound)="camaraEncontrada()"
+            >
+            </zxing-scanner>
+            <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
+          </div>
+          <div class="col-12 lg:col-6 card">
+            <div class="col-12">
+              <p-button
+                class="expandir"
+                severity="success"
+                label="Registrar"
+                icon="pi pi-qrcode"
+                (click)="scanner = !scanner; progreso = true; estado = true"
+              ></p-button>
+            </div>
+            <p-table
+              [value]="temporal"
+              [paginator]="true"
+              [rows]="10"
+              [rowsPerPageOptions]="[5, 10, 20]"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="text-center" style="width: 5%">#</th>
+                  <th class="text-center" style="width: 60%">Apellidos y Nombres</th>
+                  <th class="text-center" style="width: 35%">Fecha y Hora</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-temporal let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ temporal.completo }}</td>
+                  <td class="hidden md:table-cell">
+                    {{ temporal.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+                  </td>
+                  <td></td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </ng-template>
+</p-panel>
+
+<p-dialog
+  header="Informacion del Estudiante"
+  [modal]="true"
+  [(visible)]="visible"
+  [style]="{ width: '35rem' }"
+>
+  <div class="flex align-items-center mt-3 mb-3">
+    <div class="font-semibold">Nombre Completo: {{ codigo.completo }}</div>
+  </div>
+  <div class="flex align-items-center mb-3">
+    <div class="font-semibold">DNI: {{ codigo.cPersDocumento }}</div>
+  </div>
+  <div class="flex align-items-center mb-5">
+    <div class="font-semibold">
+      Fecha y Hora de Registro: {{ codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+    </div>
+  </div>
+  <div class="flex justify-content-end">
+    <p-button class="mr-2" label="Cancel" severity="secondary" (onClick)="visible = false" />
+    <p-button
+      label="Guardar Asistencia"
+      severity="success"
+      (onClick)="guardarAsistenciaSacnner()"
+    />
+  </div>
+</p-dialog>
+
+<p-toast />

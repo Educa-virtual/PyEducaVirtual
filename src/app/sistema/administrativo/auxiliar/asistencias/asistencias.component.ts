@@ -51,6 +51,7 @@ export class AsistenciasComponent implements OnInit {
   estado: boolean = false;
   temporal: any = [];
   archivos: any = [];
+  messages = [{ severity: 'info', detail: 'Este Registro solo marca la hora de entrada' }];
   tipoAsistencia = [
     {
       iTipoAsiId: '1',
@@ -306,11 +307,11 @@ export class AsistenciasComponent implements OnInit {
         const idAsistencia = parseInt(data.data[0]);
         const verificar = this.temporal.find(item => item.idAsistencia == idAsistencia);
         if (verificar) {
-          this.temporal.push(this.codigo);
           this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
         } else {
           this.mensajeSuccess('Mensaje del sistema', 'Ya fue registrado el alumno');
         }
+        this.temporal.push(this.codigo);
         this.visible = false;
       },
       error: () => {

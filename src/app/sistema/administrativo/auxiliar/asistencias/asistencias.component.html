@@ -324,6 +324,9 @@
           </div>
           <div class="col-12 lg:col-6 card">
             <div class="col-12">
+              <p-messages [(value)]="messages" [enableService]="false" [closable]="false" />
+            </div>
+            <div class="col-12">
               <p-button
                 class="expandir"
                 severity="success"

@@ -72,6 +72,9 @@ export class GestionFichasComponent implements OnInit {
   TIPO_PERSONA_DOCENTE: number = 2;
   TIPO_PERSONA_ADMINISTRATIVO: number = 3;
 
+  ocultar_grado: boolean = false;
+  ocultar_seccion: boolean = false;
+
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
 
@@ -151,6 +154,15 @@ export class GestionFichasComponent implements OnInit {
         }
         this.listarFichas();
       });
+
+    this.formFiltros.get('iTipoPersId').valueChanges.subscribe(value => {
+      this.ocultar_grado = false;
+      this.ocultar_seccion = false;
+      if (value == this.TIPO_PERSONA_ADMINISTRATIVO) {
+        this.ocultar_grado = true;
+        this.ocultar_seccion = true;
+      }
+    });
   }
 
   filterNivelesTipos() {

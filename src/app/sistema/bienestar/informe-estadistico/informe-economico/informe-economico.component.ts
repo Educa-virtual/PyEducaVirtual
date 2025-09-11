@@ -3,7 +3,6 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.component';
 import { DatosInformeBienestarService } from '../../services/datos-informe-bienestar.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-informe-econonomico',
@@ -23,7 +22,6 @@ export class InformeEconomicoComponent implements OnInit {
   ) {
     this.datosInformes.setActiveIndex(1);
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit() {

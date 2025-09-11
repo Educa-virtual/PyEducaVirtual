@@ -58,6 +58,9 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
   TIPO_PERSONA_ADMINISTRATIVO: number = 3;
 
   es_estudiante_apoderado: boolean = false;
+  ocultar_grado: boolean = false;
+  ocultar_seccion: boolean = false;
+  ocultar_area: boolean = true;
 
   perfiles_especialista: Array<number> = [
     ESPECIALISTA_DREMO,
@@ -180,7 +183,17 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
       this.filterDistritos(value);
     });
     this.formReportes.get('iTipoPersId').valueChanges.subscribe(value => {
-      this.cantidad_personas_nombre = this.getCantidadPersonasNombre(value);
+      this.ocultar_grado = false;
+      this.ocultar_seccion = false;
+      this.ocultar_area = false;
+      if (value == this.TIPO_PERSONA_ADMINISTRATIVO) {
+        this.ocultar_grado = true;
+        this.ocultar_seccion = true;
+        this.ocultar_area = true;
+      }
+      if (value == this.TIPO_PERSONA_ESTUDIANTE) {
+        this.ocultar_area = true;
+      }
     });
   }
 
@@ -237,6 +250,9 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
           });
           return;
         }
+        this.cantidad_personas_nombre = this.getCantidadPersonasNombre(
+          this.formReportes.value.iTipoPersId
+        );
         this.cantidad_personas = reportes?.cantidad_personas;
         this.cantidad_fichas = reportes?.cantidad_fichas;
         // this.router.navigate([`/bienestar/informe-estadistico/familia`])

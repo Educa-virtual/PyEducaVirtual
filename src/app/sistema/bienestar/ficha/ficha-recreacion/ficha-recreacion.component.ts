@@ -66,7 +66,7 @@ export class FichaRecreacionComponent implements OnInit {
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
-    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit() {

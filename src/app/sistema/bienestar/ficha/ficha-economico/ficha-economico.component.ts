@@ -54,7 +54,7 @@ export class FichaEconomicoComponent implements OnInit {
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
-    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -105,7 +105,7 @@ export class FichaEconomicoComponent implements OnInit {
         ? 'Actividad económica de la familia del estudiante'
         : 'Actividad económica de su familia',
       bIngresoEcoTrabaja: this.es_estudiante_apoderado
-        ? '¿El estudiante trabaja?'
+        ? '¿El apoderado trabaja?'
         : 'El(a) jefe de familia trabaja?',
       iTipoAEcoId: this.es_estudiante_apoderado
         ? '¿El estudiante recibe algún apoyo económico?'

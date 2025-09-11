@@ -55,7 +55,7 @@ export class FichaDeclaracionComponent implements OnInit {
       this.iPersId = Number(this.perfil.iPersId);
       this.router.navigate([`/bienestar/ficha-declaracion/${this.iPersId}`]);
     }
-    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   async ngOnInit() {

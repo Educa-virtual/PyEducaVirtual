@@ -47,7 +47,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
     private store: LocalStoreService
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(this.perfil.iPerfilId);
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {

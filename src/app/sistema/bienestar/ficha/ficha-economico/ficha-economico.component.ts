@@ -106,7 +106,7 @@ export class FichaEconomicoComponent implements OnInit {
         : 'Actividad económica de su familia',
       bIngresoEcoTrabaja: this.es_estudiante_apoderado
         ? '¿El estudiante trabaja?'
-        : '¿Usted trabaja?',
+        : 'El(a) jefe de familia trabaja?',
       iTipoAEcoId: this.es_estudiante_apoderado
         ? '¿El estudiante recibe algún apoyo económico?'
         : '¿Usted recibe algún apoyo económico?',

@@ -169,12 +169,10 @@ export class TabInicioComponent extends MostrarErrorComponent implements OnInit,
       message: 'Recuerde que al eliminarlo no podra recuperarlo',
       header: `¿Esta seguro de Eliminar: ${nombreTitulo} ?`,
       accept: () => {
-        const iCredId = this._ConstantesService.iCredId;
         const params = {
-          iAnuncioId: iAnuncioId,
-          iCredId: iCredId,
+          iCredId: this._ConstantesService.iCredId,
         };
-        this._AnunciosService.eliminarAnuncio(params).subscribe({
+        this._AnunciosService.eliminarAnuncio(iAnuncioId, params).subscribe({
           next: (response: any) => {
             if (response.validated) {
               this.mostrarMensajeToast({

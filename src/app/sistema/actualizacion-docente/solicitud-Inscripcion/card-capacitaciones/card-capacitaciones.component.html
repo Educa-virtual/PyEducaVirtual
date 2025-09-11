@@ -67,6 +67,8 @@
         icon="pi pi-file-pdf"
         iconPos="right"
         [severity]="'danger'"
+        (click)="generarCertificado(capacitacion)"
+        [loading]="isDownload"
       ></p-button>
     }
     <p-button

@@ -503,9 +503,9 @@ export class AsignarHorasComponent implements OnInit {
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
-      isVisible: rowData => {
-        return Number(rowData.bActive) === 1 || Number(rowData.bError) === 1;
-      },
+      // isVisible: rowData => {
+      //   return Number(rowData.bActive) === 1 || Number(rowData.bError) === 1;
+      // },
     },
     {
       labelTooltip: 'Eliminar',

@@ -76,6 +76,13 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.goSection('asistencia');
         },
       },
+      {
+        label: 'Resultado de evaluaciones',
+        icon: 'pi pi-angle-right',
+        command: () => {
+          this.goSection('resultados');
+        },
+      },
     ];
   }
   ngOnChanges(changes) {
@@ -134,6 +141,30 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             '/' +
             this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '')
         );
+        break;
+      case 'resultados':
+        this.router.navigate(
+          ['./aula-virtual/areas-curriculares/', this.selectedData['iSilaboId'] || 0], // ruta con parámetro
+          {
+            queryParams: {
+              cCursoNombre: this.selectedData['cCursoNombre'],
+              cNivelTipoNombre: this.selectedData['cNivelTipoNombre'],
+              cGradoAbreviacion: this.selectedData['cGradoAbreviacion'],
+              cSeccionNombre: this.selectedData['cSeccionNombre'] || this.selectedData['cSeccion'],
+              cCicloRomanos: this.selectedData['cCicloRomanos'],
+              cNivelNombreCursos: this.selectedData['cNivelNombreCursos'],
+              iCursoId: this.selectedData['iCursoId'],
+              idDocCursoId: this.selectedData['idDocCursoId'],
+              iNivelCicloId: this.selectedData['iNivelCicloId'],
+              iIeCursoId: this.selectedData['iIeCursoId'],
+              iSeccionId: this.selectedData['iSeccionId'],
+              iNivelGradoId: this.selectedData['iNivelGradoId'],
+              cantidad: this.selectedData['cantidad'],
+              tab: 2,
+            },
+          }
+        );
+
         break;
     }
   }

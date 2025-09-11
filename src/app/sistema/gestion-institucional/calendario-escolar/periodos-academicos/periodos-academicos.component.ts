@@ -33,19 +33,24 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
   periodos: any = [];
   isLoading: boolean = false;
   label: string = 'Periodo';
+  iPeriodoEvalId: string | number;
+  respaldoPeriodos: any = [];
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']?.currentValue) {
       this.data = changes['data'].currentValue;
-      if (this.data.iPeriodoEvalId === '1') {
+      this.iPeriodoEvalId = this.data?.iPeriodoEvalId;
+
+      if (this.iPeriodoEvalId === '1') {
         this.label = 'Semestre';
       }
-      if (this.data.iPeriodoEvalId === '2') {
+      if (this.iPeriodoEvalId === '2') {
         this.label = 'Trimestre';
       }
-      if (this.data.iPeriodoEvalId === '3') {
+      if (this.iPeriodoEvalId === '3') {
         this.label = 'Bimestre';
       }
-      if (this.data.jsonRegular?.length > 0 || this.data.jsonRecuperacion?.length > 0) {
+      if (this.data.jsonRegular?.length > 0) {
         this.periodos = [];
 
         if (this.data.jsonRegular?.length > 0) {
@@ -69,7 +74,23 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
               dtFaseFinRecuperacion: new Date(this.data.dtFaseFinRecuperacion),
             });
           });
+        } else {
+          this.periodos.push({
+            iPeriodoEvalAperId: null,
+            iFaseId: null,
+            dtPeriodoEvalAperFin: this.data.dtFaseFinRecuperacion
+              ? new Date(this.data.dtFaseFinRecuperacion)
+              : new Date(),
+            dtPeriodoEvalAperInicio: this.data.dtFaseInicioRecuperacion
+              ? new Date(this.data.dtFaseInicioRecuperacion)
+              : new Date(),
+            cFase: `RECUPERACIÓN`,
+            cPeriodo: 'Vacacional',
+            bHabilitado: 1,
+            iFasePromId: 2,
+          });
         }
+        this.respaldoPeriodos = this.periodos;
       } else {
         this.generarPeriodos();
       }
@@ -138,19 +159,20 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
   ];
 
   generarPeriodos() {
-    const iPeriodoEvalId = this.data.iPeriodoEvalId;
-    if (this.data.iPeriodoEvalId === '1') {
+    if (this.iPeriodoEvalId === '1') {
       this.label = 'Semestre';
     }
-    if (this.data.iPeriodoEvalId === '2') {
+    if (this.iPeriodoEvalId === '2') {
       this.label = 'Trimestre';
     }
-    if (this.data.iPeriodoEvalId === '3') {
+    if (this.iPeriodoEvalId === '3') {
       this.label = 'Bimestre';
     }
 
-    if (!iPeriodoEvalId) return;
-    const periodo = this.tiposPeriodos.find(periodo => periodo.iPeriodoEvalId === iPeriodoEvalId);
+    if (!this.iPeriodoEvalId) return;
+    const periodo = this.tiposPeriodos.find(
+      periodo => periodo.iPeriodoEvalId === this.iPeriodoEvalId
+    );
 
     const fechasCalculadas = this.calculandoPeriodosFormativos(periodo, this.data);
 
@@ -297,7 +319,7 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
     }));
 
     const data = {
-      iPeriodoEvalId: this.data.iPeriodoEvalId,
+      iPeriodoEvalId: this.iPeriodoEvalId,
       jsonPeriodos: JSON.stringify(periodosNormalizados),
       iSedeId: this._ConstantesService.iSedeId,
       iYAcadId: this._ConstantesService.iYAcadId,
@@ -321,5 +343,10 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
           this.mostrarErrores(error);
         },
       });
+  }
+
+  restablecerCalendarioPeriodosEvaluaciones() {
+    this.iPeriodoEvalId = this.data.iPeriodoEvalId;
+    this.periodos = this.respaldoPeriodos;
   }
 }

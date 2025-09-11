@@ -25,6 +25,10 @@
   color: #fff !important;
 }
 
+.table-responsive {
+  overflow-x: auto;
+}
+
 .tabla-dias {
   border-collapse: separate; /* importante para el border-radius */
   border-spacing: 0; /* elimina separación entre celdas */
@@ -93,4 +97,10 @@
 }
 .hoverTable tr:hover:not(.itemSelected, .itemActive) {
   background-color: var(--highlight-bg);
+}
+
+:host ::ng-deep p-calendar .p-inputtext:disabled {
+  opacity: 1 !important;
+  background-color: #fff !important; /* opcional: evita que se vea gris */
+  color: #000 !important; /* opcional: mantiene el texto legible */
 }

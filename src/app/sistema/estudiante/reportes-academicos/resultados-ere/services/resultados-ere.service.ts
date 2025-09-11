@@ -11,19 +11,42 @@ export class ResultadosEreService {
 
   constructor() {}
 
-  obtenerEvaluacionesPorEstudiante() {
-    return this.http.get(`${this.urlBackendApi}/ere/Evaluaciones/estudiante`);
+  /*obtenerEvaluacionesPorEstudiante() {
+        return this.http.get(`${this.urlBackendApi}/ere/Evaluaciones/estudiante`);
+    }
+
+    obtenerAreasPorEvaluacionEstudiante(iEvaluacionId: any) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/estudiante/areas`
+        );
+    }
+
+    obtenerResultadoEvaluacionEstudiante(iEvaluacionId: any, iCursoId: any) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/estudiante/areas/${iCursoId}/resultado`
+        );
+    }
+
+    */
+
+  /*obtenerResultadosPorAnioEvaluacion(anioEscolar: number) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/anios/${anioEscolar}/resultados/estudiante`
+        );
+    }*/
+
+  obtenerEvaluacionesEstudiantePorAnio(anioEscolar: number) {
+    return this.http.get(`${this.urlBackendApi}/ere/evaluaciones/anios/${anioEscolar}/estudiante`);
   }
 
-  obtenerAreasPorEvaluacionEstudiante(iEvaluacionId: any) {
+  obtenerResultadosEstudiantePorEvaluacion(iEvaluacionId: number) {
     return this.http.get(
-      `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/estudiante/areas`
+      `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/estudiante/resultados`
     );
   }
-
-  obtenerResultadoEvaluacionEstudiante(iEvaluacionId: any, iCursoId: any) {
-    return this.http.get(
-      `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/estudiante/areas/${iCursoId}/resultado`
-    );
-  }
+  /*obtenerAreasPorAnioEvaluacion(anioEscolar: number) {
+        return this.http.get(
+            `${this.urlBackendApi}/ere/evaluaciones/anios/${anioEscolar}/areas`
+        );
+    }*/
 }

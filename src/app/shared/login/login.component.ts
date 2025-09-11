@@ -11,6 +11,7 @@ import { RecoverPasswordComponent } from '../recover-password/recover-password.c
 import { SinRolAsignadoComponent } from '../../sistema/usuarios/sin-rol-asignado/sin-rol-asignado.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogModule } from 'primeng/dialog';
+import { HeaderComponent } from '../header/header.component';
 
 interface Data {
   accessToken: string;
@@ -30,12 +31,20 @@ interface Data {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [PrimengModule, RecoverPasswordComponent, SinRolAsignadoComponent, DialogModule],
+  imports: [
+    PrimengModule,
+    RecoverPasswordComponent,
+    SinRolAsignadoComponent,
+    DialogModule,
+    HeaderComponent,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   providers: [MessageService],
 })
 export class LoginComponent implements OnInit {
+  activeForm: 'login' | 'register' = 'login';
+
   showPassword: boolean;
   loading: boolean;
   loadingText: string;
@@ -163,5 +172,9 @@ export class LoginComponent implements OnInit {
         this.showModal = false;
         break;
     }
+  }
+
+  switchForm(type: 'login' | 'register') {
+    this.activeForm = type;
   }
 }

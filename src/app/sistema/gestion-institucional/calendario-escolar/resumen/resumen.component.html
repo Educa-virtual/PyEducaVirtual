@@ -10,7 +10,7 @@
           [showIcon]="true"
           appendTo="body"
           [(ngModel)]="data.dtFaseInicioRegular"
-          [readonlyInput]="true"
+          [disabled]="true"
         />
       </p-inputGroup>
     </div>
@@ -23,7 +23,7 @@
           [showIcon]="true"
           appendTo="body"
           [(ngModel)]="data.dtFaseInicioRecuperacion"
-          [readonlyInput]="true"
+          [disabled]="true"
         />
       </p-inputGroup>
     </div>
@@ -36,7 +36,7 @@
           [showIcon]="true"
           appendTo="body"
           [(ngModel)]="data.dtFaseFinRegular"
-          [readonlyInput]="true"
+          [disabled]="true"
         />
       </p-inputGroup>
     </div>
@@ -49,7 +49,7 @@
           [showIcon]="true"
           appendTo="body"
           [(ngModel)]="data.dtFaseFinRecuperacion"
-          [readonlyInput]="true"
+          [disabled]="true"
         />
       </p-inputGroup>
     </div>
@@ -62,10 +62,10 @@
     <div class="col-12 md:col-6">
       <p-inputGroup class="turno-input">
         <p-inputGroupAddon>Turno </p-inputGroupAddon>
-        <input pInputText [value]="cTurno" />
+        <input pInputText [value]="cTurno" [disabled]="true" class="opacity-100" />
       </p-inputGroup>
     </div>
-    <div class="col-12">
+    <div class="col-12 table-responsive">
       <table class="tabla-dias">
         <thead>
           <tr>

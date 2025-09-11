@@ -60,10 +60,11 @@ export class ConfiguracionInicialComponent extends MostrarErrorComponent impleme
       }
 
       if (this.data.dtCalAcadMatriculaFin && this.data.dtCalAcadMatriculaResagados) {
-        this.data.dRezagadosInicioFin = [
-          this.data.dtCalAcadMatriculaFin,
-          this.data.dtCalAcadMatriculaResagados,
-        ];
+        const finMatricula = new Date(this.data.dtCalAcadMatriculaFin);
+        const inicioRezagados = new Date(finMatricula);
+        inicioRezagados.setDate(inicioRezagados.getDate() + 1);
+
+        this.data.dRezagadosInicioFin = [inicioRezagados, this.data.dtCalAcadMatriculaResagados];
       }
 
       if (this.data.dtFaseInicioRegular && this.data.dtFaseFinRegular) {
@@ -96,6 +97,26 @@ export class ConfiguracionInicialComponent extends MostrarErrorComponent impleme
 
   onChange(value: any, campo: string) {
     switch (campo) {
+      case 'dRezagadosInicioFin':
+        const finMatricula = this.data.dMatriculaRegularInicioFin?.[1] ?? null;
+        const inicioRezagados = this.data.dRezagadosInicioFin?.[0] ?? null;
+
+        if (finMatricula && inicioRezagados) {
+          const fechaValida = new Date(finMatricula);
+          fechaValida.setDate(fechaValida.getDate() + 1);
+
+          if (new Date(inicioRezagados) < fechaValida) {
+            this.mostrarMensajeToast({
+              severity: 'error',
+              summary: '¡Atención!',
+              detail: `El inicio de Rezagados debe ser después de la Matrícula Regular`,
+            });
+
+            // corregir automáticamente
+            this.data.dRezagadosInicioFin = [fechaValida, fechaValida];
+          }
+        }
+        break;
       case 'dRegularInicioFin':
         const fin = this.data.dRegularInicioFin?.[1] ?? null;
         this.data.dRezagadosInicioFin = [fin, fin ? this.data.dRezagadosInicioFin?.[1] : null];

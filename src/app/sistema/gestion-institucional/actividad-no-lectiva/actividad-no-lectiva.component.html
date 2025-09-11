@@ -1,14 +1,14 @@
-<app-container-page
-  title="APROBACIÓN PLANES DE HORAS NO LECTIVAS"
-  [actions]="actionsContainer"
-  (accionBtnItem)="accionBtnItem($event)"
->
-  @if (seleccionado) {
-    <app-actividades-no-lectivas
-      [bAprobarActividad]="seleccionado"
-      [iDocenteId]="iDocenteId"
-    ></app-actividades-no-lectivas>
-  } @else {
+@if (seleccionado) {
+  <app-actividades-no-lectivas
+    [bAprobarActividad]="seleccionado"
+    [iDocenteId]="iDocenteId"
+  ></app-actividades-no-lectivas>
+} @else {
+  <app-container-page
+    title="APROBACIÓN PLANES DE HORAS NO LECTIVAS"
+    [actions]="[]"
+    (accionBtnItem)="accionBtnItem($event)"
+  >
     <app-table-primeng
       [columnas]="columns"
       [actions]="actions"
@@ -17,5 +17,5 @@
       [tableStyle]="null"
       (accionBtnItem)="accionBtnItem($event)"
     ></app-table-primeng>
-  }
-</app-container-page>
+  </app-container-page>
+}

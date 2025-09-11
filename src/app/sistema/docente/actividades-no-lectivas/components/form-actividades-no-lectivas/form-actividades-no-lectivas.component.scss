@@ -1,18 +1,18 @@
 :host ::ng-deep .p-button.p-button-rounded {
-    border-radius: 50% !important;
+  border-radius: 50% !important;
 }
 
 :host ::ng-deep .p-button.p-button-outlined {
-    background-color: transparent !important;
-    color: #e7eaeee3 !important;
-    border: 1px solid !important;
+  background-color: transparent !important;
+  color: #e7eaeee3 !important;
+  border: 1px solid !important;
 }
 :host ::ng-deep .p-button:focus {
-    outline: 0 none;
-    outline-offset: 0px;
-    box-shadow: none;
+  outline: 0 none;
+  outline-offset: 0px;
+  box-shadow: none;
 }
 :host ::ng-deep .p-dropdown {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }

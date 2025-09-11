@@ -5,6 +5,19 @@ import { ReporteProgresoService } from './services/reporte-progreso.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { firstValueFrom } from 'rxjs';
 
+/*interface Competencia {
+    id: number;
+    nombre: string;
+    notas: string[]; // notas por periodo (periodo1, periodo2, periodo3...)
+}*/
+
+/*interface Curso {
+    id: number;
+    nombre: string;
+    periodos: number[]; // resumen por periodo (periodo1, periodo2, periodo3)
+    competencias: Competencia[];
+}*/
+
 @Component({
   selector: 'app-reporte-progreso',
   standalone: true,
@@ -17,12 +30,45 @@ export class ReporteProgresoComponent implements OnInit {
   breadCrumbHome: MenuItem;
   iYAcadId: number;
   anioEscolar: number;
+  //Nuevas var
+  courses: any[] = [];
+
+  // Control de filas expandidas (por id de curso)
+  expanded: Record<number, boolean> = {};
+  singleOpen: boolean = false;
 
   constructor(
     private reporteProgresoService: ReporteProgresoService,
     private messageService: MessageService,
     private store: LocalStoreService
   ) {}
+
+  toggle(id: number) {
+    if (this.singleOpen) {
+      // Cierra todos excepto el seleccionado
+      Object.keys(this.expanded).forEach(key => {
+        const k = Number(key);
+        this.expanded[k] = k === id ? !this.expanded[k] : false;
+      });
+    } else {
+      this.expanded[id] = !this.expanded[id];
+    }
+  }
+
+  /** Helper para mostrar una nota segura (si no existe, devuelve '-') */
+  /*nota(c: Competencia, index: number) {
+        return c.notas[index] ?? '-';
+    }*/
+
+  /** trackBy para optimizar ngFor */
+  /*trackByCourse(index: number, curso: Curso) {
+        return curso.id;
+    }*/
+
+  /** trackBy para competencias */
+  /*trackByCompetencia(index: number, comp: Competencia) {
+        return comp.id;
+    }*/
 
   ngOnInit() {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
@@ -40,6 +86,24 @@ export class ReporteProgresoComponent implements OnInit {
         label: 'Progreso',
       },
     ];
+
+    this.obtenerReporte();
+  }
+
+  obtenerReporte() {
+    this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
+      next: (response: any) => {
+        this.courses = response.data;
+        this.courses.forEach(c => (this.expanded[c.iIeCursoId] = true));
+      },
+      error: err => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Problema al obtener reporte',
+          detail: err.error.message || 'Error desconocido',
+        });
+      },
+    });
   }
 
   async descargarReporte() {
@@ -57,7 +121,7 @@ export class ReporteProgresoComponent implements OnInit {
       }
 
       const response: Blob = await firstValueFrom(
-        this.reporteProgresoService.obtenerReporte(this.iYAcadId)
+        this.reporteProgresoService.generarReportePdf(this.iYAcadId)
       );
       const link = document.createElement('a');
       link.href = URL.createObjectURL(response);
@@ -71,44 +135,4 @@ export class ReporteProgresoComponent implements OnInit {
       });
     }
   }
-  /*descargarReporte() {
-          this.reporteProgresoService.existeMatriculaPorAnio(this.iYAcadId).subscribe({
-              next: (responsex: any) => {
-                  if (responsex.data.existe) {
-                      this.reporteProgresoService.obtenerReporte(this.iYAcadId).subscribe({
-                          next: (response: any) => {
-                              const blob = new Blob([response], {
-                                  type: 'application/pdf',
-                              });
-                              const url = window.URL.createObjectURL(blob);
-                              const link = document.createElement('a');
-                              link.href = url;
-                              link.target = '_blank';
-                              link.click();
-                          },
-                          error: () => {
-                              this.messageService.add({
-                                  severity: 'error',
-                                  summary: 'Problema al descargar el archivo',
-                                  detail: 'Error desconocido',
-                              });
-                          },
-                      });
-                  } else {
-                      this.messageService.add({
-                          severity: 'error',
-                          summary: 'No existe matricula',
-                          detail: 'No hay una matricula registrada para el anio seleccionado',
-                      });
-                  }
-              },
-              error: (err) => {
-                  this.messageService.add({
-                      severity: 'error',
-                      summary: 'Problema al descargar el archivo',
-                      detail: err.error.message || 'Error desconocido',
-                  });
-              },
-          });
-      }*/
 }

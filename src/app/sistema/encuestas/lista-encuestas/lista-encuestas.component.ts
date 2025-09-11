@@ -58,8 +58,29 @@ export class ListaEncuestasComponent implements OnInit {
 
   ngOnInit() {
     if (this.iCateId) {
+      this.verCategoria();
       this.listarEncuestas();
     }
+  }
+
+  verCategoria() {
+    this.encuestasService
+      .verCategoria({
+        iCateId: this.iCateId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.categoria = data.data;
+        },
+        error: error => {
+          console.error('Error obteniendo categoria:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   setBreadCrumbs() {
@@ -87,8 +108,9 @@ export class ListaEncuestasComponent implements OnInit {
         iTipoUsuario: this.USUARIO_ENCUESTADO,
       })
       .subscribe({
-        next: (resp: any) => {
-          this.encuestas = resp.data;
+        next: (data: any) => {
+          this.encuestas = data.data;
+          this.encuestas_filtradas = this.encuestas;
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);
@@ -130,20 +152,31 @@ export class ListaEncuestasComponent implements OnInit {
     ]);
   }
 
-  getColorEncuesta(encuesta: any) {
-    if (encuesta.iEstado === this.ESTADO_BORRADOR) {
+  getColorEncuesta(encuesta) {
+    if (Number(encuesta.puede_responder) === 0) {
+      return 'card-disabled';
+    }
+    if (Number(encuesta.alerta) === 1) {
       return 'card-alerta';
-    } else if (encuesta.iEstado === this.ESTADO_APROBADA) {
+    } else {
+      const respuestas_blanco =
+        Number(encuesta.count_preguntas) - Number(encuesta.count_respuestas);
+      if (respuestas_blanco > 0) {
+        return 'card-warning';
+      }
       return 'card-regular';
     }
-    return 'card-regular';
   }
 
   responderEncuesta(encuesta: any) {
-    this.router.navigate([`/bienestar/encuesta/${encuesta.iEncuId}/respuestas`]);
+    this.router.navigate([
+      `/encuestas/categorias/${encuesta.iCateId}/lista-encuestas/${encuesta.iEncuId}/ver`,
+    ]);
   }
 
   verRespuestas(encuesta: any) {
-    this.router.navigate([`/bienestar/encuesta/${encuesta.iEncuId}/resumen`]);
+    this.router.navigate([
+      `/encuestas/categorias/${encuesta.iCateId}/lista-encuestas/${encuesta.iEncuId}/ver`,
+    ]);
   }
 }

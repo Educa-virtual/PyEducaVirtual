@@ -17,13 +17,13 @@
     </div>
   </div>
 
-  @if (!categorias || categorias.length === 0) {
+  @if (!categorias_filtradas || categorias_filtradas.length === 0) {
     <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay categorías disponibles" />
   } @else {
-    <p-dataView [rows]="10" [paginator]="true" [value]="categorias">
-      <ng-template pTemplate="list" let-categorias>
+    <p-dataView [rows]="10" [paginator]="true" [value]="categorias_filtradas">
+      <ng-template pTemplate="list" let-categorias_filtradas>
         <div class="categorias-grid">
-          <div *ngFor="let categoria of categorias" class="categoria-item">
+          <div *ngFor="let categoria of categorias_filtradas" class="categoria-item">
             <article class="card p-0 border-1 flex flex-column surface-border h-full post-module">
               <div class="image-container img-transition">
                 <img
@@ -50,22 +50,37 @@
                 </a>
                 <span *ngIf="+categoria?.iCantBorradores === 0"></span>
                 <div class="flex gap-1">
-                  <p-splitButton
-                    severity="primary"
-                    size="small"
-                    [model]="categoria?.btnItems"
-                    badge="100"
-                    (onClick)="listarEncuestas(categoria?.iCateId)"
-                  >
-                    <ng-template pTemplate="content">
-                      Responder
+                  @if (categoria?.btnItems.length > 0) {
+                    <p-splitButton
+                      severity="primary"
+                      size="small"
+                      [model]="categoria?.btnItems"
+                      badge="100"
+                      (onClick)="listarEncuestas(categoria?.iCateId)"
+                    >
+                      <ng-template pTemplate="content">
+                        {{ +categoria?.iCantSinResponder === 0 ? 'Acceder' : 'Responder' }}
+                        <p-badge
+                          *ngIf="+categoria?.iCantSinResponder > 0"
+                          [value]="categoria?.iCantSinResponder"
+                          severity="danger"
+                        />
+                      </ng-template>
+                    </p-splitButton>
+                  } @else {
+                    <p-button
+                      size="small"
+                      severity="primary"
+                      (onClick)="listarEncuestas(categoria?.iCateId)"
+                    >
+                      {{ +categoria?.iCantSinResponder === 0 ? 'Acceder' : 'Responder' }}
                       <p-badge
                         *ngIf="+categoria?.iCantSinResponder > 0"
                         [value]="categoria?.iCantSinResponder"
                         severity="danger"
                       />
-                    </ng-template>
-                  </p-splitButton>
+                    </p-button>
+                  }
                 </div>
               </footer>
             </article>

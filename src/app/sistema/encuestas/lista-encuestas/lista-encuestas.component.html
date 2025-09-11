@@ -36,15 +36,18 @@
                       : encuesta?.cEncuNombre
                   }}
                 </span>
-                <p-tag [value]="encuesta.cEncuCateNombre" severity="warning" />
                 <div
-                  class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                  class="flex flex-column gap-2 sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
                 >
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-clock text-primary ml-1"></i>
+                    <span>Tiempo para responder: {{ encuesta?.cTiemDurNombre }}</span>
+                  </div>
                   <div class="flex items-center gap-1">
                     <i class="pi pi-calendar text-primary ml-1"></i>
                     <span>Del:</span>
-                    <span>{{ encuesta.dEncuDesde | date: 'dd/MM/yyyy' }}</span>
-                    <span>Al: {{ encuesta.dEncuHasta | date: 'dd/MM/yyyy' }}</span>
+                    <span>{{ encuesta?.dEncuInicio | date: 'dd/MM/yyyy' }}</span>
+                    <span>Al: {{ encuesta?.dEncuFin | date: 'dd/MM/yyyy' }}</span>
                   </div>
                 </div>
               </div>

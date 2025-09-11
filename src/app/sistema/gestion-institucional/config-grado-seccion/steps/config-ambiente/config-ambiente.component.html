@@ -17,6 +17,7 @@
       [showPaginator]="true"
       [(selectedRowData)]="accionBtnItemTable"
       [actions]="actions"
+      [showAdvancedFilter]="true"
     >
       <ng-container slot="caption-content"> </ng-container>
     </app-table-primeng>
@@ -72,6 +73,7 @@
               optionLabel="cTipoAmbienteNombre"
               optionValue="iTipoAmbienteId"
               formControlName="iTipoAmbienteId"
+              appendTo="body"
             />
             <label for="iTipoAmbienteId">Tipo de ambiente:</label>
           </span>
@@ -85,6 +87,7 @@
               optionLabel="cUbicaAmbNombre"
               optionValue="iUbicaAmbId"
               formControlName="iUbicaAmbId"
+              appendTo="body"
             />
             <label for="iUbicaAmbId">Ubicación:</label>
           </span>
@@ -98,6 +101,7 @@
               optionLabel="cUsoAmbNombre"
               optionValue="iUsoAmbId"
               formControlName="iUsoAmbId"
+              appendTo="body"
             />
             <label for="cUsoAmbNombre">Uso del ambiente</label>
           </span>
@@ -111,6 +115,7 @@
               optionLabel="cEstadoAmbNombre"
               optionValue="iEstadoAmbId"
               formControlName="iEstadoAmbId"
+              appendTo="body"
             />
             <label for="iEstadoAmbId">Condición de ambiente</label>
           </span>
@@ -119,6 +124,7 @@
           <span class="p-float-label">
             <input
               pInputText
+              type="number"
               formControlName="iAmbienteAforo"
               aria-describedby="iAmbienteAforo-help"
             />
@@ -129,10 +135,12 @@
           <span class="p-float-label">
             <input
               pInputText
+              type="number"
               formControlName="iAmbienteArea"
               aria-describedby="iAmbienteArea-help"
               id="iAmbienteArea"
             />
+
             <label for="iAmbienteArea">Área (m2) </label>
           </span>
         </div>
@@ -145,6 +153,7 @@
               optionLabel="cPisoAmbNombre"
               optionValue="iPisoAmbid"
               formControlName="iPisoAmbid"
+              appendTo="body"
             />
             <label for="iPisoAmbid">Piso</label>
           </span>

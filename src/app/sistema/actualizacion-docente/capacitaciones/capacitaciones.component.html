@@ -1,0 +1,29 @@
+<app-toolbar-primeng title="Mis capacitaciones"></app-toolbar-primeng>
+<div class="grid">
+  <div class="col-12 mb-5 cursos">
+    <ng-container *ngIf="data && data.length > 0">
+      @for (capacitacion of data; track capacitacion) {
+        <app-card-capacitaciones
+          [capacitacion]="capacitacion"
+          [descripcion]="true"
+          [iPerfilId]="iPerfilId"
+          (verDetalle)="onVerDetalle($event)"
+        ></app-card-capacitaciones>
+      }
+    </ng-container>
+  </div>
+  <!-- <p-paginator
+    *ngIf="data && data.length > rows"
+    [rows]="rows"
+    [totalRecords]="data.length"
+    [first]="first"
+    (onPage)="onPageChange($event)"
+    class="col-12 mt-5"
+  ></p-paginator> -->
+</div>
+
+<ng-template *ngIf="data.length === 0">
+  <app-no-data [showIcon]="'NO-DATA'" [mensaje]="'No hay capacitaciones'"></app-no-data>
+</ng-template>
+
+<p-toast></p-toast>

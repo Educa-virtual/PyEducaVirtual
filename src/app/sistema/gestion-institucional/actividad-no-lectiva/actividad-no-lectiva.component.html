@@ -1,0 +1,21 @@
+@if (seleccionado) {
+  <app-actividades-no-lectivas
+    [bAprobarActividad]="seleccionado"
+    [iDocenteId]="iDocenteId"
+  ></app-actividades-no-lectivas>
+} @else {
+  <app-container-page
+    title="APROBACIÓN PLANES DE HORAS NO LECTIVAS"
+    [actions]="[]"
+    (accionBtnItem)="accionBtnItem($event)"
+  >
+    <app-table-primeng
+      [columnas]="columns"
+      [actions]="actions"
+      [data]="docentes"
+      [showCaption]="true"
+      [tableStyle]="null"
+      (accionBtnItem)="accionBtnItem($event)"
+    ></app-table-primeng>
+  </app-container-page>
+}

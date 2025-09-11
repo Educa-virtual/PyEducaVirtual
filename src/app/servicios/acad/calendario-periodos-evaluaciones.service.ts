@@ -22,4 +22,7 @@ export class CalendarioPeriodosEvalacionesService {
       }
     );
   }
+  guardarCalendarioPeriodosEvalaciones(data: any) {
+    return this.http.post(`${baseUrl}/acad/calendario-periodos-evaluaciones`, data);
+  }
 }

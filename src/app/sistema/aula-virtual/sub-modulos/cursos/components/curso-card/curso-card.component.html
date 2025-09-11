@@ -1,64 +1,59 @@
 <div class="clash-card">
-    <div class="clash-card__image clash-card__image--barbarian img-transition">
-        <img
-            [src]="backend + getUrlImg(curso?.cCursoImagen)"
-            [alt]="curso?.cCursoNombre"
-        />
+  <div class="clash-card__image clash-card__image--barbarian img-transition">
+    <img [src]="backend + getUrlImg(curso?.cCursoImagen)" [alt]="curso?.cCursoNombre" />
+  </div>
+  <div class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max">
+    <span>{{
+      curso?.cCursoNombre.length > 30
+        ? (curso?.cCursoNombre | slice: 0 : 30) + '...'
+        : curso?.cCursoNombre
+    }}</span>
+  </div>
+  <div *ngIf="curso.bEstudiante === '1'" class="title mt-4 font-bold text-center">
+    <span>Docente: <br />{{ curso.bDocente === '1' ? curso.cDocente : '-' }}</span>
+  </div>
+  <div class="mx-4 mt-3 col-12 grid">
+    <div class="col-12 grid column-gap-1 align-items-center">
+      <i class="pi pi-bookmark mr-2"></i>
+      <span>{{ curso.cGradoAbreviacion }} Grado {{ curso.cSeccionNombre || curso.cSeccion }}</span>
     </div>
-    <div
-        class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max"
-    >
-        <span>{{
-            curso?.cCursoNombre.length > 30
-                ? (curso?.cCursoNombre | slice: 0 : 30) + '...'
-                : curso?.cCursoNombre
-        }}</span>
+    <div class="col-12 grid column-gap-1 align-items-center">
+      <i class="pi pi-info-circle mr-2"></i>
+      <span>{{ curso.cantidad }} alumnos</span>
     </div>
-    <div
-        *ngIf="curso.bEstudiante === '1'"
-        class="title mt-4 font-bold text-center"
-    >
-        <span
-            >Docente: <br />{{
-                curso.bDocente === '1' ? curso.cDocente : '-'
-            }}</span
-        >
-    </div>
-    <div class="mx-4 mt-3 col-12 grid">
-        <div class="col-12 grid column-gap-1 align-items-center">
-            <i class="pi pi-bookmark mr-2"></i>
-            <span
-                >{{ curso.cGradoAbreviacion }} Grado
-                {{ curso.cSeccionNombre || curso.cSeccion }}</span
-            >
-        </div>
-        <div class="col-12 grid column-gap-1 align-items-center">
-            <i class="pi pi-info-circle mr-2"></i>
-            <span>{{ curso.cantidad }} alumnos</span>
-        </div>
-    </div>
+  </div>
 
-    <div class="flex mx-3 mt-2 pb-4 justify-content-end">
-        <p-button
-            label="Ingresar"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [routerLink]="['./', curso.iSilaboId || 0]"
-            [queryParams]="{
-                cCursoNombre: curso.cCursoNombre,
-                cNivelTipoNombre: curso.cNivelTipoNombre,
-                cGradoAbreviacion: curso.cGradoAbreviacion,
-                cSeccionNombre: curso.cSeccionNombre || curso.cSeccion,
-                cCicloRomanos: curso.cCicloRomanos,
-                cNivelNombreCursos: curso.cNivelNombreCursos,
-                iCursoId: curso.iCursoId,
-                idDocCursoId: curso.idDocCursoId,
-                iNivelCicloId: curso.iNivelCicloId,
-                iIeCursoId: curso.iIeCursoId,
-                iSeccionId: curso.iSeccionId,
-                iNivelGradoId: curso.iNivelGradoId,
-                cantidad: curso.cantidad,
-            }"
-        ></p-button>
-    </div>
+  <div class="flex mx-3 mt-2 pb-4 justify-content-end">
+    <p-button
+      *ngIf="!registro"
+      label="Ingresar"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      [routerLink]="['./', curso.iSilaboId || 0]"
+      [queryParams]="{
+        cCursoNombre: curso.cCursoNombre,
+        cNivelTipoNombre: curso.cNivelTipoNombre,
+        cGradoAbreviacion: curso.cGradoAbreviacion,
+        cSeccionNombre: curso.cSeccionNombre || curso.cSeccion,
+        cCicloRomanos: curso.cCicloRomanos,
+        cNivelNombreCursos: curso.cNivelNombreCursos,
+        iCursoId: curso.iCursoId,
+        idDocCursoId: curso.idDocCursoId,
+        iNivelCicloId: curso.iNivelCicloId,
+        iIeCursoId: curso.iIeCursoId,
+        iSeccionId: curso.iSeccionId,
+        iNivelGradoId: curso.iNivelGradoId,
+        cantidad: curso.cantidad,
+      }"
+    ></p-button>
+    <p-button
+      *ngIf="registro"
+      label="Registrar de logros"
+      icon="pi pi-file-pdf"
+      iconPos="right"
+      class="ml-2"
+      (onClick)="eventoCurso(curso)"
+    >
+    </p-button>
+  </div>
 </div>

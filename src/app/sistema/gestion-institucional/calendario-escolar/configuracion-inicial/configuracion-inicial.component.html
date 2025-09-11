@@ -1,0 +1,116 @@
+<div class="grid" *ngIf="data">
+  <div class="col-12 md:col-6">
+    <div class="card mt-4 relative">
+      <span class="btn-label-danger">Configuración Inicial</span>
+      <div class="grid mt-3">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Año Vigente </p-inputGroupAddon>
+            <input pInputText [(ngModel)]="data.cYear" styleClass="w-full" readonly />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Inicio y Fin </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dInicioFin')"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Matrícula Regular </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dMatriculaRegularInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRegularInicioFin')"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Mátricula Rezagados </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dRezagadosInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRezagadosInicioFin')"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 md:col-6">
+    <div class="card mt-4 relative">
+      <span class="btn-label-success">Configuración de Fases y Turnos</span>
+      <div class="grid mt-3">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fase Regular </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dRegularInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRegularInicioFin')"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fase Recuperación </p-inputGroupAddon>
+            <p-calendar
+              [iconDisplay]="'input'"
+              styleClass="w-full"
+              [showIcon]="true"
+              appendTo="body"
+              selectionMode="range"
+              [(ngModel)]="data.dRecuperacionInicioFin"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onChange($event, 'dRecuperacionInicioFin')"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 text-center">
+          <p-button
+            [label]="'Configurar turnos'"
+            icon="pi pi-cog"
+            severity="warning"
+            (onClick)="mostrarModalConfigurarTurnos = true"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-configurar-turnos
+  *ngIf="mostrarModalConfigurarTurnos"
+  [showModal]="mostrarModalConfigurarTurnos"
+  [horarios]="horarios"
+  [iTurnoId]="iTurnoId"
+  [dtAperTurnoInicio]="dtAperTurnoInicio"
+  [dtAperTurnoFin]="dtAperTurnoFin"
+  (accionCloseForm)="mostrarModalConfigurarTurnos = false"
+  (datosConfiguracionTurnos)="enviarDatosConfiguracionTurnos($event)"
+></app-configurar-turnos>

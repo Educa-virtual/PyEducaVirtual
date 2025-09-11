@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
-import { NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface';
@@ -9,6 +9,8 @@ import { ValidacionFormulariosService } from '@/app/servicios/validacion-formula
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-form-evaluacion',
@@ -23,7 +25,7 @@ import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.
  * Componente para gestionar el formulario de evaluaciones.
  * Incluye funcionalidad para manejar evaluaciones, cursos y archivos relacionados.
  */
-export class FormEvaluacionComponent implements OnChanges {
+export class FormEvaluacionComponent extends MostrarErrorComponent implements OnChanges {
   private _FormBuilder = inject(FormBuilder);
   private _MessageService = inject(MessageService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
@@ -40,7 +42,9 @@ export class FormEvaluacionComponent implements OnChanges {
   @Input() iEvaluacionId: string | number;
 
   isLoading: boolean = false;
+  pipe = new DatePipe('es-ES');
   date = this.ajustarAHorarioDeMediaHora(new Date());
+
   filesUrl = [];
   typesFiles = {
     file: true,
@@ -63,15 +67,21 @@ export class FormEvaluacionComponent implements OnChanges {
     nEvaluacionPuntaje: [],
     iEvaluacionNroPreguntas: [],
     dtEvaluacionInicio: [this.date, Validators.required],
-    dtEvaluacionFin: [this.date, Validators.required],
+    dtEvaluacionFin: [
+      new Date(this.ajustarAHorarioDeMediaHora(new Date()).setHours(this.date.getHours() + 1)),
+      Validators.required,
+    ],
     iEvaluacionDuracionHoras: [],
     iEvaluacionDuracionMinutos: [],
     iEvaluacionIdPadre: [],
     cEvaluacionArchivoAdjunto: [],
     iContenidoSemId: [null, Validators.required],
     iActTipoId: [0, Validators.required],
-    idDocCursoId: [null, Validators.required],
+    idDocCursoId: [''],
     iCredId: [null, Validators.required],
+
+    iCapacitacionId: [''],
+    iYAcadId: ['', Validators.required],
   });
 
   ngOnChanges(changes) {
@@ -110,26 +120,7 @@ export class FormEvaluacionComponent implements OnChanges {
         }
       },
       error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
+        this.mostrarErrores(error);
       },
     });
   }
@@ -187,11 +178,13 @@ export class FormEvaluacionComponent implements OnChanges {
 
     this.formEvaluacion.patchValue({
       iContenidoSemId: this.semanaEvaluacion.iContenidoSemId,
-      idDocCursoId: this.semanaEvaluacion.idDocCursoId,
       iDocenteId: this._ConstantesService.iDocenteId,
       iActTipoId: EVALUACION,
       iCredId: this._ConstantesService.iCredId,
       cEvaluacionArchivoAdjunto: JSON.stringify(this.filesUrl),
+      iYAcadId: this._ConstantesService.iYAcadId,
+      idDocCursoId: this.semanaEvaluacion.idDocCursoId,
+      iCapacitacionId: this.semanaEvaluacion.iCapacitacionId,
     });
 
     const nombresCampos: Record<string, string> = {
@@ -202,8 +195,8 @@ export class FormEvaluacionComponent implements OnChanges {
       dtEvaluacionFin: 'Fecha de fin',
       iContenidoSemId: 'Semana de contenido',
       iActTipoId: 'Tipo de actividad',
-      idDocCursoId: 'Curso',
       iCredId: 'Credencial',
+      iYAcadId: 'Año académico',
     };
     const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
       this.formEvaluacion,
@@ -216,10 +209,27 @@ export class FormEvaluacionComponent implements OnChanges {
       return;
     }
 
+    const { idDocCursoId, iCapacitacionId } = this.formEvaluacion.value;
+
+    const soloUnoPresente = Boolean(idDocCursoId) !== Boolean(iCapacitacionId);
+
+    if (!soloUnoPresente) {
+      this.mostrarMensajeToast({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se encontró el curso',
+      });
+      this.isLoading = false;
+      return;
+    }
     const data = {
       ...this.formEvaluacion.value,
-      dtEvaluacionInicio: this.formatearFechaLocal(this.formEvaluacion.value.dtEvaluacionInicio),
-      dtEvaluacionFin: this.formatearFechaLocal(this.formEvaluacion.value.dtEvaluacionFin),
+      dtEvaluacionInicio: this.formEvaluacion.value.dtEvaluacionInicio
+        ? this.pipe.transform(this.formEvaluacion.value.dtEvaluacionInicio, 'dd/MM/yyyy HH:mm:ss')
+        : null,
+      dtEvaluacionFin: this.formEvaluacion.value.dtEvaluacionFin
+        ? this.pipe.transform(this.formEvaluacion.value.dtEvaluacionFin, 'dd/MM/yyyy HH:mm:ss')
+        : null,
     };
 
     if (this.iEvaluacionId) {
@@ -229,53 +239,9 @@ export class FormEvaluacionComponent implements OnChanges {
     }
   }
   guardarEvaluacion(data) {
-    this._EvaluacionesService.guardarEvaluaciones(data).subscribe({
-      next: resp => {
-        if (resp.validated) {
-          this.mostrarMensajeToast({
-            severity: 'success',
-            summary: '¡Genial!',
-            detail: resp.message,
-          });
-          setTimeout(() => {
-            this.accionRefresh.emit();
-            this.accionCloseForm.emit();
-          }, 500);
-        }
-        this.isLoading = false;
-      },
-      error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
-            });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
-        this.isLoading = false;
-      },
-    });
-  }
-  actualizarEvaluacion(data) {
-    const params = {
-      ...data,
-      iCredId: this._ConstantesService.iCredId,
-    };
     this._EvaluacionesService
-      .actualizarEvaluacionesxiEvaluacionId(this.iEvaluacionId, params)
+      .guardarEvaluaciones(data)
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: resp => {
           if (resp.validated) {
@@ -289,30 +255,37 @@ export class FormEvaluacionComponent implements OnChanges {
               this.accionCloseForm.emit();
             }, 500);
           }
-          this.isLoading = false;
         },
         error: error => {
-          const errores = error?.error?.errors;
-          if (error.status === 422 && errores) {
-            // Recorre y muestra cada mensaje de error
-            Object.keys(errores).forEach(campo => {
-              errores[campo].forEach((mensaje: string) => {
-                this.mostrarMensajeToast({
-                  severity: 'error',
-                  summary: 'Error de validación',
-                  detail: mensaje,
-                });
-              });
-            });
-          } else {
-            // Error genérico si no hay errores específicos
+          this.mostrarErrores(error);
+        },
+      });
+  }
+
+  actualizarEvaluacion(data) {
+    const params = {
+      ...data,
+      iCredId: this._ConstantesService.iCredId,
+    };
+    this._EvaluacionesService
+      .actualizarEvaluacionesxiEvaluacionId(this.iEvaluacionId, params)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
             this.mostrarMensajeToast({
-              severity: 'error',
-              summary: 'Error',
-              detail: error?.error?.message || 'Ocurrió un error inesperado',
+              severity: 'success',
+              summary: '¡Genial!',
+              detail: resp.message,
             });
+            setTimeout(() => {
+              this.accionRefresh.emit();
+              this.accionCloseForm.emit();
+            }, 500);
           }
-          this.isLoading = false;
+        },
+        error: error => {
+          this.mostrarErrores(error);
         },
       });
   }
@@ -327,14 +300,5 @@ export class FormEvaluacionComponent implements OnChanges {
     fecha.setSeconds(0);
     fecha.setMilliseconds(0);
     return fecha;
-  }
-
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
-  }
-
-  formatearFechaLocal(date: Date): string {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   }
 }

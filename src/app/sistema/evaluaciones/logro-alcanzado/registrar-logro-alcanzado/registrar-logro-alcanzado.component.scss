@@ -1,0 +1,22 @@
+// .disabled {
+//   background-color: #e9ecef !important;
+//   opacity: 1 !important;
+// }
+
+.disabled {
+  background-color: #f5f5f5 !important;
+  color: #3b3939 !important;
+  pointer-events: none;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .p-dropdown.p-disabled {
+  background-color: #f5f5f5 !important;
+  /* color de fondo */
+  opacity: 1 !important;
+  /* evitar que se vea muy gris */
+  color: #a1a1a1 !important;
+  /* color del texto */
+  // border: 1px solid #ccc !important;
+  /* borde personalizado */
+}

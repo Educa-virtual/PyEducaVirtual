@@ -33,6 +33,7 @@ import { DescripcionActividadesComponent } from '../../components/descripcion-ac
 import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component';
 import { EscalaCalificacionesService } from '@/app/servicios/eval/escala-calificaciones.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 @Component({
   selector: 'app-tarea-room',
   standalone: true,
@@ -71,7 +72,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   @Input() iTareaId: string;
   private _dialogService = inject(DialogService);
   private GeneralService = inject(GeneralService);
-  private _constantesService = inject(ConstantesService);
+  private _ConstantesService = inject(ConstantesService);
   private _confirmService = inject(ConfirmationModalService);
   private _evaluacionService = inject(ApiEvaluacionesService);
   private _formBuilder = inject(FormBuilder);
@@ -84,13 +85,17 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   students: any;
 
   iPerfilId: number;
-  public DOCENTE = DOCENTE;
-  public ESTUDIANTE = ESTUDIANTE;
 
   formTareas: any;
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
-  isDocente: boolean = this._constantesService.iPerfilId === DOCENTE;
+  isDocente: boolean =
+    this._ConstantesService.iPerfilId === DOCENTE ||
+    this._ConstantesService.iPerfilId === INSTRUCTOR;
+
+  isEstudiante: boolean =
+    this._ConstantesService.iPerfilId === ESTUDIANTE ||
+    this._ConstantesService.iPerfilId === PARTICIPANTE;
 
   form: FormGroup = this.fb.group({
     editor: [''],
@@ -117,8 +122,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
-    this.iPerfilId = this._constantesService.iPerfilId;
-    if (Number(this.iPerfilId) == ESTUDIANTE) {
+    if (this.isEstudiante) {
       this.obtenerTareaxiTareaidxiEstudianteId();
     } else {
       //this.obtenerEscalaCalificaciones();
@@ -215,6 +219,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   escalaCalificaciones = [];
   iEscalaCalifId;
   cTareaEstudianteComentarioDocente;
+  nTareaEstudianteNota;
   getInformation(params, condition) {
     this.GeneralService.getGralPrefix(params).subscribe({
       next: response => {
@@ -273,7 +278,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
 
   obtenerRubricas() {
     const params = {
-      iDocenteId: this._constantesService.iDocenteId,
+      iDocenteId: this._ConstantesService.iDocenteId,
     };
     this._evaluacionService.obtenerRubricas(params).subscribe({
       next: data => {
@@ -339,8 +344,6 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
 
         this.tareasFalta = falta.length;
         this.tareasCulminado = culminado.length;
-
-        console.log(this.grupos);
         break;
       case 'save-tarea-cabecera-grupos':
         this.showModal = false;
@@ -425,11 +428,11 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
           : [];
         this.iEstadoEstudianteTarea = data.cEstadoIndividual;
         this.iEstadoEstudianteTareaGrupal = data.cEstadoGrupal;
-        this.notaTareaEstudiante = data.cEscalaCalifNombre;
+        this.notaTareaEstudiante = data.nTareaEstudianteNota;
         this.comentarioTareaEstudiante = data.cTareaEstudianteComentarioDocente;
         this.bTareaEsGrupal = data.bTareaEsGrupal === '1' ? true : false;
         this.iEvaluado = data.iEvaluado === '1' ? true : false;
-        this.notaTareaEstudianteGrupal = data.cEscalaCalifNombre;
+        this.notaTareaEstudianteGrupal = data.nTareaGrupoNota;
         this.comentarioTareaEstudianteGrupal = data.cTareaGrupoComentarioDocente;
         this.FilesTareasEstudiantesGrupal = data.cTareaGrupoUrl
           ? JSON.parse(data.cTareaGrupoUrl)
@@ -477,8 +480,8 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
         opcion: 'CONSULTAR-ASIGNACIONxiTareaId',
         iTareaId: this.iTareaId,
         iIeCursoId: this.iIeCursoId,
-        iYAcadId: this._constantesService.iYAcadId,
-        iSedeId: this._constantesService.iSedeId,
+        iYAcadId: this._ConstantesService.iYAcadId,
+        iSedeId: this._ConstantesService.iSedeId,
         iSeccionId: this.iSeccionId,
         iNivelGradoId: this.iNivelGradoId,
       },
@@ -547,7 +550,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
           iTareaEstudianteId: this.iTareaEstudianteId,
           //iEscalaCalifId: this.iEscalaCalifId,
           cTareaEstudianteComentarioDocente: this.cTareaEstudianteComentarioDocente,
-          nTareaEstudianteNota: 0,
+          nTareaEstudianteNota: this.nTareaEstudianteNota,
         },
       };
       this.getInformation(params, 'guardar-calificacion-docente');
@@ -595,13 +598,13 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
   nTareaGrupoNota;
 
   seleccionarGrupo(item) {
-    console.log(item);
     this.grupoSeleccionadoCalificar = [];
     this.grupoSeleccionadoCalificar.push(item);
     this.iTareaCabGrupoId = item.iTareaCabGrupoId;
     this.cTareaGrupoUrl = item.cTareaGrupoUrl ? JSON.parse(item.cTareaGrupoUrl) : [];
     this.iEscalaCalifId = item.iEscalaCalifId;
     this.cTareaGrupoComentarioDocente = item.cTareaGrupoComentarioDocente;
+    this.nTareaGrupoNota = item.nTareaGrupoNota;
   }
 
   guardarTareaCabeceraGruposxDocente() {
@@ -615,7 +618,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
         iTareaCabGrupoId: this.iTareaCabGrupoId,
         //iEscalaCalifId: this.iEscalaCalifId,
         cTareaGrupoComentarioDocente: this.cTareaGrupoComentarioDocente,
-        nTareaGrupoNota: 0,
+        nTareaGrupoNota: this.nTareaGrupoNota,
       },
     };
     this.getInformation(params, 'guardar-calificacion-tarea-cabecera-grupos-docente');
@@ -723,7 +726,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
       data: {
         cTareaEstudianteUrlEstudiante: JSON.stringify(this.FilesTareasEstudiantes),
         iTareaId: this.iTareaId,
-        iEstudianteId: this._constantesService.iEstudianteId,
+        iEstudianteId: this._ConstantesService.iEstudianteId,
       },
     };
     this.getInformation(params, 'entregar-estudiante-tarea');
@@ -751,7 +754,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
       data: {
         cTareaGrupoUrl: JSON.stringify(this.FilesTareasEstudiantesGrupal),
         iTareaId: this.iTareaId,
-        iEstudianteId: this._constantesService.iEstudianteId,
+        iEstudianteId: this._ConstantesService.iEstudianteId,
       },
     };
     this.getInformation(params, 'entregar-estudiante-tarea-grupal');
@@ -764,7 +767,7 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
       ruta: 'obtenerTareaxiTareaidxiEstudianteId',
       data: {
         iTareaId: this.iTareaId,
-        iEstudianteId: this._constantesService.iEstudianteId,
+        iEstudianteId: this._ConstantesService.iEstudianteId,
       },
     };
     this.getInformation(params, params.ruta);
@@ -826,5 +829,13 @@ export class TareaRoomComponent extends MostrarErrorComponent implements OnChang
     this.iTareaEstudianteId = item.iTareaEstudianteId;
     this.iEscalaCalifId = item.iEscalaCalifId;
     this.cTareaEstudianteComentarioDocente = item.cTareaEstudianteComentarioDocente;
+    this.nTareaEstudianteNota = item.nTareaEstudianteNota;
+  }
+
+  validarNota(event: any) {
+    let value = event.value;
+    if (value < 0) value = 0;
+    if (value > 20) value = 20;
+    this.nTareaEstudianteNota = value;
   }
 }

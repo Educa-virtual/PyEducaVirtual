@@ -1,0 +1,154 @@
+<div class="card mt-4 relative">
+  <span class="btn-label">Información General</span>
+  <div class="grid mt-1">
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Inicio Regular </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          appendTo="body"
+          [(ngModel)]="data.dtFaseInicioRegular"
+          [disabled]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Inicio Recuperación </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          appendTo="body"
+          [(ngModel)]="data.dtFaseInicioRecuperacion"
+          [disabled]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Fin Regular </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          appendTo="body"
+          [(ngModel)]="data.dtFaseFinRegular"
+          [disabled]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha Fin Recuperación </p-inputGroupAddon>
+        <p-calendar
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          appendTo="body"
+          [(ngModel)]="data.dtFaseFinRecuperacion"
+          [disabled]="true"
+        />
+      </p-inputGroup>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4 relative">
+  <span class="btn-label">Información Horaria</span>
+  <div class="grid mt-1">
+    <div class="col-12 md:col-6">
+      <p-inputGroup class="turno-input">
+        <p-inputGroupAddon>Turno </p-inputGroupAddon>
+        <input pInputText [value]="cTurno" [disabled]="true" class="opacity-100" />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 table-responsive">
+      <table class="tabla-dias">
+        <thead>
+          <tr>
+            <th
+              *ngFor="let day of data.jsonHorarios"
+              [ngClass]="{ weekend: day.iDiaSeleccionado !== 1 }"
+            >
+              {{ day.cDiaNombre }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td *ngFor="let day of data.jsonHorarios">
+              {{ day.iDiaSeleccionado === 1 ? dtAperTurnoInicio + ' - ' + dtAperTurnoFin : '-' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4 relative">
+  <span class="btn-label">Periodo Académico</span>
+  <div class="grid mt-1">
+    <div class="col-12">
+      <p-table
+        [value]="periodos"
+        dataKey="id"
+        responsiveLayout="stack"
+        [breakpoint]="'768px'"
+        class="rounded-table hoverTable"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columnasTabla">
+              <div [style.text-align]="col.text_header">{{ col.header }}</div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="cols">
+          <tr>
+            <td *ngFor="let col of columnasTabla">
+              <span class="p-column-title">{{ col.header }}</span>
+              @if (col.type === 'item') {
+                <div [style.text-align]="col.text">
+                  <span>{{ rowIndex + 1 }}</span>
+                </div>
+              }
+              @if (col.type === 'text') {
+                <div [style.text-align]="col.text">
+                  {{ row[col.field] }}
+                </div>
+              }
+              @if (col.type === 'date') {
+                <div [style.text-align]="col.text">
+                  {{ row[col.field] | date: 'dd/MM/YYYY' }}
+                </div>
+              }
+              @if (col.type === 'tag-estado') {
+                <div [style.text-align]="col.text">
+                  <p-tag
+                    [severity]="row[col.field] === 'REGULAR' ? 'success' : 'danger'"
+                    [value]="row[col.field]"
+                  >
+                  </p-tag>
+                </div>
+              }
+              @if (col.type === 'tag') {
+                <div [style.text-align]="col.text">
+                  <p-tag
+                    [severity]="row[col.field] ? 'success' : 'danger'"
+                    [value]="row[col.field] ? 'Habilitado' : 'Deshabilitado'"
+                  >
+                  </p-tag>
+                </div>
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

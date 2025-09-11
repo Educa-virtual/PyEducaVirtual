@@ -1,0 +1,24 @@
+.mi-addon-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.input-disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #333333;
+}
+
+:host ::ng-deep .legend-rojo .p-fieldset-legend {
+  background-color: #b81c34 !important; /* rojo oscuro */
+  color: #ffffff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+:host ::ng-deep .legend-verde .p-fieldset-legend {
+  background-color: #087c3c !important; /* rojo oscuro */
+  color: #ffffff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}

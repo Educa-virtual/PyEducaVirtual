@@ -4,6 +4,7 @@ import { HorarioService } from './services/horario.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Dia } from './interfaces/dia.interface';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-horario',
@@ -26,21 +27,21 @@ export class HorarioComponent implements OnInit {
     { id: 4, nombre: 'Jueves' },
     { id: 5, nombre: 'Viernes' },
   ];
+  iYAcadId: any = '';
 
   constructor(
     private horarioService: HorarioService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private store: LocalStoreService
   ) {}
 
   ngOnInit() {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.breadCrumbHome = {
       icon: 'pi pi-home',
       routerLink: '/',
     };
     this.breadCrumbItems = [
-      {
-        label: 'Estudiante',
-      },
       {
         label: 'Horario',
       },
@@ -49,7 +50,7 @@ export class HorarioComponent implements OnInit {
   }
 
   obtenerHorarios() {
-    this.horarioService.obtenerHorario({}).subscribe({
+    this.horarioService.obtenerHorario(this.iYAcadId).subscribe({
       next: (data: any) => {
         this.raw = data.data.horario;
         this.detalleMatricula = `${data.data.matricula.cGradoAbreviacion} ${data.data.matricula.cSeccionNombre} - ${data.data.matricula.cNivelTipoNombre}`;

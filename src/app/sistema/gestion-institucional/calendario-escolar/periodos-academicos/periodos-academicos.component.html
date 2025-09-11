@@ -1,0 +1,113 @@
+<div class="card mt-4 relative">
+  <span class="btn-label">Periodos Académicos</span>
+  <div class="grid mt-3">
+    <div class="col-12 md:col-7">
+      <p-inputGroup>
+        <p-inputGroupAddon>Periodo</p-inputGroupAddon>
+        <p-dropdown
+          [options]="tiposPeriodos"
+          placeholder="Seleccione"
+          styleClass="w-full"
+          optionLabel="cPeriodoEvalNombre"
+          optionValue="iPeriodoEvalId"
+          [(ngModel)]="iPeriodoEvalId"
+          (onChange)="generarPeriodos()"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-5 flex justify-content-end align-items-center gap-2">
+      <p-button
+        [label]="'Guardar'"
+        icon="pi pi-save"
+        severity="primary"
+        [disabled]="!periodos.length || isLoading"
+        [loading]="isLoading"
+        (onClick)="guardarCalendarioPeriodosEvaluaciones()"
+      />
+      <p-button
+        [label]="'Restablecer'"
+        icon="pi pi-undo"
+        severity="warning"
+        [disabled]="!periodos.length"
+        (onClick)="restablecerCalendarioPeriodosEvaluaciones()"
+      />
+    </div>
+    <div class="col-12">
+      <p-table
+        [value]="periodos"
+        dataKey="id"
+        responsiveLayout="stack"
+        [breakpoint]="'768px'"
+        class="rounded-table hoverTable"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columnasTabla">
+              <div [style.text-align]="col.text_header">{{ col.header }}</div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="cols">
+          <tr>
+            <td *ngFor="let col of columnasTabla">
+              <span class="p-column-title">{{ col.header }}</span>
+              @if (col.type === 'item') {
+                <div [style.text-align]="col.text">
+                  <span>{{ rowIndex + 1 }}</span>
+                </div>
+              }
+              @if (col.type === 'text') {
+                <div [style.text-align]="col.text">
+                  {{ row[col.field] }}
+                </div>
+              }
+              @if (col.type === 'calendar') {
+                <div [style.text-align]="col.text">
+                  <p-calendar
+                    [iconDisplay]="'input'"
+                    styleClass="w-10rem"
+                    [showIcon]="true"
+                    appendTo="body"
+                    [(ngModel)]="row[col.field]"
+                    (onSelect)="onDateChange(rowIndex, col.field, $event)"
+                  />
+                </div>
+              }
+              @if (col.type === 'tag-estado') {
+                <div [style.text-align]="col.text">
+                  <p-tag
+                    [severity]="row[col.field] === 'REGULAR' ? 'success' : 'danger'"
+                    [value]="row[col.field]"
+                  >
+                  </p-tag>
+                </div>
+              }
+              @if (col.type === 'tag') {
+                <div [style.text-align]="col.text">
+                  <p-tag
+                    [severity]="row[col.field] ? 'success' : 'danger'"
+                    [value]="row[col.field] ? 'Habilitado' : 'Deshabilitado'"
+                  >
+                  </p-tag>
+                </div>
+              }
+              @if (col.type === 'action') {
+                <div [style.text-align]="col.text">
+                  <p-button
+                    icon="pi pi-undo"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="danger"
+                    (onClick)="cambiarEstado(row)"
+                  />
+                </div>
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

@@ -32,13 +32,14 @@ import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-s
   styleUrl: './asignar-horas.component.scss',
 })
 export class AsignarHorasComponent implements OnInit {
-  grados: any[] = [];
+  grados: any[] = null;
   areas_curriculas: any[] = [];
   perfil: any[] = [];
   configuracion: any[];
   serv_horas: number = 0; // Variable para almacenar las horas del servicio educativo
   total_horas_grado: number = 0; // Variable para almacenar el total de horas del grado
   mensaje: string = '';
+  horaEditar: number = 0;
 
   programacion_curricular: any[] = [];
   servicio_educativo: any[] = [];
@@ -60,7 +61,6 @@ export class AsignarHorasComponent implements OnInit {
   ) {
     this.perfil = this.stepService.perfil;
     this.configuracion = this.stepService.configuracion;
-    this.grados = this.stepService.grados;
 
     //this.secciones_asignadas =// this.stepService.secciones_asignadas
   }
@@ -73,42 +73,45 @@ export class AsignarHorasComponent implements OnInit {
         cCursoNombre: [{ value: '', disabled: true }, Validators.required], // Control para "Área curricular"
         iHorasSemPresencial: [0, Validators.required], // Control para "Horas semanales presenciales"
         iHorasSemDomicilio: [0, Validators.required],
-        iTotalHoras: [0, Validators.required], // Control para "Total de horas semanales"
+        iTotalHoras: [{ value: 0 }, Validators.required], // Control para "Total de horas semanales"
         cDeclaracionJurada: [false, Validators.requiredTrue],
         iHorasMiniminas: [0], // Control para "Declaración jurada"
         // Control para "Descripcion año"
       });
     } catch (error) {
-      console.log('error ', error);
-      // this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+      //revisar
+      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
+    this.getGrados();
 
     this.formFiltrado = this.fb.group({
       iGradoId: [0],
-
-      iServEdId: [0], // Control para "Servicio educativo"
+      iServEdId: [{ value: 0, disabled: true }], // deshabilitado desde el inicio
+      iServEdHorasTotal: [0],
     });
     this.getServicioEducativo();
-
     setInterval(() => {
       // this.mostrar = true
     }, 3000); // Cambia a true después de 1 segundo
+    this.getCurriculaNivelServicioEducativo();
   }
 
   @HostListener('window:keydown.control.b', ['$event'])
   onCtrlB(event: KeyboardEvent) {
     event.preventDefault(); // Evita acciones predeterminadas del navegador
-    console.log('Ctrl + B presionado');
     this.confirm();
   }
 
+  async getGrados() {
+    this.grados = this.stepService.grados ?? (await this.stepService.getGrado());
+  }
   accionBtnItemTable(event: any) {
-    console.log('event.accion:', event.accion);
     // Aquí puedes manejar el evento de cambio si es necesario
     // const seccionIdSeleccionada = event.value
     if (event.accion === 'editar') {
       this.mostrar = false; // Mostrar el formulario de edición
       // Lógica para editar el grado seleccionado
+      this.horaEditar = Number(event.item.iTotalHoras);
       this.formNivelGrado.patchValue({
         iCursosNivelGradId: Number(event.item.iCursosNivelGradId),
         iIeCursoId: Number(event.item.iIeCursoId),
@@ -119,45 +122,54 @@ export class AsignarHorasComponent implements OnInit {
         iHorasMiniminas: Number(event.item.iHorasMiniminas),
       });
     }
-    if (event.accion === 'registrar') {
-      const totalHoras = Number(this.formNivelGrado.value.iTotalHoras);
-      const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas);
+    if (event.accion === 'eliminar') {
+      this._confirmService.openConfiSave({
+        header: 'Advertencia del sistema',
+        message: 'Desea eliminar la distribución de horas?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          //Validar documento
+          this.query
+            .deleteCalAcademico({
+              json: JSON.stringify({
+                iCursosNivelGradId: Number(event.item.iCursosNivelGradId),
+                iIeCursoId: Number(event.item.iIeCursoId),
+                iEstado: 0, // Cambiar el estado a 0 para desactivar
+                iSesionId: this.stepService.iCredId, // iSesionId es el ID de la sesión del usuario
+              }),
+              _opcion: 'deleteDistribucionHoras',
+            })
+            .subscribe({
+              error: error => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Mensaje del sistema',
+                  detail: 'Error en en proceso de eliminación: ' + error.error.message,
+                });
+              },
+              complete: () => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Mensaje del sistema',
+                  detail: 'Proceso de eliminación de horas exitoso',
+                });
+                //  this.getCurriculaNivelServicioEducativo();
+                this.mostrar = true; // Ocultar el formulario de edición
 
-      if (totalHoras < iHorasMiniminas) {
-        this._confirmService.openConfiSave({
-          header: 'Advertencia de procesamiento',
-          message: 'Esta ingresando un valor menor a ' + iHorasMiniminas,
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-            //Validar documento
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Mensaje de sistema',
-              detail: 'Se registro distribución de horas',
+                //Eliminar el registro
+                this.programacion_curricular = this.programacion_curricular.filter(
+                  item => item.iCursosNivelGradId !== String(event.item.iCursosNivelGradId)
+                );
+                //Eliminar el registro
+                this.filtrado_programacion_curricular =
+                  this.filtrado_programacion_curricular.filter(
+                    item => item.iCursosNivelGradId !== String(event.item.iCursosNivelGradId)
+                  );
+              },
             });
-          },
-          reject: () => {
-            // Mensaje de cancelación (opcional)
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Mensaje del sistema ',
-              detail: 'Acción cancelada',
-            });
-          },
-        });
-      } else {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje de sistema',
-          detail: 'Se registro distribución de horas',
-        });
-      }
-    } else {
-      console.log('No se cumple el if, valor:', event.accion);
+        },
+      });
     }
-    /* if(event.accion.trim() === 'registrar') {
-            console.log(event)  
-        }*/
   }
 
   getServicioEducativo() {
@@ -171,7 +183,6 @@ export class AsignarHorasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.servicio_educativo = data.data;
-          console.log(this.servicio_educativo, 'desde getServicioEducativo'); // Verifica que se obtenga el servicio educativo
         },
 
         error: error => {
@@ -183,18 +194,19 @@ export class AsignarHorasComponent implements OnInit {
         },
         complete: () => {
           this.stepService.servicio_educativo = this.servicio_educativo;
-          // console.log(this.lista, 'desde getSeccionesAsignadas')
         },
       });
   }
 
   getCurriculaNivelServicioEducativo() {
     this.mensaje = null; //limpiar mensaje
+    const val = this.configuracion[0].iServEdId ?? 0;
+    this.formFiltrado.get('iServEdId')?.setValue(val);
     this.query
       .searchAmbienteAcademico({
         json: JSON.stringify({
           iNivelTipoId: this.configuracion[0].iNivelTipoId,
-          iServEdId: this.formFiltrado.value.iServEdId,
+          iServEdId: this.configuracion[0].iServEdId,
           iConfigId: this.configuracion[0].iConfigId,
         }),
         _opcion: 'getCurriculaNivelServicioEducativo',
@@ -202,7 +214,6 @@ export class AsignarHorasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.programacion_curricular = data.data;
-          console.log(data.data);
           this.messageService.add({
             severity: 'success',
             summary: 'Mensaje del sistema',
@@ -222,11 +233,9 @@ export class AsignarHorasComponent implements OnInit {
                 mensaje: <number>item.Total > 0 ? 'Grados registrados: ' + item.Total : 'Pendiente',
               });
             }
-
             return acc;
           }, []);
         },
-
         error: error => {
           this.messageService.add({
             severity: 'error',
@@ -236,24 +245,67 @@ export class AsignarHorasComponent implements OnInit {
         },
         complete: () => {
           this.stepService.programacion_curricular = this.programacion_curricular;
+          //Validar si hay menores a las horas mínimas
+          this.programacion_curricular = this.programacion_curricular.map(item => {
+            if (item.iTotalHoras < item.iHorasMiniminas) {
+              return {
+                ...item, // mantenemos lo demás igual
+                bActive: 0,
+                bError: 1, // Actualiza bActive según la condición
+              };
+            }
+            return item;
+          });
 
           this.filtrado_programacion_curricular = [];
           this.formFiltrado.patchValue({ iGradoId: 0 }); // Reiniciar el valor del grado al completar la carga
-          console.log(this.grados_unicos, 'desde getCurriculaNivelServicioEducativo'); // Verifica que se obtenga el servicio educativo
-          // console.log(this.lista, 'desde getSeccionesAsignadas')
           const filtrado = this.servicio_educativo.filter(
-            item => item.iServEdId === this.formFiltrado.value.iServEdId
+            item => item.iServEdId === this.configuracion[0].iServEdId
           );
-
-          this.serv_horas = filtrado[0].iServEdHorasTotal;
+          if (filtrado && filtrado.length > 0) {
+            this.serv_horas = Number(filtrado[0].iServEdHorasTotal ?? 0);
+          } else {
+            this.serv_horas = 0;
+          }
         },
       });
+  }
+
+  validarHorasMinimas() {
+    const totalHoras = Number(this.formNivelGrado.value.iTotalHoras);
+    const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas);
+
+    if (totalHoras < iHorasMiniminas) {
+      this._confirmService.openConfirm({
+        header: 'Advertencia de procesamiento',
+        message: 'Esta ingresando un valor menor a ' + iHorasMiniminas + ' (Horas mínimas)',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.addDistribucionHoras();
+        },
+      });
+    } else {
+      this._confirmService.openConfirm({
+        header: 'Advertencia de procesamiento',
+        message: '¿Desea registar ' + totalHoras + ' (Horas) en el área curricular?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.addDistribucionHoras();
+        },
+      });
+    }
+  }
+  calcularTotal() {
+    const presencial = Number(this.formNivelGrado.get('iHorasSemPresencial')?.value ?? 0);
+    const domicilio = Number(this.formNivelGrado.get('iHorasSemDomicilio')?.value ?? 0);
+    const suma = presencial + domicilio;
+
+    this.formNivelGrado.get('iTotalHoras')?.setValue(suma);
   }
 
   getFiltradoGrado() {
     // Obtener el grado seleccionado
     this.mensaje = null; //limpiar mensaje
-
     const iGradoId = Number(this.formFiltrado.value.iGradoId);
 
     // Validar si se ha seleccionado un grado
@@ -264,48 +316,13 @@ export class AsignarHorasComponent implements OnInit {
         detail: 'Error: No selecciono un Grado válido ',
       });
     } else {
-      const filtrado = this.programacion_curricular.filter(
-        item => item.iGradoId === String(iGradoId)
-      );
-      this.filtrado_programacion_curricular = filtrado;
-      //suma los tosales
-      let sumatoria = 0;
-      filtrado.forEach(item => {
-        sumatoria += Number(item.iTotalHoras || 0);
-      });
-
-      this.total_horas_grado = sumatoria;
-
-      const adicional = filtrado.filter(
-        item => item.iTipoCursoId === '5' // 5 es el tipo de curso para "Adicional"
-      );
-
-      this.hora_adicional = adicional;
-      console.log(this.filtrado_programacion_curricular, 'horas adicionales filtradas');
-      this.serv_horas = Number(this.serv_horas) || 0;
-
-      if (Number(sumatoria) !== Number(this.serv_horas)) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail:
-            'La distribución de horas del grado ' +
-            sumatoria +
-            'Hras no coinciden los totales horas del servicio educativo ' +
-            this.serv_horas +
-            ' Hras',
-        });
-        this.mensaje =
-          'Observación: Total de horas semanales ' +
-          sumatoria +
-          'Hras, diferentes al servicio educativo ' +
-          +this.serv_horas +
-          ' Hras';
-      }
+      this.actualizarSumatoria();
     }
   }
   // Aquí puedes ejecutar cualquier lógica
   // eventos de record set
+  //calculo de de valores
+
   confirm() {
     const filtrarGrado = Number(this.formFiltrado.value.iGradoId);
     const curso = Number(this.formNivelGrado.value.cCursoNombre);
@@ -351,47 +368,130 @@ export class AsignarHorasComponent implements OnInit {
       iProgId: this.stepService.configuracion[0].iProgId, // iProgId es el ID del grado seleccionado
       iCursosNivelGradId: this.formNivelGrado.value.iCursosNivelGradId, // iCursosNivelGradId es el ID del curso seleccionado
       iConfigId: this.stepService.configuracion[0].iConfigId, // iConfigId es el ID de la configuración
-      iHorasSemPresencial: this.formNivelGrado.value.iHorasSemPresencial, // iHorasSemPresencial es el valor del campo de horas semanales presenciales
-      iHorasSemDomicilio: this.formNivelGrado.value.iHorasSemDomicilio, // iHorasSemDomicilio es el valor del campo de horas semanales domiciliarias
-      iTotalHoras: this.formNivelGrado.value.iTotalHoras, // iTotalHoras es el valor del campo de total de horas semanales
+      iHorasSemPresencial: Number(this.formNivelGrado.value.iHorasSemPresencial) ?? 0, // iHorasSemPresencial es el valor del campo de horas semanales presenciales
+      iHorasSemDomicilio: Number(this.formNivelGrado.value.iHorasSemDomicilio) ?? 0, // iHorasSemDomicilio es el valor del campo de horas semanales domiciliarias
+      iTotalHoras: Number(this.formNivelGrado.value.iTotalHoras) ?? 0, // iTotalHoras es el valor del campo de total de horas semanales
       iEstado: 1, // iEstado es el estado del registro (1 para activo)
       iSesionId: this.stepService.iCredId, // iSesionId es el ID de la sesión del usuario
     });
-    console.log(params);
 
-    this._confirmService.openConfiSave({
-      header: 'Advertencia del sistema',
-      message: 'Desea registrar la distribución de horas?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        //Validar documento
-        this.query
-          .addAmbienteAcademico({
-            json: params,
-            _opcion: 'addDistribucionHoras',
-          })
-          .subscribe({
-            error: error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Mensaje del sistema',
-                detail: 'Error en en proceso de registro: ' + error.error.message,
-              });
-            },
-            complete: () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje del sistema',
-                detail: 'Proceso de registro de horas exitoso',
-              });
-              this.getCurriculaNivelServicioEducativo();
-              this.mostrar = true; // Ocultar el formulario de edición
+    //validar sumatoria de horas
+    const limiteHora = Number(this.formNivelGrado.value.iTotalHoras) ?? 0;
+    const sumatoria = Number(this.total_horas_grado) + Number(limiteHora) - this.horaEditar;
 
-              // console.log(this.lista, 'desde getSeccionesAsignadas')
-            },
+    if (sumatoria > Number(this.serv_horas)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Mensaje de sistema',
+        detail:
+          'La distribución de horas del grado ' +
+          (Number(this.total_horas_grado) + Number(limiteHora)) +
+          'Hras sobrepasa las totales horas del servicio educativo ' +
+          this.serv_horas +
+          ' Hras',
+      });
+      return;
+    }
+    //continua el procesamiento
+    this.query
+      .addAmbienteAcademico({
+        json: params,
+        _opcion: 'addDistribucionHoras',
+      })
+      .subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error en el proceso de registro: ' + (error.error?.message ?? error.message),
           });
-      },
+        },
+        complete: () => {
+          this.actualizarRegistros();
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Proceso de registro de horas exitoso',
+          });
+          this.mostrar = true; // Ocultar el formulario de edición
+          this.actualizarSumatoria();
+        },
+      });
+  }
+  actualizarSumatoria() {
+    const iGradoId = Number(this.formFiltrado.value.iGradoId);
+    const filtrado = this.programacion_curricular.filter(
+      item => item.iGradoId === String(iGradoId)
+    );
+    this.filtrado_programacion_curricular = filtrado;
+    //suma los tosales
+    let sumatoria = 0;
+    filtrado.forEach(item => {
+      sumatoria += Number(item.iTotalHoras || 0);
     });
+
+    this.total_horas_grado = sumatoria;
+
+    if (Number(sumatoria) !== Number(this.serv_horas)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Mensaje de sistema',
+        detail:
+          'La distribución de horas del grado ' +
+          sumatoria +
+          'Hras no coinciden los totales horas del servicio educativo ' +
+          this.serv_horas +
+          ' Hras',
+      });
+      this.mensaje =
+        'Observación: Total de horas semanales ' +
+        sumatoria +
+        'Hras, diferentes al servicio educativo ' +
+        +this.serv_horas +
+        ' Hras';
+    } else {
+      this.mensaje = null;
+    }
+  }
+  actualizarRegistros() {
+    const iCursosNivelGradId = this.formNivelGrado.value.iCursosNivelGradId;
+    const iHorasSemPresencial = Number(this.formNivelGrado.value.iHorasSemPresencial) ?? 0;
+    const iHorasSemDomicilio = Number(this.formNivelGrado.value.iHorasSemDomicilio) ?? 0;
+    const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas) ?? 0;
+    const iTotalHoras = Number(this.formNivelGrado.value.iTotalHoras) ?? 0;
+    const cumpleCondicion = iHorasMiniminas > 0 && iTotalHoras >= iHorasMiniminas;
+    this.programacion_curricular = this.programacion_curricular.map(item => {
+      if (item.iCursosNivelGradId === String(iCursosNivelGradId)) {
+        return {
+          ...item, // mantenemos lo demás igual
+          iHorasSemPresencial: iHorasSemPresencial,
+          iHorasSemDomicilio: iHorasSemDomicilio,
+          iTotalHoras: iTotalHoras,
+          bActive: cumpleCondicion ? 1 : 0,
+          bError: cumpleCondicion ? 0 : 1, // Actualiza bActive según la condición
+        };
+      }
+      return item;
+    });
+
+    this.filtrado_programacion_curricular = this.filtrado_programacion_curricular.map(item => {
+      if (item.iCursosNivelGradId === String(iCursosNivelGradId)) {
+        return {
+          ...item, // mantenemos lo demás igual
+          iHorasSemPresencial: iHorasSemPresencial,
+          iHorasSemDomicilio: iHorasSemDomicilio,
+          iTotalHoras: iTotalHoras,
+          bActive: cumpleCondicion ? 1 : 0, // Actualiza bActive según la condición
+          bError: cumpleCondicion ? 0 : 1,
+        };
+      }
+      return item;
+    });
+  }
+
+  cerrarEditar() {
+    this.mostrar = true;
   }
 
   selectedItems = [];
@@ -403,14 +503,20 @@ export class AsignarHorasComponent implements OnInit {
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
+      isVisible: rowData => {
+        return Number(rowData.bActive) === 1 || Number(rowData.bError) === 1;
+      },
     },
-    // {
-    //     labelTooltip: 'Eliminar',
-    //     icon: 'pi pi-trash',
-    //     accion: 'eliminar',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-danger p-button-text',
-    // },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: rowData => {
+        return Number(rowData.bActive) === 0 && Number(rowData.bError) != 1;
+      },
+    },
   ];
 
   columns = [
@@ -433,8 +539,17 @@ export class AsignarHorasComponent implements OnInit {
     {
       type: 'text',
       width: '2rem',
+      field: 'iHorasMiniminas',
+      header: 'H min',
+      text_header: 'center',
+      text: 'center',
+    },
+
+    {
+      type: 'text',
+      width: '2rem',
       field: 'iHorasSemPresencial',
-      header: 'H Presenciales',
+      header: 'H Pres',
       text_header: 'center',
       text: 'center',
     },
@@ -442,7 +557,15 @@ export class AsignarHorasComponent implements OnInit {
       type: 'text',
       width: '2rem',
       field: 'iHorasSemDomicilio',
-      header: 'H Domiciliarias',
+      header: 'H Dom',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '2rem',
+      field: 'iTotalHoras',
+      header: 'H Total',
       text_header: 'center',
       text: 'center',
     },

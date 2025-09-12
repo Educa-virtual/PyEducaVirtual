@@ -21,6 +21,7 @@ export class MaterialEducativoComponent implements OnInit {
 
   @Input() idDocCursoId: string;
   @Input() cCursoNombre: string;
+  @Input() iCursosNivelGradId: string;
 
   ngOnInit() {
     this.obtenerMaterialEducativoDocentes();
@@ -150,7 +151,7 @@ export class MaterialEducativoComponent implements OnInit {
       data: {
         opcion: 'CONSULTARxiDocenteIdxidDocCursoId',
         iDocenteId: this._ConstantesService.iDocenteId,
-        //iCursosNivelGradId:iCursosNivelGradId,
+        iCursosNivelGradId: this.iCursosNivelGradId,
         valorBusqueda: this.idDocCursoId,
       },
       params: { skipSuccessMessage: true },
@@ -166,20 +167,20 @@ export class MaterialEducativoComponent implements OnInit {
       prefix: 'material-educativos',
       ruta: item.opcion === 'GUARDAR' ? 'store' : 'update',
       data: item,
-      // params: { skipSuccessMessage: true },
     };
     this.getInformation(params, params.ruta + '-' + params.prefix);
   }
 
   eliminarMaterialEducativoDocentes(item) {
-    item.opcion = 'ELIMINARxiMatEduDocId';
     const params = {
       petition: 'post',
       group: 'docente',
       prefix: 'material-educativos',
       ruta: 'delete',
-      data: item,
-      // params: { skipSuccessMessage: true },
+      data: {
+        opcion: 'ELIMINARxiMatEduDocId',
+        iMatEducativoId: item.iMatEducativoId,
+      },
     };
     this.getInformation(params, params.ruta + '-' + params.prefix);
   }
@@ -189,7 +190,6 @@ export class MaterialEducativoComponent implements OnInit {
       next: response => {
         this.accionBtnItem({ accion, item: response?.data });
       },
-      complete: () => {},
       error: error => {
         console.log(error);
       },

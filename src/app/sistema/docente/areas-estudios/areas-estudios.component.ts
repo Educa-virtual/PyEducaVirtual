@@ -139,7 +139,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           'docente/material-educativo/' +
             this.selectedData['idDocCursoId'] +
             '/' +
-            this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '')
+            this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '') +
+            '/' +
+            this.selectedData['iCursosNivelGradId']
         );
         break;
       case 'resultados':

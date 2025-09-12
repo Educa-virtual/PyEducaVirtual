@@ -127,6 +127,11 @@ export class CalendarioComponent implements OnInit {
         this.actividades.map(caja => {
           caja.mostrar = true;
         });
+        this.actividades[0].estilo = 'primary-checkbox';
+        this.actividades[1].estilo = 'orange-checkbox';
+        this.actividades[2].estilo = 'bluegray-checkbox';
+        this.actividades[3].estilo = 'gray-checkbox';
+        this.actividades[4].estilo = 'red-claro-checkbox';
         break;
       default:
         this.curricula = [];

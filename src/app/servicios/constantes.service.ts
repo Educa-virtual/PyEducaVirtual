@@ -565,8 +565,13 @@ const administracion = [
           {
             label: 'Configurar calendario escolar',
             icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/apertura'],
+            routerLink: ['/gestion-institucional/calendario-escolar'],
           },
+          // {
+          //   label: 'Configurar calendario escolar',
+          //   icon: 'pi pi-lock-open',
+          //   routerLink: ['/gestion-institucional/apertura'],
+          // },
           {
             label: 'Gestion de Ambientes y Grados',
             icon: 'pi pi-building-columns',
@@ -582,11 +587,7 @@ const administracion = [
             icon: 'pi pi-calendar',
             routerLink: ['/gestion-institucional/fechas-importantes'],
           },
-          {
-            label: 'Configurar calendario escolar',
-            icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/calendario-escolar'],
-          },
+
           {
             label: 'Validación de horas',
             icon: 'pi pi-fw pi-check',
@@ -674,9 +675,28 @@ const administracion = [
                       },
                     */
       {
-        label: 'Indicadores',
-        icon: 'pi pi-chart-line',
-        routerLink: ['/gestion-institucional/dashboard-indicadores'],
+        label: 'Gestión de Matrículas',
+        icon: 'pi pi-folder',
+        items: [
+          {
+            label: 'Gestionar matriculas',
+            icon: 'pi pi-fw pi-file-edit',
+            badge: '',
+            routerLink: ['/gestion-institucional/gestion-matriculas'],
+          },
+          {
+            label: 'Matrícula Individual',
+            icon: 'pi pi-fw pi-file-plus',
+            badge: '',
+            routerLink: ['/gestion-institucional/matricula-individual'],
+          },
+          {
+            label: 'Matrícula Masiva',
+            icon: 'pi pi-fw pi-file-import',
+            badge: '',
+            routerLink: ['/gestion-institucional/matricula-masiva'],
+          },
+        ],
       },
       {
         label: 'Generación de Reportes y estadísticas',
@@ -912,7 +932,25 @@ const apoderado = [
 
 const first = [
   {
-    items: [inicio],
+    items: [
+      inicio,
+      {
+        label: 'Asistencia',
+        icon: 'pi pi-list-check',
+        items: [
+          {
+            label: 'Registro de Asistencia',
+            icon: 'pi pi-list-check',
+            routerLink: ['asistencia-auxiliar'],
+          },
+          {
+            label: 'Reporte de Asistencia',
+            icon: 'pi pi-chart-bar',
+            routerLink: ['reporte-asistencia-auxiliar'],
+          },
+        ],
+      },
+    ],
   },
 ];
 

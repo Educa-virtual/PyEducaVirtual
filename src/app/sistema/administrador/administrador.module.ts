@@ -29,6 +29,11 @@ const routes: Routes = [
       ),
   },
 
+  {
+    path: 'mantenimiento-curricula',
+    loadComponent: () =>
+      import('./mantenimiento/curriculas/curriculas.component').then(m => m.CurriculasComponent),
+  },
   /*{
         path: 'gestion-usuarios',
         loadComponent: () =>

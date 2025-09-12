@@ -40,6 +40,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     private store: LocalStoreService
   ) {}
 
+  documentos: any[] = [];
   opcionCurso = [];
   idDocenteCurso: number;
   seleccionarCurso: any = '';
@@ -138,7 +139,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           'docente/material-educativo/' +
             this.selectedData['idDocCursoId'] +
             '/' +
-            this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '')
+            this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '') +
+            '/' +
+            this.selectedData['iCursosNivelGradId']
         );
         break;
       case 'resultados':
@@ -304,5 +307,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   }
   ngOnDestroy() {
     this.unsubscribe$.next(true);
+  }
+
+  subir(event: any) {
+    console.log(event);
   }
 }

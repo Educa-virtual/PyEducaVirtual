@@ -96,7 +96,7 @@
 
         <div class="grid m-0">
           <div class="col-12 mb-1">
-            @for (ficha of item.cCuadernoUrl; track ficha.id) {
+            @for (ficha of item.cCuadernoUrl; track ficha.typePortafolio) {
               @if (ficha.typePortafolio === 1) {
                 <p class="text-primary">
                   <i class="pi pi-list"></i>&nbsp;Ficha de Actividades de Aprendizaje
@@ -163,6 +163,47 @@
                     ><input
                       type="file"
                       (change)="onUploadChange($event, 'cuadernos-campo', item)"
+                      accept=".pdf "
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    (click)="openLink(ficha.ruta)"
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-info"
+                  >
+                    &nbsp;
+                  </button>
+                </p-inputGroup>
+              }
+              @if (ficha.typePortafolio === 3) {
+                <p class="text-primary mt-2">
+                  <i class="pi pi-list"></i>&nbsp;Instrumentos de Evaluación
+                </p>
+                <p-inputGroup class="mt-3">
+                  <p-inputGroupAddon>
+                    <i class="pi pi-link" style="color: #333437"></i>
+                  </p-inputGroupAddon>
+                  <input
+                    type="text"
+                    pInputText
+                    [placeholder]="ficha.name ? ficha.name : 'Instrumentos de Evaluación'"
+                    disabled
+                    class="w-full p-inputtext-sm opacity-100"
+                    pInputText
+                  />
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    severity="primary"
+                    class="p-button-primary btn-file-image"
+                  >
+                    <i class="pi pi-upload"></i
+                    ><input
+                      type="file"
+                      (change)="onUploadChange($event, 'instrumentos-evaluacion', item)"
                       accept=".pdf "
                     />
                   </button>
@@ -258,31 +299,47 @@
                 </button>
               </p-inputGroup>
             }
-          </div>
-          <div class="col-12 mt-1">
-            <p class="text-primary"><i class="pi pi-list"></i>&nbsp;Instrumentos de Evaluación</p>
-            <p-inputGroup>
-              <p-inputGroupAddon>
-                <i class="pi pi-link" style="color: #333437"></i>
-              </p-inputGroupAddon>
-              <input
-                type="text"
-                pInputText
-                placeholder="Instrumentos de Evaluación"
-                disabled
-                class="w-full p-inputtext-sm opacity-100"
-                pInputText
-              />
-              <button
-                type="button"
-                pButton
-                icon="pi pi-eye"
-                class="p-button-info"
-                (click)="obtenerRubricasxiCursoId(item)"
-              >
-                &nbsp;
-              </button>
-            </p-inputGroup>
+            @if (!item.binstrumentos) {
+              <p class="text-primary mt-2">
+                <i class="pi pi-list"></i>&nbsp;Instrumentos de Evaluación
+              </p>
+              <p-inputGroup class="mt-3">
+                <p-inputGroupAddon>
+                  <i class="pi pi-link" style="color: #333437"></i>
+                </p-inputGroupAddon>
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Instrumentos de Evaluación"
+                  disabled
+                  class="w-full p-inputtext-sm opacity-100"
+                  pInputText
+                />
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  severity="primary"
+                  class="p-button-primary btn-file-image"
+                >
+                  <i class="pi pi-upload"></i
+                  ><input
+                    type="file"
+                    (change)="onUploadChange($event, 'instrumentos-evaluacion', item)"
+                    accept=".pdf "
+                  />
+                </button>
+                <button
+                  type="button"
+                  disabled="true"
+                  pButton
+                  icon="pi pi-eye"
+                  class="p-button-info"
+                >
+                  &nbsp;
+                </button>
+              </p-inputGroup>
+            }
           </div>
           <div class="col-12 mt-1">
             <p class="text-primary"><i class="pi pi-list"></i>&nbsp;Registro de Evaluación</p>

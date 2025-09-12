@@ -16,7 +16,8 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { IesPersonalComponent } from '../../../ies-personal/ies-personal.component';
+//import { IesPersonalComponent } from '../../../ies-personal/ies-personal.component';
+import { FormDocenteComponent } from './form-docente/form-docente.component';
 
 @Component({
   selector: 'app-config-hora-docente',
@@ -26,7 +27,8 @@ import { IesPersonalComponent } from '../../../ies-personal/ies-personal.compone
     PrimengModule,
     ContainerPageComponent,
     TablePrimengComponent,
-    IesPersonalComponent,
+    // IesPersonalComponent,
+    FormDocenteComponent,
   ],
   templateUrl: './config-hora-docente.component.html',
   styleUrls: ['./config-hora-docente.component.scss'], // ✅ corregido
@@ -39,7 +41,11 @@ export class ConfigHoraDocenteComponent implements OnInit {
   showCaption: string;
   caption: string;
   docentes: any[];
+
   showFormulario = false;
+  docente: any = {};
+  config: any = {};
+  c_accion: string = 'agregar'; // editar | agregar
 
   private _confirmService = inject(ConfirmationModalService);
   constructor(
@@ -50,6 +56,7 @@ export class ConfigHoraDocenteComponent implements OnInit {
     private query: GeneralService,
     private msg: StepConfirmationService
   ) {
+    this.form = this.fb.group({}); // evita undefined
     this.items = this.stepService.itemsStep;
     this.configuracion = this.stepService.configuracion;
   }
@@ -148,10 +155,26 @@ export class ConfigHoraDocenteComponent implements OnInit {
       });
     }
     if (accion === 'agregar') {
+      this.docente = {};
+      this.config = this.configuracion[0];
+      this.c_accion = 'agregar';
       this.showFormulario = true;
-
-      //   this.router.navigate(['/gestion-institucional/asignar-docente'])
     }
+    if (accion === 'editar') {
+      this.c_accion = 'editar';
+      this.config = this.configuracion[0];
+      this.docente = item;
+      this.showFormulario = true;
+    }
+
+    if (accion === 'registrar') {
+      this.registrarDocente(item);
+    }
+
+    if (accion === 'actualizar') {
+      this.registrarDocente(item);
+    }
+
     if (accion === 'eliminar') {
       this._confirmService.openConfiSave({
         message: '¿Estás seguro de que deseas eliminar registro?',
@@ -346,6 +369,46 @@ export class ConfigHoraDocenteComponent implements OnInit {
       });
   }
 
+  registrarDocente(item) {
+    this.query
+      .addAmbienteAcademico({
+        json: JSON.stringify({
+          iPersIeId: item.iPersIeId ?? 0,
+          iPersId: item.iPersId ?? 0,
+          iYAcadId: item.iYAcadId ?? this.configuracion.iYAcadId ?? 0,
+          iPersCargoId: 3,
+          iSedeId: item.iSedeId ?? this.configuracion.iSedeId ?? 0,
+          iHorasLabora: item.iHorasLabora ?? null,
+          cTipoTrabajador: item.cTipoTrabajador ?? null,
+          cMotivo: item.cMotivo ?? null,
+          dtPersIeInicio: item.dtPersIeInicio ?? null,
+          dtPersIeFin: item.dtPersIeFin ?? null,
+          cCodigoPlaza: item.cCodigoPlaza ?? null,
+
+          iSesionId: this.configuracion[0].iCredId ?? 0,
+        }),
+        _opcion: 'addDocenteIE',
+      })
+      .subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error en el procedimiento de búsqueda de docentes : ' + error.error.menssage,
+          });
+        },
+        complete: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Se realizó actualización de docentes',
+          });
+          this.searchPersonalDocente();
+          this.showFormulario = false;
+        },
+      });
+  }
+
   accionesPrincipal: IActionContainer[] = [
     {
       labelTooltip: 'Retornar',
@@ -381,9 +444,16 @@ export class ConfigHoraDocenteComponent implements OnInit {
   actions: IActionTable[] = [
     {
       labelTooltip: 'Verificar docentes',
-      icon: 'pi pi-pen-to-square',
+      icon: 'pi pi-spinner',
       type: 'item',
       accion: 'verificar_docente',
+      class: 'p-button-rounded p-button-default p-button-text',
+    },
+    {
+      labelTooltip: 'Editar docentes',
+      icon: 'pi pi-pen-to-square',
+      type: 'item',
+      accion: 'editar',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
     {
@@ -393,7 +463,7 @@ export class ConfigHoraDocenteComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: rowData => {
-        return rowData.iEstado === '0';
+        return rowData.iEstado === '0' || rowData.iEstado === null;
       },
     },
     {

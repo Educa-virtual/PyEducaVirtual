@@ -152,11 +152,21 @@ export class MaterialEducativoComponent implements OnInit {
         opcion: 'CONSULTARxiDocenteIdxidDocCursoId',
         iDocenteId: this._ConstantesService.iDocenteId,
         iCursosNivelGradId: this.iCursosNivelGradId,
-        valorBusqueda: this.idDocCursoId,
       },
-      params: { skipSuccessMessage: true },
     };
-    this.getInformation(params, params.ruta + '-' + params.prefix);
+
+    this._GeneralService.getRecibirDatos(params).subscribe({
+      next: response => {
+        const datos = response.data;
+        this.data = datos;
+        this.data.forEach(i => {
+          i.cMatEducativoUrl = JSON.parse(i.cMatEducativoUrl) ?? [];
+        });
+      },
+      error: error => {
+        console.log(error);
+      },
+    });
   }
   GuardarActualizarMaterialEducativoDocentes(item) {
     item.iDocenteId = this._ConstantesService.iDocenteId;

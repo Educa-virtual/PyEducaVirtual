@@ -11,6 +11,8 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-simple.component';
 import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component';
 import { FuncionesBienestarService } from '../../../services/funciones-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-gestion-pandemia-dosis',
@@ -31,14 +33,22 @@ export class GestionPandemiaDosisComponent implements OnInit {
   caption: string = 'Registrar dosis';
   fecha_actual: Date = new Date();
 
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabels: any;
+
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
 
   constructor(
     private fb: FormBuilder,
     private datosFichaBienestar: DatosFichaBienestarService,
-    private funcionesBienestar: FuncionesBienestarService
-  ) {}
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
+  ) {
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
+  }
 
   ngOnInit(): void {
     try {
@@ -52,6 +62,12 @@ export class GestionPandemiaDosisComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error de formulario');
     }
+
+    this.formLabels = {
+      seccion1: this.es_estudiante_apoderado
+        ? 'Vacunaciones que recibió el estudiante durante pandemias y epidemias'
+        : 'Vacunaciones que usted recibió durante pandemias y epidemias',
+    };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
       this.pandemias = this.datosFichaBienestar.getPandemias(data?.pandemias);

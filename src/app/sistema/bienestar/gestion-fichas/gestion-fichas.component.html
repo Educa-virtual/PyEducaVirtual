@@ -39,7 +39,20 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Tipo Persona</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="tipos_personas"
+                      [showClear]="false"
+                      formControlName="iTipoPersId"
+                      placeholder="Seleccione un tipo de persona"
+                      styleClass="group-element"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12" [ngClass]="ocultar_grado ? 'col-12' : 'md:col-6'">
                   <p-inputGroup>
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
@@ -52,7 +65,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12 md:col-6" [hidden]="ocultar_grado">
                   <p-inputGroup>
                     <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
@@ -80,7 +93,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12 md:col-6" [hidden]="ocultar_seccion">
                   <p-inputGroup>
                     <p-inputGroupAddon>Sección</p-inputGroupAddon>
                     <p-dropdown
@@ -94,7 +107,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12" [ngClass]="ocultar_seccion ? 'col-12' : 'md:col-6'">
                   <p-inputGroup>
                     <p-inputGroupAddon>Género</p-inputGroupAddon>
                     <p-dropdown

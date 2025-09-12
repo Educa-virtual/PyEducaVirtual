@@ -1,9 +1,12 @@
 import { GeneralService } from '@/app/servicios/general.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
+import {
+  ContainerPageComponent,
+  IActionContainer,
+} from '@/app/shared/container-page/container-page.component';
 import { ActividadesNoLectivasComponent } from '../../docente/actividades-no-lectivas/actividades-no-lectivas.component';
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 
@@ -24,6 +27,17 @@ export class ActividadNoLectivaComponent implements OnInit {
   iDocenteId: number;
 
   seleccionado: boolean = false;
+
+  breadCrumbItems: MenuItem[] = [
+    {
+      label: 'Validación de horas',
+      routerLink: ['/gestion-institucional/validacion-no-lectiva'],
+    },
+  ];
+  breadCrumbHome: MenuItem = {
+    icon: 'pi pi-home',
+    routerLink: '/',
+  };
 
   columns = [
     {
@@ -86,6 +100,16 @@ export class ActividadNoLectivaComponent implements OnInit {
     },
   ];
 
+  actionsContainer: IActionContainer[] = [
+    {
+      labelTooltip: 'Ver planes',
+      text: 'Ver planes',
+      icon: 'pi pi-view',
+      accion: 'ver',
+      class: 'p-button-primary',
+    },
+  ];
+
   constructor(
     private query: GeneralService,
     private store: LocalStoreService,
@@ -145,6 +169,9 @@ export class ActividadNoLectivaComponent implements OnInit {
         break;
       case 'delete':
         // this.delete(data);
+        break;
+      case 'ver':
+        this.seleccionado = false;
         break;
       default:
         break;

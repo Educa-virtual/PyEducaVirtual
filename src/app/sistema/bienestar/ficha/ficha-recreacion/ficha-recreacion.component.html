@@ -73,7 +73,7 @@
         <div class="grid">
           <div class="col-12">
             <app-switch-input
-              addonLabel="¿El estudiante recibe atención psicológica?"
+              [addonLabel]="formLabels.bFichaDGAsistioConsultaPsicologica"
               inputPlaceholder="Especifique con que frecuencia *"
               inputType="text"
               [switchControl]="$any(formRecreacion.controls['bFichaDGAsistioConsultaPsicologica'])"
@@ -94,7 +94,7 @@
               [dropdownItems]="estados_relacion"
               dropdownPlaceholder="Seleccione"
               [dropdownControl]="$any(formRecreacion.controls['iEstadoRelFamiliar'])"
-              addonLabel="¿Cómo es la relación del estudiante con su familia?"
+              [addonLabel]="formLabels.iEstadoRelFamiliar"
             />
           </div>
         </div>

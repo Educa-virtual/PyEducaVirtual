@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.component';
 import { DatosInformeBienestarService } from '../../services/datos-informe-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-informe-econonomico',
@@ -12,9 +13,15 @@ import { DatosInformeBienestarService } from '../../services/datos-informe-biene
 })
 export class InformeEconomicoComponent implements OnInit {
   reportes_economico: any;
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
 
-  constructor(private datosInformes: DatosInformeBienestarService) {
+  constructor(
+    private datosInformes: DatosInformeBienestarService,
+    private store: LocalStoreService
+  ) {
     this.datosInformes.setActiveIndex(1);
+    this.perfil = this.store.getItem('dremoPerfil');
   }
 
   ngOnInit() {

@@ -46,6 +46,17 @@ export const administradorDremo = [
           },
         ],
       },
+      {
+        label: 'Mantenimiento IE',
+        icon: 'pi pi-config',
+        items: [
+          {
+            label: 'Curricula',
+            icon: 'pi pi-star',
+            routerLink: ['/administrador/mantenimiento-curricula'],
+          },
+        ],
+      },
       /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',

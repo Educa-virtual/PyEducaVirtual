@@ -11,7 +11,7 @@
       />
     </div>
     <div class="col-12 lg:col-6">
-      <p-fieldset legend="Lugar de alimentación del estudiante durante la semana">
+      <p-fieldset [legend]="formLabeLs.seccion2">
         <div class="grid mt-3">
           <div class="col-12">
             <app-dropdown-input
@@ -48,7 +48,7 @@
     </div>
 
     <div class="col-12 lg:col-6">
-      <p-fieldset legend="Información alimenticia adicional sobre el estudiante">
+      <p-fieldset [legend]="formLabeLs.seccion3">
         <div class="grid">
           <div class="col-12">
             <app-switch-input
@@ -101,8 +101,9 @@
               [infoAdicional]="bDificultadAlim"
             />
             <ng-template #bDificultadAlim>
-              Marque esta opción si el estudiante suele tener dificultades para conseguir alimentos
-              ya sea por falta de dinero, tiempo, transporte, etc. y explique brevemente el motivo.
+              Marque esta opción si {{ es_estudiante_apoderado ? 'el estudiante' : '' }} suele tener
+              dificultades para conseguir alimentos ya sea por falta de dinero, tiempo, transporte,
+              etc. y explique brevemente el motivo.
             </ng-template>
           </div>
           <div class="col-12">

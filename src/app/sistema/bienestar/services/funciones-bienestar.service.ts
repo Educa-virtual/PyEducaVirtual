@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -39,7 +40,7 @@ export class FuncionesBienestarService implements OnDestroy {
       if (!value) value = null;
       form.get(formControl)?.patchValue(value);
     } else if (tipo === 'date') {
-      let fecha = new Date(value + 'T00:00:00');
+      let fecha = new Date(formatDate(value, 'YYYY-MM-d', 'es-ES'));
       if (!value) fecha = null;
       form.get(formControl)?.patchValue(fecha);
     } else if (tipo === 'json') {

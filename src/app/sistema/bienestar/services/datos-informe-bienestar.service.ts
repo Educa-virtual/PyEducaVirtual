@@ -32,6 +32,8 @@ export class DatosInformeBienestarService {
   zonas: Array<object>;
   tipo_sectores: Array<object>;
   estados: Array<object>;
+  tipos_personas: Array<object>;
+  areas: Array<object>;
 
   antiguo_form: any;
   reportes: any;
@@ -201,6 +203,30 @@ export class DatosInformeBienestarService {
       return this.ugeles;
     }
     return this.ugeles;
+  }
+
+  getTiposPersonas(data: any) {
+    if (!this.tipos_personas && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_personas = items.map(tipo_persona => ({
+        value: tipo_persona.iTipoPersId,
+        label: tipo_persona.cTipoPersNombre,
+      }));
+      return this.tipos_personas;
+    }
+    return this.tipos_personas;
+  }
+
+  getAreas(data: any) {
+    if (!this.areas && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.areas = items.map(area => ({
+        value: area.iCursoId,
+        label: area.cCursoNombre,
+      }));
+      return this.areas;
+    }
+    return this.areas;
   }
 
   getInstitucionesEducativas(data: any) {

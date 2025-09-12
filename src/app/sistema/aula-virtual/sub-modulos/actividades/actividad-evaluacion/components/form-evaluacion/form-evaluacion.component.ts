@@ -4,7 +4,6 @@ import { DatePipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface';
-import { MessageService } from 'primeng/api';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
@@ -27,7 +26,6 @@ import { finalize } from 'rxjs';
  */
 export class FormEvaluacionComponent extends MostrarErrorComponent implements OnChanges {
   private _FormBuilder = inject(FormBuilder);
-  private _MessageService = inject(MessageService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _EvaluacionesService = inject(EvaluacionesService);
   private _ConstantesService = inject(ConstantesService);

@@ -155,6 +155,12 @@
         />
       </div>
       <div class="col-12 md:col-4">
+        <app-switch-simple
+          [switchControl]="$any(formGeneral.controls['bFamiliarPadresVivenMismaCasa'])"
+          [addonLabel]="formLabels.bFamiliarPadresVivenMismaCasa"
+        />
+      </div>
+      <div class="col-12 md:col-4">
         <app-switch-input
           [switchControl]="$any(formGeneral.controls['bFichaDGTieneHijos'])"
           [addonLabel]="formLabels.bFichaDGTieneHijos"

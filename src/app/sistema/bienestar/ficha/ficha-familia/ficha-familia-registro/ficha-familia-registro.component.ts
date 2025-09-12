@@ -139,6 +139,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
         iOcupacionId: [null],
         iGradoInstId: [null],
         iTipoIeEstId: [null],
+        cFamiliarTelefonoCelular: ['', Validators.maxLength(150)],
       });
     } catch (error) {
       console.log(error, 'error al inicializar formulario');
@@ -416,6 +417,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     this.formFamiliar
       .get('cFamiliarDireccionReferencia')
       .patchValue(item.cFamiliarDireccionReferencia);
+    this.formFamiliar.get('cFamiliarTelefonoCelular').patchValue(item.cFamiliarTelefonoCelular);
     this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
   }
 

@@ -221,7 +221,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
 
       case 'agregar':
       case 'actualizar':
-        if (this.iDocenteId) {
+        const iDocenteId = this._ConstantesService.iDocenteId;
+        if (iDocenteId) {
           this.showModal = true;
           this.item = item;
           const dtInicio = item.dtInicio ? item.dtInicio.split(' ')[0] : null;

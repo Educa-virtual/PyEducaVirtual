@@ -91,7 +91,7 @@
                   <td>
                     <p-button
                       size="small"
-                      styleClass="text-center boton"
+                      [ngClass]="alumno.bgColor"
                       (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
                       ><span class="font-bold hidden md:table-cell">{{
                         alumno.cTipoAsiNombre

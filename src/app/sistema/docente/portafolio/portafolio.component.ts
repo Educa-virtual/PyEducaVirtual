@@ -108,7 +108,6 @@ export class PortafolioComponent implements OnInit {
         }
         this.accionBtnItem({ accion, item: response?.data });
       },
-      complete: () => {},
       error: error => {
         this._MessageService.add({
           severity: 'error',
@@ -151,7 +150,6 @@ export class PortafolioComponent implements OnInit {
           item.binstrumentos = instrumentos?.name ? true : false;
         });
 
-        // console.log("resumen #2",this.cursos)
         break;
       case 'docente-guardarItinerario':
         this.obtenerPortafolios();
@@ -267,17 +265,21 @@ export class PortafolioComponent implements OnInit {
           const data = response.data;
           if (data.length) {
             const curso = data[0];
-            this.router.navigate(['aula-virtual/areas-curriculares/', curso.iSilaboId], {
+            this.router.navigate(['aula-virtual/areas-curriculares/', item.iSilaboId], {
               queryParams: {
                 cCursoNombre: curso.cCursoNombre,
                 cNivelTipoNombre: curso.cNivelTipoNombre,
                 cGradoAbreviacion: curso.cGradoAbreviacion,
-                cSeccion: curso.cSeccion,
+                cSeccionNombre: curso.cSeccion,
                 cCicloRomanos: curso.cCicloRomanos,
                 cNivelNombreCursos: curso.cNivelNombreCursos,
-                iCursoId: curso.iCursoId,
-                idDocCursoId: curso.idDocCursoId,
-                tab: 'resultados',
+                iCursoId: item.iCursoId,
+                idDocCursoId: item.idDocCursoId,
+                iNivelCicloId: item.iNivelCicloId,
+                iIeCursoId: item.iIeCursoId,
+                iSeccionId: item.iSeccionId,
+                iNivelGradoId: item.iNivelGradoId,
+                tab: 2,
               },
             });
           }
@@ -292,7 +294,6 @@ export class PortafolioComponent implements OnInit {
 
   async onUploadChange(evt: any, tipo: any, item: any) {
     const file = evt.target.files[0];
-    console.log('documento #10 ', file);
     if (file) {
       const dataFile = await this.objectToFormData({
         file: file,

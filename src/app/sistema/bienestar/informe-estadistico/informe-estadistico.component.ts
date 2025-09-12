@@ -328,9 +328,9 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
       route: '/bienestar/informe-estadistico/salud',
     },
     {
-      label: 'Recreación',
+      label: 'Sociocultural',
       icon: 'pi pi-fw pi-image',
-      route: '/bienestar/informe-estadistico/recreacion',
+      route: '/bienestar/informe-estadistico/sociocultural',
     },
     {
       label: 'Demográfico',

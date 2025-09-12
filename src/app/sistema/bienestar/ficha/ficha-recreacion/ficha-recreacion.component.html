@@ -3,31 +3,7 @@
 <form [formGroup]="formRecreacion">
   <div class="grid p-fluid p-2">
     <div class="col-12 lg:col-6">
-      <p-fieldset legend="Deportes">
-        <div class="grid">
-          <div class="col-12">
-            <app-multiselect-input
-              [multiselectItems]="deportes"
-              multiselectPlaceholder="Seleccione"
-              [inputControl]="$any(formRecreacion.controls['cDeporteOtro'])"
-              [multiselectControl]="$any(formRecreacion.controls['iDeporteId'])"
-              addonLabel="Deporte que practica"
-            />
-          </div>
-          <div class="col-12">
-            <app-switch-input
-              addonLabel="¿Pertenece a una liga deportiva?"
-              inputPlaceholder="Especifique *"
-              inputType="text"
-              [switchControl]="$any(formRecreacion.controls['bFichaDGPerteneceLigaDeportiva'])"
-              [inputControl]="$any(formRecreacion.controls['cFichaDGPerteneceLigaDeportiva'])"
-            />
-          </div>
-        </div>
-      </p-fieldset>
-    </div>
-    <div class="col-12 lg:col-6">
-      <p-fieldset legend="Cultura y Recreación">
+      <p-fieldset legend="Cultura e Identidad">
         <div class="grid">
           <div class="col-12">
             <app-dropdown-input
@@ -39,12 +15,36 @@
             />
           </div>
           <div class="col-12">
-            <app-switch-input
-              addonLabel="¿Pertenece a un Centro Artístico o Cultural?"
-              inputPlaceholder="Especifique *"
-              inputType="text"
-              [switchControl]="$any(formRecreacion.controls['bFichaDGPerteneceCentroArtistico'])"
-              [inputControl]="$any(formRecreacion.controls['cFichaDGPerteneceCentroArtistico'])"
+            <app-multiselect-input
+              [multiselectItems]="lenguas"
+              multiselectPlaceholder="Seleccione"
+              [inputControl]="$any(formRecreacion.controls['cLenguaOtro'])"
+              [multiselectControl]="$any(formRecreacion.controls['iLenguaId'])"
+              [addonLabel]="formLabels.iLenguaId"
+            />
+          </div>
+          <div class="col-12">
+            <app-dropdown-input
+              [dropdownItems]="etnias"
+              multiselectPlaceholder="Seleccione"
+              [inputControl]="$any(formRecreacion.controls['cEtniaOtro'])"
+              [dropdownControl]="$any(formRecreacion.controls['iEtniaId'])"
+              [addonLabel]="formLabels.iEtniaId"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-fieldset legend="Deportes y Recreación">
+        <div class="grid">
+          <div class="col-12">
+            <app-multiselect-input
+              [multiselectItems]="deportes"
+              multiselectPlaceholder="Seleccione"
+              [inputControl]="$any(formRecreacion.controls['cDeporteOtro'])"
+              [multiselectControl]="$any(formRecreacion.controls['iDeporteId'])"
+              addonLabel="Deporte que practica"
             />
           </div>
           <div class="col-12">
@@ -63,6 +63,49 @@
               [inputControl]="$any(formRecreacion.controls['cPasaTiempoOtro'])"
               [multiselectControl]="$any(formRecreacion.controls['iPasaTiempoId'])"
               addonLabel="Pasatiempos"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-fieldset legend="Afiliaciones y Participación">
+        <div class="grid">
+          <div class="col-12">
+            <app-switch-input
+              *ngIf="es_estudiante_apoderado"
+              addonLabel="¿Ocupa algún cargo en la Institución Educativa?"
+              inputPlaceholder="Especifique *"
+              inputType="text"
+              [switchControl]="$any(formRecreacion.controls['bFichaDGOcupaCargoIE'])"
+              [inputControl]="$any(formRecreacion.controls['cFichaDGOcupaCargoIE'])"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Pertenece a una liga deportiva?"
+              inputPlaceholder="Especifique *"
+              inputType="text"
+              [switchControl]="$any(formRecreacion.controls['bFichaDGPerteneceLigaDeportiva'])"
+              [inputControl]="$any(formRecreacion.controls['cFichaDGPerteneceLigaDeportiva'])"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Pertenece a un Centro Artístico o Cultural?"
+              inputPlaceholder="Especifique *"
+              inputType="text"
+              [switchControl]="$any(formRecreacion.controls['bFichaDGPerteneceCentroArtistico'])"
+              [inputControl]="$any(formRecreacion.controls['cFichaDGPerteneceCentroArtistico'])"
+            />
+          </div>
+          <div class="col-12">
+            <app-switch-input
+              addonLabel="¿Pertenece a algún club o grupo de interés?"
+              inputPlaceholder="Especifique *"
+              inputType="text"
+              [switchControl]="$any(formRecreacion.controls['bFichaDGPerteneceClubInteres'])"
+              [inputControl]="$any(formRecreacion.controls['cFichaDGPerteneceClubInteres'])"
             />
           </div>
         </div>

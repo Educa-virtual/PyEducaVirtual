@@ -45,15 +45,17 @@ export class PerfilComponent implements OnInit {
     cPersDomicilio: [''],
     cPersCorreo: ['', [Validators.required, Validators.email]],
     cPersCorreoValidado: [],
-    cPersCelular: [''],
+    cPersTelefono: [''],
     cPersCelularValidado: [],
 
     cPersPassword: [],
   });
   iPersConId;
+
   ngOnInit() {
     this.getPersonasxiPersId();
   }
+
   accionBtnItem(elemento): void {
     const { accion } = elemento;
     const { item } = elemento;
@@ -63,6 +65,27 @@ export class PerfilComponent implements OnInit {
         break;
     }
   }
+
+  actualizarInformacionPersonal() {
+    this._PersonasService.actualizarDatosPersonales(this.formPersonas.value).subscribe({
+      next: (response: any) => {
+        this._MessageService.add({
+          severity: 'success',
+          summary: 'Datos actualizados',
+          detail: response.message,
+        });
+        this.accionCloseItem.emit();
+      },
+      error: (error: any) => {
+        this._MessageService.add({
+          severity: 'error',
+          summary: 'Error al actualizar datos',
+          detail: error.message,
+        });
+      },
+    });
+  }
+
   getPersonasxiPersId() {
     const params = {
       iPersId: this._ConstantesService.iPersId,

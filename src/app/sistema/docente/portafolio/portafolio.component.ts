@@ -132,7 +132,7 @@ export class PortafolioComponent implements OnInit {
         break;
       case 'docente-obtenerCuadernosCampo':
         this.cursos = item;
-
+        console.log('ver #1', this.cursos);
         this.cursos.forEach(
           item =>
             (item.cCuadernoUrl = item.cCuadernoUrl

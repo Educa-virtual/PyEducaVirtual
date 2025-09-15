@@ -38,16 +38,24 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     private router: Router,
     private MessageService: MessageService,
     private store: LocalStoreService
-  ) {}
+  ) {
+    this.iYAcadId = this._constantesService.iYAcadId;
+    this.iPersId = this._constantesService.iPersId;
+  }
 
-  documentos: any[] = [];
+  documentos: any = [];
   opcionCurso = [];
   idDocenteCurso: number;
   seleccionarCurso: any = '';
   cursoSilabos = [];
-  visible = false;
+  visible: boolean = false;
+  visibleProgramacion: boolean = false;
   selectedData = [];
   items = [];
+  archivos: any = {};
+  iYAcadId: any;
+  iPersId: any;
+  portafolio: any = {};
 
   iPerfilId: number;
   public DOCENTE = DOCENTE;
@@ -104,14 +112,16 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   goSection(section) {
     switch (section) {
       case 'silabo':
-        this.router.navigateByUrl(
-          'docente/gestionar-programacion-curricular/' +
-            this.selectedData['idDocCursoId'] +
-            '/' +
-            this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '') +
-            '/' +
-            this.selectedData['iAvanceSilabo']
-        );
+        this.visibleProgramacion = true;
+        this.archivos.idDocCursoId = this.selectedData['idDocCursoId'];
+        this.archivos.iYAcadId = this.iYAcadId;
+        this.archivos.iSilaboId = this.selectedData['iSilaboId'];
+        this.archivos.iPersId = this.iPersId;
+        const formato =
+          typeof this.selectedData['cProgramacion'] === 'string'
+            ? JSON.parse(this.selectedData['cProgramacion'])
+            : this.selectedData['cProgramacion'];
+        this.documentos = formato;
         break;
       case 'sesion-aprendizaje':
         this.router.navigateByUrl('docente/sesion-aprendizaje');
@@ -170,37 +180,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         break;
     }
   }
-  getCursos() {
-    const year = this.store.getItem('dremoYear');
 
-    const params = {
-      petition: 'post',
-      group: 'docente',
-      prefix: 'docente-cursos',
-      ruta: 'list', //'getDocentesCursos',
-      data: {
-        opcion: 'CONSULTARxiPersIdxiYearId',
-        iCredId: this._constantesService.iCredId,
-        valorBusqueda: year, //iYearId
-        iSemAcadId: null,
-        iIieeId: null,
-      },
-      params: { skipSuccessMessage: true },
-    };
-    this._generalService
-      .getGralPrefix(params)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: (response: Data) => {
-          this.data = [];
-          this.data = response.data;
-        },
-        complete: () => {},
-        error: error => {
-          console.log(error);
-        },
-      });
-  }
   descripcion: string;
   // importammos los silabos de los cursos dispnibles para la etiqueta modal
   importarSilabos(docentecurso: string[]) {
@@ -309,7 +289,84 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     this.unsubscribe$.next(true);
   }
 
-  subir(event: any) {
-    console.log(event);
+  seleccionar(event: any, fileUpload: any) {
+    const file = event.files && event.files.length > 0 ? event.files[0] : null;
+    if (file) {
+      this.archivos.enlace = file;
+    } else {
+      this.archivos.enlace = null;
+    }
+    const enviar = new FormData();
+    enviar.append('idDocCursoId', this.archivos.idDocCursoId);
+    enviar.append('iSilaboId', this.archivos.iSilaboId);
+    enviar.append('iYAcadId', this.archivos.iYAcadId);
+    enviar.append('iPersId', this.archivos.iPersId);
+    enviar.append('archivo', this.archivos.enlace);
+    enviar.append('portafolio', 'programacion-curricular');
+
+    const params = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'docente',
+      ruta: 'guardar_programacion',
+      data: enviar,
+    };
+
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: respuesta => {
+        const resultado = respuesta.data;
+        if (resultado.estado == 1) {
+          this.MessageService.add({
+            severity: 'success',
+            summary: 'Exito en el Registro',
+            detail: 'Programacion Curricular Actualizada',
+          });
+          const formato = JSON.parse(resultado.documento);
+          this.data.find(i => i.iSilaboId === this.selectedData['iSilaboId']).cProgramacion =
+            formato;
+          this.documentos = formato;
+          fileUpload.clear();
+        } else {
+          this.MessageService.add({
+            severity: 'warning',
+            summary: 'Problemas para Registrar',
+            detail: 'Programacion Curricular No Actualizada',
+          });
+        }
+      },
+      error: error => {
+        console.log(error);
+      },
+    });
+  }
+  descargarArchivo(archivo: any) {
+    const params = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'docente',
+      ruta: 'decargar-documento',
+      data: {
+        archivo: archivo,
+      },
+    };
+
+    this._generalService.getRecibirMultimedia(params).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.click();
+      },
+      error: error => {
+        console.error('Error obteniendo encuesta:', error);
+        this.MessageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 }

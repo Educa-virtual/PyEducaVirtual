@@ -149,16 +149,12 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/listarRespuestas`, data);
   }
 
-  guardarRespuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarRespuesta`, data);
+  guardarRespuestas(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarRespuestas`, data);
   }
 
-  actualizarRespuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarRespuesta`, data);
-  }
-
-  borrarRespuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarRespuesta`, data);
+  actualizarRespuestas(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarRespuestas`, data);
   }
 
   /**

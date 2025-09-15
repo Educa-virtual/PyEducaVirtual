@@ -94,7 +94,7 @@ const routes: Routes = [
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
-      puede_editar: false,
+      es_encuestador: true,
       expectedRole: encuestadores,
       breadcrumb: 'Ver Encuesta',
     },
@@ -104,7 +104,7 @@ const routes: Routes = [
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
-      puede_editar: false,
+      es_encuestador: true,
       expectedRole: encuestadores,
       breadcrumb: 'Ver Encuesta',
     },
@@ -114,8 +114,8 @@ const routes: Routes = [
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
-      puede_editar: true,
-      expectedRole: [...encuestadores, ...encuestados],
+      es_encuestador: false,
+      expectedRole: [...encuestados],
       breadcrumb: 'Responder Encuesta',
     },
   },
@@ -124,8 +124,8 @@ const routes: Routes = [
     component: EncuestaVerComponent,
     canActivate: [RoleGuard],
     data: {
-      puede_editar: true,
-      expectedRole: [...encuestadores, ...encuestados],
+      es_encuestador: false,
+      expectedRole: [...encuestados],
       breadcrumb: 'Responder Encuesta',
     },
   },

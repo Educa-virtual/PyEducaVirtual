@@ -86,7 +86,13 @@
                 <div class="col-12">
                   <app-pregunta-texto
                     [addonLabel]="pregunta.cPregContenido"
-                    [inputControl]="$any(preguntasFormArray.at(i).get('cRespContenido'))"
+                    [inputControl]="
+                      $any(
+                        preguntasFormArray
+                          .at(getPreguntaGlobalIndex(seccion, i))
+                          .get('cRespContenido')
+                      )
+                    "
                     [infoAdicional]="pregunta.cPregAdicional ? infoAdicional : null"
                     [controlDisabled]="!puede_editar"
                   />
@@ -99,7 +105,13 @@
                 <div class="col-12">
                   <app-pregunta-opcion-simple
                     [addonLabel]="pregunta.cPregContenido"
-                    [switchControl]="$any(preguntasFormArray.at(i).get('cRespContenido'))"
+                    [switchControl]="
+                      $any(
+                        preguntasFormArray
+                          .at(getPreguntaGlobalIndex(seccion, i))
+                          .get('cRespContenido')
+                      )
+                    "
                     [infoAdicional]="pregunta.cPregAdicional ? infoAdicional : null"
                     [iPregId]="pregunta?.iPregId"
                     [controlDisabled]="!puede_editar"
@@ -115,7 +127,13 @@
                 <div class="col-12">
                   <app-pregunta-opcion-multiple
                     [addonLabel]="pregunta.cPregContenido"
-                    [switchControl]="$any(preguntasFormArray.at(i).get('cRespContenido'))"
+                    [switchControl]="
+                      $any(
+                        preguntasFormArray
+                          .at(getPreguntaGlobalIndex(seccion, i))
+                          .get('cRespContenido')
+                      )
+                    "
                     [infoAdicional]="pregunta.cPregAdicional ? infoAdicional : null"
                     [iPregId]="pregunta?.iPregId"
                     [controlDisabled]="!puede_editar"

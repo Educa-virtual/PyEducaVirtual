@@ -29,12 +29,15 @@ export class EncuestaVerComponent implements OnInit {
   iPersId: number;
 
   perfil: any;
+  iYAcadId: number;
   secciones: any[] = [];
 
   formPreguntas: FormGroup;
   encuesta: any;
   respuesta_registrada: boolean = false;
   puede_editar: boolean = false;
+  es_encuestador: boolean = false;
+
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
@@ -58,12 +61,13 @@ export class EncuestaVerComponent implements OnInit {
     private slicePipe: SlicePipe
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.iEncuId || 0;
       this.iCateId = params.params.iCateId || 0;
     });
     this.route.data.subscribe((data: any) => {
-      this.puede_editar = data.puede_editar;
+      this.es_encuestador = data.es_encuestador;
     });
   }
 
@@ -71,6 +75,7 @@ export class EncuestaVerComponent implements OnInit {
     try {
       this.formPreguntas = this.fb.group({
         iEncuId: [this.iEncuId, Validators.required],
+        iYAcadId: [this.iYAcadId],
         preguntas: this.fb.array([]),
         jsonPreguntas: [null],
       });
@@ -83,6 +88,7 @@ export class EncuestaVerComponent implements OnInit {
       console.error('Error creando formulario:', error);
     }
     this.setBreadCrumbs();
+    this.verRespuestas();
   }
 
   setBreadCrumbs() {
@@ -90,48 +96,27 @@ export class EncuestaVerComponent implements OnInit {
       icon: 'pi pi-home',
       routerLink: '/',
     };
-    if (this.puede_editar) {
-      this.breadCrumbItems = [
-        { label: 'Encuestas' },
-        { label: 'Categorias', routerLink: `/encuestas/categorias` },
-        {
-          label: this.encuesta?.cCateNombre
-            ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
-            : 'Categoría',
-        },
-        {
-          label: 'Encuestas',
-          routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
-        },
-        {
-          label: this.encuesta?.cEncuNombre
-            ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
-            : 'Encuesta',
-        },
-        { label: 'Responder encuesta' },
-      ];
-    } else {
-      this.breadCrumbItems = [
-        { label: 'Encuestas' },
-        { label: 'Categorias', routerLink: `/encuestas/categorias` },
-        {
-          label: this.encuesta?.cCateNombre
-            ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
-            : 'Categoría',
-        },
-        {
-          label: 'Encuestas',
-          routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
-        },
-        {
-          label: this.encuesta?.cEncuNombre
-            ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
-            : 'Encuesta',
-          routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}`,
-        },
-        { label: 'Responder encuesta' },
-      ];
-    }
+    this.breadCrumbItems = [
+      { label: 'Encuestas' },
+      { label: 'Categorias', routerLink: `/encuestas/categorias` },
+      {
+        label: this.encuesta?.cCateNombre
+          ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
+          : 'Categoría',
+      },
+      {
+        label: this.es_encuestador ? 'Gestionar encuestas' : 'Listar encuestas',
+        routerLink: this.es_encuestador
+          ? `/encuestas/categorias/${this.iCateId}/gestion-encuestas`
+          : `/encuestas/categorias/${this.iCateId}/lista-encuestas`,
+      },
+      {
+        label: this.encuesta?.cEncuNombre
+          ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
+          : 'Encuesta',
+      },
+      { label: 'Ver respuestas' },
+    ];
   }
 
   verEncuesta() {
@@ -143,6 +128,7 @@ export class EncuestaVerComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.encuesta = data.data;
+          this.puede_editar = Boolean(this.encuesta.puede_editar) && !this.es_encuestador;
           this.encuesta.accesos_detalle = JSON.parse(this.encuesta.json_accesos_detalle);
           this.setBreadCrumbs();
         },
@@ -194,9 +180,10 @@ export class EncuestaVerComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data[0].respuestas) {
+          if (data.data.respuestas) {
             this.respuesta_registrada = true;
-            const respuestas = JSON.parse(data.data[0].respuestas);
+            const respuestas = JSON.parse(data.data.respuestas);
+            console.log(respuestas, 'respuestas');
             this.setRespuestasFormArray(respuestas);
           }
         },
@@ -219,16 +206,27 @@ export class EncuestaVerComponent implements OnInit {
     this.formPreguntas.setControl('preguntas', formArray);
   }
 
+  getPreguntaGlobalIndex(seccion: any, preguntaIndex: number): number {
+    let globalIndex = 0;
+    for (const sec of this.secciones) {
+      if (sec === seccion) break;
+      globalIndex += sec.preguntas.length;
+    }
+    return globalIndex + preguntaIndex;
+  }
+
   setRespuestasFormArray(respuestas: any[]) {
     const preguntasFA = this.formPreguntas.get('preguntas') as FormArray;
     preguntasFA.controls.forEach((preguntaFG: FormGroup) => {
       const respuesta = respuestas.find(
-        (respuesta: any) => respuesta.iPregId == preguntaFG.get('iPregId')?.value
+        (respuesta: any) => Number(respuesta.iPregId) == Number(preguntaFG.get('iPregId')?.value)
       );
       if (respuesta) {
         preguntaFG.patchValue({
-          iAlternativaId: respuesta.iAlternativaId,
-          cRespContenido: respuesta.cRespContenido,
+          cRespContenido:
+            Number(respuesta.iTipoPregId) == this.TIPO_PREG_MULTIPLE
+              ? JSON.parse(respuesta.cRespContenido)
+              : respuesta.cRespContenido,
         });
       }
     });
@@ -241,8 +239,7 @@ export class EncuestaVerComponent implements OnInit {
       'preguntas',
       ''
     );
-
-    this.encuestasService.guardarRespuesta(this.formPreguntas.value).subscribe({
+    this.encuestasService.guardarRespuestas(this.formPreguntas.value).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -250,7 +247,7 @@ export class EncuestaVerComponent implements OnInit {
           detail: 'Se registraron los datos. Redirigiendo a la lista de encuestas',
         });
         setTimeout(() => {
-          this.router.navigate(['/bienestar/gestionar-encuestas']);
+          this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas`]);
         }, 2000);
       },
       error: error => {
@@ -271,8 +268,7 @@ export class EncuestaVerComponent implements OnInit {
       'preguntas',
       ''
     );
-
-    this.encuestasService.actualizarRespuesta(this.formPreguntas.value).subscribe({
+    this.encuestasService.actualizarRespuestas(this.formPreguntas.value).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -280,7 +276,7 @@ export class EncuestaVerComponent implements OnInit {
           detail: 'Se actualizaron los datos. Redirigiendo a la lista de encuestas',
         });
         setTimeout(() => {
-          this.router.navigate(['/bienestar/gestionar-encuestas']);
+          this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas`]);
         }, 2000);
       },
       error: error => {
@@ -295,6 +291,10 @@ export class EncuestaVerComponent implements OnInit {
   }
 
   salir() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-encuestas`]);
+    if (this.USUARIO_ENCUESTADO) {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas`]);
+    } else {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-encuestas`]);
+    }
   }
 }

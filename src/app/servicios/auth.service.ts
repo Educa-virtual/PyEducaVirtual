@@ -44,7 +44,4 @@ export class AuthService {
   actualizarUsuario(data) {
     return this.http.post(`${baseUrl}/actualizarUsuario`, data);
   }
-  solicitarRegistroUsuario(data: any) {
-    return this.http.post(`${baseUrl}/seg/usuarios/solicitud`, { data });
-  }
 }

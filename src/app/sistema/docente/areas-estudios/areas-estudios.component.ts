@@ -55,8 +55,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   archivos: any = {};
   iYAcadId: any;
   iPersId: any;
-  portafolio: any = {};
-
+  cPortafolioItinerario = [];
+  reglamento = [];
+  visiblePortafolio: boolean = false;
   iPerfilId: number;
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
@@ -91,7 +92,15 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.goSection('resultados');
         },
       },
+      {
+        label: 'Portafolio',
+        icon: 'pi pi-angle-right',
+        command: () => {
+          this.goSection('portafolio');
+        },
+      },
     ];
+    this.obtenerPortafolios();
   }
   ngOnChanges(changes) {
     if (changes.data?.currentValue) {
@@ -176,7 +185,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             },
           }
         );
-
+        break;
+      case 'portafolio':
+        this.visiblePortafolio = true;
         break;
     }
   }
@@ -339,6 +350,33 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       },
     });
   }
+
+  obtenerPortafolios() {
+    const params = {
+      petition: 'post',
+      group: 'docente',
+      prefix: 'portafolios',
+      ruta: 'obtenerPortafolios',
+      data: {
+        iDocenteId: this._constantesService.iDocenteId,
+        iYAcadId: this.iYAcadId,
+        iCredId: this._constantesService.iCredId,
+        iIieeId: this._constantesService.iIieeId,
+      },
+      params: { skipSuccessMessage: true },
+    };
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: respuesta => {
+        const itinerario = respuesta.data[0].cPortafolioItinerario;
+        this.cPortafolioItinerario = JSON.parse(itinerario) || [];
+        this.reglamento = respuesta.data[0];
+      },
+      error: err => {
+        console.log(err);
+      },
+    });
+  }
+
   descargarArchivo(archivo: any) {
     const params = {
       petition: 'post',
@@ -366,6 +404,27 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           summary: 'Error',
           detail: error.error.message,
         });
+      },
+    });
+  }
+  subirPortafolio(event: any, tipo: any) {
+    const enviar = new FormData();
+    enviar.append('tipoPortafolio', tipo);
+
+    const params = {
+      petition: 'post',
+      group: 'docente',
+      prefix: 'portafolios',
+      ruta: 'guardarItinerario',
+      data: enviar,
+    };
+
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: respuesta => {
+        console.log(respuesta);
+      },
+      error: err => {
+        console.log(err);
       },
     });
   }

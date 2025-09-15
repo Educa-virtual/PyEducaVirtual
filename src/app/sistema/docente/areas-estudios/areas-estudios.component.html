@@ -210,6 +210,98 @@
   </div>
 </p-dialog>
 
+<p-dialog [modal]="true" [(visible)]="visiblePortafolio" [style]="{ width: '50rem' }">
+  <ng-template pTemplate="header">
+    <span class="font-bold text-xl text-white">Programacion Curricular</span>
+  </ng-template>
+  <div class="grid mt-3">
+    <div class="col-12">
+      <div class="font-bold p-1">Itinerario</div>
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-link"></i>
+        </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [placeholder]="
+            cPortafolioItinerario.length
+              ? cPortafolioItinerario[0]['name']
+              : 'Nombre del Itinerario'
+          "
+          disabled
+          class="w-full p-inputtext-sm opacity-100"
+          pInputText
+        />
+        <button
+          pButton
+          pRipple
+          type="button"
+          severity="primary"
+          class="p-button-primary btn-file-image"
+        >
+          <i class="pi pi-upload"></i
+          ><input type="file" (change)="subirPortafolio($event, 'itinerario')" accept=".pdf " />
+        </button>
+        <button
+          type="button"
+          (click)="
+            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
+          "
+          [disabled]="!cPortafolioItinerario"
+          pButton
+          icon="pi pi-eye"
+          class="p-button-info"
+        >
+          &nbsp;
+        </button>
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <div class="font-bold p-1">Reglamento Interno</div>
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-link"></i>
+        </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [placeholder]="
+            cPortafolioItinerario.length
+              ? cPortafolioItinerario[0]['name']
+              : 'Nombre del Itinerario'
+          "
+          disabled
+          class="w-full p-inputtext-sm opacity-100"
+          pInputText
+        />
+        <button
+          pButton
+          pRipple
+          type="button"
+          severity="primary"
+          class="p-button-primary btn-file-image"
+        >
+          <i class="pi pi-upload"></i
+          ><input type="file" (change)="subirPortafolio($event, 'itinerario')" accept=".pdf " />
+        </button>
+        <button
+          type="button"
+          (click)="
+            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
+          "
+          [disabled]="!cPortafolioItinerario"
+          pButton
+          icon="pi pi-eye"
+          class="p-button-info"
+        >
+          &nbsp;
+        </button>
+      </p-inputGroup>
+    </div>
+  </div>
+</p-dialog>
+
 <!-- <p-dialog [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }">
   <ng-template pTemplate="header">
     <span class="font-bold text-xl text-white"

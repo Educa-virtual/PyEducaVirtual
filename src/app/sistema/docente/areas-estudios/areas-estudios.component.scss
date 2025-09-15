@@ -1,20 +1,42 @@
+:host ::ng-deep {
+  .p-inputgroup-addon {
+    background-color: #2563eb;
+    color: white;
+  }
+}
+
 .toolbar-title {
-    background-color: #117fb3 !important;
+  background-color: #117fb3 !important;
 }
 .footer {
-    position: fixed;
-    bottom: 0.5rem;
+  position: fixed;
+  bottom: 0.5rem;
 }
 .hoverTable {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px;
 }
 .hoverTable tr th {
-    background-color: var(--primary-color) !important;
-    color: white;
+  background-color: var(--primary-color) !important;
+  color: white;
 }
 .hoverTable tr:hover {
-    background-color: #e3f7ff;
-    border-left: 8px solid #4a47e2 !important;
+  background-color: #e3f7ff;
+  border-left: 8px solid #4a47e2 !important;
+}
+.btn-file-image input[type='file'] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
 }

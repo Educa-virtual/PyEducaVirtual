@@ -9,6 +9,8 @@ import { SwitchInputComponent } from '../shared/switch-input/switch-input.compon
 import { MessageService } from 'primeng/api';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
 import { MultiselectSimpleComponent } from '../shared/multiselect-simple/multiselect-simple.component';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-salud',
@@ -28,6 +30,11 @@ export class FichaSaludComponent implements OnInit {
   dolencias: Array<object>;
   seguros_salud: Array<object>;
   ficha_registrada: boolean = false;
+
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabels: any;
+
   get controles_dolencias(): FormArray {
     return this.formSalud.get('controles_dolencias') as FormArray;
   }
@@ -40,15 +47,18 @@ export class FichaSaludComponent implements OnInit {
     private datosFichaBienestar: DatosFichaBienestarService,
     private router: Router,
     private route: ActivatedRoute,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(6);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -69,6 +79,18 @@ export class FichaSaludComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error inicializando formulario');
     }
+
+    this.formLabels = {
+      iSegSaludId: this.es_estudiante_apoderado
+        ? '¿El estudiante recibe algún seguro médico?'
+        : '¿Usted recibe algún seguro médico?',
+      seccion2: this.es_estudiante_apoderado
+        ? '¿El estudiante tiene alguna enfermedad o dolencia?'
+        : '¿Usted tiene alguna enfermedad o dolencia?',
+      seccion3: this.es_estudiante_apoderado
+        ? 'Indique si el estudiante tiene alergias'
+        : 'Indique si tiene alergias',
+    };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
       this.seguros_salud = this.datosFichaBienestar.getSeguros(data?.seguros_salud);

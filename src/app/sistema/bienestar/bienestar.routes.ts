@@ -50,6 +50,15 @@ const roles_directivos = [
   ADMINISTRADOR_DREMO,
 ];
 
+const registran_ficha = [
+  ESTUDIANTE,
+  APODERADO,
+  DOCENTE,
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  ASISTENTE_SOCIAL,
+];
+
 const routes: Routes = [
   {
     path: 'gestion-fichas',
@@ -76,9 +85,9 @@ const routes: Routes = [
     component: FichaDeclaracionComponent,
     canActivate: [RoleGuard],
     data: {
-      breadcrumb: 'Gestión de Fichas Apoderado',
+      breadcrumb: 'Registrar Ficha',
       icon: 'pi pi-user-edit',
-      expectedRole: [ESTUDIANTE, APODERADO],
+      expectedRole: registran_ficha,
     },
   },
   {
@@ -86,9 +95,9 @@ const routes: Routes = [
     component: FichaDeclaracionComponent,
     canActivate: [RoleGuard],
     data: {
-      breadcrumb: 'Gestión de Fichas Apoderado',
+      breadcrumb: 'Declaración de Ficha',
       icon: 'pi pi-user-edit',
-      expectedRole: [ESTUDIANTE, APODERADO],
+      expectedRole: registran_ficha,
     },
   },
   {
@@ -104,56 +113,56 @@ const routes: Routes = [
         path: 'general',
         component: FichaGeneralComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'familia',
         component: FichaFamiliaComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'economico',
         component: FichaEconomicoComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'vivienda',
         component: FichaViviendaComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'alimentacion',
         component: FichaAlimentacionComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'discapacidad',
         component: FichaDiscapacidadComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'salud',
         component: FichaSaludComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
       {
         path: 'recreacion',
         component: FichaRecreacionComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: [ESTUDIANTE, APODERADO] },
+        data: { expectedRole: registran_ficha },
       },
     ],
     canActivate: [RoleGuard],
     data: {
       breadcrumb: 'Ficha',
       icon: 'pi pi-user-edit',
-      expectedRole: [ESTUDIANTE, APODERADO],
+      expectedRole: registran_ficha,
     },
   },
   {

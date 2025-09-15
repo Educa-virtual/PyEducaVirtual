@@ -1,15 +1,11 @@
 <app-modal-primeng
   *ngIf="showModal"
-  [title]="
-    accion === 'editar'
-      ? 'EDITAR SESION DE APRENDIZAJE'
-      : 'SESION DE APRENDIZAJE ' + ' Nº ' + idSesion
-  "
+  [title]="accion === 'editar' ? 'EDITAR ' + cTituloModal : cTituloModal + ' ' + ' Nº ' + idSesion"
   [showModal]="showModal"
   (accionBtnItem)="this.accionCloseForm.emit($event)"
   width="55rem"
 >
-  <form [formGroup]="formSesines" class="grid mt-4">
+  <form [formGroup]="formSesiones" class="grid mt-4">
     <div class="col-12">
       <p-inputGroup>
         <p-inputGroupAddon>Nombre</p-inputGroupAddon>
@@ -74,7 +70,7 @@
           </div>
         </div>
         <app-subir-archivo
-          [carpeta]="'sesion-aprendizaje1'"
+          [carpeta]="'sesion-aprendizaje'"
           (obtenerArchivo)="obtenerArchivo($event)"
         ></app-subir-archivo>
       </div>
@@ -82,18 +78,12 @@
   </form>
   <div footer class="flex justify-content-end gap-2">
     <p-button label="Cancelar" severity="secondary" (onClick)="this.accionCloseForm.emit()" />
-    <button
-      pButton
-      [label]="accion === 'editar' ? 'ACTUALIZAR' : 'GUARDAR'"
-      [class]="accion === 'editar' ? 'p-button-warning' : 'p-button-success'"
-      (click)="accion === 'editar' ? actualizarDatosdeSesion() : guardarDatosdeSesion()"
-    ></button>
-    <!-- <p-button 
-      [label]="accion === 'editar'? 'EDITAR' : 'GUARDAR'" 
-      [severity]="
-                accion === 'editar' ? 'warn' : 'p-button-success'
-            "
-      (click)="guardarDatosdeSesion()" /> -->
+    <p-button
+      [label]="accion === 'editar' ? 'Actualizar' : 'Guardar'"
+      (onClick)="accion === 'editar' ? actualizarDatosdeSesion() : guardarDatosdeSesion()"
+      [loading]="isLoading"
+      [disabled]="isLoading"
+    />
   </div>
 </app-modal-primeng>
 
@@ -108,5 +98,3 @@
     <embed [src]="pdfURL" type="application/pdf" width="100%" height="600px" />
   </div>
 </app-modal-primeng>
-
-<!-- <p-toast /> -->

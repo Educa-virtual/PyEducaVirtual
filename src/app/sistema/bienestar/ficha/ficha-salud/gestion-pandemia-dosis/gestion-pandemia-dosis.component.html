@@ -1,106 +1,93 @@
-<p-fieldset
-    legend="Vacunaciones que recibió el estudiante durante pandemias y epidemias"
->
-    <div class="p-2 grid p-fluid mt-3">
-        <div class="col" style="margin-left: -0.5rem">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-search"></i>
-                </p-inputGroupAddon>
-                <input
-                    #filtro
-                    pInputText
-                    placeholder="Buscar"
-                    (input)="filtrarTabla()"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-auto align-content-center">
-            <div class="flex flex-wrap gap-2 justify-content-end">
-                <p-button
-                    label="Agregar"
-                    (onClick)="agregarDosis()"
-                    styleClass="p-button-primary"
-                    severity="success"
-                />
-            </div>
-        </div>
+<p-fieldset [legend]="formLabels.seccion1">
+  <div class="p-2 grid p-fluid mt-3">
+    <div class="col" style="margin-left: -0.5rem">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-search"></i>
+        </p-inputGroupAddon>
+        <input #filtro pInputText placeholder="Buscar" (input)="filtrarTabla()" />
+      </p-inputGroup>
     </div>
-    <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="false"
-        [data]="dosis_filtradas"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="false"
-        [(selectedRowData)]="selectedItems"
-        [actions]="actions"
-        [showAdvancedFilter]="false"
-    >
-    </app-table-primeng>
+    <div class="col-auto align-content-center">
+      <div class="flex flex-wrap gap-2 justify-content-end">
+        <p-button
+          label="Agregar"
+          (onClick)="agregarDosis()"
+          styleClass="p-button-primary"
+          severity="success"
+        />
+      </div>
+    </div>
+  </div>
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="false"
+    [data]="dosis_filtradas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="false"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+    [showAdvancedFilter]="false"
+  >
+  </app-table-primeng>
 </p-fieldset>
 
 <p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    (onClose)="clearForm()"
+  header="{{ caption }}"
+  [(visible)]="visible"
+  [style]="{ width: '56rem' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (onClose)="clearForm()"
 >
-    <ng-content>
-        <br />
-        <form [formGroup]="formDosis">
-            <div class="grid p-fluid mt-3">
-                <div class="col-12">
-                    <app-dropdown-simple
-                        [dropdownItems]="pandemias"
-                        [dropdownControl]="
-                            $any(formDosis).controls['iPandemiaId']
-                        "
-                        addonLabel="Pandemia o epidemia *"
-                        dropdownPlaceholder="Seleccione"
-                    />
-                </div>
-                <div class="col-12">
-                    <app-input-simple
-                        inputType="number"
-                        [inputControl]="
-                            $any(formDosis).controls['iPanDFichaNroDosis']
-                        "
-                        addonLabel="Nro de Dosis *"
-                        [inputMin]="1"
-                        [inputMax]="100"
-                        [inputShowButtons]="true"
-                    />
-                </div>
-                <div class="col-12">
-                    <app-input-simple
-                        inputType="date"
-                        [inputControl]="
-                            $any(formDosis).controls['dtPanDFichaDosis']
-                        "
-                        addonLabel="Fecha en que recibió la dosis *"
-                        [inputMaxDate]="fecha_actual"
-                    />
-                </div>
-            </div>
-        </form>
-
-        <div class="flex justify-content-end">
-            <p-button
-                label="Guardar"
-                (onClick)="guardarDosis()"
-                styleClass="p-button-success"
-                [hidden]="dosis_registrada"
-            />
-            <p-button
-                label="Actualizar"
-                (onClick)="actualizarDosis()"
-                styleClass="p-button-success"
-                [hidden]="!dosis_registrada"
-            />
+  <ng-content>
+    <br />
+    <form [formGroup]="formDosis">
+      <div class="grid p-fluid mt-3">
+        <div class="col-12">
+          <app-dropdown-simple
+            [dropdownItems]="pandemias"
+            [dropdownControl]="$any(formDosis).controls['iPandemiaId']"
+            addonLabel="Pandemia o epidemia *"
+            dropdownPlaceholder="Seleccione"
+          />
         </div>
-    </ng-content>
+        <div class="col-12">
+          <app-input-simple
+            inputType="number"
+            [inputControl]="$any(formDosis).controls['iPanDFichaNroDosis']"
+            addonLabel="Nro de Dosis *"
+            [inputMin]="1"
+            [inputMax]="100"
+            [inputShowButtons]="true"
+          />
+        </div>
+        <div class="col-12">
+          <app-input-simple
+            inputType="date"
+            [inputControl]="$any(formDosis).controls['dtPanDFichaDosis']"
+            addonLabel="Fecha en que recibió la dosis *"
+            [inputMaxDate]="fecha_actual"
+          />
+        </div>
+      </div>
+    </form>
+
+    <div class="flex justify-content-end">
+      <p-button
+        label="Guardar"
+        (onClick)="guardarDosis()"
+        styleClass="p-button-success"
+        [hidden]="dosis_registrada"
+      />
+      <p-button
+        label="Actualizar"
+        (onClick)="actualizarDosis()"
+        styleClass="p-button-success"
+        [hidden]="!dosis_registrada"
+      />
+    </div>
+  </ng-content>
 </p-dialog>
 
 <br />

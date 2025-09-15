@@ -891,6 +891,12 @@ const apoderado = [
 
 const first = [
   {
+    items: [inicio],
+  },
+];
+
+const auxiliar = [
+  {
     items: [
       inicio,
       {
@@ -989,7 +995,7 @@ export class ConstantesService {
       case APODERADO:
         return apoderado;
       case AUXILIAR:
-        return first;
+        return auxiliar;
       case ASISTENTE_SOCIAL:
         return asistente_social;
       case INSTRUCTOR:

@@ -274,8 +274,6 @@ export class ReporteAsistenciasComponent implements OnInit {
   conecionReporteGrafico(enlace: any) {
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
       next: data => {
-        // this.barra = [[], [], [], [], [], []];
-        // this.total = [];
         this.registros = data.data;
         this.registros.forEach(lista => {
           lista.asistencia = JSON.parse(lista.asistencia);
@@ -424,12 +422,12 @@ export class ReporteAsistenciasComponent implements OnInit {
         const tipo = this.asistencias.find(lista => {
           return lista.indice === this.tipo.tipoAsistencia;
         });
-
+        console.log('ojo #1', tipo);
         this.grafico = {
           labels: this.nombres,
           datasets: [
             {
-              label: 'Asistencia',
+              label: tipo.nombre,
               backgroundColor: documentStyle.getPropertyValue(tipo.color),
               data: this.barra[tipo.id],
             },

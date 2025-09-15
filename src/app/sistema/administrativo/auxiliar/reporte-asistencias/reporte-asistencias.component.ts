@@ -495,7 +495,7 @@ export class ReporteAsistenciasComponent implements OnInit {
         this.alumnos = data.data;
 
         this.alumnos.forEach(list => {
-          list.asistencia = JSON.parse(list.asistencia);
+          list.asistencia = list.asistencia ? JSON.parse(list.asistencia) : [];
 
           list.asistencia.forEach(item => {
             const index = parseInt(item.dtAsistencia.split('-')[2]);

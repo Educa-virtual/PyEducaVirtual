@@ -91,7 +91,7 @@
                   <td>
                     <p-button
                       size="small"
-                      [ngClass]="alumno.bgColor"
+                      [styleClass]="alumno.bgColor"
                       (click)="cambiarEstado(rowIndex, alumno.iTipoAsiId)"
                       ><span class="font-bold hidden md:table-cell">{{
                         alumno.cTipoAsiNombre
@@ -205,6 +205,7 @@
               [rows]="10"
               responsiveLayout="stack"
               [rowsPerPageOptions]="[5, 10, 20]"
+              [paginatorDropdownAppendTo]="'body'"
             >
               <ng-template pTemplate="header">
                 <tr class="escritorio">
@@ -243,14 +244,14 @@
                     />
                     <p-button
                       styleClass="h-full"
-                      [disabled]="!estudiante.cJustificar"
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
                       icon="pi pi-trash"
                       (click)="limpiar(folderEstudiante)"
                     />
                   </td>
-                  <td>
+                  <td class="text-center">
                     <p-button
-                      [disabled]="!estudiante.cJustificar"
+                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
                       icon="pi pi-file-pdf"
                       size="small"
                       (click)="descargarArchivo(estudiante.cJustificar)"

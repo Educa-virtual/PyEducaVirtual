@@ -223,6 +223,11 @@ const docente = [
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
+            label: 'Ficha Socioeconomica',
+            icon: 'pi pi-fw pi-file-edit',
+            routerLink: ['/bienestar/ficha-declaracion'],
+          },
+          {
             label: 'Recordatorios de cumpleaños',
             icon: 'pi pi-fw pi-bell',
             routerLink: ['/bienestar/recordario-fechas'],
@@ -459,6 +464,37 @@ const registro_asistencia = [
     routerLink: ['/administrador/gestion-usuarios'],
   },
   {
+    label: 'Bienestar Social',
+    icon: 'pi pi-fw pi-check-square',
+    items: [
+      {
+        label: 'Ficha Socioeconomica',
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: ['/bienestar/ficha-declaracion'],
+      },
+      {
+        label: 'Consultar Fichas Socioeconómicas',
+        icon: 'pi pi-fw pi-user-edit',
+        routerLink: ['/bienestar/gestion-fichas'],
+      },
+      {
+        label: 'Gestionar encuestas',
+        icon: 'pi pi-fw pi-list-check',
+        routerLink: ['/bienestar/gestionar-encuestas'],
+      },
+      {
+        label: 'Recordatorios de cumpleaños',
+        icon: 'pi pi-fw pi-bell',
+        routerLink: ['/bienestar/recordario-fechas'],
+      },
+      {
+        label: 'Informes y estadística',
+        icon: 'pi pi-fw pi-chart-line',
+        routerLink: ['/bienestar/informe-estadistico'],
+      },
+    ],
+  },
+  {
     label: 'Enlaces de ayuda',
     icon: 'pi pi-fw pi-share-alt',
     routerLink: ['ayuda'],
@@ -540,8 +576,13 @@ const administracion = [
           {
             label: 'Configurar calendario escolar',
             icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/apertura'],
+            routerLink: ['/gestion-institucional/calendario-escolar'],
           },
+          // {
+          //   label: 'Configurar calendario escolar',
+          //   icon: 'pi pi-lock-open',
+          //   routerLink: ['/gestion-institucional/apertura'],
+          // },
           {
             label: 'Gestion de Ambientes y Grados',
             icon: 'pi pi-building-columns',
@@ -557,11 +598,7 @@ const administracion = [
             icon: 'pi pi-calendar',
             routerLink: ['/gestion-institucional/fechas-importantes'],
           },
-          {
-            label: 'Configurar calendario escolar',
-            icon: 'pi pi-lock-open',
-            routerLink: ['/gestion-institucional/calendario-escolar'],
-          },
+
           {
             label: 'Validación de horas',
             icon: 'pi pi-fw pi-check',
@@ -649,9 +686,28 @@ const administracion = [
                             },
                           */
       {
-        label: 'Indicadores',
-        icon: 'pi pi-chart-line',
-        routerLink: ['/gestion-institucional/dashboard-indicadores'],
+        label: 'Gestión de Matrículas',
+        icon: 'pi pi-folder',
+        items: [
+          {
+            label: 'Gestionar matriculas',
+            icon: 'pi pi-fw pi-file-edit',
+            badge: '',
+            routerLink: ['/gestion-institucional/gestion-matriculas'],
+          },
+          {
+            label: 'Matrícula Individual',
+            icon: 'pi pi-fw pi-file-plus',
+            badge: '',
+            routerLink: ['/gestion-institucional/matricula-individual'],
+          },
+          {
+            label: 'Matrícula Masiva',
+            icon: 'pi pi-fw pi-file-import',
+            badge: '',
+            routerLink: ['/gestion-institucional/matricula-masiva'],
+          },
+        ],
       },
       {
         label: 'Generación de Reportes y estadísticas',
@@ -752,6 +808,11 @@ const administracion = [
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [
+          {
+            label: 'Ficha Socioeconomica',
+            icon: 'pi pi-fw pi-file-edit',
+            routerLink: ['/bienestar/ficha-declaracion'],
+          },
           {
             label: 'Consultar Fichas Socioeconómicas',
             icon: 'pi pi-fw pi-user-edit',
@@ -882,7 +943,25 @@ const apoderado = [
 
 const first = [
   {
-    items: [inicio],
+    items: [
+      inicio,
+      {
+        label: 'Asistencia',
+        icon: 'pi pi-list-check',
+        items: [
+          {
+            label: 'Registro de Asistencia',
+            icon: 'pi pi-list-check',
+            routerLink: ['asistencia-auxiliar'],
+          },
+          {
+            label: 'Reporte de Asistencia',
+            icon: 'pi pi-chart-bar',
+            routerLink: ['reporte-asistencia-auxiliar'],
+          },
+        ],
+      },
+    ],
   },
 ];
 
@@ -891,6 +970,11 @@ const asistente_social = [
     label: 'Bienestar Social',
     icon: 'pi pi-fw pi-check-square',
     items: [
+      {
+        label: 'Ficha Socioeconomica',
+        icon: 'pi pi-fw pi-file-edit',
+        routerLink: ['/bienestar/ficha-declaracion'],
+      },
       {
         label: 'Consultar Fichas Socioeconómicas',
         icon: 'pi pi-fw pi-user-edit',

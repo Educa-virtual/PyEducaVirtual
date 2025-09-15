@@ -252,6 +252,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
         this.modoFormulario = 'editar';
         const itemFormateado = {
           ...item,
+          iCosto: Number(item.iCosto) === 1 ? true : false,
           dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
           dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
         };

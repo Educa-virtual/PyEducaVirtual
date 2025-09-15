@@ -34,8 +34,9 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
   perfil: any;
   iYAcadId: number;
   formReportes: FormGroup;
-  cantidad_matriculados: number;
+  cantidad_personas: number;
   cantidad_fichas: number;
+  cantidad_personas_nombre: string = 'Estudiantes matriculados';
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
@@ -50,6 +51,16 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
   ies: any;
   sexos: any;
   distritos: any;
+  tipos_personas: any;
+
+  TIPO_PERSONA_ESTUDIANTE: number = 1;
+  TIPO_PERSONA_DOCENTE: number = 2;
+  TIPO_PERSONA_ADMINISTRATIVO: number = 3;
+
+  es_estudiante_apoderado: boolean = false;
+  ocultar_grado: boolean = false;
+  ocultar_seccion: boolean = false;
+  ocultar_area: boolean = true;
 
   perfiles_especialista: Array<number> = [
     ESPECIALISTA_DREMO,
@@ -92,6 +103,8 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
     this.formReportes = this.fb.group({
       iCredEntPerfId: [this.perfil.iCredEntPerfId],
       iYAcadId: [this.iYAcadId],
+      iTipoPersId: [this.TIPO_PERSONA_ESTUDIANTE],
+      iCursoId: [null],
       iNivelTipoId: [null],
       iNivelGradoId: [null],
       iTipoSectorId: [null],
@@ -117,6 +130,8 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
         this.nivel_tipos = this.datosInformes.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.datosInformes.getInstitucionesEducativas(data?.instituciones_educativas);
         this.distritos = this.datosInformes.getDistritos(data?.distritos);
+        this.tipos_personas = this.datosInformes.getTiposPersonas(data?.tipos_personas);
+        this.areas = this.datosInformes.getAreas(data?.areas);
         this.sexos = this.datosInformes.getSexos();
         this.datosInformes.getNivelesGrados(data?.nivel_grados);
 
@@ -167,6 +182,32 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
     });
+    this.formReportes.get('iTipoPersId').valueChanges.subscribe(value => {
+      this.ocultar_grado = false;
+      this.ocultar_seccion = false;
+      this.ocultar_area = false;
+      if (value == this.TIPO_PERSONA_ADMINISTRATIVO) {
+        this.ocultar_grado = true;
+        this.ocultar_seccion = true;
+        this.ocultar_area = true;
+      }
+      if (value == this.TIPO_PERSONA_ESTUDIANTE) {
+        this.ocultar_area = true;
+      }
+    });
+  }
+
+  getCantidadPersonasNombre(iTipoPersId: number) {
+    if (iTipoPersId == this.TIPO_PERSONA_ESTUDIANTE) {
+      return 'Estudiantes matriculados';
+    }
+    if (iTipoPersId == this.TIPO_PERSONA_DOCENTE) {
+      return 'Docentes registrados';
+    }
+    if (iTipoPersId == this.TIPO_PERSONA_ADMINISTRATIVO) {
+      return 'Administrativos registrados';
+    }
+    return '';
   }
 
   filterNivelesTipos() {
@@ -209,7 +250,10 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
           });
           return;
         }
-        this.cantidad_matriculados = reportes?.cantidad_matriculados;
+        this.cantidad_personas_nombre = this.getCantidadPersonasNombre(
+          this.formReportes.value.iTipoPersId
+        );
+        this.cantidad_personas = reportes?.cantidad_personas;
         this.cantidad_fichas = reportes?.cantidad_fichas;
         // this.router.navigate([`/bienestar/informe-estadistico/familia`])
       },

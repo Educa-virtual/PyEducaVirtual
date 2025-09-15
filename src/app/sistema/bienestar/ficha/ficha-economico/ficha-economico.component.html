@@ -6,7 +6,7 @@
       <app-input-simple
         inputType="number"
         [inputControl]="$any(formEconomico.controls['iIngresoEcoFamiliar'])"
-        addonLabel="Ingresos mensuales de la familia del estudiante"
+        [addonLabel]="formLabels.iIngresoEcoFamiliar"
         [inputMin]="0"
         [inputShowButtons]="true"
         [inputUseGrouping]="true"
@@ -15,12 +15,13 @@
       />
       <ng-template #iIngresoEcoFamiliar>
         Si no desea indicar este dato puede dejarlo en blanco, y en su lugar puede indicar el rango
-        de ingresos de la familia del estudiante.
+        de ingresos
+        {{ es_estudiante_apoderado ? 'de la familia del estudiante' : 'de su familia' }}.
       </ng-template>
     </div>
     <div class="col-12 sm:col-6">
       <app-dropdown-simple
-        addonLabel="Rango de ingresos mensuales de la familia del estudiante *"
+        [addonLabel]="formLabels.iRangoSueldoId"
         [dropdownItems]="rangos_sueldo"
         [dropdownControl]="$any(formEconomico.controls['iRangoSueldoId'])"
         dropdownPlaceholder="Seleccione"
@@ -32,19 +33,19 @@
       <app-input-simple
         inputType="text"
         [inputControl]="$any(formEconomico.controls['cIngresoEcoActividad'])"
-        addonLabel="Actividad económica de la familia del estudiante"
+        [addonLabel]="formLabels.cIngresoEcoActividad"
         [inputMaxlength]="100"
       />
     </div>
     <div class="col-12 sm:col-6">
       <app-switch-simple
         [switchControl]="$any(formEconomico.controls['bIngresoEcoTrabaja'])"
-        addonLabel="¿El estudiante trabaja?"
+        [addonLabel]="formLabels.bIngresoEcoTrabaja"
       />
     </div>
     <div class="col-12 sm:col-6">
       <app-dropdown-simple
-        addonLabel="¿El estudiante recibe algún apoyo económico?"
+        [addonLabel]="formLabels.iTipoAEcoId"
         [dropdownItems]="tipos_apoyo_economico"
         [dropdownControl]="$any(formEconomico.controls['iTipoAEcoId'])"
         dropdownPlaceholder="Seleccione"
@@ -53,13 +54,13 @@
       />
     </div>
     <div class="col-12">
-      <p-fieldset legend="Ingresos del apoderado">
+      <p-fieldset [legend]="formLabels.seccion2">
         <div class="grid p-fluid">
           <div class="col-12 sm:col-6">
             <app-input-simple
               inputType="number"
               [inputControl]="$any(formEconomico.controls['iIngresoEcoEstudiante'])"
-              addonLabel="Ingresos mensuales del apoderado"
+              [addonLabel]="formLabels.iIngresoEcoEstudiante"
               [inputMin]="0"
               [inputShowButtons]="true"
               [inputUseGrouping]="true"
@@ -68,12 +69,13 @@
             />
             <ng-template #iIngresoEcoEstudiante>
               Si no desea indicar este dato puede dejarlo en blanco, y en su lugar puede indicar el
-              rango de ingresos del apoderado.
+              rango de ingresos
+              {{ es_estudiante_apoderado ? 'del apoderado' : 'del(a) jefe del hogar' }}.
             </ng-template>
           </div>
           <div class="col-12 sm:col-6">
             <app-dropdown-simple
-              addonLabel="Rango de ingresos mensuales del apoderado"
+              [addonLabel]="formLabels.iRangoSueldoIdPersona"
               [dropdownItems]="rangos_sueldo"
               [dropdownControl]="$any(formEconomico.controls['iRangoSueldoIdPersona'])"
               dropdownPlaceholder="Seleccione"
@@ -96,13 +98,13 @@
             <app-input-simple
               inputType="text"
               [inputControl]="$any(formEconomico.controls['cIngresoEcoDependeDe'])"
-              addonLabel="Actividad económica que brinda ingresos al apoderado"
+              [addonLabel]="formLabels.cIngresoEcoDependeDe"
               [inputMaxlength]="100"
             />
           </div>
           <div class="col-12 sm:col-6">
             <app-dropdown-simple
-              addonLabel="¿De quién depende económicamente el apoderado?"
+              [addonLabel]="formLabels.iDepEcoId"
               [dropdownItems]="dependencias_economicas"
               [dropdownControl]="$any(formEconomico.controls['iDepEcoId'])"
               dropdownPlaceholder="Seleccione"
@@ -116,7 +118,7 @@
           </div>
           <div class="col-12 sm:col-6">
             <app-dropdown-simple
-              addonLabel="¿Cuál es la jornada de trabajo del apoderado?"
+              [addonLabel]="formLabels.iJorTrabId"
               [dropdownItems]="jornadas_trabajo"
               [dropdownControl]="$any(formEconomico.controls['iJorTrabId'])"
               dropdownPlaceholder="Seleccione"

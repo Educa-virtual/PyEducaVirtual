@@ -12,10 +12,10 @@
       <div class="col-12 md:col-4">
         <p-fieldset legend="Totales">
           <div class="block mb-4">
-            <p class="font-bold m-0 p-0">Estudiantes matriculados</p>
+            <p class="font-bold m-0 p-0">{{ cantidad_personas_nombre }}</p>
             <div>
               <span class="text-4xl font-bold ml-2">
-                {{ cantidad_matriculados ?? 0 }}
+                {{ cantidad_personas ?? 0 }}
               </span>
               <i class="pi pi-users text-2xl text-primary"></i>
             </div>
@@ -38,10 +38,36 @@
         <p-fieldset legend="Filtros" [toggleable]="true">
           <form [formGroup]="formReportes">
             <div class="grid">
+              <div class="col-12" [ngClass]="ocultar_area ? 'col-12' : 'md:col-6'">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Tipo persona *</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="tipos_personas"
+                    [showClear]="false"
+                    formControlName="iTipoPersId"
+                    placeholder="Seleccione un tipo de persona"
+                    styleClass="group-element"
+                    appendTo="body"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" [hidden]="ocultar_area">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Área</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="areas"
+                    [showClear]="true"
+                    formControlName="iCursoId"
+                    placeholder="Seleccione un área"
+                    styleClass="group-element"
+                    appendTo="body"
+                  ></p-dropdown>
+                </p-inputGroup>
+              </div>
               @if (es_especialista) {
                 <div class="col-12">
-                  <p-inputGroup title="* Campo obligatorio">
-                    <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
                       [options]="nivel_tipos"
                       [showClear]="true"
@@ -53,9 +79,9 @@
                   </p-inputGroup>
                 </div>
               }
-              <div class="col-12">
-                <p-inputGroup title="* Campo obligatorio">
-                  <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+              <div class="col-12" [hidden]="ocultar_grado">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Grado</p-inputGroupAddon>
                   <p-dropdown
                     [options]="nivel_grados"
                     [showClear]="true"
@@ -136,7 +162,7 @@
                   </p-inputGroup>
                 </div>
               }
-              <div class="col-12 md:col-6">
+              <div class="col-12 md:col-6" [hidden]="ocultar_seccion">
                 <p-inputGroup>
                   <p-inputGroupAddon>Sección</p-inputGroupAddon>
                   <p-dropdown
@@ -150,7 +176,7 @@
                   ></p-dropdown>
                 </p-inputGroup>
               </div>
-              <div class="col-12 md:col-6">
+              <div class="col-12" [ngClass]="ocultar_seccion ? 'col-12' : 'md:col-6'">
                 <p-inputGroup>
                   <p-inputGroupAddon>Sexo</p-inputGroupAddon>
                   <p-dropdown

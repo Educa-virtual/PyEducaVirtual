@@ -1,10 +1,10 @@
+import { Component, inject, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { environment } from '@/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { catchError, map, throwError } from 'rxjs';
 import { ApiEvaluacionesService } from '../../aula-virtual/services/api-evaluaciones.service';
@@ -108,7 +108,6 @@ export class PortafolioComponent implements OnInit {
         }
         this.accionBtnItem({ accion, item: response?.data });
       },
-      complete: () => {},
       error: error => {
         this._MessageService.add({
           severity: 'error',
@@ -133,6 +132,7 @@ export class PortafolioComponent implements OnInit {
         break;
       case 'docente-obtenerCuadernosCampo':
         this.cursos = item;
+
         this.cursos.forEach(
           item =>
             (item.cCuadernoUrl = item.cCuadernoUrl
@@ -146,7 +146,10 @@ export class PortafolioComponent implements OnInit {
           item.bFichas = fichas?.name ? true : false;
           const cuadernos = data ? data.find(fi => fi.typePortafolio === 2) : null;
           item.bCuadernos = cuadernos?.name ? true : false;
+          const instrumentos = data ? data.find(fi => fi.typePortafolio === 3) : null;
+          item.binstrumentos = instrumentos?.name ? true : false;
         });
+
         break;
       case 'docente-guardarItinerario':
         this.obtenerPortafolios();
@@ -262,17 +265,21 @@ export class PortafolioComponent implements OnInit {
           const data = response.data;
           if (data.length) {
             const curso = data[0];
-            this.router.navigate(['aula-virtual/areas-curriculares/', curso.iSilaboId], {
+            this.router.navigate(['aula-virtual/areas-curriculares/', item.iSilaboId], {
               queryParams: {
                 cCursoNombre: curso.cCursoNombre,
                 cNivelTipoNombre: curso.cNivelTipoNombre,
                 cGradoAbreviacion: curso.cGradoAbreviacion,
-                cSeccion: curso.cSeccion,
+                cSeccionNombre: curso.cSeccion,
                 cCicloRomanos: curso.cCicloRomanos,
                 cNivelNombreCursos: curso.cNivelNombreCursos,
-                iCursoId: curso.iCursoId,
-                idDocCursoId: curso.idDocCursoId,
-                tab: 'resultados',
+                iCursoId: item.iCursoId,
+                idDocCursoId: item.idDocCursoId,
+                iNivelCicloId: item.iNivelCicloId,
+                iIeCursoId: item.iIeCursoId,
+                iSeccionId: item.iSeccionId,
+                iNivelGradoId: item.iNivelGradoId,
+                tab: 2,
               },
             });
           }
@@ -287,7 +294,6 @@ export class PortafolioComponent implements OnInit {
 
   async onUploadChange(evt: any, tipo: any, item: any) {
     const file = evt.target.files[0];
-
     if (file) {
       const dataFile = await this.objectToFormData({
         file: file,
@@ -311,7 +317,9 @@ export class PortafolioComponent implements OnInit {
                   //1:fichas-aprendizaje
                   //2:cuadernos-campo
                   const cuadernos = item.cCuadernoUrl
-                    ? item.cCuadernoUrl.filter(i => i.typePortafolio === 2)
+                    ? item.cCuadernoUrl.filter(
+                        i => i.typePortafolio === 2 || i.typePortafolio === 3
+                      )
                     : [];
                   item.cCuadernoUrl = [];
                   item.cCuadernoUrl.push({
@@ -321,23 +329,50 @@ export class PortafolioComponent implements OnInit {
                   });
                   if (cuadernos.length) {
                     item.cCuadernoUrl.push(cuadernos[0]);
+                    item.cCuadernoUrl.push(cuadernos[1]);
                   }
                   this.guardarFichasCuadernosCampo(item);
                   break;
                 case 'cuadernos-campo':
                   const fichas = item.cCuadernoUrl
-                    ? item.cCuadernoUrl.filter(i => i.typePortafolio === 1)
+                    ? item.cCuadernoUrl.filter(
+                        i => i.typePortafolio === 1 || i.typePortafolio === 3
+                      )
                     : [];
 
                   item.cCuadernoUrl = [];
                   if (fichas.length) {
                     item.cCuadernoUrl.push(fichas[0]);
+                    item.cCuadernoUrl.push(fichas[1]);
                   }
                   item.cCuadernoUrl.push({
                     typePortafolio: 2,
                     name: file.name,
                     ruta: event.data,
                   });
+
+                  this.guardarFichasCuadernosCampo(item);
+                  break;
+                case 'instrumentos-evaluacion':
+                  const instrumentos = item.cCuadernoUrl
+                    ? item.cCuadernoUrl.filter(
+                        i => i.typePortafolio === 1 || i.typePortafolio === 2
+                      )
+                    : [];
+
+                  item.cCuadernoUrl = [];
+
+                  if (instrumentos.length) {
+                    item.cCuadernoUrl.push(instrumentos[0]);
+                    item.cCuadernoUrl.push(instrumentos[1]);
+                  }
+
+                  item.cCuadernoUrl.push({
+                    typePortafolio: 3,
+                    name: file.name,
+                    ruta: event.data,
+                  });
+
                   this.guardarFichasCuadernosCampo(item);
                   break;
               }

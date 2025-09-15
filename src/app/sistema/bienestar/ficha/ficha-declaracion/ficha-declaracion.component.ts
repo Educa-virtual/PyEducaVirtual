@@ -6,6 +6,14 @@ import { CompartirFichaService } from '../../services/compartir-ficha.service';
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import {
+  APODERADO,
+  ASISTENTE_SOCIAL,
+  DIRECTOR_IE,
+  DOCENTE,
+  ESTUDIANTE,
+  SUBDIRECTOR_IE,
+} from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-declaracion',
@@ -20,6 +28,15 @@ export class FichaDeclaracionComponent implements OnInit {
   ficha: any = null;
   verDeclaracion: boolean = false;
   perfil: any;
+  perfiles_permitidos: any[] = [
+    ESTUDIANTE,
+    APODERADO,
+    DOCENTE,
+    DIRECTOR_IE,
+    SUBDIRECTOR_IE,
+    ASISTENTE_SOCIAL,
+  ];
+  es_estudiante_apoderado: boolean = false;
 
   private _messageService = inject(MessageService); // dialog Mensaje simple
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
@@ -34,10 +51,11 @@ export class FichaDeclaracionComponent implements OnInit {
   ) {
     this.iPersId = this.route.snapshot.params['id'] || 0;
     this.perfil = this.store.getItem('dremoPerfil');
-    if (Number(this.iPersId) == 0 && Number(this.perfil.iPerfilId) == 80) {
+    if (this.perfiles_permitidos.includes(Number(this.perfil.iPerfilId))) {
       this.iPersId = Number(this.perfil.iPersId);
       this.router.navigate([`/bienestar/ficha-declaracion/${this.iPersId}`]);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   async ngOnInit() {

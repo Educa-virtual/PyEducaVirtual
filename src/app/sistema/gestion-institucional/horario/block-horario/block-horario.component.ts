@@ -121,6 +121,7 @@ export class BlockHorarioComponent implements OnChanges {
   }
 
   agregarBloque() {
+    /*
     this.sumarIntervalo();
     //validar que no sea menor--------------------------------
     const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
@@ -142,6 +143,73 @@ export class BlockHorarioComponent implements OnChanges {
       this.formGenerador.get('tBloqueInicio')?.setValue(date);
       return;
     }
+   
+   */
+
+    this.sumarIntervalo();
+
+    // obtener inicio desde formulario
+    const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
+
+    // buscar bloque máximo
+    let bloqueMax: any = null;
+    if (this.bloques?.length > 0) {
+      bloqueMax = this.bloques.reduce((prev, current) =>
+        prev.tFin > current.tFin ? prev : current
+      );
+    }
+
+    // si no existe bloqueMax, no seguimos validando
+    if (!bloqueMax) {
+      const params = JSON.stringify({
+        iConfBloqueId: this.iConfBloqueId, // ID de la configuración del bloque, se puede ajustar según sea necesario
+        tBloqueInicio: this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value),
+        tBloqueFin: this.toHHMMSS(this.formGenerador.get('tBloqueFin')?.value),
+      });
+
+      this.query
+        .addCalAcademico({
+          json: params, //this.formHorario.getRawValue(),
+          _opcion: 'addConfigDetalleBloque',
+        })
+        .subscribe({
+          error: error => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Mensaje del sistema',
+              detail:
+                'Error. No se proceso petición de registro: ' + error?.error?.message ||
+                'Ocurrió un error inesperado',
+            });
+          },
+          complete: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Mensaje del sistema',
+              detail: 'Proceso exitoso',
+            });
+            this.getDetailsBloque();
+          },
+        });
+    }
+
+    // ahora sí existe tBloqueFin
+    const dtfin = bloqueMax.tBloqueFin;
+    const hFin = dtfin.substring(0, 8);
+
+    if (this.toSeconds(hFin) > this.toSeconds(tInicio)) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado no puede ser menor al anterior.',
+      });
+
+      const [hours, minutes, seconds] = hFin.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, seconds || 0);
+
+      this.formGenerador.get('tBloqueInicio')?.setValue(date);
+      return;
+    }
+
     //----------------------------------------------
     if (!this.validarFechas()) {
       this._confirmService.openAlert({
@@ -149,6 +217,7 @@ export class BlockHorarioComponent implements OnChanges {
       });
       return; // Detiene el flujo si es duplicado
     }
+
     const params = JSON.stringify({
       iConfBloqueId: this.iConfBloqueId, // ID de la configuración del bloque, se puede ajustar según sea necesario
       tBloqueInicio: this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value),

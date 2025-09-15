@@ -15,6 +15,8 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
 import { InputSimpleComponent } from '../shared/input-simple/input-simple.component';
 import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-ficha-socioeconomica',
@@ -41,6 +43,10 @@ export class FichaGeneralComponent implements OnInit {
   ficha_registrada: boolean = false;
   iFichaDGId: any;
 
+  es_estudiante_apoderado: boolean = false;
+  perfil: any;
+  formLabels: any;
+
   private _MessageService = inject(MessageService);
   private _ConfirmService = inject(ConfirmationModalService);
 
@@ -50,15 +56,18 @@ export class FichaGeneralComponent implements OnInit {
     private compartirFicha: CompartirFichaService,
     private route: ActivatedRoute,
     private router: Router,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(0);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit() {
@@ -83,6 +92,28 @@ export class FichaGeneralComponent implements OnInit {
       bFichaDGTieneHijos: [false],
       iFichaDGNroHijos: [null],
     });
+
+    this.formLabels = {
+      seccion1: this.es_estudiante_apoderado ? '1. Dirección del estudiante' : '1. Dirección',
+      seccion2: this.es_estudiante_apoderado
+        ? '2. Relaciones familiares del estudiante'
+        : '2. Relaciones familiares',
+      bFamiliarPadreVive: this.es_estudiante_apoderado
+        ? '¿El papá del estudiante está vivo?'
+        : '¿Su padre está vivo?',
+      bFamiliarMadreVive: this.es_estudiante_apoderado
+        ? '¿La mamá del estudiante está viva?'
+        : '¿Su madre está viva?',
+      bFamiliarPadresVivenJuntos: this.es_estudiante_apoderado
+        ? '¿Los padres del estudiante viven juntos?'
+        : '¿Sus padres viven juntos?',
+      bFichaDGTieneHijos: this.es_estudiante_apoderado
+        ? '¿El estudiante tiene hijos/as?'
+        : '¿Tiene hijos/as?',
+      bFichaDGTieneHijos_info: this.es_estudiante_apoderado
+        ? 'Si el estudiante tiene hijos/as, debe indicar el número de hijos/as.'
+        : 'Si tiene hijos/as, debe indicar el número de hijos/as.',
+    };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
       this.tipos_vias = this.datosFichaBienestar.getTiposVias(data?.tipos_vias);

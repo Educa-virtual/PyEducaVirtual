@@ -212,13 +212,13 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
     this.iPerfilId = this._ConstantesService.iPerfilId;
     this.iDocenteId = this._ConstantesService.iDocenteId;
 
-    if (!this.curso?.iCapacitacionId) {
+    if (!this.curso.iCapacitacionId) {
       this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
       this.obtenerReporteDenotasFinales();
       this.obtenerEscalaCalificaciones();
+    } else {
+      this.obtenerEstudiantesCapacitacion();
     }
-
-    this.obtenerEstudiantesCapacitacion();
   }
 
   periodoSeleccionado: number | string | null = null;

@@ -10,6 +10,8 @@ import { InputSimpleComponent } from '../shared/input-simple/input-simple.compon
 import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component';
 import { SwitchSimpleComponent } from '../shared/switch-simple/switch-simple.component';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-economico',
@@ -29,6 +31,10 @@ export class FichaEconomicoComponent implements OnInit {
   tipos_apoyo_economico: Array<object>;
   jornadas_trabajo: Array<object>;
 
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabels: any;
+
   private _MessageService = inject(MessageService);
 
   constructor(
@@ -37,15 +43,18 @@ export class FichaEconomicoComponent implements OnInit {
     private compartirFicha: CompartirFichaService,
     private route: ActivatedRoute,
     private datosFichaBienestar: DatosFichaBienestarService,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(2);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -84,6 +93,42 @@ export class FichaEconomicoComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error inicializando formulario');
     }
+
+    this.formLabels = {
+      iIngresoEcoFamiliar: this.es_estudiante_apoderado
+        ? 'Ingresos mensuales de la familia del estudiante'
+        : 'Ingresos mensuales de su familia',
+      iRangoSueldoId: this.es_estudiante_apoderado
+        ? 'Rango de ingresos mensuales de la familia del estudiante *'
+        : 'Rango de ingresos mensuales de su familia *',
+      cIngresoEcoActividad: this.es_estudiante_apoderado
+        ? 'Actividad económica de la familia del estudiante'
+        : 'Actividad económica de su familia',
+      bIngresoEcoTrabaja: this.es_estudiante_apoderado
+        ? '¿El apoderado trabaja?'
+        : 'El(a) jefe de familia trabaja?',
+      iTipoAEcoId: this.es_estudiante_apoderado
+        ? '¿El estudiante recibe algún apoyo económico?'
+        : '¿Usted recibe algún apoyo económico?',
+      seccion2: this.es_estudiante_apoderado
+        ? 'Ingresos del apoderado'
+        : 'Ingresos del(a) jefe del hogar',
+      iIngresoEcoEstudiante: this.es_estudiante_apoderado
+        ? 'Ingresos mensuales del apoderado'
+        : 'Ingresos mensuales del(a) jefe del hogar',
+      iRangoSueldoIdPersona: this.es_estudiante_apoderado
+        ? 'Rango de ingresos mensuales del apoderado'
+        : 'Rango de ingresos mensuales del(a) jefe del hogar',
+      cIngresoEcoDependeDe: this.es_estudiante_apoderado
+        ? 'Actividad económica que brinda ingresos al apoderado'
+        : 'Actividad económica que brinda ingresos al(a) jefe del hogar',
+      iDepEcoId: this.es_estudiante_apoderado
+        ? '¿De quién depende económicamente el apoderado?'
+        : '¿De quién depende económicamente el(a) jefe del hogar?',
+      iJorTrabId: this.es_estudiante_apoderado
+        ? '¿Cuál es la jornada de trabajo del apoderado?'
+        : '¿Cuál es la jornada de trabajo del(a) jefe del hogar?',
+    };
 
     this.funcionesBienestar.formMarkAsDirty(this.formEconomico);
   }

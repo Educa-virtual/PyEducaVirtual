@@ -7,6 +7,8 @@ import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar
 import { MessageService } from 'primeng/api';
 import { SwitchInputComponent } from '../shared/switch-input/switch-input.component';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-discapacidad',
@@ -22,6 +24,11 @@ export class FichaDiscapacidadComponent implements OnInit {
   visibleLimitacionesInput: Array<boolean>;
   ficha_registrada: boolean = false;
   discapacidades: Array<object>;
+
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabels: any;
+
   get controles_discapacidades(): FormArray {
     return this.formDiscapacidad.get('controles_discapacidades') as FormArray;
   }
@@ -34,15 +41,18 @@ export class FichaDiscapacidadComponent implements OnInit {
     private datosFichaBienestar: DatosFichaBienestarService,
     private router: Router,
     private route: ActivatedRoute,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(5);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -61,6 +71,15 @@ export class FichaDiscapacidadComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error inicializando formulario');
     }
+
+    this.formLabels = {
+      seccion1: this.es_estudiante_apoderado
+        ? 'Indique si el estudiante tiene alguna limitación o discapacidad'
+        : 'Indique si tiene alguna limitación o discapacidad',
+      seccion2: this.es_estudiante_apoderado
+        ? '¿El estudiante está registrado en algún programa?'
+        : '¿Está registrado/a en algún programa?',
+    };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
       this.discapacidades = this.datosFichaBienestar.getDiscapacidades(data?.discapacidades);

@@ -1,12 +1,14 @@
 <div class="grid col">
   <div class="card col-4 mr-2">
-    <app-toolbar-primeng title="Sesiones de Aprendizaje"></app-toolbar-primeng>
+    <app-toolbar-primeng
+      [title]="iCapacitacionId ? 'Sesión Formativa' : 'Sesiones de Aprendizaje'"
+    ></app-toolbar-primeng>
     @if (iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR) {
       <div class="flex justify-content-end ml-auto mb-2 mx-4 mr-5">
         <button
           size="small"
           icon="pi pi-plus"
-          label="Agregar Sesión de Aprendizaje"
+          [label]="iCapacitacionId ? 'Agregar Sesión Formativa' : 'Agregar Sesión de Aprendizaje'"
           [rounded]="true"
           class="p-button-success"
           pButton

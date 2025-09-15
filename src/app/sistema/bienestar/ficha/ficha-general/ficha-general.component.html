@@ -3,7 +3,7 @@
 <!-- Contenido del Formulario de Datos Generales -->
 <form [formGroup]="formGeneral">
   <!-- Dirección Actual -->
-  <p-fieldset legend="1. Dirección del estudiante">
+  <p-fieldset [legend]="formLabels.seccion1">
     <div class="grid p-fluid">
       <div class="col-12 lg:col-4 md:col-6">
         <app-dropdown-input
@@ -134,30 +134,30 @@
   <br />
 
   <!-- Relaciones familiares -->
-  <p-fieldset legend="2. Relaciones familiares del estudiante">
+  <p-fieldset [legend]="formLabels.seccion2">
     <div class="grid">
       <div class="col-12 md:col-4">
         <app-switch-simple
           [switchControl]="$any(formGeneral.controls['bFamiliarPadreVive'])"
-          addonLabel="¿El papá del estudiante está vivo?"
+          [addonLabel]="formLabels.bFamiliarPadreVive"
         />
       </div>
       <div class="col-12 md:col-4">
         <app-switch-simple
           [switchControl]="$any(formGeneral.controls['bFamiliarMadreVive'])"
-          addonLabel="¿La mamá del estudiante está viva?"
+          [addonLabel]="formLabels.bFamiliarMadreVive"
         />
       </div>
       <div class="col-12 md:col-4">
         <app-switch-simple
           [switchControl]="$any(formGeneral.controls['bFamiliarPadresVivenJuntos'])"
-          addonLabel="¿Los padres del estudiante viven juntos?"
+          [addonLabel]="formLabels.bFamiliarPadresVivenJuntos"
         />
       </div>
       <div class="col-12 md:col-4">
         <app-switch-input
           [switchControl]="$any(formGeneral.controls['bFichaDGTieneHijos'])"
-          addonLabel="¿El estudiante tiene hijos/as?"
+          [addonLabel]="formLabels.bFichaDGTieneHijos"
           inputType="number"
           inputPlaceholder="¿Cuántos hijos/as?"
           [inputControl]="$any(formGeneral.controls['iFichaDGNroHijos'])"
@@ -169,7 +169,7 @@
           [infoAdicional]="bFichaDGTieneHijos"
         />
         <ng-template #bFichaDGTieneHijos>
-          Si el estudiante tiene hijos/as, debe indicar el número de hijos/as.
+          {{ formLabels.bFichaDGTieneHijos_info }}
         </ng-template>
       </div>
     </div>

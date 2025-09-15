@@ -93,6 +93,7 @@ export class GestionFichasApoderadoComponent implements OnInit {
     this.datosFichaBienestar
       .descargarFicha({
         iFichaDGId: item.iFichaDGId,
+        iYAcadId: this.iYAcadId,
       })
       .subscribe({
         next: response => {

@@ -49,8 +49,10 @@ export class AnunciosService {
     return this.http.post(`${baseUrl}/aula-virtual/anuncios`, data);
   }
 
-  eliminarAnuncio(data: any) {
-    return this.http.delete(`${baseUrl}/aula-virtual/anuncios/${data.iAnuncioId}`, data);
+  eliminarAnuncio(iAnuncioId: number | string, data: any) {
+    return this.http.delete(`${baseUrl}/aula-virtual/anuncios/${iAnuncioId}`, {
+      params: data,
+    });
   }
 
   fijarAnuncio(data: any) {

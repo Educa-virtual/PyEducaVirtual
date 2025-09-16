@@ -204,14 +204,14 @@ export class ReporteAsistenciasComponent implements OnInit {
       iTipoAsiId: '9',
       cTipoAsiLetra: 'P',
       cTipoAsiNombre: 'Tardanza Justificada',
-      textColor: 'cyan-50-boton',
+      textColor: 'yellow-50-boton',
       bgColor: 'bg-yellow-500',
     },
     {
       iTipoAsiId: '7',
       cTipoAsiLetra: '-',
       cTipoAsiNombre: 'Sin Registro',
-      textColor: 'yellow-50-boton',
+      textColor: 'cyan-50-boton',
       bgColor: 'bg-cyan-500',
     },
   ];
@@ -322,8 +322,8 @@ export class ReporteAsistenciasComponent implements OnInit {
       documentStyle.getPropertyValue('--orange-500'),
       documentStyle.getPropertyValue('--red-500'),
       documentStyle.getPropertyValue('--primary-500'),
-      documentStyle.getPropertyValue('--yellow-500'),
       documentStyle.getPropertyValue('--cyan-500'),
+      documentStyle.getPropertyValue('--yellow-500'),
     ];
 
     const hover = [
@@ -331,8 +331,8 @@ export class ReporteAsistenciasComponent implements OnInit {
       documentStyle.getPropertyValue('--orange-400'),
       documentStyle.getPropertyValue('--red-400'),
       documentStyle.getPropertyValue('--primary-400'),
-      documentStyle.getPropertyValue('--yellow-400'),
       documentStyle.getPropertyValue('--cyan-400'),
+      documentStyle.getPropertyValue('--yellow-400'),
     ];
 
     this.dona = {
@@ -381,7 +381,7 @@ export class ReporteAsistenciasComponent implements OnInit {
       this.barra[3].push(sinRegistro);
       this.barra[4].push(tardanza);
       this.barra[5].push(tardanzaJustificada);
-
+      console.log('revisar #1', this.barra[2]);
       if (!this.tipo.tipoAsistencia) {
         this.grafico = {
           labels: this.nombres,
@@ -408,12 +408,12 @@ export class ReporteAsistenciasComponent implements OnInit {
             },
             {
               label: 'Sin Registro',
-              backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
+              backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
               data: this.barra[4],
             },
             {
               label: 'Tardanza Justificada',
-              backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
+              backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
               data: this.barra[5],
             },
           ],
@@ -422,7 +422,7 @@ export class ReporteAsistenciasComponent implements OnInit {
         const tipo = this.asistencias.find(lista => {
           return lista.indice === this.tipo.tipoAsistencia;
         });
-        console.log('ojo #1', tipo);
+
         this.grafico = {
           labels: this.nombres,
           datasets: [

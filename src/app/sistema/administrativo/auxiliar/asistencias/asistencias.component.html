@@ -8,7 +8,7 @@
   </ng-template>
   <ng-template pTemplate="content">
     <p-tabView>
-      <p-tabPanel header="Grados y Seccion">
+      <p-tabPanel header="Grados y Sección">
         <div class="grid h-full m-1">
           <div class="col-6 md:col-6 lg:col-3">
             <p-inputGroup>
@@ -25,7 +25,7 @@
           </div>
           <div class="col-6 md:col-6 lg:col-3">
             <p-inputGroup>
-              <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+              <p-inputGroupAddon>Sección</p-inputGroupAddon>
               <p-dropdown
                 [options]="seccion"
                 [(ngModel)]="datos.iSeccionId"
@@ -59,7 +59,7 @@
             <p-button
               class="expandir"
               severity="success"
-              label="guardar"
+              label="Guardar"
               icon="pi pi-save"
               [disabled]="!registrar"
               (click)="guardarAsistenciaAula()"
@@ -79,7 +79,7 @@
                   <th style="width: 25%">Apellidos y Nombres</th>
                   <th class="hidden md:table-cell">DNI</th>
                   <th class="text-center">Asistencia</th>
-                  <th class="text-center">Justificacion</th>
+                  <th class="text-center">Justificación</th>
                   <th class="text-center">Documento</th>
                 </tr>
               </ng-template>
@@ -105,7 +105,7 @@
                       #folder
                       mode="basic"
                       class="mr-1"
-                      [chooseLabel]="'Seleccionar archivo'"
+                      [chooseLabel]="'Seleccionar Archivo'"
                       chooseIcon="pi pi-upload"
                       name="archivo"
                       accept=".pdf"
@@ -132,7 +132,7 @@
               <ng-template pTemplate="emptymessage">
                 <tr>
                   <td colspan="5" class="text-center text-gray-500 py-3">
-                    Sin registros de Alumnos.
+                    Sin Registros de Alumnos.
                   </td>
                 </tr>
               </ng-template>
@@ -140,7 +140,7 @@
           </div>
         </div>
       </p-tabPanel>
-      <p-tabPanel header="Busqueda por Codigo">
+      <p-tabPanel header="Búsqueda por Código">
         <div class="grid h-full m-1">
           <div class="col-12 md:col-6 lg:col-3">
             <p-inputGroup>
@@ -191,7 +191,7 @@
             <p-button
               class="expandir"
               severity="success"
-              label="guardar"
+              label="Guardar"
               icon="pi pi-save"
               [disabled]="!registrarEstudiante"
               (click)="guardarAsistencia()"
@@ -213,7 +213,7 @@
                   <th class="text-center">Apellidos y Nombres</th>
                   <th class="text-center">DNI</th>
                   <th class="text-center">Asistencia</th>
-                  <th class="text-center">Justificacion</th>
+                  <th class="text-center">Justificación</th>
                   <th class="text-center">Documento</th>
                 </tr>
               </ng-template>
@@ -235,7 +235,7 @@
                       #folderEstudiante
                       mode="basic"
                       class="mr-1"
-                      [chooseLabel]="'Seleccionar archivo'"
+                      [chooseLabel]="'Seleccionar Archivo'"
                       chooseIcon="pi pi-upload"
                       name="archivo"
                       accept=".pdf"
@@ -275,7 +275,7 @@
                       #folderEstudiante
                       mode="basic"
                       class="mr-1"
-                      [chooseLabel]="'Seleccionar archivo'"
+                      [chooseLabel]="'Seleccionar Archivo'"
                       chooseIcon="pi pi-upload"
                       name="archivo"
                       accept=".pdf"
@@ -303,7 +303,7 @@
               <ng-template pTemplate="emptymessage">
                 <tr>
                   <td colspan="5" class="text-center text-gray-500 py-3">
-                    Sin registros de Alumnos.
+                    Sin Registros de Alumnos.
                   </td>
                 </tr>
               </ng-template>
@@ -368,7 +368,7 @@
 </p-panel>
 
 <p-dialog
-  header="Informacion del Estudiante"
+  header="Información del Estudiante"
   [modal]="true"
   [(visible)]="visible"
   [style]="{ width: '35rem' }"

@@ -23,14 +23,22 @@ export class ReporteAcademicoComponent implements OnInit {
   graficos: any[] = [];
   mostrarMensajeSinDatos: boolean = false;
 
-  private colores = [
-    'rgba(255, 99, 132, 0.6)',
-    'rgba(54, 162, 235, 0.6)',
-    'rgba(255, 206, 86, 0.6)',
-    'rgba(75, 192, 192, 0.6)',
-    'rgba(153, 102, 255, 0.6)',
-    'rgba(255, 159, 64, 0.6)',
-  ];
+  coloresPorLetra: Record<string, string> = {
+    A: 'rgba(40,167,69,0.6)', // verde claro semitransparente
+    B: 'rgba(54,132,235,0.6)', // azul
+    C: 'rgba(255,159,64,0.6)', // naranja
+    AD: 'rgba(220,53,69,0.6)', // rojo
+    DEFAULT: 'rgba(108,117,125,0.6)',
+  };
+
+  // Borde (opcional)
+  bordePorLetra: Record<string, string> = {
+    A: 'rgba(40,167,69,1)',
+    B: 'rgba(54,132,235,1)',
+    C: 'rgba(255,159,64,1)',
+    AD: 'rgba(220,53,69,1)',
+    DEFAULT: 'rgba(108,117,125,1)',
+  };
 
   constructor(
     private reporteService: ReporteAcademicoService,
@@ -89,25 +97,64 @@ export class ReporteAcademicoComponent implements OnInit {
     return lines;
   }
 
+  letraAOrdinal(letra: string) {
+    if (!letra && letra !== '') return 0;
+    const l = letra.toString().trim().toUpperCase();
+    switch (l) {
+      case 'AD':
+        return 4;
+      case 'A':
+        return 3;
+      case 'B':
+        return 2;
+      case 'C':
+        return 1;
+      default:
+        return 0; // valor desconocido -> 0 (no visible dentro de 1..4)
+    }
+  }
+
+  ordinalALetra(v: number) {
+    switch (Number(v)) {
+      case 4:
+        return 'AD';
+      case 3:
+        return 'A';
+      case 2:
+        return 'B';
+      case 1:
+        return 'C';
+      default:
+        return '';
+    }
+  }
+
   generarReporte() {
     this.reporteService.obtenerResultadosPorCurso(this.iYAcadId, this.iIeCursoId).subscribe({
       next: (response: any) => {
         this.mostrarMensajeSinDatos = true;
         this.graficos = response.data.map((item: any) => {
-          const valores = item.resultado.map((n: string) => Number(n));
+          const letterValues: string[] = (item.resultado || []).map((s: any) =>
+            s == null ? '' : String(s).trim().toUpperCase()
+          );
+
+          const ordinalValues = letterValues.map(l => this.letraAOrdinal(l));
+          const bgColors = letterValues.map(
+            l => this.coloresPorLetra[l] ?? this.coloresPorLetra['DEFAULT']
+          );
+          const borderColors = letterValues.map(
+            l => this.bordePorLetra[l] ?? this.bordePorLetra['DEFAULT']
+          );
+
           return {
             data: {
               labels: item.periodos,
               datasets: [
                 {
                   label: item.competencia,
-                  data: valores,
-                  backgroundColor: valores.map(
-                    (_: any, i: number) => this.colores[i % this.colores.length]
-                  ),
-                  borderColor: valores.map((_: any, i: number) =>
-                    this.colores[i % this.colores.length].replace('0.6', '1')
-                  ),
+                  data: ordinalValues,
+                  backgroundColor: bgColors,
+                  borderColor: borderColors,
                   borderWidth: 1,
                 },
               ],
@@ -120,23 +167,24 @@ export class ReporteAcademicoComponent implements OnInit {
                   text: this.splitText(item.competencia, 40),
                   font: { size: 18 },
                 },
-                legend: {
-                  display: false,
-                },
+                legend: { display: false },
                 datalabels: {
                   anchor: 'end',
                   align: 'end',
                   offset: -6,
                   color: '#000',
-                  formatter: (value: number) => {
-                    return value < 10 ? `0${value}` : value;
+                  formatter: (_value: any, context: any) => {
+                    const idx = context.dataIndex;
+                    const letra = letterValues[idx] ?? '';
+                    return letra || '-';
                   },
                 },
                 tooltip: {
                   callbacks: {
                     label: (context: any) => {
-                      const value = context.raw;
-                      return value.toString().padStart(2, '0');
+                      const idx = context.dataIndex;
+                      const letra = letterValues[idx] ?? '';
+                      return letra || 'Sin dato';
                     },
                   },
                 },
@@ -147,10 +195,13 @@ export class ReporteAcademicoComponent implements OnInit {
                   grid: { color: '#ebedef' },
                 },
                 y: {
+                  min: 1,
+                  max: 4,
                   ticks: {
+                    stepSize: 1,
                     color: '#495057',
                     callback: (value: number | string) => {
-                      return value.toString().padStart(2, '0');
+                      return this.ordinalALetra(Number(value));
                     },
                   },
                   grid: { color: '#ebedef' },
@@ -160,13 +211,12 @@ export class ReporteAcademicoComponent implements OnInit {
             plugins: [ChartDataLabels],
           };
         });
-        console.log(this.graficos);
       },
       error: err => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error en matrícula',
-          detail: err.error.messagr || 'No hay una matrícula registrada para el año seleccionado',
+          detail: err.error?.messagr || 'No hay una matrícula registrada para el año seleccionado',
         });
       },
     });

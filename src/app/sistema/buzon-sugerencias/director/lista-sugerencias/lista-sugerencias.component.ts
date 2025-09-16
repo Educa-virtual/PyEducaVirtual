@@ -75,6 +75,14 @@ export class ListaSugerenciasComponent implements OnInit {
       text: 'center',
     },
     {
+      type: 'text',
+      width: '3rem',
+      field: 'cDiasTranscurridos',
+      header: 'Días transcurridos',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
       type: 'date',
       width: '6rem',
       field: 'dtFechaRespuesta',

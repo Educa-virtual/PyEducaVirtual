@@ -1,0 +1,58 @@
+<app-container-page [title]="'Evaluación ERE: Práctica'" [actions]="[]">
+  <!-- interface de Inicio -->
+  <div class="grid">
+    <div class="col-12 md:col-4 align-content-center">
+      <div>
+        <span class="font-bold text-xl flex gap-2">
+          <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
+          Fecha de evaluación:
+        </span>
+        <p class="flex gap-2 flex-wrap ml-5">
+          {{ dtExamenFechaInicio | date: 'EEEE, d MMMM, y' }}
+        </p>
+      </div>
+      <div>
+        <span class="font-bold text-xl flex gap-2 mt-2">
+          <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
+          Hora de evaluación:
+        </span>
+        <p class="flex gap-2 flex-wrap ml-5">En cualquier momento (práctica)</p>
+      </div>
+    </div>
+
+    <!-- tiempo de evaluación  -->
+    <div class="col-12 md:col-3 align-content-center">
+      <div class="flex flex-column gap-2">
+        <span class="font-bold text-xl flex gap-2">
+          <app-icon name="matCalendarMonth" class="text-primary" size="sm"></app-icon>
+          Duración: 60 minutos
+        </span>
+        <p class="flex gap-2 flex-wrap ml-5">Cantidad de preguntas: 5</p>
+      </div>
+    </div>
+
+    <!-- Instrucciones del examen -->
+    <div class="col-12 md:col-5 align-content-center">
+      <div class="col text-center">
+        <span class="font-bold text-xl"> Instrucciones </span>
+      </div>
+      <div class="backColor p-4">
+        <ol class="flex gap-2 flex-wrap">
+          <li>
+            Durante el desarrollo de la evaluación no se podrá usar ningún otro instrumento, reglas,
+            calculadoras, etc.
+          </li>
+          <li>Leer bien el enunciado de la Pregunta</li>
+          <li>Ante cualquier duda levantar la mano y esperar la asistencia del monitor/docente.</li>
+          <li>Evitar ver a los costados.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="col-12 text-center">
+      <button pButton pRipple type="button" class="p-button-success pulse" (click)="rendirExamen()">
+        <i class="pi pi-check-square"></i>&nbsp; Iniciar evaluación
+      </button>
+    </div>
+  </div>
+</app-container-page>

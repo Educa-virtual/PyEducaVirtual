@@ -85,15 +85,15 @@ export class AsistenciasComponent implements OnInit {
       iTipoAsiId: '9',
       cTipoAsiLetra: 'P',
       cTipoAsiNombre: 'Tardanza Justificada',
-      textColor: 'cyan-50-boton',
-      bgColor: 'bg-cyan-500',
+      textColor: 'yellow-50-boton',
+      bgColor: 'bg-yellow-500',
     },
     {
       iTipoAsiId: '7',
       cTipoAsiLetra: '-',
       cTipoAsiNombre: 'Sin Registro',
-      textColor: 'yellow-50-boton',
-      bgColor: 'bg-yellow-500',
+      textColor: 'cyan-50-boton',
+      bgColor: 'bg-cyan-500',
     },
   ];
 
@@ -458,6 +458,7 @@ export class AsistenciasComponent implements OnInit {
     this.alumnos[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
     this.alumnos[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
     this.alumnos[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
+    this.alumnos[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
   cambiarEstadoEstudiante(index: any, item: any) {
     const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
@@ -465,6 +466,7 @@ export class AsistenciasComponent implements OnInit {
     this.estudiante[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
     this.estudiante[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
     this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
+    this.estudiante[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
   camaraEncontrada() {
     this.estado = false;
@@ -501,7 +503,6 @@ export class AsistenciasComponent implements OnInit {
         link.click();
       },
       error: error => {
-        console.error('Error obteniendo encuesta:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

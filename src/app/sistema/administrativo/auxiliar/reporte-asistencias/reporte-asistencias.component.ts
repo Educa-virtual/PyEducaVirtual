@@ -517,6 +517,7 @@ export class ReporteAsistenciasComponent implements OnInit {
               list.asistencia.push(nuevo);
             }
           });
+          list.asistencia.sort((a, b) => a.diaEspecifico - b.diaEspecifico);
         });
       },
       error: err => {

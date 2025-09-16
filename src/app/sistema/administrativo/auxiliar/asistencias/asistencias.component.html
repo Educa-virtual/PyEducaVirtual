@@ -108,7 +108,7 @@
                       [chooseLabel]="'Seleccionar archivo'"
                       chooseIcon="pi pi-upload"
                       name="archivo"
-                      accept=".pdf,image/*"
+                      accept=".pdf"
                       maxFileSize="1000000"
                       (onSelect)="seleccionarFolder($event, alumno, folder)"
                     />
@@ -222,9 +222,9 @@
                   <td>{{ rowIndex + 1 }}</td>
                   <td>{{ estudiante.completo }}</td>
                   <td>{{ estudiante.cPersDocumento }}</td>
-                  <td>
+                  <td class="text-center">
                     <p-button
-                      styleClass="boton"
+                      [styleClass]="estudiante.bgColor"
                       (click)="cambiarEstadoEstudiante(rowIndex, estudiante.iTipoAsiId)"
                       ><span class="font-bold w-100">{{ estudiante.cTipoAsiNombre }}</span>
                     </p-button>
@@ -238,7 +238,7 @@
                       [chooseLabel]="'Seleccionar archivo'"
                       chooseIcon="pi pi-upload"
                       name="archivo"
-                      accept=".pdf,image/*"
+                      accept=".pdf"
                       maxFileSize="1000000"
                       (onSelect)="seleccionarFolder($event, estudiante, folderEstudiante)"
                     />
@@ -278,7 +278,7 @@
                       [chooseLabel]="'Seleccionar archivo'"
                       chooseIcon="pi pi-upload"
                       name="archivo"
-                      accept=".pdf,image/*"
+                      accept=".pdf"
                       maxFileSize="1000000"
                       (onSelect)="seleccionarFolder($event, estudiante, folderEstudiante)"
                     />

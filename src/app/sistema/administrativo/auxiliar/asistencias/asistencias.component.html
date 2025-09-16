@@ -251,7 +251,7 @@
                   </td>
                   <td class="text-center">
                     <p-button
-                      [disabled]="estudiante.iTipoAsiId !== '4' && estudiante.iTipoAsiId !== '9'"
+                      [disabled]="!estudiante.cJustificar"
                       icon="pi pi-file-pdf"
                       size="small"
                       (click)="descargarArchivo(estudiante.cJustificar)"

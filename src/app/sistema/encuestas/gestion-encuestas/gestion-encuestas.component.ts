@@ -285,10 +285,14 @@ export class GestionEncuestasComponent implements OnInit {
         });
         break;
       case 'respuestas':
-        this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/respuestas`]);
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/respuestas`,
+        ]);
         break;
       case 'resumen':
-        this.router.navigate([`/bienestar/encuesta/${item.iEncuId}/resumen`]);
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/resumen`,
+        ]);
         break;
       default:
         console.warn('Acción no reconocida:', accion);

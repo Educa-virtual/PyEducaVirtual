@@ -157,6 +157,10 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/actualizarRespuestas`, data);
   }
 
+  imprimirRespuestas(data: any) {
+    return this.http.post(`${baseUrl}/enc/imprimirRespuestas`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */
@@ -298,11 +302,23 @@ export class EncuestasService implements OnDestroy {
     });
   }
 
-  getSecciones(data: any) {
+  getSeccionesEncuesta(data: any) {
     if (data) {
       this.secciones = data.map(seccion => ({
         value: seccion.iSeccionId,
         label: seccion.iSeccionOrden + '. ' + seccion.cSeccionTitulo,
+      }));
+      return this.secciones;
+    }
+    return this.secciones;
+  }
+
+  getSecciones(data: any) {
+    if (!this.secciones && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.secciones = items.map(seccion => ({
+        value: seccion.iSeccionId,
+        label: seccion.cSeccionNombre,
       }));
       return this.secciones;
     }

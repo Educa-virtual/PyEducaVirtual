@@ -14,8 +14,9 @@ import {
   SUBDIRECTOR_IE,
 } from '@/app/servicios/seg/perfiles';
 import { LlenadoPreguntasEncuestaComponent } from './llenado-preguntas-encuesta/llenado-preguntas-encuesta.component';
-import { EncuestaVerComponent } from './encuesta-ver/encuesta-ver.component';
+import { VerEncuestaComponent } from './ver-encuesta/ver-encuesta.component';
 import { GestionEncuestasComponent } from './gestion-encuestas/gestion-encuestas.component';
+import { RespuestasEncuestaComponent } from './respuestas-encuesta/respuestas-encuesta.component';
 
 const encuestadores = [
   ADMINISTRADOR_DREMO,
@@ -91,7 +92,7 @@ const routes: Routes = [
   },
   {
     path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/ver',
-    component: EncuestaVerComponent,
+    component: VerEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
       es_encuestador: true,
@@ -101,7 +102,7 @@ const routes: Routes = [
   },
   {
     path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/ver/:iPersId',
-    component: EncuestaVerComponent,
+    component: VerEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
       es_encuestador: true,
@@ -111,22 +112,32 @@ const routes: Routes = [
   },
   {
     path: 'categorias/:iCateId/lista-encuestas/:iEncuId/ver',
-    component: EncuestaVerComponent,
+    component: VerEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
       es_encuestador: false,
-      expectedRole: [...encuestados],
+      expectedRole: encuestados,
       breadcrumb: 'Responder Encuesta',
     },
   },
   {
     path: 'categorias/:iCateId/lista-encuestas/:iEncuId/ver/:iPersId',
-    component: EncuestaVerComponent,
+    component: VerEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
       es_encuestador: false,
-      expectedRole: [...encuestados],
+      expectedRole: encuestados,
       breadcrumb: 'Responder Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/respuestas',
+    component: RespuestasEncuestaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      es_encuestador: false,
+      expectedRole: encuestadores,
+      breadcrumb: 'Ver Respuestas',
     },
   },
 ];

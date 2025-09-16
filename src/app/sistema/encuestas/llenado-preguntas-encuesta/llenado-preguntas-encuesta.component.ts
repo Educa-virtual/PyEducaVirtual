@@ -123,7 +123,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
           this.secciones.forEach((seccion: any) => {
             seccion.preguntas = seccion?.json_preguntas ? JSON.parse(seccion.json_preguntas) : [];
           });
-          this.encuestasService.getSecciones(this.secciones);
+          this.encuestasService.getSeccionesEncuesta(this.secciones);
           this.calcularTotalPreguntas();
         },
         error: error => {

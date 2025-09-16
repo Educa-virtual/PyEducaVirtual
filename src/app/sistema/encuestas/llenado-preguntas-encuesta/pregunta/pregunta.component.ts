@@ -121,14 +121,14 @@ export class PreguntaComponent implements OnInit, OnChanges {
       console.log(error);
     }
 
-    this.secciones = this.encuestasService.getSecciones(null);
+    this.secciones = this.encuestasService.getSeccionesEncuesta(null);
     this.formPregunta.get('iTipoPregId').valueChanges.subscribe(value => {
       this.iTipoPregId = value;
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.secciones = this.encuestasService.getSecciones(null);
+    this.secciones = this.encuestasService.getSeccionesEncuesta(null);
     if (this.iPregId && changes['visible']?.currentValue === true) {
       this.dialogTitle = 'Editar pregunta';
       this.verPregunta();

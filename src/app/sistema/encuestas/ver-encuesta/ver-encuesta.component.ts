@@ -11,7 +11,7 @@ import { PreguntaTextoComponent } from '../shared/pregunta-texto/pregunta-texto.
 import { SlicePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-encuesta-ver',
+  selector: 'app-ver-encuesta',
   standalone: true,
   imports: [
     PrimengModule,
@@ -19,11 +19,11 @@ import { SlicePipe } from '@angular/common';
     PreguntaOpcionMultipleComponent,
     PreguntaTextoComponent,
   ],
-  templateUrl: './encuesta-ver.component.html',
+  templateUrl: './ver-encuesta.component.html',
   styleUrl: './../lista-categorias/lista-categorias.component.scss',
   providers: [SlicePipe],
 })
-export class EncuestaVerComponent implements OnInit {
+export class VerEncuestaComponent implements OnInit {
   iEncuId: number;
   iCateId: number;
   iPersId: number;

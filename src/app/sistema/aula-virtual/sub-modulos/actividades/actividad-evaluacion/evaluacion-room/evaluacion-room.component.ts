@@ -10,7 +10,7 @@ import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.com
 import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component';
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion-preguntas.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component';
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component';
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component';
@@ -50,6 +50,7 @@ export class EvaluacionRoomComponent implements OnInit {
   private _EvaluacionesService = inject(EvaluacionesService);
   private _MessageService = inject(MessageService);
   private _ActivatedRoute = inject(ActivatedRoute);
+  private _Router = inject(Router);
 
   rubricas = [
     // {
@@ -100,6 +101,12 @@ export class EvaluacionRoomComponent implements OnInit {
   tabSeleccionado: string = 'descripcion';
   obtenerIndex(event) {
     this.tabSeleccionado = event.tab;
+    this.activeIndex = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+
+    this._Router.navigate([], {
+      queryParams: { tab: this.tabSeleccionado },
+      queryParamsHandling: 'merge',
+    });
   }
 
   obtenerRubricas() {
@@ -173,6 +180,13 @@ export class EvaluacionRoomComponent implements OnInit {
     this.params.idDocCursoId = this._ActivatedRoute.snapshot.queryParamMap.get('idDocCursoId');
 
     //this.obtenerRubricas()
+
+    this._ActivatedRoute.queryParams.subscribe(params => {
+      if (params['tab'] !== undefined) {
+        this.tabSeleccionado = params['tab'];
+        this.activeIndex = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+      }
+    });
   }
   goBack() {
     this.location.back();

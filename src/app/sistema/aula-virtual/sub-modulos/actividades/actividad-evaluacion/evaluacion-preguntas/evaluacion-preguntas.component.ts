@@ -7,7 +7,6 @@ import { PreguntasFormComponent } from '../evaluacion-form/preguntas-form/pregun
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service';
 import { EvaluacionListPreguntasComponent } from '../evaluacion-room/components/evaluacion-list-preguntas/evaluacion-list-preguntas.component';
-import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service';
 import { FormEncabezadoComponent } from '../evaluacion-room/components/form-encabezado/form-encabezado.component';
 import { ImportarBancoPreguntasComponent } from '../importar-banco-preguntas/importar-banco-preguntas.component';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
@@ -44,7 +43,6 @@ export class EvaluacionPreguntasComponent extends MostrarErrorComponent implemen
 
   private _ConstantesService = inject(ConstantesService);
   private _EvaluacionPreguntasService = inject(EvaluacionPreguntasService);
-  private _ApiEvaluacionesRService = inject(ApiEvaluacionesRService);
 
   showModalPreguntas: boolean = false;
   showModalEncabezado: boolean = false;

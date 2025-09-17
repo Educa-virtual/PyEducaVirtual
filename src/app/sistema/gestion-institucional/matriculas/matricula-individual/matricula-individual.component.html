@@ -1,167 +1,171 @@
 <p-panel>
-    <ng-template pTemplate="header">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-uppercase text-primary">
-                Matrícula individual
-            </h3>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Matrícula individual</h3>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <button
+        size="small"
+        [rounded]="true"
+        pButton
+        severity="secondary"
+        pTooltip="Regresar"
+        tooltipPosition="top"
+        (click)="salir()"
+      >
+        <i class="pi pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Regresar</span>
+      </button>
+    </div>
+  </ng-template>
+  <ng-content>
+    <form [formGroup]="form">
+      <div class="grid p-fluid mt-3">
+        <input pInputText type="hidden" formControlName="iEstudianteId" class="p-inputtext-sm" />
+
+        <div class="field col-8 md:col-9">
+          <span class="p-float-label">
+            <p-inputMask
+              id="cEstCodigo"
+              formControlName="cEstCodigo"
+              aria-describedby="cEstCodigo-help"
+              mask="99999999999999"
+              autoClear="false"
+              slotChar=""
+            />
+            <label for="cEstCodigo">Código de estudiante *</label>
+          </span>
         </div>
-    </ng-template>
-    <ng-template pTemplate="icons" class="flex flex-column flex-1">
-        <div class="flex flex-wrap gap-2 justify-content-end">
-            <button
-                size="small"
-                [rounded]="true"
-                pButton
-                severity="secondary"
-                pTooltip="Regresar"
-                tooltipPosition="top"
-                (click)="salir()"
-            >
-                <i class="pi pi-arrow-left"></i>
-                <span class="ml-2 hidden sm:block">Regresar</span>
-            </button>
+        <div class="field col-4 md:col-3">
+          <p-button
+            label="Buscar"
+            icon="pi pi-search"
+            (onClick)="searchEstudiante()"
+            styleClass="p-button-primary"
+          />
         </div>
-    </ng-template>
-    <ng-content>
-        <form [formGroup]="form">
-            <div class="grid p-fluid mt-3">
-                <input
-                    pInputText
-                    type="hidden"
-                    formControlName="iEstudianteId"
-                    class="p-inputtext-sm"
-                />
 
-                <div class="field col-8 md:col-9">
-                    <span class="p-float-label">
-                        <p-inputMask
-                            id="cEstCodigo"
-                            formControlName="cEstCodigo"
-                            aria-describedby="cEstCodigo-help"
-                            mask="99999999999999"
-                            autoClear="false"
-                            slotChar=""
-                        />
-                        <label for="cEstCodigo">Código de estudiante *</label>
-                    </span>
-                </div>
-                <div class="field col-4 md:col-3">
-                    <p-button
-                        label="Buscar"
-                        (onClick)="searchEstudiante()"
-                        styleClass="p-button-warning"
-                    />
-                </div>
+        <div class="field col-12">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="apenomEstudiante"
+              formControlName="apenomEstudiante"
+              aria-describedby="apenomEstudiante-help"
+            />
+            <label for="apenomEstudiante">Apelidos y nombres *</label>
+          </span>
+        </div>
 
-                <div class="field col-12">
-                    <span class="p-float-label">
-                        <input
-                            pInputText
-                            id="apenomEstudiante"
-                            formControlName="apenomEstudiante"
-                            aria-describedby="apenomEstudiante-help"
-                        />
-                        <label for="apenomEstudiante"
-                            >Apelidos y nombres *</label
-                        >
-                    </span>
-                </div>
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="nivel_grados"
+              formControlName="iNivelGradoId"
+              optionLabel="nombre"
+              [checkmark]="true"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              [disabled]="bEditar"
+            />
+            <label for="iNivelGradoId">Seleccionar grado *</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="turnos"
+              formControlName="iTurnoId"
+              optionLabel="nombre"
+              [checkmark]="true"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              [disabled]="bEditar"
+            />
+            <label for="iTurnoId">Seleccionar turno *</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="secciones"
+              formControlName="iSeccionId"
+              optionLabel="nombre"
+              [checkmark]="true"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              [disabled]="bEditar"
+            />
+            <label for="iSeccionId">Seleccionar sección</label>
+          </span>
+        </div>
 
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="nivel_grados"
-                            formControlName="iNivelGradoId"
-                            optionLabel="nombre"
-                            [checkmark]="true"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        />
-                        <label for="iNivelGradoId">Seleccionar grado *</label>
-                    </span>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="turnos"
-                            formControlName="iTurnoId"
-                            optionLabel="nombre"
-                            [checkmark]="true"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        />
-                        <label for="iTurnoId">Seleccionar turno *</label>
-                    </span>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="secciones"
-                            formControlName="iSeccionId"
-                            optionLabel="nombre"
-                            [checkmark]="true"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        />
-                        <label for="iSeccionId">Seleccionar sección</label>
-                    </span>
-                </div>
+        <div class="field col-12 md:col-6">
+          <span class="p-float-label">
+            <p-calendar
+              formControlName="dtMatrFecha"
+              [iconDisplay]="'input'"
+              [showIcon]="true"
+              inputId="dtMatrFecha"
+              [appendTo]="'body'"
+            />
+            <label for="dtMatrFecha">Fecha de matrícula *</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-6">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="tipos_matriculas"
+              formControlName="iTipoMatrId"
+              optionLabel="nombre"
+              [checkmark]="true"
+              optionValue="id"
+              [showClear]="true"
+              [filter]="true"
+              [appendTo]="'body'"
+            />
+            <label for="iTipoMatrId">Tipo de matrícula *</label>
+          </span>
+        </div>
 
-                <div class="field col-12 md:col-6">
-                    <span class="p-float-label">
-                        <p-calendar
-                            formControlName="dtMatrFecha"
-                            [iconDisplay]="'input'"
-                            [showIcon]="true"
-                            inputId="dtMatrFecha"
-                            [appendTo]="'body'"
-                        />
-                        <label for="dtMatrFecha">Fecha de matrícula *</label>
-                    </span>
-                </div>
-                <div class="field col-12 md:col-6">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="tipos_matriculas"
-                            formControlName="iTipoMatrId"
-                            optionLabel="nombre"
-                            [checkmark]="true"
-                            optionValue="id"
-                            [showClear]="true"
-                            [filter]="true"
-                            [appendTo]="'body'"
-                        />
-                        <label for="iTipoMatrId">Tipo de matrícula *</label>
-                    </span>
-                </div>
-
-                <div class="field col-12">
-                    <span class="p-float-label">
-                        <input
-                            pInputText
-                            formControlName="cMatrObservaciones"
-                            aria-describedby="cMatrObservaciones-help"
-                        />
-                        <label for="cMatrObservaciones">Observación</label>
-                    </span>
-                </div>
-                <div class="field col-offset-8 col-4 md:col-offset-9 md:col-3">
-                    <p-button
-                        label="Guardar"
-                        [disabled]="form.invalid"
-                        (onClick)="guardarMatricula()"
-                        styleClass="p-button-primary"
-                    />
-                </div>
-            </div>
-        </form>
-    </ng-content>
+        <div class="field col-12">
+          <span class="p-float-label">
+            <input
+              pInputText
+              formControlName="cMatrObservaciones"
+              aria-describedby="cMatrObservaciones-help"
+            />
+            <label for="cMatrObservaciones">Observación</label>
+          </span>
+        </div>
+        <div class="field col-offset-8 col-4 md:col-offset-9 md:col-3">
+          <p-button
+            *ngIf="!bEditar"
+            label="Guardar"
+            icon="pi pi-save"
+            [disabled]="form.invalid"
+            (onClick)="guardarMatricula()"
+            styleClass="p-button-success"
+          />
+          <p-button
+            *ngIf="bEditar"
+            label="Actualizar"
+            [disabled]="form.invalid"
+            (onClick)="updMatricula()"
+            styleClass="p-button-warning"
+          />
+        </div>
+      </div>
+    </form>
+  </ng-content>
 </p-panel>
 
 <p-toast></p-toast>

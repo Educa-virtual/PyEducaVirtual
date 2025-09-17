@@ -227,6 +227,8 @@ export class ConfigResumenComponent implements OnInit {
         totalHorasPendientes: this.totalHorasPendientes,
         perfil: this.perfil,
         configuracion: this.configuracion,
+        lista_grados: this.lista_grados,
+        tablaPivot: this.tablaPivot,
       },
     };
     this.query.generarPdf(params).subscribe({

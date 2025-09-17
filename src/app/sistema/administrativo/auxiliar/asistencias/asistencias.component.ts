@@ -64,22 +64,22 @@ export class AsistenciasComponent implements OnInit {
       iTipoAsiId: '2',
       cTipoAsiLetra: 'T',
       cTipoAsiNombre: 'Tardanza',
-      textColor: 'red-50-boton',
-      bgColor: 'bg-red-500',
+      textColor: 'orange-50-boton',
+      bgColor: 'bg-orange-500',
     },
     {
       iTipoAsiId: '3',
       cTipoAsiLetra: 'I',
       cTipoAsiNombre: 'Inasistencia',
-      textColor: 'primary-50-boton',
-      bgColor: 'bg-primary-500',
+      textColor: 'red-50-boton',
+      bgColor: 'bg-red-500',
     },
     {
       iTipoAsiId: '4',
       cTipoAsiLetra: 'J',
       cTipoAsiNombre: 'Inasistencia Justificada',
-      textColor: 'orange-50-boton',
-      bgColor: 'bg-orange-500',
+      textColor: 'primary-50-boton',
+      bgColor: 'bg-primary-500',
     },
     {
       iTipoAsiId: '9',
@@ -109,7 +109,7 @@ export class AsistenciasComponent implements OnInit {
     this.buscarAulas();
   }
 
-  // busca las aulas de la institucion
+  // busca las aulas de la institucion para el dropdown
   buscarAulas() {
     this.finalizar = true;
 
@@ -155,7 +155,7 @@ export class AsistenciasComponent implements OnInit {
         ruta: 'buscar-lista-estudiantes',
         data: {
           opcion: 'buscar-grupo',
-          dtAsistencia: this.datos.dtAsistencia,
+          dtAsistencia: this.formatoFecha(this.datos.dtAsistencia),
           iGradoId: this.datos.iGradoId,
           iSeccionId: this.datos.iSeccionId,
           iSedeId: this.dremoPerfil.iSedeId,
@@ -202,7 +202,7 @@ export class AsistenciasComponent implements OnInit {
         data: {
           opcion: 'buscar-estudiante',
           cEstCodigo: this.datos.cEstCodigo,
-          dtAsistencia: this.datos.dtAsistencia,
+          dtAsistencia: this.formatoFecha(this.datos.dtAsistencia),
           cPersDocumento: this.datos.cPersDocumento,
           iSedeId: this.dremoPerfil.iSedeId,
           iYAcadId: this.dremoiYAcadId,

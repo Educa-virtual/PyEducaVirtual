@@ -10,7 +10,7 @@
     <p-tabView>
       <p-tabPanel header="Grados y Sección">
         <div class="grid h-full m-1">
-          <div class="col-6 md:col-6 lg:col-3">
+          <div class="col-12 md:col-6 lg:col-3">
             <p-inputGroup>
               <p-inputGroupAddon>Grado</p-inputGroupAddon>
               <p-dropdown
@@ -23,7 +23,7 @@
               />
             </p-inputGroup>
           </div>
-          <div class="col-6 md:col-6 lg:col-3">
+          <div class="col-12 md:col-6 lg:col-3">
             <p-inputGroup>
               <p-inputGroupAddon>Sección</p-inputGroupAddon>
               <p-dropdown
@@ -69,7 +69,7 @@
             <p-table
               [value]="alumnos"
               [paginator]="true"
-              [rows]="10"
+              [rows]="20"
               class="w-full"
               [rowsPerPageOptions]="[5, 10, 20]"
             >
@@ -202,7 +202,7 @@
             <p-table
               [value]="estudiante"
               [paginator]="true"
-              [rows]="10"
+              [rows]="20"
               responsiveLayout="stack"
               [rowsPerPageOptions]="[5, 10, 20]"
               [paginatorDropdownAppendTo]="'body'"
@@ -339,7 +339,7 @@
             <p-table
               [value]="temporal"
               [paginator]="true"
-              [rows]="10"
+              [rows]="20"
               [rowsPerPageOptions]="[5, 10, 20]"
             >
               <ng-template pTemplate="header">

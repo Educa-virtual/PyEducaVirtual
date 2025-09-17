@@ -64,36 +64,36 @@ export class AsistenciasComponent implements OnInit {
       iTipoAsiId: '2',
       cTipoAsiLetra: 'T',
       cTipoAsiNombre: 'Tardanza',
-      textColor: 'red-50-boton',
-      bgColor: 'bg-red-500',
+      textColor: 'orange-50-boton',
+      bgColor: 'bg-orange-500',
     },
     {
       iTipoAsiId: '3',
       cTipoAsiLetra: 'I',
       cTipoAsiNombre: 'Inasistencia',
-      textColor: 'primary-50-boton',
-      bgColor: 'bg-primary-500',
+      textColor: 'red-50-boton',
+      bgColor: 'bg-red-500',
     },
     {
       iTipoAsiId: '4',
       cTipoAsiLetra: 'J',
       cTipoAsiNombre: 'Inasistencia Justificada',
-      textColor: 'orange-50-boton',
-      bgColor: 'bg-orange-500',
+      textColor: 'primary-50-boton',
+      bgColor: 'bg-primary-500',
     },
     {
       iTipoAsiId: '9',
       cTipoAsiLetra: 'P',
       cTipoAsiNombre: 'Tardanza Justificada',
-      textColor: 'cyan-50-boton',
-      bgColor: 'bg-cyan-500',
+      textColor: 'yellow-50-boton',
+      bgColor: 'bg-yellow-500',
     },
     {
       iTipoAsiId: '7',
       cTipoAsiLetra: '-',
       cTipoAsiNombre: 'Sin Registro',
-      textColor: 'yellow-50-boton',
-      bgColor: 'bg-yellow-500',
+      textColor: 'cyan-50-boton',
+      bgColor: 'bg-cyan-500',
     },
   ];
 
@@ -109,7 +109,7 @@ export class AsistenciasComponent implements OnInit {
     this.buscarAulas();
   }
 
-  // busca las aulas de la institucion
+  // busca las aulas de la institucion para el dropdown
   buscarAulas() {
     this.finalizar = true;
 
@@ -155,7 +155,7 @@ export class AsistenciasComponent implements OnInit {
         ruta: 'buscar-lista-estudiantes',
         data: {
           opcion: 'buscar-grupo',
-          dtAsistencia: this.datos.dtAsistencia,
+          dtAsistencia: this.formatoFecha(this.datos.dtAsistencia),
           iGradoId: this.datos.iGradoId,
           iSeccionId: this.datos.iSeccionId,
           iSedeId: this.dremoPerfil.iSedeId,
@@ -202,7 +202,7 @@ export class AsistenciasComponent implements OnInit {
         data: {
           opcion: 'buscar-estudiante',
           cEstCodigo: this.datos.cEstCodigo,
-          dtAsistencia: this.datos.dtAsistencia,
+          dtAsistencia: this.formatoFecha(this.datos.dtAsistencia),
           cPersDocumento: this.datos.cPersDocumento,
           iSedeId: this.dremoPerfil.iSedeId,
           iYAcadId: this.dremoiYAcadId,
@@ -458,6 +458,7 @@ export class AsistenciasComponent implements OnInit {
     this.alumnos[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
     this.alumnos[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
     this.alumnos[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
+    this.alumnos[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
   cambiarEstadoEstudiante(index: any, item: any) {
     const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
@@ -465,6 +466,7 @@ export class AsistenciasComponent implements OnInit {
     this.estudiante[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
     this.estudiante[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
     this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
+    this.estudiante[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
   camaraEncontrada() {
     this.estado = false;
@@ -501,7 +503,6 @@ export class AsistenciasComponent implements OnInit {
         link.click();
       },
       error: error => {
-        console.error('Error obteniendo encuesta:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

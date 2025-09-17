@@ -41,8 +41,10 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   ) {
     this.iYAcadId = this._constantesService.iYAcadId;
     this.iPersId = this._constantesService.iPersId;
+    this.iIieeId = this._constantesService.iIieeId;
   }
 
+  iIieeId: any;
   documentos: any = [];
   opcionCurso = [];
   idDocenteCurso: number;
@@ -92,15 +94,16 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.goSection('resultados');
         },
       },
-      {
-        label: 'Portafolio',
-        icon: 'pi pi-angle-right',
-        command: () => {
-          this.goSection('portafolio');
-        },
-      },
+      // {
+      //   label: 'Portafolio',
+      //   icon: 'pi pi-angle-right',
+      //   command: () => {
+      //     this.goSection('portafolio');
+      //   },
+      // },
     ];
     this.obtenerPortafolios();
+    // this.obtenerReglamento();
   }
   ngOnChanges(changes) {
     if (changes.data?.currentValue) {
@@ -187,7 +190,16 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         );
         break;
       case 'portafolio':
-        this.visiblePortafolio = true;
+        if (this.selectedData['iSilaboId']) {
+          this.visiblePortafolio = true;
+        } else {
+          this.MessageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Debes Ingresar un Silabo',
+          });
+        }
+
         break;
     }
   }
@@ -326,17 +338,26 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
         const resultado = respuesta.data;
-        if (resultado.estado == 1) {
+        if (resultado.estado > 0) {
+          const index = this.data.findIndex(
+            item =>
+              this.selectedData['idDocCursoId'] === item.idDocCursoId &&
+              this.selectedData['iSeccionId'] === item.iSeccionId &&
+              this.selectedData['iCursoId'] === item.iCursoId
+          );
+          const formato = JSON.parse(resultado.documento);
+
+          this.data[index].iSilaboId = resultado.estado;
+          this.data[index].cProgramacion = resultado.estado;
+
+          this.documentos = formato;
+          fileUpload.clear();
+
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito en el Registro',
             detail: 'Programacion Curricular Actualizada',
           });
-          const formato = JSON.parse(resultado.documento);
-          this.data.find(i => i.iSilaboId === this.selectedData['iSilaboId']).cProgramacion =
-            formato;
-          this.documentos = formato;
-          fileUpload.clear();
         } else {
           this.MessageService.add({
             severity: 'warning',
@@ -367,9 +388,10 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     };
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
-        const itinerario = respuesta.data[0].cPortafolioItinerario;
-        this.cPortafolioItinerario = JSON.parse(itinerario) || [];
-        this.reglamento = respuesta.data[0];
+        console.log(respuesta);
+        // const itinerario = respuesta.data[0].cPortafolioItinerario;
+        // this.cPortafolioItinerario = JSON.parse(itinerario) || [];
+        // this.reglamento = respuesta.data[0];
       },
       error: err => {
         console.log(err);
@@ -408,23 +430,96 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
   subirPortafolio(event: any, tipo: any) {
+    const file = event.files && event.files.length > 0 ? event.files[0] : null;
+    if (file) {
+      this.archivos.enlace = file;
+    } else {
+      this.archivos.enlace = null;
+    }
+
     const enviar = new FormData();
     enviar.append('tipoPortafolio', tipo);
-
+    enviar.append('iPersId', this.iPersId);
+    enviar.append('iYAcadId', this.iYAcadId);
+    enviar.append('archivo', this.archivos.enlace);
     const params = {
       petition: 'post',
-      group: 'docente',
-      prefix: 'portafolios',
-      ruta: 'guardarItinerario',
+      group: 'acad',
+      prefix: 'docente',
+      ruta: 'guardar_portafolio_documento',
       data: enviar,
     };
 
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
-        console.log(respuesta);
+        if (tipo == 'itinerario') {
+          const url = respuesta.data;
+          this.guardarItinerario(url);
+        }
       },
       error: err => {
         console.log(err);
+      },
+    });
+  }
+
+  guardarItinerario(ruta: any) {
+    this.cPortafolioItinerario = [];
+    const formato = {
+      name: this.archivos.enlace.name,
+      ruta: ruta,
+    };
+    this.cPortafolioItinerario.push(formato);
+    const params = {
+      petition: 'post',
+      group: 'docente',
+      prefix: 'portafolios',
+      ruta: 'guardarItinerario',
+      data: {
+        iDocenteId: this._constantesService.iDocenteId,
+        iYAcadId: this.iYAcadId,
+        cPortafolioItinerario: JSON.stringify(this.cPortafolioItinerario),
+      },
+    };
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: () => {
+        this.MessageService.add({
+          severity: 'success',
+          summary: 'Exito de Registro',
+          detail: 'Se guardo el archivo Itinerario',
+        });
+      },
+      error: err => {
+        this.MessageService.add({
+          severity: 'error',
+          summary: 'Error de Registro',
+          detail: err,
+        });
+      },
+    });
+  }
+  obtenerReglamento() {
+    const params = {
+      petition: 'post',
+      group: 'docente',
+      prefix: 'portafolios',
+      ruta: 'obtenerPortafolios',
+      data: {
+        iYacadId: this.iYAcadId,
+        iDocenteId: this._constantesService.iDocenteId,
+        iIieeId: this.iIieeId,
+      },
+    };
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: respuesta => {
+        console.log('ver #1', respuesta);
+      },
+      error: err => {
+        this.MessageService.add({
+          severity: 'error',
+          summary: 'Error al Obtener Reglamento',
+          detail: err,
+        });
       },
     });
   }

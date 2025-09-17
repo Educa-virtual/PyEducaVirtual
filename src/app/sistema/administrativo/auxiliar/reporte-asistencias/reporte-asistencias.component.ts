@@ -138,28 +138,28 @@ export class ReporteAsistenciasComponent implements OnInit {
       id: 1,
       indice: 2,
       nombre: 'Tardanza',
-      seccion: 'inasistencia',
+      seccion: 'tardanza',
       color: '--orange-500',
     },
     {
       id: 2,
       indice: 3,
       nombre: 'Inasistencia',
-      seccion: 'inasistenciaJustificada',
+      seccion: 'inasistencia',
       color: '--red-500',
     },
     {
       id: 3,
       indice: 4,
       nombre: 'Inasistencia Justificada',
-      seccion: 'sinRegistro',
+      seccion: 'inasistenciaJustificada',
       color: '--primary-500',
     },
     {
       id: 4,
       indice: 5,
       nombre: 'Sin Registro',
-      seccion: 'tardanza',
+      seccion: 'sinRegistro',
       color: '--yellow-500',
     },
     {
@@ -204,14 +204,14 @@ export class ReporteAsistenciasComponent implements OnInit {
       iTipoAsiId: '9',
       cTipoAsiLetra: 'P',
       cTipoAsiNombre: 'Tardanza Justificada',
-      textColor: 'cyan-50-boton',
+      textColor: 'yellow-50-boton',
       bgColor: 'bg-yellow-500',
     },
     {
       iTipoAsiId: '7',
       cTipoAsiLetra: '-',
       cTipoAsiNombre: 'Sin Registro',
-      textColor: 'yellow-50-boton',
+      textColor: 'cyan-50-boton',
       bgColor: 'bg-cyan-500',
     },
   ];
@@ -255,6 +255,15 @@ export class ReporteAsistenciasComponent implements OnInit {
   }
 
   ReporteGraficoEstudiante() {
+    if (!this.datos.cPersDocumento && !this.datos.cEstCodigo) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Fallo en la Busqueda',
+        detail: 'Falta Ingresar Datos para la Busqueda',
+      });
+      return;
+    }
+
     const enlace = {
       petition: 'post',
       group: 'asi',
@@ -302,10 +311,10 @@ export class ReporteAsistenciasComponent implements OnInit {
 
     const conjunto = [
       tipo.asistio,
+      tipo.tardanza,
       tipo.inasistencia,
       tipo.inasistenciaJustificada,
       tipo.sinRegistro,
-      tipo.tardanza,
       tipo.tardanzaJustificada,
     ];
 
@@ -322,8 +331,8 @@ export class ReporteAsistenciasComponent implements OnInit {
       documentStyle.getPropertyValue('--orange-500'),
       documentStyle.getPropertyValue('--red-500'),
       documentStyle.getPropertyValue('--primary-500'),
-      documentStyle.getPropertyValue('--yellow-500'),
       documentStyle.getPropertyValue('--cyan-500'),
+      documentStyle.getPropertyValue('--yellow-500'),
     ];
 
     const hover = [
@@ -331,8 +340,8 @@ export class ReporteAsistenciasComponent implements OnInit {
       documentStyle.getPropertyValue('--orange-400'),
       documentStyle.getPropertyValue('--red-400'),
       documentStyle.getPropertyValue('--primary-400'),
-      documentStyle.getPropertyValue('--yellow-400'),
       documentStyle.getPropertyValue('--cyan-400'),
+      documentStyle.getPropertyValue('--yellow-400'),
     ];
 
     this.dona = {
@@ -346,23 +355,28 @@ export class ReporteAsistenciasComponent implements OnInit {
       ],
     };
   }
+
+  /**
+     * Se recorre la lista de alumnos
+    // @param filtrar
+  */
   filtrarGrafica() {
     this.inhabilitarBoton = true;
     this.barra = [[], [], [], [], [], []];
     this.total = [];
-    this.total = this.registros[0].asistencia[0].total;
     this.nombres = [];
+    this.total = this.registros[0].asistencia[0].total;
 
     const documentStyle = getComputedStyle(document.documentElement);
 
     const datos = this.tipo.tipoAsistencia;
+
     const tipo = this.asistencias.find(list => list.indice === datos);
     const filtrar = !datos
       ? this.registros
       : this.registros.sort(
           (a, b) => b.asistencia[0][tipo.seccion] - a.asistencia[0][tipo.seccion]
         );
-
     filtrar.forEach(lista => {
       const nombre = lista.completo;
 
@@ -376,12 +390,11 @@ export class ReporteAsistenciasComponent implements OnInit {
 
       this.nombres.push(nombre);
       this.barra[0].push(asistio);
-      this.barra[1].push(inasistencia);
-      this.barra[2].push(inasistenciaJustificada);
-      this.barra[3].push(sinRegistro);
-      this.barra[4].push(tardanza);
+      this.barra[1].push(tardanza);
+      this.barra[2].push(inasistencia);
+      this.barra[3].push(inasistenciaJustificada);
+      this.barra[4].push(sinRegistro);
       this.barra[5].push(tardanzaJustificada);
-
       if (!this.tipo.tipoAsistencia) {
         this.grafico = {
           labels: this.nombres,
@@ -408,12 +421,12 @@ export class ReporteAsistenciasComponent implements OnInit {
             },
             {
               label: 'Sin Registro',
-              backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
+              backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
               data: this.barra[4],
             },
             {
               label: 'Tardanza Justificada',
-              backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
+              backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
               data: this.barra[5],
             },
           ],
@@ -422,7 +435,7 @@ export class ReporteAsistenciasComponent implements OnInit {
         const tipo = this.asistencias.find(lista => {
           return lista.indice === this.tipo.tipoAsistencia;
         });
-        console.log('ojo #1', tipo);
+
         this.grafico = {
           labels: this.nombres,
           datasets: [
@@ -438,6 +451,15 @@ export class ReporteAsistenciasComponent implements OnInit {
   }
 
   buscarReporteEstudiante() {
+    if (!this.tipo.numero && (!this.datos.cEstCodigo || !this.datos.cPersDocumento)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Fallo en la Busqueda',
+        detail: 'Falta Ingresar Datos para la Busqueda',
+      });
+      return;
+    }
+
     const year = this.dremoiYAcadId;
     const filtrar = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
     this.meses[1].dia = filtrar ? '29' : '28';
@@ -463,6 +485,15 @@ export class ReporteAsistenciasComponent implements OnInit {
   }
 
   buscarReporteAula() {
+    if (!this.datos.iGradoId || !this.datos.iSeccionId || !this.tipo.numero) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Fallo en la Busqueda',
+        detail: 'Falta Ingresar Datos para la Busqueda',
+      });
+      return;
+    }
+
     const year = this.dremoiYAcadId;
     const filtrar = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
     this.meses[1].dia = filtrar ? '29' : '28';
@@ -517,6 +548,7 @@ export class ReporteAsistenciasComponent implements OnInit {
               list.asistencia.push(nuevo);
             }
           });
+          list.asistencia.sort((a, b) => a.diaEspecifico - b.diaEspecifico);
         });
       },
       error: err => {

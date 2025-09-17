@@ -311,10 +311,10 @@ export class ReporteAsistenciasComponent implements OnInit {
 
     const conjunto = [
       tipo.asistio,
+      tipo.tardanza,
       tipo.inasistencia,
       tipo.inasistenciaJustificada,
       tipo.sinRegistro,
-      tipo.tardanza,
       tipo.tardanzaJustificada,
     ];
 

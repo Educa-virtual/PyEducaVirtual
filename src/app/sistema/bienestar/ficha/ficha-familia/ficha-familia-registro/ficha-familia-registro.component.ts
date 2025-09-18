@@ -304,8 +304,8 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
    * @param item datos del familiar seleccionado
    */
   setFormFamiliar(item: any) {
+    this.formFamiliar.reset();
     if (!item) {
-      this.formFamiliar.reset();
       this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
       this.familiar_registrado = false;
       return;
@@ -431,7 +431,19 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       this.familiar_registrado = false;
       return;
     }
+
+    const iFamiliarId = this.formFamiliar.value.iFamiliarId;
+    const iTipoIdentId = this.formFamiliar.value.iTipoIdentId;
+    const cPersDocumento = this.formFamiliar.value.cPersDocumento;
+    const iTipoFamiliarId = this.formFamiliar.value.iTipoFamiliarId;
+
+    this.resetearCamposConsultables();
+    this.formFamiliar.get('iFamiliarId').setValue(iFamiliarId);
+    this.formFamiliar.get('iTipoIdentId').setValue(iTipoIdentId);
+    this.formFamiliar.get('cPersDocumento').setValue(cPersDocumento);
+    this.formFamiliar.get('iTipoFamiliarId').setValue(iTipoFamiliarId);
     this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId);
+    this.formFamiliar.get('iPersId').setValue(item.iPersId);
     this.formFamiliar.get('cPersNombre').setValue(item.cPersNombre);
     this.formFamiliar.get('cPersPaterno').setValue(item.cPersPaterno);
     this.formFamiliar.get('cPersMaterno').setValue(item.cPersMaterno);
@@ -475,6 +487,20 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       'date'
     );
     this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
+  }
+
+  resetearCamposConsultables() {
+    this.formFamiliar.get('cPersNombre').setValue(null);
+    this.formFamiliar.get('cPersPaterno').setValue(null);
+    this.formFamiliar.get('cPersMaterno').setValue(null);
+    this.formFamiliar.get('cPersSexo').setValue(null);
+    this.formFamiliar.get('cPersDomicilio').setValue(null);
+    this.formFamiliar.get('iTipoEstCivId').setValue(null);
+    this.formFamiliar.get('iNacionId').setValue(null);
+    this.formFamiliar.get('iDptoId').setValue(null);
+    this.formFamiliar.get('iPrvnId').setValue(null);
+    this.formFamiliar.get('iDsttId').setValue(null);
+    this.formFamiliar.get('dPersNacimiento').setValue(null);
   }
 
   guardarFamiliar() {
@@ -538,9 +564,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
   }
 
   salirResetearForm() {
-    if (this.familiar_registrado) {
-      this.esVisibleChange.emit(false);
-    }
+    this.esVisibleChange.emit(false);
     this.formFamiliar.reset();
     this.formFamiliar.get('iPersId')?.setValue(null);
     this.formFamiliar.get('iFichaDGId')?.setValue(null);

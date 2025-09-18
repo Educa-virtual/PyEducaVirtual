@@ -324,4 +324,8 @@ export class DatosInformesService {
   importarOffLine(data: any) {
     return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data);
   }
+
+  subirHojaDesarrollo(data: any) {
+    return this.http.post(`${baseUrl}/ere/resultados/estudiante/hoja-desarrollo`, data);
+  }
 }

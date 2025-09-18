@@ -99,17 +99,17 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /*ngOnChanges(changes: SimpleChanges): void {
-        if (changes['iEvaluacionIdHashed']?.currentValue) {
-            this.iEvaluacionIdHashed =
-                changes['iEvaluacionIdHashed'].currentValue
-        }
-        if (changes['cursosFromParent']?.currentValue) {
-            this.cursosFromParent = changes['cursosFromParent'].currentValue
-            this.cursos = [...this.cursosFromParent]
-            console.log('Cursos recibidos del padre:', this.cursos)
-        }
-    }
-        */
+          if (changes['iEvaluacionIdHashed']?.currentValue) {
+              this.iEvaluacionIdHashed =
+                  changes['iEvaluacionIdHashed'].currentValue
+          }
+          if (changes['cursosFromParent']?.currentValue) {
+              this.cursosFromParent = changes['cursosFromParent'].currentValue
+              this.cursos = [...this.cursosFromParent]
+              console.log('Cursos recibidos del padre:', this.cursos)
+          }
+      }
+          */
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iEvaluacionIdHashed']?.currentValue) {
@@ -149,7 +149,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         header: 'Hoja de respuestas',
         width: '10%',
       },
-      { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+      { field: 'matriz', header: 'Matriz de evaluación', width: '10%' },
       { field: 'acciones', header: 'Acciones', width: '10%' },
     ];
 
@@ -175,7 +175,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
       { field: 'area', header: 'Área', width: '15%' },
       {
         field: 'cuadernillo',
-        header: 'Cuadernillo de Evaluación',
+        header: 'Cuadernillo de evaluación',
         width: '10%',
       },
       {
@@ -183,10 +183,10 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         header: 'Hoja de respuestas',
         width: '10%',
       },
-      { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
+      { field: 'matriz', header: 'Matriz de evaluación', width: '10%' },
       {
         field: 'activarDescargas',
-        header: 'Activar descargas',
+        header: 'Activar / desactivar descarga matriz',
         width: '10%',
       },
       { field: 'acciones', header: 'Acciones', width: '10%' },
@@ -221,18 +221,18 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
   /*descargarArchivoPreguntasPorArea(tipoArchivo: string): void {
-        if (!this.cursoSeleccionado) {
-            alert('No hay curso seleccionado')
-            return
-        }
+          if (!this.cursoSeleccionado) {
+              alert('No hay curso seleccionado')
+              return
+          }
 
-        const params = {
-            iEvaluacionId: this.iEvaluacionIdHashed,
-            iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
-            tipoArchivo: tipoArchivo,
-        }
-        this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
-    }*/
+          const params = {
+              iEvaluacionId: this.iEvaluacionIdHashed,
+              iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
+              tipoArchivo: tipoArchivo,
+          }
+          this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
+      }*/
   descargarMatrizPorEvaluacionArea(): void {
     if (!this.cursoSeleccionado) {
       alert('No hay curso seleccionado');
@@ -262,20 +262,20 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
   /*descargarMatrizPorEvaluacionArea(): void {
-        if (!this.cursoSeleccionado) {
-            alert('No hay curso seleccionado')
-            return
-        }
+          if (!this.cursoSeleccionado) {
+              alert('No hay curso seleccionado')
+              return
+          }
 
-        const user = this.store.getItem('dremoUser')
-        const params = {
-            iEvaluacionId: this.iEvaluacionIdHashed,
-            iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
-            iDocenteId: user.iDocenteId,
-        }
-        this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
-    }
-    */
+          const user = this.store.getItem('dremoUser')
+          const params = {
+              iEvaluacionId: this.iEvaluacionIdHashed,
+              iCursosNivelGradId: this.cursoSeleccionado.iCursosNivelGradId!,
+              iDocenteId: user.iDocenteId,
+          }
+          this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
+      }
+      */
   descargarPDF(tipo: string, curso: ICurso): void {
     this.cursoSeleccionado = curso;
 
@@ -380,25 +380,25 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
   /*eliminarArchivoCuadernillo(curso: ICurso): void {
-        this.cursoSeleccionado = curso
+          this.cursoSeleccionado = curso
 
-        if (
-            confirm(
-                `¿Está seguro de eliminar el archivo de cuadernillo para ${curso.cCursoNombre}?\n\nEsto le permitirá subir un nuevo archivo.`
-            )
-        ) {
-            console.log(
-                'Eliminando archivo de cuadernillo para:',
-                curso.cCursoNombre
-            )
+          if (
+              confirm(
+                  `¿Está seguro de eliminar el archivo de cuadernillo para ${curso.cCursoNombre}?\n\nEsto le permitirá subir un nuevo archivo.`
+              )
+          ) {
+              console.log(
+                  'Eliminando archivo de cuadernillo para:',
+                  curso.cCursoNombre
+              )
 
-            curso.bTieneArchivo = false
+              curso.bTieneArchivo = false
 
-            console.log(
-                'Archivo eliminado. Ahora puede subir un nuevo archivo.'
-            )
-        }
-    }*/
+              console.log(
+                  'Archivo eliminado. Ahora puede subir un nuevo archivo.'
+              )
+          }
+      }*/
 
   obtenerNombreArchivo(curso: ICurso): string {
     return `${curso.cCursoNombre?.toLowerCase().replace(/\s+/g, '_')}_eval.pdf`;
@@ -497,6 +497,35 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
       },
     });
   }
+
+  actualizarEstadoDescargaMatriz(curso: any) {
+    curso.bDescarga = (curso.bDescarga ?? '0') === '0' ? '1' : '0';
+    this.areasService
+      .actualizarEstadoDescarga(
+        curso.iEvaluacionIdHashed,
+        curso.iCursosNivelGradId,
+        curso.bDescarga === '1'
+      )
+      .subscribe({
+        next: resp => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: resp.message,
+          });
+        },
+        error: err => {
+          //Volver a estado anterior
+          curso.bDescarga = curso.bDescarga === '0' ? '1' : '0';
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error.message || 'Error al actualizar el estado de las descargas.',
+          });
+        },
+      });
+  }
+
   onDialogActivarDescarga(curso: ICurso): void {
     this.cursoSeleccionado = curso;
     this.dialogActivarDescarga.emit({ curso });

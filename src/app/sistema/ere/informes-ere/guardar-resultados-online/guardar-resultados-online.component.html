@@ -1,55 +1,52 @@
 <p-dialog
-    header="{{ cabecera }}"
-    [(visible)]="visible"
-    [style]="{ width: '90rem' }"
-    [modal]="true"
-    [maximizable]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    (accionBtnItem)="accionBtn($event)"
+  header="{{ cabecera }}"
+  [(visible)]="visible"
+  [style]="{ width: '90rem' }"
+  [modal]="true"
+  [maximizable]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (accionBtnItem)="accionBtn($event)"
 >
-    <section>
-        <!-- <div class="col-12 flex justify-content-center mt-5">
+  <section>
+    <!-- <div class="col-12 flex justify-content-center mt-5">
             <span class="font-bold text-3xl">CONSOLIDADO DE RESULTADOS DE AULA - ERE INICIO 2025</span>
         </div> -->
-        <form [formGroup]="formCurso">
-            <div class="grid p-fluid mt-3 col">
-                <div class="grid card col-10 mr-3 relative mt-2">
-                    <div>
-                        <span class="btn">Datos I.E.</span>
-                    </div>
-                    <div class="col-12">
-                        <div class="grid mt-5">
-                            <div class="col-6">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cCursoNombre"
-                                        formControlName="cCursoNombre"
-                                        aria-describedby="cCursoNombre-help"
-                                        readonly
-                                    />
-                                    <label for="cCursoNombre" class="font-bold"
-                                        >ÁREA:</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="col-6">
-                                <p-inputGroup>
-                                    <p-inputGroupAddon>
-                                        Docente de Aula:
-                                    </p-inputGroupAddon>
-                                    <input
-                                        pInputText
-                                        id="cNombreDocente"
-                                        formControlName="cNombreDocente"
-                                        placeholder="Nombre del Docente"
-                                        readonly
-                                        aria-describedby="cPersDocumento-help"
-                                    />
-                                </p-inputGroup>
-                            </div>
-                        </div>
-                        <!--
+    <form [formGroup]="formCurso">
+      <div class="grid p-fluid mt-3 col">
+        <div class="grid card col-10 mr-3 relative mt-2">
+          <div>
+            <span class="btn">Datos I.E.</span>
+          </div>
+          <div class="col-12">
+            <div class="grid mt-5">
+              <div class="col-6">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    id="cCursoNombre"
+                    formControlName="cCursoNombre"
+                    aria-describedby="cCursoNombre-help"
+                    readonly
+                    class="desactivado"
+                  />
+                  <label for="cCursoNombre" class="font-bold">ÁREA:</label>
+                </span>
+              </div>
+              <div class="col-6">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    id="cNombreDocente"
+                    formControlName="cNombreDocente"
+                    aria-describedby="cNombreDocente-help"
+                    readonly
+                    class="desactivado"
+                  />
+                  <label for="cNombreDocente" class="font-bold">DOCENTE:</label>
+                </span>
+              </div>
+            </div>
+            <!--
                         <span class="p-float-label mt-5">
                             <input
                                 pInputText
@@ -61,7 +58,7 @@
                                 >I.E.</label
                             >
                         </span> -->
-                        <!-- <span class="p-float-label mt-5">
+            <!-- <span class="p-float-label mt-5">
                             <input
                                 pInputText
                                 id="cPersDocumento"
@@ -72,79 +69,68 @@
                                 >ÁREA:</label
                             >
                         </span> -->
-                        <div class="grid mt-5">
-                            <!-- Mostrar grado -->
-                            <div class="col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cGradoAbreviacion"
-                                        formControlName="cGradoAbreviacion"
-                                        aria-describedby="cGradoAbreviacion-help"
-                                        readonly
-                                    />
-                                    <label
-                                        for="cGradoAbreviacion"
-                                        class="font-bold"
-                                        >GRADO:</label
-                                    >
-                                </span>
-                            </div>
 
-                            <!-- Mostrar SECCIÓN -->
-                            <div class="col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="secciones"
-                                        [style]="{ width: '100%' }"
-                                        filterBy="cSeccionDescripcion"
-                                        optionLabel="cSeccionDescripcion"
-                                        optionValue="iSeccionId"
-                                        formControlName="iSeccionId"
-                                        (onChange)="filtrado($event)"
-                                        [appendTo]="'body'"
-                                    >
-                                    </p-dropdown>
-                                    <label for="iSeccionId" class="font-bold"
-                                        >Seleccione Sección</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cNivelTipoNombre"
-                                        formControlName="cNivelTipoNombre"
-                                        aria-describedby="cNivelTipoNombre-help"
-                                        readonly
-                                    />
-                                    <label
-                                        for="cNivelTipoNombre"
-                                        class="font-bold"
-                                        >NIVEL:</label
-                                    >
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col ml-3">
-                    <div class="mt-5">
-                        <div class="flex justify-content-center">
-                            <span class="text-7xl font-bold text-primary">{{
-                                alumnosFiltrados?.length
-                            }}</span>
-                        </div>
-                        <div class="flex justify-content-center">
-                            <span class="text-base text-gray-600 mt-2"
-                                >Estudiantes Registrados</span
-                            >
-                        </div>
-                    </div>
-                </div>
+            <div class="grid mt-5">
+              <div class="col-4">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    id="cNivelTipoNombre"
+                    formControlName="cNivelTipoNombre"
+                    aria-describedby="cNivelTipoNombre-help"
+                    readonly
+                    class="desactivado"
+                  />
+                  <label for="cNivelTipoNombre" class="font-bold">NIVEL:</label>
+                </span>
+              </div>
+              <!-- Mostrar grado -->
+              <div class="col-4">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    id="cGradoAbreviacion"
+                    formControlName="cGradoAbreviacion"
+                    aria-describedby="cGradoAbreviacion-help"
+                    readonly
+                    class="desactivado"
+                  />
+                  <label for="cGradoAbreviacion" class="font-bold">GRADO:</label>
+                </span>
+              </div>
+
+              <!-- Mostrar SECCIÓN -->
+              <div class="col-4">
+                <span class="p-float-label">
+                  <p-dropdown
+                    [options]="secciones"
+                    [style]="{ width: '100%' }"
+                    filterBy="cSeccionDescripcion"
+                    optionLabel="cSeccionDescripcion"
+                    optionValue="iSeccionId"
+                    formControlName="iSeccionId"
+                    (onChange)="filtrado($event)"
+                    [appendTo]="'body'"
+                  >
+                  </p-dropdown>
+                  <label for="iSeccionId" class="font-bold">SELECCIONE SECCIÓN:</label>
+                </span>
+              </div>
             </div>
-            <!-- <div class="grid p-fluid mt-3">
+          </div>
+        </div>
+        <div class="col ml-3">
+          <div class="mt-5">
+            <div class="flex justify-content-center">
+              <span class="text-7xl font-bold text-primary">{{ alumnosFiltrados?.length }}</span>
+            </div>
+            <div class="flex justify-content-center">
+              <span class="text-base text-gray-600 mt-2">Estudiantes registrados</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="grid p-fluid mt-3">
                 <div class="col-6 mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon>
@@ -162,27 +148,27 @@
                     <p-button label="Buscar" icon="pi pi-search" severity="success" />
                 </div>
             </div> -->
-        </form>
-        <div class="col">
-            <app-table-primeng
-                [columnas]="columnas"
-                [data]="alumnosFiltrados"
-                (accionBtnItem)="getCuestionarioNotas($event)"
-                [actions]="botonesTabla"
-                [showPaginator]="true"
-                [indiceColumnaBuscar]="3"
-                [showCaption]="true"
-                [showSortIcon]="false"
-                [width]="'30px'"
-                [soloUnaLetra]="true"
-                [showSearchTable]="true"
-                [placeholder]="'Buscar por apellido paterno...'"
-                [indiceColumnaBuscar]="2"
-            >
-            </app-table-primeng>
-        </div>
+    </form>
+    <div class="col">
+      <app-table-primeng
+        [columnas]="columnas"
+        [data]="alumnosFiltrados"
+        (accionBtnItem)="accionBtn($event)"
+        [actions]="botonesTabla"
+        [showPaginator]="true"
+        [indiceColumnaBuscar]="3"
+        [showCaption]="true"
+        [showSortIcon]="false"
+        [width]="'30px'"
+        [soloUnaLetra]="true"
+        [showSearchTable]="true"
+        [placeholder]="'Buscar por apellido paterno...'"
+        [indiceColumnaBuscar]="2"
+      >
+      </app-table-primeng>
+    </div>
 
-        <!--<div class="grid p-fluid mt-3">
+    <!--<div class="grid p-fluid mt-3">
             <div class="field col-12">
 
                 <p-button
@@ -193,7 +179,9 @@
                 />
             </div>
         </div>-->
-    </section>
+  </section>
 </p-dialog>
 
 <p-toast></p-toast>
+
+<input type="file" #fileInput hidden (change)="onFileSelected($event)" />

@@ -365,12 +365,12 @@
             <!-- Activar Matriz -->
             <td style="text-align: center; width: 10%">
               <p-button
-                label="Activar"
-                icon="pi pi-check"
-                severity="success"
+                [label]="curso.bDescarga === '1' ? 'Desactivar' : 'Activar'"
+                [icon]="curso.bDescarga === '1' ? 'pi pi-times' : 'pi pi-check'"
+                [severity]="curso.bDescarga === '1' ? 'info' : 'success'"
                 size="small"
-                pTooltip="Activar descargas"
-                (click)="onDialogActivarDescarga(curso)"
+                [pTooltip]="curso.bDescarga === '1' ? 'Desactivar descarga' : 'Activar descarga'"
+                (click)="actualizarEstadoDescargaMatriz(curso)"
               ></p-button>
             </td>
 
@@ -382,7 +382,7 @@
                   severity="secondary"
                   size="small"
                   [text]="true"
-                  pTooltip="Configuraciones avanzadas"
+                  pTooltip="Gestionar preguntas"
                   (click)="gestionarPreguntas(curso)"
                 ></p-button>
                 <!--<p-button

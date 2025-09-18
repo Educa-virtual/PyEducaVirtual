@@ -2,12 +2,14 @@ import { Component, EventEmitter, Input, Output, inject, OnChanges } from '@angu
 import { PrimengModule } from '@/app/primeng.module';
 import { FormBuilder, Validators } from '@angular/forms';
 import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual';
-import { MessageService } from 'primeng/api';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
-import { finalize } from 'rxjs';
+import { finalize, lastValueFrom } from 'rxjs';
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
 
 export interface IBancoAlternativas {
   id: string;
@@ -22,9 +24,10 @@ export interface IBancoAlternativas {
 @Component({
   selector: 'app-preguntas-form',
   standalone: true,
-  imports: [PrimengModule],
+  imports: [PrimengModule, EditorComponent],
   templateUrl: './preguntas-form.component.html',
   styleUrl: './preguntas-form.component.scss',
+  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
 })
 export class PreguntasFormComponent extends MostrarErrorComponent implements OnChanges {
   @Output() accionForm = new EventEmitter();
@@ -32,11 +35,31 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
 
   @Input() data;
 
+  initEnunciado: EditorComponent['init'] = {
+    base_url: '/tinymce', // Root for resources
+    suffix: '.min', // Suffix to use when loading resources
+    menubar: false,
+    selector: 'textarea',
+    placeholder: 'Escribe aqui...',
+    plugins: 'lists image table',
+    toolbar:
+      'undo redo | bold italic underline strikethrough | ' +
+      'alignleft aligncenter alignright alignjustify | bullist numlist',
+    editable_root: true,
+    paste_as_text: true,
+    branding: false,
+    statusbar: false,
+
+    autoresize_bottom_margin: 10,
+  };
+
   private _FormBuilder = inject(FormBuilder);
-  private _MessageService = inject(MessageService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _EvaluacionPreguntasService = inject(EvaluacionPreguntasService);
   private _ConstantesService = inject(ConstantesService);
+  private _HttpClient = inject(HttpClient);
+
+  backend = environment.backend;
 
   opcion: 'GUARDAR' | 'ACTUALIZAR' = 'GUARDAR';
   isLoading: boolean = false;
@@ -53,6 +76,8 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
     cEvalPregTextoAyuda: [],
     jsonAlternativas: [],
     iCredId: ['', Validators.required],
+
+    bArgumentar: [false, Validators.required],
   });
 
   tipoPreguntas = [
@@ -80,12 +105,14 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
     if (changes.data.currentValue) {
       this.data = changes.data.currentValue;
       const formulario = this.data.cFormulario;
+      console.log(formulario);
       this.iEvalPregId = formulario?.iEvalPregId;
       this.opcion = this.iEvalPregId ? 'ACTUALIZAR' : 'GUARDAR';
       this.formEvaluacionPreguntas.patchValue({
         iTipoPregId: Number(formulario?.iTipoPregId),
         cEvalPregPregunta: formulario?.cEvalPregPregunta,
         cEvalPregTextoAyuda: formulario?.cEvalPregTextoAyuda,
+        bArgumentar: Boolean(Number(formulario?.bArgumentar)),
       });
       this.alternativas = formulario?.jsonAlternativas || [];
       this.alternativas = this.alternativas.map((alt, index) => ({
@@ -162,14 +189,17 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
       };
     }
 
-    const alternativasSinDescripcion = this.alternativas.filter(
-      alt => !alt.cBancoAltDescripcion || alt.cBancoAltDescripcion.trim() === ''
-    );
+    const alternativasInvalidas = this.alternativas.filter(alt => {
+      const sinDescripcion = !alt.cBancoAltDescripcion || alt.cBancoAltDescripcion.trim() === '';
+      const sinImagenValida =
+        !alt.cAlternativaImagen || alt.cAlternativaImagen === 'images/no-image.png';
+      return sinDescripcion && sinImagenValida;
+    });
 
-    if (alternativasSinDescripcion.length > 0) {
+    if (alternativasInvalidas.length > 0) {
       return {
         esValido: false,
-        mensaje: 'Todas las alternativas deben tener una descripción.',
+        mensaje: 'Cada alternativa debe tener una descripción o una imagen válida.',
       };
     }
 
@@ -205,6 +235,16 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
     if (this.isLoading) return; // evitar doble clic
     this.isLoading = true;
 
+    const alternativas = this.alternativas;
+
+    const alternativasLimpias = alternativas.map((alt: any) => {
+      return {
+        ...alt,
+        cAlternativaImagen:
+          alt.cAlternativaImagen === 'images/no-image.png' ? null : alt.cAlternativaImagen,
+      };
+    });
+
     this.formEvaluacionPreguntas.patchValue({
       iEvaluacionId: this.data?.iEvaluacionId,
       iDocenteId: this._ConstantesService.iDocenteId,
@@ -212,7 +252,8 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
       iNivelCicloId: this.data?.iNivelCicloId,
       idEncabPregId: this.data?.idEncabPregId,
       iCredId: this._ConstantesService.iCredId,
-      jsonAlternativas: JSON.stringify(this.alternativas),
+      jsonAlternativas: JSON.stringify(alternativasLimpias),
+      bArgumentar: this.formEvaluacionPreguntas.value.bArgumentar,
     });
 
     const nombresCampos: Record<string, string> = {
@@ -235,8 +276,13 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
       return;
     }
 
+    this.formEvaluacionPreguntas.value.jsonAlternativas.map;
+    const datos = {
+      ...this.formEvaluacionPreguntas.value,
+      bArgumentar: this.formEvaluacionPreguntas.value.bArgumentar ? 1 : 0,
+    };
     this._EvaluacionPreguntasService
-      .guardarEvaluacionPreguntas(this.formEvaluacionPreguntas.value)
+      .guardarEvaluacionPreguntas(datos)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: resp => {
@@ -260,6 +306,16 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
     if (this.isLoading) return; // evitar doble clic
     this.isLoading = true;
 
+    const alternativas = this.alternativas;
+
+    const alternativasLimpias = alternativas.map((alt: any) => {
+      return {
+        ...alt,
+        cAlternativaImagen:
+          alt.cAlternativaImagen === 'images/no-image.png' ? null : alt.cAlternativaImagen,
+      };
+    });
+
     this.formEvaluacionPreguntas.patchValue({
       iEvaluacionId: this.data?.iEvaluacionId,
       iDocenteId: this._ConstantesService.iDocenteId,
@@ -267,7 +323,7 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
       iNivelCicloId: this.data?.iNivelCicloId,
       idEncabPregId: this.data?.idEncabPregId,
       iCredId: this._ConstantesService.iCredId,
-      jsonAlternativas: JSON.stringify(this.alternativas),
+      jsonAlternativas: JSON.stringify(alternativasLimpias),
     });
 
     const nombresCampos: Record<string, string> = {
@@ -312,5 +368,50 @@ export class PreguntasFormComponent extends MostrarErrorComponent implements OnC
           this.mostrarErrores(error);
         },
       });
+  }
+
+  async onUploadChange(evt: Event, alternativa: any) {
+    const input = evt.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const dataFile = this.objectToFormData({ file, nameFile: 'aula-alternativas' });
+
+    try {
+      const resp = await lastValueFrom(
+        this._HttpClient.post<any>(`${environment.backendApi}/general/subir-archivo`, dataFile)
+      );
+      if (resp?.validated) {
+        alternativa.cAlternativaImagen = resp.data;
+      } else {
+        console.warn('Respuesta sin validated:', resp);
+      }
+    } catch (err) {
+      console.error('Error subida archivo', err);
+    }
+
+    (evt.target as HTMLInputElement).value = '';
+  }
+
+  objectToFormData(obj: Record<string, any>): FormData {
+    const formData = new FormData();
+    Object.keys(obj).forEach(key => {
+      const val = obj[key];
+      if (val === undefined || val === null || val === '') return;
+
+      if (val instanceof File) {
+        formData.append(key, val, val.name);
+      } else if (Array.isArray(val)) {
+        // si mandas arrays, los serializamos (ajusta según backend)
+        val.forEach((v, i) => formData.append(`${key}[${i}]`, v));
+      } else {
+        formData.append(key, String(val));
+      }
+    });
+    return formData;
+  }
+
+  updateUrl(item) {
+    item.cAlternativaImagen = 'images/no-image.png';
   }
 }

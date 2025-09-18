@@ -1,15 +1,15 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
 import { Component, inject, Input, OnChanges } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { PreguntasFormComponent } from '../evaluacion-form/preguntas-form/preguntas-form.component';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service';
 import { EvaluacionListPreguntasComponent } from '../evaluacion-room/components/evaluacion-list-preguntas/evaluacion-list-preguntas.component';
-import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service';
 import { FormEncabezadoComponent } from '../evaluacion-room/components/form-encabezado/form-encabezado.component';
 import { ImportarBancoPreguntasComponent } from '../importar-banco-preguntas/importar-banco-preguntas.component';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 export interface IEvaluacion {
   cTitle: string;
   cHeader: string;
@@ -38,13 +38,11 @@ export interface IEvaluacion {
   templateUrl: './evaluacion-preguntas.component.html',
   styleUrl: './evaluacion-preguntas.component.scss',
 })
-export class EvaluacionPreguntasComponent implements OnChanges {
+export class EvaluacionPreguntasComponent extends MostrarErrorComponent implements OnChanges {
   @Input() data: IEvaluacion;
 
   private _ConstantesService = inject(ConstantesService);
   private _EvaluacionPreguntasService = inject(EvaluacionPreguntasService);
-  private _MessageService = inject(MessageService);
-  private _ApiEvaluacionesRService = inject(ApiEvaluacionesRService);
 
   showModalPreguntas: boolean = false;
   showModalEncabezado: boolean = false;
@@ -145,42 +143,25 @@ export class EvaluacionPreguntasComponent implements OnChanges {
           }
         },
         error: error => {
-          const errores = error?.error?.errors;
-          if (error.status === 422 && errores) {
-            // Recorre y muestra cada mensaje de error
-            Object.keys(errores).forEach(campo => {
-              errores[campo].forEach((mensaje: string) => {
-                this.mostrarMensajeToast({
-                  severity: 'error',
-                  summary: 'Error de validación',
-                  detail: mensaje,
-                });
-              });
-            });
-          } else {
-            // Error genérico si no hay errores específicos
-            this.mostrarMensajeToast({
-              severity: 'error',
-              summary: 'Error',
-              detail: error?.error?.message || 'Ocurrió un error inesperado',
-            });
-          }
+          this.mostrarErrores(error);
         },
       });
   }
 
   generarWordEvaluacion() {
-    const ids = this.preguntas.map(item => item.iBancoId).join(',');
-
+    if (!this.preguntas.length) {
+      this.mostrarMensajeToast({
+        severity: 'info',
+        summary: '¡Atención!',
+        detail: 'No hay preguntas para generar el word',
+      });
+      return;
+    }
+    const iEvaluacionId = this.data.iEvaluacionId;
+    if (!iEvaluacionId) return;
     const params = {
-      iCursoId: this.data?.iCursoId,
-      ids,
-      iDocenteId: this._ConstantesService.iDocenteId,
+      iCredId: this._ConstantesService.iCredId,
     };
-    this._ApiEvaluacionesRService.generarWordEvaluacionByIds(params);
-  }
-
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
+    this._EvaluacionPreguntasService.generarWordxiEvaluacionId(iEvaluacionId, params);
   }
 }

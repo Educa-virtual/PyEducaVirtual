@@ -67,35 +67,7 @@ export class EvaluacionRoomComponent implements OnInit {
     this._ConstantesService.iPerfilId === ESTUDIANTE ||
     this._ConstantesService.iPerfilId === PARTICIPANTE;
 
-  tabs = [
-    {
-      title: 'Descripción',
-      icon: 'pi pi-list',
-      tab: 'descripcion',
-      //tab:0
-    },
-    {
-      title: 'Preguntas',
-      icon: 'pi-pen-to-square',
-      tab: 'preguntas',
-      isVisible: !this.isDocente,
-      //tab:1
-    },
-    {
-      title: 'Calificar',
-      icon: 'pi-list-check',
-      tab: 'calificar',
-      isVisible: !this.isDocente,
-      //tab:2
-    },
-    {
-      title: 'Rendir Evaluación',
-      icon: 'pi-check-circle',
-      tab: 'rendir-examen',
-      isVisible: !this.isEstudiante,
-      //tab:3
-    },
-  ];
+  tabs = [];
 
   activeIndex: number = 0;
   tabSeleccionado: string = 'descripcion';
@@ -180,11 +152,49 @@ export class EvaluacionRoomComponent implements OnInit {
     this.params.idDocCursoId = this._ActivatedRoute.snapshot.queryParamMap.get('idDocCursoId');
 
     //this.obtenerRubricas()
+    if (this.isDocente) {
+      this.tabs = [
+        {
+          title: 'Descripción',
+          icon: 'pi pi-list',
+          tab: 'descripcion',
+        },
+        {
+          title: 'Preguntas',
+          icon: 'pi-pen-to-square',
+          tab: 'preguntas',
+        },
+        {
+          title: 'Calificar',
+          icon: 'pi-list-check',
+          tab: 'calificar',
+          isVisible: !this.isDocente,
+        },
+      ];
+    }
 
+    if (this.isEstudiante) {
+      this.tabs = [
+        {
+          title: 'Descripción',
+          icon: 'pi pi-list',
+          tab: 'descripcion',
+        },
+        {
+          title: 'Rendir Evaluación',
+          icon: 'pi-check-circle',
+          tab: 'rendir-examen',
+        },
+      ];
+    }
     this._ActivatedRoute.queryParams.subscribe(params => {
-      if (params['tab'] !== undefined) {
-        this.tabSeleccionado = params['tab'];
-        this.activeIndex = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+      const tabParam = params['tab'];
+
+      if (tabParam) {
+        this.tabSeleccionado = tabParam;
+        const index = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+
+        this.activeIndex = index !== -1 ? index : 0;
       }
     });
   }

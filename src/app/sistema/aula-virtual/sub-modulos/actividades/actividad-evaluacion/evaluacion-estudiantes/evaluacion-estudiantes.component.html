@@ -4,7 +4,7 @@
     </p> -->
 </app-toolbar-primeng>
 <div class="bg-white shadow-lg rounded-lg p-4 h-64 flex justify-content-end" [class]="classTime">
-  <app-time [inicio]="dInicio" [fin]="evaluacion.dFin" (accionTime)="timeEvent($event)"></app-time>
+  <app-time [inicio]="dInicio" [fin]="evaluacion?.dFin" (accionTime)="timeEvent($event)"></app-time>
 </div>
 <div class="card col-12 mb-5 p-3 mt-2 relative" *ngFor="let item of preguntas; let i = index">
   <div class="tag ml-3 font-bold">

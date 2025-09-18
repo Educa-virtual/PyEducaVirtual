@@ -217,6 +217,32 @@ export class DatosFichaBienestarService implements OnDestroy {
     return this.http.post(`${baseUrl}/bienestar/actualizarFichaDiscapacidad`, data);
   }
 
+  listarDiscapacidadesDetalle(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/listarDiscapacidadesDetalle`, data);
+  }
+
+  guardarDiscapacidadDetalle(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/guardarDiscapacidadDetalle`, data);
+  }
+
+  verDiscapacidadDetalle(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/verDiscapacidadDetalle`, data);
+  }
+
+  actualizarDiscapacidadDetalle(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/actualizarDiscapacidadDetalle`, data);
+  }
+
+  borrarDiscapacidadDetalle(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/borrarDiscapacidadDetalle`, data);
+  }
+
+  descargarDiscapacidadDetalle(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/descargarDiscapacidadDetalle`, data, {
+      responseType: 'blob',
+    });
+  }
+
   verFichaSalud(data: any) {
     return this.http.post(`${baseUrl}/bienestar/verFichaSalud`, data);
   }

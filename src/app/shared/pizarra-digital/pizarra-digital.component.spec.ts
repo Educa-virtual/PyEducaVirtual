@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AsistenciasComponent } from './asistencias.component';
+import { PizarraDigitalComponent } from './pizarra-digital.component';
 
-describe('AsistenciasComponent', () => {
-  let component: AsistenciasComponent;
-  let fixture: ComponentFixture<AsistenciasComponent>;
+describe('PizarraDigitalComponent', () => {
+  let component: PizarraDigitalComponent;
+  let fixture: ComponentFixture<PizarraDigitalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AsistenciasComponent],
+      imports: [PizarraDigitalComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AsistenciasComponent);
+    fixture = TestBed.createComponent(PizarraDigitalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

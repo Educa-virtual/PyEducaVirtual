@@ -23,7 +23,7 @@ export class UserAccountComponent implements OnInit {
 
   name: string;
   fotografia: string;
-  showModal: boolean = false;
+  showModalDatosPersonales: boolean = false;
   showModalChangePassword: boolean = false;
   constructor(private ConstantesService: ConstantesService) {
     this.name = this.ConstantesService.nombres;
@@ -36,21 +36,21 @@ export class UserAccountComponent implements OnInit {
       {
         items: [
           {
-            label: 'Mi Datos Personales',
+            label: 'Mis datos personales',
             icon: 'pi pi-user',
             command: () => {
-              this.showModal = true;
+              this.showModalDatosPersonales = true;
             },
           },
           {
-            label: 'Cambiar Contraseña',
+            label: 'Cambiar contraseña',
             icon: 'pi pi-lock',
             command: () => {
               this.showModalChangePassword = true;
             },
           },
           {
-            label: 'Salir sesión',
+            label: 'Cerrar sesión',
             icon: 'pi pi-sign-out',
             command: () => {
               this.actionTopBar.emit({ accion: 'logout' });

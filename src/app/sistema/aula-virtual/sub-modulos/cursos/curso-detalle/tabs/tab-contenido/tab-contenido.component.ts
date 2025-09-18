@@ -298,6 +298,8 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
     this._ContenidoSemanasService.actualizarContenidoSemanas(datos).subscribe({
       next: response => {
         if (response.validated) {
+          this.datos.cDescripcion = data.cContenidoSemTitulo;
+          this.datos.cContenidoSemTitulo = data.cContenidoSemTitulo;
           this.messageService.add({
             severity: 'success',
             summary: 'Acción exitosa',
@@ -839,32 +841,16 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
   }
 
   filtrarSemanaSeleccionada(event: DropdownChangeEvent) {
-    // const iActTipoId = Number(event.value);
-    // this.semanaSeleccionada = { ...this.semanaSeleccionadaFiltrada }; // Hacer copia (opcional según cómo esté estructurado)
+    const iActTipoId = Number(event.value);
+    this.semanaSeleccionada = [...this.semanaSeleccionadaFiltrada];
 
-    // if (!iActTipoId || !this.semanaSeleccionada) return;
+    if (!iActTipoId) {
+      return;
+    }
 
-    // // Filtrar fechas que contienen actividades del tipo seleccionado
-    // const fechasFiltradas = this.semanaSeleccionada.fechas
-    //   .map((fecha: any) => {
-    //     const actividadesFiltradas = fecha.actividades.filter(
-    //       (actividad: any) => Number(actividad.iActTipoId) === iActTipoId
-    //     );
-
-    //     if (actividadesFiltradas.length > 0) {
-    //       return {
-    //         ...fecha,
-    //         actividades: actividadesFiltradas,
-    //       };
-    //     }
-
-    //     return null;
-    //   })
-    //   .filter((fecha: any) => fecha !== null);
-
-    // this.semanaSeleccionada.fechas = fechasFiltradas;
-    console.log(event);
-    return [];
+    this.semanaSeleccionada = this.semanaSeleccionada.filter(
+      (actividad: any) => Number(actividad.iActTipoId) === iActTipoId
+    );
   }
 
   recargarData() {

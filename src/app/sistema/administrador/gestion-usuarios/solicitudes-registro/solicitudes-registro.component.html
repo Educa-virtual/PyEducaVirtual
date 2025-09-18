@@ -1,0 +1,119 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<div class="user-management-container">
+  <div class="header bg-primary text-white p-3">
+    <div class="flex w-full" style="align-items: center">
+      <h1 class="m-0 flex-grow">Solicitudes de registro de usuarios</h1>
+    </div>
+  </div>
+
+  <div class="search-section p-3">
+    <div class="search-header bg-orange-500 text-white p-2 rounded-top">
+      <span class="search-title font-bold">Filtros</span>
+    </div>
+
+    <div class="search-content p-3 border border-top-0 bg-white rounded-bottom">
+      <form [formGroup]="formFiltros">
+        <div class="filter-row flex flex-wrap align-items-center">
+          <div class="filtro-item">
+            <label for="instituciones">Estado:</label>
+            <p-dropdown
+              [options]="dataFiltroAtendida"
+              formControlName="bAtendida"
+              placeholder="Seleccione opción"
+              styleClass="dropdown-field"
+            >
+            </p-dropdown>
+            <small>&nbsp;</small>
+          </div>
+          <div class="filtro-item">
+            <label for="perfil">Fecha solicitud:</label>
+            <p-calendar
+              formControlName="dtFechaSolicitud"
+              selectionMode="range"
+              [readonlyInput]="true"
+              appendTo="body"
+            />
+            <small>Desde - hasta</small>
+          </div>
+          <div class="filtro-item">
+            <button
+              pButton
+              pRipple
+              label="Mostrar"
+              (click)="realizarBusqueda()"
+              [disabled]="formFiltros.invalid"
+            ></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <p-table
+      [value]="dataSolicitudes"
+      styleClass="p-datatable-sm"
+      [lazy]="true"
+      [paginator]="true"
+      [rows]="20"
+      [totalRecords]="totalDataSolicitudes"
+      [showCurrentPageReport]="true"
+      [loading]="loading"
+      (onLazyLoad)="loadUsuariosLazy($event)"
+      [scrollable]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+    >
+      <ng-template pTemplate="header">
+        <tr class="bg-gray-200">
+          <th style="width: 3%" class="text-center">N°</th>
+          <th style="width: 10%" class="text-center">DNI / CE</th>
+          <th style="width: 15%" class="text-center">Apellidos</th>
+          <th style="width: 15%" class="text-center">Nombres</th>
+          <th class="text-center">Código modular IE</th>
+          <th class="text-center">Cargo</th>
+          <th style="width: 15%" class="text-center">Correo electrónico</th>
+          <th style="width: 20%" class="text-center">Motivo para solicitar registro</th>
+          <th style="width: 5%" class="text-center">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user let-i="rowIndex">
+        <tr [ngClass]="{ 'bg-gray-100': i % 2 === 0 }">
+          <td class="text-center">{{ i + 1 }}</td>
+          <td class="text-center">
+            {{ user.cPersDocumento }}
+          </td>
+          <td>{{ user.cApellidosNombres }}</td>
+          <td class="text-center">
+            @if (user.bCredVerificado === '1') {
+              <span class="text-green-600">Sí</span>
+            } @else {
+              <span class="text-red-600">No</span>
+            }
+          </td>
+          <td class="text-center">
+            @if (user.iCredEstado === '1') {
+              <span class="text-green-600">Activo</span>
+            } @else {
+              <span class="text-red-600">Inactivo</span>
+            }
+          </td>
+
+          <td class="text-center">{{ user.iCantidadPerfiles }}</td>
+          <td class="text-center action-buttons">
+            <button
+              pButton
+              icon="pi pi-calendar"
+              class="p-button-text p-button-help"
+              pTooltip="Cambiar fecha de caducidad"
+              tooltipPosition="top"
+              (click)="marcarSolicitudAtendida(user)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-toast></p-toast>

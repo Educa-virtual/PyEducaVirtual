@@ -10,7 +10,7 @@ import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.com
 import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component';
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion-preguntas.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component';
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component';
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component';
@@ -50,6 +50,7 @@ export class EvaluacionRoomComponent implements OnInit {
   private _EvaluacionesService = inject(EvaluacionesService);
   private _MessageService = inject(MessageService);
   private _ActivatedRoute = inject(ActivatedRoute);
+  private _Router = inject(Router);
 
   rubricas = [
     // {
@@ -66,40 +67,18 @@ export class EvaluacionRoomComponent implements OnInit {
     this._ConstantesService.iPerfilId === ESTUDIANTE ||
     this._ConstantesService.iPerfilId === PARTICIPANTE;
 
-  tabs = [
-    {
-      title: 'Descripción',
-      icon: 'pi pi-list',
-      tab: 'descripcion',
-      //tab:0
-    },
-    {
-      title: 'Preguntas',
-      icon: 'pi-pen-to-square',
-      tab: 'preguntas',
-      isVisible: !this.isDocente,
-      //tab:1
-    },
-    {
-      title: 'Calificar',
-      icon: 'pi-list-check',
-      tab: 'calificar',
-      isVisible: !this.isDocente,
-      //tab:2
-    },
-    {
-      title: 'Rendir Evaluación',
-      icon: 'pi-check-circle',
-      tab: 'rendir-examen',
-      isVisible: !this.isEstudiante,
-      //tab:3
-    },
-  ];
+  tabs = [];
 
   activeIndex: number = 0;
   tabSeleccionado: string = 'descripcion';
   obtenerIndex(event) {
     this.tabSeleccionado = event.tab;
+    this.activeIndex = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+
+    this._Router.navigate([], {
+      queryParams: { tab: this.tabSeleccionado },
+      queryParamsHandling: 'merge',
+    });
   }
 
   obtenerRubricas() {
@@ -173,6 +152,51 @@ export class EvaluacionRoomComponent implements OnInit {
     this.params.idDocCursoId = this._ActivatedRoute.snapshot.queryParamMap.get('idDocCursoId');
 
     //this.obtenerRubricas()
+    if (this.isDocente) {
+      this.tabs = [
+        {
+          title: 'Descripción',
+          icon: 'pi pi-list',
+          tab: 'descripcion',
+        },
+        {
+          title: 'Preguntas',
+          icon: 'pi-pen-to-square',
+          tab: 'preguntas',
+        },
+        {
+          title: 'Calificar',
+          icon: 'pi-list-check',
+          tab: 'calificar',
+          isVisible: !this.isDocente,
+        },
+      ];
+    }
+
+    if (this.isEstudiante) {
+      this.tabs = [
+        {
+          title: 'Descripción',
+          icon: 'pi pi-list',
+          tab: 'descripcion',
+        },
+        {
+          title: 'Rendir Evaluación',
+          icon: 'pi-check-circle',
+          tab: 'rendir-examen',
+        },
+      ];
+    }
+    this._ActivatedRoute.queryParams.subscribe(params => {
+      const tabParam = params['tab'];
+
+      if (tabParam) {
+        this.tabSeleccionado = tabParam;
+        const index = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+
+        this.activeIndex = index !== -1 ? index : 0;
+      }
+    });
   }
   goBack() {
     this.location.back();

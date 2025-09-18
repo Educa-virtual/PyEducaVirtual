@@ -9,7 +9,7 @@ import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.compon
   standalone: true,
   imports: [PrimengModule, ChartModule, MultiChartComponent],
   templateUrl: './informe-discapacidad.component.html',
-  styleUrl: './informe-discapacidad.component.scss',
+  styleUrl: './../informe-estadistico.component.scss',
 })
 export class InformeDiscapacidadComponent implements OnInit {
   reportes_discapacidad: any;

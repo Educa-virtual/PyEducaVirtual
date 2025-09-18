@@ -1,0 +1,19 @@
+@media print {
+  ::ng-deep .topbar,
+  ::ng-deep .layout-sidebar {
+    visibility: hidden !important;
+    display: none !important;
+  }
+
+  ::ng-deep canvas {
+    width: fit-content !important;
+  }
+
+  ::ng-deep .col-12 {
+    page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 1cm;
+  }
+}

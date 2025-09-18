@@ -275,6 +275,10 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
     });
   }
 
+  descargarReporte() {
+    window.print();
+  }
+
   /**
    * Mover scrool a la pestaña seleccionada
    * @param event

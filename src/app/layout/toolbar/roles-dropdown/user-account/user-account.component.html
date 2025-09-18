@@ -28,7 +28,10 @@
   appendTo="body"
 />
 @if (selectedPerfil?.iPerfilId !== 0) {
-  <app-perfil [showModal]="showModal" (accionCloseItem)="showModal = false"></app-perfil>
+  <app-perfil
+    [showModal]="showModalDatosPersonales"
+    (accionCloseItem)="showModalDatosPersonales = false"
+  ></app-perfil>
 
   <app-cambiar-constrasena
     [showModal]="showModalChangePassword"

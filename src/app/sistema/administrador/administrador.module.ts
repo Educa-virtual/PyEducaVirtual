@@ -22,10 +22,17 @@ const routes: Routes = [
   },
   //REACTIVAR PORQUE ES EL NUEVO MODULO DE GESTION DE USUARIOS
   {
-    path: 'gestion-usuarios',
+    path: 'gestion-usuarios/usuarios',
     loadComponent: () =>
       import('./gestion-usuarios/lista-usuarios/lista-usuarios.component').then(
         m => m.ListaUsuariosComponent
+      ),
+  },
+  {
+    path: 'gestion-usuarios/solicitudes-registro',
+    loadComponent: () =>
+      import('./gestion-usuarios/solicitudes-registro/solicitudes-registro.component').then(
+        m => m.SolicitudesRegistroComponent
       ),
   },
 

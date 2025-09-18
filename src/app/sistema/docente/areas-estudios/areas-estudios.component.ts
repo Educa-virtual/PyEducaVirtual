@@ -94,13 +94,13 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.goSection('resultados');
         },
       },
-      // {
-      //   label: 'Portafolio',
-      //   icon: 'pi pi-angle-right',
-      //   command: () => {
-      //     this.goSection('portafolio');
-      //   },
-      // },
+      {
+        label: 'Portafolio',
+        icon: 'pi pi-angle-right',
+        command: () => {
+          this.goSection('portafolio');
+        },
+      },
     ];
     this.obtenerPortafolios();
     // this.obtenerReglamento();

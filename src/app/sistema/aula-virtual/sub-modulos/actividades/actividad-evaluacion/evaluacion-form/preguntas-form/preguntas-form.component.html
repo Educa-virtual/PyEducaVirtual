@@ -7,7 +7,7 @@
       </p-inputGroup>
     </div>
   }
-  <div class="col-12 md:col-12 lg:col-4">
+  <div class="col-12 md:col-12 lg:col-6">
     <p-inputGroup>
       <p-inputGroupAddon>Tipo de Preguntas</p-inputGroupAddon>
       <p-dropdown
@@ -20,7 +20,14 @@
       />
     </p-inputGroup>
   </div>
-  <div class="col">
+  <div class="col-12 md:col-12 lg:col-6">
+    <div class="flex align-items-center justify-content-end">
+      <label for="" class="pr-3">¿Habilitar pizarra digital?</label>
+      <p-inputSwitch formControlName="bArgumentar" class="pr-3" />
+      <span class="font-bold">{{ formEvaluacionPreguntas.value.bArgumentar ? 'Si' : 'No' }}</span>
+    </div>
+  </div>
+  <div class="col-12">
     <p-inputGroup>
       <p-inputGroupAddon>Texto de ayuda</p-inputGroupAddon>
       <input
@@ -37,11 +44,7 @@
       <span class="text-red-500 text-xs">&nbsp;(*) Obligatorio</span></label
     >
     <div class="mt-2">
-      <p-editor
-        [style]="{ height: 'auto' }"
-        placeholder="Ingrese enunciado de la pregunta"
-        formControlName="cEvalPregPregunta"
-      />
+      <editor [init]="initEnunciado" formControlName="cEvalPregPregunta"></editor>
     </div>
   </div>
 </form>
@@ -68,9 +71,16 @@
             placeholder="Ingrese la alternativa"
             [(ngModel)]="alternativa.cBancoAltDescripcion"
           />
-          <!-- <div class="align-content-center p-2 border-img">
-                    <p-image [src]="alternativa.cAlternativaImagen" alt="Image" width="25" [preview]="true" />
-                </div> -->
+          <div class="align-content-center p-2 border-img">
+            <p-image
+              [src]="backend + '/' + alternativa.cAlternativaImagen"
+              alt="Image"
+              width="25"
+              height="25"
+              [preview]="true"
+              (onImageError)="updateUrl(alternativa)"
+            />
+          </div>
 
           <button
             type="button"
@@ -83,9 +93,16 @@
           >
             &nbsp;
           </button>
-          <!-- <button pButton type="button" [text]="true" class="p-button-primary btn-file-image" size="small">
-                    <i class="pi pi-image"></i><input type="file" accept="image/*" />
-                </button> -->
+          <button
+            pButton
+            type="button"
+            [text]="true"
+            class="p-button-primary btn-file-image"
+            size="small"
+          >
+            <i class="pi pi-image"></i
+            ><input type="file" accept="image/*" (change)="onUploadChange($event, alternativa)" />
+          </button>
           <p-checkbox
             [binary]="true"
             [trueValue]="1"

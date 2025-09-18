@@ -72,7 +72,8 @@
   [modal]="true"
   class="asistenciaModal"
   [(visible)]="verAsistencia"
-  [style]="{ width: '60rem' }"
+  position="top"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 >
   <div class="grid mt-4">
     <div class="col-12">
@@ -80,7 +81,7 @@
         Detalles del {{ encabezado[0]?.cNivelNombreCursos }}
       </span>
     </div>
-    <div class="col-12">
+    <div class="col-12 xl:col-4 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon
           [ngStyle]="{
@@ -93,7 +94,7 @@
         <input pInputText disabled [value]="encabezado[0]?.cCursoNombre" />
       </p-inputGroup>
     </div>
-    <div class="col-6">
+    <div class="col-12 xl:col-4 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon
           [ngStyle]="{
@@ -106,7 +107,7 @@
         <input pInputText disabled [value]="cNivelTipoNombre" />
       </p-inputGroup>
     </div>
-    <div class="col-6">
+    <div class="col-12 xl:col-4 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon
           [ngStyle]="{
@@ -119,7 +120,7 @@
         <input pInputText disabled [value]="encabezado[0]?.cCicloRomanos" />
       </p-inputGroup>
     </div>
-    <div class="col-6">
+    <div class="col-12 xl:col-6 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon
           [ngStyle]="{
@@ -132,7 +133,7 @@
         <input pInputText disabled [value]="encabezado[0]?.cGradoAbreviacion" />
       </p-inputGroup>
     </div>
-    <div class="col-6">
+    <div class="col-12 xl:col-6 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon
           [ngStyle]="{
@@ -162,20 +163,11 @@
             <td>{{ item.nombrecompleto }}</td>
             <td>
               <p-button
-                *ngIf="item.cTipoAsiLetra; else noboton"
                 label="{{ item.cTipoAsiLetra }}"
                 size="small"
-                [ngClass]="item.bgcolor"
-                (click)="changeAsistencia(rowIndex)"
+                [styleClass]="item.bgColor"
+                (click)="changeAsistencia(rowIndex, item.iTipoAsiId)"
               />
-              <ng-template #noboton>
-                <p-button
-                  label="-"
-                  size="small"
-                  (click)="changeAsistencia(rowIndex)"
-                  ngClass="bt-cyan"
-                />
-              </ng-template>
             </td>
             <td>
               <p-fileUpload

@@ -156,7 +156,6 @@
         (accionBtnItem)="accionBtn($event)"
         [actions]="botonesTabla"
         [showPaginator]="true"
-        [indiceColumnaBuscar]="3"
         [showCaption]="true"
         [showSortIcon]="false"
         [width]="'30px'"
@@ -164,6 +163,7 @@
         [showSearchTable]="true"
         [placeholder]="'Buscar por apellido paterno...'"
         [indiceColumnaBuscar]="2"
+        [selectedRowData]="alumnoSeleccionado"
       >
       </app-table-primeng>
     </div>

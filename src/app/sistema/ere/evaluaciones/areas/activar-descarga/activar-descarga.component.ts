@@ -37,7 +37,6 @@ export class ActivarDescargaComponent implements OnInit {
     this.form = this.fb.group({
       bDescarga: [true],
     });
-    console.log('OKI');
   }
 
   onHide() {

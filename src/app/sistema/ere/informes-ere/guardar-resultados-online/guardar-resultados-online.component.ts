@@ -99,6 +99,16 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         return rowData.bTieneArchivo == 1;
       },
     },
+    {
+      labelTooltip: 'Eliminar archivo',
+      icon: 'pi pi-times-circle',
+      accion: 'eliminar-archivo',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+      isVisible: rowData => {
+        return rowData.bTieneArchivo == 1;
+      },
+    },
     // {
     //     labelTooltip: 'guardar',
     //     icon: 'pi pi-plus',
@@ -340,6 +350,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
       text_header: 'center',
     },
   ];
+
   mostrarDialog(datos: { curso: ICurso }) {
     this.titulo = `Importar resultados: ${datos.curso.cCursoNombre} - ${datos.curso.cGradoAbreviacion.toString().substring(0, 1)}° Grado
          - ${datos.curso.cNivelTipoNombre.toString().replace('Educación ', '')}`;
@@ -373,10 +384,10 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
         /* const respuestasMapeadas: any = {};
 
-                 for (let i = 1; i <= 6; i++) {
-                     respuestasMapeadas[`respuestas${i.toString().padStart(2, '0')}`] =
-                         respuestas.find(r => r.iPreguntaOrden === i)?.cAlternativaLetra ?? null;
-                 }   */
+                         for (let i = 1; i <= 6; i++) {
+                             respuestasMapeadas[`respuestas${i.toString().padStart(2, '0')}`] =
+                                 respuestas.find(r => r.iPreguntaOrden === i)?.cAlternativaLetra ?? null;
+                         }   */
         this.estudiantes = this.estudiantes.map(alumno => {
           const respuestas = JSON.parse(alumno.respuestas ?? '[]');
 
@@ -423,6 +434,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
           materno: est.cPersMaterno,
           sexo: est.cPersSexo,
           nombres: est.cPersNombre,
+          iEstudianteId: est.iEstudianteId,
           iSeccionId: +est.iSeccionId, // convertir a number
           icon: 'pi pi-fw pi-home',
           routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
@@ -457,18 +469,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
       },
     });
   }
-  // acciones de la tabla
-  // accionesTabla({ accion, item }) {
-  //     switch (accion) {
-  //         case 'guardar':
-  //             // this.query.insertarCuestionarioNotas(item).subscribe({
-  //             //     next: (res) => console.log('Respuesta del backend:', res),
-  //             //     error: (err) => console.error('Error:', err),
-  //             // })
-  //             this.getCuestionarioNotas(item)
-  //             break
-  //     }
-  // }
+
   accionBtn(elemento: any): void {
     const { accion } = elemento;
     switch (accion) {
@@ -498,28 +499,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   //     // })
   // }
   getCuestionarioNotas(event: any) {
-    const item = event.item;
-    //this.subirArchivo(item) // Ahora item completo será enviado
+    //const item = event.item;
+    this.alumnoSeleccionado = event.item;
     this.dialogConfirm.openConfirm({
-      header: `Se va a guardar los resultados ingresados del estudiante \n ${item.paterno} ${item.materno} ${item.nombres}. ¿Desea continuar?`,
+      header: `Se va a guardar los resultados ingresados del estudiante ${this.alumnoSeleccionado.paterno} ${this.alumnoSeleccionado.materno} ${this.alumnoSeleccionado.nombres}. ¿Desea continuar?`,
       accept: () => {
-        /* this.alumnosFiltrados = this.alumnosFiltrados.map((alumno) => {
-                    if (alumno.documento == item.documento) {
-
-                        return {
-                            ...alumno,
-                            iEstado: 0,
-                            bActive: 1, // Asignar un valor por defecto a bActive
-                          //  ...respuestasMapeadas
-
-                        }
-                    } else {
-                        return {
-                            ...alumno,
-                        }
-                    }
-                })*/
-        this.subirArchivo([item]);
+        this.subirArchivo([this.alumnoSeleccionado]);
       },
     });
   }
@@ -544,59 +529,9 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             detail: 'Error en ejecución',
           });
         },
-        complete: () => {
-          console.log(this.secciones, 'secciones obtenidas'); // Verifica que se obtuvieron las secciones
-        },
       });
   }
-  // subirArchivo(item: any) {
-  //     // const iCursosNivelGradId =
-  //     //     this.formCurso.get('iCursosNivelGradId').value
-  //     // const cCursoNombre = this.formCurso.get('cCursoNombre').value
-  //     // const cGradoAbreviacion = this.formCurso.get('cGradoAbreviacion').value
-  //     // this.curso.iCursosNivelGradId = iCursosNivelGradId
-  //     // this.curso.cCursoNombre = cCursoNombre
-  //     // this.curso.cGradoAbreviacion = cGradoAbreviacion
 
-  //     // console.log('Item completo que se enviará:', JSON.stringify(item))
-  //     // console.log('iYAcadId:', this.iYAcadId)
-  //     // console.log('iSedeId:', this.iSedeId)
-  //     // console.log('dremoperfil:', this.store.getItem('dremoPerfil'))
-  //     // console.log('IevaluacionHashed:', this.curso.iEvaluacionIdHashed)
-  //     // console.log('cEvaluacionNombre:', this.curso.cCursoNombre)
-  //     // console.log('Curso nivel Grado', this.curso.iCursosNivelGradId)
-  //     // console.log('CgradoAbreviacion:', this.curso.cGradoAbreviacion)
-
-  //     // Aquí mandas los datos de la tabla
-  //     this.datosInformesService
-  //         .importarOffLine({
-  //             tipo: 'resultados', // puedes mantenerlo, aunque Laravel no lo usa
-  //             json_resultados: JSON.stringify(item), //  aquí lo envías como JSON string
-  //             iYAcadId: this.iYAcadId,
-  //             iSedeId: this.iSedeId,
-  //             iCredId: this.store.getItem('dremoPerfil')?.iCredId,
-  //             iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
-  //             cCursoNombre: this.curso.cCursoNombre ?? null,
-  //             cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
-  //             iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
-  //         })
-  //         .subscribe({
-  //             next: (res) => {
-  //                 console.log('Datos subidos:', res)
-  //             },
-  //             error: (error) => {
-  //                 console.error('Error subiendo archivo:', error)
-  //                 this._messageService.add({
-  //                     severity: 'error',
-  //                     summary: 'Error',
-  //                     detail: error.message || 'Error al subir archivo',
-  //                 })
-  //             },
-  //             complete: () => {
-  //                 console.log('Subida completada.')
-  //             },
-  //         })
-  // }
   filtrado(event: any) {
     // Aquí puedes manejar el evento de cambio si es necesario
     const seccionIdSeleccionada = event.value;
@@ -604,12 +539,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     this.alumnosFiltrados = this.alumnos.filter(
       alumno => alumno.iSeccionId === Number(seccionIdSeleccionada)
     );
-    /*
-        this.alumnosFiltrados = this.alumnosFiltrados.map((item) => ({
-            ...item,
-            iEstado: 1,
-            bActive: 0, // Asignar un valor por defecto a bActive
-        })) */
   }
 
   async subirArchivo(datos_hojas: Array<object>) {
@@ -628,40 +557,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
       tipo: 'resultados',
       json_resultados: JSON.stringify(datos_hojas),
     };
-    /*const subirArchivo = {
-            // datos_hojas: datos_hojas,
-            iSedeId: Number(this.iSedeId),
-            iSemAcadId: Number(this.iSemAcadId),
-            iYAcadId: Number(this.iYAcadId),
-            iCredId: Number(this.store.getItem('dremoPerfil').iCredId),
-            iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
-            iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null, //curso_nivel_grado
-            codigo_modular: this.perfil.cIieeCodigoModular,
-            curso: this.curso.cCursoNombre ?? null,
-            nivel: this.curso.cNivelTipoNombre ?? null, //nivel_tipo_nombre
-            grado: this.curso.cGradoAbreviacion ?? null,
 
-            tipo: 'resultados',
-            json_resultados: JSON.stringify(datos_hojas), //  aquí lo envías como JSON string
-        }*/
-    console.log('subirArchivo', subirArchivo);
-
-    // this.datosInformesService.importarOffLine(subirArchivo).subscribe({
-    //     next: (data: any) => {
-    //         console.log('Datos Subidas de Importar Resultados:', data)
-    //     },
-    //     error: (error) => {
-    //         console.error('Error subiendo archivo:', error)
-    //         this._messageService.add({
-    //             severity: 'error',
-    //             summary: 'Error',
-    //             detail: error,
-    //         })
-    //     },
-    //     complete: () => {
-    //         console.log('Request completed')
-    //     },
-    // })
     this.datosInformesService.importarOffLine(subirArchivo).subscribe({
       next: (data: any) => {
         const documento = datos_hojas.length > 0 ? datos_hojas[0]['documento'] : null;
@@ -669,6 +565,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
           if (alumno.documento === documento) {
             alumno.bActive = 1;
             alumno.iEstado = 0;
+            this.alumnoSeleccionado = null;
           }
         });
         console.log('Datos Subidas de Importar Resultados:', data);
@@ -692,7 +589,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   }
 
   openFileDialog(row: any) {
-    this.alumnoSeleccionado = row;
+    this.alumnoSeleccionado = row.item;
     this.fileInput.nativeElement.click();
   }
 
@@ -700,10 +597,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0 && this.alumnoSeleccionado) {
       const file = input.files[0];
-
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('rowId', this.alumnoSeleccionado.id);
+      formData.append('archivo', file);
+      formData.append('iEvaluacionId', this.curso.iEvaluacionIdHashed);
+      formData.append('iCursosNivelGradId', this.curso.iCursosNivelGradId);
+      formData.append('iEstudianteId', this.alumnoSeleccionado.iEstudianteId);
+
       this.datosInformesService.subirHojaDesarrollo(formData).subscribe({
         next: (data: any) => {
           this._messageService.add({
@@ -711,10 +610,20 @@ export class GuardarResultadosOnlineComponent implements OnInit {
             summary: 'Archivo subido',
             detail: data.message,
           });
+          /*const alumno = this.alumnosFiltrados.find(a => a.iEstudianteId === this.alumnoSeleccionado.iEstudianteId);
+                    if (alumno) {
+                        alumno.bTieneArchivo = 1;
+                    }*/
+          /*this.alumnosFiltrados.map(alumno => {
+                        if (alumno.iEstudianteId === this.alumnoSeleccionado.iEstudianteId) {
+                            alumno.bTieneArchivo = 1;
+                        }
+                    });*/
           this.alumnoSeleccionado.bTieneArchivo = 1;
+          input.value = '';
+          this.alumnoSeleccionado = null;
         },
         error: error => {
-          console.error('Error subiendo archivo:', error);
           this._messageService.add({
             severity: 'error',
             summary: 'Error al subir archivo',
@@ -722,45 +631,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
           });
         },
       });
-      /*this.http.post('/api/upload', formData).subscribe({
-              next: () => alert(`Archivo de ${this.alumnoSeleccionado.nombre} subido correctamente`),
-              error: (err) => console.error('Error al subir archivo', err)
-            });*/
-
-      // Reseteamos
-      input.value = '';
-      this.alumnoSeleccionado = null;
     }
   }
-  // Angular: componente donde se envía el JSON
-  // async subirArchivo(datos_hojas: Array<object>) {
-  //     const payload = {
-  //         iYAcadId: this.iYAcadId,
-  //         iSedeId: this.iSedeId,
-  //         iCredId: this.store.getItem('dremoPerfil').iCredId,
-  //         iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
-  //         cCursoNombre: this.curso.cCursoNombre ?? null,
-  //         cGradoAbreviacion: this.curso.cGradoAbreviacion ?? null,
-  //         iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
-  //         tipo: 'resultados',
-  //         json_resultados: JSON.stringify(datos_hojas), // este se envía como string
-  //     }
-
-  //     this.datosInformesService.importarResultados(payload).subscribe({
-  //         next: (data: any) => {
-  //             console.log('Respuesta del servidor:', data)
-  //         },
-  //         error: (error) => {
-  //             console.error('Error subiendo archivo:', error)
-  //             this._messageService.add({
-  //                 severity: 'error',
-  //                 summary: 'Error',
-  //                 detail: error.message || 'Error inesperado',
-  //             })
-  //         },
-  //         complete: () => {
-  //             console.log('Petición finalizada')
-  //         },
-  //     })
-  // }
 }

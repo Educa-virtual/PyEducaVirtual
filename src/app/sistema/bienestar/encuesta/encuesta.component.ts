@@ -296,18 +296,12 @@ export class EncuestaComponent implements OnInit {
       data.iEstado,
       'number'
     );
-    this.funcionesBienestar.formatearFormControl(
-      this.formEncuesta,
-      'dEncuDesde',
-      data.dEncuDesde,
-      'date'
-    );
-    this.funcionesBienestar.formatearFormControl(
-      this.formEncuesta,
-      'dEncuHasta',
-      data.dEncuHasta,
-      'date'
-    );
+    this.formEncuesta
+      .get('dEncuDesde')
+      .patchValue(this.funcionesBienestar.formaterarFormFecha(data.dEncuDesde));
+    this.formEncuesta
+      .get('dEncuHasta')
+      .patchValue(this.funcionesBienestar.formaterarFormFecha(data.dEncuHasta));
 
     const poblacion = JSON.parse(data.poblacion);
     if (poblacion && poblacion.length) {

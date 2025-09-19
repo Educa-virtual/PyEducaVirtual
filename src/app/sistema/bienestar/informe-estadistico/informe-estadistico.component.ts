@@ -53,9 +53,9 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
   distritos: any;
   tipos_personas: any;
 
-  TIPO_PERSONA_ESTUDIANTE: number = 1;
-  TIPO_PERSONA_DOCENTE: number = 2;
-  TIPO_PERSONA_ADMINISTRATIVO: number = 3;
+  TIPO_PERSONA_ESTUDIANTE: number = this.datosInformes.TIPO_PERSONA_ESTUDIANTE;
+  TIPO_PERSONA_DOCENTE: number = this.datosInformes.TIPO_PERSONA_DOCENTE;
+  TIPO_PERSONA_ADMINISTRATIVO: number = this.datosInformes.TIPO_PERSONA_ADMINISTRATIVO;
 
   es_estudiante_apoderado: boolean = false;
   ocultar_grado: boolean = false;
@@ -183,6 +183,7 @@ export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
       this.filterDistritos(value);
     });
     this.formReportes.get('iTipoPersId').valueChanges.subscribe(value => {
+      this.datosInformes.setTipoPersona(value);
       this.ocultar_grado = false;
       this.ocultar_seccion = false;
       this.ocultar_area = false;

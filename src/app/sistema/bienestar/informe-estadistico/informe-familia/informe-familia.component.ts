@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { DatosInformeBienestarService } from '../../services/datos-informe-bienestar.service';
 import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.component';
+
 @Component({
   selector: 'app-informe-familia',
   standalone: true,
@@ -11,6 +12,9 @@ import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.compon
 })
 export class InformeFamiliaComponent implements OnInit {
   reportes_familia: any;
+  tipo_persona_seleccionada: any;
+
+  TIPO_PERSONA_ESTUDIANTE: number = this.datosInformes.TIPO_PERSONA_ESTUDIANTE;
 
   constructor(private datosInformes: DatosInformeBienestarService) {
     this.datosInformes.setActiveIndex(0);
@@ -26,6 +30,10 @@ export class InformeFamiliaComponent implements OnInit {
           tiene_hijos: [...JSON.parse(data.data?.tiene_hijos)],
         };
       }
+    });
+    this.datosInformes.tipoPersona$.subscribe(tipo => {
+      console.log(tipo);
+      this.tipo_persona_seleccionada = Number(tipo);
     });
   }
 }

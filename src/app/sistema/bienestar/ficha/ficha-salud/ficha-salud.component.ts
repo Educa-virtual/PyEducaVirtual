@@ -199,7 +199,7 @@ export class FichaSaludComponent implements OnInit {
           detail: 'Se actualizaron los datos',
         });
         setTimeout(() => {
-          this.router.navigate([`/bienestar/ficha/${this.iFichaDGId}/recreacion`]);
+          this.router.navigate([`/bienestar/ficha/${this.iFichaDGId}/sociocultural`]);
         }, 1000);
       },
       error: error => {

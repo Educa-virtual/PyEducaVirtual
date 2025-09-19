@@ -15,11 +15,11 @@
             />
           </div>
           <div class="col-12">
-            <app-multiselect-input
-              [multiselectItems]="lenguas"
-              multiselectPlaceholder="Seleccione"
+            <app-dropdown-input
+              [dropdownItems]="lenguas"
+              dropdownPlaceholder="Seleccione"
               [inputControl]="$any(formRecreacion.controls['cLenguaOtro'])"
-              [multiselectControl]="$any(formRecreacion.controls['iLenguaId'])"
+              [dropdownControl]="$any(formRecreacion.controls['iLenguaId'])"
               [addonLabel]="formLabels.iLenguaId"
             />
           </div>

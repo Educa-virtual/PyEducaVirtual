@@ -8,7 +8,7 @@ import { CuestionarioFormPreguntasComponent } from '../cuestionario-form-pregunt
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
-import { TipoPreguntasService } from '@/app/servicios/enc/tipo-preguntas.service';
+import { TipoPreguntasService } from '@/app/servicios/aula/tipo-preguntas.service';
 import { PreguntasService } from '@/app/servicios/aula/preguntas.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 

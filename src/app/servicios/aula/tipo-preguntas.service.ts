@@ -15,7 +15,7 @@ export class TipoPreguntasService {
   obtenerTipoPreguntas() {
     const headers = new HttpHeaders().set('x-cache', 'true').set('x-cache-duration', '3600000'); // 60 minutos
     return this.http
-      .get<ApiResponse>(`${baseUrl}/enc/tipo-preguntas`, { headers })
+      .get<ApiResponse>(`${baseUrl}/aula-virtual/tipo-preguntas`, { headers })
       .pipe(map(resp => resp.data));
   }
 }

@@ -7,30 +7,23 @@
   <div class="login__form">
     <div class="p-4">
       <div class="login_card card relative">
-        <div class="btn-group">
-          <button
-            class="btn-blue"
-            [class.active]="activeForm === 'login'"
-            (click)="switchForm('login')"
-          >
-            Ingresar
-          </button>
-          <button
-            class="btn-red"
-            [class.active]="activeForm === 'register'"
-            (click)="switchForm('register')"
-          >
-            Solicitar Registro
-          </button>
-        </div>
+        <!--<div class="btn-group">
+                    <button class="btn-blue" [class.active]="activeForm === 'login'" (click)="switchForm('login')">
+                        Ingresar
+                    </button>
+                    <button class="btn-red" [class.active]="activeForm === 'register'" (click)="switchForm('register')">
+                        Solicitar Registro
+                    </button>
+                </div>-->
 
         <div class="p-4 form-content" *ngIf="activeForm === 'login'">
           <div class="text-center mt-1">
             <img src="assets/images/logo-proyecto.png" alt="logo" class="logo_dremo" />
           </div>
           <div class="text-center mb-4 mt-2 text-sm">
-            Ingrese su <b>Usuario</b> y <b>Contraseña.</b><br />
-            (si no lo tiene, solicite uno en el Registro)
+            Ingrese su <b>Usuario</b> y <b>contraseña.</b
+            ><!--<br />
+            (si no lo tiene, solicite uno en el Registro)-->
           </div>
 
           <form class="flex flex-column mt-1" [formGroup]="formLogin">
@@ -50,7 +43,7 @@
                   pInputText
                   [type]="!showPassword ? 'password' : 'text'"
                   class="flex-1 border-noround-right w-full"
-                  [placeholder]="!showPassword ? '********' : ''"
+                  [placeholder]="!showPassword ? 'Contraseña' : ''"
                   formControlName="pass"
                 />
                 <button
@@ -67,12 +60,15 @@
                 </button>
               </div>
             </div>
-            <p class="small" align="center">
+            <p class="small text-center">
               <p-button class="text-primary" (onClick)="showModal = true" [text]="true"
-                >¿Has olvidado tu contraseña?<br />
-                ¿Contraseña vencida?</p-button
+                >¿Has olvidado tu contraseña?</p-button
+              >
+              <p-button class="text-primary" (onClick)="mostrarAnuncio = true" [text]="true"
+                >Contactar con soporte</p-button
               >
             </p>
+
             <button
               pButton
               class="btn-submit"
@@ -86,40 +82,47 @@
           </form>
         </div>
 
-        <div class="p-4" *ngIf="activeForm === 'register'">
-          <div class="text-center mt-1">
-            <img src="assets/images/logo-proyecto.png" alt="logo" class="logo_dremo" />
-          </div>
-          <div class="text-center mb-4 mt-2 text-sm">
-            Registre sus datos para solicitar el <b>Ingreso a la Plataforma</b>
-          </div>
+        <!--<div class="p-4" *ngIf="activeForm === 'register'">
+                    <div class="text-center mt-1">
+                        <img src="assets/images/logo-proyecto.png" alt="logo" class="logo_dremo" />
+                    </div>
+                    <div class="text-center mb-4 mt-2 text-sm">
+                        Registra tus datos para solicitar el <strong>ingreso a la Plataforma</strong>
+                    </div>
 
-          <form class="flex flex-column mt-1">
-            <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="DNI" name="documento" />
-            </div>
-            <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Nombre Completo" name="nombre" />
-            </div>
-            <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Cód. Modular" name="codmodular" />
-            </div>
-            <div class="mb-3 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Cargo" name="cargo" />
-            </div>
-            <div class="mb-5 flex flex-column gap-2 mt-2">
-              <input type="text" pInputText placeholder="Correo Personal" name="correo" />
-            </div>
-            <button
-              pButton
-              class="btn-submit"
-              severity="success"
-              size="small"
-              label="Solicitar"
-              disabled
-            ></button>
-          </form>
-        </div>
+                    <form class="flex flex-column mt-1" [formGroup]="formRegistro">
+                        <div class="mb-3 flex flex-column gap-2 mt-2">
+                            <input type="text" pInputText placeholder="DNI / CE" formControlName="cDocumento" />
+                        </div>
+                        <div class="mb-3 flex flex-column gap-2 mt-2">
+                            <input type="text" pInputText placeholder="Apellidos" formControlName="cApellidos" />
+                        </div>
+                        <div class="mb-3 flex flex-column gap-2 mt-2">
+                            <input type="text" pInputText placeholder="Nombres" formControlName="cNombres" />
+                        </div>
+                        <div class="mb-3 flex flex-column gap-2 mt-2">
+                            <input type="text" pInputText placeholder="Cód. Modular I.E."
+                                formControlName="cCodigoModular" />
+                        </div>
+                        <div class="mb-3 flex flex-column gap-2 mt-2">
+                            <input type="text" pInputText placeholder="Cargo" formControlName="cCargo" />
+                        </div>
+                        <div class="mb-5 flex flex-column gap-2 mt-2">
+                            <input type="text" pInputText placeholder="Correo electrónico" formControlName="cCorreo" />
+                        </div>
+                        <div class="mb-5 flex flex-column gap-2 mt-2">
+                            <textarea pInputTextarea rows="3" placeholder="Motivo para solicitar registro (opcional)"
+                                formControlName="cComentarios"></textarea>
+                        </div>
+
+                        <button pButton class="btn-submit" severity="success" size="small" label="Solicitar"
+                            [loading]="solicitandoRegistroUsuario" [disabled]="this.formRegistro.invalid"
+                            (click)="solicitarRegistroUsuario()"></button>
+                        <p class="mb-3 font-light">
+                            <small>Se te notificará al correo ingresado cuando tu cuenta haya sido creada.</small>
+                        </p>
+                    </form>
+                </div>-->
       </div>
     </div>
   </div>
@@ -132,8 +135,8 @@
 <p-toast />
 
 <p-dialog
-  [header]="'DIÁLOGO INFORMATIVO DE EDUCA VIRTUAL'"
-  [(visible)]="anuncio"
+  [header]="'Información de Soporte'"
+  [(visible)]="mostrarAnuncio"
   [maximizable]="true"
   [modal]="true"
   [closable]="true"

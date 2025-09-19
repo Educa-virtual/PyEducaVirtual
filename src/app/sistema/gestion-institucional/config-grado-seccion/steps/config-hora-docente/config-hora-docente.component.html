@@ -33,6 +33,11 @@
     [dismissableMask]="true"
     [header]="'Agregar Personal'"
   >
-    <app-ies-personal></app-ies-personal>
+    <app-form-docente
+      [configuracion]="config"
+      [docente]="docente"
+      [c_accion]="c_accion"
+      (accionBtnItem)="accionBtnItemTable($event)"
+    ></app-form-docente>
   </p-dialog>
 </app-container-page>

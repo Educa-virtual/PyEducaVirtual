@@ -13,7 +13,8 @@ import { SimpleListaAreasComponent } from './sistema/ere/evaluaciones/areas/simp
 import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/areas/especialista-simple-area/especialista-simple-area.component';
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component';
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component';
-import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component';
+import { AsistenciasComponent } from './sistema/administrativo/auxiliar/asistencias/asistencias.component';
+import { ReporteAsistenciasComponent } from './sistema/administrativo/auxiliar/reporte-asistencias/reporte-asistencias.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -85,7 +86,11 @@ export const routes: Routes = [
       },
       {
         path: 'asistencia-auxiliar',
-        component: AuxiliarComponent,
+        component: AsistenciasComponent,
+      },
+      {
+        path: 'reporte-asistencia-auxiliar',
+        component: ReporteAsistenciasComponent,
       },
     ],
   },

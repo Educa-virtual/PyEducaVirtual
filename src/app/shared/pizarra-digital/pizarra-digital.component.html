@@ -1,0 +1,71 @@
+<div class="toolbar p-2 surface-100 border-round-md flex align-items-center flex-wrap gap-2">
+  <p-button
+    icon="pi pi-pencil"
+    label="Lápiz"
+    [outlined]="tool !== 'pen'"
+    [severity]="tool === 'pen' ? 'primary' : null"
+    (onClick)="setTool('pen')"
+  />
+
+  <p-button
+    icon="pi pi-stop"
+    label="Rectángulo"
+    [outlined]="tool !== 'rect'"
+    [severity]="tool === 'rect' ? 'primary' : null"
+    (onClick)="setTool('rect')"
+  />
+
+  <p-button
+    icon="pi pi-circle"
+    label="Círculo"
+    [outlined]="tool !== 'circle'"
+    [severity]="tool === 'circle' ? 'primary' : null"
+    (onClick)="setTool('circle')"
+  />
+
+  <p-button
+    icon="pi pi-align-left"
+    label="Texto"
+    [outlined]="tool !== 'text'"
+    [severity]="tool === 'text' ? 'primary' : null"
+    (onClick)="setTool('text')"
+  />
+
+  <p-button
+    icon="pi pi-eraser"
+    label="Borrador"
+    [outlined]="tool !== 'eraser'"
+    [severity]="tool === 'eraser' ? 'danger' : null"
+    (onClick)="setTool('eraser')"
+  />
+
+  <p-button
+    icon="pi pi-mouse"
+    label="Seleccionar"
+    [outlined]="tool !== 'select'"
+    [severity]="tool === 'select' ? 'primary' : null"
+    (onClick)="setTool('select')"
+  />
+
+  <p-button icon="pi pi-trash" label="Limpiar" severity="danger" (onClick)="clearCanvas()" />
+
+  <p-button icon="pi pi-upload" label="Exportar PNG" severity="success" (onClick)="exportPNG()" />
+
+  <!-- Opciones -->
+  <div class="flex align-items-center gap-2 ml-3">
+    <label for="color" class="font-medium">🎨 Color:</label>
+    <input
+      id="color"
+      type="color"
+      [(ngModel)]="strokeColor"
+      class="p-inputtext p-component p-1 border-round"
+    />
+  </div>
+
+  <div class="flex align-items-center gap-2 ml-3">
+    <label for="width" class="font-medium">➖ Ancho:</label>
+    <p-slider id="width" [(ngModel)]="strokeWidth" [min]="1" [max]="30" styleClass="w-14rem" />
+  </div>
+</div>
+
+<div #stageHost class="stage-host border-1 surface-border border-round-md"></div>

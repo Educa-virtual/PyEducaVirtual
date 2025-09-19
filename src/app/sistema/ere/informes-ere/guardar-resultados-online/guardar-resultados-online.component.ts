@@ -562,7 +562,12 @@ export class GuardarResultadosOnlineComponent implements OnInit {
       formData.append('archivo', file);
 
       this.datosInformesService
-        .guardarHojaDesarrolloEstudiante(formData, this.curso, this.alumnoSeleccionado)
+        .guardarHojaDesarrolloEstudiante(
+          formData,
+          this.curso.iEvaluacionIdHashed,
+          this.curso.iCursosNivelGradId,
+          this.alumnoSeleccionado.iEstudianteId
+        )
         .subscribe({
           next: (data: any) => {
             this._messageService.add({
@@ -588,7 +593,11 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   descargarHojaDesarrolloEstudiante(event: any) {
     this.alumnoSeleccionado = event.item;
     this.datosInformesService
-      .descargarHojaDesarrolloEstudiante(this.curso, this.alumnoSeleccionado)
+      .descargarHojaDesarrolloEstudiante(
+        this.curso.iEvaluacionIdHashed,
+        this.curso.iCursosNivelGradId,
+        this.alumnoSeleccionado.iEstudianteId
+      )
       .subscribe({
         next: (response: Blob) => {
           let filename = `Hoja desarrollo - ${this.alumnoSeleccionado.documento}`;
@@ -626,7 +635,11 @@ export class GuardarResultadosOnlineComponent implements OnInit {
 
   eliminarHojaDesarrolloEstudiante() {
     this.datosInformesService
-      .eliminarHojaDesarrolloEstudiante(this.curso, this.alumnoSeleccionado)
+      .eliminarHojaDesarrolloEstudiante(
+        this.curso.iEvaluacionIdHashed,
+        this.curso.iCursosNivelGradId,
+        this.alumnoSeleccionado.iEstudianteId
+      )
       .subscribe({
         next: (response: any) => {
           this._messageService.add({

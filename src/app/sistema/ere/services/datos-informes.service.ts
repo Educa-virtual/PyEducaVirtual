@@ -325,25 +325,38 @@ export class DatosInformesService {
     return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data);
   }
 
-  guardarHojaDesarrolloEstudiante(formData: any, curso: any, estudiante: any) {
+  guardarHojaDesarrolloEstudiante(
+    formData: any,
+    iEvaluacionId: string,
+    iCursosNivelGradId: string,
+    iEstudianteId: number
+  ) {
     return this.http.post(
-      `${baseUrl}/ere/resultados/evaluaciones/${curso.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/estudiantes/${estudiante.iEstudianteId}/hoja-desarrollo`,
+      `${baseUrl}/ere/resultados/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/estudiantes/${iEstudianteId}/hoja-desarrollo`,
       formData
     );
   }
 
-  descargarHojaDesarrolloEstudiante(curso: any, estudiante: any) {
+  descargarHojaDesarrolloEstudiante(
+    iEvaluacionId: string,
+    iCursosNivelGradId: string,
+    iEstudianteId: number
+  ) {
     return this.http.get(
-      `${baseUrl}/ere/resultados/evaluaciones/${curso.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/estudiantes/${estudiante.iEstudianteId}/hoja-desarrollo`,
+      `${baseUrl}/ere/resultados/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/estudiantes/${iEstudianteId}/hoja-desarrollo`,
       {
         responseType: 'blob',
       }
     );
   }
 
-  eliminarHojaDesarrolloEstudiante(curso: any, estudiante: any) {
+  eliminarHojaDesarrolloEstudiante(
+    iEvaluacionId: string,
+    iCursosNivelGradId: string,
+    iEstudianteId: number
+  ) {
     return this.http.delete(
-      `${baseUrl}/ere/resultados/evaluaciones/${curso.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/estudiantes/${estudiante.iEstudianteId}/hoja-desarrollo`
+      `${baseUrl}/ere/resultados/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/estudiantes/${iEstudianteId}/hoja-desarrollo`
     );
   }
 }

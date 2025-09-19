@@ -1,16 +1,11 @@
-<p-dialog
-  [modal]="true"
-  [(visible)]="visible"
-  [style]="{ width: '65rem' }"
-  (onHide)="visible = false"
->
+<p-dialog [modal]="true" [(visible)]="visible" [style]="{ width: '65rem' }" (onHide)="logout()">
   <ng-template pTemplate="header">
     <img src="assets/images/logo_blanco.png" alt="logo" height="60px" />
   </ng-template>
   <div class="mt-5 grid evaluacion-finalizada">
     <div class="col-12 md:col-9">
       <!-- <span class="title">Bienvenido</span> -->
-      <h1>Gracias por su participación en la Evaluación Regional de Estudiantes (ERE)</h1>
+      <h1>Gracias por tu participación en la Evaluación Regional de Estudiantes (ERE)</h1>
       <!-- <h5 style="font-size: 22px">
                 Levanta la mano e indica que terminaste, y espera las
                 indicaciones.
@@ -19,19 +14,14 @@
     <div class="col-12 md:col-3 align-content-center text-center">
       <img style="max-width: 150px" src="assets/images/icons/prueba.gif" alt="logo" />
     </div>
-    @if (mostrarBotonEncuesta) {
-      <div class="col-12 md:col-9">
-        <h5>Por favor complete la encuesta para culminar la evaluación.</h5>
-      </div>
-      <div class="col-12 md:col-3 align-content-center text-center">
-        <button pButton pRipple type="button" class="p-button-success pulse" (click)="irEncuesta()">
-          <i class="pi pi-check-square"></i>&nbsp; Iniciar encuesta
-        </button>
-      </div>
-    }
+    <div class="col-12" *ngIf="puedeCerrarSesion && !archivoSubido">
+      <p style="font-size: 1.5rem">
+        (Opcional) Puedes subir tu hoja de desarrollo de la evaluación utilizando el botón de abajo.
+      </p>
+    </div>
   </div>
   <ng-template pTemplate="footer">
-    <div class="btn-center mb-4" *ngIf="!puedeCerrarSesion && !archivoSubido">
+    <div class="btn-center mb-4 mt-1" *ngIf="puedeCerrarSesion && !archivoSubido">
       <p-button
         icon="pi pi-paperclip"
         label="Subir hoja de desarrollo"
@@ -39,6 +29,20 @@
         severity="success"
       />
     </div>
+    <div class="btn-center mb-4 mt-1" *ngIf="puedeCerrarSesion && archivoSubido">
+      <p-button
+        icon="pi pi-download"
+        label="Ver archivo subido"
+        (onClick)="descargarHojaDesarrolloEstudiante()"
+      />
+      <p-button
+        icon="pi pi-trash"
+        label="Eliminar archivo"
+        (onClick)="preguntarEliminarArchivoHojaDesarrollo()"
+        severity="warning"
+      />
+    </div>
+
     <div class="btn-center">
       <p-button
         icon="pi pi-sign-out"

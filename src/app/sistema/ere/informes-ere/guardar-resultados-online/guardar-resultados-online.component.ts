@@ -625,7 +625,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   preguntarEliminarArchivoHojaDesarrollo(event: any) {
     this.alumnoSeleccionado = event.item;
     this.dialogConfirm.openConfirm({
-      header: `Se va a eliminar el archivo subido para el estudiante ${this.alumnoSeleccionado.paterno} ${this.alumnoSeleccionado.materno} ${this.alumnoSeleccionado.nombres}. ¿Desea continuar?`,
+      header: `Se va a eliminar el archivo subido para el estudiante ${this.alumnoSeleccionado.paterno} ${this.alumnoSeleccionado.materno} ${this.alumnoSeleccionado.nombres}.`,
       message: '¿Desea continuar?',
       accept: () => {
         this.eliminarHojaDesarrolloEstudiante();

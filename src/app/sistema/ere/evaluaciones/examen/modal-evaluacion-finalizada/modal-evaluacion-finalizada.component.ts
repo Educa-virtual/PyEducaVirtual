@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { DatosInformesService } from '../../../services/datos-informes.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { MessageService } from 'primeng/api';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 
 @Component({
   selector: 'app-modal-evaluacion-finalizada',
@@ -30,18 +31,12 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
     private tokenStorageService: TokenStorageService,
     private datosInformesService: DatosInformesService,
     private constantesService: ConstantesService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private dialogConfirm: ConfirmationModalService
   ) {}
 
   ngOnInit() {
-    //Desactivado porque solo era para el piloto
     this.mostrarBotonEncuesta = false;
-    /*switch (this.grado) {
-            case '2do.':
-            case '4to.':
-                this.mostrarBotonEncuesta = true
-                break
-        }*/
   }
 
   irEncuesta() {
@@ -91,6 +86,7 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
         )
         .subscribe({
           next: (data: any) => {
+            this.archivoSubido = true;
             this.messageService.add({
               severity: 'success',
               summary: 'Archivo subido',
@@ -106,5 +102,72 @@ export class ModalEvaluacionFinalizadaComponent implements OnInit {
           },
         });
     }
+  }
+
+  descargarHojaDesarrolloEstudiante() {
+    this.datosInformesService
+      .descargarHojaDesarrolloEstudiante(
+        this.iEvaluacionId,
+        this.iCursoNivelGradId,
+        this.constantesService.iEstudianteId
+      )
+      .subscribe({
+        next: (response: Blob) => {
+          let filename = `Hoja desarrollo - ${this.constantesService.iEstudianteId}`;
+          if (!filename.includes('.') && response.type) {
+            const ext = response.type.split('/')[1];
+            filename += '.' + ext;
+          }
+          const url = window.URL.createObjectURL(response);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al descargar el archivo',
+            detail: error.error?.message || 'No se pudo descargar el archivo',
+          });
+        },
+      });
+  }
+
+  preguntarEliminarArchivoHojaDesarrollo() {
+    this.dialogConfirm.openConfirm({
+      header: `Se va a eliminar el archivo subido`,
+      message: '¿Desea continuar?',
+      accept: () => {
+        this.eliminarHojaDesarrolloEstudiante();
+      },
+    });
+  }
+
+  eliminarHojaDesarrolloEstudiante() {
+    this.datosInformesService
+      .eliminarHojaDesarrolloEstudiante(
+        this.iEvaluacionId,
+        this.iCursoNivelGradId,
+        this.constantesService.iEstudianteId
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Archivo eliminado',
+            detail: response.message,
+          });
+          this.archivoSubido = false;
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al descargar el archivo',
+            detail: error.error?.message || 'No se pudo descargar el archivo',
+          });
+        },
+      });
   }
 }

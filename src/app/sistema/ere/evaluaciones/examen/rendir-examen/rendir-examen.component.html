@@ -227,6 +227,8 @@
 <app-modal-evaluacion-finalizada
   [grado]="this.evaluacion?.cGradoAbreviacion"
   [puedeCerrarSesion]="true"
+  [iEvaluacionId]="iEvaluacionId"
+  [iCursoNivelGradId]="iCursoNivelGradId"
   *ngIf="finalizado"
 ></app-modal-evaluacion-finalizada>
 

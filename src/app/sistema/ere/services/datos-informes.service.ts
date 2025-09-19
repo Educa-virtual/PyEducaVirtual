@@ -325,7 +325,25 @@ export class DatosInformesService {
     return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data);
   }
 
-  subirHojaDesarrollo(data: any) {
-    return this.http.post(`${baseUrl}/ere/resultados/estudiante/hoja-desarrollo`, data);
+  guardarHojaDesarrolloEstudiante(formData: any, curso: any, estudiante: any) {
+    return this.http.post(
+      `${baseUrl}/ere/resultados/evaluaciones/${curso.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/estudiantes/${estudiante.iEstudianteId}/hoja-desarrollo`,
+      formData
+    );
+  }
+
+  descargarHojaDesarrolloEstudiante(curso: any, estudiante: any) {
+    return this.http.get(
+      `${baseUrl}/ere/resultados/evaluaciones/${curso.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/estudiantes/${estudiante.iEstudianteId}/hoja-desarrollo`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
+  eliminarHojaDesarrolloEstudiante(curso: any, estudiante: any) {
+    return this.http.delete(
+      `${baseUrl}/ere/resultados/evaluaciones/${curso.iEvaluacionIdHashed}/areas/${curso.iCursosNivelGradId}/estudiantes/${estudiante.iEstudianteId}/hoja-desarrollo`
+    );
   }
 }

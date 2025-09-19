@@ -183,7 +183,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     //     });
     // }
     this.searchTerm = event;
-    console.log('Valor es ' + this.indiceColumnaBuscar);
     if (this.dt) {
       // solo va buscar en el indice(1)
       // const filas = [this.columnas[1].field, this.columnas[2].field]

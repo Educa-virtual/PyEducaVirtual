@@ -109,29 +109,8 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         return rowData.bTieneArchivo == 1;
       },
     },
-    // {
-    //     labelTooltip: 'guardar',
-    //     icon: 'pi pi-plus',
-    //     accion: 'guardar',
-    //     type: 'item',
-    //     class: 'p-button-rounded p-button-primary p-button-text',
-    //     isVisible: (rowData) => {
-    //         console.log('rowData');
-    //         console.log(rowData);
-
-    //         return rowData.sexo == "F"
-    //     }
-    // },
   ];
   columnas: IColumn[] = [
-    // {
-    //     type: 'item-checkbox',
-    //     width: '1rem',
-    //     field: 'seleccionado',
-    //     header: 'Elegir',
-    //     text_header: 'center',
-    //     text: 'center',
-    // },
     {
       type: 'item',
       width: '0.5rem',
@@ -360,8 +339,6 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     this.formCurso.get('cNivelTipoNombre').patchValue(datos.curso.cNivelTipoNombre);
     this.formCurso.get('cNombreDocente').patchValue('Nombre del Docente');
     this.formCurso.get('iCursosNivelGradId').patchValue(datos.curso.iCursosNivelGradId);
-    // this.curso = datos.curso
-    // this.form.reset()
     this.curso = datos.curso;
     this.alumnosFiltrados = [];
     this.formCurso.get('iSeccionId').patchValue(null);
@@ -381,43 +358,35 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     this.query.obtenerEstudiantesMatriculados(body).subscribe({
       next: (data: any) => {
         this.estudiantes = data.data;
-
-        /* const respuestasMapeadas: any = {};
-
-                         for (let i = 1; i <= 6; i++) {
-                             respuestasMapeadas[`respuestas${i.toString().padStart(2, '0')}`] =
-                                 respuestas.find(r => r.iPreguntaOrden === i)?.cAlternativaLetra ?? null;
-                         }   */
         this.estudiantes = this.estudiantes.map(alumno => {
           const respuestas = JSON.parse(alumno.respuestas ?? '[]');
 
           return {
             ...alumno,
-            respuesta01: respuestas.find(r => r.iPreguntaOrden === 1)?.cAlternativaLetra ?? null,
-            respuesta02: respuestas.find(r => r.iPreguntaOrden === 2)?.cAlternativaLetra ?? null,
-            respuesta03: respuestas.find(r => r.iPreguntaOrden === 3)?.cAlternativaLetra ?? null,
-            respuesta04: respuestas.find(r => r.iPreguntaOrden === 4)?.cAlternativaLetra ?? null,
-            respuesta05: respuestas.find(r => r.iPreguntaOrden === 5)?.cAlternativaLetra ?? null,
-            respuesta06: respuestas.find(r => r.iPreguntaOrden === 6)?.cAlternativaLetra ?? null,
-            respuesta07: respuestas.find(r => r.iPreguntaOrden === 7)?.cAlternativaLetra ?? null,
-            respuesta08: respuestas.find(r => r.iPreguntaOrden === 8)?.cAlternativaLetra ?? null,
-            respuesta09: respuestas.find(r => r.iPreguntaOrden === 9)?.cAlternativaLetra ?? null,
-            respuesta10: respuestas.find(r => r.iPreguntaOrden === 10)?.cAlternativaLetra ?? null,
-            respuesta11: respuestas.find(r => r.iPreguntaOrden === 11)?.cAlternativaLetra ?? null,
-            respuesta12: respuestas.find(r => r.iPreguntaOrden === 12)?.cAlternativaLetra ?? null,
-            respuesta13: respuestas.find(r => r.iPreguntaOrden === 13)?.cAlternativaLetra ?? null,
-            respuesta14: respuestas.find(r => r.iPreguntaOrden === 14)?.cAlternativaLetra ?? null,
-            respuesta15: respuestas.find(r => r.iPreguntaOrden === 15)?.cAlternativaLetra ?? null,
-            respuesta16: respuestas.find(r => r.iPreguntaOrden === 16)?.cAlternativaLetra ?? null,
-            respuesta17: respuestas.find(r => r.iPreguntaOrden === 17)?.cAlternativaLetra ?? null,
-            respuesta18: respuestas.find(r => r.iPreguntaOrden === 18)?.cAlternativaLetra ?? null,
-            respuesta19: respuestas.find(r => r.iPreguntaOrden === 19)?.cAlternativaLetra ?? null,
-            respuesta20: respuestas.find(r => r.iPreguntaOrden === 20)?.cAlternativaLetra ?? null,
+            respuesta01: respuestas.find(r => r.iPreguntaOrden === 1)?.cAlternativaLetra,
+            respuesta02: respuestas.find(r => r.iPreguntaOrden === 2)?.cAlternativaLetra,
+            respuesta03: respuestas.find(r => r.iPreguntaOrden === 3)?.cAlternativaLetra,
+            respuesta04: respuestas.find(r => r.iPreguntaOrden === 4)?.cAlternativaLetra,
+            respuesta05: respuestas.find(r => r.iPreguntaOrden === 5)?.cAlternativaLetra,
+            respuesta06: respuestas.find(r => r.iPreguntaOrden === 6)?.cAlternativaLetra,
+            respuesta07: respuestas.find(r => r.iPreguntaOrden === 7)?.cAlternativaLetra,
+            respuesta08: respuestas.find(r => r.iPreguntaOrden === 8)?.cAlternativaLetra,
+            respuesta09: respuestas.find(r => r.iPreguntaOrden === 9)?.cAlternativaLetra,
+            respuesta10: respuestas.find(r => r.iPreguntaOrden === 10)?.cAlternativaLetra,
+            respuesta11: respuestas.find(r => r.iPreguntaOrden === 11)?.cAlternativaLetra,
+            respuesta12: respuestas.find(r => r.iPreguntaOrden === 12)?.cAlternativaLetra,
+            respuesta13: respuestas.find(r => r.iPreguntaOrden === 13)?.cAlternativaLetra,
+            respuesta14: respuestas.find(r => r.iPreguntaOrden === 14)?.cAlternativaLetra,
+            respuesta15: respuestas.find(r => r.iPreguntaOrden === 15)?.cAlternativaLetra,
+            respuesta16: respuestas.find(r => r.iPreguntaOrden === 16)?.cAlternativaLetra,
+            respuesta17: respuestas.find(r => r.iPreguntaOrden === 17)?.cAlternativaLetra,
+            respuesta18: respuestas.find(r => r.iPreguntaOrden === 18)?.cAlternativaLetra,
+            respuesta19: respuestas.find(r => r.iPreguntaOrden === 19)?.cAlternativaLetra,
+            respuesta20: respuestas.find(r => r.iPreguntaOrden === 20)?.cAlternativaLetra,
           };
         });
       },
       error: error => {
-        console.error('Error subiendo archivo:', error);
         this._messageService.add({
           severity: 'error',
           summary: 'Mensaje del sistema',
@@ -477,34 +446,24 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.getCuestionarioNotas(elemento);
         break;
       case 'subir-archivo':
-        this.openFileDialog(elemento);
+        this.openFileDialogHojaDesarrollo(elemento);
+        break;
+      case 'descargar-archivo':
+        this.descargarHojaDesarrolloEstudiante(elemento);
+        break;
+      case 'eliminar-archivo':
+        this.preguntarEliminarArchivoHojaDesarrollo(elemento);
         break;
     }
   }
 
-  // BACKUP
-  // getCuestionarioNotas(event: any) {
-  //     const item = event.item
-  //     console.log(item, 'item')
-  //     this.subirArchivo(item)
-  //     // this.query.insertarCuestionarioNotas(item).subscribe({
-  //     //     next: (res) => {
-  //     //         this.subirArchivo(
-  //     //             // Aquí mandas los datos de la tabla
-  //     //             this.alumnos
-  //     //         )
-  //     //         console.log('Respuesta del backend:', res)
-  //     //     },
-  //     //     error: (err) => console.error('Error:', err),
-  //     // })
-  // }
   getCuestionarioNotas(event: any) {
-    //const item = event.item;
     this.alumnoSeleccionado = event.item;
     this.dialogConfirm.openConfirm({
-      header: `Se va a guardar los resultados ingresados del estudiante ${this.alumnoSeleccionado.paterno} ${this.alumnoSeleccionado.materno} ${this.alumnoSeleccionado.nombres}. ¿Desea continuar?`,
+      header: `Se va a guardar los resultados de ${this.alumnoSeleccionado.paterno} ${this.alumnoSeleccionado.materno} ${this.alumnoSeleccionado.nombres}. `,
+      message: '¿Desea continuar?',
       accept: () => {
-        this.subirArchivo([this.alumnoSeleccionado]);
+        this.subirArchivo();
       },
     });
   }
@@ -539,21 +498,23 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     this.alumnosFiltrados = this.alumnos.filter(
       alumno => alumno.iSeccionId === Number(seccionIdSeleccionada)
     );
+    console.log(this.alumnosFiltrados);
   }
 
-  async subirArchivo(datos_hojas: Array<object>) {
+  async subirArchivo() {
+    const datos_hojas: Array<object> = [this.alumnoSeleccionado];
     const subirArchivo = {
       iSedeId: Number(this.iSedeId), // Number()
       iSemAcadId: Number(this.iSemAcadId), // Number()
       iYAcadId: Number(this.iYAcadId), // Number()
       iCredId: Number(this.store.getItem('dremoPerfil').iCredId), // Number()
-      iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed ?? null,
-      iCursosNivelGradId: this.curso.iCursosNivelGradId ?? null,
+      iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed,
+      iCursosNivelGradId: this.curso.iCursosNivelGradId,
       codigo_modular: this.perfil.cIieeCodigoModular,
-      curso: this.curso.cCursoNombre ?? null,
+      curso: this.curso.cCursoNombre,
       //curso: cursoNormalizado,
-      nivel: this.curso.cNivelTipoNombre ?? null,
-      grado: this.curso.cGradoAbreviacion ?? null,
+      nivel: this.curso.cNivelTipoNombre,
+      grado: this.curso.cGradoAbreviacion,
       tipo: 'resultados',
       json_resultados: JSON.stringify(datos_hojas),
     };
@@ -588,49 +549,101 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     });
   }
 
-  openFileDialog(row: any) {
+  openFileDialogHojaDesarrollo(row: any) {
     this.alumnoSeleccionado = row.item;
     this.fileInput.nativeElement.click();
   }
 
-  onFileSelected(event: Event) {
+  onFileSelectedHojaDesarrollo(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0 && this.alumnoSeleccionado) {
       const file = input.files[0];
       const formData = new FormData();
       formData.append('archivo', file);
-      formData.append('iEvaluacionId', this.curso.iEvaluacionIdHashed);
-      formData.append('iCursosNivelGradId', this.curso.iCursosNivelGradId);
-      formData.append('iEstudianteId', this.alumnoSeleccionado.iEstudianteId);
 
-      this.datosInformesService.subirHojaDesarrollo(formData).subscribe({
-        next: (data: any) => {
+      this.datosInformesService
+        .guardarHojaDesarrolloEstudiante(formData, this.curso, this.alumnoSeleccionado)
+        .subscribe({
+          next: (data: any) => {
+            this._messageService.add({
+              severity: 'success',
+              summary: 'Archivo subido',
+              detail: data.message,
+            });
+            this.alumnoSeleccionado.bTieneArchivo = 1;
+            input.value = '';
+            this.alumnoSeleccionado = null;
+          },
+          error: error => {
+            this._messageService.add({
+              severity: 'error',
+              summary: 'Error al subir archivo',
+              detail: error.error.message || 'Error desconocido',
+            });
+          },
+        });
+    }
+  }
+
+  descargarHojaDesarrolloEstudiante(event: any) {
+    this.alumnoSeleccionado = event.item;
+    this.datosInformesService
+      .descargarHojaDesarrolloEstudiante(this.curso, this.alumnoSeleccionado)
+      .subscribe({
+        next: (response: Blob) => {
+          let filename = `Hoja desarrollo - ${this.alumnoSeleccionado.documento}`;
+          if (!filename.includes('.') && response.type) {
+            const ext = response.type.split('/')[1];
+            filename += '.' + ext;
+          }
+          const url = window.URL.createObjectURL(response);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: error => {
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Problema al descargar el archivo',
+            detail: error.error?.message || 'No se pudo descargar el archivo',
+          });
+        },
+      });
+  }
+
+  preguntarEliminarArchivoHojaDesarrollo(event: any) {
+    this.alumnoSeleccionado = event.item;
+    this.dialogConfirm.openConfirm({
+      header: `Se va a eliminar el archivo subido para el estudiante ${this.alumnoSeleccionado.paterno} ${this.alumnoSeleccionado.materno} ${this.alumnoSeleccionado.nombres}. ¿Desea continuar?`,
+      message: '¿Desea continuar?',
+      accept: () => {
+        this.eliminarHojaDesarrolloEstudiante();
+      },
+    });
+  }
+
+  eliminarHojaDesarrolloEstudiante() {
+    this.datosInformesService
+      .eliminarHojaDesarrolloEstudiante(this.curso, this.alumnoSeleccionado)
+      .subscribe({
+        next: (response: any) => {
           this._messageService.add({
             severity: 'success',
-            summary: 'Archivo subido',
-            detail: data.message,
+            summary: 'Archivo eliminado',
+            detail: response.message,
           });
-          /*const alumno = this.alumnosFiltrados.find(a => a.iEstudianteId === this.alumnoSeleccionado.iEstudianteId);
-                    if (alumno) {
-                        alumno.bTieneArchivo = 1;
-                    }*/
-          /*this.alumnosFiltrados.map(alumno => {
-                        if (alumno.iEstudianteId === this.alumnoSeleccionado.iEstudianteId) {
-                            alumno.bTieneArchivo = 1;
-                        }
-                    });*/
-          this.alumnoSeleccionado.bTieneArchivo = 1;
-          input.value = '';
+          this.alumnoSeleccionado.bTieneArchivo = 0;
           this.alumnoSeleccionado = null;
         },
         error: error => {
           this._messageService.add({
             severity: 'error',
-            summary: 'Error al subir archivo',
-            detail: error.error.message || 'Error desconocido',
+            summary: 'Problema al descargar el archivo',
+            detail: error.error?.message || 'No se pudo descargar el archivo',
           });
         },
       });
-    }
   }
 }

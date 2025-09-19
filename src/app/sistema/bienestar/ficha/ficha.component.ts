@@ -116,9 +116,9 @@ export class FichaComponent implements OnInit, AfterViewInit {
         route: `/bienestar/ficha/${this.iFichaDGId}/salud`,
       },
       {
-        label: 'Recreación',
+        label: 'Sociocultural',
         icon: 'pi pi-fw pi-image',
-        route: `/bienestar/ficha/${this.iFichaDGId}/recreacion`,
+        route: `/bienestar/ficha/${this.iFichaDGId}/sociocultural`,
       },
     ];
   }

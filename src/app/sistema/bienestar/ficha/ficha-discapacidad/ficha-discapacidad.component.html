@@ -1,39 +1,23 @@
 <br />
 
 <form [formGroup]="formDiscapacidad">
-  <div class="grid p-fluid p-2">
+  <div class="grid p-2">
     <div class="col-12">
       <p-messages [closable]="false" severity="info">
         <ng-template pTemplate="content">
           <p>
             Solo debe llenar esta sección si
             {{ es_estudiante_apoderado ? 'el estudiante' : '' }} tiene alguna limitación o
-            discapacidad <strong>diagnosticada por un médico</strong>, de lo contrario puede dejar
-            esta sección en blanco y continuar a la siguiente sección.
+            discapacidad <strong>diagnosticada por un médico</strong>, la cual debe ser adjuntada en
+            formato PDF, de lo contrario puede dejar esta sección en blanco y continuar a la
+            siguiente sección.
           </p>
         </ng-template>
       </p-messages>
     </div>
     <div class="col-12 lg:col-6">
       <p-fieldset [legend]="formLabels.seccion1">
-        <div class="grid" *ngIf="controles_discapacidades && controles_discapacidades.length > 0">
-          <div class="col-12" *ngFor="let discapacidad of discapacidades; let i = index">
-            <app-switch-input
-              [switchControl]="$any(controles_discapacidades.at(i)).controls['bDiscFicha']"
-              [addonLabel]="discapacidad['label']"
-              inputType="textarea"
-              [inputInitRows]="3"
-              [inputMinRows]="3"
-              [inputMaxRows]="6"
-              [inputControl]="$any(controles_discapacidades.at(i)).controls['cDiscFichaObs']"
-              inputPlaceholder="Especifique cuando fue diagnosticada, la severidad y si necesita apoyo o acomodaciones"
-              [infoAdicional]="bDiscFicha"
-            />
-            <ng-template #bDiscFicha>
-              Especifique cuando fue diagnosticada, la severidad y si necesita apoyo o acomodaciones
-            </ng-template>
-          </div>
-        </div>
+        <app-ficha-discapacidad-registro [iFichaDGId]="iFichaDGId" />
       </p-fieldset>
     </div>
     <div class="col-12 lg:col-6">

@@ -9,7 +9,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
   standalone: true,
   imports: [PrimengModule, MultiChartComponent],
   templateUrl: './informe-economico.component.html',
-  styleUrl: './informe-economico.component.scss',
+  styleUrl: './../informe-estadistico.component.scss',
 })
 export class InformeEconomicoComponent implements OnInit {
   reportes_economico: any;

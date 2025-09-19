@@ -88,6 +88,7 @@ export class FichaGeneralComponent implements OnInit {
       cReligionOtro: ['', Validators.maxLength(150)],
       bFamiliarPadreVive: [false],
       bFamiliarMadreVive: [false],
+      bFamiliarPadresVivenMismaCasa: [false],
       bFamiliarPadresVivenJuntos: [false],
       bFichaDGTieneHijos: [false],
       iFichaDGNroHijos: [null],
@@ -113,6 +114,9 @@ export class FichaGeneralComponent implements OnInit {
       bFichaDGTieneHijos_info: this.es_estudiante_apoderado
         ? 'Si el estudiante tiene hijos/as, debe indicar el número de hijos/as.'
         : 'Si tiene hijos/as, debe indicar el número de hijos/as.',
+      bFamiliarPadresVivenMismaCasa: this.es_estudiante_apoderado
+        ? '¿El estudiante vive en la misma casa que uno de sus padres?'
+        : '¿Vive con sus padres?',
     };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
@@ -173,6 +177,12 @@ export class FichaGeneralComponent implements OnInit {
       this.formGeneral,
       'bFichaDGTieneHijos',
       data.bFichaDGTieneHijos,
+      'boolean'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formGeneral,
+      'bFamiliarPadresVivenMismaCasa',
+      data.bFamiliarPadresVivenMismaCasa,
       'boolean'
     );
     this.funcionesBienestar.formMarkAsDirty(this.formGeneral);

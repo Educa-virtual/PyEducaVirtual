@@ -79,6 +79,7 @@ export class FuncionesBienestarService implements OnDestroy {
   }
 
   formaterarFormFecha(value: any) {
+    value = value.substring(0, 10);
     let fecha = new Date(value + 'T00:00:00');
     if (!value) fecha = null;
     return fecha;

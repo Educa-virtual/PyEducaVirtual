@@ -229,6 +229,10 @@
   border-left: 15px solid var(--yellow-500);
 }
 
+:host ::ng-deep .p-message-wrapper {
+  display: inline-block;
+}
+
 // Media query para impresión en resumen de encuesta
 @media print {
   ::ng-deep .topbar {

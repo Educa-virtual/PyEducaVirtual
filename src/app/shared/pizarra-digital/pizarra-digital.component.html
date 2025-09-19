@@ -1,7 +1,9 @@
-<div class="toolbar p-2 surface-100 border-round-md flex align-items-center flex-wrap gap-2">
+<div
+  class="toolbar p-2 surface-100 border-round-md flex align-items-center flex-wrap gap-2 justify-content-center"
+>
   <p-button
     icon="pi pi-pencil"
-    label="Lápiz"
+    [text]="false"
     [outlined]="tool !== 'pen'"
     [severity]="tool === 'pen' ? 'primary' : null"
     (onClick)="setTool('pen')"
@@ -9,7 +11,7 @@
 
   <p-button
     icon="pi pi-stop"
-    label="Rectángulo"
+    [text]="false"
     [outlined]="tool !== 'rect'"
     [severity]="tool === 'rect' ? 'primary' : null"
     (onClick)="setTool('rect')"
@@ -17,7 +19,7 @@
 
   <p-button
     icon="pi pi-circle"
-    label="Círculo"
+    [text]="false"
     [outlined]="tool !== 'circle'"
     [severity]="tool === 'circle' ? 'primary' : null"
     (onClick)="setTool('circle')"
@@ -25,34 +27,45 @@
 
   <p-button
     icon="pi pi-align-left"
-    label="Texto"
+    [text]="false"
     [outlined]="tool !== 'text'"
     [severity]="tool === 'text' ? 'primary' : null"
     (onClick)="setTool('text')"
   />
 
-  <p-button
+  <!-- <p-button
     icon="pi pi-eraser"
-    label="Borrador"
+    [text]="false"
     [outlined]="tool !== 'eraser'"
     [severity]="tool === 'eraser' ? 'danger' : null"
     (onClick)="setTool('eraser')"
-  />
+  /> -->
 
   <p-button
-    icon="pi pi-mouse"
-    label="Seleccionar"
+    icon="pi pi-send"
+    [text]="false"
     [outlined]="tool !== 'select'"
     [severity]="tool === 'select' ? 'primary' : null"
     (onClick)="setTool('select')"
   />
 
-  <p-button icon="pi pi-trash" label="Limpiar" severity="danger" (onClick)="clearCanvas()" />
+  <p-button icon="pi pi-trash" [text]="false" severity="danger" (onClick)="clearCanvas()" />
 
-  <p-button icon="pi pi-upload" label="Exportar PNG" severity="success" (onClick)="exportPNG()" />
+  <!-- <p-button icon="pi pi-upload" [text]="false" severity="success" (onClick)="exportPNG()" />
+
+  <p-button icon="pi pi-file" [text]="false" severity="success" (onClick)="exportSVG()" /> -->
+
+  <!-- <p-button icon="pi pi-upload" [text]="false" severity="info" (onClick)="fileInput.click()" /> -->
+  <input
+    #fileInput
+    type="file"
+    accept=".svg"
+    style="display: none"
+    (change)="onUploadSVG($event)"
+  />
 
   <!-- Opciones -->
-  <div class="flex align-items-center gap-2 ml-3">
+  <!-- <div class="flex align-items-center gap-2 ml-3">
     <label for="color" class="font-medium">🎨 Color:</label>
     <input
       id="color"
@@ -65,7 +78,16 @@
   <div class="flex align-items-center gap-2 ml-3">
     <label for="width" class="font-medium">➖ Ancho:</label>
     <p-slider id="width" [(ngModel)]="strokeWidth" [min]="1" [max]="30" styleClass="w-14rem" />
-  </div>
+  </div> -->
 </div>
 
 <div #stageHost class="stage-host border-1 surface-border border-round-md"></div>
+
+<div class="mt-2 text-center">
+  <p-button
+    label="Guardar pizarra"
+    icon="pi pi-save"
+    (onClick)="exportarSVG()"
+    severity="success"
+  ></p-button>
+</div>

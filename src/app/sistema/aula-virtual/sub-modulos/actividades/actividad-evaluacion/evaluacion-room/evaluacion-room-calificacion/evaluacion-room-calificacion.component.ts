@@ -170,14 +170,13 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     this.getData();
   }
   ngOnChanges(changes) {
-    console.log('changes', changes);
-    // if (changes.iEstado?.currentValue) {
-    //     this.iEstado = changes.iEstado?.currentValue
+    if (changes.iEstado?.currentValue) {
+      this.iEstado = changes.iEstado?.currentValue;
+    }
 
-    //     if (this.iEstado === 2) {
-    //         this.getData()
-    //     }
-    // }
+    if (changes.evaluacion?.currentValue) {
+      this.evaluacion = changes.evaluacion?.currentValue;
+    }
   }
 
   getData() {
@@ -219,9 +218,8 @@ export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
       .pipe(takeUntil(this._unsubscribe$))
       .subscribe({
         next: preguntas => {
-          console.log(preguntas);
           this.preguntasEstudiante = preguntas;
-          console.log(this.preguntasEstudiante);
+
           // this._state.update((current) => ({
           //     ...current,
           //     selectedEstudiante: {

@@ -16,24 +16,39 @@ export class EvaluacionPreguntaAlternativaComponent implements OnChanges {
   @Input({ required: true }) pregunta;
 
   ngOnChanges(changes) {
-    if (changes.pregunta.currentValue) {
+    if (changes.pregunta?.currentValue) {
       this.pregunta = changes.pregunta.currentValue;
-      if (typeof this.pregunta.jEvalRptaEstudiante === 'object') {
-        const parsed = this.pregunta.jEvalRptaEstudiante;
+
+      const parsed = this.pregunta.jEvalRptaEstudiante;
+      if (parsed && typeof parsed === 'object') {
         switch (this.pregunta.iTipoPregId) {
           case 1:
-            this.pregunta.respuestaEstudiante = parsed.rptaUnica;
+            this.pregunta.respuestaEstudiante = parsed.rptaUnica ?? null;
             break;
           case 2:
-            this.pregunta.respuestaEstudiante = parsed.rptaMultiple || []; // 👈 Array
+            this.pregunta.respuestaEstudiante = parsed.rptaMultiple ?? [];
             break;
           case 3:
-            this.pregunta.respuestaEstudiante = parsed.rptaAbierta;
+            this.pregunta.respuestaEstudiante = parsed.rptaAbierta ?? '';
+            break;
+        }
+      } else {
+        // Si no hay respuestas todavía, inicializamos vacío según tipo
+        switch (this.pregunta.iTipoPregId) {
+          case 1:
+            this.pregunta.respuestaEstudiante = null;
+            break;
+          case 2:
+            this.pregunta.respuestaEstudiante = [];
+            break;
+          case 3:
+            this.pregunta.respuestaEstudiante = '';
             break;
         }
       }
     }
-    if (changes.alternativa.currentValue) {
+
+    if (changes.alternativa?.currentValue) {
       this.alternativa = changes.alternativa.currentValue;
     }
   }

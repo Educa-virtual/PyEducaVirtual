@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { NgIf } from '@angular/common';
 import { PersonasService } from '@/app/servicios/grl/personas.service';
+import { environment } from '@/environments/environment';
 
 @Component({
   selector: 'app-perfil',
@@ -34,6 +35,7 @@ export class PerfilComponent implements OnInit {
   private _MessageService = inject(MessageService);
   private _LocalStoreService = inject(LocalStoreService);
   private _PersonasService = inject(PersonasService);
+  backend: string = environment.backend;
 
   formPersonas = this.fb.group({
     iPersId: [this._ConstantesService.iPersId, Validators.required],
@@ -56,14 +58,18 @@ export class PerfilComponent implements OnInit {
     this.getPersonasxiPersId();
   }
 
-  accionBtnItem(elemento): void {
-    const { accion } = elemento;
-    const { item } = elemento;
-    switch (accion) {
-      case 'subir-archivo-users':
-        this.formPersonas.controls.cPersFotografia.setValue(item.imagen.data);
-        break;
-    }
+  /*accionBtnItem(elemento): void {
+        const { accion } = elemento;
+        const { item } = elemento;
+        switch (accion) {
+            case 'subir-archivo-users':
+                this.formPersonas.controls.cPersFotografia.setValue(item.imagen.data);
+                break;
+        }
+    }*/
+
+  actualizarRutaFotoPerfil(foto: string) {
+    this.formPersonas.get('cPersFotografia')?.setValue(foto);
   }
 
   actualizarInformacionPersonal() {
@@ -93,7 +99,10 @@ export class PerfilComponent implements OnInit {
     this._PersonasService.obtenerPersonasxiPersId(params).subscribe({
       next: (response: any) => {
         if (response.validated) {
-          this.formPersonas.patchValue(response.data.length ? response.data[0] : null);
+          this.formPersonas.patchValue({
+            ...response.data,
+            cPersFotografia: this.backend + '/' + response.data.cPersFotografia,
+          });
         }
       },
       error: error => {
@@ -101,94 +110,94 @@ export class PerfilComponent implements OnInit {
       },
     });
   }
-  showModalVerificarCorreo: boolean = false;
+  //showModalVerificarCorreo: boolean = false;
 
-  guardarPersonasxDatosPersonales() {
-    if (!this.formPersonas.valid) return;
-    const params = {
-      petition: 'post',
-      group: 'grl',
-      prefix: 'personas',
-      ruta: 'guardarPersonasxDatosPersonales',
-      data: this.formPersonas.value,
-    };
+  /*guardarPersonasxDatosPersonales() {
+      if (!this.formPersonas.valid) return;
+      const params = {
+        petition: 'post',
+        group: 'grl',
+        prefix: 'personas',
+        ruta: 'guardarPersonasxDatosPersonales',
+        data: this.formPersonas.value,
+      };
 
-    this._GeneralService.getGralPrefix(params).subscribe({
-      next: response => {
-        if (response.validated) {
-          this._MessageService.add({
-            severity: 'success',
-            summary: 'Exitoso!',
-            detail: 'Se ha guardado exitosamente su información',
-          });
-          const user = this._LocalStoreService.getItem('dremoUser');
-          user.cPersFotografia = this.formPersonas.value.cPersFotografia;
-          this._LocalStoreService.setItem('dremoUser', user);
-          this.accionCloseItem.emit();
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
-        }
-      },
-      complete: () => {},
-      error: error => {
-        console.log('Error completo:', error);
+      this._GeneralService.getGralPrefix(params).subscribe({
+        next: response => {
+          if (response.validated) {
+            this._MessageService.add({
+              severity: 'success',
+              summary: 'Exitoso!',
+              detail: 'Se ha guardado exitosamente su información',
+            });
+            const user = this._LocalStoreService.getItem('dremoUser');
+            user.cPersFotografia = this.formPersonas.value.cPersFotografia;
+            this._LocalStoreService.setItem('dremoUser', user);
+            this.accionCloseItem.emit();
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          }
+        },
+        complete: () => {},
+        error: error => {
+          console.log('Error completo:', error);
 
-        // Acceder a errores del backend
-        const errores = error?.error?.errors;
+          // Acceder a errores del backend
+          const errores = error?.error?.errors;
 
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this._MessageService.add({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
+          if (error.status === 422 && errores) {
+            // Recorre y muestra cada mensaje de error
+            Object.keys(errores).forEach(campo => {
+              errores[campo].forEach((mensaje: string) => {
+                this._MessageService.add({
+                  severity: 'error',
+                  summary: 'Error de validación',
+                  detail: mensaje,
+                });
               });
             });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this._MessageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
-      },
-    });
-  }
+          } else {
+            // Error genérico si no hay errores específicos
+            this._MessageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error?.error?.message || 'Ocurrió un error inesperado',
+            });
+          }
+        },
+      });
+    }*/
 
-  enviarCodVerificarCorreo() {
-    const params = {
-      petition: 'post',
-      group: 'grl',
-      prefix: 'personas-contactos',
-      ruta: 'enviarCodVerificarCorreo',
-      data: {
-        iPersId: this._ConstantesService.iPersId,
-        cPersCorreo: this.formPersonas.value.cPersCorreo,
-        iTipoConId: 1,
-        iPersConId: null,
-        cPersConCodigoValidacion: null,
-      },
-    };
+  /*enviarCodVerificarCorreo() {
+      const params = {
+        petition: 'post',
+        group: 'grl',
+        prefix: 'personas-contactos',
+        ruta: 'enviarCodVerificarCorreo',
+        data: {
+          iPersId: this._ConstantesService.iPersId,
+          cPersCorreo: this.formPersonas.value.cPersCorreo,
+          iTipoConId: 1,
+          iPersConId: null,
+          cPersConCodigoValidacion: null,
+        },
+      };
 
-    this._GeneralService.getGralPrefix(params).subscribe({
-      next: response => {
-        if (response.validated) {
-          this.iPersConId = response.data;
-          this.showModalVerificarCorreo = true;
-        }
-      },
-      complete: () => {},
-      error: error => {
-        console.log(error);
-      },
-    });
-  }
-  verificarCorreo() {
-    this.showModalVerificarCorreo = true;
-  }
+      this._GeneralService.getGralPrefix(params).subscribe({
+        next: response => {
+          if (response.validated) {
+            this.iPersConId = response.data;
+            this.showModalVerificarCorreo = true;
+          }
+        },
+        complete: () => {},
+        error: error => {
+          console.log(error);
+        },
+      });
+    }
+    verificarCorreo() {
+      this.showModalVerificarCorreo = true;
+    }*/
 }

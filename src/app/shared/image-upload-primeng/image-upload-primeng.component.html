@@ -1,28 +1,28 @@
 <div>
-    <img
-        [src]="backend + '/' + urlFoto"
-        alt=""
-        width="300vw%"
-        height="300vh"
-        class="perfil-redondo"
-        (error)="updateUrl()"
-    />
-    <div class="text-center">
-        <button
-            pButton
-            pRipple
-            type="button"
-            severity="danger"
-            class="p-button-outlined btn-file-image mt-1 mb-3"
-        >
-            <i class="pi pi-camera"></i>&nbsp; Subir Foto de Perfil<input
-                type="file"
-                (change)="onUploadChange($event)"
-                accept=".png, .jpg, .jpeg, "
-            />
-        </button>
-        @if (iProgress) {
-            <p-progressBar [value]="iProgress" />
-        }
-    </div>
+  <img
+    [src]="urlFoto"
+    alt=""
+    width="300vw%"
+    height="300vh"
+    class="perfil-redondo"
+    (error)="updateUrl()"
+  />
+  <div class="text-center">
+    <button
+      pButton
+      pRipple
+      type="button"
+      severity="danger"
+      class="p-button-outlined btn-file-image mt-1 mb-3"
+    >
+      <i class="pi pi-camera"></i>&nbsp; Subir Foto de Perfil<input
+        type="file"
+        (change)="onUploadChange($event)"
+        accept=".png, .jpg, .jpeg, "
+      />
+    </button>
+    @if (iProgress) {
+      <p-progressBar [value]="iProgress" />
+    }
+  </div>
 </div>

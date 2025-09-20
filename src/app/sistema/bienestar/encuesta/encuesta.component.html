@@ -345,9 +345,11 @@
             <p>
               <strong>El creador de la encuesta tiene todos los permisos por defecto.</strong>
               Cada perfil tendrá permisos dentro de su jurisdicción, por ejemplo: los especialistas
-              solo de su UGEL, los directores solo de su I.E., etc.<br />
+              solo de su UGEL, los directores solo de su I.E., etc.
             </p>
-            <strong>CREADA POR: {{ encuesta.cCreador }}</strong>
+            <p *ngIf="encuesta?.cCreador">
+              <strong>CREADA POR: {{ encuesta?.cCreador }}</strong>
+            </p>
           </ng-template>
         </p-messages>
         <form [formGroup]="formPermisos">

@@ -148,12 +148,9 @@ export class GestionPandemiaDosisComponent implements OnInit {
         data.iPanDFichaNroDosis,
         'number'
       );
-      this.funcionesBienestar.formatearFormControl(
-        this.formDosis,
-        'dtPanDFichaDosis',
-        data.dtPanDFichaDosis,
-        'date'
-      );
+      this.formDosis
+        .get('dtPanDFichaDosis')
+        ?.setValue(this.funcionesBienestar.formaterarFormFecha(data.dtPanDFichaDosis));
       this.dosis_registrada = true;
     }
     this.funcionesBienestar.formMarkAsDirty(this.formDosis);
@@ -325,7 +322,7 @@ export class GestionPandemiaDosisComponent implements OnInit {
     {
       type: 'text',
       width: '5rem',
-      field: 'iPanDFichaNroDosis',
+      field: 'cPanDFichaNroDosisNombre',
       header: 'Nro. de Dosis',
       text_header: 'center',
       text: 'center',

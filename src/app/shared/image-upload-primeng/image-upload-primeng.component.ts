@@ -36,7 +36,7 @@ export class ImageUploadPrimengComponent {
         next: (event: any) => {
           if (event.body) {
             this.urlFoto = this.backend + '/' + event.body.data.urlFoto;
-            this.actionImageUpload.emit(this.urlFoto);
+            this.actionImageUpload.emit(event.body.data.urlFoto);
             this.messageService.add({
               severity: 'success',
               summary: 'Foto subida',

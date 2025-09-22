@@ -1,106 +1,111 @@
 <p-panel>
-    <ng-template pTemplate="header">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-uppercase text-primary">
-                Gestionar matrículas
-            </h3>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="icons" class="flex flex-column flex-1">
-        <div class="flex flex-wrap gap-2 justify-content-end">
-            <button
-                size="small"
-                [rounded]="true"
-                pButton
-                pTooltip="Registrar matrícula"
-                tooltipPosition="top"
-                (click)="agregarMatricula()"
-            >
-                <i class="pi pi-plus"></i>
-                <span class="ml-2 hidden sm:block">Registar matrícula</span>
-            </button>
-        </div>
-    </ng-template>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Gestionar matrículas</h3>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <button
+        size="small"
+        [rounded]="true"
+        pButton
+        pTooltip="Registrar matrícula"
+        tooltipPosition="top"
+        (click)="agregarMatricula()"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Registar matrícula</span>
+      </button>
+    </div>
+  </ng-template>
 
-    <p-panel header="Aplicar Filtros" [toggleable]="true">
-        <form [formGroup]="form">
-            <div class="grid p-fluid m-0">
-                <div class="field col-12 md:col-3">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="nivel_grados"
-                            formControlName="iNivelGradoId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        ></p-dropdown>
-                        <label for="iNivelGradoId">Grado</label>
-                    </span>
-                </div>
+  <p-panel header="Aplicar Filtros" [toggleable]="true">
+    <form [formGroup]="form">
+      <div class="grid p-fluid m-0">
+        <div class="field col-12 md:col-3">
+          <p-inputGroup>
+            <p-inputGroupAddon>Nivel Grado</p-inputGroupAddon>
+            <p-dropdown
+              [options]="nivel_grados"
+              formControlName="iNivelGradoId"
+              optionLabel="nombre"
+              styleClass="w-full"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+            ></p-dropdown>
+          </p-inputGroup>
+        </div>
 
-                <div class="field col-12 md:col-3">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="turnos"
-                            formControlName="iTurnoId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        ></p-dropdown>
+        <div class="field col-12 md:col-3">
+          <!-- <span class="p-float-label">
+                        <p-dropdown [options]="turnos" formControlName="iTurnoId" optionLabel="nombre" optionValue="id"
+                            [filter]="true" [showClear]="true" [appendTo]="'body'"></p-dropdown>
                         <label for="iTurnoId">Turno</label>
-                    </span>
-                </div>
+                    </span> -->
+        </div>
 
-                <div class="field col-12 md:col-3">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="secciones"
-                            formControlName="iSeccionId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        ></p-dropdown>
-                        <label for="iSeccionId">Sección</label>
-                    </span>
-                </div>
+        <div class="field col-12 md:col-3">
+          <p-inputGroup>
+            <p-inputGroupAddon>Sección</p-inputGroupAddon>
+            <p-dropdown
+              [options]="secciones"
+              formControlName="iSeccionId"
+              optionLabel="nombre"
+              styleClass="w-full"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+            ></p-dropdown>
+          </p-inputGroup>
+        </div>
 
-                <div class="field col-12 md:col-3">
-                    <span class="p-float-label">
-                        <p-dropdown
-                            [options]="tipos_matriculas"
-                            formControlName="iTipoMatrId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                        ></p-dropdown>
+        <div class="field col-12 md:col-3">
+          <!-- <span class="p-float-label">
+                        <p-dropdown [options]="tipos_matriculas" formControlName="iTipoMatrId" optionLabel="nombre"
+                            optionValue="id" [filter]="true" [showClear]="true" [appendTo]="'body'"></p-dropdown>
                         <label for="iTipoMatrId">Tipo</label>
-                    </span>
-                </div>
-            </div>
-        </form>
-    </p-panel>
+                    </span> -->
+        </div>
+      </div>
+    </form>
+  </p-panel>
 
-    <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="true"
-        [data]="matriculas_filtradas"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        sortMode="single"
-        sortField="_cPersNomape"
-        [sortOrder]="1"
-        [(selectedRowData)]="selectedItems"
-        [actions]="actions"
-        [showAdvancedFilter]="true"
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="matriculas_filtradas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    sortMode="single"
+    sortField="_cPersNomape"
+    [sortOrder]="1"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+    [showAdvancedFilter]="true"
+  >
+  </app-table-primeng>
+  <ng-container slot="caption-content"> </ng-container>
+
+  <p-dialog
+    [header]="caption"
+    [(visible)]="bApoderado"
+    [style]="{ width: '89rem', height: '80rem' }"
+    [modal]="true"
+    [closable]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="bApoderado = false"
+    [resizable]="true"
+    [maximizable]="true"
+  >
+    <app-matricula-apoderado
+      [iEstudianteId]="iEstudianteId"
+      [iCredId]="iCredId"
+      (closeDialog)="bApoderado = false"
     >
-    </app-table-primeng>
-    <ng-container slot="caption-content"> </ng-container>
+    </app-matricula-apoderado>
+  </p-dialog>
 </p-panel>

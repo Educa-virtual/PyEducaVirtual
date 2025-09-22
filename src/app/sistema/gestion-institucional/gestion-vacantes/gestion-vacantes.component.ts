@@ -197,7 +197,7 @@ export class GestionVacantesComponent implements OnInit {
         error: error => {
           this.messageService.add({
             summary: 'Mensaje de sistema',
-            detail: 'Error al cargar vacantes de IE.' + error.message,
+            detail: 'Error al cargar vacantes de IE.' + error.error.message,
             life: 3000,
             severity: 'error',
           });
@@ -209,7 +209,6 @@ export class GestionVacantesComponent implements OnInit {
             life: 3000,
             severity: 'success',
           });
-          console.log(this.vacantes, 'Request completed');
         },
       });
   }
@@ -230,11 +229,16 @@ export class GestionVacantesComponent implements OnInit {
           this.grados = this.removeDuplicatesByiGradoId(this.gradosSecciones);
         },
         error: error => {
-          console.error('Error fetching Servicios de Atención:', error);
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
         },
-        complete: () => {
-          console.log(this.gradosSecciones);
-        },
+        // complete: () => {
+        //   console.log(this.gradosSecciones);
+        // },
       });
   }
 
@@ -341,125 +345,54 @@ export class GestionVacantesComponent implements OnInit {
   }
   //----------------------------------
   imprimirVacantes() {
-    const printContent = this.generatePrintContent();
-    const printWindow = window.open('', '_blank', 'width=800,height=600'); // Definir tamaño de la ventana
+    const params = {
+      petition: 'post',
+      group: 'acad',
+      prefix: 'gestionInstitucional',
+      ruta: 'reportePDFResumenVacantes',
+      data: {
+        vacantes: this.vacantes,
+        perfil: this.perfil,
+        anio_actual: this.anio_actual,
+      },
+    };
 
-    const imagen = ` '<div style="position: relative;">
-            <img src="https://educavirtual.gremoquegua.edu.pe/assets/images/dremo.png" alt="Logo" style="position: absolute; top: 0; left: 0; width: 100px; height: auto;">
-            <h1 style="text-align: center; margin-top: 60px;">Registro de vacantes para el año ${this.anio_actual}</h1>
-        </div>'`;
-    //printWindow.document.querySelector('img');
-    printWindow.document.write(`
-        <html>
-        <head>
-        <title>Vacantes Registradas</title>
-        <style>
-            @page {
-                size: A4 portrait; /* Formato A4 en orientación vertical */
-                margin: 2cm; /* Márgenes adecuados para impresión */
-            }
-            body {
-                font-family: Arial, sans-serif;
-                font-size: 12px;
-                width: 21cm;
-                height: 29.7cm;
-                margin: 0 auto;
-                padding: 1cm;
-            }
-            h1 {
-                text-align: center;
-                margin-bottom: 20px;
-                margin-top: 20px; /* Ajuste del margen superior sin el logo */
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-            th, td {
-                border: 1px solid black;
-                padding: 8px;
-                text-align: center;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-            .icon { 
-                width: 70px; 
-                height: 50px; 
-                vertical-align: middle; 
-                margin-right: 10px; 
-            }
-        </style>
-        </head>
-        <body>
-          ${imagen}
-          ${printContent}
-        </body>
-        </html>
-        `);
-
-    // Cerrar el documento y preparar la impresión
-    // Lanzamos el diálogo de impresión
-    // printWindow.print();
-    printWindow.document.close();
-    printWindow.print();
-
-    //  if (imagen) {
-    //   imagen.onload = () => {
-
-    //   };
-    //   // imagen.onerror = () => {
-    //   //   console.error('Error: No se pudo cargar el logo.');
-    //   //   printWindow.print(); // Imprimir incluso si el logo no se carga
-    //   // };
-    // } else {
-    //   printWindow.document.close();
-    //   printWindow.print(); // Imprimir si no hay imagen
-    // }
+    this.query.generarPdf(params).subscribe({
+      next: response => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reporte_vacantes.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      complete: () => {},
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: 'Error en el procesamiento: ' + error.message,
+        });
+      },
+    });
   }
+
+  //  if (imagen) {
+  //   imagen.onload = () => {
+
+  //   };
+  //   // imagen.onerror = () => {
+  //   //   console.error('Error: No se pudo cargar el logo.');
+  //   //   printWindow.print(); // Imprimir incluso si el logo no se carga
+  //   // };
+  // } else {
+  //   printWindow.document.close();
+  //   printWindow.print(); // Imprimir si no hay imagen
+  // }
 
   // generarImagen(){
   //   // Asegurar que la imagen se cargue antes de imprimir
-
-  generatePrintContent(): string {
-    let content = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Nro.</th> 
-                    <th>Nivel Grado</th>
-                    <th>Sección</th>
-                    <th>Vacantes Regulares</th>
-                    <th>Vacantes NEE</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-        `;
-
-    let contador = 1;
-    this.vacantes.forEach(vacante => {
-      content += `
-                <tr>
-                    <td>${contador}</td>
-                    <td>${vacante.cGradoNombre}</td>
-                    <td>${vacante.cSeccionNombre}</td>                     
-                    <td>${vacante.iVacantesRegular}</td>
-                    <td>${vacante.iVacantesNEE}</td>
-                    <td>${vacante.cEstado}</td>
-                </tr>
-            `;
-      contador++;
-    });
-
-    content += `
-                </tbody>
-            </table>
-        `;
-
-    return content;
-  }
 
   //---------------------------
   accionesPrincipal: IActionContainer[] = [

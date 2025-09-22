@@ -16,11 +16,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
 import { CompartirMatriculaService } from '../services/compartir-matricula.service';
 import { CompartirEstudianteService } from '../services/compartir-estudiante.service';
+import { MatriculaApoderadoComponent } from './matricula-apoderado/matricula-apoderado.component';
 
 @Component({
   selector: 'app-gestion-matriculas',
   standalone: true,
-  imports: [PrimengModule, InputNumberModule, TablePrimengComponent],
+  imports: [PrimengModule, InputNumberModule, TablePrimengComponent, MatriculaApoderadoComponent],
   templateUrl: './gestion-matriculas.component.html',
   styleUrl: './gestion-matriculas.component.scss',
 })
@@ -33,10 +34,12 @@ export class GestionMatriculasComponent implements OnInit {
   matriculas: any[];
   matriculas_filtradas: any[];
   option: boolean = false;
+  iEstudianteId: number = 0; //id del estudiante
 
   visible: boolean = false; //mostrar dialogo
   caption: string = ''; // titulo o cabecera de dialogo
   c_accion: string; //valos de las acciones
+  bApoderado: boolean = false; //para mostrar el formulario de apoderado
 
   tipos_matriculas: Array<object>;
   grados_secciones_turnos: Array<object>;
@@ -47,6 +50,7 @@ export class GestionMatriculasComponent implements OnInit {
   tipo_matriculas: Array<object>;
   estados_civiles: Array<object>;
   sexos: Array<object>;
+  iCredId: number;
 
   private _MessageService = inject(MessageService); // dialog Mensaje simple
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
@@ -144,6 +148,13 @@ export class GestionMatriculasComponent implements OnInit {
       this.compartirMatriculaService.setiMatrId(item?.iMatrId);
       this.router.navigate(['/gestion-institucional/matricula-individual']);
     }
+    if (accion === 'asig_apoderado') {
+      this.bApoderado = true; // muestra dialogo de apoderado
+      this.iEstudianteId = item?.iEstudianteId;
+      this.caption = 'Asignar Apoderado de : ' + item?._cPersNomape;
+      this.iCredId = this.constantesService.iCredId;
+    }
+
     if (accion === 'editar_estudiante') {
       console.log(item);
       this.compartirEstudianteService.setiEstudianteId(item?.iEstudianteId);
@@ -361,7 +372,7 @@ export class GestionMatriculasComponent implements OnInit {
       icon: 'pi pi-trash',
       accion: 'anular',
       type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
+      class: 'p-button-rounded p-button-danger p-button-text',
     },
   ];
 

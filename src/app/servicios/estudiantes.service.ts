@@ -471,9 +471,9 @@ const administracion = [
         icon: 'pi pi-chart-scatter',
         items: [
           {
-            label: 'Reportes Academicos',
+            label: 'Reporte académico',
             icon: 'pi pi-fw pi-circle',
-            routerLink: ['/gestion-institucional/reporte'],
+            routerLink: ['/gestion-institucional/reportes-academicos'],
           },
           {
             label: 'Reportes Orden de Mérito',

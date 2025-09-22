@@ -710,7 +710,7 @@ const administracion = [
         ],
       },
       {
-        label: 'Generación de Reportes y estadísticas',
+        label: 'Generación de reportes y estadísticas',
         icon: 'pi pi-chart-bar',
         items: [
           {
@@ -719,9 +719,9 @@ const administracion = [
             routerLink: ['/gestion-institucional/dashboard-indicadores'],
           },
           {
-            label: 'Reportes',
+            label: 'Reportes académicos',
             icon: 'pi pi-book',
-            routerLink: ['/gestion-institucional/reporte'],
+            routerLink: ['/gestion-institucional/reportes-academicos'],
           },
           {
             label: 'Estadisticas y ranking de mérito',

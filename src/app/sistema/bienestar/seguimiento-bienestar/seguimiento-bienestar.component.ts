@@ -65,9 +65,10 @@ export class SeguimientoBienestarComponent implements OnInit {
   PRIORIDAD_URGENTE: number = this.datosSeguimiento.PRIORIDAD_URGENTE;
 
   fases: Array<object>;
-  FASE_ATENDIDO: number = this.datosSeguimiento.FASE_ATENDIDO;
-  FASE_PENDIENTE: number = this.datosSeguimiento.FASE_PENDIENTE;
+  FASE_INICIO: number = this.datosSeguimiento.FASE_INICIO;
+  FASE_PROCESO: number = this.datosSeguimiento.FASE_PROCESO;
   FASE_DERIVADO: number = this.datosSeguimiento.FASE_DERIVADO;
+  FASE_CERRADO: number = this.datosSeguimiento.FASE_CERRADO;
 
   archivoSeleccionado: File | null = null;
   fecha_actual: Date = new Date();
@@ -111,7 +112,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       iPersIeId: [null],
       iTipoSeguimId: [null, Validators.required],
       iPrioridad: [null, Validators.required],
-      iFase: [null],
+      iFase: [null, Validators.required],
       dSeguimFecha: [null, Validators.required],
       archivo: [null, Validators.required],
       cSeguimDescripcion: [null],
@@ -120,6 +121,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       iTipoIdentId: [null, Validators.required],
       cPersDocumento: [null, Validators.required],
       cPersDatos: [null],
+      iSeguimEstado: [null, Validators.required],
     });
 
     this.tipos_seguimiento = this.datosSeguimiento.getTiposSeguimiento();
@@ -469,6 +471,7 @@ export class SeguimientoBienestarComponent implements OnInit {
     formData.append('cSeguimDescripcion', this.formSeguimiento.value.cSeguimDescripcion);
     formData.append('iTipoIdentId', this.formSeguimiento.value.iTipoIdentId);
     formData.append('cPersDocumento', this.formSeguimiento.value.cPersDocumento);
+    formData.append('iSeguimEstado', this.formSeguimiento.value.iSeguimEstado);
     if (this.archivoSeleccionado) {
       formData.append('archivo', this.archivoSeleccionado);
     }
@@ -611,7 +614,9 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   clearForm() {
     this.setFormSeguimiento(null);
-    this.fileUpload.clear();
+    if (this.fileUpload) {
+      this.fileUpload.clear();
+    }
     this.archivoSeleccionado = null;
     this.seguimiento_registrado = false;
     this.seguimiento_bloqueado = false;
@@ -719,7 +724,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       field: 'cPersDocumento',
       header: 'Documento',
       type: 'text',
-      width: '15%',
+      width: '10%',
       text_header: 'center',
       text: 'center',
     },
@@ -732,6 +737,20 @@ export class SeguimientoBienestarComponent implements OnInit {
       text: 'left',
     },
     {
+      field: 'cFaseUltima',
+      header: 'Fase',
+      type: 'tag',
+      width: '10%',
+      text_header: 'center',
+      text: 'center',
+      styles: {
+        INICIO: 'danger',
+        PROCESO: 'warning',
+        DERIVADO: 'info',
+        CERRADO: 'secondary',
+      },
+    },
+    {
       field: 'dSeguimFechaUltima',
       header: 'Actualizado en',
       type: 'date',
@@ -741,7 +760,7 @@ export class SeguimientoBienestarComponent implements OnInit {
     },
     {
       type: 'actions',
-      width: '10%',
+      width: '5%',
       field: '',
       header: 'Acciones',
       text_header: 'right',
@@ -778,10 +797,24 @@ export class SeguimientoBienestarComponent implements OnInit {
       field: 'item',
       header: 'N°',
       type: 'item',
-      width: '10%',
+      width: '5%',
       text_header: 'center',
       text: 'center',
       class: 'hidden md:table-cell',
+    },
+    {
+      field: 'cSeguimFase',
+      header: 'Fase',
+      type: 'tag',
+      width: '10%',
+      text_header: 'center',
+      text: 'center',
+      styles: {
+        INICIO: 'danger',
+        PROCESO: 'warning',
+        DERIVADO: 'info',
+        CERRADO: 'secondary',
+      },
     },
     {
       field: 'dSeguimFecha',
@@ -816,7 +849,7 @@ export class SeguimientoBienestarComponent implements OnInit {
       field: 'cIieeNombre',
       header: 'Institución',
       type: 'text',
-      width: '30%',
+      width: '25%',
       text_header: 'left',
       text: 'left',
     },

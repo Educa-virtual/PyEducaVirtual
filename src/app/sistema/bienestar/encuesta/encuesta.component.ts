@@ -270,6 +270,7 @@ export class EncuestaComponent implements OnInit {
   }
 
   handleNextPoblacionPermisos(nextCallback: any) {
+    this._messageService.clear();
     if (this.poblacion.length === 0) {
       this._messageService.add({
         severity: 'warn',
@@ -569,7 +570,7 @@ export class EncuestaComponent implements OnInit {
     if (!this.es_especialista && this.nivel_tipos) {
       this.formPoblacion.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
     }
-    this.obtenerPoblacionObjetivo();
+    this.obtenerPoblacionObjetivo(form);
   }
 
   agregarPermiso(item: any = null) {
@@ -606,7 +607,7 @@ export class EncuestaComponent implements OnInit {
     this.formPermisos.reset();
   }
 
-  obtenerPoblacionObjetivo() {
+  obtenerPoblacionObjetivo(ultima_poblacion: any = []) {
     this.funcionesBienestar.formControlJsonStringify(
       this.formEncuesta,
       'jsonPoblacion',
@@ -624,23 +625,32 @@ export class EncuestaComponent implements OnInit {
         next: (data: any) => {
           this._messageService.clear();
           if (data.data) {
+            /**
+             * Si esta editando encuesta y la última población es cero,
+             * entonces quitarla y mostrar advertencia
+             */
             if (
+              !this.encuesta_bloqueada &&
               this.poblacion.length > 0 &&
               Number(data.data.iPoblacionObjetivo) === Number(this.cantidad_poblacion)
             ) {
+              this.poblacion = this.poblacion.filter(
+                (poblacion: any) => ultima_poblacion.iEncuPobId != poblacion.iEncuPobId
+              );
+              this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
               this._messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail:
-                  'La última población objetivo indicada es cero, quítela y agregue una nueva',
+                detail: 'La última población objetivo indicada es cero, seleccione otra',
               });
             }
+            /** Luego cargar cantidad acumulada de población objetivo */
             this.cantidad_poblacion = data.data.iPoblacionObjetivo;
           } else {
             this._messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'No se ha encontrado la población objetivo',
+              detail: 'No se pudo calcular la cantidad de población objetivo',
             });
             this.cantidad_poblacion = 0;
           }

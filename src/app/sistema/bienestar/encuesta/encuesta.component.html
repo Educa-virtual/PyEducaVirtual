@@ -27,7 +27,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -330,7 +330,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"

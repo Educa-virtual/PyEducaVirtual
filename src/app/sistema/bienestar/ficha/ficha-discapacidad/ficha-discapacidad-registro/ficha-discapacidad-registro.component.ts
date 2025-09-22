@@ -71,7 +71,7 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
         iDiscFichaId: [null],
         iDiscId: [null, Validators.required],
         cDiscFichaObs: [null, Validators.required],
-        cDiscfichaArchivoNombre: [null],
+        cDiscFichaArchivoNombre: [null],
         archivo: [null],
       });
     } catch (error) {
@@ -211,15 +211,23 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
       });
       return;
     }
+    if (this.formDiscapacidad.value.archivo === null) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe añadir un documento sustentario',
+      });
+      return;
+    }
 
     const formData: FormData = new FormData();
     formData.append('iYAcadId', String(this.iYAcadId));
     formData.append('iFichaDGId', String(this.iFichaDGId));
     formData.append('iDiscId', this.formDiscapacidad.value.iDiscId);
     formData.append('cDiscFichaObs', this.formDiscapacidad.value.cDiscFichaObs);
-    formData.append('cDiscfichaArchivoNombre', this.formDiscapacidad.value.cDiscfichaArchivoNombre);
+    formData.append('cDiscFichaArchivoNombre', this.formDiscapacidad.value.cDiscFichaArchivoNombre);
     if (this.archivoSeleccionado) {
-      formData.append('cDiscfichaArchivoNombre', null);
+      formData.append('cDiscFichaArchivoNombre', null);
       formData.append('archivo', this.archivoSeleccionado);
     }
 
@@ -253,6 +261,14 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
       });
       return;
     }
+    if (!this.archivoSeleccionado && !this.formDiscapacidad.value.cDiscFichaArchivoNombre) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe añadir un documento sustentario',
+      });
+      return;
+    }
 
     const formData: FormData = new FormData();
     formData.append('iYAcadId', String(this.iYAcadId));
@@ -260,9 +276,9 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
     formData.append('iDiscFichaId', this.formDiscapacidad.value.iDiscFichaId);
     formData.append('iDiscId', this.formDiscapacidad.value.iDiscId);
     formData.append('cDiscFichaObs', this.formDiscapacidad.value.cDiscFichaObs);
-    formData.append('cDiscfichaArchivoNombre', this.formDiscapacidad.value.cDiscfichaArchivoNombre);
+    formData.append('cDiscFichaArchivoNombre', this.formDiscapacidad.value.cDiscFichaArchivoNombre);
     if (this.archivoSeleccionado) {
-      formData.append('cDiscfichaArchivoNombre', null);
+      formData.append('cDiscFichaArchivoNombre', null);
       formData.append('archivo', this.archivoSeleccionado);
     }
 
@@ -287,7 +303,8 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
     });
   }
 
-  descargarArchivo(item: any = null) {
+  descargarArchivo(item: any = null, event = null) {
+    event?.preventDefault();
     if (!item) {
       item = {
         iDiscFichaId: this.formDiscapacidad.value.iDiscFichaId,
@@ -331,6 +348,7 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
     switch (accion) {
       case 'editar':
         this.visible = true;
+        this.clearForm();
         this.caption = 'Editar discapacidad';
         this.verDiscapacidadDetalle(item?.iDiscFichaId);
         break;
@@ -383,7 +401,7 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
       type: 'item',
       width: '10%',
       field: 'item',
-      header: '',
+      header: '#',
       text_header: 'left',
       text: 'left',
     },

@@ -121,7 +121,6 @@ export class SeguimientoBienestarComponent implements OnInit {
       iTipoIdentId: [null, Validators.required],
       cPersDocumento: [null, Validators.required],
       cPersDatos: [null],
-      iSeguimEstado: [null, Validators.required],
     });
 
     this.tipos_seguimiento = this.datosSeguimiento.getTiposSeguimiento();
@@ -471,7 +470,6 @@ export class SeguimientoBienestarComponent implements OnInit {
     formData.append('cSeguimDescripcion', this.formSeguimiento.value.cSeguimDescripcion);
     formData.append('iTipoIdentId', this.formSeguimiento.value.iTipoIdentId);
     formData.append('cPersDocumento', this.formSeguimiento.value.cPersDocumento);
-    formData.append('iSeguimEstado', this.formSeguimiento.value.iSeguimEstado);
     if (this.archivoSeleccionado) {
       formData.append('archivo', this.archivoSeleccionado);
     }

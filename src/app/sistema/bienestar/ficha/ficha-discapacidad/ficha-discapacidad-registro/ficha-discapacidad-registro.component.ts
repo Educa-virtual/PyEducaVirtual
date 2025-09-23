@@ -157,10 +157,12 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
   }
 
   handleArchivo(event: any) {
-    const file = event.files && event.files.length > 0 ? event.files[0] : null;
-    if (file) {
+    if (event && event?.files) {
+      const file = event.files && event.files.length > 0 ? event.files[0] : null;
       this.archivoSeleccionado = file;
       this.formDiscapacidad.get('archivo').setValue(file);
+      this.hay_archivo = false;
+      this.formDiscapacidad.get('cDiscFichaArchivoNombre').setValue(null);
     } else {
       this.archivoSeleccionado = null;
       this.formDiscapacidad.get('archivo').setValue(null);
@@ -225,10 +227,14 @@ export class FichaDiscapacidadRegistroComponent implements OnInit {
     formData.append('iFichaDGId', String(this.iFichaDGId));
     formData.append('iDiscId', this.formDiscapacidad.value.iDiscId);
     formData.append('cDiscFichaObs', this.formDiscapacidad.value.cDiscFichaObs);
-    formData.append('cDiscFichaArchivoNombre', this.formDiscapacidad.value.cDiscFichaArchivoNombre);
     if (this.archivoSeleccionado) {
       formData.append('cDiscFichaArchivoNombre', null);
       formData.append('archivo', this.archivoSeleccionado);
+    } else {
+      formData.append(
+        'cDiscFichaArchivoNombre',
+        this.formDiscapacidad.value.cDiscFichaArchivoNombre
+      );
     }
 
     this.datosFichaBienestar.guardarDiscapacidadDetalle(formData).subscribe({

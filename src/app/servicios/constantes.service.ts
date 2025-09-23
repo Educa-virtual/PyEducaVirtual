@@ -906,11 +906,11 @@ const apoderado = [
       //   icon: 'pi pi-fw pi-eye',
       //   routerLink: ['apoderado/seguimiento-apoderado'],
       // },
-      {
-        label: 'Registro de apoderados',
-        icon: 'pi pi-user-edit',
-        routerLink: ['apoderado/registro-apoderado'],
-      },
+      // {
+      //   label: 'Registro de apoderados',
+      //   icon: 'pi pi-user-edit',
+      //   routerLink: ['apoderado/registro-apoderado'],
+      // },
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',

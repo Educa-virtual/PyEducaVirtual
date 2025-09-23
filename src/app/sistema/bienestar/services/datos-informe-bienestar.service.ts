@@ -38,6 +38,17 @@ export class DatosInformeBienestarService {
   antiguo_form: any;
   reportes: any;
 
+  TIPO_PERSONA_ESTUDIANTE: number = 1;
+  TIPO_PERSONA_DOCENTE: number = 2;
+  TIPO_PERSONA_ADMINISTRATIVO: number = 3;
+
+  private tipoPersonaSubject = new BehaviorSubject<number | null>(this.TIPO_PERSONA_ESTUDIANTE);
+  tipoPersona$ = this.tipoPersonaSubject.asObservable();
+
+  setTipoPersona(tipo: number) {
+    this.tipoPersonaSubject.next(tipo);
+  }
+
   private activeIndex = new BehaviorSubject<number | null>(null);
 
   getActiveIndex(): Observable<any> {

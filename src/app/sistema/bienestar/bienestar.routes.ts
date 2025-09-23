@@ -152,7 +152,7 @@ const routes: Routes = [
         data: { expectedRole: registran_ficha },
       },
       {
-        path: 'recreacion',
+        path: 'sociocultural',
         component: FichaRecreacionComponent,
         canActivate: [RoleGuard],
         data: { expectedRole: registran_ficha },
@@ -353,7 +353,7 @@ const routes: Routes = [
         data: { expectedRole: roles_directivos },
       },
       {
-        path: 'recreacion',
+        path: 'sociocultural',
         component: InformeRecreacionComponent,
         data: { expectedRole: roles_directivos },
       },

@@ -427,6 +427,10 @@ export class EncuestaResumenComponent implements OnInit, AfterViewInit {
       });
   }
 
+  descargarReporte() {
+    window.print();
+  }
+
   plugin_pie = [
     {
       afterDraw: chart => {

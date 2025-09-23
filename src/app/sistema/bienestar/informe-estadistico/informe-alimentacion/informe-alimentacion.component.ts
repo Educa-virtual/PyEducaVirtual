@@ -8,7 +8,7 @@ import { MultiChartComponent } from '../../shared/multi-chart/multi-chart.compon
   standalone: true,
   imports: [PrimengModule, ChartModule, MultiChartComponent],
   templateUrl: './informe-alimentacion.component.html',
-  styleUrl: './informe-alimentacion.component.scss',
+  styleUrl: './../informe-estadistico.component.scss',
 })
 export class InformeAlimentacionComponent implements OnInit {
   reportes_alimentacion: any;

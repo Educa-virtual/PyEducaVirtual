@@ -11,7 +11,7 @@
 
     <!-- Botón Agregar -->
     <div class="col-12 sm:col-6 flex justify-content-start sm:justify-content-end">
-      <ng-container *ngIf="data?.iEstado === 1">
+      <ng-container>
         <button
           pButton
           type="button"
@@ -23,6 +23,7 @@
         </button>
 
         <button
+          *ngIf="data?.iEstado === 1"
           pButton
           class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
           (click)="menuAgregarPreguntas.toggle($event)"

@@ -375,4 +375,8 @@ export class GeneralService {
     }
     return this.url;
   }
+
+  subirSvgPizarra(data: any) {
+    return this.http.post(`${baseUrl}/general/subir-svg-pizarra`, data);
+  }
 }

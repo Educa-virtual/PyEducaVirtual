@@ -56,11 +56,18 @@
           <app-input-simple
             inputType="number"
             [inputControl]="$any(formDosis).controls['iPanDFichaNroDosis']"
-            addonLabel="Nro de Dosis *"
+            addonLabel="Orden de Dosis *"
             [inputMin]="1"
             [inputMax]="100"
             [inputShowButtons]="true"
+            [infoAdicional]="iPanDFichaNroDosis"
+            inputNumberSuffix="ᵃ dosis"
           />
+          <ng-template #iPanDFichaNroDosis>
+            <strong>El orden de dosis es un número que identifica la dosis</strong> que se le ha
+            dado a la persona. Es importante que el orden de dosis sea único para cada persona y
+            cada pandemia o epidemia.
+          </ng-template>
         </div>
         <div class="col-12">
           <app-input-simple

@@ -198,7 +198,22 @@
             ></textarea>
           </p-inputGroup>
         </div>
-        <div class="col-12 md:col-6">
+        <div class="col-12 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fase * </p-inputGroupAddon>
+            <p-dropdown
+              [options]="fases"
+              formControlName="iFase"
+              filter="false"
+              showClear="false"
+              appendTo="body"
+              placeholder="Seleccione"
+              [style]="{ flex: '1', width: '100%' }"
+              styleClass="group-element"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
           <p-inputGroup>
             <p-inputGroupAddon> Prioridad * </p-inputGroupAddon>
             <p-dropdown
@@ -213,7 +228,7 @@
             />
           </p-inputGroup>
         </div>
-        <div class="col-12 md:col-6">
+        <div class="col-12 md:col-4">
           <p-inputGroup>
             <p-inputGroupAddon>
               <span>Fecha *</span>

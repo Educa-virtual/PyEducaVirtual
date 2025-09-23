@@ -397,33 +397,55 @@ export class AsistenciaComponent implements OnInit {
    * @iTipoAsiId extraemos el indice
    */
 
-  tipoMarcado = [
-    { iTipoAsiId: '7', cTipoAsiLetra: '-', bgcolor: 'bt-cyan' },
-    { iTipoAsiId: '1', cTipoAsiLetra: 'X', bgcolor: 'bt-green' },
-    { iTipoAsiId: '2', cTipoAsiLetra: 'T', bgcolor: 'bt-orange' },
-    { iTipoAsiId: '3', cTipoAsiLetra: 'I', bgcolor: 'bt-red' },
-    { iTipoAsiId: '4', cTipoAsiLetra: 'J', bgcolor: 'bt-primary' },
-    { iTipoAsiId: '9', cTipoAsiLetra: 'P', bgcolor: 'bt-yellow' },
+  tipoAsistencia = [
+    {
+      iTipoAsiId: '1',
+      cTipoAsiLetra: 'X',
+      cTipoAsiNombre: 'Asistio',
+      bgColor: 'bg-green-500',
+    },
+    {
+      iTipoAsiId: '2',
+      cTipoAsiLetra: 'T',
+      cTipoAsiNombre: 'Tardanza',
+      bgColor: 'bg-orange-500',
+    },
+    {
+      iTipoAsiId: '3',
+      cTipoAsiLetra: 'I',
+      cTipoAsiNombre: 'Inasistencia',
+      bgColor: 'bg-red-500',
+    },
+    {
+      iTipoAsiId: '4',
+      cTipoAsiLetra: 'J',
+      cTipoAsiNombre: 'Inasistencia Justificada',
+      bgColor: 'bg-primary-500',
+    },
+    {
+      iTipoAsiId: '9',
+      cTipoAsiLetra: 'P',
+      cTipoAsiNombre: 'Tardanza Justificada',
+      bgColor: 'bg-yellow-500',
+    },
+    {
+      iTipoAsiId: '7',
+      cTipoAsiLetra: '-',
+      cTipoAsiNombre: 'Sin Registro',
+      bgColor: 'bg-cyan-500',
+    },
   ];
 
   iTipoAsiId = 0;
   indice = 0;
 
-  changeAsistencia(index) {
-    if (this.data[index]['iTipoAsiId'] == null) {
-      this.data[index]['iTipoAsiId'] = this.tipoMarcado[0]['iTipoAsiId'];
-      this.data[index]['cTipoAsiLetra'] = this.tipoMarcado[0]['cTipoAsiLetra'];
-      this.data[index]['bgcolor'] = this.tipoMarcado[0]['bgcolor'];
-    }
-
-    this.iTipoAsiId = this.tipoMarcado.findIndex(
-      tipo => tipo.iTipoAsiId == this.data[index]['iTipoAsiId']
-    );
-    this.indice = (this.iTipoAsiId + 7) % 6;
-
-    this.data[index]['iTipoAsiId'] = this.tipoMarcado[this.indice]['iTipoAsiId'];
-    this.data[index]['cTipoAsiLetra'] = this.tipoMarcado[this.indice]['cTipoAsiLetra'];
-    this.data[index]['bgcolor'] = this.tipoMarcado[this.indice]['bgcolor'];
+  changeAsistencia(index, item) {
+    const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
+    const indice = (Number(valor) + 1) % this.tipoAsistencia.length;
+    this.data[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
+    this.data[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
+    this.data[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
+    this.data[index].bgColor = this.tipoAsistencia[indice].bgColor;
 
     this.countAsistenciasModal();
   }
@@ -455,9 +477,16 @@ export class AsistenciaComponent implements OnInit {
         break;
       case 'get_asistencia':
         this.data = item;
-        this.data.map(index => {
-          index.bgcolor = this.estado[index.iTipoAsiId];
+        this.data.forEach(item => {
+          const seleccionar = this.tipoAsistencia.find(
+            lista => lista.iTipoAsiId == item.iTipoAsiId
+          );
+          item.bgColor = seleccionar.bgColor;
+          item.cTipoAsiNombre = seleccionar.cTipoAsiNombre;
         });
+        // this.data.map(index => {
+        //   index.bgcolor = this.estado[index.iTipoAsiId];
+        // });
         this.countAsistenciasModal();
         break;
       case 'get_curso_horario':
@@ -517,6 +546,8 @@ export class AsistenciaComponent implements OnInit {
       enviar.append('iDocenteId', this.iDocenteId);
       enviar.append('iYAcadId', this.iYAcadId);
       enviar.append('dtCtrlAsistencia', this.fechaActual);
+      enviar.append('idDocCursoId', this.idDocCursoId);
+      enviar.append('iSedeId', this.iSedeId);
       enviar.append('asistencia_json', JSON.stringify(this.data));
       this.archivo.forEach((item: File, index: number) => {
         enviar.append(`archivos[${index}]`, item);

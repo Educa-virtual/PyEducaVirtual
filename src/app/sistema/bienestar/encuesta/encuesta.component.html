@@ -7,15 +7,15 @@
   <ng-template pTemplate="icons" class="flex justify-content-center">
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
-        label="Ver preguntas"
-        icon="pi pi-list-check"
-        iconPos="left"
         size="small"
         severity="warning"
         pTooltip="Ver preguntas"
         tooltipPosition="top"
         (click)="verPreguntas()"
-      />
+      >
+        <i class="pi pi-list-check mr-2"></i>
+        <span class="hidden md:block">Ver </span>Preguntas
+      </p-button>
     </div>
   </ng-template>
   <p-stepper class="mt-3" [(activeStep)]="active">
@@ -64,27 +64,12 @@
                 ></textarea>
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-6">
+            <div class="col-12">
               <p-inputGroup>
                 <p-inputGroupAddon> Categoría </p-inputGroupAddon>
                 <p-dropdown
                   [options]="categorias"
                   formControlName="iEncuCateId"
-                  [filter]="true"
-                  [showClear]="true"
-                  appendTo="body"
-                  placeholder="Seleccione"
-                  styleClass="group-element"
-                  [style]="{ flex: '1', width: '100%' }"
-                />
-              </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-6">
-              <p-inputGroup>
-                <p-inputGroupAddon> Estado </p-inputGroupAddon>
-                <p-dropdown
-                  [options]="estados"
-                  formControlName="iEstado"
                   [filter]="true"
                   [showClear]="true"
                   appendTo="body"
@@ -361,6 +346,9 @@
               <strong>El creador de la encuesta tiene todos los permisos por defecto.</strong>
               Cada perfil tendrá permisos dentro de su jurisdicción, por ejemplo: los especialistas
               solo de su UGEL, los directores solo de su I.E., etc.
+            </p>
+            <p *ngIf="encuesta?.cCreador">
+              <strong>CREADA POR: {{ encuesta?.cCreador }}</strong>
             </p>
           </ng-template>
         </p-messages>

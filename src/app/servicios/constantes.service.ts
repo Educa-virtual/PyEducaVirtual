@@ -633,12 +633,12 @@ const administracion = [
         label: 'Gestión de estudiantes',
         icon: 'pi pi-fw pi-cog',
         items: [
-          {
-            label: 'Ingresar estudiante',
-            icon: 'pi pi-fw pi-circle',
-            badge: 'NEW',
-            routerLink: ['/gestion-institucional/estudiante/registro'],
-          },
+          // {
+          //   label: 'Ingresar estudiante',
+          //   icon: 'pi pi-fw pi-circle',
+          //   badge: 'NEW',
+          //   routerLink: ['/gestion-institucional/estudiante/registro'],
+          // },
           {
             label: 'Buzón de sugerencias',
             icon: 'pi pi-fw pi-envelope',
@@ -695,18 +695,18 @@ const administracion = [
             badge: '',
             routerLink: ['/gestion-institucional/gestion-matriculas'],
           },
-          {
-            label: 'Matrícula Individual',
-            icon: 'pi pi-fw pi-file-plus',
-            badge: '',
-            routerLink: ['/gestion-institucional/matricula-individual'],
-          },
-          {
-            label: 'Matrícula Masiva',
-            icon: 'pi pi-fw pi-file-import',
-            badge: '',
-            routerLink: ['/gestion-institucional/matricula-masiva'],
-          },
+          // {
+          //   label: 'Matrícula Individual',
+          //   icon: 'pi pi-fw pi-file-plus',
+          //   badge: '',
+          //   routerLink: ['/gestion-institucional/matricula-individual'],
+          // },
+          // {
+          //   label: 'Matrícula Masiva',
+          //   icon: 'pi pi-fw pi-file-import',
+          //   badge: '',
+          //   routerLink: ['/gestion-institucional/matricula-masiva'],
+          // },
         ],
       },
       {
@@ -771,11 +771,11 @@ const administracion = [
   {
     label: 'Otros Módulos',
     items: [
-      {
-        label: 'Comunicados',
-        icon: 'pi pi-fw pi-bell',
-        routerLink: ['/docente/comunicados'],
-      },
+      // {
+      //   label: 'Comunicados',
+      //   icon: 'pi pi-fw pi-bell',
+      //   routerLink: ['/docente/comunicados'],
+      // },
       {
         label: 'ERE',
         icon: 'pi pi-pen-to-square',

@@ -267,8 +267,3 @@
     margin: 1cm;
   }
 }
-
-:host ::ng-deep .p-scrollpanel,
-:host ::ng-deep .p-scrollpanel-bar {
-  background-color: var(--primary-color-text) !important;
-}

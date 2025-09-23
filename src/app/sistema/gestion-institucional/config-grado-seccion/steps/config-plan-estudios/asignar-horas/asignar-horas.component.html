@@ -150,21 +150,15 @@
               </span>
             </div>
             <div class="field col-12 md:col-4">
-              <span class="p-float-label">
-                <p-inputNumber
-                  currency="Hrs"
-                  id="iTotalHoras"
-                  formControlName="iTotalHoras"
-                  aria-describedby="iTotalHoras-help"
-                />
-                <label for="iTotalHoras">Total </label>
-              </span>
+              <h6 align="center">Total de horas</h6>
+              <h4 align="center">
+                {{ formNivelGrado.get('iTotalHoras')?.value }}
+              </h4>
             </div>
           </div>
           <!-- <div class="field col-12">
             <span class="p-float-label">
               Horas acumuladas: {{ total_horas_grado }} de {{serv_horas}}
-
             </span>
           </div> -->
           <div class="col-12 mt-2 grid flex align-items-end">

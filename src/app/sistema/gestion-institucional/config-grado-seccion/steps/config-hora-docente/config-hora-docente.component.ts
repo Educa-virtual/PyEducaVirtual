@@ -467,7 +467,7 @@ export class ConfigHoraDocenteComponent implements OnInit {
       },
     },
     {
-      labelTooltip: 'Eliminar',
+      labelTooltip: 'Deshabilitar',
       icon: 'pi pi-ban',
       accion: 'eliminar',
       type: 'item',

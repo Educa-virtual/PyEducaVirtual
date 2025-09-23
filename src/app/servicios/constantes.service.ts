@@ -345,11 +345,11 @@ const administrador = [
                                   icon: 'pi pi-fw pi-folder',
                                   routerLink: ['/administrador/componentes'],
                               },*/
-      {
-        label: 'Registro de fechas especiales',
-        icon: 'pi pi-calendar',
-        routerLink: ['/gestion-institucional/fechas'],
-      },
+      // {
+      //   label: 'Registro de fechas especiales',
+      //   icon: 'pi pi-calendar',
+      //   routerLink: ['/gestion-institucional/fechas'],
+      // },
       /*{
               label: 'Backup de BD',
               icon: 'pi pi-fw pi-database',
@@ -633,12 +633,12 @@ const administracion = [
         label: 'Gestión de estudiantes',
         icon: 'pi pi-fw pi-cog',
         items: [
-          {
-            label: 'Ingresar estudiante',
-            icon: 'pi pi-fw pi-circle',
-            badge: 'NEW',
-            routerLink: ['/gestion-institucional/estudiante/registro'],
-          },
+          // {
+          //   label: 'Ingresar estudiante',
+          //   icon: 'pi pi-fw pi-circle',
+          //   badge: 'NEW',
+          //   routerLink: ['/gestion-institucional/estudiante/registro'],
+          // },
           {
             label: 'Buzón de sugerencias',
             icon: 'pi pi-fw pi-envelope',
@@ -695,18 +695,18 @@ const administracion = [
             badge: '',
             routerLink: ['/gestion-institucional/gestion-matriculas'],
           },
-          {
-            label: 'Matrícula Individual',
-            icon: 'pi pi-fw pi-file-plus',
-            badge: '',
-            routerLink: ['/gestion-institucional/matricula-individual'],
-          },
-          {
-            label: 'Matrícula Masiva',
-            icon: 'pi pi-fw pi-file-import',
-            badge: '',
-            routerLink: ['/gestion-institucional/matricula-masiva'],
-          },
+          // {
+          //   label: 'Matrícula Individual',
+          //   icon: 'pi pi-fw pi-file-plus',
+          //   badge: '',
+          //   routerLink: ['/gestion-institucional/matricula-individual'],
+          // },
+          // {
+          //   label: 'Matrícula Masiva',
+          //   icon: 'pi pi-fw pi-file-import',
+          //   badge: '',
+          //   routerLink: ['/gestion-institucional/matricula-masiva'],
+          // },
         ],
       },
       {
@@ -771,11 +771,11 @@ const administracion = [
   {
     label: 'Otros Módulos',
     items: [
-      {
-        label: 'Comunicados',
-        icon: 'pi pi-fw pi-bell',
-        routerLink: ['/docente/comunicados'],
-      },
+      // {
+      //   label: 'Comunicados',
+      //   icon: 'pi pi-fw pi-bell',
+      //   routerLink: ['/docente/comunicados'],
+      // },
       {
         label: 'ERE',
         icon: 'pi pi-pen-to-square',
@@ -901,16 +901,16 @@ const apoderado = [
   {
     label: 'Apoderado',
     items: [
-      {
-        label: 'Visualizar datos',
-        icon: 'pi pi-fw pi-eye',
-        routerLink: ['apoderado/seguimiento-apoderado'],
-      },
-      {
-        label: 'Registro de apoderados',
-        icon: 'pi pi-user-edit',
-        routerLink: ['apoderado/registro-apoderado'],
-      },
+      // {
+      //   label: 'Visualizar datos',
+      //   icon: 'pi pi-fw pi-eye',
+      //   routerLink: ['apoderado/seguimiento-apoderado'],
+      // },
+      // {
+      //   label: 'Registro de apoderados',
+      //   icon: 'pi pi-user-edit',
+      //   routerLink: ['apoderado/registro-apoderado'],
+      // },
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
@@ -927,11 +927,11 @@ const apoderado = [
           },
         ],
       },
-      {
-        label: 'Notificaciones y anuncios',
-        icon: 'pi pi-megaphone',
-        routerLink: ['apoderado/notificacion-apoderado'],
-      },
+      // {
+      //   label: 'Notificaciones y anuncios',
+      //   icon: 'pi pi-megaphone',
+      //   routerLink: ['apoderado/notificacion-apoderado'],
+      // },
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',

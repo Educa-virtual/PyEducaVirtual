@@ -345,11 +345,11 @@ const administrador = [
                                   icon: 'pi pi-fw pi-folder',
                                   routerLink: ['/administrador/componentes'],
                               },*/
-      {
-        label: 'Registro de fechas especiales',
-        icon: 'pi pi-calendar',
-        routerLink: ['/gestion-institucional/fechas'],
-      },
+      // {
+      //   label: 'Registro de fechas especiales',
+      //   icon: 'pi pi-calendar',
+      //   routerLink: ['/gestion-institucional/fechas'],
+      // },
       /*{
               label: 'Backup de BD',
               icon: 'pi pi-fw pi-database',
@@ -901,11 +901,11 @@ const apoderado = [
   {
     label: 'Apoderado',
     items: [
-      {
-        label: 'Visualizar datos',
-        icon: 'pi pi-fw pi-eye',
-        routerLink: ['apoderado/seguimiento-apoderado'],
-      },
+      // {
+      //   label: 'Visualizar datos',
+      //   icon: 'pi pi-fw pi-eye',
+      //   routerLink: ['apoderado/seguimiento-apoderado'],
+      // },
       {
         label: 'Registro de apoderados',
         icon: 'pi pi-user-edit',
@@ -927,11 +927,11 @@ const apoderado = [
           },
         ],
       },
-      {
-        label: 'Notificaciones y anuncios',
-        icon: 'pi pi-megaphone',
-        routerLink: ['apoderado/notificacion-apoderado'],
-      },
+      // {
+      //   label: 'Notificaciones y anuncios',
+      //   icon: 'pi pi-megaphone',
+      //   routerLink: ['apoderado/notificacion-apoderado'],
+      // },
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',

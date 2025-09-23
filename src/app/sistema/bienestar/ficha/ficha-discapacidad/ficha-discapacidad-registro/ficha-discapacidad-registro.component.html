@@ -65,7 +65,12 @@
           <div class="col-12">
             <p-inputGroup styleClass="vertical-group">
               <p-inputGroupAddon>
-                <a type="button" href="#" class="underline text-white" (click)="descargarArchivo()">
+                <a
+                  type="button"
+                  href="#"
+                  class="underline text-white"
+                  (click)="descargarArchivo(null, $event)"
+                >
                   <i class="pi pi-fw pi-download mr-2"></i>
                   <span>Descargar Archivo Adjunto</span>
                 </a>
@@ -80,6 +85,7 @@
             </p-inputGroupAddon>
             <p-fileUpload
               #fileUpload
+              chooseLabel="Subir PDF"
               name="archivo"
               [multiple]="false"
               accept=".pdf"

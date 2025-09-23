@@ -103,9 +103,9 @@ export class FichaRecreacionComponent implements OnInit {
       jsonProblemas: [null],
       jsonTransportes: [null],
       bFichaDGOcupaCargoIE: [false],
-      cFichaDGOcupaCargoIE: [''],
+      cFichaDGOcupaCargoIE: ['', Validators.maxLength(120)],
       bFichaDGPerteneceClubInteres: [false],
-      cFichaDGPerteneceClubInteres: [''],
+      cFichaDGPerteneceClubInteres: ['', Validators.maxLength(120)],
     });
 
     this.formLabels = {
@@ -203,6 +203,18 @@ export class FichaRecreacionComponent implements OnInit {
     );
     this.funcionesBienestar.formatearFormControl(
       this.formRecreacion,
+      'iLenguaId',
+      data.iLenguaId,
+      'number'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
+      'iEtniaId',
+      data.iEtniaId,
+      'number'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
       'bFichaDGPerteneceLigaDeportiva',
       data.bFichaDGPerteneceLigaDeportiva,
       'boolean'
@@ -217,6 +229,18 @@ export class FichaRecreacionComponent implements OnInit {
       this.formRecreacion,
       'bFichaDGAsistioConsultaPsicologica',
       data.bFichaDGAsistioConsultaPsicologica,
+      'boolean'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
+      'bFichaDGPerteneceClubInteres',
+      data.bFichaDGPerteneceClubInteres,
+      'boolean'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
+      'bFichaDGOcupaCargoIE',
+      data.bFichaDGOcupaCargoIE,
       'boolean'
     );
 

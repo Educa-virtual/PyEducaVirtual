@@ -23,7 +23,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     PreguntaEscalaComponent,
   ],
   templateUrl: './encuesta-preguntas.component.html',
-  styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
+  styleUrl: './encuesta-preguntas.component.scss',
 })
 export class EncuestaPreguntasComponent implements OnInit {
   iEncuId: number;

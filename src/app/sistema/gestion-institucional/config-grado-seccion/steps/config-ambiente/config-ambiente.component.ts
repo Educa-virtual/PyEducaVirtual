@@ -65,6 +65,7 @@ export class ConfigAmbienteComponent implements OnInit {
   piso_ambiente: [];
   condicion_ambiente: [];
   configuracion: any[];
+  perfil: any = [];
 
   ambientes: any[];
   typesFiles = {
@@ -75,6 +76,8 @@ export class ConfigAmbienteComponent implements OnInit {
     image: true,
   };
   filesUrl = [];
+  ruta_imagen: string;
+
   private _confirmService = inject(ConfirmationModalService);
   private http = inject(HttpClient);
   backend = environment.backend;
@@ -89,6 +92,8 @@ export class ConfigAmbienteComponent implements OnInit {
   ) {
     //this.iSedeId = this.stepService.iSedeId
     this.items = this.stepService.itemsStep;
+    this.perfil = this.stepService.perfil;
+
     //this.iYAcadId = this.stepService.iYAcadId
     this.anio = this.stepService.anio;
     this.configuracion = this.stepService.configuracion;
@@ -96,6 +101,10 @@ export class ConfigAmbienteComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
+      const codigoModular = this.perfil.cIieeCodigoModular;
+      const cYAcadNombre = this.configuracion[0].cYAcadNombre;
+
+      this.ruta_imagen = String(cYAcadNombre + '/' + codigoModular + '/ambientes');
       //bd iiee_ambientes
       //this.visible = true
       this.form = this.fb.group({
@@ -121,6 +130,7 @@ export class ConfigAmbienteComponent implements OnInit {
     } catch (error) {
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
+
     this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes()); // devuelve arrays de tabla acad.ambientes
     this.tipo_ambiente =
       this.stepService.tipo_ambiente ?? (await this.stepService.getTipoAmbiente());
@@ -520,7 +530,7 @@ export class ConfigAmbienteComponent implements OnInit {
     if (file) {
       const dataFile = await this.objectToFormData({
         file: file,
-        nameFile: tipo,
+        nameFile: this.ruta_imagen, //ruta de imagen
       });
       this.http
         .post(`${this.backendApi}/general/subir-archivo?` + 'skipSuccessMessage=true', dataFile)
@@ -534,9 +544,7 @@ export class ConfigAmbienteComponent implements OnInit {
                     name: file.name,
                     ruta: event.data,
                   });
-
                   this.form.get('cImagen')?.setValue(this.filesUrl[0].ruta);
-
                   //this.guardarItinerario();
                   break;
               }
@@ -585,16 +593,16 @@ export class ConfigAmbienteComponent implements OnInit {
     window.open(ruta, '_blank');
   }
 
-  saveInformation() {
-    if (this.caption == 'create') {
-      alert('Mensaje 0 save');
-    } else {
-      alert('Mensaje 1 save');
-    }
-  }
-  nextPage() {
-    alert('mensaje de next');
-  }
+  // saveInformation() {
+  //   if (this.caption == 'create') {
+  //     alert('Mensaje 0 save');
+  //   } else {
+  //     alert('Mensaje 1 save');
+  //   }
+  // }
+  // nextPage() {
+  //   alert('mensaje de next');
+  // }
 
   //ESTRUCTURASS DE TABLA
   //Maquetar tablas
@@ -695,7 +703,7 @@ export class ConfigAmbienteComponent implements OnInit {
       type: 'text',
       width: '5rem',
       field: 'cTipoAmbienteNombre',
-      header: 'Tipo de ambiente',
+      header: 'Tipo',
       text_header: 'center',
       text: 'center',
     },

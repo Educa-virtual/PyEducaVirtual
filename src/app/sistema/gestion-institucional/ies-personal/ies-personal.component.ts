@@ -433,13 +433,13 @@ export class IesPersonalComponent implements OnInit {
       accion: 'agregar',
       class: 'p-button-primary',
     },
-    {
-      labelTooltip: 'Clonar personal',
-      text: 'Clonar personal',
-      icon: 'pi pi-copy',
-      accion: 'clonar',
-      class: 'p-button-warning',
-    },
+    // {
+    //   labelTooltip: 'Clonar personal',
+    //   text: 'Clonar personal',
+    //   icon: 'pi pi-copy',
+    //   accion: 'clonar',
+    //   class: 'p-button-warning',
+    // },
   ];
   selectedItems = [];
   actions: IActionTable[] = [

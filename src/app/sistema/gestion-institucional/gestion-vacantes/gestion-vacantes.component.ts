@@ -166,6 +166,7 @@ export class GestionVacantesComponent implements OnInit {
     this.iGradoId = '0';
     this.getVacantes();
     this.form.reset();
+    this.iSeccionId = '0';
   }
 
   getVacantes() {
@@ -205,7 +206,7 @@ export class GestionVacantesComponent implements OnInit {
         complete: () => {
           this.messageService.add({
             summary: 'Mensaje de sistema',
-            detail: 'Se cargargaron las vacantes de IE.',
+            detail: 'Carga de vacantes de IE exitosa.',
             life: 3000,
             severity: 'success',
           });
@@ -372,7 +373,7 @@ export class GestionVacantesComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Mensaje del sistema',
-          detail: 'Error en el procesamiento: ' + error.message,
+          detail: 'Error en el procesamiento: ' + error.error.message,
         });
       },
     });

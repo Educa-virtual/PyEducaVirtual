@@ -28,7 +28,7 @@ export class CalendarioComponent implements OnInit {
   festividades = [];
   actividades = [];
   events = []; // guarda los eventos para el calendario
-
+  filtro = Array.from({ length: 12 }, () => []);
   constructor() {
     this.iDocenteId = this.ConstantesService.iDocenteId;
     this.iYAcadId = this.ConstantesService.iYAcadId;
@@ -56,7 +56,6 @@ export class CalendarioComponent implements OnInit {
         iIieeId: this.iIieeId,
         iSedeId: this.iSedeId,
       },
-      params: { skipSuccessMessage: true },
     };
     this.getInformation(params, 'curriculas');
   }
@@ -68,7 +67,6 @@ export class CalendarioComponent implements OnInit {
       prefix: 'asistencia',
       ruta: 'obtenerFestividad',
       data: {},
-      params: { skipSuccessMessage: true },
     };
     this.getInformation(params, 'festividades');
   }
@@ -80,7 +78,6 @@ export class CalendarioComponent implements OnInit {
       prefix: 'buscar_curso',
       ruta: 'obtenerActividad',
       data: {},
-      params: { skipSuccessMessage: true },
     };
     this.getInformation(params, 'actividades');
   }
@@ -97,7 +94,6 @@ export class CalendarioComponent implements OnInit {
         iIieeId: this.iIieeId,
         iSedeId: this.iSedeId,
       },
-      params: { skipSuccessMessage: true },
     };
     this.getInformation(params, 'curriculaHorario');
   }
@@ -109,22 +105,26 @@ export class CalendarioComponent implements OnInit {
     switch (accion) {
       case 'curriculas':
         this.curricula = item;
-        this.curricula.map(caja => {
+        this.curricula.forEach(caja => {
           caja.mostrar = true;
         });
         break;
       case 'curriculaHorario':
         this.events = item;
+        this.events.forEach(evento => {
+          evento.mostrar = true;
+          evento.display = 'block';
+        });
         break;
       case 'festividades':
         this.festividades = item;
-        this.festividades.map(caja => {
+        this.festividades.forEach(caja => {
           caja.mostrar = true;
         });
         break;
       case 'actividades':
         this.actividades = item;
-        this.actividades.map(caja => {
+        this.actividades.forEach(caja => {
           caja.mostrar = true;
         });
         this.actividades[0].estilo = 'primary-checkbox';
@@ -149,39 +149,14 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
-  filterFestividad(valor: any) {
-    this.events.map(evento => {
-      if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == true) {
-        evento.display = 'block';
-      }
-      if (evento.grupo == valor.checkbox.cTipoFechaNombre && valor.checkbox.mostrar == false) {
-        evento.display = 'none';
-      }
-    });
-    this.events = Object.assign([], this.events);
-  }
-
-  filterCalendario(valor: any) {
-    this.events.map(evento => {
-      if (evento.grupo == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == true) {
-        evento.display = 'block';
-      }
-      if (evento.grupo == valor.checkbox.cCursoNombre && valor.checkbox.mostrar == false) {
-        evento.display = 'none';
-      }
-    });
-    this.events = Object.assign([], this.events);
-  }
-
   filterActividad(valor: any) {
-    this.events.map(evento => {
-      if (evento.grupo == valor.checkbox.cActTipoNombre && valor.checkbox.mostrar == true) {
-        evento.display = 'block';
-      }
-      if (evento.grupo == valor.checkbox.cActTipoNombre && valor.checkbox.mostrar == false) {
-        evento.display = 'none';
-      }
-    });
-    this.events = Object.assign([], this.events);
+    this.events
+      .filter(evento => evento.grupo == valor.checkbox.grupo)
+      .forEach(lista => {
+        lista.mostrar = valor.checkbox.mostrar ? true : false;
+        lista.display = lista.mostrar ? 'block' : 'none';
+      });
+
+    this.events = [...this.events];
   }
 }

@@ -242,7 +242,9 @@ export class AsistenciaComponent implements OnInit {
     this.leyenda.filter(index => {
       index.contar = 0;
     });
+
     this.events.filter(index => {
+      console.log('revisando 3', index);
       this.captura = index.title.split(' : ');
 
       if (this.captura.length > 1) {

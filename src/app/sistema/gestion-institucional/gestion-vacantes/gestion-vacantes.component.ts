@@ -286,8 +286,7 @@ export class GestionVacantesComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail:
-              'Error. No se proceso petición registro ya existe o es invalido ' + error.message,
+            detail: 'Error.' + error.error.message,
           });
         },
         complete: () => {
@@ -326,8 +325,7 @@ export class GestionVacantesComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail:
-              'Error. No se proceso petición registro ya existe o es invalido ' + error.message,
+            detail: 'Error. No se proceso petición : ' + error.error.message,
           });
         },
         complete: () => {

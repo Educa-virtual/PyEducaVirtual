@@ -19,28 +19,14 @@ export class RoleGuard implements CanActivate {
   ) {}
 
   canActivate(next: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    let currentRoute: ActivatedRouteSnapshot | null = next;
-    let expectedRole: number[] | undefined;
-
-    while (currentRoute) {
-      if (currentRoute.data && currentRoute.data['expectedRole']) {
-        expectedRole = currentRoute.data['expectedRole'];
-      }
-      currentRoute = currentRoute.firstChild ?? null;
-    }
-
-    if (!expectedRole) {
-      this.router.navigate(['user/perfil']);
-      return false;
-    }
+    const expectedRole = next.data['expectedRole'];
 
     const perfil = this.LocalStoreService.getItem('dremoPerfil');
 
-    if (!expectedRole.includes(Number(perfil.iPerfilId))) {
-      this.router.navigate(['user/perfil']);
-      return false;
+    if (perfil && expectedRole.includes(Number(perfil.iPerfilId))) {
+      return true;
     }
-
-    return true;
+    // this.router.navigate(['user/perfil']);
+    return false;
   }
 }

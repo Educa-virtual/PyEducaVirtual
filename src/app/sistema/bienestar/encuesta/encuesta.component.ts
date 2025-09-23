@@ -247,6 +247,41 @@ export class EncuestaComponent implements OnInit {
     }
   }
 
+  handlePanelClick(onClick: any, active: number) {
+    if (active === 0) {
+      this.handleNextEncuestaPoblacion(onClick);
+    } else if (active === 1) {
+      this.handleNextPoblacionPermisos(onClick);
+    }
+  }
+
+  handleNextEncuestaPoblacion(nextCallback: any) {
+    this._messageService.clear();
+    if (this.formEncuesta.invalid) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe completar los campos requeridos',
+      });
+      this.funcionesBienestar.formMarkAsDirty(this.formEncuesta);
+      return;
+    }
+    nextCallback.emit();
+  }
+
+  handleNextPoblacionPermisos(nextCallback: any) {
+    this._messageService.clear();
+    if (this.poblacion.length === 0) {
+      this._messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe especificar la población objetivo',
+      });
+      return;
+    }
+    nextCallback.emit();
+  }
+
   verEncuesta() {
     this.datosEncuestas
       .verEncuesta({
@@ -377,6 +412,7 @@ export class EncuestaComponent implements OnInit {
     this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
+    this._messageService.clear();
     if (this.formEncuesta.invalid) {
       this._messageService.add({
         severity: 'warn',
@@ -385,7 +421,6 @@ export class EncuestaComponent implements OnInit {
       });
       return;
     }
-
     if (this.poblacion.length == 0) {
       this._messageService.add({
         severity: 'warn',
@@ -432,6 +467,7 @@ export class EncuestaComponent implements OnInit {
     this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
+    this._messageService.clear();
     if (this.formEncuesta.invalid) {
       this._messageService.add({
         severity: 'warn',
@@ -440,12 +476,11 @@ export class EncuestaComponent implements OnInit {
       });
       return;
     }
-
     if (this.poblacion.length == 0) {
       this._messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Debe especificar al menos una población objetivo',
+        detail: 'Debe especificar la población objetivo',
       });
       return;
     }
@@ -483,6 +518,7 @@ export class EncuestaComponent implements OnInit {
   }
 
   agregarPoblacion(item: any = null) {
+    this._messageService.clear();
     if (item) {
       this.formPoblacion.patchValue(item);
     }
@@ -534,7 +570,7 @@ export class EncuestaComponent implements OnInit {
     if (!this.es_especialista && this.nivel_tipos) {
       this.formPoblacion.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
     }
-    this.obtenerPoblacionObjetivo();
+    this.obtenerPoblacionObjetivo(form);
   }
 
   agregarPermiso(item: any = null) {
@@ -571,7 +607,7 @@ export class EncuestaComponent implements OnInit {
     this.formPermisos.reset();
   }
 
-  obtenerPoblacionObjetivo() {
+  obtenerPoblacionObjetivo(ultima_poblacion: any = []) {
     this.funcionesBienestar.formControlJsonStringify(
       this.formEncuesta,
       'jsonPoblacion',
@@ -587,9 +623,35 @@ export class EncuestaComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
+          this._messageService.clear();
           if (data.data) {
+            /**
+             * Si esta editando encuesta y la última población es cero,
+             * entonces quitarla y mostrar advertencia
+             */
+            if (
+              !this.encuesta_bloqueada &&
+              this.poblacion.length > 0 &&
+              Number(data.data.iPoblacionObjetivo) === Number(this.cantidad_poblacion)
+            ) {
+              this.poblacion = this.poblacion.filter(
+                (poblacion: any) => ultima_poblacion.iEncuPobId != poblacion.iEncuPobId
+              );
+              this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
+              this._messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'La última población objetivo indicada es cero, seleccione otra',
+              });
+            }
+            /** Luego cargar cantidad acumulada de población objetivo */
             this.cantidad_poblacion = data.data.iPoblacionObjetivo;
           } else {
+            this._messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se pudo calcular la cantidad de población objetivo',
+            });
             this.cantidad_poblacion = 0;
           }
         },

@@ -25,7 +25,7 @@ export class CambiarConstrasenaComponent {
     private messageService: MessageService,
     private usuariosService: UsuariosService
   ) {
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
     this.form = this.fb.group(
       {

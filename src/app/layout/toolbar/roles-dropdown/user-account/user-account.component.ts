@@ -25,6 +25,7 @@ export class UserAccountComponent implements OnInit {
   fotografia: string;
   showModalDatosPersonales: boolean = false;
   showModalChangePassword: boolean = false;
+
   constructor(private ConstantesService: ConstantesService) {
     this.name = this.ConstantesService.nombres;
     this.fotografia = environment.backend + '/' + this.ConstantesService.fotografia;

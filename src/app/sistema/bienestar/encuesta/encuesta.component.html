@@ -4,7 +4,11 @@
   <ng-template pTemplate="header">
     <span class="text-2xl text-uppercase"> Registrar encuesta </span>
   </ng-template>
-  <ng-template pTemplate="icons" class="flex justify-content-center">
+  <ng-template
+    pTemplate="icons"
+    class="flex justify-content-center"
+    *ngIf="encuesta_registrada && this.iEncuId"
+  >
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
         size="small"
@@ -23,7 +27,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -118,7 +122,7 @@
               severity="success"
               icon="pi pi-arrow-right"
               iconPos="right"
-              (onClick)="nextCallback.emit()"
+              (onClick)="handleNextEncuestaPoblacion(nextCallback)"
             />
           </div>
         </form>
@@ -128,7 +132,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -225,6 +229,7 @@
                   <p-inputGroupAddon>Grado</p-inputGroupAddon>
                   <p-dropdown
                     [options]="nivel_grados"
+                    showClear="true"
                     formControlName="iNivelGradoId"
                     placeholder="Seleccione un grado"
                     styleClass="group-element"
@@ -316,7 +321,7 @@
             severity="success"
             icon="pi pi-arrow-right"
             iconPos="right"
-            (onClick)="nextCallback.emit()"
+            (onClick)="handleNextPoblacionPermisos(nextCallback)"
           />
         </div>
       </ng-template>
@@ -325,7 +330,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"

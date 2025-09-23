@@ -270,8 +270,12 @@ export class GestionarEncuestasComponent implements OnInit {
           Number(item.iEstado) === this.ESTADO_BORRADOR
             ? this.ESTADO_TERMINADA
             : this.ESTADO_BORRADOR;
+        let nuevo_estado_nombre = 'BORRADOR';
+        if (nuevo_estado === this.ESTADO_TERMINADA) {
+          nuevo_estado_nombre = 'POR APROBAR';
+        }
         this._confirmService.openConfirm({
-          message: '¿Está seguro de cambiar el estado de la encuesta?',
+          message: `¿Está seguro de cambiar el estado de la encuesta a ${nuevo_estado_nombre}?`,
           header: 'Confirmación',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
@@ -350,7 +354,7 @@ export class GestionarEncuestasComponent implements OnInit {
       text: 'center',
       styles: {
         BORRADOR: 'danger',
-        TERMINADA: 'warning',
+        'POR APROBAR': 'warning',
         APROBADA: 'success',
       },
     },

@@ -360,20 +360,20 @@ export class GestionMatriculasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-primary p-button-text',
     },
-    {
-      labelTooltip: 'Editar Estudiante',
-      icon: 'pi pi-user-edit',
-      accion: 'editar_estudiante',
-      type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
-    },
-    {
-      labelTooltip: 'Anular',
-      icon: 'pi pi-trash',
-      accion: 'anular',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Editar Estudiante',
+    //   icon: 'pi pi-user-edit',
+    //   accion: 'editar_estudiante',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-secondary p-button-text',
+    // },
+    // {
+    //   labelTooltip: 'Anular',
+    //   icon: 'pi pi-trash',
+    //   accion: 'anular',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
 
   actionsLista: IActionTable[];

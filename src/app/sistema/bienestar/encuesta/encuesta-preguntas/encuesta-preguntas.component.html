@@ -13,7 +13,6 @@
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
         size="small"
-        pButton
         pTooltip="Salir"
         tooltipPosition="top"
         (onClick)="salir()"
@@ -25,7 +24,6 @@
       <p-button
         *ngIf="!encuesta_bloqueada"
         size="small"
-        pButton
         pTooltip="Registrar encuesta"
         tooltipPosition="top"
         (click)="agregarPregunta()"
@@ -36,7 +34,7 @@
       </p-button>
     </div>
   </ng-template>
-  <p-scrollPanel [style]="{ width: '99%', height: '65vh' }" styleClass="barra_color">
+  <p-scrollPanel [style]="{ width: '100%', height: '60vh' }">
     <div class="grid p-fluid mt-3" *ngFor="let pregunta of preguntas; let i = index">
       @switch (+pregunta.iEncuPregTipoId) {
         <!-- Pregunta cerrada Si/No -->

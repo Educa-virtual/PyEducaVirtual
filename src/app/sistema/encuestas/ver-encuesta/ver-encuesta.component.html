@@ -14,7 +14,7 @@
   </ng-template>
 
   <div class="grid p-fluid">
-    <div class="col-12 md:col-4">
+    <div class="col-12 md:col-5">
       <div class="grid p-fluid">
         <div class="col-12">
           <p-messages severity="info" class="my-0">
@@ -34,11 +34,22 @@
                     <span class="m-0 text-secondary">{{ encuesta?.cEncuSubtitulo }}</span>
                   </span>
                 </li>
+                <li class="flex py-3">
+                  <i class="pi pi-clock text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Tiempo para editar respuestas</span>
+                    <span class="m-0 text-secondary text-justify"
+                      >{{ encuesta?.cTiemDurNombre }} {{ formatearTiempoRestante(encuesta) }}</span
+                    >
+                  </span>
+                </li>
                 <li class="flex py-3" *ngIf="encuesta?.cEncuDescripcion">
                   <i class="pi pi-align-justify text-xl mr-3"></i>
                   <span class="flex flex-column">
                     <span class="font-bold mb-1">Descripción</span>
-                    <span class="m-0 text-secondary">{{ encuesta?.cEncuDescripcion }}</span>
+                    <span class="m-0 text-secondary text-justify">{{
+                      encuesta?.cEncuDescripcion
+                    }}</span>
                   </span>
                 </li>
                 <li class="flex py-3">
@@ -69,7 +80,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 md:col-8">
+    <div class="col-12 md:col-7">
       @for (seccion of secciones; track seccion.iSeccionId) {
         <p-fieldset>
           <ng-template pTemplate="header">

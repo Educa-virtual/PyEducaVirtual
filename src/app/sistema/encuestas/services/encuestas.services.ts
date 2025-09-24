@@ -149,6 +149,10 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/listarRespuestas`, data);
   }
 
+  verRespuestas(data: any) {
+    return this.http.post(`${baseUrl}/enc/verRespuestas`, data);
+  }
+
   guardarRespuestas(data: any) {
     return this.http.post(`${baseUrl}/enc/guardarRespuestas`, data);
   }

@@ -175,4 +175,16 @@ export class ListaEncuestasComponent implements OnInit {
       `/encuestas/categorias/${encuesta.iCateId}/lista-encuestas/${encuesta.iEncuId}/ver`,
     ]);
   }
+
+  formatearTiempoRestante(encuesta: any) {
+    const iMinutosRestantes = Number(encuesta?.iMinutosRestantes);
+    if (Number(encuesta?.iTiempDurId) === 0) return '';
+    else if (iMinutosRestantes === 0) return '(Tiempo expirado)';
+    else if (iMinutosRestantes > 0 && iMinutosRestantes < 60)
+      return `(${iMinutosRestantes} minutos restantes)`;
+    else if (iMinutosRestantes >= 60 && iMinutosRestantes < 1440)
+      return `(${Math.floor(iMinutosRestantes / 60)} horas restantes)`;
+    else if (iMinutosRestantes >= 1440) return `(más de 1 día restante)`;
+    return '';
+  }
 }

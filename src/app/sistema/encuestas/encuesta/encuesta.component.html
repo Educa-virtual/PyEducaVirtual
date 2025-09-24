@@ -75,7 +75,7 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-6 lg:col-4">
+            <div class="col-12 md:col-6">
               <p-inputGroup>
                 <p-inputGroupAddon>Inicio</p-inputGroupAddon>
                 <p-calendar
@@ -89,7 +89,7 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-6 lg:col-4">
+            <div class="col-12 md:col-6">
               <p-inputGroup>
                 <p-inputGroupAddon>Cierre</p-inputGroupAddon>
                 <p-calendar
@@ -103,17 +103,34 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="col-12 lg:col-4">
+            <div class="col-12">
               <p-inputGroup>
-                <p-inputGroupAddon>Tiempo</p-inputGroupAddon>
+                <p-inputGroupAddon>
+                  <a
+                    role="button"
+                    class="p-button p-button-secondary mr-2"
+                    (click)="iTiemDurId.toggle($event)"
+                    (keypress)="iTiemDurId.toggle($event)"
+                    tabindex="0"
+                  >
+                    <i class="pi pi-question-circle"></i>
+                  </a>
+                  <span>Tiempo para editar respuestas</span>
+                </p-inputGroupAddon>
                 <p-dropdown
                   styleClass="group-element"
                   [options]="tiempos_duracion"
-                  placeholder="Seleccione tiempo de duración"
+                  placeholder="Seleccione tiempo"
                   formControlName="iTiemDurId"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
+                <p-overlayPanel #iTiemDurId showCloseIcon="true" appendTo="body">
+                  <div class="flex w-15rem">
+                    El tiempo que el encuestado tendrá para editar sus respuestas una vez que las
+                    haya registrado por primera vez.
+                  </div>
+                </p-overlayPanel>
               </p-inputGroup>
             </div>
             <div class="col-12">

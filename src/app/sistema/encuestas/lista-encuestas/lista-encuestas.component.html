@@ -41,7 +41,10 @@
                 >
                   <div class="flex items-center gap-1">
                     <i class="pi pi-clock text-primary ml-1"></i>
-                    <span>Tiempo para responder: {{ encuesta?.cTiemDurNombre }}</span>
+                    <span
+                      >Tiempo para editar respuestas: {{ encuesta?.cTiemDurNombre }}
+                      {{ formatearTiempoRestante(encuesta) }}</span
+                    >
                   </div>
                   <div class="flex items-center gap-1">
                     <i class="pi pi-calendar text-primary ml-1"></i>

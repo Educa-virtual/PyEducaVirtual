@@ -65,6 +65,7 @@ export class VerEncuestaComponent implements OnInit {
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.iEncuId || 0;
       this.iCateId = params.params.iCateId || 0;
+      this.iPersId = params.params.iPersId || 0;
     });
     this.route.data.subscribe((data: any) => {
       this.es_encuestador = data.es_encuestador;
@@ -128,7 +129,8 @@ export class VerEncuestaComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.encuesta = data.data;
-          this.puede_editar = Boolean(this.encuesta.puede_editar) && !this.es_encuestador;
+          this.puede_editar =
+            Boolean(Number(this.encuesta.puede_responder)) && !this.es_encuestador;
           this.encuesta.accesos_detalle = JSON.parse(this.encuesta.json_accesos_detalle);
           this.setBreadCrumbs();
         },
@@ -174,7 +176,7 @@ export class VerEncuestaComponent implements OnInit {
 
   verRespuestas() {
     this.encuestasService
-      .listarRespuestas({
+      .verRespuestas({
         iEncuId: this.iEncuId,
         iPersId: this.iPersId,
       })
@@ -183,7 +185,6 @@ export class VerEncuestaComponent implements OnInit {
           if (data.data.respuestas) {
             this.respuesta_registrada = true;
             const respuestas = JSON.parse(data.data.respuestas);
-            console.log(respuestas, 'respuestas');
             this.setRespuestasFormArray(respuestas);
           }
         },
@@ -296,5 +297,17 @@ export class VerEncuestaComponent implements OnInit {
     } else {
       this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-encuestas`]);
     }
+  }
+
+  formatearTiempoRestante(encuesta: any) {
+    const iMinutosRestantes = Number(encuesta?.iMinutosRestantes);
+    if (Number(encuesta?.iTiempDurId) === 0) return '';
+    else if (iMinutosRestantes === 0) return '(Tiempo expirado)';
+    else if (iMinutosRestantes > 0 && iMinutosRestantes < 60)
+      return `(${iMinutosRestantes} minutos restantes)`;
+    else if (iMinutosRestantes >= 60 && iMinutosRestantes < 1440)
+      return `(${Math.floor(iMinutosRestantes / 60)} horas restantes)`;
+    else if (iMinutosRestantes >= 1440) return `(más de 1 día restante)`;
+    return '';
   }
 }

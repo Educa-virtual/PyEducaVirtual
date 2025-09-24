@@ -137,7 +137,8 @@
   top: -0.25rem !important;
 }
 
-:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon a.p-button {
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon a.p-button,
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon a.p-button {
   padding: 0 !important;
 }
 

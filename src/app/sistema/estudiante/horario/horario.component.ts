@@ -57,8 +57,8 @@ export class HorarioComponent implements OnInit {
         this.bloques = Array.from(new Set(this.raw.map(h => h.iBloque))).sort((a, b) => a - b);
         this.franjas = this.bloques.map(b => {
           const h = this.raw.find(x => x.iBloque === b)!;
-          const hi = h.tHoraInicio.slice(0, 5);
-          const hf = h.tHoraFin.slice(0, 5);
+          const hi = h.tHoraInicio ? h.tHoraInicio.slice(0, 5) : '';
+          const hf = h.tHoraFin ? h.tHoraFin.slice(0, 5) : '';
           return { bloque: b, horario: `${hi} - ${hf}` };
         });
       },

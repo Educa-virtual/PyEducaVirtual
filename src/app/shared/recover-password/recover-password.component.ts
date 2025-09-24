@@ -20,7 +20,7 @@ export class RecoverPasswordComponent implements OnChanges, OnInit {
   isLoading: boolean = false;
   reenviandoCodigo: boolean = false;
   correoMasked: string = '';
-  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
   paso: number = 1;
 
   showPassword: boolean = false;

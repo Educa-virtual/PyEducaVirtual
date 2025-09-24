@@ -4,18 +4,22 @@
   <ng-template pTemplate="header">
     <span class="text-2xl text-uppercase"> Registrar encuesta </span>
   </ng-template>
-  <ng-template pTemplate="icons" class="flex justify-content-center">
+  <ng-template
+    pTemplate="icons"
+    class="flex justify-content-center"
+    *ngIf="encuesta_registrada && this.iEncuId"
+  >
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
-        label="Ver preguntas"
-        icon="pi pi-list-check"
-        iconPos="left"
         size="small"
         severity="warning"
         pTooltip="Ver preguntas"
         tooltipPosition="top"
         (click)="verPreguntas()"
-      />
+      >
+        <i class="pi pi-list-check mr-2"></i>
+        <span class="hidden md:block">Ver </span>Preguntas
+      </p-button>
     </div>
   </ng-template>
   <p-stepper class="mt-3" [(activeStep)]="active">
@@ -23,7 +27,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -64,27 +68,12 @@
                 ></textarea>
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-6">
+            <div class="col-12">
               <p-inputGroup>
                 <p-inputGroupAddon> Categoría </p-inputGroupAddon>
                 <p-dropdown
                   [options]="categorias"
                   formControlName="iEncuCateId"
-                  [filter]="true"
-                  [showClear]="true"
-                  appendTo="body"
-                  placeholder="Seleccione"
-                  styleClass="group-element"
-                  [style]="{ flex: '1', width: '100%' }"
-                />
-              </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-6">
-              <p-inputGroup>
-                <p-inputGroupAddon> Estado </p-inputGroupAddon>
-                <p-dropdown
-                  [options]="estados"
-                  formControlName="iEstado"
                   [filter]="true"
                   [showClear]="true"
                   appendTo="body"
@@ -133,7 +122,7 @@
               severity="success"
               icon="pi pi-arrow-right"
               iconPos="right"
-              (onClick)="nextCallback.emit()"
+              (onClick)="handleNextEncuestaPoblacion(nextCallback)"
             />
           </div>
         </form>
@@ -143,7 +132,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -240,6 +229,7 @@
                   <p-inputGroupAddon>Grado</p-inputGroupAddon>
                   <p-dropdown
                     [options]="nivel_grados"
+                    showClear="true"
                     formControlName="iNivelGradoId"
                     placeholder="Seleccione un grado"
                     styleClass="group-element"
@@ -331,7 +321,7 @@
             severity="success"
             icon="pi pi-arrow-right"
             iconPos="right"
-            (onClick)="nextCallback.emit()"
+            (onClick)="handleNextPoblacionPermisos(nextCallback)"
           />
         </div>
       </ng-template>
@@ -340,7 +330,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -361,6 +351,9 @@
               <strong>El creador de la encuesta tiene todos los permisos por defecto.</strong>
               Cada perfil tendrá permisos dentro de su jurisdicción, por ejemplo: los especialistas
               solo de su UGEL, los directores solo de su I.E., etc.
+            </p>
+            <p *ngIf="encuesta?.cCreador">
+              <strong>CREADA POR: {{ encuesta?.cCreador }}</strong>
             </p>
           </ng-template>
         </p-messages>

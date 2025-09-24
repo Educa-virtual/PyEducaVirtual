@@ -7,9 +7,13 @@ import {
   AfterViewInit,
   OnDestroy,
   forwardRef,
+  EventEmitter,
+  Output,
+  Input,
 } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import Konva from 'konva';
+import { toSVG } from 'src/app/shared/utils/konva-to-svg';
 
 type Tool = 'pen' | 'rect' | 'circle' | 'eraser' | 'select' | 'text';
 
@@ -18,7 +22,7 @@ type Tool = 'pen' | 'rect' | 'circle' | 'eraser' | 'select' | 'text';
   standalone: true,
   imports: [FormsModule, PrimengModule],
   templateUrl: './pizarra-digital.component.html',
-  styleUrls: ['./pizarra-digital.component.scss'], // nota: styleUrls (plural)
+  styleUrls: ['./pizarra-digital.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -30,20 +34,30 @@ type Tool = 'pen' | 'rect' | 'circle' | 'eraser' | 'select' | 'text';
 })
 export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
   @ViewChild('stageHost', { static: true }) stageHost!: ElementRef<HTMLDivElement>;
+  @Input() id: string | number;
+  @Input() svgUrl?: string;
+
+  @Output() exportImageSvg = new EventEmitter<{ svg: string; id: string | number }>();
 
   private stage!: Konva.Stage;
-  private layer!: Konva.Layer;
+  private gridLayer!: Konva.Layer; // cuadrícula
+  private backgroundLayer!: Konva.Layer; // imagen inicial (pizarra previa)
+  private drawLayer!: Konva.Layer; // lo que dibuja el usuario
+
   private currentLine?: Konva.Line;
   private currentShape?: Konva.Shape;
-  private isDrawing = false;
-  private startPos = { x: 0, y: 0 };
   private eraserCursor?: Konva.Circle;
   private currentTextarea?: HTMLTextAreaElement;
+  tr!: Konva.Transformer;
+
+  private isDrawing = false;
+  private startPos = { x: 0, y: 0 };
 
   tool: Tool = 'pen';
   strokeColor = '#000000';
   strokeWidth = 3;
   textInput = '';
+
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
 
@@ -53,32 +67,56 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
     const height = container.clientHeight || 600;
 
     this.stage = new Konva.Stage({
-      container: container,
+      container,
       width,
       height,
       draggable: false,
     });
 
-    this.layer = new Konva.Layer();
-    this.stage.add(this.layer);
+    // 1. cuadrícula
+    this.gridLayer = new Konva.Layer({ listening: false, name: 'gridLayer' });
+
+    this.stage.add(this.gridLayer);
+    this.drawGrid();
+
+    // 2. capa de fondo (imagen previa)
+    this.backgroundLayer = new Konva.Layer();
+    this.stage.add(this.backgroundLayer);
+
+    this.tr = new Konva.Transformer({
+      rotateEnabled: true,
+      enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+    });
+
+    // 3. capa de dibujo del usuario
+    this.drawLayer = new Konva.Layer();
+    this.stage.add(this.drawLayer);
 
     this.attachEvents();
 
-    // 🔹 Dibuja fondo y cuadrícula
-    this.drawBackgroundAndGrid();
+    // cargar imagen inicial si existe
+    if (this.svgUrl) {
+      Konva.Image.fromURL(this.svgUrl, imageNode => {
+        imageNode.setAttrs({
+          x: 0,
+          y: 0,
+          width: this.stage.width(),
+          height: this.stage.height(),
+          draggable: true, // permitir arrastrar
+        });
+        this.backgroundLayer.add(imageNode);
+        this.enableEditing(imageNode);
+        this.backgroundLayer.draw();
+      });
+    }
 
-    // permitir editar texto existente con doble click/double tap
+    // edición de texto con doble click
     this.stage.on('dblclick dbltap', e => {
       const shape = e.target as Konva.Shape;
       if (shape && shape.getClassName && shape.getClassName() === 'Text') {
         const textNode = shape as Konva.Text;
-
-        // 🔹 Desactivar arrastre mientras se edita
         textNode.draggable(false);
-
         this.openTextareaForTextNode(textNode);
-
-        // 🔹 Cuando termine edición, devolver arrastre si la herramienta actual es select
         this.currentTextarea?.addEventListener('blur', () => {
           textNode.draggable(this.tool === 'select');
         });
@@ -94,35 +132,22 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
     this.stage.destroy();
   }
 
+  // --- ControlValueAccessor ---
   writeValue(value: any): void {
     if (!value) return;
-
     try {
       const json = typeof value === 'string' ? JSON.parse(value) : value;
+      this.drawLayer.destroyChildren();
 
-      // Limpiar layer actual
-      this.layer.destroyChildren();
-
-      // Crear nodos desde JSON
       const nodes = Konva.Node.create(json, this.stage.container() as HTMLElement);
-
-      // Agregar nodos válidos
       if (nodes instanceof Konva.Stage || nodes instanceof Konva.Layer) {
         nodes.getChildren().forEach((child: any) => {
-          if (
-            child instanceof Konva.Shape ||
-            child instanceof Konva.Group ||
-            child instanceof Konva.Text
-          ) {
-            this.layer.add(child);
-            this.enableEditing(child); // 🔹 aplicar edición
-          }
+          this.drawLayer.add(child);
+          this.enableEditing(child);
         });
       }
 
-      this.layer.draw();
-
-      // 🔹 Reaplicar tool actual a todos los nodos restaurados
+      this.drawLayer.draw();
       this.setTool(this.tool);
     } catch (e) {
       console.error('Error restaurando dibujo:', e);
@@ -135,76 +160,57 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-
   setDisabledState?(isDisabled: boolean): void {
     if (!this.stage) return;
     this.stage.listening(!isDisabled);
   }
 
   private propagateChanges() {
-    const json = this.layer.toJSON(); // <- Solo la layer
+    const json = this.drawLayer.toJSON();
     this.onChange(json);
   }
 
-  private initStage() {
-    const container = this.stageHost.nativeElement;
-    this.stage = new Konva.Stage({
-      container,
-      width: container.clientWidth || 800,
-      height: container.clientHeight || 600,
-    });
-    this.layer = new Konva.Layer();
-    this.stage.add(this.layer);
-  }
-
-  private applyToolToNode(node: any) {
-    if (node instanceof Konva.Group) {
-      node.getChildren().forEach((child: any) => this.applyToolToNode(child));
-      node.draggable(this.tool === 'select');
-    } else if (node instanceof Konva.Text) {
-      node.draggable(this.tool === 'select');
-    } else if (node instanceof Konva.Shape) {
-      node.draggable(this.tool === 'select');
-    }
-  }
-
+  // --- Herramientas ---
   setTool(t: Tool) {
     this.tool = t;
-    if (t === 'select') {
-      this.stage.draggable(false);
-    } else {
-      this.stage.draggable(false);
-    }
-    this.layer.getChildren().forEach(node => this.applyToolToNode(node));
 
-    // cursor y eraser
-    if (t === 'eraser') {
-      this.stage.container().style.cursor = 'none';
-      if (!this.eraserCursor) {
-        this.eraserCursor = new Konva.Circle({
-          radius: this.strokeWidth * 2,
-          fill: 'rgba(200,200,200,0.3)',
-          stroke: '#999',
-          strokeWidth: 1,
-          listening: false,
-        });
-        this.layer.add(this.eraserCursor);
-        this.layer.draw();
+    // recorrer nodos de ambas capas (imagen de fondo + dibujos)
+    const allNodes = [...this.backgroundLayer.getChildren(), ...this.drawLayer.getChildren()];
+
+    allNodes.forEach(node => {
+      switch (t) {
+        case 'select':
+          node.draggable(true);
+          node.off('click'); // limpiar handlers previos
+          node.on('click', () => {
+            this.tr.nodes([node]);
+            this.drawLayer.draw();
+          });
+          break;
+
+        case 'eraser':
+          node.draggable(false);
+          node.off('click');
+          node.on('click', () => {
+            node.destroy();
+            this.drawLayer.draw();
+            this.backgroundLayer.draw();
+          });
+          break;
+
+        default:
+          // para pen, line, rect, circle...
+          node.draggable(false);
+          node.off('click');
+          break;
       }
-      this.stage.on('mousemove.eraser', () => {
-        const pos = this.getPointerPos();
-        if (pos && this.eraserCursor) {
-          this.eraserCursor.position(pos);
-          this.layer.batchDraw();
-        }
-      });
-    } else {
-      this.stage.container().style.cursor = 'default';
-      if (this.eraserCursor) {
-        this.eraserCursor.destroy();
-        this.eraserCursor = undefined;
-      }
-      this.stage.off('mousemove.eraser');
+    });
+
+    // limpiar selección del transformer si no está en modo select
+    if (t !== 'select') {
+      this.tr.nodes([]);
+      this.drawLayer.draw();
+      this.backgroundLayer.draw();
     }
   }
 
@@ -239,7 +245,7 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
         lineJoin: 'round',
         globalCompositeOperation: this.tool === 'eraser' ? 'destination-out' : undefined,
       });
-      this.layer.add(this.currentLine);
+      this.drawLayer.add(this.currentLine);
     } else if (this.tool === 'rect') {
       this.currentShape = new Konva.Rect({
         x: pos.x,
@@ -249,7 +255,7 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
         stroke: this.strokeColor,
         strokeWidth: this.strokeWidth,
       });
-      this.layer.add(this.currentShape);
+      this.drawLayer.add(this.currentShape);
     } else if (this.tool === 'circle') {
       this.currentShape = new Konva.Circle({
         x: pos.x,
@@ -258,9 +264,8 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
         stroke: this.strokeColor,
         strokeWidth: this.strokeWidth,
       });
-      this.layer.add(this.currentShape);
+      this.drawLayer.add(this.currentShape);
     } else if (this.tool === 'text') {
-      // CREAR texto con valor inicial (opcional) para que tenga dimensiones
       const initialText = this.textInput?.trim() ? this.textInput : '';
       const textNode = new Konva.Text({
         x: pos.x,
@@ -270,17 +275,13 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
         fill: this.strokeColor,
         draggable: true,
       });
-      this.layer.add(textNode);
-      this.layer.draw();
-
-      // abrir textarea (pos = coordenadas del stage)
+      this.drawLayer.add(textNode);
+      this.drawLayer.draw();
       this.openTextareaForTextNode(textNode, pos);
-
-      // no dejamos isDrawing en true (no es un trazo continuo)
       this.isDrawing = false;
     }
 
-    this.layer.draw();
+    this.drawLayer.draw();
   }
 
   private onPointerMove() {
@@ -289,31 +290,19 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
 
     if (this.tool === 'pen' || this.tool === 'eraser') {
       if (!this.currentLine) return;
-      const newPoints = this.currentLine.points().concat([pos.x, pos.y]);
-      this.currentLine.points(newPoints);
-    } else if (
-      this.tool === 'rect' &&
-      this.currentShape &&
-      this.currentShape instanceof Konva.Rect
-    ) {
+      this.currentLine.points(this.currentLine.points().concat([pos.x, pos.y]));
+    } else if (this.tool === 'rect' && this.currentShape instanceof Konva.Rect) {
       const x = Math.min(this.startPos.x, pos.x);
       const y = Math.min(this.startPos.y, pos.y);
-      const w = Math.abs(pos.x - this.startPos.x);
-      const h = Math.abs(pos.y - this.startPos.y);
       this.currentShape.position({ x, y });
-      this.currentShape.width(w);
-      this.currentShape.height(h);
-    } else if (
-      this.tool === 'circle' &&
-      this.currentShape &&
-      this.currentShape instanceof Konva.Circle
-    ) {
+      this.currentShape.width(Math.abs(pos.x - this.startPos.x));
+      this.currentShape.height(Math.abs(pos.y - this.startPos.y));
+    } else if (this.tool === 'circle' && this.currentShape instanceof Konva.Circle) {
       const dx = pos.x - this.startPos.x;
       const dy = pos.y - this.startPos.y;
-      const r = Math.sqrt(dx * dx + dy * dy);
-      this.currentShape.radius(r);
+      this.currentShape.radius(Math.sqrt(dx * dx + dy * dy));
     }
-    this.layer.batchDraw();
+    this.drawLayer.batchDraw();
   }
 
   private onPointerUp() {
@@ -323,29 +312,123 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
   }
 
   clearCanvas() {
-    this.layer.destroyChildren();
-    this.drawBackgroundAndGrid();
+    this.drawLayer.destroyChildren();
+    this.backgroundLayer.destroyChildren();
+    this.stage.draw();
   }
 
-  exportPNG() {
-    const dataUrl = this.stage.toDataURL({ pixelRatio: 2 });
-    const w = window.open('', '_blank');
-    if (w) {
-      const img = new Image();
-      img.src = dataUrl;
-      w.document.body.style.margin = '0';
-      w.document.body.appendChild(img);
-    } else {
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = 'whiteboard.png';
-      a.click();
+  // --- CUADRÍCULA ---
+  private drawGrid() {
+    const width = this.stage.width();
+    const height = this.stage.height();
+    const gridSize = 20;
+
+    const background = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width,
+      height,
+      fill: '#ffffff',
+      listening: false,
+    });
+    this.gridLayer.add(background);
+
+    for (let i = 0; i < Math.ceil(width / gridSize); i++) {
+      this.gridLayer.add(
+        new Konva.Line({
+          points: [i * gridSize, 0, i * gridSize, height],
+          stroke: '#eee',
+          strokeWidth: 1,
+          listening: false,
+        })
+      );
+    }
+    for (let j = 0; j < Math.ceil(height / gridSize); j++) {
+      this.gridLayer.add(
+        new Konva.Line({
+          points: [0, j * gridSize, width, j * gridSize],
+          stroke: '#eee',
+          strokeWidth: 1,
+          listening: false,
+        })
+      );
+    }
+    this.gridLayer.draw();
+  }
+
+  // --- IMPORTAR IMAGEN ---
+  onUploadSVG(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = e => {
+      const url = e.target?.result as string;
+      Konva.Image.fromURL(url, imageNode => {
+        imageNode.setAttrs({ x: 50, y: 50, width: 200, height: 200, draggable: true });
+        this.backgroundLayer.add(imageNode);
+        this.backgroundLayer.draw();
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // --- EXPORTAR SVG (imagen + dibujos) ---
+  exportarSVG() {
+    if (!this.stage) return;
+
+    // Recorremos todos los Image en la capa de fondo
+    this.backgroundLayer.getChildren().forEach(node => {
+      if (node instanceof Konva.Image) {
+        const image = node.image();
+        if (image instanceof HTMLImageElement) {
+          const canvas = document.createElement('canvas');
+          canvas.width = image.width;
+          canvas.height = image.height;
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) ctx.drawImage(image, 0, 0);
+
+          const dataURL = canvas.toDataURL();
+          node.setAttr('imageSrc', dataURL);
+        }
+      }
+    });
+
+    const svg = toSVG(this.stage); // ahora sí tendrá la <image> embebida
+    this.exportImageSvg.emit({ svg, id: this.id });
+  }
+
+  private applyToolToNode(node: any) {
+    if (node instanceof Konva.Group) {
+      node.getChildren().forEach((child: any) => this.applyToolToNode(child));
+      node.draggable(this.tool === 'select');
+    } else if (node instanceof Konva.Text || node instanceof Konva.Shape) {
+      node.draggable(this.tool === 'select');
     }
   }
 
-  // --- helpers para edición de texto in-place ---
+  private enableEditing(node: Konva.Node) {
+    if (node instanceof Konva.Text) {
+      node.draggable(this.tool === 'select');
+      node.off('dblclick dbltap');
+      node.on('dblclick dbltap', () => {
+        node.draggable(false);
+        this.openTextareaForTextNode(node as Konva.Text);
+        this.currentTextarea?.addEventListener('blur', () => {
+          node.draggable(this.tool === 'select');
+        });
+      });
+    } else if (node instanceof Konva.Group) {
+      node.getChildren().forEach(child => this.enableEditing(child));
+      node.draggable(this.tool === 'select');
+    } else if (node instanceof Konva.Shape) {
+      node.draggable(this.tool === 'select');
+    }
+  }
+
+  // --- helpers para texto in-place ---
   private openTextareaForTextNode(textNode: Konva.Text, stagePos?: { x: number; y: number }) {
-    // cerrar textarea previo si existe
     if (this.currentTextarea) {
       try {
         document.body.removeChild(this.currentTextarea);
@@ -356,8 +439,6 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
     }
 
     const pos = stagePos ?? { x: textNode.x(), y: textNode.y() };
-
-    // bounding rect del contenedor Konva (relativo a viewport)
     const stageBox = this.stage.container().getBoundingClientRect();
     const areaX = stageBox.left + window.scrollX + pos.x;
     const areaY = stageBox.top + window.scrollY + pos.y;
@@ -380,40 +461,26 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
     textarea.style.color = (textNode.fill() as string) || '#000';
     textarea.style.fontFamily = (textNode.fontFamily && textNode.fontFamily()) || 'inherit';
 
-    // Evitar que Konva capture los eventos del textarea
     textarea.addEventListener('mousedown', e => e.stopPropagation());
     textarea.addEventListener('touchstart', e => e.stopPropagation());
 
     document.body.appendChild(textarea);
     this.currentTextarea = textarea;
 
-    // forzar focus en siguiente tick para evitar problemas de captura de eventos
     setTimeout(() => {
       textarea.focus();
       textarea.select();
     }, 0);
 
-    // ajustar si sale del viewport
-    setTimeout(() => {
-      const rect = textarea.getBoundingClientRect();
-      if (rect.right > window.innerWidth) {
-        textarea.style.left = Math.max(8, areaX - rect.width) + 'px';
-      }
-      if (rect.bottom > window.innerHeight) {
-        textarea.style.top = Math.max(8, areaY - rect.height) + 'px';
-      }
-    }, 0);
-
     const finish = () => {
       const newText = textarea.value;
       if (!newText.trim()) {
-        // si está vacío, borramos el nodo para no dejar texto invisible
         textNode.destroy();
       } else {
         textNode.text(newText);
-        textNode.fill(this.strokeColor); // mantener color actual
+        textNode.fill(this.strokeColor);
       }
-      this.layer.draw();
+      this.drawLayer.draw();
       if (this.currentTextarea && document.body.contains(this.currentTextarea)) {
         document.body.removeChild(this.currentTextarea);
       }
@@ -425,14 +492,12 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
         document.body.removeChild(this.currentTextarea);
       }
       this.currentTextarea = undefined;
-      // si quieres borrar nodo creado cuando cancela y quedó vacío:
       if (!textNode.text()) {
         textNode.destroy();
-        this.layer.draw();
+        this.drawLayer.draw();
       }
     };
 
-    // Enter guarda; Esc cancela; blur guarda
     const keyHandler = (ev: KeyboardEvent) => {
       if (ev.key === 'Enter') {
         ev.preventDefault();
@@ -444,67 +509,5 @@ export class PizarraDigitalComponent implements AfterViewInit, OnDestroy, Contro
 
     textarea.addEventListener('keydown', keyHandler);
     textarea.addEventListener('blur', finish);
-  }
-
-  private drawBackgroundAndGrid() {
-    const width = this.stage.width();
-    const height = this.stage.height();
-
-    // fondo blanco
-    const background = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width,
-      height,
-      fill: '#ffffff',
-      listening: false,
-    });
-    this.layer.add(background);
-
-    // cuadrícula ligera
-    const gridSize = 20;
-    for (let i = 0; i < Math.ceil(width / gridSize); i++) {
-      this.layer.add(
-        new Konva.Line({
-          points: [i * gridSize, 0, i * gridSize, height],
-          stroke: '#eee',
-          strokeWidth: 1,
-          listening: false,
-        })
-      );
-    }
-    for (let j = 0; j < Math.ceil(height / gridSize); j++) {
-      this.layer.add(
-        new Konva.Line({
-          points: [0, j * gridSize, width, j * gridSize],
-          stroke: '#eee',
-          strokeWidth: 1,
-          listening: false,
-        })
-      );
-    }
-
-    this.layer.draw();
-  }
-
-  private enableEditing(node: Konva.Node) {
-    if (node instanceof Konva.Text) {
-      node.draggable(this.tool === 'select');
-
-      // asignar doble click para abrir textarea
-      node.off('dblclick dbltap'); // quitar handlers previos si existían
-      node.on('dblclick dbltap', () => {
-        node.draggable(false);
-        this.openTextareaForTextNode(node as Konva.Text);
-        this.currentTextarea?.addEventListener('blur', () => {
-          node.draggable(this.tool === 'select');
-        });
-      });
-    } else if (node instanceof Konva.Shape) {
-      node.draggable(this.tool === 'select');
-    } else if (node instanceof Konva.Group) {
-      node.getChildren().forEach(child => this.enableEditing(child));
-      node.draggable(this.tool === 'select');
-    }
   }
 }

@@ -272,7 +272,7 @@ export class AsignarHorasComponent implements OnInit {
   }
 
   validarHorasMinimas() {
-    const totalHoras = Number(this.formNivelGrado.value.iTotalHoras);
+    const totalHoras = parseInt(this.formNivelGrado.value.iTotalHoras);
     const iHorasMiniminas = Number(this.formNivelGrado.value.iHorasMiniminas);
 
     if (totalHoras < iHorasMiniminas) {

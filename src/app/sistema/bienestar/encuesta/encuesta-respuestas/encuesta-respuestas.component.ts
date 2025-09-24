@@ -321,6 +321,15 @@ export class EncuestaRespuestasComponent implements OnInit {
         iCredEntPerfId: this.perfil.iCredEntPerfId,
         iEncuId: this.iEncuId,
         iMatrId: iMatrId,
+        iNivelTipoId: this.formFiltros.get('iNivelTipoId')?.value,
+        iTipoSectorId: this.formFiltros.get('iTipoSectorId')?.value,
+        iZonaId: this.formFiltros.get('iZonaId')?.value,
+        iUgelId: this.formFiltros.get('iUgelId')?.value,
+        iDsttId: this.formFiltros.get('iDsttId')?.value,
+        iIieeId: this.formFiltros.get('iIieeId')?.value,
+        iNivelGradoId: this.formFiltros.get('iNivelGradoId')?.value,
+        iSeccionId: this.formFiltros.get('iSeccionId')?.value,
+        cPersSexo: this.formFiltros.get('cPersSexo')?.value,
       })
       .subscribe({
         next: (response: any) => {

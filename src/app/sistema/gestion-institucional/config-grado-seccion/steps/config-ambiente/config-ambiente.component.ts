@@ -24,6 +24,10 @@ import { MenuItem } from 'primeng/api';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
+import { environment } from '@/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-config-ambiente',
@@ -40,6 +44,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     ButtonModule,
     InputSwitchModule,
     PrimengModule,
+    TypesFilesUploadPrimengComponent,
   ],
   templateUrl: './config-ambiente.component.html',
   styleUrl: './config-ambiente.component.scss',
@@ -60,9 +65,23 @@ export class ConfigAmbienteComponent implements OnInit {
   piso_ambiente: [];
   condicion_ambiente: [];
   configuracion: any[];
+  perfil: any = [];
 
   ambientes: any[];
+  typesFiles = {
+    file: false,
+    url: false,
+    youtube: false,
+    repository: false,
+    image: true,
+  };
+  filesUrl = [];
+  ruta_imagen: string;
+
   private _confirmService = inject(ConfirmationModalService);
+  private http = inject(HttpClient);
+  backend = environment.backend;
+  private backendApi = environment.backendApi;
 
   constructor(
     private stepService: AdmStepGradoSeccionService,
@@ -73,6 +92,8 @@ export class ConfigAmbienteComponent implements OnInit {
   ) {
     //this.iSedeId = this.stepService.iSedeId
     this.items = this.stepService.itemsStep;
+    this.perfil = this.stepService.perfil;
+
     //this.iYAcadId = this.stepService.iYAcadId
     this.anio = this.stepService.anio;
     this.configuracion = this.stepService.configuracion;
@@ -80,6 +101,10 @@ export class ConfigAmbienteComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
+      const codigoModular = this.perfil.cIieeCodigoModular;
+      const cYAcadNombre = this.configuracion[0].cYAcadNombre;
+
+      this.ruta_imagen = String(cYAcadNombre + '/' + codigoModular + '/ambientes');
       //bd iiee_ambientes
       //this.visible = true
       this.form = this.fb.group({
@@ -97,6 +122,7 @@ export class ConfigAmbienteComponent implements OnInit {
         iAmbienteArea: [0, Validators.required],
         iAmbienteAforo: [0, Validators.required],
         cAmbienteObs: [''],
+        cImagen: [''],
         // ambiente: [''],
         cYAcadNombre: [this.configuracion[0].cYAcadNombre],
         // campo adicional para la vista
@@ -104,6 +130,7 @@ export class ConfigAmbienteComponent implements OnInit {
     } catch (error) {
       this.router.navigate(['/gestion-institucional/configGradoSeccion']);
     }
+
     this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes()); // devuelve arrays de tabla acad.ambientes
     this.tipo_ambiente =
       this.stepService.tipo_ambiente ?? (await this.stepService.getTipoAmbiente());
@@ -297,6 +324,7 @@ export class ConfigAmbienteComponent implements OnInit {
   }
 
   accionBtnItemTable({ accion, item }) {
+    console.log(accion, 'accion', item, 'item');
     if (accion === 'editar') {
       this.visible = true;
       this.caption = 'Editar ambientes';
@@ -313,6 +341,15 @@ export class ConfigAmbienteComponent implements OnInit {
       this.form.get('iPisoAmbid')?.setValue(item.iPisoAmbid);
       this.form.get('cAmbienteObs')?.setValue(item.cAmbienteObs);
       this.form.get('bAmbienteEstado')?.setValue(item.bAmbienteEstado);
+      this.form.get('cImagen')?.setValue(item.cImagen), (this.filesUrl = []);
+      if ((item.cImagen ?? '').length > 0) {
+        this.filesUrl.push({
+          name: 'imagen',
+          ruta: item.cImagen,
+        });
+      }
+
+      console.log(item.cImagen, 'item.cImagen', this.filesUrl);
       if (item.bAmbienteEstado == 1) {
         this.form.get('bAmbienteEstado')?.setValue(1);
       } else {
@@ -325,6 +362,7 @@ export class ConfigAmbienteComponent implements OnInit {
       this.option = 'crear';
       this.clearForm();
     }
+
     if (accion === 'eliminar') {
       this._confirmService.openConfirm({
         message: '¿Está seguro de que desea eliminar este elemento?',
@@ -393,8 +431,8 @@ export class ConfigAmbienteComponent implements OnInit {
     }
   }
 
-  accionBtnItem(accion) {
-    if (accion === 'guardar') {
+  accionBtnItem(event: any) {
+    if (event === 'guardar') {
       this.visible = true;
       this.caption = 'Registrar ambientes';
       if (this.form.valid) {
@@ -433,7 +471,7 @@ export class ConfigAmbienteComponent implements OnInit {
       }
     }
     //updateAcademico
-    if (accion === 'editar') {
+    if (event === 'editar') {
       if (this.form.valid) {
         const params = {
           esquema: 'acad',
@@ -452,6 +490,7 @@ export class ConfigAmbienteComponent implements OnInit {
             iAmbienteArea: this.form.get('iAmbienteArea')?.value,
             iAmbienteAforo: this.form.get('iAmbienteAforo')?.value,
             cAmbienteObs: this.form.get('cAmbienteObs')?.value,
+            cImagen: this.form.get('cImagen')?.value,
           }),
           campo: 'iIieeAmbienteId',
           condicion: this.form.get('iIieeAmbienteId')?.value,
@@ -486,6 +525,52 @@ export class ConfigAmbienteComponent implements OnInit {
       }
     }
   }
+  async onUploadChange(evt: any, tipo: any) {
+    const file = evt.target.files[0];
+    if (file) {
+      const dataFile = await this.objectToFormData({
+        file: file,
+        nameFile: this.ruta_imagen, //ruta de imagen
+      });
+      this.http
+        .post(`${this.backendApi}/general/subir-archivo?` + 'skipSuccessMessage=true', dataFile)
+        .pipe(
+          map((event: any) => {
+            if (event.validated) {
+              switch (tipo) {
+                case 'ambiente':
+                  this.filesUrl = [];
+                  this.filesUrl.push({
+                    name: file.name,
+                    ruta: event.data,
+                  });
+                  this.form.get('cImagen')?.setValue(this.filesUrl[0].ruta);
+                  //this.guardarItinerario();
+                  break;
+              }
+            }
+          }),
+          catchError((error: any) => {
+            return throwError(error.error.message);
+          })
+        )
+        .toPromise();
+    }
+  }
+
+  objectToFormData(obj: any) {
+    const formData = new FormData();
+    Object.keys(obj).forEach(key => {
+      if (obj[key] !== '') {
+        formData.append(key, obj[key]);
+      }
+    });
+
+    return formData;
+  }
+
+  guardarItinerario() {}
+
   clearForm() {
     this.form.get('iIieeAmbienteId')?.setValue(0);
     this.form.get('cAmbienteNombre')?.setValue('');
@@ -499,18 +584,25 @@ export class ConfigAmbienteComponent implements OnInit {
     this.form.get('iPisoAmbid')?.setValue(0);
     this.form.get('cAmbienteObs')?.setValue('');
     this.form.get('bAmbienteEstado')?.setValue(0);
+    this.form.get('cImagen')?.setValue('');
   }
 
-  saveInformation() {
-    if (this.caption == 'create') {
-      alert('Mensaje 0 save');
-    } else {
-      alert('Mensaje 1 save');
-    }
+  openLink(item) {
+    if (!item) return;
+    const ruta = environment.backend + '/' + item;
+    window.open(ruta, '_blank');
   }
-  nextPage() {
-    alert('mensaje de next');
-  }
+
+  // saveInformation() {
+  //   if (this.caption == 'create') {
+  //     alert('Mensaje 0 save');
+  //   } else {
+  //     alert('Mensaje 1 save');
+  //   }
+  // }
+  // nextPage() {
+  //   alert('mensaje de next');
+  // }
 
   //ESTRUCTURASS DE TABLA
   //Maquetar tablas
@@ -611,7 +703,7 @@ export class ConfigAmbienteComponent implements OnInit {
       type: 'text',
       width: '5rem',
       field: 'cTipoAmbienteNombre',
-      header: 'Tipo de ambiente',
+      header: 'Tipo',
       text_header: 'center',
       text: 'center',
     },

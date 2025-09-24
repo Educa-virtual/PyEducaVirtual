@@ -1,79 +1,81 @@
 <p-inputGroup styleClass="vertical-group">
-    <p-inputGroupAddon>
-        <a
-            *ngIf="infoAdicional"
-            role="button"
-            class="p-button p-button-secondary mr-2"
-            (click)="panel.toggle($event)"
-            (keypress)="panel.toggle($event)"
-            tabindex="0"
-        >
-            <i class="pi pi-question-circle"></i>
-        </a>
-        <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
-            <div class="w-15rem">
-                <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
-            </div>
-        </p-overlayPanel>
-        <span>{{ addonLabel }}</span>
-    </p-inputGroupAddon>
-    @switch (inputType) {
-        @case ('text') {
-            <input
-                pInputText
-                [formControl]="inputControl"
-                [placeholder]="inputPlaceholder"
-                type="text"
-                class="group-element"
-                [maxlength]="inputMaxlength"
-                [required]="inputRequired"
-                [value]="inputControl.value"
-                [readOnly]="inputReadonly"
-            />
-        }
-        @case ('number') {
-            <p-inputNumber
-                [formControl]="inputControl"
-                [min]="inputMin"
-                [max]="inputMax"
-                [step]="inputStep"
-                [placeholder]="inputPlaceholder"
-                [maxlength]="inputMaxlength"
-                [useGrouping]="inputUseGrouping"
-                [showButtons]="inputShowButtons"
-                [required]="inputRequired"
-                class="group-element"
-            />
-        }
-        @case ('textarea') {
-            <textarea
-                cdkTextareaAutosize
-                #autosize="cdkTextareaAutosize"
-                pInputTextarea
-                [formControl]="inputControl"
-                [maxlength]="inputMaxlength"
-                [placeholder]="inputPlaceholder"
-                [required]="inputRequired"
-                [rows]="inputInitRows"
-                class="group-element"
-                [style.minHeight]="inputMinRowsString"
-                [style.maxHeight]="inputMaxRowsString"
-                [cdkAutosizeMinRows]="inputInitRows + 1.5"
-                [cdkAutosizeMaxRows]="inputMaxRows"
-            >
-                >{{ inputControl.value }}</textarea
-            >
-        }
-        @case ('date') {
-            <p-calendar
-                [formControl]="inputControl"
-                iconDisplay="input"
-                [showIcon]="true"
-                appendTo="body"
-                [maxDate]="inputMaxDate"
-                [minDate]="inputMinDate"
-                inputStyleClass="group-element"
-            />
-        }
+  <p-inputGroupAddon>
+    <a
+      *ngIf="infoAdicional"
+      role="button"
+      class="p-button p-button-secondary mr-2"
+      (click)="panel.toggle($event)"
+      (keypress)="panel.toggle($event)"
+      tabindex="0"
+    >
+      <i class="pi pi-question-circle"></i>
+    </a>
+    <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+      <div class="w-15rem">
+        <ng-template [ngTemplateOutlet]="infoAdicional"></ng-template>
+      </div>
+    </p-overlayPanel>
+    <span>{{ addonLabel }}</span>
+  </p-inputGroupAddon>
+  @switch (inputType) {
+    @case ('text') {
+      <input
+        pInputText
+        [formControl]="inputControl"
+        [placeholder]="inputPlaceholder"
+        type="text"
+        class="group-element"
+        [maxlength]="inputMaxlength"
+        [required]="inputRequired"
+        [value]="inputControl.value"
+        [readOnly]="inputReadonly"
+      />
     }
+    @case ('number') {
+      <p-inputNumber
+        [formControl]="inputControl"
+        [min]="inputMin"
+        [max]="inputMax"
+        [step]="inputStep"
+        [placeholder]="inputPlaceholder"
+        [maxlength]="inputMaxlength"
+        [useGrouping]="inputUseGrouping"
+        [showButtons]="inputShowButtons"
+        [required]="inputRequired"
+        [prefix]="inputNumberPrefix"
+        [suffix]="inputNumberSuffix"
+        class="group-element"
+      />
+    }
+    @case ('textarea') {
+      <textarea
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        pInputTextarea
+        [formControl]="inputControl"
+        [maxlength]="inputMaxlength"
+        [placeholder]="inputPlaceholder"
+        [required]="inputRequired"
+        [rows]="inputInitRows"
+        class="group-element"
+        [style.minHeight]="inputMinRowsString"
+        [style.maxHeight]="inputMaxRowsString"
+        [cdkAutosizeMinRows]="inputInitRows + 1.5"
+        [cdkAutosizeMaxRows]="inputMaxRows"
+      >
+                >{{ inputControl.value }}</textarea
+      >
+    }
+    @case ('date') {
+      <p-calendar
+        [formControl]="inputControl"
+        iconDisplay="input"
+        [showIcon]="true"
+        appendTo="body"
+        [maxDate]="inputMaxDate"
+        [minDate]="inputMinDate"
+        inputStyleClass="group-element"
+      />
+    }
+  }
 </p-inputGroup>

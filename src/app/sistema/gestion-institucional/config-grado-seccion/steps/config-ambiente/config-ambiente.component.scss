@@ -1,6 +1,30 @@
 .center-content {
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    height: 100%; /* Asegúrate de que el contenedor tenga altura suficiente */
+  display: flex;
+  justify-content: center;
+  /* Centra horizontalmente */
+  align-items: center;
+  /* Centra verticalmente */
+  height: 100%;
+  /* Asegúrate de que el contenedor tenga altura suficiente */
+}
+
+.btn-file-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file-image input[type='file'] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
 }

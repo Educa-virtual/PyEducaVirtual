@@ -6,21 +6,18 @@
 </ng-template>
 
 <ng-template #footerPregunta let-pregunta="pregunta">
-  <footer class="flex justify-content-end mt-2">
-    <!-- @if (pregunta.iTipoPregId === 3 && !hideButton) {
-            <button
-                pButton
-                [label]="
-                    pregunta.iEstadoRespuestaEstudiante === 1
-                        ? 'Calificar Pregunta'
-                        : 'Actualizar Calificación'
-                "
-                type="button"
-                size="small"
-                icon="pi pi-check"
-                (click)="calificarPreguntaChange.emit(pregunta)"
-            ></button>
-        } -->
+  <footer class="flex justify-content-between align-items-center mt-2">
+    @if (pregunta.bArgumentar) {
+      <p-button
+        severity="warning"
+        [text]="true"
+        label="Ver Pizarra"
+        icon="pi pi-external-link"
+        size="small"
+        (onClick)="showModalPizarra = true"
+      ></p-button>
+    }
+    &nbsp;&nbsp;
     @if (pregunta.iTipoPregId === 2 || pregunta.iTipoPregId === 1) {
       <p-tag value="Pregunta Correcta Configurada" styleClass="bg-yellow-100 text-gray-600" />
     }
@@ -32,3 +29,23 @@
   [footerPreguntaTemplate]="footerPregunta"
   [pregunta]="pregunta"
 ></app-banco-pregunta-preview>
+
+<p-dialog
+  [header]="'Pizarra Digital'"
+  [(visible)]="showModalPizarra"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '60rem' }"
+>
+  <ng-container class="flex justify-content-between flex-wrap">
+    <img
+      *ngIf="pregunta?.cEvalRptaPizarraUrl"
+      [src]="backend + '/' + pregunta.cEvalRptaPizarraUrl"
+      alt="Pizarra"
+      class="max-w-full border-round shadow-2"
+    />
+    <p *ngIf="!pregunta?.cEvalRptaPizarraUrl" class="text-gray-500">
+      No hay pizarra disponible para esta pregunta.
+    </p>
+  </ng-container>
+</p-dialog>

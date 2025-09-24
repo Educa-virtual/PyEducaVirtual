@@ -27,9 +27,10 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
   public readonly PRIORIDAD_URGENTE = 3;
 
   fases: Array<object>;
-  public readonly FASE_ATENDIDO = 1;
-  public readonly FASE_PENDIENTE = 2;
+  public readonly FASE_INICIO = 1;
+  public readonly FASE_PROCESO = 2;
   public readonly FASE_DERIVADO = 3;
+  public readonly FASE_CERRADO = 4;
 
   constructor(private http: HttpClient) {}
 
@@ -115,16 +116,20 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     if (!this.fases) {
       this.fases = [
         {
-          label: 'ATENDIDO',
-          value: this.FASE_ATENDIDO,
+          label: 'INICIO',
+          value: this.FASE_INICIO,
         },
         {
-          label: 'PENDIENTE',
-          value: this.FASE_PENDIENTE,
+          label: 'PROCESO',
+          value: this.FASE_PROCESO,
         },
         {
           label: 'DERIVADO',
           value: this.FASE_DERIVADO,
+        },
+        {
+          label: 'CERRADO',
+          value: this.FASE_CERRADO,
         },
       ];
     }

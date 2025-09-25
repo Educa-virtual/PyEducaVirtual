@@ -492,13 +492,10 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   }
 
   filtrado(event: any) {
-    // Aquí puedes manejar el evento de cambio si es necesario
     const seccionIdSeleccionada = event.value;
-
     this.alumnosFiltrados = this.alumnos.filter(
       alumno => alumno.iSeccionId === Number(seccionIdSeleccionada)
     );
-    console.log(this.alumnosFiltrados);
   }
 
   async subirArchivo() {
@@ -536,14 +533,14 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this._messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: error,
+          detail: error.error.message,
         });
       },
       complete: () => {
         this._messageService.add({
           severity: 'success',
           summary: 'Mensaje del sistema',
-          detail: 'Se aactualizo la tabla de resultados',
+          detail: 'Se actualizo la tabla de resultados',
         });
       },
     });

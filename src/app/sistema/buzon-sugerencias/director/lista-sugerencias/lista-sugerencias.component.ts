@@ -16,7 +16,7 @@ import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-d
   styleUrl: './lista-sugerencias.component.scss',
 })
 export class ListaSugerenciasComponent implements OnInit {
-  title: string = 'Buzón de sugerencias - Director';
+  title: string = 'Buzón de sugerencias administrativas - Director';
   prioridades: any[];
   mostrarFormularioVer: boolean = false;
   mostrarFormularioResponder: boolean = false;

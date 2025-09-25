@@ -364,14 +364,18 @@
 
             <!-- Activar Matriz -->
             <td style="text-align: center; width: 10%">
-              <p-button
+              <p-inputSwitch
+                [ngModel]="curso.bDescarga === '1'"
+                (click)="actualizarEstadoDescargaMatriz(curso)"
+              />
+              <!--<p-button
                 [label]="curso.bDescarga === '1' ? 'Desactivar' : 'Activar'"
                 [icon]="curso.bDescarga === '1' ? 'pi pi-times' : 'pi pi-check'"
                 [severity]="curso.bDescarga === '1' ? 'info' : 'success'"
                 size="small"
                 [pTooltip]="curso.bDescarga === '1' ? 'Desactivar descarga' : 'Activar descarga'"
                 (click)="actualizarEstadoDescargaMatriz(curso)"
-              ></p-button>
+              ></p-button>-->
             </td>
 
             <!-- Acciones adicionales -->

@@ -14,7 +14,7 @@ import { SlicePipe } from '@angular/common';
   standalone: true,
   imports: [PrimengModule, AulaBancoPreguntasModule],
   templateUrl: './encuesta.component.html',
-  styleUrls: ['./../lista-categorias/lista-categorias.component.scss'],
+  styleUrl: './encuesta.component.scss',
   providers: [SlicePipe],
 })
 export class EncuestaComponent implements OnInit {

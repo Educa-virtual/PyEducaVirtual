@@ -22,7 +22,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
   standalone: true,
   imports: [PrimengModule, EditorComponent, TextFieldModule],
   templateUrl: './pregunta.component.html',
-  styleUrl: './../../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './pregunta.component.scss',
   providers: [
     {
       provide: TINYMCE_SCRIPT_SRC,

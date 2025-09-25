@@ -16,7 +16,7 @@ import { SlicePipe } from '@angular/common';
   standalone: true,
   imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent],
   templateUrl: './llenado-preguntas-encuesta.component.html',
-  styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './llenado-preguntas-encuesta.component.scss',
   providers: [SlicePipe],
 })
 export class LlenadoPreguntasEncuestaComponent implements OnInit {

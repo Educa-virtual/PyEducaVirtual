@@ -20,7 +20,7 @@ import { SlicePipe } from '@angular/common';
     PreguntaTextoComponent,
   ],
   templateUrl: './ver-encuesta.component.html',
-  styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './ver-encuesta.component.scss',
   providers: [SlicePipe],
 })
 export class VerEncuestaComponent implements OnInit {

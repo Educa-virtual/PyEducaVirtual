@@ -21,7 +21,7 @@ import { FileUpload } from 'primeng/fileupload';
   standalone: true,
   imports: [PrimengModule, CommonModule, FormsModule, TextFieldModule],
   templateUrl: './nueva-categoria.component.html',
-  styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './nueva-categoria.component.scss',
 })
 export class NuevaCategoriaComponent implements OnInit, OnChanges {
   @Input() visible: boolean = false;

@@ -19,7 +19,7 @@ import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfi
   standalone: true,
   imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './respuestas-encuesta.component.html',
-  styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './respuestas-encuesta.component.scss',
   providers: [SlicePipe],
 })
 export class RespuestasEncuestaComponent implements OnInit {

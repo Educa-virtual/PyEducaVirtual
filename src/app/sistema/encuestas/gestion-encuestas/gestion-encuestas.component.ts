@@ -15,7 +15,7 @@ import { SlicePipe } from '@angular/common';
   standalone: true,
   imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './gestion-encuestas.component.html',
-  styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './gestion-encuestas.component.scss',
   providers: [SlicePipe],
 })
 export class GestionEncuestasComponent implements OnInit {

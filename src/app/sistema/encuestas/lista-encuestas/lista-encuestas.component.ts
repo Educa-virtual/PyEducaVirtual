@@ -14,7 +14,7 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
   standalone: true,
   imports: [PrimengModule, NoDataComponent],
   templateUrl: './lista-encuestas.component.html',
-  styleUrl: './../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './lista-encuestas.component.scss',
   providers: [SlicePipe],
 })
 export class ListaEncuestasComponent implements OnInit {

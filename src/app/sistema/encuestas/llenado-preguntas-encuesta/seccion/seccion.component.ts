@@ -18,7 +18,7 @@ import { ActivatedRoute } from '@angular/router';
   standalone: true,
   imports: [PrimengModule, TextFieldModule],
   templateUrl: './seccion.component.html',
-  styleUrl: './../../lista-categorias/lista-categorias.component.scss',
+  styleUrl: './seccion.component.scss',
 })
 export class SeccionComponent implements OnInit, OnChanges {
   @Input() visible: boolean = false;

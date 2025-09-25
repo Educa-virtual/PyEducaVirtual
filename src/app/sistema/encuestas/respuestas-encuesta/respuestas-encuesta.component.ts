@@ -12,6 +12,7 @@ import { EncuestasService } from '../services/encuestas.services';
 import { SlicePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-respuestas-encuesta',
@@ -69,6 +70,10 @@ export class RespuestasEncuestaComponent implements OnInit {
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.iEncuId || 0;
       this.iCateId = params.params.iCateId || 0;
@@ -125,6 +130,34 @@ export class RespuestasEncuestaComponent implements OnInit {
     } catch (error) {
       console.error('Error obteniendo parametros:', error);
     }
+
+    this.formFiltros.get('iNivelTipoId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iNivelGradoId')?.setValue(null);
+      this.nivel_grados = null;
+      this.filterNivelesGrados(value);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iDsttId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iZonaId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iTipoSectorId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iUgelId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iDsttId')?.setValue(null);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.distritos = null;
+      this.filterInstitucionesEducativas();
+      this.filterDistritos(value);
+    });
+
     if (this.iEncuId) {
       this.verEncuesta();
       this.filtrarRespuestasFormulario();
@@ -319,6 +352,17 @@ export class RespuestasEncuestaComponent implements OnInit {
         iCredEntPerfId: this.perfil.iCredEntPerfId,
         iEncuId: this.iEncuId,
         iPersId: iPersId,
+        iNivelTipoId: this.formFiltros.get('iNivelTipoId')?.value,
+        iTipoSectorId: this.formFiltros.get('iTipoSectorId')?.value,
+        iZonaId: this.formFiltros.get('iZonaId')?.value,
+        iUgelId: this.formFiltros.get('iUgelId')?.value,
+        iDsttId: this.formFiltros.get('iDsttId')?.value,
+        iIieeId: this.formFiltros.get('iIieeId')?.value,
+        iNivelGradoId: this.formFiltros.get('iNivelGradoId')?.value,
+        iSeccionId: this.formFiltros.get('iSeccionId')?.value,
+        cPersSexo: this.formFiltros.get('cPersSexo')?.value,
+        iPerfilId: this.formFiltros.get('iPerfilId')?.value,
+        iCursoId: this.formFiltros.get('iCursoId')?.value,
       })
       .subscribe({
         next: (response: any) => {
@@ -370,9 +414,17 @@ export class RespuestasEncuestaComponent implements OnInit {
       class: 'hidden md:table-cell',
     },
     {
+      field: 'perfiles',
+      type: 'text',
+      width: '15%',
+      header: 'Tipo de Persona',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
       field: 'cPersNombreApellidos',
       type: 'text',
-      width: '40%',
+      width: '45%',
       header: 'Nombres y Apellidos',
       text_header: 'left',
       text: 'left',
@@ -410,7 +462,7 @@ export class RespuestasEncuestaComponent implements OnInit {
     {
       field: 'cIieeNombre',
       type: 'text',
-      width: '20%',
+      width: '15%',
       header: 'I.E. Nombre',
       text_header: 'center',
       text: 'center',
@@ -424,7 +476,7 @@ export class RespuestasEncuestaComponent implements OnInit {
     {
       field: '',
       type: 'actions',
-      width: '10%',
+      width: '5%',
       header: 'Acciones',
       text_header: 'right',
       text: 'right',

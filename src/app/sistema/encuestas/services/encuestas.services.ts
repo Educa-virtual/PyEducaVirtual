@@ -162,7 +162,9 @@ export class EncuestasService implements OnDestroy {
   }
 
   imprimirRespuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/imprimirRespuestas`, data);
+    return this.http.post(`${baseUrl}/enc/imprimirRespuestas`, data, {
+      responseType: 'blob',
+    });
   }
 
   /**
